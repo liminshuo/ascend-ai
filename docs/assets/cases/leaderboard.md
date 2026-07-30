@@ -1,0 +1,48 @@
+# Agent Score Leaderboard
+
+A live ranking of how every documentation site we track scores.
+
+- [Browserbase (docs.browserbase.com)](/score/browserbase.md) — 100/100
+- [Mintlify (www.mintlify.com/docs)](/score/mintlify.md) — 100/100
+- [Neon (neon.com/docs)](/score/neon.md) — 100/100
+- [Resend (resend.com/docs)](/score/resend.md) — 100/100
+- [Anaconda (www.anaconda.com/docs/main)](/score/anaconda.md) — 99/100
+- [Arize AI (arize.com/docs/ax)](/score/arize.md) — 99/100
+- [Bun (bun.com/docs)](/score/bun.md) — 99/100
+- [Firecrawl (docs.firecrawl.dev)](/score/firecrawl.md) — 99/100
+- [Greptile (www.greptile.com/docs)](/score/greptile.md) — 99/100
+- [Lovable (docs.lovable.dev)](/score/lovable.md) — 99/100
+- [Ollama (docs.ollama.com)](/score/ollama.md) — 99/100
+- [Cartesia (docs.cartesia.ai)](/score/cartesia.md) — 98/100
+- [Cerebras Inference (inference-docs.cerebras.ai)](/score/cerebras.md) — 98/100
+- [Claude Code (code.claude.com/docs)](/score/claude-code.md) — 98/100
+- [Notion (developers.notion.com)](/score/notion.md) — 98/100
+- [Braintrust (www.braintrust.dev/docs)](/score/braintrust.md) — 97/100
+- [Browser Use (docs.browser-use.com)](/score/browser-use.md) — 97/100
+- [Cloudflare (developers.cloudflare.com)](/score/cloudflare.md) — 97/100
+- [Discord (docs.discord.com)](/score/discord.md) — 97/100
+- [PlanetScale (planetscale.com/docs)](/score/planetscale.md) — 97/100
+- [Cal.com (cal.com/docs)](/score/cal.md) — 96/100
+- [LangChain (docs.langchain.com)](/score/langchain.md) — 96/100
+- [Next.js (nextjs.org/docs)](/score/nextjs.md) — 96/100
+- [Replit (docs.replit.com)](/score/replit.md) — 96/100
+- [Baseten (docs.baseten.co)](/score/baseten.md) — 95/100
+- [Cohere (docs.cohere.com)](/score/cohere.md) — 95/100
+- [Exa (docs.exa.ai)](/score/exa.md) — 95/100
+- [ClickHouse (clickhouse.com/docs)](/score/clickhouse.md) — 94/100
+- [OpenAI (platform.openai.com/docs)](/score/openai.md) — 92/100
+- [Poolside (docs.poolside.ai)](/score/poolside.md) — 91/100
+- [React (react.dev)](/score/react.md) — 91/100
+- [Datadog (docs.datadoghq.com)](/score/datadoghq.md) — 89/100
+- [Graphite (graphite.dev/docs)](/score/graphite.md) — 89/100
+- [Stripe (docs.stripe.com)](/score/stripe.md) — 84/100
+- [Slack (docs.slack.dev)](/score/slack.md) — 83/100
+- [Clerk (clerk.com/docs)](/score/clerk.md) — 82/100
+- [Supabase (supabase.com/docs)](/score/supabase.md) — 81/100
+- [Amazon Web Services (docs.aws.amazon.com)](/score/aws.md) — 80/100
+- [Plaid (plaid.com/docs)](/score/plaid.md) — 80/100
+- [Vercel (vercel.com/docs)](/score/vercel.md) — 78/100
+- [Twilio (www.twilio.com/docs)](/score/twilio.md) — 77/100
+- [Spotify (developer.spotify.com/documentation)](/score/spotify.md) — 75/100
+- [Laravel (laravel.com/docs)](/score/laravel.md) — 59/100
+- [Cursor (docs.cursor.com)](/score/cursor.md) — 53/100

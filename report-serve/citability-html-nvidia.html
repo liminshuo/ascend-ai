@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NVIDIA（html）分析 · 可引用性·内容（html）分析 · 昇腾社区 AI 亲和原则</title>
+<style>
+
+  :root {
+    --bg: #F5F5F5; --panel: #ffffff; --panel2: #FAFAFA; --line: #e2e8f0;
+    --text: #191919; --muted: #595959; --accent: #1476FF; --accent-soft: rgba(20, 118, 255, 0.1);
+    --link: #1476FF; --topbar-h: 56px; --content-max: 1200px; --page-gutter: clamp(16px, 2.5vw, 24px);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "PingFang SC", sans-serif;
+    background: var(--bg);
+    color: var(--text); line-height: 1.55;
+  }
+  .topbar {
+    position: sticky; top: 0; z-index: 50; height: var(--topbar-h);
+    background: var(--panel);
+    border-bottom: 1px solid var(--line);
+  }
+  .topbar-inner {
+    width: min(var(--content-max), calc(100% - 2 * var(--page-gutter)));
+    margin: 0 auto;
+    padding: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .brand {
+    font-weight: 700; font-size: 14px; letter-spacing: -0.01em;
+    color: var(--text); text-decoration: none; white-space: nowrap;
+  }
+  .brand span { color: var(--accent); }
+  .site-nav { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+  .site-nav a {
+    text-decoration: none; color: var(--muted); font-size: 14px; font-weight: 500;
+    padding: 8px 14px; border-radius: 8px; white-space: nowrap;
+  }
+  .site-nav a:hover { color: var(--accent); background: #F5F5F5; text-decoration: none; }
+  .site-nav a.active { color: var(--accent); background: #F5F5F5; font-weight: 600; }
+  .wrap {
+    width: min(var(--content-max), calc(100% - 2 * var(--page-gutter)));
+    margin: 0 auto;
+    padding: 32px 0 80px;
+  }
+  .hero { margin-bottom: 28px; }
+  .eyebrow {
+    color: var(--accent);
+    font-size: 13px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  h1 {
+    font-family: "PingFang SC", sans-serif;
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 600;
+    margin: 8px 0 12px;
+    letter-spacing: -0.02em;
+  }
+  .sub {
+    color: var(--muted);
+    font-size: 15px;
+    margin: 0 0 24px;
+    line-height: 1.65;
+  }
+  .section {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 22px 24px 8px;
+    margin-bottom: 16px;
+  }
+  .section h2 {
+    margin: 0 0 6px;
+    font-size: 18px;
+    font-weight: 650;
+  }
+  .sum-h3 {
+    margin: 24px 0 10px;
+    font-size: 14px;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+  }
+  .sum-h3:first-of-type { margin-top: 14px; }
+  .domain-desc {
+    margin: 0 0 12px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.65;
+  }
+  .domain-why {
+    margin: 0 0 16px;
+    padding: 12px 14px 12px 32px;
+    background: var(--panel2);
+    border-radius: 10px;
+    font-size: 13px;
+    color: #3a4458;
+    line-height: 1.55;
+  }
+  .domain-why li { margin-bottom: 6px; }
+  .domain-why li:last-child { margin-bottom: 0; }
+  .domain-why code {
+    font-family: "SF Mono", "Fira Code", "Cascadia Code", ui-monospace, monospace;
+    font-size: 12px;
+  }
+  .section a { color: var(--link); }
+  footer { margin-top: 48px; color: var(--muted); font-size: 12px; }
+  @media (max-width: 720px) {
+    .site-nav a { padding: 8px 10px; font-size: 13px; }
+  }
+
+  .subnav {
+    position: sticky;
+    top: var(--topbar-h);
+    z-index: 40;
+    background: var(--panel);
+    border-bottom: 1px solid var(--line);
+  }
+  .subnav-inner {
+    width: min(var(--content-max), calc(100% - 2 * var(--page-gutter)));
+    margin: 0 auto;
+    padding: 0;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 4px;
+    overflow-x: auto;
+  }
+  .subnav a {
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 8px;
+    white-space: nowrap;
+  }
+  .subnav a:hover {
+    color: var(--accent);
+    background: #F5F5F5;
+  }
+  .subnav a.active {
+    color: var(--accent);
+    background: #F5F5F5;
+    font-weight: 600;
+  }
+
+  body.modal-open { overflow: hidden; }
+  .case-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .case-card {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 22px 24px;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+    transition: border-color .15s, background .15s;
+  }
+  .case-card:hover {
+    border-color: rgba(20, 118, 255, 0.35);
+    background: rgba(20, 118, 255, 0.06);
+  }
+  .case-card .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .chip {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: var(--accent-soft);
+    color: #0d4db8;
+  }
+  .chip.alt { background: #e8eef8; color: #3a4a66; }
+  .case-card h2 {
+    margin: 0 0 8px;
+    font-size: 18px;
+    font-weight: 600;
+  }
+  .case-card p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .case-card .cta {
+    margin-top: 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #0d4db8;
+  }
+
+  /* Fullscreen modal */
+  .modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: #fff;
+    flex-direction: column;
+    overflow: auto;
+  }
+  .modal.open { display: flex; }
+  .modal-head {
+    display: contents;
+  }
+  .modal-head-bar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--line);
+    background: #fff;
+  }
+  .modal-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0;
+  }
+  .modal-actions { display: flex; gap: 8px; align-items: center; }
+  .btn {
+    border: 1px solid var(--line);
+    background: #fff;
+    border-radius: 8px;
+    padding: 7px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .btn:hover { background: var(--panel2); }
+  .btn.close {
+    background: var(--text);
+    color: #fff;
+    border-color: var(--text);
+  }
+  .btn.close:hover { background: #333; }
+  .floor-item.warn {
+    border-left-color: #ea580c;
+    background: rgba(234, 88, 12, 0.06);
+  }
+  .floor-item.warn .idx {
+    background: rgba(234, 88, 12, 0.12);
+    color: #c2410c;
+  }
+  .floor-item.warn .badge {
+    background: rgba(234, 88, 12, 0.12);
+    color: #c2410c;
+  }
+  .floor-item.peel {
+    border-left-color: #c5cad3;
+    background: #f8f9fb;
+  }
+  .conclude .floor-stack {
+    margin: 8px 0 0;
+    border: 1px solid rgba(20, 118, 255, 0.18);
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fff;
+  }
+  .conclude {
+    flex-shrink: 0;
+    padding: 16px 20px 18px;
+    background: rgba(20, 118, 255, 0.06);
+  }
+  .conclude h3 {
+    margin: 0 0 10px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .conclude .tag {
+    display: inline-block;
+    margin: 0 4px 8px 0;
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .03em;
+    line-height: 1.4;
+  }
+  .conclude .tag-in {
+    background: #ecfdf5;
+    color: #047857;
+  }
+  .conclude .tag-out {
+    background: #fff7ed;
+    color: #c2410c;
+  }
+  .conclude .tag-muted {
+    background: #eceff3;
+    color: #5a6478;
+  }
+  .conclude strong { color: var(--text); }
+  .conclude-geo {
+    margin: 12px 0 0;
+    padding-top: 10px;
+    border-top: 1px solid rgba(20, 118, 255, 0.25);
+    font-size: 13px;
+    color: #3a4458;
+  }
+  .d1-verdict {
+    margin: 0 0 12px;
+    font-size: 13px;
+    color: #3a4458;
+    line-height: 1.55;
+  }
+  .d1-verdict code {
+    font-family: "SF Mono", "Fira Code", "Cascadia Code", ui-monospace, monospace;
+    font-size: 12px;
+  }
+  .comp-scroll {
+    overflow-x: auto;
+    margin: 0 0 4px;
+    border: 1px solid rgba(20, 118, 255, 0.18);
+    border-radius: 10px;
+    background: #fff;
+  }
+  .comp-matrix {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    min-width: 720px;
+  }
+  .comp-matrix th,
+  .comp-matrix td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+    vertical-align: top;
+    color: #3a4458;
+  }
+  .comp-matrix th {
+    background: #f4f7fb;
+    font-weight: 650;
+    color: var(--text);
+    white-space: nowrap;
+  }
+  .comp-matrix tr:last-child td { border-bottom: none; }
+  .comp-matrix .role {
+    font-size: 11px;
+    font-weight: 600;
+    color: #5a6478;
+    white-space: nowrap;
+  }
+  .cell-ok { color: #047857; font-weight: 650; }
+  .cell-warn { color: #c2410c; font-weight: 650; }
+  .cell-miss { color: #b91c1c; font-weight: 650; }
+  .cell-na { color: #94a3b8; }
+  .comp-note { color: #5a6478; font-size: 11.5px; line-height: 1.45; }
+  .section .comp-scroll { margin: 12px 0 16px; }
+  .cases-block h2 { margin: 0 0 6px; font-size: 18px; font-weight: 650; }
+  .cases-block > .sub { margin-bottom: 14px; }
+
+  .modal-split {
+    flex: 1 1 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: minmax(720px, 1fr);
+    gap: 12px 16px;
+    padding: 16px 20px 20px;
+    min-height: 1000px;
+    background: #eef1f5;
+    align-items: stretch;
+  }
+  @media (max-width: 900px) {
+    .modal-split { grid-template-columns: 1fr; }
+  }
+  .pane-frame-wrap {
+    min-height: 720px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .pane-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--line);
+    font-size: 12px;
+    color: var(--muted);
+    background: #fafbfc;
+    flex: 0 0 auto;
+  }
+  .pane-label a {
+    color: var(--link);
+    text-decoration: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .pane-label a:hover { text-decoration: underline; }
+  .pane-frame {
+    flex: 1 1 auto;
+    position: relative;
+    min-height: 720px;
+    background: #fff;
+    overflow: hidden;
+  }
+  .floor-map-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--line);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    background: #fff;
+  }
+  .floor-map-legend {
+    display: flex;
+    gap: 10px;
+    font-weight: 500;
+    color: var(--muted);
+  }
+  .floor-map-legend i {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    margin-right: 4px;
+  }
+  .floor-map-legend .on { background: #1476FF; }
+  .floor-map-legend .off { background: #c5cad3; }
+  .floor-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .floor-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+    border-left: 4px solid #c5cad3;
+    background: #fff;
+    font-size: 12.5px;
+  }
+  .floor-item:last-child { border-bottom: none; }
+  .floor-item.in {
+    border-left-color: #1476FF;
+    background: rgba(20, 118, 255, 0.06);
+  }
+  .floor-item .idx {
+    flex: 0 0 auto;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #e8edf3;
+    color: #5c6578;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .floor-item.in .idx {
+    background: rgba(20, 118, 255, 0.1);
+    color: #0d4db8;
+  }
+  .floor-item .body { flex: 1 1 auto; min-width: 0; }
+  .floor-item .name {
+    font-weight: 600;
+    color: var(--text);
+    margin: 0 0 2px;
+  }
+  .floor-item .desc {
+    margin: 0;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.4;
+  }
+  .floor-item .desc.mapsto {
+    margin-top: 4px;
+    color: #1a5fb4;
+    font-weight: 500;
+  }
+  .floor-item .right-meta {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    max-width: 46%;
+  }
+  .floor-item .badge {
+    flex: 0 0 auto;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: #eef0f3;
+    color: #6a7385;
+    white-space: nowrap;
+  }
+  .floor-item.in .badge {
+    background: rgba(20, 118, 255, 0.1);
+    color: #0d4db8;
+  }
+  .pane-frame iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: #fff;
+  }
+
+  .shot-map {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    vertical-align: top;
+  }
+  .shot-map .pane-shot { width: 100%; }
+  .shot-hotspot {
+    position: absolute;
+    z-index: 2;
+    width: 28px;
+    height: 28px;
+    margin: -14px 0 0 -14px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    background: #1476FF;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,.35);
+    padding: 0;
+    line-height: 1;
+  }
+  .shot-hotspot.warn { background: #ea580c; }
+  .shot-hotspot.peel { background: #64748b; }
+  .shot-hotspot.active {
+    transform: scale(1.15);
+    box-shadow: 0 0 0 3px rgba(20, 118, 255, 0.45), 0 2px 8px rgba(0,0,0,.35);
+  }
+  .shot-hotspot.warn.active {
+    box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.45), 0 2px 8px rgba(0,0,0,.35);
+  }
+  .floor-item {
+    width: 100%;
+    cursor: pointer;
+    text-align: left;
+    font: inherit;
+    color: inherit;
+    appearance: none;
+    -webkit-appearance: none;
+    border-right: none;
+    border-top: none;
+    border-bottom: 1px solid var(--line);
+    border-left: 4px solid #c5cad3;
+  }
+  .floor-item.active {
+    outline: 2px solid rgba(20, 118, 255, 0.45);
+    outline-offset: -2px;
+    background: rgba(20, 118, 255, 0.1);
+  }
+  .floor-item.warn.active {
+    outline-color: rgba(234, 88, 12, 0.45);
+    background: rgba(234, 88, 12, 0.1);
+  }
+  .floor-hint {
+    margin: 0 0 8px;
+    font-size: 12px;
+    color: #5a6478;
+  }
+  .floor-src-list {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
+    padding: 10px 12px 16px;
+    background: #f4f6f8;
+  }
+  .floor-src {
+    margin: 0 0 10px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: #fff;
+    overflow: hidden;
+  }
+  .floor-src:last-child { margin-bottom: 0; }
+  .floor-src.active {
+    border-color: rgba(20, 118, 255, 0.55);
+    box-shadow: 0 0 0 2px rgba(20, 118, 255, 0.15);
+  }
+  .floor-src.warn.active {
+    border-color: rgba(234, 88, 12, 0.55);
+    box-shadow: 0 0 0 2px rgba(234, 88, 12, 0.12);
+  }
+  .floor-src-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px 12px;
+    background: #fafbfc;
+    border-bottom: 1px solid var(--line);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .floor-src-head .badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: #eef0f3;
+    color: #6a7385;
+  }
+  .floor-src.in .floor-src-head .badge {
+    background: rgba(20, 118, 255, 0.1);
+    color: #0d4db8;
+  }
+  .floor-src.warn .floor-src-head .badge {
+    background: rgba(234, 88, 12, 0.12);
+    color: #c2410c;
+  }
+  .floor-src pre {
+    margin: 0;
+    padding: 12px 14px;
+    max-height: 160px;
+    overflow: auto;
+    font-family: "SF Mono", "Fira Code", "Cascadia Code", ui-monospace, monospace;
+    font-size: 11.5px;
+    line-height: 1.5;
+    color: var(--text);
+    white-space: pre-wrap;
+    word-break: break-word;
+    background: #fff;
+  }
+  .floor-src.active pre { max-height: 320px; }
+
+  .pane-frame--shot {
+    overflow: auto;
+    background: #0b0c0e;
+  }
+  .pane-shot {
+    display: block;
+    width: 100%;
+    height: auto;
+    vertical-align: top;
+  }
+  .pane-frame--md {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .md-embed {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .md-embed .fb-banner {
+    flex: 0 0 auto;
+    padding: 10px 14px;
+    background: #f4f7fb;
+    border-bottom: 1px solid var(--line);
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .md-embed .fb-banner a { color: var(--link); font-weight: 600; }
+  .md-embed .fb-body {
+    flex: 1 1 auto;
+    overflow: auto;
+    padding: 16px 18px;
+    margin: 0;
+    font-family: "SF Mono", "Fira Code", "Cascadia Code", ui-monospace, monospace;
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: var(--text);
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .iframe-fallback {
+    position: absolute;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+    background: #fff;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .iframe-fallback.show { display: flex; }
+  .iframe-fallback .fb-banner {
+    flex: 0 0 auto;
+    padding: 10px 14px;
+    background: #fff8e8;
+    border-bottom: 1px solid #f0e0b8;
+    font-size: 12px;
+    color: #6a5a30;
+  }
+  .iframe-fallback .fb-banner a { color: var(--link); font-weight: 600; }
+  .iframe-fallback .fb-body {
+    flex: 1 1 auto;
+    overflow: auto;
+    padding: 16px 18px;
+    margin: 0;
+    font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: var(--text);
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .iframe-fallback.center {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 24px;
+    gap: 12px;
+    background: var(--panel2);
+  }
+  .iframe-fallback.center .fb-body { display: none; }
+  .iframe-fallback a.ext {
+    color: var(--link);
+    font-weight: 600;
+  }
+
+  .cases-block { margin-top: 40px; }
+  .cases-block > h2 {
+    margin: 0 0 8px;
+    font-size: 22px;
+    font-weight: 650;
+  }
+  .cases-block > .sub {
+    margin: 0 0 18px;
+  }
+
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html">昇腾社区 <span>AI 亲和原则研究</span></a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="mintlify.html">可达性·索引分析</a>
+      <a href="citability-mintlify.html">可引用性·内容（md）分析</a>
+      <a href="citability-html-mintlify.html" class="active">可引用性·内容（html）分析</a>
+    </nav>
+  </div>
+</div>
+
+<div class="subnav" aria-label="可引用性·内容（html）二级导航">
+  <div class="subnav-inner">
+    <a href="citability-html-mintlify.html">Mintlify（html）分析</a>
+    <a href="citability-html-nvidia.html" class="active">NVIDIA（html）分析</a>
+    <a href="citability-html-ascend.html">Ascend 社区（html）分析</a>
+  </div>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="eyebrow">可引用性 · 内容分析 · NVIDIA</div>
+    <h1>NVIDIA（html）分析 · 可引用性·内容（html）分析</h1>
+    <p class="sub">
+      聚焦一件事：大模型去抓网页 HTML 时，关键信息能不能读到、链接跟不跟得上、图和日历会不会丢、广告会不会和正文搅在一起。
+      下列观点从 NVIDIA 八类典型页（含「完整」与「部分」）实测提炼，并给出可执行建议。
+    </p>
+  </header>
+
+  <section class="section" aria-labelledby="principles-title">
+    <h2 id="principles-title">从友商做法提炼的观点</h2>
+    <ul class="domain-why">
+      <li><strong>产品/行业营销页往往「完整」：</strong>标题、说明、入口卡多半写进源码，且常带真实 href（如 DGX Cloud、Industries、Automotive、Partners）。抓得到文字，不等于整页适合当规格知识源。</li>
+      <li><strong>「部分」页要单独对待：</strong>build.nvidia.com 首屏分区有 SSR，但目录/检索偏动态；Newsroom 列表可抓、全文在详情且图常缺 alt；Events 人读开 JS 能见日程，静态首包几乎无日期——人看得见 ≠ 源码里有。</li>
+      <li><strong>链接写在标签里才跟得上：</strong>NVIDIA 多处 Learn More / Find a Partner / 行业卡带真地址——这点值得学。</li>
+      <li><strong>转化与证明要剥壳：</strong>Contact Us、购物车、加入计划等和说明同页；入库时只留可核对正文与文档链接。</li>
+      <li><strong>对昇腾：</strong>重要说明页优先完整 SSR；应用壳/日历/资讯列表若要对 AI 可抓，补静态列表或独立文档页，并给图补说明文字。</li>
+    </ul>
+  </section>
+
+  <section class="cases-block" id="cases" aria-labelledby="cases-title">
+    <h2 id="cases-title">案例</h2>
+    <p class="sub">覆盖可达性表中的典型「完整 / 部分」页。每条先写抓取事实，再给建议。点击打开编号热区与分段源码。</p>
+    <div class="case-grid">
+
+    <button type="button" class="case-card" data-case="home" aria-haspopup="dialog">
+      <div class="meta">
+        <span class="chip">产品/营销</span><span class="chip alt">HTML 完整</span>
+      </div>
+      <h2>/en-gb/</h2>
+      <p>抓取首页源码时，主张标题与产品卡文案可读，入口多有真链接；同页有导航/购物操作，并提示依赖 JS。<strong>建议：</strong>营销首页只做人读与搜索，不要整页当作 AI 的官方规格。</p>
+      <div class="cta">打开编号热区与楼层源码 →</div>
+    </button>
+
+    <button type="button" class="case-card" data-case="dgx-cloud" aria-haspopup="dialog">
+      <div class="meta">
+        <span class="chip">产品方案</span><span class="chip alt">HTML 完整</span>
+      </div>
+      <h2>/data-center/dgx-cloud/</h2>
+      <p>产品名、What Is 说明、文档 Learn More 链接写在源码里；同页有 Contact Us 表单。<strong>建议：</strong>入库取说明与文档链接，销售表单单独剥掉。</p>
+      <div class="cta">打开编号热区与楼层源码 →</div>
+    </button>
+
+    <button type="button" class="case-card" data-case="industries" aria-haspopup="dialog">
+      <div class="meta">
+        <span class="chip">行业总览</span><span class="chip alt">HTML 完整</span>
+      </div>
+      <h2>/industries/</h2>
+      <p>行业主张与入口卡可抓，Automotive 等带真实 href，适合当目录索引。<strong>建议：</strong>总览作入口；规格落到各行业深页，避免把口号当方案细节。</p>
+      <div class="cta">打开编号热区与楼层源码 →</div>
+    </button>
+
+    <button type="button" class="case-card" data-case="automotive" aria-haspopup="dialog">
+      <div class="meta">
+        <span class="chip">行业深页</span><span class="chip alt">HTML 完整</span>
+      </div>
+      <h2>/industries/automotive/</h2>
+      <p>行业标题与 Volvo 等案例段落可抓，内嵌产品链接可跟；大图偏 lazy，图意可能丢一层。<strong>建议：</strong>可作方案介绍来源；补图说明，剥掉纯转化按钮。</p>
+      <div class="cta">打开编号热区与楼层源码 →</div>
+    </button>
+
+    <button type="button" class="case-card" data-case="build" aria-haspopup="dialog">
+      <div class="meta">
+        <span class="chip">知识/开发者</span><span class="chip alt">HTML 部分</span>
+      </div>
+      <h2>build.nvidia.com/</h2>
+      <p>首屏标题与分区有 SSR；大量内容在 Next/RSC 飞行数据里，模型目录/检索偏动态，只抓首包容易不全。<strong>建议：</strong>应用壳旁备可静态抓的文档或完整 SSR 目录。</p>
+      <div class="cta">打开编号热区与楼层源码 →</div>
+    </button>
+
+    <button type="button" class="case-card" data-case="partners" aria-haspopup="dialog">
+      <div class="meta">
+        <span class="chip">生态</span><span class="chip alt">HTML 完整</span>
+      </div>
+      <h2>/about-nvidia/partners/</h2>
+      <p>Partner Network 说明可抓，「Find a Partner」带真链接。<strong>建议：</strong>生态介绍可引用；转化按钮与权益条文分开处理。</p>
+      <div class="cta">打开编号热区与楼层源码 →</div>
+    </button>
+
+    <button type="button" class="case-card" data-case="news" aria-haspopup="dialog">
+      <div class="meta">
+        <span class="chip">内容运营</span><span class="chip alt">HTML 部分</span>
+      </div>
+      <h2>nvidianews.nvidia.com/</h2>
+      <p>Latest News 标题与链接可抓；多处配图缺 alt，全文在详情页不在列表首页。<strong>建议：</strong>首页当索引，通稿跟详情；配图补说明。不作产品规格源。</p>
+      <div class="cta">打开编号热区与楼层源码 →</div>
+    </button>
+
+    <button type="button" class="case-card" data-case="events" aria-haspopup="dialog">
+      <div class="meta">
+        <span class="chip">社区/活动</span><span class="chip alt">HTML 部分</span>
+      </div>
+      <h2>/events/</h2>
+      <p>页主题与 GTC 等外链可抓；人读开 JS 能见日程卡，但静态首包几乎无日期——「部分」指不执行脚本时抓不全。<strong>建议：</strong>日程 SSR 或提供可抓列表/ICS，不要假设人看得见就等于源码里有。</p>
+      <div class="cta">打开编号热区与楼层源码 →</div>
+    </button>
+
+    </div>
+  </section>
+
+  <footer>昇腾社区 AI 亲和原则研究</footer>
+</div>
+
+<div class="modal" id="case-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal-head">
+    <div class="modal-head-bar">
+      <h2 class="modal-title" id="modal-title"></h2>
+      <div class="modal-actions">
+        <a class="btn" id="btn-left" href="#" target="_blank" rel="noopener">打开左页</a>
+        <a class="btn" id="btn-right" href="#" target="_blank" rel="noopener">打开右页</a>
+        <button type="button" class="btn close" id="close-modal">关闭</button>
+      </div>
+    </div>
+    <div class="conclude" id="conclude"></div>
+  </div>
+
+  <div class="modal-split">
+    <div class="pane-frame-wrap">
+      <div class="pane-label">
+        <span>左侧 · 人读截图（编号热区）</span>
+        <a id="label-left" href="#" target="_blank" rel="noopener"></a>
+      </div>
+      <div class="pane-frame pane-frame--shot" id="shot-pane">
+        <div class="shot-map" id="shot-map">
+          <img id="shot-left" class="pane-shot" alt="人读页截图" />
+        </div>
+      </div>
+    </div>
+    <div class="pane-frame-wrap">
+      <div class="pane-label">
+        <span>右侧 · 按楼层的 HTML 摘录</span>
+        <a id="label-right" href="#" target="_blank" rel="noopener"></a>
+      </div>
+      <div class="pane-frame pane-frame--md">
+        <div class="md-embed" id="html-embed">
+          <div class="fb-banner">
+            点上方楼层或左图编号，右侧跳到对应源码段 ·
+            <a id="html-source-link" href="#" target="_blank" rel="noopener"></a>
+          </div>
+          <div class="floor-src-list" id="floor-src-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script type="application/json" id="cases-data">{"home":{"title":"首页 /en-gb/ · HTML 抓取对照","leftUrl":"https://www.nvidia.com/en-gb/","leftLabel":"nvidia.com/en-gb/","leftShot":"assets/cases-html-nvidia/home.png","rightUrl":"https://www.nvidia.com/en-gb/","rightLabel":"按楼层 HTML 摘录","floors":[{"id":"noscript","idx":1,"kind":"warn","name":"noscript · 依赖 JavaScript 提示","badge":"抓取注意","desc":"页头有「本站需启用 JS」提示；主内容仍大段写在源码里，但交互壳依赖脚本。","shotTop":2,"shotLeft":50,"html":" \u003cnoscript> \u003cdiv class=\"no-js-warning\">This site requires Javascript in order to view all its content. Please enable Javascript in order to access all the functionality of this web site. Here are the \u003ca href=\"http://www.enable-javascript.com/\" target=\"_blank\">instructions how to enable JavaScript in your web browser."},{"id":"hero","idx":2,"kind":"in","name":"Hero 主张标题","badge":"正文可抓","desc":"「Artificial Intelligence Computing Leadership…」写在 h1 源码里，不点按钮也能读到。","shotTop":12,"shotLeft":18,"html":"logo\" href=\"https://www.nvidia.com/en-gb/\" title='Artificial Intelligence Computing Leadership from NVIDIA' aria-label='Artificial Intelligence Computing Leadership from NVIDIA' aria-labelledby=\"nvidia_logo_desktop\"> \u003csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"117\" height=\"35\" viewBox=\"0 0 117 35\" fill=\""},{"id":"nav","idx":3,"kind":"peel","name":"顶栏 / 产品菜单","badge":"操作/导航","desc":"Data Center、Gaming 等菜单按钮写在源码里，方便人找页，不是产品规格正文。","shotTop":3,"shotLeft":35,"html":"ton class=\"menu3-title-btn\" data-tab=\"menu1-tab3\">Data Center\u003c/button> \u003cbutton class=\"menu3-title-btn\" data-tab=\"menu1-tab4\">Embedded Systems\u003c/button> \u003cbutton class=\"menu3-title-btn\" data-tab=\"menu1-tab5\">Gaming\u003c/button> "},{"id":"cards","idx":4,"kind":"in","name":"产品卡文案与链接","badge":"正文可抓","desc":"GeForce 等产品卡有说明文字和真实 href，列表入口跟得上。","shotTop":28,"shotLeft":20,"html":"/div> \u003c/div> \u003cp>High performance GeForce RTX PCs, purpose-built for creators\u003c/p> \u003c/div> \u003c/a> \u003ca class=\"menu3-item-card\" href=\"https://www.nvidia.com/en-gb/geforce/broadcasting/\" target=\"_self\"> \u003cdiv class=\"menu3-item-card"},{"id":"cta","idx":5,"kind":"peel","name":"转化 / 购物等操作位","badge":"操作/按钮","desc":"购物车、购买类操作文案进源码，和宣传主张同页，属于人读转化噪声。","shotTop":2.5,"shotLeft":88,"html":"wBox=\"0 0 24 24\"> \u003ctitle id=\"shopping_cart\">Shopping Cart\u003c/title> \u003cdesc>Click to see cart items\u003c/desc> \u003cdefs> \u003cstyle> .n24-icon-cart-bg { opacity: 0; } .n24-icon-cart-stroke { fill: none; stroke: #666; stroke-miterlimit: 10; stroke-width: 1.5px; } \u003c/style>\u003c/defs> \u003cg id=\"n2"}],"concludeLead":"\u003ch3>组件可读性结论\u003c/h3>\u003cp class=\"d1-verdict\">\u003cspan class=\"tag tag-in\">关键文字可抓\u003c/span> \u003cspan class=\"tag tag-muted\">营销首页\u003c/span> \u003cspan class=\"tag tag-out\">声明依赖 JS\u003c/span>\u003c/p>\u003cp class=\"floor-hint\">绿 = 正文可抓 · 橙 = 需注意 · 灰 = 导航/转化\u003c/p>","concludeGeo":"\u003cp class=\"conclude-geo\">\u003cstrong>建议：\u003c/strong>营销首页保可读即可，不要整页当作 AI 的官方规格；说明书放到文档/产品深页。\u003c/p>"},"dgx-cloud":{"title":"DGX Cloud · HTML 抓取对照","leftUrl":"https://www.nvidia.com/en-gb/data-center/dgx-cloud/","leftLabel":"…/data-center/dgx-cloud/","leftShot":"assets/cases-html-nvidia/dgx-cloud.png","rightUrl":"https://www.nvidia.com/en-gb/data-center/dgx-cloud/","rightLabel":"按楼层 HTML 摘录","floors":[{"id":"h1","idx":1,"kind":"in","name":"产品名与首屏标题","badge":"正文可抓","desc":"「NVIDIA DGX Cloud」写在 h1 源码里，产品名可直接抓到。","shotTop":10,"shotLeft":15,"html":"Accelerate AI from development to deployment with NVIDIA DGX Cloud, the unified, fully managed AI platform that sets the benchmark for NVIDIA GPU performance across clouds.\"/> \u003cmeta name=\"nv-pub-date\" content=\"2026-06-26T06:29:33.000Z\"/> \u003cmeta name=\"nv-cre-date\" content=\"2023-03-21T15:41:45.000Z\"/> \u003cmeta name=\"nv-u"},{"id":"what","idx":2,"kind":"in","name":"What Is… 说明楼层","badge":"正文可抓","desc":"「What Is NVIDIA DGX Cloud?」等说明标题写在源码文本里，偏产品介绍正文。","shotTop":32,"shotLeft":20,"html":"e=\"color: #000000;\"> What Is NVIDIA DGX Cloud? \u003c/h2> \u003c/div> \u003c/div> \u003c/div> \u003cdiv class=\"nv-text text aem-GridColumn--tablet--12 aem-GridColumn--offset--tablet--0 aem-GridColumn--default--none aem-GridColumn--phone--none aem-GridColumn--phone--1"},{"id":"docs","idx":3,"kind":"in","name":"Learn More · 真链接","badge":"链接可跟","desc":"「Learn More」带真实 href（如 docs.nvidia.com），模型看得见也能跟到下一页。","shotTop":48,"shotLeft":25,"html":"9f117713\" rel=\"noopener noreferrer\" href=\"https://docs.nvidia.com/dsx/home#dsx-os\">Learn More \u003cspan class=\"cmp-teaser__action-link-icon fa-solid fa-angle-right\">\u003c/span> \u003c/a> \u003c/div> \u003c/div> \u003c/div> \u003c/div> \u003c/div> \u003cdiv class=\"nv-teaser teaser nv-teaser--card aem-Grid"},{"id":"contact","idx":4,"kind":"peel","name":"Contact Us 表单区","badge":"操作/转化","desc":"「Contact Us To Learn More…」与表单在同页，属于销售转化，不是规格条文。","shotTop":78,"shotLeft":30,"html":"ass=\"h--medium\">\u003ch2>\u003cb>\u003cspan class=\"color-black \">Contact Us To Learn More About DGX \u003c/span>\u003c/b>\u003c/h2> \u003c/div> \u003c/div> \u003cdiv id=\"prefill-message-logged-in\" class=\"prefill-message logged-in\" style=\"display: none;\">Welcome back. Not you? \u003cspan>\u003ca href=\"\" class=\"prefill-login-clear\">Log Out\u003c/a>\u003c/span>\u003c/div> \u003cdiv id=\"prefill-m"}],"concludeLead":"\u003ch3>组件可读性结论\u003c/h3>\u003cp class=\"d1-verdict\">\u003cspan class=\"tag tag-in\">产品说明可抓\u003c/span> \u003cspan class=\"tag tag-in\">外链可跟\u003c/span> \u003cspan class=\"tag tag-muted\">同页有转化表单\u003c/span>\u003c/p>\u003cp class=\"floor-hint\">绿 = 说明/链接 · 灰 = 联系销售\u003c/p>","concludeGeo":"\u003cp class=\"conclude-geo\">\u003cstrong>建议：\u003c/strong>入库取产品说明与文档链接楼层；联系表单与销售话术单独剥掉。\u003c/p>"},"industries":{"title":"行业总览 /industries/ · HTML 抓取对照","leftUrl":"https://www.nvidia.com/en-gb/industries/","leftLabel":"…/industries/","leftShot":"assets/cases-html-nvidia/industries.png","rightUrl":"https://www.nvidia.com/en-gb/industries/","rightLabel":"按楼层 HTML 摘录","floors":[{"id":"h1","idx":1,"kind":"in","name":"页头主张","badge":"正文可抓","desc":"「Fueling the Future of Industries With AI」写在 h1，主张可抓。","shotTop":12,"shotLeft":40,"html":" \u003ch1 class=\"title \"> Fueling the Future of Industries With AI \u003c/h1> \u003c/div> \u003c/div> \u003c/div> \u003cdiv class=\"nv-separator separator aem-GridColumn aem-GridColumn--default--12\"> \u003cdiv id=\"nv-separator-28976a504a\" class=\"cmp-separator\"> \u003cstyle> "},{"id":"cards","idx":2,"kind":"in","name":"行业入口卡 + href","badge":"链接可跟","desc":"Automotive、Healthcare 等入口卡有文案和真实地址，目录可被完整跟上。","shotTop":35,"shotLeft":20,"html":"tncta\"> \u003cspan class=\"btn-text\">Automotive - DRIVE\u003c/span> \u003c/div> \u003c/div> \u003cp>\u003c/p> \u003c/div> \u003c/a> \u003ca class=\"menu3-item-card\" href=\"https://www.nvidia.com/en-gb/deep-learning-ai/solutions/data-s"},{"id":"nav","idx":3,"kind":"peel","name":"站点导航壳","badge":"操作/导航","desc":"顶栏与全球导航写在源码里，方便人找页，不是行业方案正文。","shotTop":2,"shotLeft":25,"html":" }; })(); \u003c/script> \u003ctitle>AI Solutions for Industries | NVIDIA\u003c/title> \u003c/head> \u003cbody class=\"body-page nv-page-body theme-en-gb theme-deeplearning enterprise page basicpage\"> \u003cheader id=\"ma"}],"concludeLead":"\u003ch3>组件可读性结论\u003c/h3>\u003cp class=\"d1-verdict\">\u003cspan class=\"tag tag-in\">目录可抓\u003c/span> \u003cspan class=\"tag tag-in\">入口带真链接\u003c/span>\u003c/p>\u003cp class=\"floor-hint\">绿 = 目录/链接 · 灰 = 导航壳\u003c/p>","concludeGeo":"\u003cp class=\"conclude-geo\">\u003cstrong>建议：\u003c/strong>行业总览适合做「入口索引」；具体规格仍落到各行业深页，避免把口号当方案细节。\u003c/p>"},"automotive":{"title":"汽车行业 /industries/automotive/ · HTML 抓取对照","leftUrl":"https://www.nvidia.com/en-gb/industries/automotive/","leftLabel":"…/industries/automotive/","leftShot":"assets/cases-html-nvidia/automotive.png","rightUrl":"https://www.nvidia.com/en-gb/industries/automotive/","rightLabel":"按楼层 HTML 摘录","floors":[{"id":"h1","idx":1,"kind":"in","name":"行业页标题","badge":"正文可抓","desc":"「Redefining Auto Innovation…」写在 h1，行业主张可抓。","shotTop":12,"shotLeft":18,"html":" \u003ch1 class=\"title \"> Redefining Auto Innovation With AI and Digitalization \u003c/h1> \u003c/div> \u003c/div> \u003c/div> \u003cdiv class=\"nv-creditline text aem-GridColumn aem-GridColumn--default--12\"> \u003cdiv id=\"nv-creditline-f2ef2b0068\" class=\"nv-credit-line \"> \u003cp>Rimac, BM"},{"id":"proof","idx":2,"kind":"in","name":"客户案例段落（Volvo 等）","badge":"正文可抓","desc":"Volvo 等案例句子和内嵌产品链接写在源码里，可核对抓取。","shotTop":42,"shotLeft":20,"html":"lass=\"cmp-teaser__description\"> \u003cp>Volvo Cars will integrate \u003ca href=\"https://www.nvidia.com/en-gb/self-driving-cars/in-vehicle-computing/#hardware\">NVIDIA DRIVE AGX Thor\u003c/a>™, built on the \u003ca href=\"https://www.nvidia.com/en-gb/data-center/technologies/blackwell-architecture/\">NVIDIA Blackwell GPU architectur"},{"id":"cta","idx":3,"kind":"peel","name":"Learn More 转化按钮","badge":"操作/按钮","desc":"「Learn More About Autonomous Vehicle…」是行动按钮文案，与说明同页。","shotTop":22,"shotLeft":20,"html":" \u003cspan class=\"btn-text\"> Learn More About Autonomous Vehicle Solutions\u003c/span> \u003c/a> \u003c/div> \u003c/div> \u003c/div> \u003c/div> \u003c/div> \u003cfigure class=\"autofit\"> \u003cpicture data-nv-lazyload data-srcset-mobile=\"/content/dam/e"},{"id":"img","idx":4,"kind":"warn","name":"视觉大图 / lazy 图","badge":"图意偏弱","desc":"部分大图走 lazy/picture；图上品牌名若只在图里，抓文本时可能丢一层。","shotTop":55,"shotLeft":50,"html":"onst videoTarget = container.querySelector('video[data-nv-lazyload]'); if (videoTarget) { //Intersection Observer Callback Function const loadVideo = (entries, observer) => { const [entry] = entries; "}],"concludeLead":"\u003ch3>组件可读性结论\u003c/h3>\u003cp class=\"d1-verdict\">\u003cspan class=\"tag tag-in\">行业说明可抓\u003c/span> \u003cspan class=\"tag tag-muted\">同页有按钮\u003c/span> \u003cspan class=\"tag tag-out\">图意需补\u003c/span>\u003c/p>\u003cp class=\"floor-hint\">绿 = 正文 · 灰 = 按钮 · 橙 = 图\u003c/p>","concludeGeo":"\u003cp class=\"conclude-geo\">\u003cstrong>建议：\u003c/strong>行业深页可作方案介绍来源；入库保留案例与产品链接，剥掉纯转化按钮；复杂图补文字说明。\u003c/p>"},"build":{"title":"build.nvidia.com · HTML 抓取对照（部分）","leftUrl":"https://build.nvidia.com/","leftLabel":"build.nvidia.com/","leftShot":"assets/cases-html-nvidia/build.png","rightUrl":"https://build.nvidia.com/","rightLabel":"按楼层 HTML 摘录","floors":[{"id":"shell","idx":1,"kind":"warn","name":"Next.js / RSC 飞行数据","badge":"部分可抓","desc":"大量正文以 self.__next_f 飞行载荷出现；能抠到字符串，但不像普通段落好读。","shotTop":8,"shotLeft":50,"html":"b2060f8e3.js\" id=\"_R_\" async=\"\">\u003c/script>\u003cscript>(self.__next_f=self.__next_f||[]).push([0])\u003c/script>\u003cscript>self.__next_f.push([1,\"1:\\\"$Sreact.fragment\\\"\\n4:I[745122,[],\\\"\\\"]\\n5:I[178320,[],\\\"\\\"]\\n7:I[975499,[],\\\"OutletBoundary\\\"]\\nc:I[28378,[],\\\"AsyncMetadataOutlet\\\"]\\ne:I[975499,[],\\\"ViewportBoundary\\\"]\\n10:I"},{"id":"h1","idx":2,"kind":"in","name":"首屏标题（有 SSR）","badge":"正文可抓","desc":"「Start Building Your AI Here.」在 HTML 标签里也能见到，首屏主张可抓。","shotTop":18,"shotLeft":40,"html":"\u003ch1 class=\"text-center text-32 leading-heading font-bold xs:text-48\">Start Building Your AI Here.\u003c/h1>"},{"id":"sections","idx":3,"kind":"in","name":"分区标题（NemoClaw / Skills…）","badge":"正文可抓","desc":"若干分区 h2/说明有服务端输出，目录级文字能抓到。","shotTop":40,"shotLeft":20,"html":",\\\"children\\\":[[\\\"$\\\",\\\"h2\\\",null,{\\\"children\\\":\\\"Introducing NemoClaw\\\",\\\"className\\\":\\\"nv-text nv-text--weight-bold nv-text--title-xs mb-1\\\",\\\"ref\\\":null,\\\"data-testid\\\":\\\"nv-text\\\"}],[\\\"$\\\",\\\"p\\\",null,{\\\"children\\\":\\\"Safe agent execution. Control access. Protect data.\\\",\\\"className\\\":\\\"nv-text nv-text--body-regular-"},{"id":"catalog","idx":4,"kind":"warn","name":"模型目录 / 交互检索","badge":"列表偏动态","desc":"模型卡/检索偏客户端；Cookie 弹层也会挡首屏。只抓首包时目录与下文容易不全——对应「部分」。","shotTop":55,"shotLeft":50,"html":"Solutions/ot-js/ot-custom.js\" as=\"script\"/>\u003ctitle>Try NVIDIA NIM APIs\u003c/title>\u003cmeta name=\"description\" content=\"Experience the leading models to build enterprise generative AI apps now.\"/>\u003clink rel=\"canonical\" href=\"https://build.nvidia.com\"/>\u003cmeta property=\"og:title\" content=\"Try NVIDIA NIM APIs\"/>\u003cmeta property=\"og:d"}],"concludeLead":"\u003ch3>组件可读性结论\u003c/h3>\u003cp class=\"d1-verdict\">\u003cspan class=\"tag tag-out\">HTML 档：部分\u003c/span> \u003cspan class=\"tag tag-in\">首屏分区可抓\u003c/span> \u003cspan class=\"tag tag-out\">目录/检索不全\u003c/span>\u003c/p>\u003cp class=\"floor-hint\">绿 = 已 SSR 的标题 · 橙 = 动态/RSC\u003c/p>","concludeGeo":"\u003cp class=\"conclude-geo\">\u003cstrong>建议：\u003c/strong>知识型应用壳不要只靠首包 HTML；关键目录与 API 说明要有可静态抓的文档页或完整 SSR。\u003c/p>"},"partners":{"title":"合作伙伴 /partners/ · HTML 抓取对照","leftUrl":"https://www.nvidia.com/en-gb/about-nvidia/partners/","leftLabel":"…/about-nvidia/partners/","leftShot":"assets/cases-html-nvidia/partners.png","rightUrl":"https://www.nvidia.com/en-gb/about-nvidia/partners/","rightLabel":"按楼层 HTML 摘录","floors":[{"id":"h1","idx":1,"kind":"in","name":"NVIDIA Partner Network","badge":"正文可抓","desc":"「NVIDIA Partner Network」写在 h1，生态项目名可抓。","shotTop":12,"shotLeft":18,"html":"a/partners/\"/> \u003cmeta property=\"og:title\" content=\"NVIDIA Partner Network (NPN)\"/> \u003cmeta property=\"og:description\" content=\"Join the NVIDIA partner program or find an experienced partner.\"/> \u003cmeta property=\"og:image\" content=\"https://www.nvidia.com/content/dam/en-zz/Solutions/about-us/partners/nvidia-key-visual-og.jpg\"/"},{"id":"find","idx":2,"kind":"in","name":"Find a Partner · 真链接","badge":"链接可跟","desc":"「Find a Partner」带 partner-locator 真实地址，入口跟得上。","shotTop":18,"shotLeft":25,"html":"-locator/\"> \u003cspan class=\"btn-text\">Find a Partner\u003c/span> \u003c/a> \u003c/div> \u003c/div> \u003c/div> \u003c/div> \u003c/div> \u003c/div> \u003c/div> \u003c/div> \u003cdiv class=\"nv-container container responsivegrid aem-GridColumn aem-GridColumn--default--12\"> \u003cdiv id=\"introduction\" class=\"v1"},{"id":"meta","idx":3,"kind":"in","name":"项目说明（meta / 正文）","badge":"正文可抓","desc":"加入伙伴计划、培训与支持等说明出现在 description/正文源码里。","shotTop":35,"shotLeft":20,"html":" and support\"/> \u003cmeta name=\"description\" content=\"Join the NVIDIA partner program or find an experienced partner. Benefits include sales and distribution, training, marketing, service, and support.\"/> \u003cmeta name=\"nv-pub-date\" content=\"2026-02-11T04:51:45.000Z\"/> \u003cmeta name=\"nv-cre-date\" content=\"2019-02-11T04:53:01.000"},{"id":"cta","idx":4,"kind":"peel","name":"加入 / 转化按钮","badge":"操作/按钮","desc":"加入计划等按钮文案与说明同页，属于生态转化操作。","shotTop":20,"shotLeft":55,"html":"ttps://www.nvidia.com/en-gb/about-nvidia/partners/partner-locator/\"> \u003cspan class=\"btn-text\">Find a Partner\u003c/span> \u003c/a> \u003c/div> \u003c/div> \u003c/div> \u003c/div> \u003c/div> \u003c/div> \u003c/div> \u003c/div> \u003cdiv class=\"nv-container container responsivegrid aem-GridColumn aem-GridColumn--de"}],"concludeLead":"\u003ch3>组件可读性结论\u003c/h3>\u003cp class=\"d1-verdict\">\u003cspan class=\"tag tag-in\">生态说明可抓\u003c/span> \u003cspan class=\"tag tag-in\">入口带真链接\u003c/span>\u003c/p>\u003cp class=\"floor-hint\">绿 = 说明/链接 · 灰 = 按钮\u003c/p>","concludeGeo":"\u003cp class=\"conclude-geo\">\u003cstrong>建议：\u003c/strong>生态页可作伙伴计划介绍来源；入口保持真链接，转化按钮与权益条文在引用时分开。\u003c/p>"},"news":{"title":"Newsroom · HTML 抓取对照（部分）","leftUrl":"https://nvidianews.nvidia.com/","leftLabel":"nvidianews.nvidia.com/","leftShot":"assets/cases-html-nvidia/news.png","rightUrl":"https://nvidianews.nvidia.com/","rightLabel":"按楼层 HTML 摘录","floors":[{"id":"latest","idx":1,"kind":"in","name":"Latest News 列表","badge":"列表可抓","desc":"「Latest News」与稿件标题、链接写在源码里，新闻目录能抓到。","shotTop":35,"shotLeft":30,"html":"\"> \u003ch2 class=\"widget-title\"> \u003cspan>Latest News\u003c/span> \u003c/h2> \u003cdiv class=\"widget-content\"> \u003cdiv class=\"tiles\"> \u003carticle class=\"tiles-item \"> \u003cdiv class=\"tiles-item-wrapper\"> \u003cdiv class=\"tiles-item-figure\" onclick=\"window.location='/news/nvidia-sets-conference-"},{"id":"story","idx":2,"kind":"in","name":"头条标题与摘要","badge":"正文可抓","desc":"头条标题和一段摘要在 HTML 里，不点进详情也能读到。","shotTop":18,"shotLeft":40,"html":"-ai-alliance/\" target=\"_blank\"> Industry Leaders Unite in Open Secure AI Alliance for AI Safety and Security \u003c/a> \u003c/h2> \u003cdiv class=\"carousel-item-text-description\">Open source software is a critical pillar of the global econom"},{"id":"imgs","idx":3,"kind":"warn","name":"配图缺说明文字","badge":"图缺说明","desc":"多处配图没有可用 alt；图意只靠画面，抓文本时丢一层——拉低完整度。","shotTop":25,"shotLeft":20,"html":"\u003cimg src=\"https://iprsoftwaremedia.com/219/files/20266/fb14f7c59fc41a6cb3e360dad2df1ca1/6a68d1333d6332f1e8a4b6c7_osaia-logo-garden_press-kit_1920x1080-2/osaia-logo-garden_press-kit_1920x1080-2_hero.png?v=a78abb0f-0b87-48bf-a95d-cbd695698576\" />"},{"id":"body","idx":4,"kind":"warn","name":"详情正文不在列表页","badge":"部分可抓","desc":"列表页只有标题/摘要；完整通稿要跟进详情 URL。只抓首页不等于抓到全文。","shotTop":50,"shotLeft":50,"html":"\u003c!-- 列表页 tiles / carousel：标题+链接可抓；article 全文在 /news/... 详情 -->"}],"concludeLead":"\u003ch3>组件可读性结论\u003c/h3>\u003cp class=\"d1-verdict\">\u003cspan class=\"tag tag-out\">HTML 档：部分\u003c/span> \u003cspan class=\"tag tag-in\">标题列表可抓\u003c/span> \u003cspan class=\"tag tag-out\">图缺说明 / 全文在详情\u003c/span>\u003c/p>\u003cp class=\"floor-hint\">绿 = 列表 · 橙 = 图/全文\u003c/p>","concludeGeo":"\u003cp class=\"conclude-geo\">\u003cstrong>建议：\u003c/strong>资讯首页当索引；引用通稿跟详情页。配图补 alt。不要把新闻首页当产品规格源。\u003c/p>"},"events":{"title":"Events 日历 · HTML 抓取对照（部分）","leftUrl":"https://www.nvidia.com/en-gb/events/","leftLabel":"…/events/","leftShot":"assets/cases-html-nvidia/events.png","rightUrl":"https://www.nvidia.com/en-gb/events/","rightLabel":"按楼层 HTML 摘录","floors":[{"id":"noscript","idx":1,"kind":"warn","name":"noscript · 需 JS 才能看全","badge":"部分可抓","desc":"noscript 声明需 JS 才能看全；Cookie 弹层也会挡内容。静态抓取与人读截图不一致。","shotTop":8,"shotLeft":50,"html":" \u003cnoscript> \u003cdiv class=\"no-js-warning\">This site requires Javascript in order to view all its content. Please enable Javascript in order to access all the functionality of this web site. Here are the \u003ca href=\"http://www.enable-javascript.com/\" target=\"_blank\">instructions how to enable JavaScript in your web browser."},{"id":"meta","idx":2,"kind":"in","name":"页标题 / 元描述","badge":"元信息可抓","desc":"「Corporate and Investor Events Calendar」等写在 title/og 里，页主题能抓到。","shotTop":3,"shotLeft":40,"html":"\"og:title\" content=\"NVIDIA Corporate and Investor Events Calendar\"/> \u003cmeta property=\"og:description\" content=\"NVIDIA corporate, developer, CUDA, and investor events.\"/> \u003cmeta property=\"og:image\" content=\"https://www.nvidia.com/content/dam/en-zz/Solutions/events/corp-kv-og.jpg\"/> \u003cmeta name=\"twitter:card\" con"},{"id":"links","idx":3,"kind":"in","name":"GTC / On-Demand 外链","badge":"链接可跟","desc":"GTC、On-Demand 等入口有真实 href，静态壳里仍能跟上几个关键会场。","shotTop":25,"shotLeft":30,"html":"w.nvidia.com/en-us/gtc/?for=emea\" target=\"_blank\">GTC AI Conference\u003c/a> \u003c/li> \u003cli> \u003ca href=\"https://www.nvidia.com/en-us/on-demand/\" target=\"_blank\">NVIDIA On-Demand\u003c/a> \u003c/li> \u003c/ul> \u003c/div> \u003cdi"},{"id":"calendar","idx":4,"kind":"warn","name":"日程表本体","badge":"日期列表缺失","desc":"人读（浏览器执行 JS）可见 Upcoming/Past 卡片；用 curl 抓到的静态首包几乎无日期条目——「部分」指的是不执行脚本时抓不全。","shotTop":45,"shotLeft":50,"html":"\u003c!-- curl 静态 HTML：未见 Aug 23-25 / Hot Chips 等日期条目；Chrome 执行 JS 后截图可见日程卡 -->"}],"concludeLead":"\u003ch3>组件可读性结论\u003c/h3>\u003cp class=\"d1-verdict\">\u003cspan class=\"tag tag-out\">HTML 档：部分\u003c/span> \u003cspan class=\"tag tag-in\">主题与外链可抓\u003c/span> \u003cspan class=\"tag tag-out\">日程靠 JS 填充\u003c/span>\u003c/p>\u003cp class=\"floor-hint\">绿 = 元信息/外链 · 橙 = 静态抓不全\u003c/p>","concludeGeo":"\u003cp class=\"conclude-geo\">\u003cstrong>建议：\u003c/strong>活动页若要对 AI 可抓，把日程 SSR 进 HTML 或提供可抓列表/ICS；不要假设「人看得见 = 源码里有」。\u003c/p>"}}</script>
+<script>
+  let CASES = {};
+
+  const modal = document.getElementById('case-modal');
+  const closeBtn = document.getElementById('close-modal');
+  const concludeEl = document.getElementById('conclude');
+  const titleEl = document.getElementById('modal-title');
+  const btnLeft = document.getElementById('btn-left');
+  const btnRight = document.getElementById('btn-right');
+  const labelLeft = document.getElementById('label-left');
+  const labelRight = document.getElementById('label-right');
+  const shotLeft = document.getElementById('shot-left');
+  const shotMap = document.getElementById('shot-map');
+  const shotPane = document.getElementById('shot-pane');
+  const htmlSourceLink = document.getElementById('html-source-link');
+  const floorSrcList = document.getElementById('floor-src-list');
+  let activeFloorId = null;
+  let currentCase = null;
+  let dataReady = null;
+
+  function loadCases() {
+    if (!dataReady) {
+      dataReady = Promise.resolve().then(() => {
+        const el = document.getElementById('cases-data');
+        if (!el) throw new Error('cases-data missing');
+        CASES = JSON.parse(el.textContent);
+        return CASES;
+      });
+    }
+    return dataReady;
+  }
+
+  function esc(s) {
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function renderConclude(c) {
+    const floors = c.floors || [];
+    const items = floors.map((f) => `
+      <button type="button" class="floor-item ${f.kind}" data-floor="${esc(f.id)}">
+        <div class="idx">${f.idx}</div>
+        <div class="body">
+          <div class="name">${esc(f.name)}</div>
+          <p class="desc">${esc(f.desc)}</p>
+        </div>
+        <div class="right-meta"><span class="badge">${esc(f.badge)}</span></div>
+      </button>
+    `).join('');
+    concludeEl.innerHTML = `
+      ${c.concludeLead || ''}
+      <div class="floor-stack">${items}</div>
+      ${c.concludeGeo || ''}
+    `;
+    concludeEl.querySelectorAll('[data-floor]').forEach((el) => {
+      el.addEventListener('click', () => selectFloor(el.getAttribute('data-floor')));
+    });
+  }
+
+  function renderHotspots(c) {
+    shotMap.querySelectorAll('.shot-hotspot').forEach((n) => n.remove());
+    (c.floors || []).forEach((f) => {
+      if (f.shotTop == null) return;
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = ('shot-hotspot ' + (f.kind === 'in' ? '' : f.kind)).trim();
+      btn.textContent = String(f.idx);
+      btn.style.top = f.shotTop + '%';
+      btn.style.left = f.shotLeft + '%';
+      btn.title = f.name;
+      btn.setAttribute('data-floor', f.id);
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        selectFloor(f.id);
+      });
+      shotMap.appendChild(btn);
+    });
+  }
+
+  function renderFloorSources(c) {
+    floorSrcList.innerHTML = (c.floors || []).map((f) => `
+      <section class="floor-src ${f.kind}" data-floor="${esc(f.id)}" id="src-${esc(f.id)}">
+        <div class="floor-src-head">
+          <span>${f.idx} · ${esc(f.name)}</span>
+          <span class="badge">${esc(f.badge)}</span>
+        </div>
+        <pre>${esc(f.html)}</pre>
+      </section>
+    `).join('');
+    floorSrcList.querySelectorAll('[data-floor]').forEach((el) => {
+      el.addEventListener('click', () => selectFloor(el.getAttribute('data-floor')));
+    });
+  }
+
+  function selectFloor(id) {
+    activeFloorId = id;
+    const c = currentCase;
+    if (!c) return;
+
+    concludeEl.querySelectorAll('.floor-item').forEach((el) => {
+      el.classList.toggle('active', el.getAttribute('data-floor') === id);
+    });
+    shotMap.querySelectorAll('.shot-hotspot').forEach((el) => {
+      el.classList.toggle('active', el.getAttribute('data-floor') === id);
+    });
+    floorSrcList.querySelectorAll('.floor-src').forEach((el) => {
+      el.classList.toggle('active', el.getAttribute('data-floor') === id);
+    });
+
+    const src = document.getElementById('src-' + id);
+    if (src) src.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    const pin = shotMap.querySelector('.shot-hotspot[data-floor="' + id + '"]');
+    if (pin && shotPane) {
+      const target = pin.offsetTop - shotPane.clientHeight * 0.25;
+      shotPane.scrollTo({ top: Math.max(0, target), behavior: 'smooth' });
+    } else {
+      const item = concludeEl.querySelector('.floor-item[data-floor="' + id + '"]');
+      if (item) item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }
+
+  function openModal(key) {
+    loadCases()
+      .then(() => {
+        const c = CASES[key];
+        if (!c) {
+          console.error('unknown case', key);
+          return;
+        }
+        currentCase = c;
+        titleEl.textContent = c.title;
+        btnLeft.href = c.leftUrl;
+        btnRight.href = c.rightUrl || '#';
+        labelLeft.href = c.leftUrl;
+        labelLeft.textContent = c.leftLabel;
+        labelRight.href = c.rightUrl || '#';
+        labelRight.textContent = c.rightLabel;
+        htmlSourceLink.href = c.rightUrl || '#';
+        htmlSourceLink.textContent = c.leftUrl || '';
+        shotLeft.src = c.leftShot || '';
+        shotLeft.alt = (c.leftLabel || '人读页') + ' 截图';
+        renderConclude(c);
+        renderFloorSources(c);
+        const placePins = () => {
+          renderHotspots(c);
+          const first = (c.floors && c.floors[0] && c.floors[0].id) || null;
+          if (first) selectFloor(first);
+        };
+        if (shotLeft.complete && shotLeft.naturalHeight) placePins();
+        else shotLeft.onload = placePins;
+        modal.classList.add('open');
+        document.body.classList.add('modal-open');
+      })
+      .catch((err) => {
+        console.error(err);
+        alert('案例数据加载失败，请刷新重试。');
+      });
+  }
+
+  function closeModal() {
+    modal.classList.remove('open');
+    document.body.classList.remove('modal-open');
+    shotLeft.removeAttribute('src');
+    shotLeft.onload = null;
+    shotMap.querySelectorAll('.shot-hotspot').forEach((n) => n.remove());
+    floorSrcList.innerHTML = '';
+    concludeEl.innerHTML = '';
+    currentCase = null;
+    activeFloorId = null;
+  }
+
+  document.querySelectorAll('[data-case]').forEach((btn) => {
+    btn.addEventListener('click', () => openModal(btn.dataset.case));
+  });
+  closeBtn.addEventListener('click', closeModal);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+  });
+
+  // preload
+  loadCases().catch(() => {});
+</script>
+</body>
+</html>

@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NVIDIA（md）分析 · 可引用性·内容（md）分析 · 昇腾社区 AI 亲和原则</title>
+<style>
+  :root {
+    --bg: #F5F5F5; --panel: #ffffff; --panel2: #FAFAFA; --line: #e2e8f0;
+    --text: #191919; --muted: #595959; --accent: #1476FF; --accent-soft: rgba(20, 118, 255, 0.1);
+    --link: #1476FF; --topbar-h: 56px; --content-max: 1200px; --page-gutter: clamp(16px, 2.5vw, 24px);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "PingFang SC", sans-serif;
+    background: var(--bg);
+    color: var(--text); line-height: 1.55;
+  }
+  .topbar {
+    position: sticky; top: 0; z-index: 50; height: var(--topbar-h);
+    background: var(--panel);
+    border-bottom: 1px solid var(--line);
+  }
+  .topbar-inner {
+    width: min(var(--content-max), calc(100% - 2 * var(--page-gutter)));
+    margin: 0 auto;
+    padding: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .brand {
+    font-weight: 700; font-size: 14px; letter-spacing: -0.01em;
+    color: var(--text); text-decoration: none; white-space: nowrap;
+  }
+  .brand span { color: var(--accent); }
+  .site-nav { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+  .site-nav a {
+    text-decoration: none; color: var(--muted); font-size: 14px; font-weight: 500;
+    padding: 8px 14px; border-radius: 8px; white-space: nowrap;
+  }
+  .site-nav a:hover { color: var(--accent); background: #F5F5F5; text-decoration: none; }
+  .site-nav a.active { color: var(--accent); background: #F5F5F5; font-weight: 600; }
+  .wrap {
+    width: min(var(--content-max), calc(100% - 2 * var(--page-gutter)));
+    margin: 0 auto;
+    padding: 32px 0 80px;
+  }
+  .hero { margin-bottom: 28px; }
+  .eyebrow {
+    color: var(--accent);
+    font-size: 13px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  h1 {
+    font-family: "PingFang SC", sans-serif;
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 600;
+    margin: 8px 0 12px;
+    letter-spacing: -0.02em;
+  }
+  .sub {
+    color: var(--muted);
+    font-size: 15px;
+    margin: 0 0 24px;
+    line-height: 1.65;
+  }
+  .section {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 22px 24px 8px;
+    margin-bottom: 16px;
+  }
+  .section h2 {
+    margin: 0 0 6px;
+    font-size: 18px;
+    font-weight: 650;
+  }
+  .sum-h3 {
+    margin: 24px 0 10px;
+    font-size: 14px;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+  }
+  .sum-h3:first-of-type { margin-top: 14px; }
+  .domain-desc {
+    margin: 0 0 12px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.65;
+  }
+  .domain-why {
+    margin: 0 0 16px;
+    padding: 12px 14px 12px 32px;
+    background: var(--panel2);
+    border-radius: 10px;
+    font-size: 13px;
+    color: #3a4458;
+    line-height: 1.55;
+  }
+  .domain-why li { margin-bottom: 6px; }
+  .domain-why li:last-child { margin-bottom: 0; }
+  .domain-why code {
+    font-family: "SF Mono", "Fira Code", "Cascadia Code", ui-monospace, monospace;
+    font-size: 12px;
+  }
+  .section a { color: var(--link); }
+  footer { margin-top: 48px; color: var(--muted); font-size: 12px; }
+  @media (max-width: 720px) {
+    .site-nav a { padding: 8px 10px; font-size: 13px; }
+  }
+
+  .subnav {
+    position: sticky;
+    top: var(--topbar-h);
+    z-index: 40;
+    background: var(--panel);
+    border-bottom: 1px solid var(--line);
+  }
+  .subnav-inner {
+    width: min(var(--content-max), calc(100% - 2 * var(--page-gutter)));
+    margin: 0 auto;
+    padding: 0;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 4px;
+    overflow-x: auto;
+  }
+  .subnav a {
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 8px;
+    white-space: nowrap;
+  }
+  .subnav a:hover {
+    color: var(--accent);
+    background: #F5F5F5;
+  }
+  .subnav a.active {
+    color: var(--accent);
+    background: #F5F5F5;
+    font-weight: 600;
+  }
+
+  body.modal-open { overflow: hidden; }
+  .case-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .case-card {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 22px 24px;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+    transition: border-color .15s, background .15s;
+  }
+  .case-card:hover {
+    border-color: rgba(20, 118, 255, 0.35);
+    background: rgba(20, 118, 255, 0.06);
+  }
+  .case-card .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .chip {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: var(--accent-soft);
+    color: #0d4db8;
+  }
+  .chip.alt { background: #e8eef8; color: #3a4a66; }
+  .case-card h2 {
+    margin: 0 0 8px;
+    font-size: 18px;
+    font-weight: 600;
+  }
+  .case-card p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .case-card .cta {
+    margin-top: 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #0d4db8;
+  }
+
+  /* Fullscreen modal */
+  .modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: #fff;
+    flex-direction: column;
+    overflow: auto;
+  }
+  .modal.open { display: flex; }
+  .modal-head {
+    display: contents;
+  }
+  .modal-head-bar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--line);
+    background: #fff;
+  }
+  .modal-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0;
+  }
+  .modal-actions { display: flex; gap: 8px; align-items: center; }
+  .btn {
+    border: 1px solid var(--line);
+    background: #fff;
+    border-radius: 8px;
+    padding: 7px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .btn:hover { background: var(--panel2); }
+  .btn.close {
+    background: var(--text);
+    color: #fff;
+    border-color: var(--text);
+  }
+  .btn.close:hover { background: #333; }
+  .conclude {
+    padding: 16px 20px 18px;
+    background: rgba(20, 118, 255, 0.06);
+  }
+  .conclude h3 {
+    margin: 0 0 10px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .conclude-cols {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .conclude .tag {
+    display: inline-block;
+    margin: 0 0 8px;
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .03em;
+    line-height: 1.4;
+  }
+  .conclude .tag-in {
+    background: #ecfdf5;
+    color: #047857;
+  }
+  .conclude .tag-out {
+    background: #eceff3;
+    color: #5a6478;
+  }
+  .conclude ul {
+    margin: 0;
+    padding-left: 18px;
+    color: #3a4458;
+    font-size: 13px;
+  }
+  .conclude li { margin-bottom: 4px; }
+  .conclude li:last-child { margin-bottom: 0; }
+  .conclude strong { color: var(--text); }
+  .conclude-geo {
+    margin: 12px 0 0;
+    padding-top: 10px;
+    border-top: 1px solid rgba(20, 118, 255, 0.25);
+    font-size: 13px;
+    color: #3a4458;
+  }
+
+  .modal-split {
+    flex: 1 1 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: minmax(720px, 1fr);
+    gap: 12px 16px;
+    padding: 16px 20px 20px;
+    min-height: 1000px;
+    background: #eef1f5;
+    align-items: stretch;
+  }
+  @media (max-width: 900px) {
+    .modal-split { grid-template-columns: 1fr; }
+  }
+  .pane-frame-wrap {
+    min-height: 720px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .pane-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--line);
+    font-size: 12px;
+    color: var(--muted);
+    background: #fafbfc;
+    flex: 0 0 auto;
+  }
+  .pane-label a {
+    color: var(--link);
+    text-decoration: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .pane-label a:hover { text-decoration: underline; }
+  .pane-frame {
+    flex: 1 1 auto;
+    position: relative;
+    min-height: 720px;
+    background: #fff;
+    overflow: hidden;
+  }
+  .floor-map-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--line);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    background: #fff;
+  }
+  .floor-map-legend {
+    display: flex;
+    gap: 10px;
+    font-weight: 500;
+    color: var(--muted);
+  }
+  .floor-map-legend i {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    margin-right: 4px;
+  }
+  .floor-map-legend .on { background: #1476FF; }
+  .floor-map-legend .off { background: #c5cad3; }
+  .floor-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .floor-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+    border-left: 4px solid #c5cad3;
+    background: #fff;
+    font-size: 12.5px;
+  }
+  .floor-item:last-child { border-bottom: none; }
+  .floor-item.in {
+    border-left-color: #1476FF;
+    background: rgba(20, 118, 255, 0.06);
+  }
+  .floor-item .idx {
+    flex: 0 0 auto;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #e8edf3;
+    color: #5c6578;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .floor-item.in .idx {
+    background: rgba(20, 118, 255, 0.1);
+    color: #0d4db8;
+  }
+  .floor-item .body { flex: 1 1 auto; min-width: 0; }
+  .floor-item .name {
+    font-weight: 600;
+    color: var(--text);
+    margin: 0 0 2px;
+  }
+  .floor-item .desc {
+    margin: 0;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.4;
+  }
+  .floor-item .desc.mapsto {
+    margin-top: 4px;
+    color: #1a5fb4;
+    font-weight: 500;
+  }
+  .floor-item .right-meta {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    max-width: 46%;
+  }
+  .floor-item .badge {
+    flex: 0 0 auto;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: #eef0f3;
+    color: #6a7385;
+    white-space: nowrap;
+  }
+  .floor-item.in .badge {
+    background: rgba(20, 118, 255, 0.1);
+    color: #0d4db8;
+  }
+  .pane-frame iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: #fff;
+  }
+  .pane-frame--shot {
+    overflow: auto;
+    background: #0b0c0e;
+  }
+  .pane-frame--embed {
+    overflow: hidden;
+    background: #fff;
+  }
+  .pane-shot {
+    display: block;
+    width: 100%;
+    height: auto;
+    vertical-align: top;
+  }
+  .pane-frame--embed iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: #fff;
+  }
+  .pane-embed-fallback {
+    position: absolute;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 24px;
+    background: var(--panel2);
+    color: var(--muted);
+    font-size: 14px;
+    text-align: center;
+  }
+  .pane-embed-fallback.show { display: flex; }
+  .pane-embed-fallback a { color: var(--link); font-weight: 600; }
+  .pane-frame--md {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .md-embed {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .md-embed .fb-banner {
+    flex: 0 0 auto;
+    padding: 10px 14px;
+    background: #f4f7fb;
+    border-bottom: 1px solid var(--line);
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .md-embed .fb-banner a { color: var(--link); font-weight: 600; }
+  .md-embed .fb-body {
+    flex: 1 1 auto;
+    overflow: auto;
+    padding: 16px 18px;
+    margin: 0;
+    font-family: "SF Mono", "Fira Code", "Cascadia Code", ui-monospace, monospace;
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: var(--text);
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .iframe-fallback {
+    position: absolute;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+    background: #fff;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .iframe-fallback.show { display: flex; }
+  .iframe-fallback .fb-banner {
+    flex: 0 0 auto;
+    padding: 10px 14px;
+    background: #fff8e8;
+    border-bottom: 1px solid #f0e0b8;
+    font-size: 12px;
+    color: #6a5a30;
+  }
+  .iframe-fallback .fb-banner a { color: var(--link); font-weight: 600; }
+  .iframe-fallback .fb-body {
+    flex: 1 1 auto;
+    overflow: auto;
+    padding: 16px 18px;
+    margin: 0;
+    font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: var(--text);
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .iframe-fallback.center {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 24px;
+    gap: 12px;
+    background: var(--panel2);
+  }
+  .iframe-fallback.center .fb-body { display: none; }
+  .iframe-fallback a.ext {
+    color: var(--link);
+    font-weight: 600;
+  }
+
+  .cases-block { margin-top: 40px; }
+  .cases-block > h2 {
+    margin: 0 0 8px;
+    font-size: 22px;
+    font-weight: 650;
+  }
+  .cases-block > .sub {
+    margin: 0 0 18px;
+  }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html">昇腾社区 <span>AI 亲和原则研究</span></a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="nvidia.html">可达性·索引分析</a>
+      <a href="citability-mintlify.html" class="active">可引用性·内容（md）分析</a>
+      <a href="citability-html-mintlify.html">可引用性·内容（html）分析</a>
+    </nav>
+  </div>
+</div>
+
+<div class="subnav" aria-label="可引用性·内容 二级导航">
+  <div class="subnav-inner">
+    <a href="citability-mintlify.html">Mintlify（md）分析</a>
+    <a href="citability-nvidia.html" class="active">NVIDIA（md）分析</a>
+    <a href="citability-ascend.html">Ascend 社区（md）分析</a>
+  </div>
+</div>
+<div class="wrap">
+  <header class="hero">
+    <div class="eyebrow">可引用性 · 内容分析 · NVIDIA</div>
+    <h1>NVIDIA（md）分析 · 可引用性·内容（md）分析</h1>
+    <p class="sub">
+      引用后是否有价值：正文是否结论前置、事实原子化，以及是否值得维护平行 Markdown。
+      缺口归内容生产，与管道配置分开排期；营销口径默认不当知识源。
+    </p>
+  </header>
+
+  <section class="section" aria-labelledby="principles-title">
+    <h2 id="principles-title">从 NVIDIA（md）案例提炼的指导原则</h2>
+    <ul class="domain-why">
+      <li><strong>准入 MD 的标准（事实与结构层）：</strong>产品能力说明、行业用例与方案结构、平台可调用入口（如 Inference Endpoints / Skills）等可核对内容可进 MD。行业总览宜收敛为行业目录与报告入口；知识叶子应能让 Agent 直接取到稳定表述。</li>
+      <li><strong>排除 MD 的标准（壳、转化与说服层）：</strong>站壳导航、筛选控件、视频播放器 UI、客户 Logo 墙与实时活动流、Cookie 浮层等应留人读 HTML。壳页即使技术上能出 MD，也不应把「几乎无可引用事实」的过滤界面当正文背书。</li>
+      <li><strong>楼层切片逻辑：</strong>营销产品页常把叙事、用例、新闻一并推进 MD；点播壳页则往往只切出极薄目录。同一流水线交付，密度可以差一个数量级——分析要以楼层对照，不以「有 md」一刀切。</li>
+      <li><strong>有目录 ≠ 有 MD：</strong>是否进 <code>llms.txt</code> 与是否存在平行 Markdown 是两道闸。例如 NGC Catalog 可出现在开发者目录，却无平行 MD（R2·D1）——Agent 发现了入口，仍缺可解析正文。对照见可达性侧 <a href="nvidia.html">NVIDIA 分析</a>。</li>
+    </ul>
+  </section>
+
+  <section class="cases-block" id="cases" aria-labelledby="cases-title">
+    <h2 id="cases-title">案例</h2>
+    <p class="sub">人读页面 vs Agent 可读交付的对照案例。点击卡片打开全屏对比。</p>
+    <div class="case-grid">
+
+    <button type="button" class="case-card" data-case="dgx-cloud" aria-haspopup="dialog">
+      <div class="meta">
+        <span class="chip">产品/行业/方案介绍</span>
+        <span class="chip alt">产品介绍</span>
+      </div>
+      <h2>/en-us/data-center/dgx-cloud/</h2>
+      <p>
+        MD 收：产品定义、How it works、能力模块、用例与资源链接。
+        不收：站壳导航、重视觉 Hero 与转化控件。<strong>原因：</strong>能力说明可背书；壳与转化给人操作。
+      </p>
+      <div class="cta">打开全屏对比 →</div>
+    </button>
+
+    <button type="button" class="case-card" data-case="industries" aria-haspopup="dialog">
+      <div class="meta">
+        <span class="chip">产品/行业/方案介绍</span>
+        <span class="chip alt">行业总览</span>
+      </div>
+      <h2>/en-us/industries/</h2>
+      <p>
+        MD 收：主张句、行业目录链接、State of AI 报告入口。
+        不收：行业卡视觉网格与站壳。<strong>原因：</strong>总览页给 Agent 的是导航结构，不是单行业深度事实。
+      </p>
+      <div class="cta">打开全屏对比 →</div>
+    </button>
+
+    <button type="button" class="case-card" data-case="automotive" aria-haspopup="dialog">
+      <div class="meta">
+        <span class="chip">产品/行业/方案介绍</span>
+        <span class="chip alt">单个行业</span>
+      </div>
+      <h2>/en-us/industries/automotive/</h2>
+      <p>
+        MD 收：行业转型叙事、用例（Robotaxi / 设计 / 数字孪生等）、客户影响与方案链接。
+        不收：站壳、视频/轮播控件、Cookie。<strong>原因：</strong>行业叶子把叙事与用例推进 MD；交互壳留人读。
+      </p>
+      <div class="cta">打开全屏对比 →</div>
+    </button>
+
+    <button type="button" class="case-card" data-case="build" aria-haspopup="dialog">
+      <div class="meta">
+        <span class="chip">知识</span>
+        <span class="chip alt">Build 平台</span>
+      </div>
+      <h2>build.nvidia.com/</h2>
+      <p>
+        MD 收：Inference Endpoints 模型列表、Agentic Skills 分类、Blueprint / DGX Station 入口。
+        不收：平台交互壳与探索 UI。<strong>原因：</strong>可调用入口进语料；操作界面给人用。
+      </p>
+      <div class="cta">打开全屏对比 →</div>
+    </button>
+
+    <button type="button" class="case-card" data-case="on-demand" aria-haspopup="dialog">
+      <div class="meta">
+        <span class="chip">社区运营</span>
+        <span class="chip alt">点播壳页</span>
+      </div>
+      <h2>/en-us/on-demand/</h2>
+      <p>
+        MD 收：极薄目录（简介、Recent Events 标题、Training 入口）。
+        不收：筛选器、视频卡片网格、播放与会员引导 UI。<strong>原因：</strong>壳页信息密度低，MD 几乎只剩导航标题。
+      </p>
+      <div class="cta">打开全屏对比 →</div>
+    </button>
+
+    </div>
+  </section>
+
+  <footer>昇腾社区 AI 亲和原则研究</footer>
+</div>
+
+<div class="modal" id="case-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal-head">
+    <div class="modal-head-bar">
+      <h2 class="modal-title" id="modal-title"></h2>
+      <div class="modal-actions">
+        <a class="btn" id="btn-left" href="#" target="_blank" rel="noopener">打开左页</a>
+        <a class="btn" id="btn-right" href="#" target="_blank" rel="noopener">打开右页</a>
+        <button type="button" class="btn close" id="close-modal">关闭</button>
+      </div>
+    </div>
+    <div class="conclude" id="conclude"></div>
+  </div>
+
+  <div class="modal-split">
+    <div class="pane-frame-wrap">
+      <div class="pane-label">
+        <span id="label-left-kind">左侧 · 人读 HTML（截图）</span>
+        <a id="label-left" href="#" target="_blank" rel="noopener"></a>
+      </div>
+      <div class="pane-frame pane-frame--shot" id="pane-left">
+        <img id="shot-left" class="pane-shot" alt="人读页截图" />
+        <iframe id="frame-left" title="Case HTML" src="about:blank" loading="lazy" referrerpolicy="no-referrer-when-downgrade" hidden></iframe>
+        <div class="pane-embed-fallback" id="fallback-left">
+          <div>目标站可能禁止嵌入（X-Frame-Options / CSP）。</div>
+          <a class="ext" id="fallback-left-link" href="#" target="_blank" rel="noopener">在新标签打开人读页 →</a>
+        </div>
+      </div>
+    </div>
+    <div class="pane-frame-wrap">
+      <div class="pane-label">
+        <span>右侧 · Agent Markdown（内嵌）</span>
+        <a id="label-right" href="#" target="_blank" rel="noopener"></a>
+      </div>
+      <div class="pane-frame pane-frame--md">
+        <div class="md-embed" id="md-embed">
+          <div class="fb-banner">
+            内嵌正文来自
+            <a id="md-source-link" href="#" target="_blank" rel="noopener"></a>
+          </div>
+          <pre class="fb-body" id="md-mirror">加载中…</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const CASES = {
+    'dgx-cloud': {
+      title: 'DGX Cloud · 产品介绍页 vs dgx-cloud.md',
+      leftUrl: 'https://www.nvidia.com/en-us/data-center/dgx-cloud/',
+      leftLabel: 'nvidia.com/en-us/data-center/dgx-cloud/',
+      leftEmbed: true,
+      leftShot: 'assets/cases-nvidia/dgx-cloud.png?v=8',
+      rightUrl: 'https://www.nvidia.com/en-us/data-center/dgx-cloud.md',
+      rightLabel: 'dgx-cloud.md',
+      rightMdLocal: 'assets/cases-nvidia/dgx-cloud.md',
+      conclude: `
+        <h3>对比结论</h3>
+        <div class="conclude-cols">
+          <div>
+            <span class="tag tag-in">已收录进 Markdown</span>
+            <ul>
+              <li>产品定义与 Overview / How it works</li>
+              <li>DSX OS、Exemplar Cloud 等能力模块</li>
+              <li>用例（AV / 机器人 / Nemotron / Cosmos）与资源链接</li>
+            </ul>
+          </div>
+          <div>
+            <span class="tag tag-out">未收录进 Markdown 的楼层</span>
+            <ul>
+              <li>站壳 chrome（顶栏 / 搜索 / 区域切换）——<strong>原因：导航与站级交互给人操作，不背书为产品事实</strong></li>
+              <li>重视觉 Hero / 转化控件——<strong>原因：打动与下单动作留人读，MD 收可核对说明</strong></li>
+              <li>Cookie / 隐私条——<strong>原因：合规浮层与产品知识无关</strong></li>
+            </ul>
+          </div>
+        </div>
+        <p class="conclude-geo"><strong>GEO 启示：</strong>产品介绍页的标准对照——能力与用例进 MD；壳与转化留 HTML。注意叙事密度仍偏高，引用时要区分「规格」与「故事」。</p>
+      `,
+    },
+    industries: {
+      title: 'Industries · 行业总览 vs industries.md',
+      leftUrl: 'https://www.nvidia.com/en-us/industries/',
+      leftLabel: 'nvidia.com/en-us/industries/',
+      leftEmbed: true,
+      leftShot: 'assets/cases-nvidia/industries.png?v=8',
+      rightUrl: 'https://www.nvidia.com/en-us/industries.md',
+      rightLabel: 'industries.md',
+      rightMdLocal: 'assets/cases-nvidia/industries.md',
+      conclude: `
+        <h3>对比结论</h3>
+        <div class="conclude-cols">
+          <div>
+            <span class="tag tag-in">已收录进 Markdown</span>
+            <ul>
+              <li>主张句与简介</li>
+              <li>各行业入口链接（Automotive / Energy / Healthcare…）</li>
+              <li>State of AI Reports 报告入口</li>
+            </ul>
+          </div>
+          <div>
+            <span class="tag tag-out">未收录进 Markdown 的楼层</span>
+            <ul>
+              <li>站壳 chrome——<strong>原因：站级导航给人操作</strong></li>
+              <li>行业卡视觉网格 / 图片装饰——<strong>原因：展示层服务浏览，Agent 只需结构化目录</strong></li>
+              <li>Cookie / 隐私条——<strong>原因：合规浮层与行业知识无关</strong></li>
+            </ul>
+          </div>
+        </div>
+        <p class="conclude-geo"><strong>GEO 启示：</strong>总览页 MD 本质是「目录 + 报告入口」；深度事实在单个行业叶子（如 Automotive）。</p>
+      `,
+    },
+    automotive: {
+      title: 'Automotive · 单个行业 vs automotive.md',
+      leftUrl: 'https://www.nvidia.com/en-us/industries/automotive/',
+      leftLabel: 'nvidia.com/en-us/industries/automotive/',
+      leftEmbed: true,
+      leftShot: 'assets/cases-nvidia/automotive.png?v=8',
+      rightUrl: 'https://www.nvidia.com/en-us/industries/automotive.md',
+      rightLabel: 'automotive.md',
+      rightMdLocal: 'assets/cases-nvidia/automotive.md',
+      conclude: `
+        <h3>对比结论</h3>
+        <div class="conclude-cols">
+          <div>
+            <span class="tag tag-in">已收录进 Markdown</span>
+            <ul>
+              <li>行业转型总述与客户名录</li>
+              <li>用例楼层（Robotaxi / Design / CAE / Digital Twin / GenAI）</li>
+              <li>Real-World Impact 客户故事与方案深链</li>
+            </ul>
+          </div>
+          <div>
+            <span class="tag tag-out">未收录进 Markdown 的楼层</span>
+            <ul>
+              <li>站壳 chrome——<strong>原因：导航给人操作，不背书为行业事实</strong></li>
+              <li>视频 / 轮播 / 交互控件——<strong>原因：人读多媒体体验，非可解析条款</strong></li>
+              <li>Cookie / 隐私条——<strong>原因：合规浮层与行业方案无关</strong></li>
+            </ul>
+          </div>
+        </div>
+        <p class="conclude-geo"><strong>GEO 启示：</strong>相对行业总览，叶子页把叙事与用例写满 MD；引用时仍要警惕「客户故事」与「可核对规格」混层。</p>
+      `,
+    },
+    build: {
+      title: 'Build · 平台首页 vs index.md',
+      leftUrl: 'https://build.nvidia.com/',
+      leftLabel: 'build.nvidia.com/',
+      leftShot: 'assets/cases-nvidia/build.png?v=6',
+      rightUrl: 'https://build.nvidia.com/index.md',
+      rightLabel: 'index.md',
+      rightMdLocal: 'assets/cases-nvidia/build.md',
+      conclude: `
+        <h3>对比结论</h3>
+        <div class="conclude-cols">
+          <div>
+            <span class="tag tag-in">已收录进 Markdown</span>
+            <ul>
+              <li>Inference Endpoints 模型列表（可点进各模型 .md）</li>
+              <li>Agentic Skills 分类</li>
+              <li>Blueprint / DGX Station 起步入口</li>
+            </ul>
+          </div>
+          <div>
+            <span class="tag tag-out">未收录进 Markdown 的楼层</span>
+            <ul>
+              <li>平台 chrome 与探索 UI——<strong>原因：交互壳给人试玩与导航，不构成稳定 API 事实</strong></li>
+              <li>登录 / 账户控件——<strong>原因：产品操作，不当知识源</strong></li>
+            </ul>
+          </div>
+        </div>
+        <p class="conclude-geo"><strong>GEO 启示：</strong>知识域平台页更接近「可调用目录」——MD 短但结构清晰，适合 Agent 发现入口后再下钻模型页。</p>
+      `,
+    },
+    'on-demand': {
+      title: 'On-Demand · 点播壳页 vs on-demand.md',
+      leftUrl: 'https://www.nvidia.com/en-us/on-demand/',
+      leftLabel: 'nvidia.com/en-us/on-demand/',
+      leftEmbed: true,
+      leftShot: 'assets/cases-nvidia/on-demand.png?v=8',
+      rightUrl: 'https://www.nvidia.com/en-us/on-demand.md',
+      rightLabel: 'on-demand.md',
+      rightMdLocal: 'assets/cases-nvidia/on-demand.md',
+      conclude: `
+        <h3>对比结论</h3>
+        <div class="conclude-cols">
+          <div>
+            <span class="tag tag-in">已收录进 Markdown</span>
+            <ul>
+              <li>简介与 Developer Program 提示</li>
+              <li>Recent Events 活动标题（如 GTC 系列）</li>
+              <li>Training Resources 入口标题</li>
+            </ul>
+          </div>
+          <div>
+            <span class="tag tag-out">未收录进 Markdown 的楼层</span>
+            <ul>
+              <li>筛选器 / 搜索 / 排序——<strong>原因：壳页交互给人找片，无可核对事实密度</strong></li>
+              <li>视频卡片网格与播放器——<strong>原因：媒体消费界面，MD 未展开会话正文</strong></li>
+              <li>会员 / 登录引导——<strong>原因：转化与权限流，不背书为知识</strong></li>
+            </ul>
+          </div>
+        </div>
+        <p class="conclude-geo"><strong>GEO 启示：</strong>有 MD ≠ 有可引用正文。点播壳页 MD 极薄，几乎只剩标题导航——与产品/行业页密度形成反差。</p>
+      `,
+    },
+  };
+
+  const modal = document.getElementById('case-modal');
+  const closeBtn = document.getElementById('close-modal');
+  const concludeEl = document.getElementById('conclude');
+  const titleEl = document.getElementById('modal-title');
+  const btnLeft = document.getElementById('btn-left');
+  const btnRight = document.getElementById('btn-right');
+  const labelLeft = document.getElementById('label-left');
+  const labelRight = document.getElementById('label-right');
+  const shotLeft = document.getElementById('shot-left');
+  const frameLeft = document.getElementById('frame-left');
+  const paneLeft = document.getElementById('pane-left');
+  const labelLeftKind = document.getElementById('label-left-kind');
+  const fallbackLeft = document.getElementById('fallback-left');
+  const fallbackLeftLink = document.getElementById('fallback-left-link');
+  const mdSourceLink = document.getElementById('md-source-link');
+  const mdMirror = document.getElementById('md-mirror');
+  let mdLoadToken = 0;
+  let leftEmbedTimer = null;
+
+  async function loadRightMd(c) {
+    const token = ++mdLoadToken;
+    mdSourceLink.href = c.rightUrl || '#';
+    mdSourceLink.textContent = c.rightUrl || '(无平行 MD)';
+    if (!c.rightUrl && !c.rightMdLocal) {
+      mdMirror.textContent = c.mirrorNote || '(无平行 Markdown)';
+      return;
+    }
+    mdMirror.textContent = '加载中…';
+    const floors = c.floors || [];
+    const fallback = c.mirrorNote
+      || floors.filter((f) => f.rightMd).map((f) => f.rightMd).join('\n\n')
+      || '';
+    try {
+      const src = c.rightMdLocal || c.rightUrl;
+      const res = await fetch(src);
+      if (!res.ok) throw new Error(String(res.status));
+      const text = await res.text();
+      if (token !== mdLoadToken) return;
+      mdMirror.textContent = text;
+    } catch (_) {
+      if (token !== mdLoadToken) return;
+      mdMirror.textContent = fallback || '无法加载 Markdown。请点「打开右页」查看原文。';
+    }
+  }
+
+  function showLeftShot(c, note) {
+    labelLeftKind.textContent = note || '左侧 · 人读 HTML（截图）';
+    paneLeft.classList.add('pane-frame--shot');
+    paneLeft.classList.remove('pane-frame--embed');
+    frameLeft.hidden = true;
+    frameLeft.src = 'about:blank';
+    fallbackLeft.classList.remove('show');
+    shotLeft.hidden = false;
+    shotLeft.src = c.leftShot || '';
+    shotLeft.alt = (c.leftLabel || '人读页') + ' 截图';
+  }
+
+  function setLeftMode(c) {
+    if (leftEmbedTimer) {
+      clearTimeout(leftEmbedTimer);
+      leftEmbedTimer = null;
+    }
+    fallbackLeft.classList.remove('show');
+    fallbackLeftLink.href = c.leftUrl;
+    // NVIDIA etc. block iframes — prefer screenshot when leftShot exists
+    if (c.leftEmbed && !c.leftShot) {
+      labelLeftKind.textContent = '左侧 · 人读 HTML（内嵌）';
+      paneLeft.classList.remove('pane-frame--shot');
+      paneLeft.classList.add('pane-frame--embed');
+      shotLeft.hidden = true;
+      shotLeft.removeAttribute('src');
+      frameLeft.hidden = false;
+      frameLeft.src = c.leftUrl;
+      leftEmbedTimer = setTimeout(() => {
+        fallbackLeft.classList.add('show');
+      }, 2200);
+      return;
+    }
+    // Embed requested but site blocks: use local full-page capture
+    if (c.leftEmbed && c.leftShot) {
+      showLeftShot(c, '左侧 · 人读 HTML（截图 · 站点禁止嵌入）');
+      return;
+    }
+    showLeftShot(c);
+  }
+
+  function openModal(key) {
+    const c = CASES[key];
+    if (!c) return;
+    titleEl.textContent = c.title;
+    concludeEl.innerHTML = c.conclude;
+    btnLeft.href = c.leftUrl;
+    btnRight.href = c.rightUrl || '#';
+    if (!c.rightUrl) {
+      btnRight.style.visibility = 'hidden';
+    } else {
+      btnRight.style.visibility = 'visible';
+    }
+    labelLeft.href = c.leftUrl;
+    labelLeft.textContent = c.leftLabel;
+    labelRight.href = c.rightUrl || '#';
+    labelRight.textContent = c.rightLabel;
+    setLeftMode(c);
+    loadRightMd(c);
+    modal.classList.add('open');
+    document.body.classList.add('modal-open');
+  }
+
+  function closeModal() {
+    modal.classList.remove('open');
+    document.body.classList.remove('modal-open');
+    if (leftEmbedTimer) {
+      clearTimeout(leftEmbedTimer);
+      leftEmbedTimer = null;
+    }
+    shotLeft.removeAttribute('src');
+    frameLeft.src = 'about:blank';
+    fallbackLeft.classList.remove('show');
+    mdLoadToken += 1;
+    mdMirror.textContent = '';
+    btnRight.style.visibility = 'visible';
+  }
+
+  document.querySelectorAll('[data-case]').forEach((btn) => {
+    btn.addEventListener('click', () => openModal(btn.dataset.case));
+  });
+  closeBtn.addEventListener('click', closeModal);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+  });
+</script>
+</body>
+</html>

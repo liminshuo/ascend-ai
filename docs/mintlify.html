@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mintlify 分析 · 昇腾社区 AI 亲和原则</title>
+<style>
+  :root {
+    --bg: #F5F5F5;
+    --panel: #ffffff;
+    --panel2: #FAFAFA;
+    --line: #e2e8f0;
+    --text: #191919;
+    --muted: #595959;
+    --accent: #1476FF;
+    --accent-soft: rgba(20, 118, 255, 0.1);
+    --link: #1476FF;
+    --topbar-h: 56px;
+    --yes: #047857;
+    --yes-bg: #ecfdf5;
+    --no: #5a6478;
+    --no-bg: #eceff3;
+    --warn: #7a5a00;
+    --warn-bg: #f8efd0;
+    --content-max: 1200px;
+    --mono: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+    --page-gutter: clamp(16px, 2.5vw, 24px);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "PingFang SC", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.55;
+  }
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    height: var(--topbar-h);
+    background: var(--panel);
+    border-bottom: 1px solid var(--line);
+  }
+  .topbar-inner {
+    width: min(var(--content-max), calc(100% - 2 * var(--page-gutter)));
+    margin: 0 auto;
+    padding: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .brand {
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .brand span { color: var(--accent); }
+  .site-nav { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+  .site-nav a {
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 14px;
+    border-radius: 8px;
+  }
+  .site-nav a:hover { color: var(--accent); background: #F5F5F5; text-decoration: none; }
+  .site-nav a.active {
+    color: var(--accent);
+    background: #F5F5F5;
+    font-weight: 600;
+  }
+  .wrap {
+    width: min(var(--content-max), calc(100% - 2 * var(--page-gutter)));
+    margin: 0 auto;
+    padding: 32px 0 80px;
+  }
+  header { margin-bottom: 28px; }
+  .eyebrow {
+    color: var(--accent);
+    font-size: 13px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  h1 {
+    font-family: "PingFang SC", sans-serif;
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 600;
+    margin: 8px 0 12px;
+    letter-spacing: -0.02em;
+  }
+  .sub { color: var(--muted); max-width: 780px; font-size: 15px; }
+  .sub a { color: var(--link); }
+
+  .peer-cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin: 20px 0 24px;
+  }
+  .peer-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    width: 100%;
+    text-align: left;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 16px 18px;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+    transition: border-color .15s, background .15s, box-shadow .15s;
+  }
+  .peer-card:hover {
+    border-color: rgba(20, 118, 255, 0.35);
+    background: rgba(20, 118, 255, 0.06);
+  }
+  .peer-card.active {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    box-shadow: inset 0 0 0 1px var(--accent);
+  }
+  .peer-card .logo {
+    display: flex;
+    align-items: center;
+    height: 28px;
+  }
+  .peer-card .logo img {
+    display: block;
+    max-height: 28px;
+    width: auto;
+    max-width: 120px;
+    object-fit: contain;
+  }
+  .peer-card .logo img.logo-icon {
+    width: 28px;
+    height: 28px;
+    max-width: 28px;
+  }
+  .peer-card .name {
+    font-size: 16px;
+    font-weight: 650;
+    margin: 0 0 4px;
+  }
+  .peer-card .desc {
+    margin: 0;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.45;
+  }
+  .peer-panel[hidden] { display: none; }
+
+  .domain-table td > a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .domain-table td > a:hover .tag {
+    outline: 1px solid currentColor;
+    outline-offset: 1px;
+  }
+  #panel-ascend .domain-table td > a {
+    color: inherit;
+    text-decoration: none;
+  }
+  #panel-ascend .domain-table td > a:hover .tag {
+    outline: 1px solid currentColor;
+    outline-offset: 1px;
+  }
+
+
+  .note {
+    background: rgba(20, 118, 255, 0.06);
+    border: 1px solid rgba(20, 118, 255, 0.25);
+    border-radius: 12px;
+    padding: 14px 18px;
+    font-size: 13px;
+    color: #3a4458;
+    margin-bottom: 28px;
+  }
+  .note strong { color: var(--text); }
+
+  .section {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 22px 24px 8px;
+    margin-bottom: 16px;
+  }
+  .section h2 {
+    margin: 0 0 6px;
+    font-size: 18px;
+    font-weight: 650;
+  }
+  .section .hint {
+    margin: 0 0 16px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  .section .domain-level {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 12px;
+  }
+  .section .domain-level .lvl {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1;
+    box-sizing: border-box;
+    border: 1px solid transparent;
+    white-space: nowrap;
+  }
+  .section .domain-level .lv-k {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 700;
+    color: inherit;
+  }
+  .section .domain-desc {
+    margin: 0 0 12px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .domain-why {
+    margin: 0 0 16px;
+    padding: 12px 14px 12px 32px;
+    background: var(--panel2);
+    border-radius: 10px;
+    font-size: 13px;
+    color: #3a4458;
+    line-height: 1.55;
+  }
+  .domain-why li { margin-bottom: 6px; }
+  .domain-why li:last-child { margin-bottom: 0; }
+  .domain-why code,
+  .principle code,
+  .steps code,
+  .practice-table code {
+    font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+    font-size: 12px;
+  }
+
+  .sum-h3 {
+    margin: 24px 0 10px;
+    font-size: 14px;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+  }
+  .principle {
+    margin: 4px 0 8px;
+    padding: 16px 18px;
+    background: var(--accent-soft);
+    border-left: 3px solid var(--accent);
+    border-radius: 12px;
+  }
+  .principle .q {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 650;
+    line-height: 1.5;
+  }
+  .principle .a {
+    margin: 8px 0 0;
+    font-size: 13px;
+    color: #3a4458;
+  }
+  .coord {
+    display: inline-block;
+    padding: 1px 7px;
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    background: var(--panel2);
+    font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .coord .r { color: var(--yes); }
+  .coord .c { color: #6d28d9; }
+  .coord .sep { color: #c3cbd6; margin: 0 3px; }
+  .caveat {
+    margin: 0 0 4px;
+    padding: 14px 16px;
+    background: #fbf8f1;
+    border: 1px solid #f0e6d2;
+    border-radius: 10px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #3a4458;
+  }
+  .caveat strong { color: var(--text); }
+  .caveat code {
+    font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+    font-size: 12px;
+  }
+  .practice-table td.lv { width: 108px; }
+  .practice-table th:first-child,
+  .practice-table td:first-child { width: 26%; }
+  .steps {
+    counter-reset: step;
+    list-style: none;
+    margin: 0 0 4px;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+  }
+  .steps li {
+    counter-increment: step;
+    position: relative;
+    padding: 12px 14px 12px 44px;
+    background: var(--panel2);
+    border-radius: 10px;
+    font-size: 13px;
+    color: #3a4458;
+  }
+  .steps li::before {
+    content: counter(step);
+    position: absolute;
+    left: 14px;
+    top: 13px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .steps strong { color: var(--text); }
+  .donts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin: 0 0 4px;
+    padding: 0;
+    list-style: none;
+  }
+  .donts li {
+    padding: 12px 14px;
+    background: #fbf8f1;
+    border: 1px solid #f0e6d2;
+    border-radius: 10px;
+    font-size: 13px;
+    color: #3a4458;
+  }
+  .donts strong {
+    display: block;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+  td.cat {
+    font-weight: 600;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    color: #3a4458;
+  }
+  .empty-row td { color: var(--muted); }
+  .empty { color: var(--muted); }
+
+  table.domain-table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+  .domain-table col.col-cat { width: 140px; }
+  .domain-table col.col-page { width: auto; }
+  .domain-table col.col-static { width: 100px; }
+  .domain-table col.col-md { width: 88px; }
+  .domain-table col.col-sitemap { width: 118px; }
+  .domain-table col.col-llms { width: 118px; }
+
+  .domain-table col.col-level { width: 232px; }
+  .domain-table td.model-lv {
+    white-space: nowrap;
+    vertical-align: middle;
+  }
+  .domain-table td.model-lv .lvl {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1;
+    box-sizing: border-box;
+    border: 1px solid transparent;
+    margin: 0 4px 0 0;
+    white-space: nowrap;
+  }
+  .domain-table td.model-lv .lvl:last-child { margin-right: 0; }
+  .domain-table td.model-lv .lv-k {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 700;
+    color: inherit;
+  }
+  /* 索引轴：软 → 实（对齐首页 axis-card） */
+  .domain-table td.model-lv .lvl.axis-r.lvl-0,
+  .domain-table td.model-lv .lvl.axis-c.lvl-0,
+  .section .domain-level .lvl.axis-r.lvl-0,
+  .section .domain-level .lvl.axis-c.lvl-0 {
+    background: #eceff3;
+    color: #4a5568;
+    border-color: #d5dae1;
+  }
+  .domain-table td.model-lv .lvl.axis-r.lvl-1,
+  .section .domain-level .lvl.axis-r.lvl-1 {
+    background: #EEF4FF;
+    color: #1476FF;
+    border-color: #C9DCFF;
+  }
+  .domain-table td.model-lv .lvl.axis-r.lvl-2,
+  .section .domain-level .lvl.axis-r.lvl-2 {
+    background: #1476FF;
+    color: #fff;
+    border-color: #1476FF;
+  }
+  /* 交付轴：软 → 实（对齐首页 axis-card.cite） */
+  .domain-table td.model-lv .lvl.axis-c.lvl-1,
+  .section .domain-level .lvl.axis-c.lvl-1 {
+    background: #F3EBFF;
+    color: #6D28D9;
+    border-color: #DCC9F7;
+  }
+  .domain-table td.model-lv .lvl.axis-c.lvl-2,
+  .section .domain-level .lvl.axis-c.lvl-2 {
+    background: #6D28D9;
+    color: #fff;
+    border-color: #6D28D9;
+  }
+  .domain-table th,
+  .domain-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-top: 1px solid var(--line);
+    vertical-align: top;
+  }
+  .domain-table th {
+    font-size: 11px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    border-top: none;
+    background: var(--panel2);
+  }
+  .domain-table td.path {
+    overflow-wrap: anywhere;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-top: 1px solid var(--line);
+    vertical-align: top;
+  }
+  th {
+    font-size: 11px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    border-top: none;
+    background: var(--panel2);
+  }
+  td a {
+    color: var(--link);
+    text-decoration: none;
+    word-break: break-all;
+  }
+  td a:hover { text-decoration: underline; }
+  .path { font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace; font-size: 12px; }
+  .nav-src { margin-top: 2px; font-family: "PingFang SC", sans-serif; font-size: 11px; color: var(--muted); font-weight: 500; }
+
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  a.tag {
+    text-decoration: none;
+    cursor: pointer;
+  }
+  a.tag:hover {
+    filter: brightness(0.92);
+    text-decoration: underline;
+  }
+  .tag-yes { background: var(--yes-bg); color: var(--yes); }
+  .tag-no { background: var(--no-bg); color: var(--no); }
+  .tag-warn { background: var(--warn-bg); color: var(--warn); }
+  .tag-full { background: var(--yes-bg); color: var(--yes); }
+  .tag-partial { background: #e3f0fb; color: #0b5cab; }
+  .tag-miss { background: #fde8e8; color: #8b1a1a; }
+
+  .takeaways {
+    display: grid;
+    gap: 10px;
+    margin-top: 8px;
+  }
+  .takeaways li { margin-bottom: 4px; }
+  footer {
+    margin-top: 32px;
+    color: var(--muted);
+    font-size: 12px;
+  }
+  @media (max-width: 720px) {
+    .site-nav a { padding: 8px 10px; font-size: 13px; }
+    .peer-cards { grid-template-columns: 1fr; }
+    .donts { grid-template-columns: 1fr; }
+  }
+
+  /* ascend panel */
+  #panel-ascend {
+    --q-noise: #fbeded; --q-base: #eceff3; --risk: #b3382c;
+    --mono: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+    --yes: #047857; --yes-bg: #ecfdf5; --no: #5a6478; --no-bg: #eceff3;
+  }
+  #panel-ascend .block { margin-bottom: 48px; scroll-margin-top: 72px; }
+
+  #panel-ascend .block h2 {
+    font-family: "PingFang SC", sans-serif;
+    font-size: 22px; font-weight: 650; margin: 0 0 8px; letter-spacing: -0.02em;
+  }
+
+  #panel-ascend .block h2 .cnt { font-size: 13px; font-weight: 500; color: var(--muted); margin-left: 8px; }
+
+  #panel-ascend .lead,
+#panel-ascend .domain-desc { margin: 0 0 18px; color: var(--muted); font-size: 14px; }
+
+  #panel-ascend .target-line { margin: 0 0 14px; font-size: 13px; }
+
+  #panel-ascend table { width: 100%; border-collapse: collapse; font-size: 13px;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+
+  #panel-ascend th,
+#panel-ascend td { text-align: left; padding: 11px 14px; border-top: 1px solid var(--line); vertical-align: top; }
+
+  #panel-ascend th {
+    font-size: 11px; letter-spacing: .04em; text-transform: uppercase;
+    color: var(--muted); font-weight: 600; border-top: none; background: var(--panel2);
+  }
+
+  #panel-ascend td.name { font-weight: 650; white-space: nowrap; }
+
+  #panel-ascend td.name a { color: inherit; text-decoration: none; border-bottom: 1px dotted #b9c2ce; }
+
+  #panel-ascend td.name a:hover { color: var(--link); }
+
+  #panel-ascend td.num { font-family: var(--mono); font-weight: 700; white-space: nowrap; }
+
+  #panel-ascend td.num .ext-n {
+    display: block; font-family: inherit; font-size: 11px;
+    font-weight: 500; color: var(--muted);
+  }
+
+  #panel-ascend td.act { color: #3a4458; line-height: 1.55; }
+
+  #panel-ascend .axis-cell { white-space: nowrap; }
+
+  #panel-ascend .dec { white-space: nowrap; }
+
+  #panel-ascend .tag {
+    display: inline-block; padding: 3px 9px; border-radius: 6px;
+    font-size: 12px; font-weight: 650; margin: 2px 4px 2px 0; line-height: 1.4;
+  }
+
+  #panel-ascend .tag.r { background: var(--accent-soft); color: #0d4db8; }
+
+  #panel-ascend .tag.c { background: rgba(124, 58, 237, 0.12); color: #6d28d9; }
+  #panel-ascend .tag.zero { background: #eceff3; color: #4a5568; }
+
+  #panel-ascend .tag.dec-must { background: var(--q-noise); color: var(--risk); }
+
+  #panel-ascend .tag.dec-skip { background: var(--q-base); color: #4a5568; }
+
+  #panel-ascend .tag.dec-never { background: #2a303c; color: #f3f4f6; }
+
+  #panel-ascend .urls td.u { font-family: var(--mono); font-size: 12px; word-break: break-all; }
+
+  #panel-ascend .urls td.u a { color: var(--link); text-decoration: none; }
+
+  #panel-ascend .urls td.u a:hover { text-decoration: underline; }
+
+  #panel-ascend .tag-ext {
+    display: inline-block; margin-left: 7px; padding: 1px 6px; border-radius: 4px;
+    background: var(--q-base); color: #4a5568; font-family: inherit;
+    font-size: 10.5px; font-weight: 700; vertical-align: 1px;
+  }
+
+  #panel-ascend .urls td.mn { width: 30%; }
+
+  #panel-ascend .urls td.src { width: 22%; color: var(--muted); font-size: 12px; }
+
+  #panel-ascend .note-line {
+    margin: 16px 0 0; padding: 13px 16px; background: var(--panel2);
+    border: 1px solid var(--line); border-radius: 10px;
+    font-size: 12.5px; line-height: 1.6; color: #3a4458;
+  }
+
+  #panel-ascend .note-line strong { color: var(--text); }
+
+  #panel-ascend .note-line + .note-line { margin-top: 10px; }
+
+  #panel-ascend .note-line code { font-family: var(--mono); font-size: 11.5px; }
+
+  #panel-ascend footer { margin-top: 48px; color: var(--muted); font-size: 12px; }
+
+  @media (max-width: 720px) {
+
+    #panel-ascend .stats { grid-template-columns: 1fr 1fr; }
+
+    #panel-ascend .site-nav a { padding: 8px 10px; font-size: 13px; }
+
+    }
+
+
+  /* 友商同款域区块（对齐 peers.html .section） */
+  
+  #panel-ascend .section.domain {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 22px 24px 8px;
+    margin-bottom: 16px;
+    scroll-margin-top: 72px;
+  }
+
+  #panel-ascend .section.domain h2 {
+    margin: 0 0 8px;
+    font-size: 18px;
+    font-weight: 650;
+    letter-spacing: 0;
+  }
+
+  #panel-ascend .section.domain h2 .cnt {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    margin-left: 8px;
+  }
+
+  #panel-ascend .section.domain .domain-desc {
+    margin: 0 0 16px;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 22px;
+  }
+
+  #panel-ascend .domain-why {
+    margin: 0 0 16px;
+    padding: 12px 14px 12px 32px;
+    background: var(--panel2);
+    border-radius: 10px;
+    font-size: 13px;
+    color: #3a4458;
+    line-height: 1.55;
+  }
+
+  #panel-ascend .domain-why li { margin-bottom: 6px; }
+
+  #panel-ascend .domain-why li:last-child { margin-bottom: 0; }
+
+  #panel-ascend .domain-why code { font-family: var(--mono); font-size: 12px; }
+
+  #panel-ascend table.domain-table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-bottom: 16px;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    overflow: visible;
+  }
+
+  #panel-ascend .domain-table col.col-cat { width: 140px; }
+
+  #panel-ascend .domain-table col.col-page { width: auto; }
+
+  #panel-ascend .domain-table col.col-static { width: 100px; }
+
+  #panel-ascend .domain-table col.col-md { width: 88px; }
+
+  #panel-ascend .domain-table col.col-sitemap { width: 118px; }
+
+  #panel-ascend .domain-table col.col-llms { width: 118px; }
+  #panel-ascend .domain-table col.col-level { width: 232px; }
+  #panel-ascend .domain-table td.model-lv { white-space: nowrap; vertical-align: middle; }
+
+  #panel-ascend .domain-table th,
+#panel-ascend .domain-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-top: 1px solid var(--line);
+    vertical-align: top;
+  }
+
+  #panel-ascend .domain-table th {
+    font-size: 11px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    border-top: none;
+    background: var(--panel2);
+  }
+
+  #panel-ascend .domain-table td.cat {
+    font-weight: 600;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    color: #3a4458;
+    font-size: 13px;
+  }
+
+  #panel-ascend .domain-table td.path {
+    font-family: var(--mono);
+    font-size: 12px;
+    overflow-wrap: anywhere;
+  }
+
+  #panel-ascend .domain-table td.path a { color: var(--link); text-decoration: none; word-break: break-all; }
+
+  #panel-ascend .domain-table td.path a:hover { text-decoration: underline; }
+
+  #panel-ascend .domain-table .mn-sub {
+    display: block;
+    margin-top: 2px;
+    font-family: "PingFang SC", sans-serif;
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  #panel-ascend .domain-table .tag-ext {
+    display: inline-block; margin-left: 6px; padding: 1px 6px; border-radius: 4px;
+    background: var(--q-base); color: #4a5568; font-family: inherit;
+    font-size: 10.5px; font-weight: 700; vertical-align: 1px;
+  }
+
+  #panel-ascend .domain-table .nav-src {
+    display: block;
+    margin-top: 2px;
+    font-family: "PingFang SC", sans-serif;
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  #panel-ascend .domain-table .tag {
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.4;
+    white-space: nowrap;
+  }
+
+  #panel-ascend .domain-table .tag-yes { background: var(--yes-bg); color: var(--yes); }
+
+  #panel-ascend .domain-table .tag-no { background: var(--no-bg); color: var(--no); }
+
+  #panel-ascend .domain-table .tag-full { background: var(--yes-bg); color: var(--yes); }
+
+  #panel-ascend .domain-table .tag-partial { background: #e3f0fb; color: #0b5cab; }
+
+  #panel-ascend .domain-table .tag-miss { background: #fde8e8; color: #8b1a1a; }
+
+
+  #panel-ascend .hero { margin-bottom: 28px; }
+  #panel-ascend .hero h1 { font-size: 28px; }
+
+
+  .subnav {
+    position: sticky;
+    top: var(--topbar-h);
+    z-index: 40;
+    background: var(--panel);
+    border-bottom: 1px solid var(--line);
+  }
+  .subnav-inner {
+    width: min(var(--content-max), calc(100% - 2 * var(--page-gutter)));
+    margin: 0 auto;
+    padding: 0;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 4px;
+    overflow-x: auto;
+  }
+  .subnav a {
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 8px;
+    white-space: nowrap;
+  }
+  .subnav a:hover {
+    color: var(--accent);
+    background: #F5F5F5;
+  }
+  .subnav a.active {
+    color: var(--accent);
+    background: #F5F5F5;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html">昇腾社区 <span>AI 亲和原则研究</span></a>
+                    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="mintlify.html" class="active">可达性·索引分析</a>
+      <a href="citability-mintlify.html">可引用性·内容（md）分析</a>
+      <a href="citability-html-mintlify.html">可引用性·内容（html）分析</a>
+    </nav>
+  </div>
+</div>
+
+<div class="subnav" aria-label="可达性·索引 二级导航">
+  <div class="subnav-inner">
+    <a href="mintlify.html" class="active">Mintlify 分析</a>
+    <a href="nvidia.html">NVIDIA 分析</a>
+    <a href="reachability.html">Ascend 社区分析</a>
+  </div>
+</div>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Peer Analysis · Mintlify</div>
+    <h1>Mintlify 分析</h1>
+    <p class="sub" style="color:var(--muted);font-size:15px;margin:0 0 24px;line-height:1.65;">
+      Mintlify 并不是盲目追求「全站 AI 友好」，而是展现了一种「精准克制」的务实策略。
+    </p>
+  </header>
+
+<section class="section">
+    <h2>从 Mintlify 提炼的指导原则</h2>
+
+    <h3 class="sum-h3">总观点</h3>
+    <p class="domain-desc" style="margin-top:0">Mintlify 的核心侧重点并非「全站 AI 友好」，而是专注于<strong>文档闭环与精准交付</strong>——将官方愿背书的知识，提纯为 Agent 唯一可信的语料库。</p>
+    <ul class="domain-why">
+      <li><strong>策展纪律：只认文档，不认全站。</strong>AI 能力严格锁定在 <code>/docs</code> 与 <code>/api</code> 范围内，主动屏蔽新闻、博客等噪声。底层逻辑极简：导航能点到，绝不等于该成为 AI 知识源。源头严格把关，是建立用户信任最核心的防线。</li>
+      <li><strong>产出机制：自然副产物，非额外工程。</strong>AI 能力应随文档发布自然生成（如 MDX 自动同步 <code>llms.txt</code>）。核心在于将策展标准前置——先把「什么内容才配得上进文档库」想清楚，而非事后再去修补全站的兼容性。</li>
+      <li><strong>交付目标：追求精准，不贪全面。</strong>与 NVIDIA 的「处处可达」不同，我们主动收窄语料边界，坚决剥离营销话术。底层目标不是「收录了多少页」，而是确保「每一次回答都经得起对照原文的溯源查验」。</li>
+      <li><strong>落地原则：事实与叙事物理分层。</strong>基准与主页定位对齐：只有官方愿背书的客观事实，才推入深度知识层；其余叙事类内容止步于搜索层。严格遵循「分面管道 + 窄目录背书」的策略，彻底杜绝无差别抓取全站的机械堆砌。</li>
+    </ul>
+  </section>
+
+  <section class="section">
+    <h2>介绍/营销</h2>
+    <p class="domain-desc">站点总入口、用例叙事、客户证明及转化工具页。营销页做到人能看、引擎能抓就好，再进一步就是把广告包装成事实，得不偿失。</p>
+    <div class="domain-level" aria-label="本域默认模型层级">
+      <span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span>
+      <span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span>
+    </div>
+    <ul class="domain-why">
+      <li>营销页的唯一使命是打动人和促成转化，做到「人可读（D1）＋搜索引擎可发现（R1）」就已经把获客和流量的本职工作做到位了。</li>
+      <li>不继续升级到 AI 可引用的知识源（R2 / D2）是主动避险——营销内容主观、易变、说服性强，不适合拿来当作客观事实背书，否则容易制造过时甚至误导的信息。</li>
+      <li>客观产品事实交给专门的 <code>/docs</code> 处理，把「讲故事的页面」和「当事实的页面」彻底分开，既保证了营销的灵活性，又维护了知识的严肃性。</li>
+    </ul>
+    <table class="domain-table">
+      <colgroup>
+        <col class="col-cat" />
+        <col class="col-page" />
+        <col class="col-static" />
+        <col class="col-md" />
+        <col class="col-sitemap" />
+        <col class="col-llms" />
+        <col class="col-level" />
+      </colgroup>
+      <thead><tr><th>分类</th><th>页面</th><th>HTML主信息（交付 D1）</th><th>MD文件（交付 D2）</th><th>收录Sitemap（索引 R1）</th><th>收录llms.txt（索引 R2）</th><th>实测模型层级</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="cat">首页</td>
+          <td class="path"><a href="https://www.mintlify.com/" target="_blank" rel="noopener">/</a></td>
+          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.mintlify.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+        </tr>
+        <tr>
+          <td class="cat" rowspan="5">营销</td>
+          <td class="path"><a href="https://www.mintlify.com/use-cases/knowledge-base" target="_blank" rel="noopener">/use-cases/knowledge-base</a></td>
+          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.mintlify.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.mintlify.com/customers" target="_blank" rel="noopener">/customers</a></td>
+          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.mintlify.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.mintlify.com/wall-of-love" target="_blank" rel="noopener">/wall-of-love</a></td>
+          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.mintlify.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.mintlify.com/switch" target="_blank" rel="noopener">/switch</a></td>
+          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.mintlify.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.mintlify.com/score" target="_blank" rel="noopener">/score</a></td>
+          <td><span class="tag tag-full">完整</span></td>
+          <td><a href="https://www.mintlify.com/score.md" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-2 axis-c"><span class="lv-k">D2</span>MD 可托管</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+  <section class="section">
+    <h2>知识</h2>
+    <p class="domain-desc">文档、学习与支持知识库。这里才是 AI 亲和的主战场——规格、操作与可引用事实都放在这。</p>
+    <div class="domain-level" aria-label="本域默认模型层级">
+      <span class="lvl lvl-2 axis-r"><span class="lv-k">R2</span>llms 目录收录</span>
+      <span class="lvl lvl-2 axis-c"><span class="lv-k">D2</span>MD 可托管</span>
+    </div>
+    <ul class="domain-why">
+      <li>知识域的使命是让人（和 Agent）查得到、用得上：进文档面 Sitemap、写入 <code>docs/llms.txt</code>（R2），并提供平行 Markdown（D2）。</li>
+      <li>和营销页相反——这里愿意为准确性背书，所以两根轴都往上推；支持若本身是知识库，也归这一域。</li>
+      <li>例外提醒：有 MD 仍可能索引不满（如 <code>/docs/changelog</code> 实测停在 R0·D2）——那是知识面缺口，应补收录，不是「不做亲和」。</li>
+    </ul>
+    <table class="domain-table">
+      <colgroup>
+        <col class="col-cat" />
+        <col class="col-page" />
+        <col class="col-static" />
+        <col class="col-md" />
+        <col class="col-sitemap" />
+        <col class="col-llms" />
+        <col class="col-level" />
+      </colgroup>
+      <thead><tr><th>分类</th><th>页面</th><th>HTML主信息（交付 D1）</th><th>MD文件（交付 D2）</th><th>收录Sitemap（索引 R1）</th><th>收录llms.txt（索引 R2）</th><th>实测模型层级</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="cat" rowspan="12">文档</td>
+          <td class="path"><a href="https://www.mintlify.com/docs" target="_blank" rel="noopener">/docs</a></td>
+          <td><span class="tag tag-full">完整</span></td>
+          <td><a href="https://www.mintlify.com/docs.md" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
+          <td><a href="https://www.mintlify.com/docs/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site+docs</span></a></td>
+          <td><a href="https://www.mintlify.com/docs/llms.txt" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
+          <td class="model-lv"><span class="lvl lvl-2 axis-r"><span class="lv-k">R2</span>llms 目录收录</span><span class="lvl lvl-2 axis-c"><span class="lv-k">D2</span>MD 可托管</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.mintlify.com/docs/editor" target="_blank" rel="noopener">/docs/editor</a></td>
+          <td><span class="tag tag-full">完整</span></td>
+          <td><a href="https://www.mintlify.com/docs/editor.md" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
+          <td><a href="https://www.mintlify.com/docs/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site+docs</span></a></td>
+          <td><a href="https://www.mintlify.com/docs/llms.txt" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
+          <td class="model-lv"><span class="lvl lvl-2 axis-r"><span class="lv-k">R2</span>llms 目录收录</span><span class="lvl lvl-2 axis-c"><span class="lv-k">D2</span>MD 可托管</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.mintlify.com/docs/deploy/authentication-setup" target="_blank" rel="noopener">/docs/deploy/authentication-setup</a></td>
+          <td><span class="tag tag-full">完整</span></td>
+          <td><a href="https://www.mintlify.com/docs/deploy/authentication-setup.md" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
+          <td><a href="https://www.mintlify.com/docs/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site+docs</span></a></td>
+          <td><a href="https://www.mintlify.com/docs/llms.txt" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
+          <td class="model-lv"><span class="lvl lvl-2 axis-r"><span class="lv-k">R2</span>llms 目录收录</span><span class="lvl lvl-2 axis-c"><span class="lv-k">D2</span>MD 可托管</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.mintlify.com/docs/automations" target="_blank" rel="noopener">/docs/automations</a></td>
+          <td><span class="tag tag-full">完整</span></td>
+          <td><a href="https://www.mintlify.com/docs/automations.md" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
+          <td><a href="https://www.mintlify.com/docs/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site+docs</span></a></td>
+          <td><a href="https://www.mintlify.com/docs/llms.txt" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
+          <td class="model-lv"><span class="lvl lvl-2 axis-r"><span class="lv-k">R2</span>llms 目录收录</span><span class="lvl lvl-2 axis-c"><span class="lv-k">D2</span>MD 可托管</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.mintlify.com/docs/agent" target="_blank" rel="noopener">/docs/agent</a></td>
+          <td><span class="tag tag-full">完整</span></td>
+          <td><a href="https://www.mintlify.com/docs/agent.md" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
+          <td><a href="https://www.mintlify.com/docs/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site+docs</span></a></td>
+          <td><a href="https://www.mintlify.com/docs/llms.txt" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
+          <td class="model-lv"><span class="lvl lvl-2 axis-r"><span class="lv-k">R2</span>llms 目录收录</span><span class="lvl lvl-2 axis-c"><span class="lv-k">D2</span>MD 可托管</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.mintlify.com/docs/assistant" target="_blank" rel="noopener">/docs/assistant</a></td>
+          <td><span class="tag tag-full">完整</span></td>
+          <td><a href="https://www.mintlify.com/docs/assistant.md" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
+          <td><a href="https://www.mintlify.com/docs/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site+docs</span></a></td>
+          <td><a href="https://www.mintlify.com/docs/llms.txt" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
+          <td class="model-lv"><span class="lvl lvl-2 axis-r"><span class="lv-k">R2</span>llms 目录收录</span><span class="lvl lvl-2 axis-c"><span class="lv-k">D2</span>MD 可托管</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.mintlify.com/docs/automations/integrations" target="_blank" rel="noopener">/docs/automations/integrations</a></td>
+          <td><span class="tag tag-full">完整</span></td>
+          <td><a href="https://www.mintlify.com/docs/automations/integrations.md" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
+          <td><a href="https://www.mintlify.com/docs/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site+docs</span></a></td>
+          <td><a href="https://www.mintlify.com/docs/llms.txt" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
+          <td class="model-lv"><span class="lvl lvl-2 axis-r"><span class="lv-k">R2</span>llms 目录收录</span><span class="lvl lvl-2 axis-c"><span class="lv-k">D2</span>MD 可托管</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.mintlify.com/docs/ai/model-context-protocol" target="_blank" rel="noopener">/docs/ai/model-context-protocol</a></td>
+          <td><span class="tag tag-full">完整</span></td>
+          <td><a href="https://www.mintlify.com/docs/ai/model-context-protocol.md" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
+          <td><a href="https://www.mintlify.com/docs/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site+docs</span></a></td>
+          <td><a href="https://www.mintlify.com/docs/llms.txt" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
+          <td class="model-lv"><span class="lvl lvl-2 axis-r"><span class="lv-k">R2</span>llms 目录收录</span><span class="lvl lvl-2 axis-c"><span class="lv-k">D2</span>MD 可托管</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.mintlify.com/docs/api-playground/overview" target="_blank" rel="noopener">/docs/api-playground/overview</a></td>
+          <td><span class="tag tag-full">完整</span></td>
+          <td><a href="https://www.mintlify.com/docs/api-playground/overview.md" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
+          <td><a href="https://www.mintlify.com/docs/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site+docs</span></a></td>
+          <td><a href="https://www.mintlify.com/docs/llms.txt" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
+          <td class="model-lv"><span class="lvl lvl-2 axis-r"><span class="lv-k">R2</span>llms 目录收录</span><span class="lvl lvl-2 axis-c"><span class="lv-k">D2</span>MD 可托管</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.mintlify.com/docs/components" target="_blank" rel="noopener">/docs/components</a></td>
+          <td><span class="tag tag-full">完整</span></td>
+          <td><a href="https://www.mintlify.com/docs/components.md" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
+          <td><a href="https://www.mintlify.com/docs/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site+docs</span></a></td>
+          <td><a href="https://www.mintlify.com/docs/llms.txt" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
+          <td class="model-lv"><span class="lvl lvl-2 axis-r"><span class="lv-k">R2</span>llms 目录收录</span><span class="lvl lvl-2 axis-c"><span class="lv-k">D2</span>MD 可托管</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.mintlify.com/docs/api/introduction" target="_blank" rel="noopener">/docs/api/introduction</a></td>
+          <td><span class="tag tag-full">完整</span></td>
+          <td><a href="https://www.mintlify.com/docs/api/introduction.md" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
+          <td><a href="https://www.mintlify.com/docs/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site+docs</span></a></td>
+          <td><a href="https://www.mintlify.com/docs/llms.txt" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
+          <td class="model-lv"><span class="lvl lvl-2 axis-r"><span class="lv-k">R2</span>llms 目录收录</span><span class="lvl lvl-2 axis-c"><span class="lv-k">D2</span>MD 可托管</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.mintlify.com/docs/changelog" target="_blank" rel="noopener">/docs/changelog</a></td>
+          <td><span class="tag tag-full">完整</span></td>
+          <td><a href="https://www.mintlify.com/docs/changelog.md" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
+          <td><a href="https://www.mintlify.com/docs/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-warn">两边无</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-2 axis-c"><span class="lv-k">D2</span>MD 可托管</span></td>
+        </tr>
+        <tr>
+          <td class="cat">学习</td>
+          <td class="path"><a href="https://learn.mintlify.com/" target="_blank" rel="noopener">learn.mintlify.com/</a></td>
+          <td><span class="tag tag-full">完整</span></td>
+          <td><a href="https://learn.mintlify.com/index.md" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
+          <td><a href="https://learn.mintlify.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-no">不在 www</span></a></td>
+          <td><a href="https://learn.mintlify.com/llms.txt" target="_blank" rel="noopener"><span class="tag tag-yes">自有 + Optional</span></a></td>
+          <td class="model-lv"><span class="lvl lvl-2 axis-r"><span class="lv-k">R2</span>llms 目录收录</span><span class="lvl lvl-2 axis-c"><span class="lv-k">D2</span>MD 可托管</span></td>
+        </tr>
+        <tr>
+          <td class="cat">支持</td>
+          <td class="path"><span class="empty">本样本无</span></td>
+          <td><span class="tag tag-no">—</span></td>
+          <td><span class="tag tag-no">—</span></td>
+          <td><span class="tag tag-no">—</span></td>
+          <td><span class="tag tag-no">—</span></td>
+          <td class="model-lv"><span class="tag tag-no">—</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="section">
+    <h2>生态</h2>
+    <p class="domain-desc">企业 / 创业等分群与伙伴计划落地页。获客与生态招募，不当产品知识源。</p>
+    <div class="domain-level" aria-label="本域默认模型层级">
+      <span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span>
+      <span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span>
+    </div>
+    <ul class="domain-why">
+      <li>生态页做到「人可读（D1）＋搜索可发现（R1）」即可：让对的人找到计划入口，不必升级成 AI 可引用知识源。</li>
+      <li>和营销同属「不做亲和」——差别只在话术对象：营销偏品牌卖点与客户证明，生态偏「跟谁合作 / 哪类客户加入」；拆开是为了和 NVIDIA 伙伴 / 创业 / ISV 对照。</li>
+      <li>计划权益与分群话术会变、说服性强，写进 llms 容易把招募文案当成事实，故主动停在 R1·D1。</li>
+    </ul>
+    <table class="domain-table">
+      <colgroup>
+        <col class="col-cat" />
+        <col class="col-page" />
+        <col class="col-static" />
+        <col class="col-md" />
+        <col class="col-sitemap" />
+        <col class="col-llms" />
+        <col class="col-level" />
+      </colgroup>
+      <thead><tr><th>分类</th><th>页面</th><th>HTML主信息（交付 D1）</th><th>MD文件（交付 D2）</th><th>收录Sitemap（索引 R1）</th><th>收录llms.txt（索引 R2）</th><th>实测模型层级</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="cat">企业</td>
+          <td class="path"><a href="https://www.mintlify.com/enterprise" target="_blank" rel="noopener">/enterprise</a></td>
+          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.mintlify.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+        </tr>
+        <tr>
+          <td class="cat">创业</td>
+          <td class="path"><a href="https://www.mintlify.com/startups" target="_blank" rel="noopener">/startups</a></td>
+          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.mintlify.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+
+
+  <section class="section">
+    <h2>商业转化</h2>
+    <p class="domain-desc">套餐与购买决策页。给人比价下单，不给 AI 当「产品怎么用」的说明书。</p>
+    <div class="domain-level" aria-label="本域默认模型层级">
+      <span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span>
+      <span class="lvl lvl-2 axis-c"><span class="lv-k">D2</span>MD 可托管</span>
+    </div>
+    <ul class="domain-why">
+      <li>定价要给人做购买决策，所以进站点 Sitemap（R1）合理；但默认不进 llms（不上 R2）——报价易变，写进目录容易让模型拿过期价格当事实。</li>
+      <li><code>/pricing</code> 实测有平行 MD（到了 D2），这是实现例外，不改变「不做 AI 亲和」的域判定：有 MD ≠ 该进 Agent 主索引。</li>
+      <li>产品怎么用仍归 <code>/docs</code>；商业页只服务转化漏斗，策展闸门卡在 R2。</li>
+    </ul>
+    <table class="domain-table">
+      <colgroup>
+        <col class="col-cat" />
+        <col class="col-page" />
+        <col class="col-static" />
+        <col class="col-md" />
+        <col class="col-sitemap" />
+        <col class="col-llms" />
+        <col class="col-level" />
+      </colgroup>
+      <thead><tr><th>分类</th><th>页面</th><th>HTML主信息（交付 D1）</th><th>MD文件（交付 D2）</th><th>收录Sitemap（索引 R1）</th><th>收录llms.txt（索引 R2）</th><th>实测模型层级</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="cat">价格</td>
+          <td class="path"><a href="https://www.mintlify.com/pricing" target="_blank" rel="noopener">/pricing</a></td>
+          <td><span class="tag tag-full">完整</span></td>
+          <td><a href="https://www.mintlify.com/pricing.md" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
+          <td><a href="https://www.mintlify.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-2 axis-c"><span class="lv-k">D2</span>MD 可托管</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="section">
+    <h2>内容运营</h2>
+    <p class="domain-desc">博客等阅读向内容。给人看、做 SEO 就好，不当产品说明书。</p>
+    <div class="domain-level" aria-label="本域默认模型层级">
+      <span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span>
+      <span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span>
+    </div>
+    <ul class="domain-why">
+      <li>博客的本职是观点、故事与传播：人可读（D1）、进站点 Sitemap 拿流量（R1）就够。</li>
+      <li>不升级到 R2 / D2 是主动避险——时效强、口径偏传播，写进 llms 容易干扰答题；实测里博客 <code>*.md</code> 也常是 HTML 壳，不算可托管正文。</li>
+      <li>可引用的技术说明在 <code>/docs</code>；<code>docs/llms.txt</code> 只收文档站，博客不在列。</li>
+    </ul>
+    <table class="domain-table">
+      <colgroup>
+        <col class="col-cat" />
+        <col class="col-page" />
+        <col class="col-static" />
+        <col class="col-md" />
+        <col class="col-sitemap" />
+        <col class="col-llms" />
+        <col class="col-level" />
+      </colgroup>
+      <thead><tr><th>分类</th><th>页面</th><th>HTML主信息（交付 D1）</th><th>MD文件（交付 D2）</th><th>收录Sitemap（索引 R1）</th><th>收录llms.txt（索引 R2）</th><th>实测模型层级</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="cat" rowspan="4">博客</td>
+          <td class="path"><a href="https://www.mintlify.com/blog" target="_blank" rel="noopener">/blog</a></td>
+          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.mintlify.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.mintlify.com/blog/developer-documentation" target="_blank" rel="noopener">/blog/developer-documentation</a></td>
+          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.mintlify.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.mintlify.com/blog/internal-knowledge-base" target="_blank" rel="noopener">/blog/internal-knowledge-base</a></td>
+          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.mintlify.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.mintlify.com/blog/help-centers" target="_blank" rel="noopener">/blog/help-centers</a></td>
+          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.mintlify.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+  <section class="section">
+    <h2>社区运营</h2>
+    <p class="domain-desc">活动与社区 / Wiki。时效入口与 UGC，不为官方产品事实背书。</p>
+    <div class="domain-level" aria-label="本域默认模型层级">
+      <span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span>
+      <span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span>
+    </div>
+    <ul class="domain-why">
+      <li>活动偏报名与日程，社区 / Wiki 偏讨论与投稿——人能打开页面（D1）即可，不宜当作稳定知识源。</li>
+      <li>刻意停在 R0：实测 <code>/events</code> 与 <code>mintlify.wiki</code> 基本不进 www sitemap，更不会进 <code>docs/llms.txt</code>——发现通道和 Agent 目录都不覆盖。</li>
+      <li>变化快、准确性难背书；产品怎么用仍归知识域，这里不往 R1 / R2 推。</li>
+    </ul>
+    <table class="domain-table">
+      <colgroup>
+        <col class="col-cat" />
+        <col class="col-page" />
+        <col class="col-static" />
+        <col class="col-md" />
+        <col class="col-sitemap" />
+        <col class="col-llms" />
+        <col class="col-level" />
+      </colgroup>
+      <thead><tr><th>分类</th><th>页面</th><th>HTML主信息（交付 D1）</th><th>MD文件（交付 D2）</th><th>收录Sitemap（索引 R1）</th><th>收录llms.txt（索引 R2）</th><th>实测模型层级</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="cat">活动</td>
+          <td class="path"><a href="https://www.mintlify.com/events" target="_blank" rel="noopener">/events</a></td>
+          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+        </tr>
+        <tr>
+          <td class="cat">社区</td>
+          <td class="path"><a href="https://mintlify.wiki/explore" target="_blank" rel="noopener">mintlify.wiki/explore</a></td>
+          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="section">
+    <h2>公司事务</h2>
+    <p class="domain-desc">招聘与法务 / 信任页。雇主品牌与合规披露，和「产品怎么用」无关。</p>
+    <div class="domain-level" aria-label="本域默认模型层级">
+      <span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span>
+      <span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span>
+    </div>
+    <ul class="domain-why">
+      <li>招聘要给人投递、法务要人能读到条款：做到 HTML 可读（D1）是基本功；职位页进站点 Sitemap（R1）只服务 SEO / 招聘曝光。</li>
+      <li>不上 R2 / D2：AI 答题不应从招聘文案或隐私政策里拼产品事实；进 sitemap ≠ 进 Agent 知识目录。</li>
+      <li>本样本暂无法务页；有法务 / 信任页时，亲和判定同样默认停在这一档。</li>
+    </ul>
+    <table class="domain-table">
+      <colgroup>
+        <col class="col-cat" />
+        <col class="col-page" />
+        <col class="col-static" />
+        <col class="col-md" />
+        <col class="col-sitemap" />
+        <col class="col-llms" />
+        <col class="col-level" />
+      </colgroup>
+      <thead><tr><th>分类</th><th>页面</th><th>HTML主信息（交付 D1）</th><th>MD文件（交付 D2）</th><th>收录Sitemap（索引 R1）</th><th>收录llms.txt（索引 R2）</th><th>实测模型层级</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="cat">招聘</td>
+          <td class="path"><a href="https://www.mintlify.com/careers" target="_blank" rel="noopener">/careers</a></td>
+          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.mintlify.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+        </tr>
+        <tr>
+          <td class="cat">法务/信任</td>
+          <td class="path"><span class="empty">本样本无</span></td>
+          <td><span class="tag tag-no">—</span></td>
+          <td><span class="tag tag-no">—</span></td>
+          <td><span class="tag tag-no">—</span></td>
+          <td><span class="tag tag-no">—</span></td>
+          <td class="model-lv"><span class="tag tag-no">—</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+
+  <footer>实测时间：2026-07-28 · 友商：Mintlify</footer>
+
+</div>
+</body>
+</html>

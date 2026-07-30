@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Ascend 社区（md）分析 · 可引用性·内容（md）分析 · 昇腾社区 AI 亲和原则</title>
+<style>
+  :root {
+    --bg: #F5F5F5; --panel: #ffffff; --panel2: #FAFAFA; --line: #e2e8f0;
+    --text: #191919; --muted: #595959; --accent: #1476FF; --accent-soft: rgba(20, 118, 255, 0.1);
+    --link: #1476FF; --topbar-h: 56px; --content-max: 1200px; --page-gutter: clamp(16px, 2.5vw, 24px);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "PingFang SC", sans-serif;
+    background: var(--bg);
+    color: var(--text); line-height: 1.55;
+  }
+  .topbar {
+    position: sticky; top: 0; z-index: 50; height: var(--topbar-h);
+    background: var(--panel);
+    border-bottom: 1px solid var(--line);
+  }
+  .topbar-inner {
+    width: min(var(--content-max), calc(100% - 2 * var(--page-gutter)));
+    margin: 0 auto;
+    padding: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .brand {
+    font-weight: 700; font-size: 14px; letter-spacing: -0.01em;
+    color: var(--text); text-decoration: none; white-space: nowrap;
+  }
+  .brand span { color: var(--accent); }
+  .site-nav { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+  .site-nav a {
+    text-decoration: none; color: var(--muted); font-size: 14px; font-weight: 500;
+    padding: 8px 14px; border-radius: 8px; white-space: nowrap;
+  }
+  .site-nav a:hover { color: var(--accent); background: #F5F5F5; text-decoration: none; }
+  .site-nav a.active { color: var(--accent); background: #F5F5F5; font-weight: 600; }
+  .wrap {
+    width: min(var(--content-max), calc(100% - 2 * var(--page-gutter)));
+    margin: 0 auto;
+    padding: 32px 0 80px;
+  }
+  .hero { margin-bottom: 28px; }
+  .eyebrow {
+    color: var(--accent);
+    font-size: 13px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  h1 {
+    font-family: "PingFang SC", sans-serif;
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 600;
+    margin: 8px 0 12px;
+    letter-spacing: -0.02em;
+  }
+  .sub {
+    color: var(--muted);
+    font-size: 15px;
+    margin: 0 0 24px;
+    line-height: 1.65;
+  }
+  .section {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 22px 24px 8px;
+    margin-bottom: 16px;
+  }
+  .section h2 {
+    margin: 0 0 6px;
+    font-size: 18px;
+    font-weight: 650;
+  }
+  .sum-h3 {
+    margin: 24px 0 10px;
+    font-size: 14px;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+  }
+  .sum-h3:first-of-type { margin-top: 14px; }
+  .domain-desc {
+    margin: 0 0 12px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.65;
+  }
+  .domain-why {
+    margin: 0 0 16px;
+    padding: 12px 14px 12px 32px;
+    background: var(--panel2);
+    border-radius: 10px;
+    font-size: 13px;
+    color: #3a4458;
+    line-height: 1.55;
+  }
+  .domain-why li { margin-bottom: 6px; }
+  .domain-why li:last-child { margin-bottom: 0; }
+  .domain-why code {
+    font-family: "SF Mono", "Fira Code", "Cascadia Code", ui-monospace, monospace;
+    font-size: 12px;
+  }
+  .section a { color: var(--link); }
+  footer { margin-top: 48px; color: var(--muted); font-size: 12px; }
+  @media (max-width: 720px) {
+    .site-nav a { padding: 8px 10px; font-size: 13px; }
+  }
+
+  .subnav {
+    position: sticky;
+    top: var(--topbar-h);
+    z-index: 40;
+    background: var(--panel);
+    border-bottom: 1px solid var(--line);
+  }
+  .subnav-inner {
+    width: min(var(--content-max), calc(100% - 2 * var(--page-gutter)));
+    margin: 0 auto;
+    padding: 0;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 4px;
+    overflow-x: auto;
+  }
+  .subnav a {
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 8px;
+    white-space: nowrap;
+  }
+  .subnav a:hover {
+    color: var(--accent);
+    background: #F5F5F5;
+  }
+  .subnav a.active {
+    color: var(--accent);
+    background: #F5F5F5;
+    font-weight: 600;
+  }
+
+  body.modal-open { overflow: hidden; }
+  .case-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .case-card {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 22px 24px;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+    transition: border-color .15s, background .15s;
+  }
+  .case-card:hover {
+    border-color: rgba(20, 118, 255, 0.35);
+    background: rgba(20, 118, 255, 0.06);
+  }
+  .case-card .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .chip {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: var(--accent-soft);
+    color: #0d4db8;
+  }
+  .chip.alt { background: #e8eef8; color: #3a4a66; }
+  .case-card h2 {
+    margin: 0 0 8px;
+    font-size: 18px;
+    font-weight: 600;
+  }
+  .case-card p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .case-card .cta {
+    margin-top: 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #0d4db8;
+  }
+
+  /* Fullscreen modal */
+  .modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: #fff;
+    flex-direction: column;
+    overflow: auto;
+  }
+  .modal.open { display: flex; }
+  .modal-head {
+    display: contents;
+  }
+  .modal-head-bar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--line);
+    background: #fff;
+  }
+  .modal-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0;
+  }
+  .modal-actions { display: flex; gap: 8px; align-items: center; }
+  .btn {
+    border: 1px solid var(--line);
+    background: #fff;
+    border-radius: 8px;
+    padding: 7px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .btn:hover { background: var(--panel2); }
+  .btn.close {
+    background: var(--text);
+    color: #fff;
+    border-color: var(--text);
+  }
+  .btn.close:hover { background: #333; }
+  .conclude {
+    padding: 16px 20px 18px;
+    background: rgba(20, 118, 255, 0.06);
+  }
+  .conclude h3 {
+    margin: 0 0 10px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .conclude-cols {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .conclude .tag {
+    display: inline-block;
+    margin: 0 0 8px;
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .03em;
+    line-height: 1.4;
+  }
+  .conclude .tag-in {
+    background: #ecfdf5;
+    color: #047857;
+  }
+  .conclude .tag-out {
+    background: #eceff3;
+    color: #5a6478;
+  }
+  .conclude ul {
+    margin: 0;
+    padding-left: 18px;
+    color: #3a4458;
+    font-size: 13px;
+  }
+  .conclude li { margin-bottom: 4px; }
+  .conclude li:last-child { margin-bottom: 0; }
+  .conclude strong { color: var(--text); }
+  .conclude-geo {
+    margin: 12px 0 0;
+    padding-top: 10px;
+    border-top: 1px solid rgba(20, 118, 255, 0.25);
+    font-size: 13px;
+    color: #3a4458;
+  }
+
+  .modal-split {
+    flex: 1 1 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: minmax(720px, 1fr);
+    gap: 12px 16px;
+    padding: 16px 20px 20px;
+    min-height: 1000px;
+    background: #eef1f5;
+    align-items: stretch;
+  }
+  @media (max-width: 900px) {
+    .modal-split { grid-template-columns: 1fr; }
+  }
+  .pane-frame-wrap {
+    min-height: 720px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .pane-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--line);
+    font-size: 12px;
+    color: var(--muted);
+    background: #fafbfc;
+    flex: 0 0 auto;
+  }
+  .pane-label a {
+    color: var(--link);
+    text-decoration: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .pane-label a:hover { text-decoration: underline; }
+  .pane-frame {
+    flex: 1 1 auto;
+    position: relative;
+    min-height: 720px;
+    background: #fff;
+    overflow: hidden;
+  }
+  .floor-map-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--line);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    background: #fff;
+  }
+  .floor-map-legend {
+    display: flex;
+    gap: 10px;
+    font-weight: 500;
+    color: var(--muted);
+  }
+  .floor-map-legend i {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    margin-right: 4px;
+  }
+  .floor-map-legend .on { background: #1476FF; }
+  .floor-map-legend .off { background: #c5cad3; }
+  .floor-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .floor-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+    border-left: 4px solid #c5cad3;
+    background: #fff;
+    font-size: 12.5px;
+  }
+  .floor-item:last-child { border-bottom: none; }
+  .floor-item.in {
+    border-left-color: #1476FF;
+    background: rgba(20, 118, 255, 0.06);
+  }
+  .floor-item .idx {
+    flex: 0 0 auto;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #e8edf3;
+    color: #5c6578;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .floor-item.in .idx {
+    background: rgba(20, 118, 255, 0.1);
+    color: #0d4db8;
+  }
+  .floor-item .body { flex: 1 1 auto; min-width: 0; }
+  .floor-item .name {
+    font-weight: 600;
+    color: var(--text);
+    margin: 0 0 2px;
+  }
+  .floor-item .desc {
+    margin: 0;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.4;
+  }
+  .floor-item .desc.mapsto {
+    margin-top: 4px;
+    color: #1a5fb4;
+    font-weight: 500;
+  }
+  .floor-item .right-meta {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    max-width: 46%;
+  }
+  .floor-item .badge {
+    flex: 0 0 auto;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: #eef0f3;
+    color: #6a7385;
+    white-space: nowrap;
+  }
+  .floor-item.in .badge {
+    background: rgba(20, 118, 255, 0.1);
+    color: #0d4db8;
+  }
+  .pane-frame iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: #fff;
+  }
+  .pane-frame--shot {
+    overflow: auto;
+    background: #0b0c0e;
+  }
+  .pane-frame--embed {
+    overflow: hidden;
+    background: #fff;
+  }
+  .pane-shot {
+    display: block;
+    width: 100%;
+    height: auto;
+    vertical-align: top;
+  }
+  .pane-frame--embed iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: #fff;
+  }
+  .pane-embed-fallback {
+    position: absolute;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 24px;
+    background: var(--panel2);
+    color: var(--muted);
+    font-size: 14px;
+    text-align: center;
+  }
+  .pane-embed-fallback.show { display: flex; }
+  .pane-embed-fallback a { color: var(--link); font-weight: 600; }
+  .pane-frame--md {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .md-embed {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .md-embed .fb-banner {
+    flex: 0 0 auto;
+    padding: 10px 14px;
+    background: #f4f7fb;
+    border-bottom: 1px solid var(--line);
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .md-embed .fb-banner a { color: var(--link); font-weight: 600; }
+  .md-embed .fb-body {
+    flex: 1 1 auto;
+    overflow: auto;
+    padding: 16px 18px;
+    margin: 0;
+    font-family: "SF Mono", "Fira Code", "Cascadia Code", ui-monospace, monospace;
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: var(--text);
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .iframe-fallback {
+    position: absolute;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+    background: #fff;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .iframe-fallback.show { display: flex; }
+  .iframe-fallback .fb-banner {
+    flex: 0 0 auto;
+    padding: 10px 14px;
+    background: #fff8e8;
+    border-bottom: 1px solid #f0e0b8;
+    font-size: 12px;
+    color: #6a5a30;
+  }
+  .iframe-fallback .fb-banner a { color: var(--link); font-weight: 600; }
+  .iframe-fallback .fb-body {
+    flex: 1 1 auto;
+    overflow: auto;
+    padding: 16px 18px;
+    margin: 0;
+    font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: var(--text);
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .iframe-fallback.center {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 24px;
+    gap: 12px;
+    background: var(--panel2);
+  }
+  .iframe-fallback.center .fb-body { display: none; }
+  .iframe-fallback a.ext {
+    color: var(--link);
+    font-weight: 600;
+  }
+
+  .cases-block { margin-top: 40px; }
+  .cases-block > h2 {
+    margin: 0 0 8px;
+    font-size: 22px;
+    font-weight: 650;
+  }
+  .cases-block > .sub {
+    margin: 0 0 18px;
+  }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html">昇腾社区 <span>AI 亲和原则研究</span></a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="reachability.html">可达性·索引分析</a>
+      <a href="citability-mintlify.html" class="active">可引用性·内容（md）分析</a>
+      <a href="citability-html-mintlify.html">可引用性·内容（html）分析</a>
+    </nav>
+  </div>
+</div>
+
+<div class="subnav" aria-label="可引用性·内容 二级导航">
+  <div class="subnav-inner">
+    <a href="citability-mintlify.html">Mintlify（md）分析</a>
+    <a href="citability-nvidia.html">NVIDIA（md）分析</a>
+    <a href="citability-ascend.html" class="active">Ascend 社区（md）分析</a>
+  </div>
+</div>
+<div class="wrap">
+  <header class="hero">
+    <div class="eyebrow">可引用性 · 内容分析 · Ascend</div>
+    <h1>Ascend 社区（md）分析 · 可引用性·内容（md）分析</h1>
+    <p class="sub">
+      当前样本页普遍无平行 Markdown。本页给出「在 Ascend 社区做 MD」的策展建议，
+      并以拟定稿对照人读页：左侧截图，右侧为建议收录的 Markdown 参照（非线上实文件）。
+    </p>
+  </header>
+
+  <section class="section" aria-labelledby="principles-title">
+    <h2 id="principles-title">在 Ascend 社区做 MD 的建议</h2>
+    <ul class="domain-why">
+      <li><strong>准入 MD 的标准（事实与结构层）：</strong>优先覆盖知识叶子与可核对规格——开发者中心的分区目录、产品「技术规格 / 产品特性」、解决方案的「挑战 → 方案 → 亮点 → 相关产品」。条目应结论前置、可溯源到官网章节；能进开发者 <code>llms.txt</code> 的，才视为 Agent 主事实源。</li>
+      <li><strong>排除 MD 的标准（壳、转化与说服层）：</strong>社区首页 Hero、商机 / 加入社区 CTA、Logo 墙、下载按钮与权限流、筛选表格壳等锁定人读 HTML。下载中心属分发例外：给人找包，不把易变包列表固化进长期语料。</li>
+      <li><strong>楼层切片逻辑：</strong>同一 URL 只抽可解析楼层进 MD。产品页收规格不收大视觉；方案页收结构不收口号；开发者壳页收目录指针，不镜像整页运营位。</li>
+      <li><strong>先策展、再管道：</strong>Ascend 现状多是「无 MD」。改造顺序应是先定哪些页值得 D2，再铺平行文件与目录——避免把营销首页整页镜像成 MD。对照见可达性侧 <a href="reachability.html">Ascend 社区分析</a>。</li>
+    </ul>
+  </section>
+
+  <section class="cases-block" id="cases" aria-labelledby="cases-title">
+    <h2 id="cases-title">案例（建议 MD 参照）</h2>
+    <p class="sub">左侧为人读页截图；右侧为拟定 Markdown（标注「建议稿」）。点击打开全屏对比。</p>
+    <div class="case-grid">
+
+    <button type="button" class="case-card" data-case="developer" aria-haspopup="dialog">
+      <div class="meta">
+        <span class="chip">知识</span>
+        <span class="chip alt">开发者入口</span>
+      </div>
+      <h2>/developer</h2>
+      <p>
+        建议 MD 收：技术热点 / 开发资源 / 学习成长 / 互动 / 计划 / 支持等目录指针。
+        不收：运营大视觉与站壳。<strong>原因：</strong>知识域壳页应给 Agent 可下钻的入口结构。
+      </p>
+      <div class="cta">打开全屏对比 →</div>
+    </button>
+
+    <button type="button" class="case-card" data-case="cluster" aria-haspopup="dialog">
+      <div class="meta">
+        <span class="chip">市场营销</span>
+        <span class="chip alt">产品·集群</span>
+      </div>
+      <h2>/hardware/cluster</h2>
+      <p>
+        建议 MD 收：产品特性、技术规格、场景名与支持入口。
+        不收：Hero / CTA / Logo 墙。<strong>原因：</strong>规格可背书；转化壳给人操作。
+      </p>
+      <div class="cta">打开全屏对比 →</div>
+    </button>
+
+    <button type="button" class="case-card" data-case="large-model" aria-haspopup="dialog">
+      <div class="meta">
+        <span class="chip">市场营销</span>
+        <span class="chip alt">解决方案</span>
+      </div>
+      <h2>/industries/solutions/large-model</h2>
+      <p>
+        建议 MD 收：业务挑战、解决方案、方案亮点、相关产品。
+        不收：纯口号与转化条。<strong>原因：</strong>方案结构可引用；情感打动留人读。
+      </p>
+      <div class="cta">打开全屏对比 →</div>
+    </button>
+
+    <button type="button" class="case-card" data-case="home" aria-haspopup="dialog">
+      <div class="meta">
+        <span class="chip">市场营销</span>
+        <span class="chip alt">社区首页</span>
+      </div>
+      <h2>/zh</h2>
+      <p>
+        建议 MD 仅作枢纽目录指针（若必须有）。
+        不收：整页营销叙事与转化楼层。<strong>原因：</strong>首页不当知识源；事实落到叶子页。
+      </p>
+      <div class="cta">打开全屏对比 →</div>
+    </button>
+
+    <button type="button" class="case-card" data-case="download" aria-haspopup="dialog">
+      <div class="meta">
+        <span class="chip">知识</span>
+        <span class="chip alt">分发例外</span>
+      </div>
+      <h2>/developer/download</h2>
+      <p>
+        建议默认不建知识 MD；至多极薄入口说明。
+        不收：包列表、下载按钮、筛选壳。<strong>原因：</strong>分发易变，规格应放文档叶子。
+      </p>
+      <div class="cta">打开全屏对比 →</div>
+    </button>
+
+    </div>
+  </section>
+
+  <footer>昇腾社区 AI 亲和原则研究</footer>
+</div>
+
+<div class="modal" id="case-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal-head">
+    <div class="modal-head-bar">
+      <h2 class="modal-title" id="modal-title"></h2>
+      <div class="modal-actions">
+        <a class="btn" id="btn-left" href="#" target="_blank" rel="noopener">打开左页</a>
+        <a class="btn" id="btn-right" href="#" target="_blank" rel="noopener">打开建议 MD</a>
+        <button type="button" class="btn close" id="close-modal">关闭</button>
+      </div>
+    </div>
+    <div class="conclude" id="conclude"></div>
+  </div>
+
+  <div class="modal-split">
+    <div class="pane-frame-wrap">
+      <div class="pane-label">
+        <span>左侧 · 人读 HTML（截图）</span>
+        <a id="label-left" href="#" target="_blank" rel="noopener"></a>
+      </div>
+      <div class="pane-frame pane-frame--shot" id="pane-left">
+        <img id="shot-left" class="pane-shot" alt="人读页截图" />
+      </div>
+    </div>
+    <div class="pane-frame-wrap">
+      <div class="pane-label">
+        <span>右侧 · 建议 Markdown（拟定稿）</span>
+        <a id="label-right" href="#" target="_blank" rel="noopener"></a>
+      </div>
+      <div class="pane-frame pane-frame--md">
+        <div class="md-embed" id="md-embed">
+          <div class="fb-banner">
+            内嵌为建议稿参照（非线上实文件）：
+            <a id="md-source-link" href="#" target="_blank" rel="noopener"></a>
+          </div>
+          <pre class="fb-body" id="md-mirror">加载中…</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const CASES = {
+    developer: {
+      title: '/developer · 开发者入口 vs 建议 MD',
+      leftUrl: 'https://www.hiascend.com/developer',
+      leftLabel: 'hiascend.com/developer',
+      leftShot: 'assets/cases-ascend/developer.png?v=1',
+      rightUrl: 'assets/cases-ascend/developer.proposed.md',
+      rightLabel: 'developer.proposed.md',
+      rightMdLocal: 'assets/cases-ascend/developer.proposed.md',
+      conclude: `
+        <h3>对比结论</h3>
+        <div class="conclude-cols">
+          <div>
+            <span class="tag tag-in">建议收录进 Markdown</span>
+            <ul>
+              <li>六大分区目录：热点 / 资源 / 学习 / 互动 / 计划 / 支持</li>
+              <li>指向文档与下载等可下钻链接</li>
+            </ul>
+          </div>
+          <div>
+            <span class="tag tag-out">建议不收录</span>
+            <ul>
+              <li>站壳与运营大视觉——<strong>原因：给人浏览，不背书为事实</strong></li>
+              <li>活动海报类运营位——<strong>原因：易变，不宜进长期语料</strong></li>
+            </ul>
+          </div>
+        </div>
+        <p class="conclude-geo"><strong>GEO 启示：</strong>知识域壳页先做「目录型 MD + llms」，再补叶子文档；现状无 MD，这是优先改造点。</p>
+      `,
+    },
+    cluster: {
+      title: '/hardware/cluster · 产品页 vs 建议 MD',
+      leftUrl: 'https://www.hiascend.com/hardware/cluster',
+      leftLabel: 'hiascend.com/hardware/cluster',
+      leftShot: 'assets/cases-ascend/cluster.png?v=1',
+      rightUrl: 'assets/cases-ascend/cluster.proposed.md',
+      rightLabel: 'cluster.proposed.md',
+      rightMdLocal: 'assets/cases-ascend/cluster.proposed.md',
+      conclude: `
+        <h3>对比结论</h3>
+        <div class="conclude-cols">
+          <div>
+            <span class="tag tag-in">建议收录进 Markdown</span>
+            <ul>
+              <li>产品特性（可核对条目）</li>
+              <li>技术规格表要点</li>
+              <li>场景名 + 开发支持入口</li>
+            </ul>
+          </div>
+          <div>
+            <span class="tag tag-out">建议不收录</span>
+            <ul>
+              <li>Hero / Start CTA——<strong>原因：转化给人点</strong></li>
+              <li>营销口号与 Logo 墙——<strong>原因：说服层，易过期</strong></li>
+            </ul>
+          </div>
+        </div>
+        <p class="conclude-geo"><strong>GEO 启示：</strong>营销域产品页可以有 MD，但只切规格与特性楼层；不要整页镜像。</p>
+      `,
+    },
+    'large-model': {
+      title: '/industries/solutions/large-model · 方案页 vs 建议 MD',
+      leftUrl: 'https://www.hiascend.com/industries/solutions/large-model',
+      leftLabel: 'hiascend.com/.../large-model',
+      leftShot: 'assets/cases-ascend/large-model.png?v=1',
+      rightUrl: 'assets/cases-ascend/large-model.proposed.md',
+      rightLabel: 'large-model.proposed.md',
+      rightMdLocal: 'assets/cases-ascend/large-model.proposed.md',
+      conclude: `
+        <h3>对比结论</h3>
+        <div class="conclude-cols">
+          <div>
+            <span class="tag tag-in">建议收录进 Markdown</span>
+            <ul>
+              <li>业务挑战（MoE 推理要点）</li>
+              <li>解决方案结构</li>
+              <li>方案亮点（优先带口径的句子）与相关产品</li>
+            </ul>
+          </div>
+          <div>
+            <span class="tag tag-out">建议不收录</span>
+            <ul>
+              <li>纯形容词口号——<strong>原因：不可核对</strong></li>
+              <li>转化条与站壳——<strong>原因：给人操作</strong></li>
+            </ul>
+          </div>
+        </div>
+        <p class="conclude-geo"><strong>GEO 启示：</strong>方案页按「挑战→方案→亮点→产品」四段进 MD，便于 Agent 引用结构。</p>
+      `,
+    },
+    home: {
+      title: '/zh · 社区首页 vs 建议 MD（枢纽目录）',
+      leftUrl: 'https://www.hiascend.com/zh',
+      leftLabel: 'hiascend.com/zh',
+      leftShot: 'assets/cases-ascend/home.png?v=1',
+      rightUrl: 'assets/cases-ascend/home.proposed.md',
+      rightLabel: 'home.proposed.md',
+      rightMdLocal: 'assets/cases-ascend/home.proposed.md',
+      conclude: `
+        <h3>对比结论</h3>
+        <div class="conclude-cols">
+          <div>
+            <span class="tag tag-in">建议收录进 Markdown（若必须）</span>
+            <ul>
+              <li>仅分区指针：硬件 / 开发者 / 方案等</li>
+            </ul>
+          </div>
+          <div>
+            <span class="tag tag-out">建议不收录</span>
+            <ul>
+              <li>Hero 与品牌长文——<strong>原因：营销叙事，不当知识源</strong></li>
+              <li>商机 / 加入社区转化楼层——<strong>原因：打动与转化</strong></li>
+            </ul>
+          </div>
+        </div>
+        <p class="conclude-geo"><strong>GEO 启示：</strong>首页默认不做整页 MD；Agent 目录应指向知识叶子，而不是社区大门。</p>
+      `,
+    },
+    download: {
+      title: '/developer/download · 下载中心 vs 建议（默认不建）',
+      leftUrl: 'https://www.hiascend.com/developer/download',
+      leftLabel: 'hiascend.com/developer/download',
+      leftShot: 'assets/cases-ascend/download.png?v=1',
+      rightUrl: 'assets/cases-ascend/download.proposed.md',
+      rightLabel: 'download.proposed.md',
+      rightMdLocal: 'assets/cases-ascend/download.proposed.md',
+      conclude: `
+        <h3>对比结论</h3>
+        <div class="conclude-cols">
+          <div>
+            <span class="tag tag-in">建议收录进 Markdown</span>
+            <ul>
+              <li>默认：无（不建知识 MD）</li>
+              <li>可选：极薄入口说明 + 指向文档「获取软件」章节</li>
+            </ul>
+          </div>
+          <div>
+            <span class="tag tag-out">建议不收录</span>
+            <ul>
+              <li>包列表与版本长表——<strong>原因：强时效，易过期</strong></li>
+              <li>下载按钮 / 登录流 / 筛选壳——<strong>原因：分发交互</strong></li>
+            </ul>
+          </div>
+        </div>
+        <p class="conclude-geo"><strong>GEO 启示：</strong>分发例外与知识叶子分开——下载给人，规格进文档 MD + llms。</p>
+      `,
+    },
+  };
+
+  const modal = document.getElementById('case-modal');
+  const closeBtn = document.getElementById('close-modal');
+  const concludeEl = document.getElementById('conclude');
+  const titleEl = document.getElementById('modal-title');
+  const btnLeft = document.getElementById('btn-left');
+  const btnRight = document.getElementById('btn-right');
+  const labelLeft = document.getElementById('label-left');
+  const labelRight = document.getElementById('label-right');
+  const shotLeft = document.getElementById('shot-left');
+  const mdSourceLink = document.getElementById('md-source-link');
+  const mdMirror = document.getElementById('md-mirror');
+  let mdLoadToken = 0;
+
+  async function loadRightMd(c) {
+    const token = ++mdLoadToken;
+    mdSourceLink.href = c.rightUrl || '#';
+    mdSourceLink.textContent = c.rightLabel || c.rightUrl || '(建议稿)';
+    mdMirror.textContent = '加载中…';
+    try {
+      const res = await fetch(c.rightMdLocal || c.rightUrl);
+      if (!res.ok) throw new Error(String(res.status));
+      const text = await res.text();
+      if (token !== mdLoadToken) return;
+      mdMirror.textContent = text;
+    } catch (_) {
+      if (token !== mdLoadToken) return;
+      mdMirror.textContent = '无法加载建议稿。';
+    }
+  }
+
+  function openModal(key) {
+    const c = CASES[key];
+    if (!c) return;
+    titleEl.textContent = c.title;
+    concludeEl.innerHTML = c.conclude;
+    btnLeft.href = c.leftUrl;
+    btnRight.href = c.rightUrl || '#';
+    labelLeft.href = c.leftUrl;
+    labelLeft.textContent = c.leftLabel;
+    labelRight.href = c.rightUrl || '#';
+    labelRight.textContent = c.rightLabel;
+    shotLeft.src = c.leftShot || '';
+    shotLeft.alt = (c.leftLabel || '人读页') + ' 截图';
+    loadRightMd(c);
+    modal.classList.add('open');
+    document.body.classList.add('modal-open');
+  }
+
+  function closeModal() {
+    modal.classList.remove('open');
+    document.body.classList.remove('modal-open');
+    shotLeft.removeAttribute('src');
+    mdLoadToken += 1;
+    mdMirror.textContent = '';
+  }
+
+  document.querySelectorAll('[data-case]').forEach((btn) => {
+    btn.addEventListener('click', () => openModal(btn.dataset.case));
+  });
+  closeBtn.addEventListener('click', closeModal);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+  });
+</script>
+</body>
+</html>

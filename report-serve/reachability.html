@@ -1,0 +1,1778 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Ascend 社区分析 · 昇腾社区 AI 亲和原则</title>
+<style>
+  :root {
+    --bg: #F5F5F5;
+    --panel: #ffffff;
+    --panel2: #FAFAFA;
+    --line: #e2e8f0;
+    --text: #191919;
+    --muted: #595959;
+    --accent: #1476FF;
+    --accent-soft: rgba(20, 118, 255, 0.1);
+    --link: #1476FF;
+    --topbar-h: 56px;
+    --yes: #047857;
+    --yes-bg: #ecfdf5;
+    --no: #5a6478;
+    --no-bg: #eceff3;
+    --warn: #7a5a00;
+    --warn-bg: #f8efd0;
+    --content-max: 1200px;
+    --mono: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+    --page-gutter: clamp(16px, 2.5vw, 24px);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "PingFang SC", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.55;
+  }
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    height: var(--topbar-h);
+    background: var(--panel);
+    border-bottom: 1px solid var(--line);
+  }
+  .topbar-inner {
+    width: min(var(--content-max), calc(100% - 2 * var(--page-gutter)));
+    margin: 0 auto;
+    padding: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .brand {
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .brand span { color: var(--accent); }
+  .site-nav { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+  .site-nav a {
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 14px;
+    border-radius: 8px;
+  }
+  .site-nav a:hover { color: var(--accent); background: #F5F5F5; text-decoration: none; }
+  .site-nav a.active {
+    color: var(--accent);
+    background: #F5F5F5;
+    font-weight: 600;
+  }
+  .wrap {
+    width: min(var(--content-max), calc(100% - 2 * var(--page-gutter)));
+    margin: 0 auto;
+    padding: 32px 0 80px;
+  }
+  header { margin-bottom: 28px; }
+  .eyebrow {
+    color: var(--accent);
+    font-size: 13px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  h1 {
+    font-family: "PingFang SC", sans-serif;
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 600;
+    margin: 8px 0 12px;
+    letter-spacing: -0.02em;
+  }
+  .sub { color: var(--muted); max-width: none; font-size: 15px; }
+  .sub a { color: var(--link); }
+
+  .peer-cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin: 20px 0 24px;
+  }
+  a.peer-card {
+    text-decoration: none;
+    color: inherit;
+  }
+  a.peer-card:hover { text-decoration: none; }
+  .peer-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    width: 100%;
+    text-align: left;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 16px 18px;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+    transition: border-color .15s, background .15s, box-shadow .15s;
+  }
+  .peer-card:hover {
+    border-color: rgba(20, 118, 255, 0.35);
+    background: rgba(20, 118, 255, 0.06);
+  }
+  .peer-card.active {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    box-shadow: inset 0 0 0 1px var(--accent);
+  }
+  .peer-card .logo {
+    display: flex;
+    align-items: center;
+    height: 28px;
+  }
+  .peer-card .logo img {
+    display: block;
+    max-height: 28px;
+    width: auto;
+    max-width: 120px;
+    object-fit: contain;
+  }
+  .peer-card .logo img.logo-icon {
+    width: 28px;
+    height: 28px;
+    max-width: 28px;
+  }
+  .peer-card .name {
+    font-size: 16px;
+    font-weight: 650;
+    margin: 0 0 4px;
+  }
+  .peer-card .desc {
+    margin: 0;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.45;
+  }
+  .peer-panel[hidden] { display: none; }
+
+  .domain-table td > a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .domain-table td > a:hover .tag {
+    outline: 1px solid currentColor;
+    outline-offset: 1px;
+  }
+  #panel-ascend .domain-table td > a {
+    color: inherit;
+    text-decoration: none;
+  }
+  #panel-ascend .domain-table td > a:hover .tag {
+    outline: 1px solid currentColor;
+    outline-offset: 1px;
+  }
+
+
+  .note {
+    background: rgba(20, 118, 255, 0.06);
+    border: 1px solid rgba(20, 118, 255, 0.25);
+    border-radius: 12px;
+    padding: 14px 18px;
+    font-size: 13px;
+    color: #3a4458;
+    margin-bottom: 28px;
+  }
+  .note strong { color: var(--text); }
+
+  .section {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 22px 24px 8px;
+    margin-bottom: 16px;
+  }
+  .section h2 {
+    margin: 0 0 6px;
+    font-size: 18px;
+    font-weight: 650;
+  }
+  .section .hint {
+    margin: 0 0 16px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  .section .domain-level {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 12px;
+  }
+  .section .domain-level .lvl {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1;
+    box-sizing: border-box;
+    border: 1px solid transparent;
+    white-space: nowrap;
+  }
+  .section .domain-level .lv-k {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 700;
+    color: inherit;
+  }
+  .section .domain-desc {
+    margin: 0 0 12px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .domain-why {
+    margin: 0 0 16px;
+    padding: 12px 14px 12px 32px;
+    background: var(--panel2);
+    border-radius: 10px;
+    font-size: 13px;
+    color: #3a4458;
+    line-height: 1.55;
+  }
+  .domain-why li { margin-bottom: 6px; }
+  .domain-why li:last-child { margin-bottom: 0; }
+  .domain-why code,
+  .principle code,
+  .steps code,
+  .practice-table code {
+    font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+    font-size: 12px;
+  }
+
+  .sum-h3 {
+    margin: 24px 0 10px;
+    font-size: 14px;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+  }
+  .principle {
+    margin: 4px 0 8px;
+    padding: 16px 18px;
+    background: var(--accent-soft);
+    border-left: 3px solid var(--accent);
+    border-radius: 12px;
+  }
+  .principle .q {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 650;
+    line-height: 1.5;
+  }
+  .principle .a {
+    margin: 8px 0 0;
+    font-size: 13px;
+    color: #3a4458;
+  }
+  .coord {
+    display: inline-block;
+    padding: 1px 7px;
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    background: var(--panel2);
+    font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .coord .r { color: var(--yes); }
+  .coord .c { color: #6d28d9; }
+  .coord .sep { color: #c3cbd6; margin: 0 3px; }
+  .caveat {
+    margin: 0 0 4px;
+    padding: 14px 16px;
+    background: #fbf8f1;
+    border: 1px solid #f0e6d2;
+    border-radius: 10px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #3a4458;
+  }
+  .caveat strong { color: var(--text); }
+  .caveat code {
+    font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+    font-size: 12px;
+  }
+  .practice-table td.lv { width: 108px; }
+  .practice-table th:first-child,
+  .practice-table td:first-child { width: 26%; }
+  .steps {
+    counter-reset: step;
+    list-style: none;
+    margin: 0 0 4px;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+  }
+  .steps li {
+    counter-increment: step;
+    position: relative;
+    padding: 12px 14px 12px 44px;
+    background: var(--panel2);
+    border-radius: 10px;
+    font-size: 13px;
+    color: #3a4458;
+  }
+  .steps li::before {
+    content: counter(step);
+    position: absolute;
+    left: 14px;
+    top: 13px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .steps strong { color: var(--text); }
+  .donts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin: 0 0 4px;
+    padding: 0;
+    list-style: none;
+  }
+  .donts li {
+    padding: 12px 14px;
+    background: #fbf8f1;
+    border: 1px solid #f0e6d2;
+    border-radius: 10px;
+    font-size: 13px;
+    color: #3a4458;
+  }
+  .donts strong {
+    display: block;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+  td.cat {
+    font-weight: 600;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    color: #3a4458;
+  }
+  .empty-row td { color: var(--muted); }
+  .empty { color: var(--muted); }
+
+  table.domain-table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+  .domain-table col.col-cat { width: 140px; }
+  .domain-table col.col-page { width: auto; }
+  .domain-table col.col-static { width: 100px; }
+  .domain-table col.col-md { width: 88px; }
+  .domain-table col.col-sitemap { width: 118px; }
+  .domain-table col.col-llms { width: 118px; }
+
+  .domain-table col.col-level { width: 232px; }
+  .domain-table td.model-lv {
+    white-space: nowrap;
+    vertical-align: middle;
+  }
+  .domain-table td.model-lv .lvl {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1;
+    box-sizing: border-box;
+    border: 1px solid transparent;
+    margin: 0 4px 0 0;
+    white-space: nowrap;
+  }
+  .domain-table td.model-lv .lvl:last-child { margin-right: 0; }
+  .domain-table td.model-lv .lv-k {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 700;
+    color: inherit;
+  }
+  /* 索引轴：软 → 实（对齐首页 axis-card） */
+  .domain-table td.model-lv .lvl.axis-r.lvl-0,
+  .domain-table td.model-lv .lvl.axis-c.lvl-0,
+  .section .domain-level .lvl.axis-r.lvl-0,
+  .section .domain-level .lvl.axis-c.lvl-0 {
+    background: #eceff3;
+    color: #4a5568;
+    border-color: #d5dae1;
+  }
+  .domain-table td.model-lv .lvl.axis-r.lvl-1,
+  .section .domain-level .lvl.axis-r.lvl-1 {
+    background: #EEF4FF;
+    color: #1476FF;
+    border-color: #C9DCFF;
+  }
+  .domain-table td.model-lv .lvl.axis-r.lvl-2,
+  .section .domain-level .lvl.axis-r.lvl-2 {
+    background: #1476FF;
+    color: #fff;
+    border-color: #1476FF;
+  }
+  /* 交付轴：软 → 实（对齐首页 axis-card.cite） */
+  .domain-table td.model-lv .lvl.axis-c.lvl-1,
+  .section .domain-level .lvl.axis-c.lvl-1 {
+    background: #F3EBFF;
+    color: #6D28D9;
+    border-color: #DCC9F7;
+  }
+  .domain-table td.model-lv .lvl.axis-c.lvl-2,
+  .section .domain-level .lvl.axis-c.lvl-2 {
+    background: #6D28D9;
+    color: #fff;
+    border-color: #6D28D9;
+  }
+  .domain-table th,
+  .domain-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-top: 1px solid var(--line);
+    vertical-align: top;
+  }
+  .domain-table th {
+    font-size: 11px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    border-top: none;
+    background: var(--panel2);
+  }
+  .domain-table td.path {
+    overflow-wrap: anywhere;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-top: 1px solid var(--line);
+    vertical-align: top;
+  }
+  th {
+    font-size: 11px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    border-top: none;
+    background: var(--panel2);
+  }
+  td a {
+    color: var(--link);
+    text-decoration: none;
+    word-break: break-all;
+  }
+  td a:hover { text-decoration: underline; }
+  .path { font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace; font-size: 12px; }
+  .nav-src { margin-top: 2px; font-family: "PingFang SC", sans-serif; font-size: 11px; color: var(--muted); font-weight: 500; }
+
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  a.tag {
+    text-decoration: none;
+    cursor: pointer;
+  }
+  a.tag:hover {
+    filter: brightness(0.92);
+    text-decoration: underline;
+  }
+  .tag-yes { background: var(--yes-bg); color: var(--yes); }
+  .tag-no { background: var(--no-bg); color: var(--no); }
+  .tag-warn { background: var(--warn-bg); color: var(--warn); }
+  .tag-full { background: var(--yes-bg); color: var(--yes); }
+  .tag-partial { background: #e3f0fb; color: #0b5cab; }
+  .tag-miss { background: #fde8e8; color: #8b1a1a; }
+
+  .takeaways {
+    display: grid;
+    gap: 10px;
+    margin-top: 8px;
+  }
+  .takeaways li { margin-bottom: 4px; }
+  footer {
+    margin-top: 32px;
+    color: var(--muted);
+    font-size: 12px;
+  }
+  @media (max-width: 720px) {
+    .site-nav a { padding: 8px 10px; font-size: 13px; }
+    .peer-cards { grid-template-columns: 1fr; }
+    .donts { grid-template-columns: 1fr; }
+  }
+
+  /* ascend panel */
+  #panel-ascend {
+    --q-noise: #fbeded; --q-base: #eceff3; --risk: #b3382c;
+    --mono: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+    --yes: #047857; --yes-bg: #ecfdf5; --no: #5a6478; --no-bg: #eceff3;
+  }
+  #panel-ascend .block { margin-bottom: 48px; scroll-margin-top: 72px; }
+
+  #panel-ascend .block h2 {
+    font-family: "PingFang SC", sans-serif;
+    font-size: 22px; font-weight: 650; margin: 0 0 8px; letter-spacing: -0.02em;
+  }
+
+  #panel-ascend .block h2 .cnt { font-size: 13px; font-weight: 500; color: var(--muted); margin-left: 8px; }
+
+  #panel-ascend .lead,
+#panel-ascend .domain-desc { margin: 0 0 18px; color: var(--muted); font-size: 14px; }
+
+  #panel-ascend .target-line { margin: 0 0 14px; font-size: 13px; }
+
+  #panel-ascend table { width: 100%; border-collapse: collapse; font-size: 13px;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+
+  #panel-ascend th,
+#panel-ascend td { text-align: left; padding: 11px 14px; border-top: 1px solid var(--line); vertical-align: top; }
+
+  #panel-ascend th {
+    font-size: 11px; letter-spacing: .04em; text-transform: uppercase;
+    color: var(--muted); font-weight: 600; border-top: none; background: var(--panel2);
+  }
+
+  #panel-ascend td.name { font-weight: 650; white-space: nowrap; }
+
+  #panel-ascend td.name a { color: inherit; text-decoration: none; border-bottom: 1px dotted #b9c2ce; }
+
+  #panel-ascend td.name a:hover { color: var(--link); }
+
+  #panel-ascend td.num { font-family: var(--mono); font-weight: 700; white-space: nowrap; }
+
+  #panel-ascend td.num .ext-n {
+    display: block; font-family: inherit; font-size: 11px;
+    font-weight: 500; color: var(--muted);
+  }
+
+  #panel-ascend td.act { color: #3a4458; line-height: 1.55; }
+
+  #panel-ascend .axis-cell { white-space: nowrap; }
+
+  #panel-ascend .dec { white-space: nowrap; }
+
+  #panel-ascend .tag {
+    display: inline-block; padding: 3px 9px; border-radius: 6px;
+    font-size: 12px; font-weight: 650; margin: 2px 4px 2px 0; line-height: 1.4;
+  }
+
+  #panel-ascend .tag.r { background: var(--accent-soft); color: #0d4db8; }
+
+  #panel-ascend .tag.c { background: rgba(124, 58, 237, 0.12); color: #6d28d9; }
+  #panel-ascend .tag.zero { background: #eceff3; color: #4a5568; }
+
+  #panel-ascend .tag.dec-must { background: var(--q-noise); color: var(--risk); }
+
+  #panel-ascend .tag.dec-skip { background: var(--q-base); color: #4a5568; }
+
+  #panel-ascend .tag.dec-never { background: #2a303c; color: #f3f4f6; }
+
+  #panel-ascend .urls td.u { font-family: var(--mono); font-size: 12px; word-break: break-all; }
+
+  #panel-ascend .urls td.u a { color: var(--link); text-decoration: none; }
+
+  #panel-ascend .urls td.u a:hover { text-decoration: underline; }
+
+
+  #panel-ascend .section .domain-level {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 14px;
+  }
+  #panel-ascend .domain-level .dl-label {
+    font-size: 11px;
+    font-weight: 650;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+    margin-right: 2px;
+  }
+  #panel-ascend .curate {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 9px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+  }
+  #panel-ascend .curate-know {
+    background: rgba(20, 118, 255, 0.12);
+    color: #0d4db8;
+    border: 1px solid rgba(20, 118, 255, 0.28);
+  }
+  #panel-ascend .curate-dist {
+    background: var(--q-base);
+    color: #4a5568;
+    border: 1px solid var(--line);
+  }
+  #panel-ascend .curate-out {
+    background: #2a303c;
+    color: #f3f4f6;
+    border: 1px solid #2a303c;
+  }
+  #panel-ascend .domain-table .curate-ex {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 10.5px;
+    font-weight: 700;
+    vertical-align: 1px;
+    white-space: nowrap;
+  }
+  #panel-ascend .domain-table .curate-ex.shell {
+    background: rgba(124, 58, 237, 0.1);
+    color: #6d28d9;
+  }
+  #panel-ascend .domain-table .curate-ex.dist {
+    background: var(--q-base);
+    color: #4a5568;
+  }
+  #panel-ascend .domain-table .curate-ex.leaf {
+    background: rgba(20, 118, 255, 0.1);
+    color: #0d4db8;
+  }
+
+  #panel-ascend .tag-ext {
+    display: inline-block; margin-left: 7px; padding: 1px 6px; border-radius: 4px;
+    background: var(--q-base); color: #4a5568; font-family: inherit;
+    font-size: 10.5px; font-weight: 700; vertical-align: 1px;
+  }
+
+  #panel-ascend .urls td.mn { width: 30%; }
+
+  #panel-ascend .urls td.src { width: 22%; color: var(--muted); font-size: 12px; }
+
+  #panel-ascend .note-line {
+    margin: 16px 0 0; padding: 13px 16px; background: var(--panel2);
+    border: 1px solid var(--line); border-radius: 10px;
+    font-size: 12.5px; line-height: 1.6; color: #3a4458;
+  }
+
+  #panel-ascend .note-line strong { color: var(--text); }
+
+  #panel-ascend .note-line + .note-line { margin-top: 10px; }
+
+  #panel-ascend .note-line code { font-family: var(--mono); font-size: 11.5px; }
+
+  #panel-ascend footer { margin-top: 48px; color: var(--muted); font-size: 12px; }
+
+  @media (max-width: 720px) {
+
+    #panel-ascend .stats { grid-template-columns: 1fr 1fr; }
+
+    #panel-ascend .site-nav a { padding: 8px 10px; font-size: 13px; }
+
+    }
+
+
+  /* 友商同款域区块（对齐 peers.html .section） */
+  
+  #panel-ascend .section.domain {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 22px 24px 8px;
+    margin-bottom: 16px;
+    scroll-margin-top: 72px;
+  }
+
+  #panel-ascend .section.domain h2 {
+    margin: 0 0 8px;
+    font-size: 18px;
+    font-weight: 650;
+    letter-spacing: 0;
+  }
+
+  #panel-ascend .section.domain h2 .cnt {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    margin-left: 8px;
+  }
+
+  #panel-ascend .section.domain .domain-desc {
+    margin: 0 0 16px;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 22px;
+  }
+
+  #panel-ascend .domain-why {
+    margin: 0 0 16px;
+    padding: 12px 14px 12px 32px;
+    background: var(--panel2);
+    border-radius: 10px;
+    font-size: 13px;
+    color: #3a4458;
+    line-height: 1.55;
+  }
+
+  #panel-ascend .domain-why li { margin-bottom: 6px; }
+
+  #panel-ascend .domain-why li:last-child { margin-bottom: 0; }
+
+  #panel-ascend .domain-why code { font-family: var(--mono); font-size: 12px; }
+
+  #panel-ascend table.domain-table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-bottom: 16px;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    overflow: visible;
+  }
+
+  #panel-ascend .domain-table col.col-cat { width: 140px; }
+
+  #panel-ascend .domain-table col.col-page { width: auto; }
+
+  #panel-ascend .domain-table col.col-static { width: 100px; }
+
+  #panel-ascend .domain-table col.col-md { width: 88px; }
+
+  #panel-ascend .domain-table col.col-sitemap { width: 118px; }
+
+  #panel-ascend .domain-table col.col-llms { width: 118px; }
+  #panel-ascend .domain-table col.col-level { width: 232px; }
+  #panel-ascend .domain-table td.model-lv { white-space: nowrap; vertical-align: middle; }
+
+  #panel-ascend .domain-table th,
+#panel-ascend .domain-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-top: 1px solid var(--line);
+    vertical-align: top;
+  }
+
+  #panel-ascend .domain-table th {
+    font-size: 11px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    border-top: none;
+    background: var(--panel2);
+  }
+
+  #panel-ascend .domain-table td.cat {
+    font-weight: 600;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    color: #3a4458;
+    font-size: 13px;
+  }
+
+  #panel-ascend .domain-table td.path {
+    font-family: var(--mono);
+    font-size: 12px;
+    overflow-wrap: anywhere;
+  }
+
+  #panel-ascend .domain-table td.path a { color: var(--link); text-decoration: none; word-break: break-all; }
+
+  #panel-ascend .domain-table td.path a:hover { text-decoration: underline; }
+
+  #panel-ascend .domain-table .mn-sub {
+    display: block;
+    margin-top: 2px;
+    font-family: "PingFang SC", sans-serif;
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  #panel-ascend .domain-table .tag-ext {
+    display: inline-block; margin-left: 6px; padding: 1px 6px; border-radius: 4px;
+    background: var(--q-base); color: #4a5568; font-family: inherit;
+    font-size: 10.5px; font-weight: 700; vertical-align: 1px;
+  }
+
+  #panel-ascend .domain-table .nav-src {
+    display: block;
+    margin-top: 2px;
+    font-family: "PingFang SC", sans-serif;
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  #panel-ascend .domain-table .tag {
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.4;
+    white-space: nowrap;
+  }
+
+  #panel-ascend .domain-table .tag-yes { background: var(--yes-bg); color: var(--yes); }
+
+  #panel-ascend .domain-table .tag-no { background: var(--no-bg); color: var(--no); }
+
+  #panel-ascend .domain-table .tag-full { background: var(--yes-bg); color: var(--yes); }
+
+  #panel-ascend .domain-table .tag-partial { background: #e3f0fb; color: #0b5cab; }
+
+  #panel-ascend .domain-table .tag-miss { background: #fde8e8; color: #8b1a1a; }
+
+
+  #panel-ascend .hero { margin-bottom: 28px; }
+  #panel-ascend .hero h1 { font-size: 28px; }
+
+
+  .subnav {
+    position: sticky;
+    top: var(--topbar-h);
+    z-index: 40;
+    background: var(--panel);
+    border-bottom: 1px solid var(--line);
+  }
+  .subnav-inner {
+    width: min(var(--content-max), calc(100% - 2 * var(--page-gutter)));
+    margin: 0 auto;
+    padding: 0;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 4px;
+    overflow-x: auto;
+  }
+  .subnav a {
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 8px;
+    white-space: nowrap;
+  }
+  .subnav a:hover {
+    color: var(--accent);
+    background: #F5F5F5;
+  }
+  .subnav a.active {
+    color: var(--accent);
+    background: #F5F5F5;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html">昇腾社区 <span>AI 亲和原则研究</span></a>
+                    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="mintlify.html" class="active">可达性·索引分析</a>
+      <a href="citability-mintlify.html">可引用性·内容（md）分析</a>
+      <a href="citability-html-mintlify.html">可引用性·内容（html）分析</a>
+    </nav>
+  </div>
+</div>
+
+<div class="subnav" aria-label="可达性·索引 二级导航">
+  <div class="subnav-inner">
+    <a href="mintlify.html">Mintlify 分析</a>
+    <a href="nvidia.html">NVIDIA 分析</a>
+    <a href="reachability.html" class="active">Ascend 社区分析</a>
+  </div>
+</div>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">双轴 · 索引 × 交付 · Peer Analysis</div>
+    <h1>Ascend 社区分析</h1>
+    <p class="sub" style="color:var(--muted);font-size:15px;margin:0 0 24px;line-height:1.65;">
+      本页为昇腾社区实测。Mintlify / NVIDIA 对照见顶栏「Mintlify 分析」「NVIDIA 分析」。
+      「实测模型层级」由四列实测直接推出，取每根轴上达到的最高一档，不代表该页<em>应该</em>做到这一档。
+    </p>
+  </header>
+
+  <section class="section">
+    <h2>对 Ascend 的实施建议</h2>
+
+    <h3 class="sum-h3">一、策略内核与目标锚定</h3>
+    <ul class="domain-why">
+      <li>整体策略聚焦于「工程可达」与「策展边界」的平衡：借鉴 NVIDIA 的分面管道能力保障大站发现效率，参考 Mintlify 的收口纪律确保引用可信度。</li>
+      <li>核心目标是仅将「官方愿背书的知识面」推至 <span class="coord"><span class="r">R2</span><span class="sep">·</span><span class="c">D2</span></span>（AI 可溯源引用层），其余内容止步于人读与 SEO 分发层。</li>
+      <li>最终落地为<strong>分面管道 + 窄目录背书</strong>的架构格局，规避全站镜像流水线带来的内容混杂风险。</li>
+    </ul>
+
+    <h3 class="sum-h3">二、内容准入与分层机制</h3>
+    <p class="domain-desc" style="margin-top:0">需预先划定明确的语义边界：</p>
+    <ul class="domain-why">
+      <li><strong>纳入知识域（<span class="coord"><span class="r">R2</span><span class="sep">·</span><span class="c">D2</span></span>）。</strong>锁定文档中心、FAQ、故障案例、可核对的开发指南及 API 手册——即具备客观性、稳定性和可溯源性的官方事实叶子页。基准判断为：导航能触达，绝不意味着具备进入知识层的资格。</li>
+      <li><strong>止于分发层（<span class="coord"><span class="r">R1</span><span class="sep">·</span><span class="c">D1</span></span>）。</strong>产品 / 方案 / 行业故事、博客新闻及招聘类内容，最高准入至 Sitemap 且确保 HTML 可读，但坚决不录入 <code>llms.txt</code>，不产出平行 MD。此举旨在防止主观话术与客观事实混入同一 Agent 语料库。</li>
+      <li><strong>明确剔除项。</strong>论坛发帖、活动报名、在线工单以及法务协议等事务性内容绝对不切入 Agent 检索范围；论坛精华如需利用，需先经官方审核沉淀为 FAQ 后方可准入。</li>
+    </ul>
+
+    <h3 class="sum-h3">三、实施执行序列（前置原则压倒工程）</h3>
+    <p class="domain-desc" style="margin-top:0">为确保策展纪律不被工程惯性冲淡，实施顺序需严格遵循以下四个层级：</p>
+    <ul class="domain-why">
+      <li><strong>背书闸门前置（一票否决）。</strong>决策优先级高于技术可行性。每一页面先执行「官方是否愿为 AI 原样引用负责」的判断，若为否定，则立即锁定于 <span class="coord"><span class="r">R1</span><span class="sep">·</span><span class="c">D1</span></span> 及以下。</li>
+      <li><strong>知识面管道建设。</strong>为文档、FAQ、案例等知识子域各自维护独立的 sitemap 与 <code>llms.txt</code>；根站仅作枢纽指针，不充当全站统一索引；同时明确唯一的权威 locale 路径（如 <code>/zh/</code>），规避多语言抓取盲区。</li>
+      <li><strong>交付与发布同轨（防止脱节）。</strong>知识叶子页必须在发布时自动同步产出平行 MD 并写入 llms，坚决杜绝「目录有条目、MD 为 404」的链路错位。汇总壳页（如 <code>/document</code> 索引页）仅作为入口指针，不强求生成平行 MD 正文，避免与子页信息打架。</li>
+      <li><strong>基础可读性先行。</strong>若知识域入口尚处于 D0（正文缺失或渲染异常），需优先保证 SSR 与核心信息的 D1 可读能力，再行推进 llms 与平行 MD 产出，避免空转。</li>
+    </ul>
+  </section>
+
+  <div id="panel-ascend">
+  <header class="hero">
+    <h1>现状分析</h1>
+    <p class="sub">
+      从 hiascend.com 顶栏与页脚导航抓取的全部入口，按七个运营域归类，作为改造范围的基线。
+      各域挂<strong>策展档位</strong>（知识域 / 分发层 / 剔除）——与表内「实测模型层级」分开读；知识域内另标壳页、分发例外等行级例外。
+    </p>
+  </header>
+
+  <section class="block">
+    <h2>按运营域分布</h2>
+    <p class="lead">与友商分析同构的域划分。目标档位沿用<a href="index.html">首页的决策矩阵</a>：只有「知识」默认必改。</p>
+    <table>
+      <thead>
+        <tr>
+          <th>运营域</th><th>条数</th><th>可达性·索引</th><th>可读取性·交付</th><th>决策</th><th>说明</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="name"><a href="#d-市场营销">产品/行业/方案介绍</a></td>
+          <td class="num">32</td>
+          <td class="axis-cell"><span class="tag r">R1 Sitemap 可发现</span></td>
+          <td class="axis-cell"><span class="tag c">D1 HTML 可读</span></td>
+          <td class="dec"><span class="tag dec-skip">不改</span></td>
+          <td class="act">首页、CANN、硬件产品线（集群 / 服务器 / 加速卡 / 模块 / 套件）、九大行业应用与解决方案。选型叙事与导流，不当知识源。</td>
+        </tr>
+        <tr>
+          <td class="name"><a href="#d-知识">知识</a></td>
+          <td class="num">10<span class="ext-n">含站外 1</span></td>
+          <td class="axis-cell"><span class="tag r">R2 llms 目录收录</span></td>
+          <td class="axis-cell"><span class="tag c">D2 MD 可托管</span></td>
+          <td class="dec"><span class="tag dec-must">必改</span></td>
+          <td class="act">文档中心、常见问题、故障案例、产品公告、资源下载 / 驱动 / 镜像。唯一默认做满两轴的域，也是本次改造的主战场。</td>
+        </tr>
+        <tr>
+          <td class="name"><a href="#d-生态">生态</a></td>
+          <td class="num">11<span class="ext-n">含站外 8</span></td>
+          <td class="axis-cell"><span class="tag r">R1 Sitemap 可发现</span></td>
+          <td class="axis-cell"><span class="tag c">D1 HTML 可读</span></td>
+          <td class="dec"><span class="tag dec-skip">不改</span></td>
+          <td class="act">伙伴网络、产业概述、开源资源与友情链接。绝大多数是站外跳转，不在本站亲和范围内。</td>
+        </tr>
+        <tr>
+          <td class="name"><a href="#d-内容运营">内容运营</a></td>
+          <td class="num">3</td>
+          <td class="axis-cell"><span class="tag r">R1 Sitemap 可发现</span></td>
+          <td class="axis-cell"><span class="tag c">D1 HTML 可读</span></td>
+          <td class="dec"><span class="tag dec-skip">不改</span></td>
+          <td class="act">博客、技术干货、新闻资讯。时效强、口径偏传播，进 sitemap 服务 SEO 即可，不进机器目录。</td>
+        </tr>
+        <tr>
+          <td class="name"><a href="#d-社区运营">社区运营</a></td>
+          <td class="num">5</td>
+          <td class="axis-cell"><span class="tag r zero">R0 未进索引</span></td>
+          <td class="axis-cell"><span class="tag c">D1 HTML 可读</span></td>
+          <td class="dec"><span class="tag dec-skip">不改</span></td>
+          <td class="act">论坛、论坛求助、技术工单、昇腾活动。UGC 与交互入口，不为官方事实背书。</td>
+        </tr>
+        <tr>
+          <td class="name"><a href="#d-公司事务">公司事务</a></td>
+          <td class="num">8<span class="ext-n">含站外 3</span></td>
+          <td class="axis-cell"><span class="tag r zero">R0 未进索引</span></td>
+          <td class="axis-cell"><span class="tag c">D1 HTML 可读</span></td>
+          <td class="dec"><span class="tag dec-never">绝对不改</span></td>
+          <td class="act">法律声明、隐私政策、Cookie 协议、用户协议、备案与举报中心。与产品怎么用无关。</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="section domain" id="d-市场营销">
+    <h2>产品/行业/方案介绍 <span class="cnt">32 条</span></h2>
+    <p class="domain-desc">选型叙事与导流；默认止于分发层，不当知识源。策展档位见下，与「实测模型层级」无关。</p>
+    <div class="domain-level" aria-label="本域策展目标（非表内实测汇总）">
+      <span class="dl-label">策展目标</span>
+      <span class="curate curate-dist">分发层</span>
+      <span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span>
+      <span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span>
+    </div>
+    <table class="domain-table">
+      <colgroup>
+        <col class="col-cat" />
+        <col class="col-page" />
+        <col class="col-static" />
+        <col class="col-md" />
+        <col class="col-sitemap" />
+        <col class="col-llms" />
+        <col class="col-level" />
+      </colgroup>
+      <thead><tr><th>分类</th><th>页面</th><th>HTML主信息（交付 D1）</th><th>MD文件（交付 D2）</th><th>收录Sitemap（索引 R1）</th><th>收录llms.txt（索引 R2）</th><th>实测模型层级</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="cat" rowspan="2">入口</td>
+          <td class="path"><a href="https://www.hiascend.com/zh" target="_blank" rel="noopener">/zh</a><span class="mn-sub">昇腾社区（Logo）</span></td>
+          <td><span class="tag tag-partial">部分</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.hiascend.com/cann" target="_blank" rel="noopener">/cann</a><span class="mn-sub">CANN</span></td>
+          <td><span class="tag tag-miss">缺失</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+        </tr>
+        <tr>
+          <td class="cat" rowspan="3">产品·集群</td>
+          <td class="path"><a href="https://www.hiascend.com/hardware/cluster" target="_blank" rel="noopener">/hardware/cluster</a><span class="mn-sub">Atlas 900 A3 SuperPoD 超节点</span></td>
+          <td><span class="tag tag-partial">部分</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.hiascend.com/hardware/cluster?tag=900" target="_blank" rel="noopener">/hardware/cluster?tag=900</a><span class="mn-sub">Atlas 900 A2 PoD 集群基础单元</span></td>
+          <td><span class="tag tag-partial">部分</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.hiascend.com/hardware/cluster?tag=900ai" target="_blank" rel="noopener">/hardware/cluster?tag=900ai</a><span class="mn-sub">Atlas 900 SuperCluster AI集群</span></td>
+          <td><span class="tag tag-partial">部分</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+        </tr>
+        <tr>
+          <td class="cat">产品·集群自智引擎</td>
+          <td class="path"><a href="https://www.hiascend.com/software/ccae" target="_blank" rel="noopener">/software/ccae</a><span class="mn-sub">CCAE（集群自智引擎）</span></td>
+          <td><span class="tag tag-miss">缺失</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+        </tr>
+        <tr>
+          <td class="cat" rowspan="6">产品·服务器</td>
+          <td class="path"><a href="https://www.hiascend.com/hardware/ai-server" target="_blank" rel="noopener">/hardware/ai-server</a><span class="mn-sub">Atlas 800T A3 超节点服务器</span></td>
+          <td><span class="tag tag-miss">缺失</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.hiascend.com/hardware/ai-server?tag=800ia3" target="_blank" rel="noopener">/hardware/ai-server?tag=800ia3</a><span class="mn-sub">Atlas 800I A3 超节点服务器</span></td>
+          <td><span class="tag tag-miss">缺失</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.hiascend.com/hardware/ai-server?tag=900A2" target="_blank" rel="noopener">/hardware/ai-server?tag=900A2</a><span class="mn-sub">Atlas 800T A2 训练服务器</span></td>
+          <td><span class="tag tag-miss">缺失</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.hiascend.com/hardware/ai-server?tag=800A2" target="_blank" rel="noopener">/hardware/ai-server?tag=800A2</a><span class="mn-sub">Atlas 800I A2 推理服务器</span></td>
+          <td><span class="tag tag-miss">缺失</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.hiascend.com/hardware/ai-server?tag=300" target="_blank" rel="noopener">/hardware/ai-server?tag=300</a><span class="mn-sub">Atlas 800 推理服务器</span></td>
+          <td><span class="tag tag-miss">缺失</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.hiascend.com/hardware/ai-server?tag=500pro" target="_blank" rel="noopener">/hardware/ai-server?tag=500pro</a><span class="mn-sub">Atlas 500 Pro 智能边缘服务器</span></td>
+          <td><span class="tag tag-miss">缺失</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+        </tr>
+        <tr>
+          <td class="cat" rowspan="5">产品·加速卡</td>
+          <td class="path"><a href="https://www.hiascend.com/hardware/accelerator-card" target="_blank" rel="noopener">/hardware/accelerator-card</a><span class="mn-sub">Atlas 300I A2 推理卡</span></td>
+          <td><span class="tag tag-miss">缺失</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.hiascend.com/hardware/accelerator-card?tag=300V" target="_blank" rel="noopener">/hardware/accelerator-card?tag=300V</a><span class="mn-sub">Atlas 300V 视频解析卡</span></td>
+          <td><span class="tag tag-miss">缺失</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.hiascend.com/hardware/accelerator-card?tag=300V-Pro" target="_blank" rel="noopener">/hardware/accelerator-card?tag=300V-Pro</a><span class="mn-sub">Atlas 300V Pro 视频解析卡</span></td>
+          <td><span class="tag tag-miss">缺失</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.hiascend.com/hardware/accelerator-card?tag=300I-Pro" target="_blank" rel="noopener">/hardware/accelerator-card?tag=300I-Pro</a><span class="mn-sub">Atlas 300I Pro 推理卡</span></td>
+          <td><span class="tag tag-miss">缺失</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.hiascend.com/hardware/accelerator-card?tag=300I-duo" target="_blank" rel="noopener">/hardware/accelerator-card?tag=300I-duo</a><span class="mn-sub">Atlas 300I Duo 推理卡</span></td>
+          <td><span class="tag tag-miss">缺失</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+        </tr>
+        <tr>
+          <td class="cat">产品·智能小站</td>
+          <td class="path"><a href="https://www.hiascend.com/hardware/Intelligent-edge-A2" target="_blank" rel="noopener">/hardware/Intelligent-edge-A2</a><span class="mn-sub">Atlas 500 A2 智能小站</span></td>
+          <td><span class="tag tag-partial">部分</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+        </tr>
+        <tr>
+          <td class="cat">产品·加速模块</td>
+          <td class="path"><a href="https://www.hiascend.com/hardware/accelerator-module-A2" target="_blank" rel="noopener">/hardware/accelerator-module-A2</a><span class="mn-sub">Atlas 200I A2 加速模块</span></td>
+          <td><span class="tag tag-partial">部分</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+        </tr>
+        <tr>
+          <td class="cat">产品·开发者套件</td>
+          <td class="path"><a href="https://www.hiascend.com/hardware/developer-kit-a2" target="_blank" rel="noopener">/hardware/developer-kit-a2</a><span class="mn-sub">Atlas 200I DK A2 开发者套件</span></td>
+          <td><span class="tag tag-partial">部分</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+        </tr>
+        <tr>
+          <td class="cat" rowspan="9">行业应用</td>
+          <td class="path"><a href="https://www.hiascend.com/industries/internet" target="_blank" rel="noopener">/industries/internet</a><span class="mn-sub">互联网</span></td>
+          <td><span class="tag tag-partial">部分</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.hiascend.com/industries/telecom" target="_blank" rel="noopener">/industries/telecom</a><span class="mn-sub">电信</span></td>
+          <td><span class="tag tag-partial">部分</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.hiascend.com/industries/solutions/smart-city" target="_blank" rel="noopener">/industries/solutions/smart-city</a><span class="mn-sub">政府</span></td>
+          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.hiascend.com/industries/fintech" target="_blank" rel="noopener">/industries/fintech</a><span class="mn-sub">金融</span></td>
+          <td><span class="tag tag-partial">部分</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.hiascend.com/industries/education" target="_blank" rel="noopener">/industries/education</a><span class="mn-sub">教育</span></td>
+          <td><span class="tag tag-partial">部分</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.hiascend.com/industries/electricity" target="_blank" rel="noopener">/industries/electricity</a><span class="mn-sub">能源</span></td>
+          <td><span class="tag tag-partial">部分</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.hiascend.com/industries/transportation" target="_blank" rel="noopener">/industries/transportation</a><span class="mn-sub">交通</span></td>
+          <td><span class="tag tag-partial">部分</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.hiascend.com/industries/manufacturing" target="_blank" rel="noopener">/industries/manufacturing</a><span class="mn-sub">制造</span></td>
+          <td><span class="tag tag-partial">部分</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.hiascend.com/industries/healthcare" target="_blank" rel="noopener">/industries/healthcare</a><span class="mn-sub">医疗</span></td>
+          <td><span class="tag tag-partial">部分</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+        </tr>
+        <tr>
+          <td class="cat" rowspan="3">解决方案</td>
+          <td class="path"><a href="https://www.hiascend.com/industries/solutions/large-model" target="_blank" rel="noopener">/industries/solutions/large-model</a><span class="mn-sub">大规模专家并行解决方案</span></td>
+          <td><span class="tag tag-partial">部分</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.hiascend.com/solutions/Foundation-Model" target="_blank" rel="noopener">/solutions/Foundation-Model</a><span class="mn-sub">昇腾大模型解决方案</span></td>
+          <td><span class="tag tag-partial">部分</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.hiascend.com/marketplace/solution" target="_blank" rel="noopener">/marketplace/solution</a><span class="mn-sub">昇腾生态解决方案</span></td>
+          <td><span class="tag tag-miss">缺失</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+  <section class="section domain" id="d-知识">
+    <h2>知识 <span class="cnt">10 条</span></h2>
+    <p class="domain-desc">默认做满两轴的主战场。行内例外：壳页仅作入口、驱动/镜像 Hub 停分发层、站外不在本站亲和范围。</p>
+    <div class="domain-level" aria-label="本域策展目标（非表内实测汇总）">
+      <span class="dl-label">策展目标</span>
+      <span class="curate curate-know">知识域</span>
+      <span class="lvl lvl-2 axis-r"><span class="lv-k">R2</span>llms 目录收录</span>
+      <span class="lvl lvl-2 axis-c"><span class="lv-k">D2</span>MD 可托管</span>
+    </div>
+    <table class="domain-table">
+      <colgroup>
+        <col class="col-cat" />
+        <col class="col-page" />
+        <col class="col-static" />
+        <col class="col-md" />
+        <col class="col-sitemap" />
+        <col class="col-llms" />
+        <col class="col-level" />
+      </colgroup>
+      <thead><tr><th>分类</th><th>页面</th><th>HTML主信息（交付 D1）</th><th>MD文件（交付 D2）</th><th>收录Sitemap（索引 R1）</th><th>收录llms.txt（索引 R2）</th><th>实测模型层级</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="cat">开发者</td>
+          <td class="path"><a href="https://www.hiascend.com/developer" target="_blank" rel="noopener">/developer</a><span class="curate-ex shell">壳·入口</span><span class="mn-sub">原昇腾系列软件（点击查看）</span></td>
+          <td><span class="tag tag-miss">缺失</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+        </tr>
+        <tr>
+          <td class="cat" rowspan="4">文档</td>
+          <td class="path"><a href="https://www.hiascend.com/document/detail/zh/AscendFAQ/overview/index.html" target="_blank" rel="noopener">/document/detail/zh/AscendFAQ/overview/index.html</a><span class="curate-ex leaf">知识叶子</span><span class="mn-sub">常见问题</span></td>
+          <td><span class="tag tag-partial">部分</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.hiascend.com/document/caselibrary" target="_blank" rel="noopener">/document/caselibrary</a><span class="curate-ex leaf">知识叶子</span><span class="mn-sub">故障案例</span></td>
+          <td><span class="tag tag-miss">缺失</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.hiascend.com/document" target="_blank" rel="noopener">/document</a><span class="curate-ex shell">壳·入口</span><span class="mn-sub">文档</span></td>
+          <td><span class="tag tag-miss">缺失</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.hiascend.com/zh/document" target="_blank" rel="noopener">/zh/document</a><span class="curate-ex shell">壳·入口</span><span class="mn-sub">文档</span></td>
+          <td><span class="tag tag-miss">缺失</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+        </tr>
+        <tr>
+          <td class="cat">开发</td>
+          <td class="path"><a href="https://hidevlab.huawei.com/online-develop-intro?from=hiascend" target="_blank" rel="noopener">hidevlab.huawei.com/online-develop-intro?from=hiascend</a><span class="tag-ext">站外</span><span class="mn-sub">HiDevLab-在线开发</span></td>
+          <td><span class="tag tag-miss">缺失</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://hidevlab.huawei.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-no">站外</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+        </tr>
+        <tr>
+          <td class="cat" rowspan="3">下载</td>
+          <td class="path"><a href="https://www.hiascend.com/developer/download" target="_blank" rel="noopener">/developer/download</a><span class="curate-ex dist">分发例外</span><span class="mn-sub">资源下载中心</span></td>
+          <td><span class="tag tag-partial">部分</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.hiascend.com/hardware/firmware-drivers/community" target="_blank" rel="noopener">/hardware/firmware-drivers/community</a><span class="curate-ex dist">分发例外</span><span class="mn-sub">固件与驱动（社区版）</span></td>
+          <td><span class="tag tag-miss">缺失</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.hiascend.com/developer/ascendhub" target="_blank" rel="noopener">/developer/ascendhub</a><span class="curate-ex dist">分发例外</span><span class="mn-sub">昇腾镜像仓库</span></td>
+          <td><span class="tag tag-miss">缺失</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+        </tr>
+        <tr>
+          <td class="cat">公告</td>
+          <td class="path"><a href="https://www.hiascend.com/productbulletins" target="_blank" rel="noopener">/productbulletins</a><span class="curate-ex leaf">知识叶子</span><span class="mn-sub">产品公告</span></td>
+          <td><span class="tag tag-miss">缺失</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+  <section class="section domain" id="d-生态">
+    <h2>生态 <span class="cnt">11 条</span></h2>
+    <p class="domain-desc">伙伴与友情链接；默认止于分发层。站外跳转不在本站亲和范围内。</p>
+    <div class="domain-level" aria-label="本域策展目标（非表内实测汇总）">
+      <span class="dl-label">策展目标</span>
+      <span class="curate curate-dist">分发层</span>
+      <span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span>
+      <span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span>
+    </div>
+    <table class="domain-table">
+      <colgroup>
+        <col class="col-cat" />
+        <col class="col-page" />
+        <col class="col-static" />
+        <col class="col-md" />
+        <col class="col-sitemap" />
+        <col class="col-llms" />
+        <col class="col-level" />
+      </colgroup>
+      <thead><tr><th>分类</th><th>页面</th><th>HTML主信息（交付 D1）</th><th>MD文件（交付 D2）</th><th>收录Sitemap（索引 R1）</th><th>收录llms.txt（索引 R2）</th><th>实测模型层级</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="cat">教育科研</td>
+          <td class="path"><a href="https://edu.hicomputing.huawei.com" target="_blank" rel="noopener">https://edu.hicomputing.huawei.com/</a><span class="tag-ext">站外</span><span class="mn-sub">教育科研平台了解更多</span></td>
+          <td><span class="tag tag-partial">部分</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://edu.hicomputing.huawei.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-no">站外</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+        </tr>
+        <tr>
+          <td class="cat">合作伙伴</td>
+          <td class="path"><a href="https://www.hiascend.com/ecosystem" target="_blank" rel="noopener">/ecosystem</a><span class="mn-sub">昇腾生态伙伴网络了解更多</span></td>
+          <td><span class="tag tag-partial">部分</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+        </tr>
+        <tr>
+          <td class="cat">产业</td>
+          <td class="path"><a href="https://www.hiascend.com/ecosystem/industry" target="_blank" rel="noopener">/ecosystem/industry</a><span class="mn-sub">昇腾计算产业概述</span></td>
+          <td><span class="tag tag-partial">部分</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+        </tr>
+        <tr>
+          <td class="cat" rowspan="2">开源</td>
+          <td class="path"><a href="https://www.mindspore.cn/" target="_blank" rel="noopener">https://www.mindspore.cn/</a><span class="tag-ext">站外</span><span class="mn-sub">昇思社区</span></td>
+          <td><span class="tag tag-partial">部分</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.mindspore.cn/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-no">站外</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.hiascend.com/zh/developer/opensource" target="_blank" rel="noopener">/zh/developer/opensource</a><span class="mn-sub">昇腾开放资源</span></td>
+          <td><span class="tag tag-miss">缺失</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+        </tr>
+        <tr>
+          <td class="cat" rowspan="6">友情链接</td>
+          <td class="path"><a href="https://www.huawei.com/cn/" target="_blank" rel="noopener">www.huawei.com/cn/</a><span class="tag-ext">站外</span><span class="mn-sub">华为官网</span></td>
+          <td><span class="tag tag-miss">缺失</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.huawei.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-no">站外</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://e.huawei.com/cn/solutions/computing" target="_blank" rel="noopener">e.huawei.com/cn/solutions/computing</a><span class="tag-ext">站外</span><span class="mn-sub">华为计算</span></td>
+          <td><span class="tag tag-miss">缺失</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://e.huawei.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-no">站外</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.hikunpeng.com/" target="_blank" rel="noopener">https://www.hikunpeng.com/</a><span class="tag-ext">站外</span><span class="mn-sub">鲲鹏社区</span></td>
+          <td><span class="tag tag-partial">部分</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hikunpeng.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-no">站外</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.huaweicloud.com/" target="_blank" rel="noopener">https://www.huaweicloud.com/</a><span class="tag-ext">站外</span><span class="mn-sub">华为云</span></td>
+          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.huaweicloud.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-no">站外</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.openi.org.cn/" target="_blank" rel="noopener">https://www.openi.org.cn/</a><span class="tag-ext">站外</span><span class="mn-sub">启智社区</span></td>
+          <td><span class="tag tag-miss">缺失</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.openi.org.cn/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-no">站外</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://developer.huawei.com/" target="_blank" rel="noopener">https://developer.huawei.com/</a><span class="tag-ext">站外</span><span class="mn-sub">华为开发者</span></td>
+          <td><span class="tag tag-miss">缺失</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://developer.huawei.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-no">站外</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+  <section class="section domain" id="d-内容运营">
+    <h2>内容运营 <span class="cnt">3 条</span></h2>
+    <p class="domain-desc">博客 / 新闻 / 干货；进 sitemap 服务 SEO，不进机器目录。</p>
+    <div class="domain-level" aria-label="本域策展目标（非表内实测汇总）">
+      <span class="dl-label">策展目标</span>
+      <span class="curate curate-dist">分发层</span>
+      <span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span>
+      <span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span>
+    </div>
+    <table class="domain-table">
+      <colgroup>
+        <col class="col-cat" />
+        <col class="col-page" />
+        <col class="col-static" />
+        <col class="col-md" />
+        <col class="col-sitemap" />
+        <col class="col-llms" />
+        <col class="col-level" />
+      </colgroup>
+      <thead><tr><th>分类</th><th>页面</th><th>HTML主信息（交付 D1）</th><th>MD文件（交付 D2）</th><th>收录Sitemap（索引 R1）</th><th>收录llms.txt（索引 R2）</th><th>实测模型层级</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="cat">博客</td>
+          <td class="path"><a href="https://www.hiascend.com/developer/blog" target="_blank" rel="noopener">/developer/blog</a><span class="mn-sub">博客</span></td>
+          <td><span class="tag tag-miss">缺失</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+        </tr>
+        <tr>
+          <td class="cat">新闻</td>
+          <td class="path"><a href="https://www.hiascend.com/activities/news" target="_blank" rel="noopener">/activities/news</a><span class="mn-sub">新闻资讯</span></td>
+          <td><span class="tag tag-miss">缺失</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+        </tr>
+        <tr>
+          <td class="cat">干货</td>
+          <td class="path"><a href="https://www.hiascend.com/developer/techArticles" target="_blank" rel="noopener">/developer/techArticles</a><span class="mn-sub">技术干货</span></td>
+          <td><span class="tag tag-miss">缺失</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+  <section class="section domain" id="d-社区运营">
+    <h2>社区运营 <span class="cnt">5 条</span></h2>
+    <p class="domain-desc">UGC 与交互入口；不进 Agent 检索。精华须先沉淀为官方 FAQ 再准入知识域。</p>
+    <div class="domain-level" aria-label="本域策展目标（非表内实测汇总）">
+      <span class="dl-label">策展目标</span>
+      <span class="curate curate-out">剔除</span>
+      <span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span>
+      <span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span>
+    </div>
+    <table class="domain-table">
+      <colgroup>
+        <col class="col-cat" />
+        <col class="col-page" />
+        <col class="col-static" />
+        <col class="col-md" />
+        <col class="col-sitemap" />
+        <col class="col-llms" />
+        <col class="col-level" />
+      </colgroup>
+      <thead><tr><th>分类</th><th>页面</th><th>HTML主信息（交付 D1）</th><th>MD文件（交付 D2）</th><th>收录Sitemap（索引 R1）</th><th>收录llms.txt（索引 R2）</th><th>实测模型层级</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="cat" rowspan="3">支持</td>
+          <td class="path"><a href="https://www.hiascend.com/forum/topicpost" target="_blank" rel="noopener">/forum/topicpost</a><span class="mn-sub">论坛求助</span></td>
+          <td><span class="tag tag-miss">缺失</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.hiascend.com/feedback" target="_blank" rel="noopener">/feedback</a><span class="mn-sub">技术工单</span></td>
+          <td><span class="tag tag-miss">缺失</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.hiascend.com/zh/feedback" target="_blank" rel="noopener">/zh/feedback</a><span class="mn-sub">技术工单</span></td>
+          <td><span class="tag tag-miss">缺失</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+        </tr>
+        <tr>
+          <td class="cat">论坛</td>
+          <td class="path"><a href="https://www.hiascend.com/forum/" target="_blank" rel="noopener">/forum/</a><span class="mn-sub">昇腾论坛</span></td>
+          <td><span class="tag tag-miss">缺失</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+        </tr>
+        <tr>
+          <td class="cat">活动</td>
+          <td class="path"><a href="https://www.hiascend.com/activities" target="_blank" rel="noopener">/activities</a><span class="mn-sub">昇腾活动</span></td>
+          <td><span class="tag tag-miss">缺失</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+  <section class="section domain" id="d-公司事务">
+    <h2>公司事务 <span class="cnt">8 条</span></h2>
+    <p class="domain-desc">法务与组织事务；与产品怎么用无关，绝对不进 Agent 目录。</p>
+    <div class="domain-level" aria-label="本域策展目标（非表内实测汇总）">
+      <span class="dl-label">策展目标</span>
+      <span class="curate curate-out">剔除</span>
+      <span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span>
+      <span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span>
+    </div>
+    <table class="domain-table">
+      <colgroup>
+        <col class="col-cat" />
+        <col class="col-page" />
+        <col class="col-static" />
+        <col class="col-md" />
+        <col class="col-sitemap" />
+        <col class="col-llms" />
+        <col class="col-level" />
+      </colgroup>
+      <thead><tr><th>分类</th><th>页面</th><th>HTML主信息（交付 D1）</th><th>MD文件（交付 D2）</th><th>收录Sitemap（索引 R1）</th><th>收录llms.txt（索引 R2）</th><th>实测模型层级</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="cat">举报</td>
+          <td class="path"><a href="https://www.hiascend.com/zh/report" target="_blank" rel="noopener">/zh/report</a><span class="mn-sub">举报中心</span></td>
+          <td><span class="tag tag-miss">缺失</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+        </tr>
+        <tr>
+          <td class="cat" rowspan="2">备案</td>
+          <td class="path"><a href="https://beian.miit.gov.cn" target="_blank" rel="noopener">https://beian.miit.gov.cn/</a><span class="tag-ext">站外</span><span class="mn-sub">粤A2-20044005号</span></td>
+          <td><span class="tag tag-miss">缺失</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://beian.miit.gov.cn/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-no">站外</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44030702005057" target="_blank" rel="noopener">www.beian.gov.cn/portal/registerSystemInfo?recordcode=44030702005057</a><span class="tag-ext">站外</span><span class="mn-sub">粤公网安备 44030702005057号</span></td>
+          <td><span class="tag tag-miss">缺失</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.beian.gov.cn/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-no">站外</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+        </tr>
+        <tr>
+          <td class="cat" rowspan="5">法务</td>
+          <td class="path"><a href="https://www.hiascend.com/zh/legal/law" target="_blank" rel="noopener">/zh/legal/law</a><span class="mn-sub">法律声明</span></td>
+          <td><span class="tag tag-miss">缺失</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.hiascend.com/zh/legal/privacy" target="_blank" rel="noopener">/zh/legal/privacy</a><span class="mn-sub">隐私政策</span></td>
+          <td><span class="tag tag-miss">缺失</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.hiascend.com/zh/legal/cookies" target="_blank" rel="noopener">/zh/legal/cookies</a><span class="mn-sub">Cookie协议</span></td>
+          <td><span class="tag tag-miss">缺失</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.hiascend.com/zh/legal/user" target="_blank" rel="noopener">/zh/legal/user</a><span class="mn-sub">用户协议</span></td>
+          <td><span class="tag tag-miss">缺失</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+        </tr>
+        <tr>
+          <td class="path"><a href="https://www.huawei.com/cn/contact-us" target="_blank" rel="noopener">www.huawei.com/cn/contact-us</a><span class="tag-ext">站外</span><span class="mn-sub">联系我们</span></td>
+          <td><span class="tag tag-miss">缺失</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.huawei.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-no">站外</span></a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <footer>数据：hiascend_导航URL清单.xlsx（69 条去重 URL）· 归类结构对齐友商七域</footer>
+  </div>
+</div>
+
+</body>
+</html>
