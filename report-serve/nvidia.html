@@ -25,50 +25,70 @@
     --content-max: 1200px;
     --mono: "SF Mono", "Fira Code", "Cascadia Code", monospace;
     --page-gutter: clamp(16px, 2.5vw, 24px);
+      --body-size: 14px;
+    --body-lh: 22px;
+    /* 卡片标题：字号 18 / 行高 28 */
+    --card-title-size: 18px;
+    --card-title-lh: 28px;
   }
   * { box-sizing: border-box; }
   body {
+    font-size: var(--body-size);
     margin: 0;
     font-family: "PingFang SC", sans-serif;
     background: var(--bg);
     color: var(--text);
-    line-height: 1.55;
+    line-height: var(--body-lh);
   }
   .topbar {
     position: sticky;
     top: 0;
     z-index: 50;
-    height: var(--topbar-h);
+    height: 56px;
+    min-height: 56px;
+    max-height: 56px;
+    box-sizing: border-box;
     background: var(--panel);
     border-bottom: 1px solid var(--line);
+    overflow: hidden;
   }
   .topbar-inner {
-    width: min(var(--content-max), calc(100% - 2 * var(--page-gutter)));
-    margin: 0 auto;
-    padding: 0;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0 24px;
     height: 100%;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 24px;
+    justify-content: flex-start;
+    gap: 0;
   }
   .brand {
     font-weight: 700;
-    font-size: 14px;
+    font-size: 15px;
     letter-spacing: -0.01em;
     color: var(--text);
     text-decoration: none;
     white-space: nowrap;
+    margin-right: 40px;
   }
   .brand span { color: var(--accent); }
-  .site-nav { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+  .site-nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+    flex-wrap: wrap;
+  }
   .site-nav a {
     text-decoration: none;
     color: var(--muted);
     font-size: 14px;
     font-weight: 500;
-    padding: 8px 14px;
-    border-radius: 8px;
+    padding: 6px 14px;
+    border-radius: 6px;
+    white-space: nowrap;
+    transition: background .15s, color .15s;
   }
   .site-nav a:hover { color: var(--accent); background: #F5F5F5; text-decoration: none; }
   .site-nav a.active {
@@ -95,6 +115,7 @@
     font-weight: 600;
     margin: 8px 0 12px;
     letter-spacing: -0.02em;
+    line-height: 48px;
   }
   .sub { color: var(--muted); max-width: none; font-size: 15px; }
   .sub a { color: var(--link); }
@@ -154,9 +175,9 @@
   }
   .peer-card .desc {
     margin: 0;
-    font-size: 13px;
+    font-size: var(--body-size);
     color: var(--muted);
-    line-height: 1.45;
+    line-height: var(--body-lh);
   }
   .peer-panel[hidden] { display: none; }
 
@@ -183,9 +204,10 @@
     border: 1px solid rgba(20, 118, 255, 0.25);
     border-radius: 12px;
     padding: 14px 18px;
-    font-size: 13px;
+    font-size: var(--body-size);
     color: #3a4458;
     margin-bottom: 28px;
+    line-height: var(--body-lh);
   }
   .note strong { color: var(--text); }
 
@@ -196,15 +218,35 @@
     padding: 22px 24px 8px;
     margin-bottom: 16px;
   }
+  .section:has(.sum-h3) {
+    padding: 32px;
+  }
+  .section:has(.sum-h3) > .sum-h3:first-child {
+    margin-top: 0;
+  }
+  .section:has(.sum-h3) > .domain-why:last-child {
+    margin-bottom: 0;
+  }
+    /* 卡片标题 */
+  .card-title,
   .section h2 {
-    margin: 0 0 6px;
-    font-size: 18px;
+    margin: 0 0 8px;
+    font-size: var(--card-title-size);
+    line-height: var(--card-title-lh);
     font-weight: 650;
+  }
+  .wrap > h2.block-title {
+    margin: 40px 0 16px;
+    font-size: 24px;
+    line-height: 32px;
+    font-weight: 650;
+    letter-spacing: -0.01em;
   }
   .section .hint {
     margin: 0 0 16px;
     color: var(--muted);
-    font-size: 13px;
+    font-size: var(--body-size);
+    line-height: var(--body-lh);
   }
 
   .section .domain-level {
@@ -212,7 +254,7 @@
     flex-wrap: wrap;
     align-items: center;
     gap: 8px;
-    margin: 0 0 12px;
+    margin: 0 0 16px;
   }
   .section .domain-level .lvl {
     display: inline-flex;
@@ -234,18 +276,19 @@
     color: inherit;
   }
   .section .domain-desc {
-    margin: 0 0 12px;
+    margin: 0 0 8px;
     color: var(--muted);
-    font-size: 13px;
+    font-size: var(--body-size);
+    line-height: var(--body-lh);
   }
   .domain-why {
     margin: 0 0 16px;
-    padding: 12px 14px 12px 32px;
+    padding: 16px 14px 16px 32px;
     background: var(--panel2);
     border-radius: 10px;
-    font-size: 13px;
+    font-size: var(--body-size);
     color: #3a4458;
-    line-height: 1.55;
+    line-height: var(--body-lh);
   }
   .domain-why li { margin-bottom: 6px; }
   .domain-why li:last-child { margin-bottom: 0; }
@@ -278,8 +321,9 @@
   }
   .principle .a {
     margin: 8px 0 0;
-    font-size: 13px;
+    font-size: var(--body-size);
     color: #3a4458;
+    line-height: var(--body-lh);
   }
   .coord {
     display: inline-block;
@@ -301,7 +345,7 @@
     background: #fbf8f1;
     border: 1px solid #f0e6d2;
     border-radius: 10px;
-    font-size: 13px;
+    font-size: var(--body-size);
     line-height: 1.6;
     color: #3a4458;
   }
@@ -327,8 +371,9 @@
     padding: 12px 14px 12px 44px;
     background: var(--panel2);
     border-radius: 10px;
-    font-size: 13px;
+    font-size: var(--body-size);
     color: #3a4458;
+    line-height: var(--body-lh);
   }
   .steps li::before {
     content: counter(step);
@@ -345,6 +390,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    line-height: var(--body-lh);
   }
   .steps strong { color: var(--text); }
   .donts {
@@ -360,7 +406,7 @@
     background: #fbf8f1;
     border: 1px solid #f0e6d2;
     border-radius: 10px;
-    font-size: 13px;
+    font-size: var(--body-size);
     color: #3a4458;
   }
   .donts strong {
@@ -382,8 +428,9 @@
     width: 100%;
     table-layout: fixed;
     border-collapse: collapse;
-    font-size: 13px;
+    font-size: var(--body-size);
     margin-bottom: 16px;
+    line-height: var(--body-lh);
   }
   .domain-table col.col-cat { width: 140px; }
   .domain-table col.col-page { width: auto; }
@@ -476,8 +523,9 @@
   table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 13px;
+    font-size: var(--body-size);
     margin-bottom: 16px;
+    line-height: var(--body-lh);
   }
   th, td {
     text-align: left;
@@ -559,12 +607,18 @@
   #panel-ascend .block h2 .cnt { font-size: 13px; font-weight: 500; color: var(--muted); margin-left: 8px; }
 
   #panel-ascend .lead,
-#panel-ascend .domain-desc { margin: 0 0 18px; color: var(--muted); font-size: 14px; }
+#panel-ascend .domain-desc { margin: 0 0 8px; color: var(--muted); font-size: var(--body-size);
+    line-height: var(--body-lh);
+  }
 
-  #panel-ascend .target-line { margin: 0 0 14px; font-size: 13px; }
+  #panel-ascend .target-line { margin: 0 0 14px; font-size: var(--body-size);
+    line-height: var(--body-lh);
+  }
 
-  #panel-ascend table { width: 100%; border-collapse: collapse; font-size: 13px;
-    background: var(--panel); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  #panel-ascend table { width: 100%; border-collapse: collapse; font-size: var(--body-size);
+    background: var(--panel); border: 1px solid var(--line); border-radius: 12px; overflow: hidden;
+    line-height: var(--body-lh);
+  }
 
   #panel-ascend th,
 #panel-ascend td { text-align: left; padding: 11px 14px; border-top: 1px solid var(--line); vertical-align: top; }
@@ -587,7 +641,7 @@
     font-weight: 500; color: var(--muted);
   }
 
-  #panel-ascend td.act { color: #3a4458; line-height: 1.55; }
+  #panel-ascend td.act { color: #3a4458; line-height: var(--body-lh); }
 
   #panel-ascend .axis-cell { white-space: nowrap; }
 
@@ -628,7 +682,7 @@
   #panel-ascend .note-line {
     margin: 16px 0 0; padding: 13px 16px; background: var(--panel2);
     border: 1px solid var(--line); border-radius: 10px;
-    font-size: 12.5px; line-height: 1.6; color: #3a4458;
+    font-size: var(--body-size); line-height: var(--body-lh); color: #3a4458;
   }
 
   #panel-ascend .note-line strong { color: var(--text); }
@@ -659,9 +713,10 @@
     scroll-margin-top: 72px;
   }
 
-  #panel-ascend .section.domain h2 {
+    #panel-ascend .section.domain h2 {
     margin: 0 0 8px;
-    font-size: 18px;
+    font-size: var(--card-title-size);
+    line-height: var(--card-title-lh);
     font-weight: 650;
     letter-spacing: 0;
   }
@@ -674,20 +729,20 @@
   }
 
   #panel-ascend .section.domain .domain-desc {
-    margin: 0 0 16px;
+    margin: 0 0 8px;
     color: var(--muted);
-    font-size: 14px;
-    line-height: 22px;
+    font-size: var(--body-size);
+    line-height: var(--body-lh);
   }
 
   #panel-ascend .domain-why {
     margin: 0 0 16px;
-    padding: 12px 14px 12px 32px;
+    padding: 16px 14px 16px 32px;
     background: var(--panel2);
     border-radius: 10px;
-    font-size: 13px;
+    font-size: var(--body-size);
     color: #3a4458;
-    line-height: 1.55;
+    line-height: var(--body-lh);
   }
 
   #panel-ascend .domain-why li { margin-bottom: 6px; }
@@ -700,12 +755,13 @@
     width: 100%;
     table-layout: fixed;
     border-collapse: collapse;
-    font-size: 13px;
+    font-size: var(--body-size);
     margin-bottom: 16px;
     background: transparent;
     border: none;
     border-radius: 0;
     overflow: visible;
+    line-height: var(--body-lh);
   }
 
   #panel-ascend .domain-table col.col-cat { width: 140px; }
@@ -746,7 +802,8 @@
     overflow-wrap: anywhere;
     word-break: break-word;
     color: #3a4458;
-    font-size: 13px;
+    font-size: var(--body-size);
+    line-height: var(--body-lh);
   }
 
   #panel-ascend .domain-table td.path {
@@ -808,79 +865,127 @@
   #panel-ascend .hero h1 { font-size: 28px; }
 
 
-  .subnav {
-    position: sticky;
-    top: var(--topbar-h);
-    z-index: 40;
-    background: var(--panel);
-    border-bottom: 1px solid var(--line);
-  }
-  .subnav-inner {
-    width: min(var(--content-max), calc(100% - 2 * var(--page-gutter)));
-    margin: 0 auto;
-    padding: 0;
-    height: 44px;
+
+  .page-wrapper {
     display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 4px;
-    overflow-x: auto;
+    align-items: stretch;
+    width: 100%;
+    min-height: calc(100vh - 56px);
+    background: var(--bg);
   }
-  .subnav a {
+  .peer-sidebar {
+    width: clamp(200px, 12.9167vw, 248px);
+    flex-shrink: 0;
+    position: sticky;
+    top: 56px;
+    height: calc(100vh - 56px);
+    overflow-y: auto;
+    padding: 16px 0 32px;
+    border-right: 1px solid var(--line);
+    background: var(--panel);
+  }
+  .peer-sidebar-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0 20px 10px;
+  }
+  .peer-nav ul { list-style: none; margin: 0; padding: 0; }
+  .peer-group-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    color: var(--muted);
+    padding: 12px 20px 4px;
+    margin-top: 8px;
+    border-top: 1px solid var(--line);
+  }
+  .peer-nav > .peer-group-label:first-child {
+    margin-top: 0;
+    border-top: none;
+    padding-top: 10px;
+  }
+  .peer-nav a {
+    display: block;
+    padding: 8px 20px;
+    font-size: 13px;
+    line-height: 1.5;
     text-decoration: none;
     color: var(--muted);
-    font-size: 13px;
-    font-weight: 500;
-    padding: 6px 12px;
-    border-radius: 8px;
-    white-space: nowrap;
+    border-left: 2px solid transparent;
   }
-  .subnav a:hover {
+  .peer-nav a:hover { color: var(--text); background: #F5F5F5; }
+  .peer-nav a.active {
     color: var(--accent);
-    background: #F5F5F5;
-  }
-  .subnav a.active {
-    color: var(--accent);
-    background: #F5F5F5;
     font-weight: 600;
+    background: #EEF5FF;
+    border-left-color: var(--accent);
   }
+  .peer-main {
+    flex: 1;
+    min-width: 0;
+    background: var(--bg);
+  }
+  .peer-main > .wrap {
+    padding-top: 32px;
+  }
+  @media (max-width: 900px) {
+    .page-wrapper { flex-direction: column; }
+    .peer-sidebar {
+      position: static;
+      width: 100%;
+      height: auto;
+      border-right: none;
+      border-bottom: 1px solid var(--line);
+    }
+  }
+
+  .wrap > h2.block-title { scroll-margin-top: 72px; }
 </style>
 </head>
 <body>
 <div class="topbar">
   <div class="topbar-inner">
-    <a class="brand" href="index.html">昇腾社区 <span>AI 亲和原则研究</span></a>
-                    <nav class="site-nav" aria-label="主导航">
+    <a class="brand" href="index.html">社区 <span>AI 亲和原则</span></a>
+                        <nav class="site-nav" aria-label="主导航">
       <a href="index.html">首页</a>
-      <a href="mintlify.html" class="active">可达性·索引分析</a>
-      <a href="citability-mintlify.html">可引用性·内容（md）分析</a>
-      <a href="citability-html-mintlify.html">可引用性·内容（html）分析</a>
+      <a href="mintlify.html" class="active">友商对照</a>
+      <a href="reachability.html">社区诊断</a>
+      <a href="community-ui.html">组件亲和</a>
     </nav>
   </div>
 </div>
 
-<div class="subnav" aria-label="可达性·索引 二级导航">
-  <div class="subnav-inner">
-    <a href="mintlify.html">Mintlify 分析</a>
-    <a href="nvidia.html" class="active">NVIDIA 分析</a>
-    <a href="reachability.html">Ascend 社区分析</a>
-  </div>
-</div>
+<div class="page-wrapper">
+<aside class="peer-sidebar" aria-label="友商对照导航">
+    <nav class="peer-nav">
+      <div class="peer-group-label">对标友商</div>
+      <ul>
+        <li><a href="mintlify.html">Mintlify</a></li>
+        <li><a href="nvidia.html" class="active">NVIDIA</a></li>
+      </ul>
+      <div class="peer-group-label">分析层面</div>
+      <ul>
+        <li><a href="nvidia.html" class="active">分析概览</a></li>
+        <li><a href="nvidia.html#index">找的到（收录索引）</a></li>
+        <li><a href="citability-html-nvidia.html">读的懂（能抓 html）</a></li>
+        <li><a href="citability-nvidia.html">读的顺（双轨交付）</a></li>
+      </ul>
+    </nav>
+  </aside>
+  <div class="peer-main">
 <div class="wrap">
   <header>
-    <div class="eyebrow">Peer Analysis · NVIDIA</div>
     <h1>NVIDIA 分析</h1>
-    <p class="sub" style="color:var(--muted);font-size:15px;margin:0 0 24px;line-height:1.65;">
+    <p class="sub" style="color:var(--muted);font-size: var(--body-size);margin:0 0 24px;line-height: var(--body-lh);">
       NVIDIA 在工程上将「技术可达」做到了极致，却唯独在「愿不愿意为 AI 的引用负责」这一收口环节上缺少边界判断。
     </p>
   </header>
 
+  <h2 class="block-title" id="overview">分析总结</h2>
 <section class="section">
-    <h2>从 NVIDIA 提炼的指导原则</h2>
-
-    <h3 class="sum-h3">总观点</h3>
-    <p class="domain-desc" style="margin-top:0">追求「可达」，更需警惕「滥用」。NVIDIA 证明大站能把 AI 可达做成基础设施；Mintlify 提醒我们：<strong>可达 ≠ 该被引用</strong>。</p>
-
     <h3 class="sum-h3">一、NVIDIA 在 AI 发现工程上的做法</h3>
     <ul class="domain-why">
       <li><strong>实施分面管道，子域各自独立发现。</strong>将 www、docs、developer、build、gtc 等不同属性的子域彻底分离，为每个子域独立生成 sitemap 与 llms 目录。根站点退居枢纽，仅作指针指向各分区，不再用一张全站总表统一判定所有页面的「有」与「无」。</li>
@@ -898,8 +1003,10 @@
     </ul>
 
   </section>
+
+  <h2 class="block-title" id="index">实测分析</h2>
   <section class="section">
-    <h2>产品/行业/方案介绍</h2>
+    <h2 class="card-title">产品/行业/方案介绍</h2>
         <p class="domain-desc">首页、产品与方案 / 行业叙事页。按当前 <code>nividia-md-table.md</code> 口径，140 条里 133 条落在 R2·D2，形成「可读 + 可索引」高覆盖。</p>
     <div class="domain-level" aria-label="本域默认模型层级">
       <span class="lvl lvl-2 axis-r"><span class="lv-k">R2</span>llms 目录收录</span>
@@ -2186,7 +2293,7 @@
     </table>
   </section>
   <section class="section">
-    <h2>知识</h2>
+    <h2 class="card-title">知识</h2>
         <p class="domain-desc">文档站、开发者站、Build / NGC 与支持入口。对照 <code>nv-developer-llms.md</code> / <code>nv-build-llms.md</code> / <code>nv-doc-llms.md</code> 后，多数入口已进对应面 llms（R2）；仍有个别仅 Sitemap 或未收录。</p>
     <div class="domain-level" aria-label="本域默认模型层级">
       <span class="lvl lvl-2 axis-r"><span class="lv-k">R2</span>llms 目录收录</span>
@@ -2357,7 +2464,7 @@
     </table>
   </section>
   <section class="section">
-    <h2>生态</h2>
+    <h2 class="card-title">生态</h2>
         <p class="domain-desc">伙伴、创业 / VC、ISV 与风投入口。当前口径下以 R2·D2 为主，但仍有 R1·D1 与 R0·D1 混合。</p>
     <div class="domain-level" aria-label="本域默认模型层级">
       <span class="lvl lvl-2 axis-r"><span class="lv-k">R2</span>llms 目录收录</span>
@@ -2420,7 +2527,7 @@
     </table>
   </section>
   <section class="section">
-    <h2>商业转化</h2>
+    <h2 class="card-title">商业转化</h2>
         <p class="domain-desc">Shop / Marketplace 等购买入口。发现走站外 sitemap（R1）；不做 llms，交付看页面是否真有可读主信息。</p>
     <div class="domain-level" aria-label="本域默认模型层级">
       <span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span>
@@ -2465,7 +2572,7 @@
     </table>
   </section>
   <section class="section">
-    <h2>内容运营</h2>
+    <h2 class="card-title">内容运营</h2>
         <p class="domain-desc">新闻、博客、订阅、网络研讨与高管洞察。开发者技术博客已进 <code>developer.nvidia.com/llms.txt</code>（R2），但无平行 MD（D1）；公司新闻 / 博客仍多停在 R1。</p>
     <div class="domain-level" aria-label="本域默认模型层级">
       <span class="lvl lvl-2 axis-r"><span class="lv-k">R2</span>llms 目录收录</span>
@@ -2546,7 +2653,7 @@
     </table>
   </section>
   <section class="section">
-    <h2>社区运营</h2>
+    <h2 class="card-title">社区运营</h2>
         <p class="domain-desc">活动、大会与点播。3 条均已落在 R2·D2：MD 可取，且进了 <code>en-us/llms.txt</code>（GTC 站内容与 On-Demand 入口均有目录项）。</p>
     <div class="domain-level" aria-label="本域默认模型层级">
       <span class="lvl lvl-2 axis-r"><span class="lv-k">R2</span>llms 目录收录</span>
@@ -2600,7 +2707,7 @@
     </table>
   </section>
   <section class="section">
-    <h2>公司事务</h2>
+    <h2 class="card-title">公司事务</h2>
         <p class="domain-desc">关于、招聘、法务、投资人与登录等。多数在当前 MD 口径下落到 R2·D2；站外入口记为 R1，真正无 sitemap 的仍为 R0。</p>
     <div class="domain-level" aria-label="本域默认模型层级">
       <span class="lvl lvl-2 axis-r"><span class="lv-k">R2</span>llms 目录收录</span>
@@ -2764,5 +2871,30 @@
 <footer>数据：NV首页可达页面.xlsx（186）× en-gb Sitemap（2727）· 友商：NVIDIA · 结构对齐 Mintlify 七域（含生态）</footer>
 
 </div>
+</div><!-- /.peer-main -->
+</div><!-- /.page-wrapper -->
+
+<script>
+(function () {
+  var nav = document.querySelector('.peer-nav');
+  if (!nav) return;
+  var links = Array.prototype.slice.call(nav.querySelectorAll('a'));
+  var overviewLink = links.find(function (a) { return a.textContent.trim() === '分析概览'; });
+  var indexLink = links.find(function (a) { return a.textContent.trim() === '找的到（收录索引）'; });
+  var mintLink = links.find(function (a) { return a.textContent.trim() === 'Mintlify'; });
+  var nvidiaLink = links.find(function (a) { return a.textContent.trim() === 'NVIDIA'; });
+  if (!overviewLink || !indexLink) return;
+  function sync() {
+    var onIndex = (location.hash === '#index');
+    overviewLink.classList.toggle('active', !onIndex);
+    indexLink.classList.toggle('active', onIndex);
+    if (mintLink) mintLink.href = onIndex ? 'mintlify.html#index' : 'mintlify.html';
+    if (nvidiaLink) nvidiaLink.href = onIndex ? 'nvidia.html#index' : 'nvidia.html';
+  }
+  sync();
+  window.addEventListener('hashchange', sync);
+})();
+</script>
+
 </body>
 </html>

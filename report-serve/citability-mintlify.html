@@ -9,38 +9,69 @@
     --bg: #F5F5F5; --panel: #ffffff; --panel2: #FAFAFA; --line: #e2e8f0;
     --text: #191919; --muted: #595959; --accent: #1476FF; --accent-soft: rgba(20, 118, 255, 0.1);
     --link: #1476FF; --topbar-h: 56px; --content-max: 1200px; --page-gutter: clamp(16px, 2.5vw, 24px);
+      --body-size: 14px;
+    --body-lh: 22px;
+    /* 卡片标题：字号 18 / 行高 28 */
+    --card-title-size: 18px;
+    --card-title-lh: 28px;
   }
   * { box-sizing: border-box; }
   body {
+    font-size: var(--body-size);
     margin: 0;
     font-family: "PingFang SC", sans-serif;
     background: var(--bg);
-    color: var(--text); line-height: 1.55;
+    color: var(--text); line-height: var(--body-lh);
   }
   .topbar {
-    position: sticky; top: 0; z-index: 50; height: var(--topbar-h);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    height: 56px;
+    min-height: 56px;
+    max-height: 56px;
+    box-sizing: border-box;
     background: var(--panel);
     border-bottom: 1px solid var(--line);
+    overflow: hidden;
   }
   .topbar-inner {
-    width: min(var(--content-max), calc(100% - 2 * var(--page-gutter)));
-    margin: 0 auto;
-    padding: 0;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0 24px;
     height: 100%;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 24px;
+    justify-content: flex-start;
+    gap: 0;
   }
   .brand {
-    font-weight: 700; font-size: 14px; letter-spacing: -0.01em;
-    color: var(--text); text-decoration: none; white-space: nowrap;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    text-decoration: none;
+    white-space: nowrap;
+    margin-right: 40px;
   }
   .brand span { color: var(--accent); }
-  .site-nav { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+  .site-nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+    flex-wrap: wrap;
+  }
   .site-nav a {
-    text-decoration: none; color: var(--muted); font-size: 14px; font-weight: 500;
-    padding: 8px 14px; border-radius: 8px; white-space: nowrap;
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 6px;
+    white-space: nowrap;
+    transition: background .15s, color .15s;
   }
   .site-nav a:hover { color: var(--accent); background: #F5F5F5; text-decoration: none; }
   .site-nav a.active { color: var(--accent); background: #F5F5F5; font-weight: 600; }
@@ -63,6 +94,7 @@
     font-weight: 600;
     margin: 8px 0 12px;
     letter-spacing: -0.02em;
+    line-height: 48px;
   }
   .sub {
     color: var(--muted);
@@ -77,9 +109,34 @@
     padding: 22px 24px 8px;
     margin-bottom: 16px;
   }
+  .section:has(.summary-points) {
+    padding: 32px;
+  }
+  h2.block-title {
+    margin: 40px 0 16px;
+    font-size: 24px;
+    line-height: 32px;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+  }
+  .summary-points {
+    margin: 0;
+    padding: 0;
+    list-style: disc;
+    background: none;
+    border-radius: 0;
+    font-size: var(--body-size);
+    color: #3a4458;
+    line-height: var(--body-lh);
+  }
+  .summary-points li { margin-bottom: 12px; margin-left: 16px; }
+  .summary-points li:last-child { margin-bottom: 0; }
+    /* 卡片标题 */
+  .card-title,
   .section h2 {
     margin: 0 0 6px;
-    font-size: 18px;
+    font-size: var(--card-title-size);
+    line-height: var(--card-title-lh);
     font-weight: 650;
   }
   .sum-h3 {
@@ -92,21 +149,22 @@
   .domain-desc {
     margin: 0 0 12px;
     color: var(--muted);
-    font-size: 13px;
-    line-height: 1.65;
+    font-size: var(--body-size);
+    line-height: var(--body-lh);
   }
   .domain-why {
     margin: 0 0 16px;
     padding: 12px 14px 12px 32px;
     background: var(--panel2);
     border-radius: 10px;
-    font-size: 13px;
+    font-size: var(--body-size);
     color: #3a4458;
-    line-height: 1.55;
+    line-height: var(--body-lh);
   }
   .domain-why li { margin-bottom: 6px; }
   .domain-why li:last-child { margin-bottom: 0; }
-  .domain-why code {
+  .domain-why code,
+  .summary-points code {
     font-family: "SF Mono", "Fira Code", "Cascadia Code", ui-monospace, monospace;
     font-size: 12px;
   }
@@ -116,42 +174,6 @@
     .site-nav a { padding: 8px 10px; font-size: 13px; }
   }
 
-  .subnav {
-    position: sticky;
-    top: var(--topbar-h);
-    z-index: 40;
-    background: var(--panel);
-    border-bottom: 1px solid var(--line);
-  }
-  .subnav-inner {
-    width: min(var(--content-max), calc(100% - 2 * var(--page-gutter)));
-    margin: 0 auto;
-    padding: 0;
-    height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 4px;
-    overflow-x: auto;
-  }
-  .subnav a {
-    text-decoration: none;
-    color: var(--muted);
-    font-size: 13px;
-    font-weight: 500;
-    padding: 6px 12px;
-    border-radius: 8px;
-    white-space: nowrap;
-  }
-  .subnav a:hover {
-    color: var(--accent);
-    background: #F5F5F5;
-  }
-  .subnav a.active {
-    color: var(--accent);
-    background: #F5F5F5;
-    font-weight: 600;
-  }
 
   body.modal-open { overflow: hidden; }
   .case-grid {
@@ -194,7 +216,8 @@
   .chip.alt { background: #e8eef8; color: #3a4a66; }
   .case-card h2 {
     margin: 0 0 8px;
-    font-size: 18px;
+    font-size: var(--card-title-size);
+    line-height: var(--card-title-lh);
     font-weight: 600;
   }
   .case-card p {
@@ -204,7 +227,7 @@
   }
   .case-card .cta {
     margin-top: 14px;
-    font-size: 13px;
+    font-size: var(--body-size);
     font-weight: 600;
     color: #0d4db8;
   }
@@ -246,7 +269,7 @@
     background: #fff;
     border-radius: 8px;
     padding: 7px 12px;
-    font-size: 13px;
+    font-size: var(--body-size);
     font-weight: 500;
     color: var(--text);
     cursor: pointer;
@@ -295,7 +318,7 @@
     margin: 0;
     padding-left: 18px;
     color: #3a4458;
-    font-size: 13px;
+    font-size: var(--body-size);
   }
   .conclude li { margin-bottom: 4px; }
   .conclude li:last-child { margin-bottom: 0; }
@@ -304,7 +327,7 @@
     margin: 12px 0 0;
     padding-top: 10px;
     border-top: 1px solid rgba(20, 118, 255, 0.25);
-    font-size: 13px;
+    font-size: var(--body-size);
     color: #3a4458;
   }
 
@@ -369,6 +392,7 @@
     font-weight: 600;
     color: var(--text);
     background: #fff;
+    line-height: var(--body-lh);
   }
   .floor-map-legend {
     display: flex;
@@ -398,7 +422,8 @@
     border-bottom: 1px solid var(--line);
     border-left: 4px solid #c5cad3;
     background: #fff;
-    font-size: 12.5px;
+    font-size: var(--body-size);
+    line-height: var(--body-lh);
   }
   .floor-item:last-child { border-bottom: none; }
   .floor-item.in {
@@ -417,6 +442,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    line-height: var(--body-lh);
   }
   .floor-item.in .idx {
     background: rgba(20, 118, 255, 0.1);
@@ -432,7 +458,7 @@
     margin: 0;
     color: var(--muted);
     font-size: 12px;
-    line-height: 1.4;
+    line-height: var(--body-lh);
   }
   .floor-item .desc.mapsto {
     margin-top: 4px;
@@ -508,8 +534,8 @@
     padding: 16px 18px;
     margin: 0;
     font-family: "SF Mono", "Fira Code", "Cascadia Code", ui-monospace, monospace;
-    font-size: 12.5px;
-    line-height: 1.55;
+    font-size: var(--body-size);
+    line-height: var(--body-lh);
     color: var(--text);
     white-space: pre-wrap;
     word-break: break-word;
@@ -539,8 +565,8 @@
     padding: 16px 18px;
     margin: 0;
     font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
-    font-size: 12.5px;
-    line-height: 1.55;
+    font-size: var(--body-size);
+    line-height: var(--body-lh);
     color: var(--text);
     white-space: pre-wrap;
     word-break: break-word;
@@ -561,38 +587,127 @@
 
   .cases-block { margin-top: 40px; }
   .cases-block > h2 {
-    margin: 0 0 8px;
-    font-size: 22px;
+    margin: 40px 0 8px;
+    font-size: 24px;
+    line-height: 32px;
     font-weight: 650;
+    letter-spacing: -0.01em;
   }
   .cases-block > .sub {
     margin: 0 0 18px;
   }
+
+  .page-wrapper {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    min-height: calc(100vh - 56px);
+    background: var(--bg);
+  }
+  .peer-sidebar {
+    width: clamp(200px, 12.9167vw, 248px);
+    flex-shrink: 0;
+    position: sticky;
+    top: 56px;
+    height: calc(100vh - 56px);
+    overflow-y: auto;
+    padding: 16px 0 32px;
+    border-right: 1px solid var(--line);
+    background: var(--panel);
+  }
+  .peer-sidebar-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0 20px 10px;
+  }
+  .peer-nav ul { list-style: none; margin: 0; padding: 0; }
+  .peer-group-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    color: var(--muted);
+    padding: 12px 20px 4px;
+    margin-top: 8px;
+    border-top: 1px solid var(--line);
+  }
+  .peer-nav > .peer-group-label:first-child {
+    margin-top: 0;
+    border-top: none;
+    padding-top: 10px;
+  }
+  .peer-nav a {
+    display: block;
+    padding: 8px 20px;
+    font-size: 13px;
+    line-height: 1.5;
+    text-decoration: none;
+    color: var(--muted);
+    border-left: 2px solid transparent;
+  }
+  .peer-nav a:hover { color: var(--text); background: #F5F5F5; }
+  .peer-nav a.active {
+    color: var(--accent);
+    font-weight: 600;
+    background: #EEF5FF;
+    border-left-color: var(--accent);
+  }
+  .peer-main {
+    flex: 1;
+    min-width: 0;
+    background: var(--bg);
+  }
+  .peer-main > .wrap {
+    padding-top: 32px;
+  }
+  @media (max-width: 900px) {
+    .page-wrapper { flex-direction: column; }
+    .peer-sidebar {
+      position: static;
+      width: 100%;
+      height: auto;
+      border-right: none;
+      border-bottom: 1px solid var(--line);
+    }
+  }
+
 </style>
 </head>
 <body>
 <div class="topbar">
   <div class="topbar-inner">
-    <a class="brand" href="index.html">昇腾社区 <span>AI 亲和原则研究</span></a>
-    <nav class="site-nav" aria-label="主导航">
+    <a class="brand" href="index.html">社区 <span>AI 亲和原则</span></a>
+        <nav class="site-nav" aria-label="主导航">
       <a href="index.html">首页</a>
-      <a href="mintlify.html">可达性·索引分析</a>
-      <a href="citability-mintlify.html" class="active">可引用性·内容（md）分析</a>
-      <a href="citability-html-mintlify.html">可引用性·内容（html）分析</a>
+      <a href="mintlify.html" class="active">友商对照</a>
+      <a href="reachability.html">社区诊断</a>
+      <a href="community-ui.html">组件亲和</a>
     </nav>
   </div>
 </div>
 
-<div class="subnav" aria-label="可引用性·内容 二级导航">
-  <div class="subnav-inner">
-    <a href="citability-mintlify.html" class="active">Mintlify（md）分析</a>
-    <a href="citability-nvidia.html">NVIDIA（md）分析</a>
-    <a href="citability-ascend.html">Ascend 社区（md）分析</a>
-  </div>
-</div>
+<div class="page-wrapper">
+<aside class="peer-sidebar" aria-label="友商对照导航">
+    <nav class="peer-nav">
+      <div class="peer-group-label">对标友商</div>
+      <ul>
+        <li><a href="citability-mintlify.html" class="active">Mintlify</a></li>
+        <li><a href="citability-nvidia.html">NVIDIA</a></li>
+      </ul>
+      <div class="peer-group-label">分析层面</div>
+      <ul>
+        <li><a href="mintlify.html">分析概览</a></li>
+        <li><a href="mintlify.html#index">找的到（收录索引）</a></li>
+        <li><a href="citability-html-mintlify.html">读的懂（能抓 html）</a></li>
+        <li><a href="citability-mintlify.html" class="active">读的顺（双轨交付）</a></li>
+      </ul>
+    </nav>
+  </aside>
+  <div class="peer-main">
 <div class="wrap">
   <header class="hero">
-    <div class="eyebrow">可引用性 · 内容分析 · Mintlify</div>
     <h1>Mintlify（md）分析 · 可引用性·内容（md）分析</h1>
     <p class="sub">
       引用后是否有价值：正文是否结论前置、事实原子化，以及是否值得维护平行 Markdown。
@@ -600,10 +715,9 @@
     </p>
   </header>
 
+  <h2 class="block-title" id="principles-title">实施建议</h2>
   <section class="section" aria-labelledby="principles-title">
-    <h2 id="principles-title">从 Mintlify（md）案例提炼的指导原则</h2>
-
-    <ul class="domain-why">
+    <ul class="summary-points">
       <li><strong>准入 MD 的标准（事实与结构层）：</strong>仅收录官方愿背书、可核对、可解析的稳定事实。包括知识正文（概述、步骤、布局）、课程序列与入口，以及可切分的结构化数据（如榜单行、总分与检查清单）。此类知识叶子页应同步配置页顶索引块，并统一写入 <code>docs/llms.txt</code>。</li>
       <li><strong>排除 MD 的标准（壳、转化与说服层）：</strong>凡是用于交互、转化或情感打动的内容，应绝对锁定于人读 HTML。包括顶栏、搜索等站壳；试用 Demo 等 CTA 引导；首屏主张、领袖寄语、趋势曲线与实时统计，以及 Cookie 浮窗——这些内容旨在驱动操作或传递情绪，不构成可背书的稳定知识。</li>
       <li><strong>楼层切片逻辑：</strong>整页内容需按人类阅读与 Agent 提取进行物理剥离。人类视角可铺开五层叙事，但 Agent 通常只取其中唯一可解析的事实楼层。</li>
@@ -612,7 +726,7 @@
   </section>
 
   <section class="cases-block" id="cases" aria-labelledby="cases-title">
-    <h2 id="cases-title">案例</h2>
+    <h2 class="block-title" id="cases-title">实测案例</h2>
     <p class="sub">人读页面 vs Agent 可读交付的对照案例。点击卡片打开全屏对比。</p>
     <div class="case-grid">
 
@@ -622,7 +736,7 @@
         <span class="chip">知识域</span>
         <span class="chip alt">文档页</span>
       </div>
-      <h2>/docs/editor</h2>
+      <h2 class="card-title">/docs/editor</h2>
       <p>
         MD 收：概述、操作步骤、布局、相关主题；页顶 llms 索引块，并进 <code>docs/llms.txt</code>。
         不收：顶栏 / 搜索 / 主题等导航壳。<strong>原因：</strong>站级交互给人操作，不背书为知识事实。
@@ -635,7 +749,7 @@
         <span class="chip">知识域</span>
         <span class="chip alt">学习站</span>
       </div>
-      <h2>learn.mintlify.com</h2>
+      <h2 class="card-title">learn.mintlify.com</h2>
       <p>
         MD 收：Hero、四门课程卡片、Your first day 推荐入口。
         不收：站壳 chrome、Cookie / 隐私条。<strong>原因：</strong>导航给人操作；合规浮层与课程无关。
@@ -648,7 +762,7 @@
         <span class="chip">商业例外</span>
         <span class="chip alt">定价页</span>
       </div>
-      <h2>/pricing</h2>
+      <h2 class="card-title">/pricing</h2>
       <p>
         MD 收：套餐价、功能对比、FAQ。
         不收：转化视觉 / CTA、客户 Logo 墙与动态统计。<strong>原因：</strong>转化给人点；营销证明易变，不宜背书。
@@ -661,7 +775,7 @@
         <span class="chip">介绍/营销</span>
         <span class="chip alt">榜单页</span>
       </div>
-      <h2>/score</h2>
+      <h2 class="card-title">/score</h2>
       <p>
         MD 收：Agent score leaderboard（站点 / URL / 分数）。
         不收：首屏主张与 CTA、Why it matters、Insights、底部行动区。<strong>原因：</strong>营销叙事与转化留人读，Agent 只取可解析榜单。
@@ -674,7 +788,7 @@
         <span class="chip">介绍/营销</span>
         <span class="chip alt">单站评分</span>
       </div>
-      <h2>/score/mintlify</h2>
+      <h2 class="card-title">/score/mintlify</h2>
       <p>
         MD 收：总览分数、AFDocs / Components 检查清单。
         不收：页头交互、Score history、底部行动区。<strong>原因：</strong>控件与趋势图给人看，清单给 Agent 读。
@@ -1118,5 +1232,7 @@ A live ranking of how every documentation site we track scores.
     if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
   });
 </script>
+</div><!-- /.peer-main -->
+</div><!-- /.page-wrapper -->
 </body>
 </html>

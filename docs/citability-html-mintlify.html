@@ -10,38 +10,69 @@
     --bg: #F5F5F5; --panel: #ffffff; --panel2: #FAFAFA; --line: #e2e8f0;
     --text: #191919; --muted: #595959; --accent: #1476FF; --accent-soft: rgba(20, 118, 255, 0.1);
     --link: #1476FF; --topbar-h: 56px; --content-max: 1200px; --page-gutter: clamp(16px, 2.5vw, 24px);
+      --body-size: 14px;
+    --body-lh: 22px;
+    /* 卡片标题：字号 18 / 行高 28 */
+    --card-title-size: 18px;
+    --card-title-lh: 28px;
   }
   * { box-sizing: border-box; }
   body {
+    font-size: var(--body-size);
     margin: 0;
     font-family: "PingFang SC", sans-serif;
     background: var(--bg);
-    color: var(--text); line-height: 1.55;
+    color: var(--text); line-height: var(--body-lh);
   }
   .topbar {
-    position: sticky; top: 0; z-index: 50; height: var(--topbar-h);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    height: 56px;
+    min-height: 56px;
+    max-height: 56px;
+    box-sizing: border-box;
     background: var(--panel);
     border-bottom: 1px solid var(--line);
+    overflow: hidden;
   }
   .topbar-inner {
-    width: min(var(--content-max), calc(100% - 2 * var(--page-gutter)));
-    margin: 0 auto;
-    padding: 0;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0 24px;
     height: 100%;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 24px;
+    justify-content: flex-start;
+    gap: 0;
   }
   .brand {
-    font-weight: 700; font-size: 14px; letter-spacing: -0.01em;
-    color: var(--text); text-decoration: none; white-space: nowrap;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    text-decoration: none;
+    white-space: nowrap;
+    margin-right: 40px;
   }
   .brand span { color: var(--accent); }
-  .site-nav { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+  .site-nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+    flex-wrap: wrap;
+  }
   .site-nav a {
-    text-decoration: none; color: var(--muted); font-size: 14px; font-weight: 500;
-    padding: 8px 14px; border-radius: 8px; white-space: nowrap;
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 6px;
+    white-space: nowrap;
+    transition: background .15s, color .15s;
   }
   .site-nav a:hover { color: var(--accent); background: #F5F5F5; text-decoration: none; }
   .site-nav a.active { color: var(--accent); background: #F5F5F5; font-weight: 600; }
@@ -64,6 +95,7 @@
     font-weight: 600;
     margin: 8px 0 12px;
     letter-spacing: -0.02em;
+    line-height: 48px;
   }
   .sub {
     color: var(--muted);
@@ -78,9 +110,34 @@
     padding: 22px 24px 8px;
     margin-bottom: 16px;
   }
+  .section:has(.summary-points) {
+    padding: 32px;
+  }
+  h2.block-title {
+    margin: 40px 0 16px;
+    font-size: 24px;
+    line-height: 32px;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+  }
+  .summary-points {
+    margin: 0;
+    padding: 0;
+    list-style: disc;
+    background: none;
+    border-radius: 0;
+    font-size: var(--body-size);
+    color: #3a4458;
+    line-height: var(--body-lh);
+  }
+  .summary-points li { margin-bottom: 12px; margin-left: 16px; }
+  .summary-points li:last-child { margin-bottom: 0; }
+    /* 卡片标题 */
+  .card-title,
   .section h2 {
     margin: 0 0 6px;
-    font-size: 18px;
+    font-size: var(--card-title-size);
+    line-height: var(--card-title-lh);
     font-weight: 650;
   }
   .sum-h3 {
@@ -93,21 +150,22 @@
   .domain-desc {
     margin: 0 0 12px;
     color: var(--muted);
-    font-size: 13px;
-    line-height: 1.65;
+    font-size: var(--body-size);
+    line-height: var(--body-lh);
   }
   .domain-why {
     margin: 0 0 16px;
     padding: 12px 14px 12px 32px;
     background: var(--panel2);
     border-radius: 10px;
-    font-size: 13px;
+    font-size: var(--body-size);
     color: #3a4458;
-    line-height: 1.55;
+    line-height: var(--body-lh);
   }
   .domain-why li { margin-bottom: 6px; }
   .domain-why li:last-child { margin-bottom: 0; }
-  .domain-why code {
+  .domain-why code,
+  .summary-points code {
     font-family: "SF Mono", "Fira Code", "Cascadia Code", ui-monospace, monospace;
     font-size: 12px;
   }
@@ -117,42 +175,6 @@
     .site-nav a { padding: 8px 10px; font-size: 13px; }
   }
 
-  .subnav {
-    position: sticky;
-    top: var(--topbar-h);
-    z-index: 40;
-    background: var(--panel);
-    border-bottom: 1px solid var(--line);
-  }
-  .subnav-inner {
-    width: min(var(--content-max), calc(100% - 2 * var(--page-gutter)));
-    margin: 0 auto;
-    padding: 0;
-    height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 4px;
-    overflow-x: auto;
-  }
-  .subnav a {
-    text-decoration: none;
-    color: var(--muted);
-    font-size: 13px;
-    font-weight: 500;
-    padding: 6px 12px;
-    border-radius: 8px;
-    white-space: nowrap;
-  }
-  .subnav a:hover {
-    color: var(--accent);
-    background: #F5F5F5;
-  }
-  .subnav a.active {
-    color: var(--accent);
-    background: #F5F5F5;
-    font-weight: 600;
-  }
 
   body.modal-open { overflow: hidden; }
   .case-grid {
@@ -195,7 +217,8 @@
   .chip.alt { background: #e8eef8; color: #3a4a66; }
   .case-card h2 {
     margin: 0 0 8px;
-    font-size: 18px;
+    font-size: var(--card-title-size);
+    line-height: var(--card-title-lh);
     font-weight: 600;
   }
   .case-card p {
@@ -205,7 +228,7 @@
   }
   .case-card .cta {
     margin-top: 14px;
-    font-size: 13px;
+    font-size: var(--body-size);
     font-weight: 600;
     color: #0d4db8;
   }
@@ -248,7 +271,7 @@
     background: #fff;
     border-radius: 8px;
     padding: 7px 12px;
-    font-size: 13px;
+    font-size: var(--body-size);
     font-weight: 500;
     color: var(--text);
     cursor: pointer;
@@ -321,14 +344,14 @@
     margin: 12px 0 0;
     padding-top: 10px;
     border-top: 1px solid rgba(20, 118, 255, 0.25);
-    font-size: 13px;
+    font-size: var(--body-size);
     color: #3a4458;
   }
   .d1-verdict {
     margin: 0 0 12px;
-    font-size: 13px;
+    font-size: var(--body-size);
     color: #3a4458;
-    line-height: 1.55;
+    line-height: var(--body-lh);
   }
   .d1-verdict code {
     font-family: "SF Mono", "Fira Code", "Cascadia Code", ui-monospace, monospace;
@@ -374,7 +397,12 @@
   .cell-na { color: #94a3b8; }
   .comp-note { color: #5a6478; font-size: 11.5px; line-height: 1.45; }
   .section .comp-scroll { margin: 12px 0 16px; }
-  .cases-block h2 { margin: 0 0 6px; font-size: 18px; font-weight: 650; }
+  .cases-block h2 {
+    margin: 0 0 6px;
+    font-size: var(--card-title-size);
+    line-height: var(--card-title-lh);
+    font-weight: 650;
+  }
   .cases-block > .sub { margin-bottom: 14px; }
 
   .modal-split {
@@ -438,6 +466,7 @@
     font-weight: 600;
     color: var(--text);
     background: #fff;
+    line-height: var(--body-lh);
   }
   .floor-map-legend {
     display: flex;
@@ -467,7 +496,8 @@
     border-bottom: 1px solid var(--line);
     border-left: 4px solid #c5cad3;
     background: #fff;
-    font-size: 12.5px;
+    font-size: var(--body-size);
+    line-height: var(--body-lh);
   }
   .floor-item:last-child { border-bottom: none; }
   .floor-item.in {
@@ -486,6 +516,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    line-height: var(--body-lh);
   }
   .floor-item.in .idx {
     background: rgba(20, 118, 255, 0.1);
@@ -501,7 +532,7 @@
     margin: 0;
     color: var(--muted);
     font-size: 12px;
-    line-height: 1.4;
+    line-height: var(--body-lh);
   }
   .floor-item .desc.mapsto {
     margin-top: 4px;
@@ -601,6 +632,7 @@
     margin: 0 0 8px;
     font-size: 12px;
     color: #5a6478;
+    line-height: var(--body-lh);
   }
   .floor-src-list {
     flex: 1 1 auto;
@@ -636,6 +668,7 @@
     font-size: 12px;
     font-weight: 600;
     color: var(--text);
+    line-height: var(--body-lh);
   }
   .floor-src-head .badge {
     font-size: 10px;
@@ -660,7 +693,7 @@
     overflow: auto;
     font-family: "SF Mono", "Fira Code", "Cascadia Code", ui-monospace, monospace;
     font-size: 11.5px;
-    line-height: 1.5;
+    line-height: var(--body-lh);
     color: var(--text);
     white-space: pre-wrap;
     word-break: break-word;
@@ -707,8 +740,8 @@
     padding: 16px 18px;
     margin: 0;
     font-family: "SF Mono", "Fira Code", "Cascadia Code", ui-monospace, monospace;
-    font-size: 12.5px;
-    line-height: 1.55;
+    font-size: var(--body-size);
+    line-height: var(--body-lh);
     color: var(--text);
     white-space: pre-wrap;
     word-break: break-word;
@@ -738,8 +771,8 @@
     padding: 16px 18px;
     margin: 0;
     font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
-    font-size: 12.5px;
-    line-height: 1.55;
+    font-size: var(--body-size);
+    line-height: var(--body-lh);
     color: var(--text);
     white-space: pre-wrap;
     word-break: break-word;
@@ -760,12 +793,91 @@
 
   .cases-block { margin-top: 40px; }
   .cases-block > h2 {
-    margin: 0 0 8px;
-    font-size: 22px;
+    margin: 40px 0 8px;
+    font-size: 24px;
+    line-height: 32px;
     font-weight: 650;
+    letter-spacing: -0.01em;
   }
   .cases-block > .sub {
     margin: 0 0 18px;
+  }
+
+
+  .page-wrapper {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    min-height: calc(100vh - 56px);
+    background: var(--bg);
+  }
+  .peer-sidebar {
+    width: clamp(200px, 12.9167vw, 248px);
+    flex-shrink: 0;
+    position: sticky;
+    top: 56px;
+    height: calc(100vh - 56px);
+    overflow-y: auto;
+    padding: 16px 0 32px;
+    border-right: 1px solid var(--line);
+    background: var(--panel);
+  }
+  .peer-sidebar-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0 20px 10px;
+  }
+  .peer-nav ul { list-style: none; margin: 0; padding: 0; }
+  .peer-group-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    color: var(--muted);
+    padding: 12px 20px 4px;
+    margin-top: 8px;
+    border-top: 1px solid var(--line);
+  }
+  .peer-nav > .peer-group-label:first-child {
+    margin-top: 0;
+    border-top: none;
+    padding-top: 10px;
+  }
+  .peer-nav a {
+    display: block;
+    padding: 8px 20px;
+    font-size: 13px;
+    line-height: 1.5;
+    text-decoration: none;
+    color: var(--muted);
+    border-left: 2px solid transparent;
+  }
+  .peer-nav a:hover { color: var(--text); background: #F5F5F5; }
+  .peer-nav a.active {
+    color: var(--accent);
+    font-weight: 600;
+    background: #EEF5FF;
+    border-left-color: var(--accent);
+  }
+  .peer-main {
+    flex: 1;
+    min-width: 0;
+    background: var(--bg);
+  }
+  .peer-main > .wrap {
+    padding-top: 32px;
+  }
+  @media (max-width: 900px) {
+    .page-wrapper { flex-direction: column; }
+    .peer-sidebar {
+      position: static;
+      width: 100%;
+      height: auto;
+      border-right: none;
+      border-bottom: 1px solid var(--line);
+    }
   }
 
 </style>
@@ -773,27 +885,37 @@
 <body>
 <div class="topbar">
   <div class="topbar-inner">
-    <a class="brand" href="index.html">昇腾社区 <span>AI 亲和原则研究</span></a>
-    <nav class="site-nav" aria-label="主导航">
+    <a class="brand" href="index.html">社区 <span>AI 亲和原则</span></a>
+        <nav class="site-nav" aria-label="主导航">
       <a href="index.html">首页</a>
-      <a href="mintlify.html">可达性·索引分析</a>
-      <a href="citability-mintlify.html">可引用性·内容（md）分析</a>
-      <a href="citability-html-mintlify.html" class="active">可引用性·内容（html）分析</a>
+      <a href="mintlify.html" class="active">友商对照</a>
+      <a href="reachability.html">社区诊断</a>
+      <a href="community-ui.html">组件亲和</a>
     </nav>
   </div>
 </div>
 
-<div class="subnav" aria-label="可引用性·内容（html）二级导航">
-  <div class="subnav-inner">
-    <a href="citability-html-mintlify.html" class="active">Mintlify（html）分析</a>
-    <a href="citability-html-nvidia.html">NVIDIA（html）分析</a>
-    <a href="citability-html-ascend.html">Ascend 社区（html）分析</a>
-  </div>
-</div>
 
+<div class="page-wrapper">
+<aside class="peer-sidebar" aria-label="友商对照导航">
+    <nav class="peer-nav">
+      <div class="peer-group-label">对标友商</div>
+      <ul>
+        <li><a href="citability-html-mintlify.html" class="active">Mintlify</a></li>
+        <li><a href="citability-html-nvidia.html">NVIDIA</a></li>
+      </ul>
+      <div class="peer-group-label">分析层面</div>
+      <ul>
+        <li><a href="mintlify.html">分析概览</a></li>
+        <li><a href="mintlify.html#index">找的到（收录索引）</a></li>
+        <li><a href="citability-html-mintlify.html" class="active">读的懂（能抓 html）</a></li>
+        <li><a href="citability-mintlify.html">读的顺（双轨交付）</a></li>
+      </ul>
+    </nav>
+  </aside>
+  <div class="peer-main">
 <div class="wrap">
   <header class="hero">
-    <div class="eyebrow">可引用性 · 内容分析 · Mintlify</div>
     <h1>Mintlify（html）分析 · 可引用性·内容（html）分析</h1>
     <p class="sub">
       聚焦一件事：大模型去抓网页 HTML 时，关键信息能不能读到、链接跟不跟得上、图和提示有没有字、广告会不会和正文搅在一起。
@@ -801,9 +923,9 @@
     </p>
   </header>
 
+  <h2 class="block-title" id="principles-title">实施建议</h2>
   <section class="section" aria-labelledby="principles-title">
-    <h2 id="principles-title">从友商做法提炼的观点</h2>
-    <ul class="domain-why">
+    <ul class="summary-points">
       <li><strong>先看源码里有没有关键文字：</strong>不点按钮也能读到标题、正文、价格、步骤，才算「抓得到」。Mintlify 这几类页大体做到了。</li>
       <li><strong>抓得到不等于适合整页当依据：</strong>口号、按钮、客户 Logo 也会进源码；若整页吞下去，容易把宣传当成事实。看友商：说明书在文档站，营销页不当文档知识源。</li>
       <li><strong>链接要写在标签里：</strong>只有样子能点、源码没有地址，模型看得见标题却跟丢下一页——文档入口卡片上出现过。</li>
@@ -813,7 +935,7 @@
   </section>
 
   <section class="cases-block" id="cases" aria-labelledby="cases-title">
-    <h2 id="cases-title">案例</h2>
+    <h2 class="block-title" id="cases-title">实测案例</h2>
     <p class="sub">每条先写抓取事实，再给建议。点击打开编号热区与分段源码。</p>
     <div class="case-grid">
 
@@ -821,7 +943,7 @@
       <div class="meta">
         <span class="chip">介绍/营销</span><span class="chip alt">HTML 可抓</span>
       </div>
-      <h2>/</h2>
+      <h2 class="card-title">/</h2>
       <p>抓取首页源码时，宣传口号、数字会和按钮文案一起出现；Mintlify 未把该页当作文档知识源，说明书在 <code>/docs</code>。<strong>建议：</strong>营销首页只做人读与搜索，不要整页当作 AI 的官方说明。</p>
       <div class="cta">打开编号热区与楼层源码 →</div>
     </button>
@@ -829,7 +951,7 @@
       <div class="meta">
         <span class="chip">商业页</span><span class="chip alt">价目可抓</span>
       </div>
-      <h2>/pricing</h2>
+      <h2 class="card-title">/pricing</h2>
       <p>价格、套餐说明写在源码里，模型能抓到；同页还有「联系销售」等按钮文案，和价目混在一起。<strong>建议：</strong>入库或引用时只保留价目与条款，转化按钮文案单独剥掉。</p>
       <div class="cta">打开编号热区与楼层源码 →</div>
     </button>
@@ -837,7 +959,7 @@
       <div class="meta">
         <span class="chip">知识页</span><span class="chip alt">正文可抓</span>
       </div>
-      <h2>/docs/editor</h2>
+      <h2 class="card-title">/docs/editor</h2>
       <p>说明书正文在源码里，抓取没问题；部分入口卡片没有真实链接地址，模型看得见标题却跟不到下一页。<strong>建议：</strong>入口做成带真实地址的链接，避免只有点击后才跳转。</p>
       <div class="cta">打开编号热区与楼层源码 →</div>
     </button>
@@ -845,7 +967,7 @@
       <div class="meta">
         <span class="chip">内容运营</span><span class="chip alt">列表可抓</span>
       </div>
-      <h2>/blog</h2>
+      <h2 class="card-title">/blog</h2>
       <p>文章标题和链接能从源码抓到；页面定位是内容浏览，不是产品规格说明。<strong>建议：</strong>博客保网页可读即可，不要当作产品规格知识源。</p>
       <div class="cta">打开编号热区与楼层源码 →</div>
     </button>
@@ -853,7 +975,7 @@
       <div class="meta">
         <span class="chip">工具/营销</span><span class="chip alt">榜单可抓</span>
       </div>
-      <h2>/score</h2>
+      <h2 class="card-title">/score</h2>
       <p>榜单分数在源码里能读到；同页上方还有宣传故事，和榜单数字处在不同楼层。<strong>建议：</strong>只取榜单等可核对楼层；宣传故事与主张不要和数字混进同一段依据。</p>
       <div class="cta">打开编号热区与楼层源码 →</div>
     </button>
@@ -1095,5 +1217,7 @@
   // preload
   loadCases().catch(() => {});
 </script>
+</div><!-- /.peer-main -->
+</div><!-- /.page-wrapper -->
 </body>
 </html>

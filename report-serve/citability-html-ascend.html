@@ -10,38 +10,69 @@
     --bg: #F5F5F5; --panel: #ffffff; --panel2: #FAFAFA; --line: #e2e8f0;
     --text: #191919; --muted: #595959; --accent: #1476FF; --accent-soft: rgba(20, 118, 255, 0.1);
     --link: #1476FF; --topbar-h: 56px; --content-max: 1200px; --page-gutter: clamp(16px, 2.5vw, 24px);
+      --body-size: 14px;
+    --body-lh: 22px;
+    /* 卡片标题：字号 18 / 行高 28 */
+    --card-title-size: 18px;
+    --card-title-lh: 28px;
   }
   * { box-sizing: border-box; }
   body {
+    font-size: var(--body-size);
     margin: 0;
     font-family: "PingFang SC", sans-serif;
     background: var(--bg);
-    color: var(--text); line-height: 1.55;
+    color: var(--text); line-height: var(--body-lh);
   }
   .topbar {
-    position: sticky; top: 0; z-index: 50; height: var(--topbar-h);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    height: 56px;
+    min-height: 56px;
+    max-height: 56px;
+    box-sizing: border-box;
     background: var(--panel);
     border-bottom: 1px solid var(--line);
+    overflow: hidden;
   }
   .topbar-inner {
-    width: min(var(--content-max), calc(100% - 2 * var(--page-gutter)));
-    margin: 0 auto;
-    padding: 0;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0 24px;
     height: 100%;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 24px;
+    justify-content: flex-start;
+    gap: 0;
   }
   .brand {
-    font-weight: 700; font-size: 14px; letter-spacing: -0.01em;
-    color: var(--text); text-decoration: none; white-space: nowrap;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    text-decoration: none;
+    white-space: nowrap;
+    margin-right: 40px;
   }
   .brand span { color: var(--accent); }
-  .site-nav { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+  .site-nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+    flex-wrap: wrap;
+  }
   .site-nav a {
-    text-decoration: none; color: var(--muted); font-size: 14px; font-weight: 500;
-    padding: 8px 14px; border-radius: 8px; white-space: nowrap;
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 6px;
+    white-space: nowrap;
+    transition: background .15s, color .15s;
   }
   .site-nav a:hover { color: var(--accent); background: #F5F5F5; text-decoration: none; }
   .site-nav a.active { color: var(--accent); background: #F5F5F5; font-weight: 600; }
@@ -64,6 +95,7 @@
     font-weight: 600;
     margin: 8px 0 12px;
     letter-spacing: -0.02em;
+    line-height: 48px;
   }
   .sub {
     color: var(--muted);
@@ -78,9 +110,34 @@
     padding: 22px 24px 8px;
     margin-bottom: 16px;
   }
+  .section:has(.summary-points) {
+    padding: 32px;
+  }
+  h2.block-title {
+    margin: 40px 0 16px;
+    font-size: 24px;
+    line-height: 32px;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+  }
+  .summary-points {
+    margin: 0;
+    padding: 0;
+    list-style: disc;
+    background: none;
+    border-radius: 0;
+    font-size: var(--body-size);
+    color: #3a4458;
+    line-height: var(--body-lh);
+  }
+  .summary-points li { margin-bottom: 12px; margin-left: 16px; }
+  .summary-points li:last-child { margin-bottom: 0; }
+    /* 卡片标题 */
+  .card-title,
   .section h2 {
     margin: 0 0 6px;
-    font-size: 18px;
+    font-size: var(--card-title-size);
+    line-height: var(--card-title-lh);
     font-weight: 650;
   }
   .sum-h3 {
@@ -93,21 +150,22 @@
   .domain-desc {
     margin: 0 0 12px;
     color: var(--muted);
-    font-size: 13px;
-    line-height: 1.65;
+    font-size: var(--body-size);
+    line-height: var(--body-lh);
   }
   .domain-why {
     margin: 0 0 16px;
     padding: 12px 14px 12px 32px;
     background: var(--panel2);
     border-radius: 10px;
-    font-size: 13px;
+    font-size: var(--body-size);
     color: #3a4458;
-    line-height: 1.55;
+    line-height: var(--body-lh);
   }
   .domain-why li { margin-bottom: 6px; }
   .domain-why li:last-child { margin-bottom: 0; }
-  .domain-why code {
+  .domain-why code,
+  .summary-points code {
     font-family: "SF Mono", "Fira Code", "Cascadia Code", ui-monospace, monospace;
     font-size: 12px;
   }
@@ -125,9 +183,10 @@
     border-bottom: 1px solid var(--line);
   }
   .subnav-inner {
-    width: min(var(--content-max), calc(100% - 2 * var(--page-gutter)));
-    margin: 0 auto;
-    padding: 0;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0 24px;
     height: 44px;
     display: flex;
     align-items: center;
@@ -195,7 +254,8 @@
   .chip.alt { background: #e8eef8; color: #3a4a66; }
   .case-card h2 {
     margin: 0 0 8px;
-    font-size: 18px;
+    font-size: var(--card-title-size);
+    line-height: var(--card-title-lh);
     font-weight: 600;
   }
   .case-card p {
@@ -205,7 +265,7 @@
   }
   .case-card .cta {
     margin-top: 14px;
-    font-size: 13px;
+    font-size: var(--body-size);
     font-weight: 600;
     color: #0d4db8;
   }
@@ -248,7 +308,7 @@
     background: #fff;
     border-radius: 8px;
     padding: 7px 12px;
-    font-size: 13px;
+    font-size: var(--body-size);
     font-weight: 500;
     color: var(--text);
     cursor: pointer;
@@ -321,14 +381,14 @@
     margin: 12px 0 0;
     padding-top: 10px;
     border-top: 1px solid rgba(20, 118, 255, 0.25);
-    font-size: 13px;
+    font-size: var(--body-size);
     color: #3a4458;
   }
   .d1-verdict {
     margin: 0 0 12px;
-    font-size: 13px;
+    font-size: var(--body-size);
     color: #3a4458;
-    line-height: 1.55;
+    line-height: var(--body-lh);
   }
   .d1-verdict code {
     font-family: "SF Mono", "Fira Code", "Cascadia Code", ui-monospace, monospace;
@@ -374,7 +434,12 @@
   .cell-na { color: #94a3b8; }
   .comp-note { color: #5a6478; font-size: 11.5px; line-height: 1.45; }
   .section .comp-scroll { margin: 12px 0 16px; }
-  .cases-block h2 { margin: 0 0 6px; font-size: 18px; font-weight: 650; }
+  .cases-block h2 {
+    margin: 0 0 6px;
+    font-size: var(--card-title-size);
+    line-height: var(--card-title-lh);
+    font-weight: 650;
+  }
   .cases-block > .sub { margin-bottom: 14px; }
 
   .modal-split {
@@ -438,6 +503,7 @@
     font-weight: 600;
     color: var(--text);
     background: #fff;
+    line-height: var(--body-lh);
   }
   .floor-map-legend {
     display: flex;
@@ -467,7 +533,8 @@
     border-bottom: 1px solid var(--line);
     border-left: 4px solid #c5cad3;
     background: #fff;
-    font-size: 12.5px;
+    font-size: var(--body-size);
+    line-height: var(--body-lh);
   }
   .floor-item:last-child { border-bottom: none; }
   .floor-item.in {
@@ -486,6 +553,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    line-height: var(--body-lh);
   }
   .floor-item.in .idx {
     background: rgba(20, 118, 255, 0.1);
@@ -501,7 +569,7 @@
     margin: 0;
     color: var(--muted);
     font-size: 12px;
-    line-height: 1.4;
+    line-height: var(--body-lh);
   }
   .floor-item .desc.mapsto {
     margin-top: 4px;
@@ -601,6 +669,7 @@
     margin: 0 0 8px;
     font-size: 12px;
     color: #5a6478;
+    line-height: var(--body-lh);
   }
   .floor-src-list {
     flex: 1 1 auto;
@@ -636,6 +705,7 @@
     font-size: 12px;
     font-weight: 600;
     color: var(--text);
+    line-height: var(--body-lh);
   }
   .floor-src-head .badge {
     font-size: 10px;
@@ -660,7 +730,7 @@
     overflow: auto;
     font-family: "SF Mono", "Fira Code", "Cascadia Code", ui-monospace, monospace;
     font-size: 11.5px;
-    line-height: 1.5;
+    line-height: var(--body-lh);
     color: var(--text);
     white-space: pre-wrap;
     word-break: break-word;
@@ -707,8 +777,8 @@
     padding: 16px 18px;
     margin: 0;
     font-family: "SF Mono", "Fira Code", "Cascadia Code", ui-monospace, monospace;
-    font-size: 12.5px;
-    line-height: 1.55;
+    font-size: var(--body-size);
+    line-height: var(--body-lh);
     color: var(--text);
     white-space: pre-wrap;
     word-break: break-word;
@@ -738,8 +808,8 @@
     padding: 16px 18px;
     margin: 0;
     font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
-    font-size: 12.5px;
-    line-height: 1.55;
+    font-size: var(--body-size);
+    line-height: var(--body-lh);
     color: var(--text);
     white-space: pre-wrap;
     word-break: break-word;
@@ -760,40 +830,116 @@
 
   .cases-block { margin-top: 40px; }
   .cases-block > h2 {
-    margin: 0 0 8px;
-    font-size: 22px;
+    margin: 40px 0 8px;
+    font-size: 24px;
+    line-height: 32px;
     font-weight: 650;
+    letter-spacing: -0.01em;
   }
   .cases-block > .sub {
     margin: 0 0 18px;
   }
+
+
+  .page-wrapper {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    min-height: calc(100vh - 56px);
+    background: var(--bg);
+  }
+  .peer-sidebar {
+    width: clamp(200px, 12.9167vw, 248px);
+    flex-shrink: 0;
+    position: sticky;
+    top: 56px;
+    height: calc(100vh - 56px);
+    overflow-y: auto;
+    padding: 16px 0 32px;
+    border-right: 1px solid var(--line);
+    background: var(--panel);
+  }
+  .peer-nav ul { list-style: none; margin: 0; padding: 0; }
+  .peer-group-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    color: var(--muted);
+    padding: 12px 20px 4px;
+    margin-top: 8px;
+    border-top: 1px solid var(--line);
+  }
+  .peer-nav > .peer-group-label:first-child {
+    margin-top: 0;
+    border-top: none;
+    padding-top: 10px;
+  }
+  .peer-nav a {
+    display: block;
+    padding: 8px 20px;
+    font-size: 13px;
+    line-height: 1.5;
+    text-decoration: none;
+    color: var(--muted);
+    border-left: 2px solid transparent;
+  }
+  .peer-nav a:hover { color: var(--text); background: #F5F5F5; }
+  .peer-nav a.active {
+    color: var(--accent);
+    font-weight: 600;
+    background: #EEF5FF;
+    border-left-color: var(--accent);
+  }
+  .peer-main {
+    flex: 1;
+    min-width: 0;
+    background: var(--bg);
+  }
+  .peer-main > .wrap {
+    padding-top: 32px;
+  }
+  @media (max-width: 900px) {
+    .page-wrapper { flex-direction: column; }
+    .peer-sidebar {
+      position: static;
+      width: 100%;
+      height: auto;
+      border-right: none;
+      border-bottom: 1px solid var(--line);
+    }
+  }
+  .wrap > h2.block-title { scroll-margin-top: 72px; }
 
 </style>
 </head>
 <body>
 <div class="topbar">
   <div class="topbar-inner">
-    <a class="brand" href="index.html">昇腾社区 <span>AI 亲和原则研究</span></a>
-    <nav class="site-nav" aria-label="主导航">
+    <a class="brand" href="index.html">社区 <span>AI 亲和原则</span></a>
+        <nav class="site-nav" aria-label="主导航">
       <a href="index.html">首页</a>
-      <a href="mintlify.html">可达性·索引分析</a>
-      <a href="citability-mintlify.html">可引用性·内容（md）分析</a>
-      <a href="citability-html-mintlify.html" class="active">可引用性·内容（html）分析</a>
+      <a href="mintlify.html">友商对照</a>
+      <a href="reachability.html" class="active">社区诊断</a>
+      <a href="community-ui.html">组件亲和</a>
     </nav>
   </div>
 </div>
 
-<div class="subnav" aria-label="可引用性·内容（html）二级导航">
-  <div class="subnav-inner">
-    <a href="citability-html-mintlify.html">Mintlify（html）分析</a>
-    <a href="citability-html-nvidia.html">NVIDIA（html）分析</a>
-    <a href="citability-html-ascend.html" class="active">Ascend 社区（html）分析</a>
-  </div>
-</div>
-
+<div class="page-wrapper">
+<aside class="peer-sidebar" aria-label="社区诊断导航">
+    <nav class="peer-nav">
+      <div class="peer-group-label">分析层面</div>
+      <ul>
+        <li><a href="reachability.html">分析概览</a></li>
+        <li><a href="reachability.html#index">找的到（收录索引）</a></li>
+        <li><a href="citability-html-ascend.html" class="active">读的懂（能抓 html）</a></li>
+        <li><a href="citability-ascend.html">读的顺（双轨交付）</a></li>
+      </ul>
+    </nav>
+  </aside>
+  <div class="peer-main">
 <div class="wrap">
   <header class="hero">
-    <div class="eyebrow">可引用性 · 内容分析 · Ascend</div>
     <h1>Ascend 社区（html）分析 · 可引用性·内容（html）分析</h1>
     <p class="sub">
       本栏对着昇腾自己的页：大模型抓 HTML 时，正文在不在源码、缺到什么程度、站外空壳怎么处理。
@@ -801,9 +947,9 @@
     </p>
   </header>
 
+  <h2 class="block-title" id="principles-title">实施建议</h2>
   <section class="section" aria-labelledby="principles-title">
-    <h2 id="principles-title">当前 HTML 抓取问题与改造方向</h2>
-    <ul class="domain-why">
+    <ul class="summary-points">
       <li><strong>缺失页优先补 SSR：</strong>如 CCAE、HiDevLab 空壳，curl 几乎无产品说明。先把定位与要点写进 HTML，再谈入库。</li>
       <li><strong>部分页区分「壳」与「规格」：</strong>首页、集群、下载中心常有导航/定位可抓，规格表或包列表仍偏动态——补表格 SSR，或链到可抓文档。</li>
       <li><strong>知识壳 ≠ 知识正文：</strong><code>/developer</code> 只有入口卡与短述；可引用内容在 FAQ 等叶子。壳做人读，叶子保可抓。</li>
@@ -813,7 +959,7 @@
   </section>
 
   <section class="cases-block" id="cases" aria-labelledby="cases-title">
-    <h2 id="cases-title">案例</h2>
+    <h2 class="block-title" id="cases-title">实测案例</h2>
     <p class="sub">每条先写<strong>问题</strong>（抓取事实），再写<strong>建议</strong>。点击打开编号热区与分段源码。</p>
     <div class="case-grid">
 
@@ -821,7 +967,7 @@
       <div class="meta">
         <span class="chip">市场营销</span><span class="chip alt">HTML 部分</span>
       </div>
-      <h2>/zh</h2>
+      <h2 class="card-title">/zh</h2>
       <p><strong>问题：</strong>导航与 title 可抓，首屏运营主体偏 Nuxt 动态，静态不全。<strong>建议：</strong>首页只做人读与发现；可抓主张写一两句进 SSR，规格放到产品/文档深页。</p>
       <div class="cta">打开编号热区与楼层源码 →</div>
     </button>
@@ -830,7 +976,7 @@
       <div class="meta">
         <span class="chip">市场营销 · 产品</span><span class="chip alt">HTML 部分</span>
       </div>
-      <h2>/hardware/cluster</h2>
+      <h2 class="card-title">/hardware/cluster</h2>
       <p><strong>问题：</strong>title 有产品名，承诺「技术规格」但静态源码难见完整参数表。<strong>建议：</strong>关键规格 SSR 成 HTML 表，或提供可抓规格文档并带真链接。</p>
       <div class="cta">打开编号热区与楼层源码 →</div>
     </button>
@@ -839,7 +985,7 @@
       <div class="meta">
         <span class="chip">市场营销 · 软件</span><span class="chip alt">HTML 缺失</span>
       </div>
-      <h2>/software/ccae</h2>
+      <h2 class="card-title">/software/ccae</h2>
       <p><strong>问题：</strong>几乎只有 title 与导航壳，产品说明依赖 JS，D0 正文不可读。<strong>建议：</strong>优先改造：定位、能力要点、文档入口 SSR；未完成前不要进 AI 知识库。</p>
       <div class="cta">打开编号热区与楼层源码 →</div>
     </button>
@@ -848,7 +994,7 @@
       <div class="meta">
         <span class="chip">知识 · 壳入口</span><span class="chip alt">HTML 缺失</span>
       </div>
-      <h2>/developer</h2>
+      <h2 class="card-title">/developer</h2>
       <p><strong>问题：</strong>有训练/推理等入口卡与工具短述，但无系统说明书，不能当知识正文。<strong>建议：</strong>壳只做人读导航；AI 引用指向 FAQ/文档叶子，卡片保真 href。</p>
       <div class="cta">打开编号热区与楼层源码 →</div>
     </button>
@@ -857,7 +1003,7 @@
       <div class="meta">
         <span class="chip">知识 · 文档</span><span class="chip alt">HTML 部分</span>
       </div>
-      <h2>AscendFAQ /overview</h2>
+      <h2 class="card-title">AscendFAQ /overview</h2>
       <p><strong>问题：</strong>已有标题与产品系列正文可抓，仍有壳与交互续读，故为「部分」。<strong>建议：</strong>改造优先落在此类叶子：保 SSR 正文；入库剥导航壳。比先改营销首页更划算。</p>
       <div class="cta">打开编号热区与楼层源码 →</div>
     </button>
@@ -866,7 +1012,7 @@
       <div class="meta">
         <span class="chip">知识 · 站外</span><span class="chip alt">HTML 缺失</span>
       </div>
-      <h2>hidevlab.huawei.com</h2>
+      <h2 class="card-title">hidevlab.huawei.com</h2>
       <p><strong>问题：</strong>首包空 <code>#app</code>，站外且无说明可抓。<strong>建议：</strong>社区链出时附摘要页；或明确 AI 不引用该壳。不要把空 app 当知识源。</p>
       <div class="cta">打开编号热区与楼层源码 →</div>
     </button>
@@ -875,7 +1021,7 @@
       <div class="meta">
         <span class="chip">知识 · 下载</span><span class="chip alt">HTML 部分</span>
       </div>
-      <h2>/developer/download</h2>
+      <h2 class="card-title">/developer/download</h2>
       <p><strong>问题：</strong>定位与社区版/商用版说明、资源卡可抓；完整包表/筛选偏动态。<strong>建议：</strong>保分类说明 SSR；准确版本另做可抓清单或文档页。</p>
       <div class="cta">打开编号热区与楼层源码 →</div>
     </button>
@@ -884,7 +1030,7 @@
       <div class="meta">
         <span class="chip">生态 · 站外</span><span class="chip alt">HTML 部分</span>
       </div>
-      <h2>edu.hicomputing.huawei.com</h2>
+      <h2 class="card-title">edu.hicomputing.huawei.com</h2>
       <p><strong>问题：</strong>主张与角色卡可抓，但属站外，不在 www 索引尺子内。<strong>建议：</strong>社区入口留真链接 + 短摘要；深度内容以教育站为准，勿整站塞进 www llms。</p>
       <div class="cta">打开编号热区与楼层源码 →</div>
     </button>
@@ -1126,5 +1272,7 @@
   // preload
   loadCases().catch(() => {});
 </script>
+</div><!-- /.peer-main -->
+</div><!-- /.page-wrapper -->
 </body>
 </html>

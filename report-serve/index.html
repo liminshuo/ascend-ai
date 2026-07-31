@@ -24,50 +24,67 @@
     --q-noise: #fbeded;
     --risk: #b3382c;
     --mono: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+      --body-size: 14px;
+    --body-lh: 22px;
   }
   * { box-sizing: border-box; }
   body {
+    font-size: var(--body-size);
     margin: 0;
     font-family: "PingFang SC", sans-serif;
     background: var(--bg);
     color: var(--text);
-    line-height: 1.55;
+    line-height: var(--body-lh);
   }
   .topbar {
     position: sticky;
     top: 0;
     z-index: 50;
-    height: var(--topbar-h);
+    height: 56px;
+    min-height: 56px;
+    max-height: 56px;
+    box-sizing: border-box;
     background: var(--panel);
     border-bottom: 1px solid var(--line);
+    overflow: hidden;
   }
   .topbar-inner {
-    width: min(var(--content-max), calc(100% - 2 * var(--page-gutter)));
-    margin: 0 auto;
-    padding: 0;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0 24px;
     height: 100%;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 24px;
+    justify-content: flex-start;
+    gap: 0;
   }
   .brand {
     font-weight: 700;
-    font-size: 14px;
+    font-size: 15px;
     letter-spacing: -0.01em;
     color: var(--text);
     text-decoration: none;
     white-space: nowrap;
+    margin-right: 40px;
   }
   .brand span { color: var(--accent); }
-  .site-nav { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+  .site-nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+    flex-wrap: wrap;
+  }
   .site-nav a {
     text-decoration: none;
     color: var(--muted);
     font-size: 14px;
     font-weight: 500;
-    padding: 8px 14px;
-    border-radius: 8px;
+    padding: 6px 14px;
+    border-radius: 6px;
+    white-space: nowrap;
+    transition: background .15s, color .15s;
   }
   .site-nav a:hover { color: var(--accent); background: #F5F5F5; text-decoration: none; }
   .site-nav a.active {
@@ -80,7 +97,7 @@
     margin: 0 auto;
     padding: 40px 0 80px;
   }
-  .hero { margin-bottom: 56px; }
+  .hero { margin-bottom: 40px; }
   .eyebrow {
     color: var(--accent);
     font-size: 13px;
@@ -90,26 +107,87 @@
   }
   h1 {
     font-family: "PingFang SC", sans-serif;
-    font-size: clamp(32px, 5vw, 48px);
+    font-size: clamp(28px, 4vw, 40px);
     font-weight: 600;
     margin: 8px 0 12px;
     letter-spacing: -0.02em;
+    line-height: 48px;
   }
-  .sub { color: var(--muted); max-width: 640px; font-size: 16px; margin: 0; }
+  .hero-lead {
+    margin: 0 0 10px;
+    color: var(--text);
+    font-size: 17px;
+    line-height: 1.55;
+    max-width: 720px;
+    font-weight: 500;
+  }
   .hero-desc {
     margin: 0;
     color: var(--muted);
     font-size: 15px;
     line-height: 1.65;
+    max-width: 720px;
   }
-  .hero-desc p { margin: 0 0 12px; }
-  .hero-desc p:last-child { margin-bottom: 0; }
-  .hero-desc ol {
-    margin: 4px 0 14px;
-    padding-left: 1.25em;
+  .hero-desc p { margin: 0; }
+
+  .module-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 0 0 8px;
   }
-  .hero-desc li { margin-bottom: 6px; }
-  .hero-desc li:last-child { margin-bottom: 0; }
+  .module-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 22px 22px 18px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .module-card:hover {
+    border-color: #C9DCFF;
+    box-shadow: 0 4px 16px rgba(20, 118, 255, 0.08);
+    text-decoration: none;
+    color: inherit;
+  }
+  .module-card .m-num {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    color: var(--accent);
+    margin: 0 0 8px;
+  }
+  .module-card h3 {
+    margin: 0 0 10px;
+    font-size: 18px;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+  }
+  .module-card p {
+    margin: 0 0 12px;
+    font-size: var(--body-size);
+    line-height: var(--body-lh);
+    color: var(--muted);
+    flex: 1;
+  }
+  .module-card .m-meta {
+    margin: 0 0 14px;
+    padding: 10px 12px;
+    background: var(--panel2);
+    border-radius: 8px;
+    font-size: 12px;
+    line-height: 1.55;
+    color: #3a4458;
+  }
+  .module-card .m-meta strong { color: var(--text); font-weight: 650; }
+  .module-card .m-go {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+  }
 
   .block { margin-bottom: 56px; }
   .block h2 {
@@ -122,18 +200,20 @@
   .block .lead {
     margin: 0 0 22px;
     color: var(--muted);
-    font-size: 14px;
+    font-size: var(--body-size);
     max-width: 720px;
+    line-height: var(--body-lh);
   }
 
   .levels {
     width: 100%;
     border-collapse: collapse;
-    font-size: 13px;
+    font-size: var(--body-size);
     background: var(--panel);
     border: 1px solid var(--line);
     border-radius: 12px;
     overflow: hidden;
+    line-height: var(--body-lh);
   }
   .levels th, .levels td {
     text-align: left;
@@ -203,7 +283,7 @@
     font-size: 12px;
     font-weight: 400;
     color: var(--muted);
-    line-height: 1.45;
+    line-height: var(--body-lh);
   }
   .levels .dec {
     white-space: nowrap;
@@ -227,7 +307,7 @@
   }
   .levels .act {
     color: #3a4458;
-    line-height: 1.55;
+    line-height: var(--body-lh);
   }
   .levels .act strong { color: var(--text); font-weight: 650; }
 
@@ -259,7 +339,7 @@
     font-weight: 700;
     white-space: nowrap;
   }
-  .gate .g-b { margin: 0; font-size: 14px; line-height: 22px; color: #3a4458; }
+  .gate .g-b { margin: 0; font-size: var(--body-size); line-height: var(--body-lh); color: #3a4458; }
 
   .axes {
     display: grid;
@@ -273,7 +353,7 @@
     border-radius: 12px;
   }
   .axis-card h3 { margin: 0 0 4px; font-size: 16px; line-height: 24px; font-weight: 650; }
-  .axis-card .ac-sub { margin: 0 0 18px; font-size: 14px; line-height: 22px; color: var(--muted); }
+  .axis-card .ac-sub { margin: 0 0 18px; font-size: var(--body-size); line-height: var(--body-lh); color: var(--muted); }
   .rungs { list-style: none; margin: 0; padding: 0; }
   .rungs li {
     padding: 0 0 18px;
@@ -315,7 +395,7 @@
     color: #4a5568;
     border-color: #d5dae1;
   }
-  .rungs .r-d { margin: 3px 0 0; font-size: 14px; line-height: 22px; color: #3a4458; }
+  .rungs .r-d { margin: 3px 0 0; font-size: var(--body-size); line-height: var(--body-lh); color: #3a4458; }
   .rungs .r-map {
     display: inline-block;
     margin-top: 6px;
@@ -374,7 +454,7 @@
   .target .t-c .r { color: var(--accent); }
   .target .t-c .c { color: #6d28d9; }
   .target .t-c .sep { color: #c3cbd6; margin: 0 3px; }
-  .target .t-d { margin: 0; font-size: 12.5px; color: #3a4458; line-height: 1.45; }
+  .target .t-d { margin: 0; font-size: var(--body-size); color: #3a4458; line-height: var(--body-lh); }
 
   .flow {
     display: grid;
@@ -409,7 +489,7 @@
     font-weight: 700;
   }
   .flow h3 { margin: 0 0 6px; font-size: 15px; font-weight: 650; }
-  .flow p { margin: 0; font-size: 13px; color: #3a4458; line-height: 1.5; }
+  .flow p { margin: 0; font-size: var(--body-size); color: #3a4458; line-height: var(--body-lh); }
   .flow .ex {
     margin-top: 9px;
     padding-top: 9px;
@@ -423,8 +503,8 @@
     background: var(--panel2);
     border: 1px solid var(--line);
     border-radius: 10px;
-    font-size: 12.5px;
-    line-height: 1.6;
+    font-size: var(--body-size);
+    line-height: var(--body-lh);
     color: #3a4458;
   }
   .note-line strong { color: var(--text); }
@@ -465,8 +545,9 @@
     background: var(--panel2);
     border: 1px solid var(--line);
     border-radius: 10px;
-    font-size: 13px;
+    font-size: var(--body-size);
     color: #3a4458;
+    line-height: var(--body-lh);
   }
   .steps li::before {
     content: counter(step);
@@ -483,6 +564,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    line-height: var(--body-lh);
   }
   .steps strong { color: var(--text); }
   .steps code {
@@ -502,7 +584,7 @@
     background: #fbf8f1;
     border: 1px solid #f0e6d2;
     border-radius: 10px;
-    font-size: 13px;
+    font-size: var(--body-size);
     color: #3a4458;
   }
   .donts strong {
@@ -517,8 +599,11 @@
     color: var(--muted);
     font-size: 12px;
   }
+  @media (max-width: 1100px) {
+    .module-grid { grid-template-columns: 1fr; }
+  }
   @media (max-width: 720px) {
-    .site-nav a { padding: 8px 10px; font-size: 13px; }
+    .site-nav a { padding: 6px 10px; font-size: 13px; }
     .levels .name { white-space: normal; }
     .gates { grid-template-columns: 1fr; }
     .axes { grid-template-columns: 1fr; }
@@ -536,9 +621,10 @@
     border-bottom: 1px solid var(--line);
   }
   .subnav-inner {
-    width: min(var(--content-max), calc(100% - 2 * var(--page-gutter)));
-    margin: 0 auto;
-    padding: 0;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0 24px;
     height: 44px;
     display: flex;
     align-items: center;
@@ -569,34 +655,56 @@
 <body>
 <div class="topbar">
   <div class="topbar-inner">
-    <a class="brand" href="index.html">昇腾社区 <span>AI 亲和原则研究</span></a>
-                    <nav class="site-nav" aria-label="主导航">
+    <a class="brand" href="index.html">社区 <span>AI 亲和原则</span></a>
+                        <nav class="site-nav" aria-label="主导航">
       <a href="index.html" class="active">首页</a>
-      <a href="mintlify.html">可达性·索引分析</a>
-      <a href="citability-mintlify.html">可引用性·内容（md）分析</a>
-      <a href="citability-html-mintlify.html">可引用性·内容（html）分析</a>
+      <a href="mintlify.html">友商对照</a>
+      <a href="reachability.html">社区诊断</a>
+      <a href="community-ui.html">组件亲和</a>
     </nav>
   </div>
 </div>
 
 <div class="wrap">
   <header class="hero">
-    <div class="eyebrow">研究主题</div>
-    <h1>昇腾社区 AI 亲和原则</h1>
+    <h1>社区 AI 亲和原则</h1>
+    <p class="hero-lead">整站哪些面该做亲和、索引与交付各做到哪一档——从官网与社区入口层建立基线。</p>
     <div class="hero-desc">
-      <p>此前，我们已完成技术文档的 AI 亲和研究，重点聚焦于正文的可读性与可引用性，并实现了文档站双轨交付（HTML / Markdown / 索引体系）。本次研究则将视野从「说明书如何被 Agent 调用」上移至官网与社区入口层，核心命题转变为：整站在哪些面上需做亲和、索引与交付各自应达到何种深度。</p>
-      <p>研究旨在回答以下三个关键问题：</p>
-      <ol>
-        <li>按运营域划分，哪些环节应做亲和改造，哪些暂不介入；</li>
-        <li>以「可达性·索引 × 可读取性·交付」为度量维度，刻画各模块的改造程度与优先级；</li>
-        <li>从 Mintlify 与 NVIDIA 的实践对比中，抽象出一套可迁移至昇腾社区的设计原则，特别覆盖 Sitemap 发现机制、locale 与子域错位等官网特有的结构性难题。</li>
-      </ol>
-      <p>此轮研究不重复文档层已有成果，而是在入口与导航层建立新的亲和基线，为后续全站 AI 友好度演进提供决策依据。</p>
+      <p>文档层已解决「说明书如何被 Agent 读」；本站上移到入口与组件层：运营域取舍、双轴定档、友商可迁移原则，以及社区 UI 的实测与改造。</p>
     </div>
   </header>
 
+  <section class="block" aria-labelledby="paths-title">
+    <h2 id="paths-title">三条研究路径</h2>
+    <p class="lead">与顶栏一致：对照友商、诊断社区、落地组件。任选一条进入。</p>
+    <div class="module-grid">
+      <a class="module-card" href="mintlify.html">
+        <div class="m-num">01 · 友商对照</div>
+        <h3>Mintlify / NVIDIA</h3>
+        <p>对标索引管道、locale 与机器目录、内容交付（md / html）。学分区 sitemap 与枢纽 llms，警惕全面覆盖把叙事页卷进知识层。</p>
+        <div class="m-meta">左侧：对标友商（Mintlify · NVIDIA）· 分析层面（分析概览 · 找的到（收录索引） · 读的懂（能抓 html） · 读的顺（双轨交付））</div>
+        <span class="m-go">进入友商对照 →</span>
+      </a>
+      <a class="module-card" href="reachability.html">
+        <div class="m-num">02 · 社区诊断</div>
+        <h3>昇腾可达与可引用</h3>
+        <p>用同一双轴验收社区自身：机器入口是否清晰、HTML/MD 能否干净读走、版本与渠道是否可消歧。</p>
+        <div class="m-meta">左侧：分析层面（分析概览 · 找的到 · 读的懂 · 读的顺）</div>
+        <span class="m-go">进入社区诊断 →</span>
+      </a>
+      <a class="module-card" href="community-ui.html">
+        <div class="m-num">03 · 组件亲和</div>
+        <h3>社区 UI 组件</h3>
+        <p>按组件判定要不要做亲和；需要者附问题实测与改造原则（设计 / 内容 / 前端）。</p>
+        <div class="m-meta"><strong>39</strong> 个组件 · 需要 <strong>14</strong> · 视情况 <strong>9</strong> · 不需要 <strong>16</strong></div>
+        <span class="m-go">打开组件清单 →</span>
+      </a>
+    </div>
+  </section>
+
   <section class="block" aria-labelledby="model-title">
-    <h2 id="model-title">双轴模型</h2>
+    <h2 id="model-title">共用标尺 · 双轴模型</h2>
+    <p class="lead">三条路径共用同一套判定：先过背书闸门，再分开定 R（找得到）与 D（读得走）。</p>
 
     <div class="gates">
       <div class="gate">
@@ -604,8 +712,8 @@
           <h3>背书闸门</h3>
           <span class="g-k">G · 敢不敢背书</span>
           <p class="g-b">
-            你愿不愿意让 AI 把这页当官方事实原样引用？不愿意就停在基线，业务价值再高也不升档。
-            它不归属任何一根轴，是一票否决：定价页价值高、内容也独家，却因为报价会变而故意不进目录。
+            愿不愿意让 AI 把这页当官方事实原样引用？不愿意就停在基线，业务价值再高也不升档。
+            一票否决：定价页价值高却因报价会变而故意不进目录。
           </p>
         </div>
       </div>
@@ -614,42 +722,38 @@
     <div class="axes">
       <div class="axis-card">
         <h3>可达性·索引</h3>
-        <p class="ac-sub">R = Reachability（可达性）。机器能不能找到这一页。归属：站点配置、索引运营。</p>
+        <p class="ac-sub">R = Reachability。机器能不能找到这一页。</p>
         <ul class="rungs">
           <li>
             <div class="r-h"><span class="lvl lvl-0"><span class="r-k">R0</span>未进索引</span></div>
-            <p class="r-d">Sitemap 与 llms.txt 两处都搜不到，AI 只能靠外链偶然撞见。</p>
+            <p class="r-d">Sitemap 与 llms.txt 都搜不到，只能靠外链偶然撞见。</p>
           </li>
           <li>
             <div class="r-h"><span class="lvl lvl-1"><span class="r-k">R1</span>Sitemap 可发现</span></div>
-            <p class="r-d">URL 稳定，并进入<strong>该内容面</strong>对应的 sitemap（文档站用 docs sitemap，不必强行进 www 根 sitemap）。</p>
-            <span class="r-map">报表列 · 收录Sitemap</span>
+            <p class="r-d">URL 稳定，并进入<strong>该内容面</strong>对应的 sitemap。</p>
           </li>
           <li>
             <div class="r-h"><span class="lvl lvl-2"><span class="r-k">R2</span>llms 目录收录</span></div>
-            <p class="r-d">写入机器目录（llms.txt 或等价知识索引），让 Agent 一次拿到可引用全集。</p>
-            <span class="r-map">报表列 · 收录llms.txt</span>
+            <p class="r-d">写入机器目录，让 Agent 一次拿到可引用全集。</p>
           </li>
         </ul>
       </div>
 
       <div class="axis-card cite">
         <h3>可读取性·交付</h3>
-        <p class="ac-sub">D = Delivery（交付）。找到之后能不能干净地读走。归属：前端架构、内容生产。</p>
+        <p class="ac-sub">D = Delivery。找到之后能不能干净地读走。</p>
         <ul class="rungs">
           <li>
             <div class="r-h"><span class="lvl lvl-0"><span class="r-k">D0</span>正文不可读</span></div>
-            <p class="r-d">正文靠 JS 才出现，且没有平行 MD——拿到 URL 也读不到东西。</p>
+            <p class="r-d">正文靠 JS 才出现，且没有平行 MD。</p>
           </li>
           <li>
             <div class="r-h"><span class="lvl lvl-1"><span class="r-k">D1</span>HTML 可读</span></div>
-            <p class="r-d">不执行 JS 时，HTML 里已有完整主信息（正文、步骤、参数；侧栏、弹层、推荐位不计）。</p>
-            <span class="r-map">报表列 · HTML主信息</span>
+            <p class="r-d">不执行 JS 时，HTML 里已有完整主信息。</p>
           </li>
           <li>
             <div class="r-h"><span class="lvl lvl-2"><span class="r-k">D2</span>MD 可托管</span></div>
-            <p class="r-d">平行 Markdown（或等价结构化正文）与 HTML <strong>同源同步</strong>；且对 Agent 实际爬取的 locale / 子域可用——不是只在别的地区版有。</p>
-            <span class="r-map">报表列 · MD文件</span>
+            <p class="r-d">平行 Markdown 与 HTML <strong>同源同步</strong>，且对实际爬取 locale 可用。</p>
           </li>
         </ul>
       </div>
@@ -659,35 +763,34 @@
       <div class="target goal">
         <p class="t-l">知识面目标</p>
         <p class="t-c"><span class="r">R1</span><span class="sep">·</span><span class="c">D1</span> 必达 · <span class="r">R2</span><span class="sep">·</span><span class="c">D2</span> 加码</p>
-        <p class="t-d">文档 / API / 教程 / 支持库。先保证进 sitemap、正文在 HTML 里；再补机器目录与平行 MD。</p>
+        <p class="t-d">文档 / API / 教程 / 支持库。先保证进 sitemap、正文在 HTML；再补机器目录与平行 MD。</p>
       </div>
       <div class="target base">
         <p class="t-l">非知识面默认</p>
         <p class="t-c"><span class="r">R1</span><span class="sep">·</span><span class="c">D1</span> 封顶</p>
-        <p class="t-d">营销、生态、博客、定价、活动、招聘等。Sitemap 可服务 SEO；不进 llms，不强制 MD。</p>
+        <p class="t-d">营销、生态、博客、定价、活动等。Sitemap 可服务 SEO；不进 llms，不强制 MD。</p>
       </div>
     </div>
-
   </section>
 
   <section class="block" aria-labelledby="playbook-title">
     <h2 id="playbook-title">可直接搬的决策</h2>
-    <p class="lead">从 Mintlify / NVIDIA 对标沉淀的操作手册：先过三步决策，再对照可搬走结论与明确不做。域定档见下方矩阵。</p>
+    <p class="lead">从友商对标沉淀的操作要点；展开论证见 <a href="mintlify.html">友商对照</a>。</p>
 
     <h3 class="sum-h3">三步决策</h3>
     <ol class="steps">
-      <li><strong>这页公开吗？</strong>是 → <span class="coord"><span class="r">R0</span><span class="sep">·</span><span class="c">D1</span></span>（主信息进 HTML）。网页基本功，同时服务人、SEO 与爬虫。</li>
-      <li><strong>用户会拿它问「怎么做 / 是什么」吗？</strong>会 → <span class="coord"><span class="r">R1</span></span>（进对应内容面 sitemap）。多数知识页停这里已够用；子域知识用各站自有 sitemap，不用 www 一票否决。</li>
-      <li><strong>长期稳定、愿意背书吗？</strong>是 → 再补 <span class="coord"><span class="c">D2</span></span> 平行 MD 与 <span class="coord"><span class="r">R2</span></span> 写入目录。前两步过了这一步仍可能不过——定价页就是；汇总壳页也不必强当知识正文。</li>
+      <li><strong>这页公开吗？</strong>是 → <span class="coord"><span class="r">R0</span><span class="sep">·</span><span class="c">D1</span></span>（主信息进 HTML）。</li>
+      <li><strong>用户会拿它问「怎么做 / 是什么」吗？</strong>会 → <span class="coord"><span class="r">R1</span></span>（进对应内容面 sitemap）。</li>
+      <li><strong>长期稳定、愿意背书吗？</strong>是 → 再补 <span class="coord"><span class="c">D2</span></span> 与 <span class="coord"><span class="r">R2</span></span>。可达 ≠ 该被引用。</li>
     </ol>
 
     <h3 class="sum-h3">可搬走的结论</h3>
     <ol class="steps">
-      <li><strong>管道能力必须学</strong>——分区 sitemap、locale 权威 MD、枢纽 llms；大站没有这些，Agent 会系统性迷路。</li>
-      <li><strong>全面覆盖必须警惕</strong>——防止发布流水线默认全开，把叙事页也卷进 Agent 知识层。工程学 NVIDIA，收口学 Mintlify。</li>
-      <li><strong>策展以场景为准</strong>——先问愿不愿意背书；严守「事实」与「壳」的界线，再决定是否上 <span class="coord"><span class="r">R2</span><span class="sep">·</span><span class="c">D2</span></span>。可达 ≠ 该被引用。</li>
-      <li><strong>叶子重于汇总</strong>——具体可引用页优先；On-Demand 等根页最多做入口指针，不必强做平行 MD 正文。</li>
-      <li><strong>分流是为了场景边界</strong>——不是刷亲和指标；目标是<strong>分面管道 + 窄目录背书</strong>，而非全站镜像流水线。</li>
+      <li><strong>管道能力必须学</strong>——分区 sitemap、locale 权威 MD、枢纽 llms。</li>
+      <li><strong>全面覆盖必须警惕</strong>——工程学 NVIDIA，收口学 Mintlify。</li>
+      <li><strong>策展以场景为准</strong>——先问愿不愿意背书，再决定是否上 R2·D2。</li>
+      <li><strong>叶子重于汇总</strong>——具体可引用页优先；根页最多做入口指针。</li>
+      <li><strong>分流是为了场景边界</strong>——目标是分面管道 + 窄目录背书，而非全站镜像。</li>
     </ol>
 
     <h3 class="sum-h3">四种明确不做</h3>
@@ -700,8 +803,8 @@
   </section>
 
   <section class="block" aria-labelledby="scene-title">
-    <h2 id="scene-title">改造决策矩阵</h2>
-    <p class="lead">按「可达性·索引 × 可读取性·交付」给七个运营域定档，再落到决策与改造动作。往上够是浪费，往下掉是缺口。</p>
+    <h2 id="scene-title">运营域定档</h2>
+    <p class="lead">按「可达性·索引 × 可读取性·交付」给七个运营域定档。知识域必改；其余多数停在基线。</p>
     <table class="levels">
       <thead>
         <tr>
@@ -718,49 +821,49 @@
           <td class="axis-cell"><span class="tag r">R1 Sitemap 可发现</span><span class="hint">Sitemap 服务 SEO</span></td>
           <td class="axis-cell"><span class="tag c">D1 HTML 可读</span><span class="hint">说服与导流，非说明书</span></td>
           <td class="dec"><span class="tag dec-skip">不改</span></td>
-          <td class="act">首页、产品 / 方案 / 行业、客户证言。进 sitemap 即可；<strong>不进 llms</strong>，挡在知识目录外，也不做平行 MD。</td>
+          <td class="act">进 sitemap 即可；<strong>不进 llms</strong>，也不做平行 MD。</td>
         </tr>
         <tr>
           <td class="name">知识</td>
           <td class="axis-cell"><span class="tag r">R2 llms 目录收录</span><span class="hint">Sitemap + 机器目录</span></td>
           <td class="axis-cell"><span class="tag c">D2 MD 可托管</span><span class="hint">操作说明书，答错=失败</span></td>
           <td class="dec"><span class="tag dec-must">必改</span></td>
-          <td class="act">文档 / API / 教程 / 学习站做满两轴。支持库可先进 llms 目录、MD 后置；Changelog 是否进目录看更新节奏；驱动 Hub 停在 R1·D1。索引跟知识面走，按子域 / locale 验收。</td>
+          <td class="act">文档 / API / 教程 / 学习站做满两轴；索引跟知识面走，按子域 / locale 验收。</td>
         </tr>
         <tr>
           <td class="name">内容运营</td>
           <td class="axis-cell"><span class="tag r">R1 Sitemap 可发现</span><span class="hint">常更，易被搜到</span></td>
           <td class="axis-cell"><span class="tag c">D1 HTML 可读</span><span class="hint">时效强、口径偏传播</span></td>
           <td class="dec"><span class="tag dec-skip">不改</span></td>
-          <td class="act">博客、新闻、高管洞察。进 sitemap 即可；<strong>不进机器目录</strong>，避免稀释文档答题准确率。</td>
+          <td class="act">进 sitemap；<strong>不进机器目录</strong>，避免稀释文档答题准确率。</td>
         </tr>
         <tr>
           <td class="name">生态</td>
           <td class="axis-cell"><span class="tag r">R1 Sitemap 可发现</span><span class="hint">计划页可被搜到</span></td>
           <td class="axis-cell"><span class="tag c">D1 HTML 可读</span><span class="hint">招募与分群，非产品事实</span></td>
           <td class="dec"><span class="tag dec-skip">不改</span></td>
-          <td class="act">伙伴 / 创业 / ISV / VC。亲和判定与营销相同；不追 MD、不进 llms。</td>
+          <td class="act">与营销相同；不追 MD、不进 llms。</td>
         </tr>
         <tr>
           <td class="name">商业转化</td>
           <td class="axis-cell"><span class="tag r">R1 Sitemap 可发现</span><span class="hint">可被搜索到</span></td>
           <td class="axis-cell"><span class="tag c">D1 HTML 可读</span><span class="hint">报价会变，引旧价有风险</span></td>
           <td class="dec"><span class="tag dec-skip">不改</span></td>
-          <td class="act">定价、套餐、商城。允许 SEO 发现；<strong>刻意不进 llms</strong>——即便实测已有 MD（D2），也不升格为「该亲和」。</td>
+          <td class="act">允许 SEO；<strong>刻意不进 llms</strong>。</td>
         </tr>
         <tr>
           <td class="name">社区运营</td>
           <td class="axis-cell"><span class="tag r zero">R0 未进索引</span><span class="hint">可不进 Sitemap</span></td>
           <td class="axis-cell"><span class="tag c">D1 HTML 可读</span><span class="hint">时效 / UGC，不背书</span></td>
           <td class="dec"><span class="tag dec-skip">不改</span></td>
-          <td class="act">活动、大会、Wiki / Forum。索引通道与知识目录都不必覆盖；精华问答若要沉淀，另做 FAQ 进知识域。</td>
+          <td class="act">活动、Wiki / Forum 不必进知识目录；精华另做 FAQ 进知识域。</td>
         </tr>
         <tr>
           <td class="name">公司事务</td>
           <td class="axis-cell"><span class="tag r zero">R0 未进索引</span><span class="hint">与产品用法无关</span></td>
           <td class="axis-cell"><span class="tag c">D1 HTML 可读</span><span class="hint">组织事务，非知识源</span></td>
           <td class="dec"><span class="tag dec-never">绝对不改</span></td>
-          <td class="act">关于、法务、投资人。招聘可单独升到 R1 进 sitemap 做岗位曝光。只有登录 / 控制台这类鉴权页才用 robots 屏蔽——那是准入闸门，不是改造档位。</td>
+          <td class="act">关于、法务等。招聘可单独升到 R1 做岗位曝光。</td>
         </tr>
       </tbody>
     </table>
@@ -768,76 +871,42 @@
 
   <section class="block" aria-labelledby="order-title">
     <h2 id="order-title">落地顺序</h2>
-    <p class="lead">矩阵定「改到哪」，但七个域一起摆在面前时还要回答「先做谁」。按三问推进，顺序不能颠倒。</p>
+    <p class="lead">矩阵定「改到哪」，还要回答「先做谁」。三问不能颠倒。</p>
 
     <ol class="flow">
       <li class="veto">
         <h3>过得了背书闸门吗？</h3>
-        <p>就是上面的背书闸门。不愿意让 AI 把这段内容当官方事实原样引用，就停在基线，业务价值再高也不升档。一票否决，不参与打分。</p>
-        <p class="ex">定价页价值高、内容独家，但模型引旧价是商业风险——故意不进目录。</p>
+        <p>不愿意让 AI 当官方事实引用，就停在基线。一票否决，不参与打分。</p>
+        <p class="ex">定价页高价值却因引旧价风险——故意不进目录。</p>
       </li>
       <li>
         <h3>两根轴各到哪一档？</h3>
-        <p>查上面的决策矩阵，索引与交付<strong>分开定档</strong>。索引缺口归站点配置，交付缺口归前端与内容生产，别压成同一个待办。</p>
-        <p class="ex">正文写得够好却没进 sitemap，和进了 sitemap 但正文全靠 JS 渲染，是两种完全不同的问题。</p>
+        <p>索引与交付<strong>分开定档</strong>。索引缺口归站点配置，交付缺口归前端与内容生产。</p>
+        <p class="ex">没进 sitemap，和进了 sitemap 但正文全靠 JS，是两种问题。</p>
       </li>
       <li>
         <h3>先做谁？</h3>
-        <p>只在「必改」范围内用下表打分排序。同样是缺口，先补配置类——便宜、立刻见效；重写正文放在后面。</p>
-        <p class="ex">补一条 sitemap 记录几分钟就能兑现，重写一个栏目的正文要排几个季度。</p>
+        <p>只在「必改」范围内排序：先补配置类（便宜、立刻见效），重写正文放后面。</p>
+        <p class="ex">补一条 sitemap 几分钟；重写栏目正文要排几个季度。</p>
       </li>
     </ol>
 
-    <table class="levels">
-      <thead>
-        <tr>
-          <th>排序维度</th>
-          <th>3 分</th>
-          <th>2 分</th>
-          <th>1 分</th>
-          <th>这项决定什么</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="name">业务价值</td>
-          <td class="act">用户据此做技术选型或实际操作：API、参数、报错处理</td>
-          <td class="act">辅助理解与选型：方案说明、白皮书</td>
-          <td class="act">品牌与通识介绍</td>
-          <td class="act">值不值得排在前面。</td>
-        </tr>
-        <tr>
-          <td class="name">内容稳定性</td>
-          <td class="act">半年以上不大改</td>
-          <td class="act">有版本节奏，变化可预期</td>
-          <td class="act">频繁变动，或即将重写下架</td>
-          <td class="act">要不要上平行 Markdown。<strong>同步成本按年计</strong>，周更页面做 MD 是负资产。</td>
-        </tr>
-        <tr>
-          <td class="name">修复成本</td>
-          <td class="act">补一条 sitemap 记录或一行目录条目</td>
-          <td class="act">调渲染方式或页面模板</td>
-          <td class="act">需要重写正文结构</td>
-          <td class="act">同等收益下先做便宜的。</td>
-        </tr>
-      </tbody>
-    </table>
-
     <p class="note-line">
       <strong>打分只排序，不决定改不改。</strong>
-      「改不改」由第一问的风险闸门和运营域判定决定。若把价值与潜力加总来判断是否改造，定价页这类「高价值 + 高独特性 + 高风险」的内容会被算成最该深度改造的一档，结论正好反了。
+      「改不改」由背书闸门和运营域判定决定。价值与独特性加总会把定价页算成最该深度改造——结论正好反了。
     </p>
     <p class="note-line">
       <strong>robots.txt 不是档位。</strong>
-      「不做亲和」= 停在 R1·D1，仍进 sitemap 服务 SEO，只是不进机器目录、不出平行 MD。把不做亲和等同于屏蔽爬虫，会连带杀掉招聘、新闻等页面的搜索曝光，并让 AI 转去引用第三方口径——负收益。
+      「不做亲和」= 停在 R1·D1，仍可进 sitemap；不等于屏蔽爬虫。
     </p>
     <p class="note-line">
       <strong>按季度复检。</strong>
-      亲和度会腐化：Markdown 与 HTML 漂移、新页漏进 sitemap、locale 之间不再对齐。新增与改版页面需要重新定档，不是一次性项目。
+      Markdown 与 HTML 会漂移、新页会漏索引。亲和度会腐化，不是一次性项目。
     </p>
   </section>
 
-  <footer>昇腾社区 AI 亲和原则 · 索引 × 交付 双轴框架（操作化）</footer>
+  <footer>昇腾社区 AI 亲和原则 · 友商对照 · 社区诊断 · 组件亲和</footer>
 </div>
+
 </body>
 </html>

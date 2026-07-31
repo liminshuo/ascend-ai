@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>表格语义化可问答 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
+<style>
+
+  :root {
+    --bg: #F5F5F5; --panel: #ffffff; --panel2: #FAFAFA; --line: #e2e8f0;
+    --text: #191919; --muted: #595959; --accent: #1476FF;
+    --link: #1476FF; --topbar-h: 56px; --subnav-h: 44px;
+    --sidebar-w: clamp(200px, 12.9167vw, 248px);
+    --toc-w: 200px;
+    --content-pad-x: clamp(24px, 3vw, 40px);
+    --body-size: 14px;
+    --body-lh: 22px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-size: var(--body-size);
+    margin: 0;
+    font-family: "PingFang SC", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: var(--body-lh);
+  }
+  a { color: var(--link); }
+  code {
+    font-size: 12px;
+    background: var(--panel2);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 0 4px;
+  }
+
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    height: 56px;
+    min-height: 56px;
+    max-height: 56px;
+    box-sizing: border-box;
+    background: var(--panel);
+    border-bottom: 1px solid var(--line);
+    overflow: hidden;
+  }
+  .topbar-inner {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0 24px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0;
+  }
+  .brand {
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    text-decoration: none;
+    white-space: nowrap;
+    margin-right: 40px;
+  }
+  .brand span { color: var(--accent); }
+  .site-nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+    flex-wrap: wrap;
+  }
+  .site-nav a {
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 6px;
+    white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .site-nav a:hover { color: var(--accent); background: #F5F5F5; text-decoration: none; }
+  .site-nav a.active { color: var(--accent); background: #F5F5F5; font-weight: 600; }
+
+  .subnav {
+    position: sticky;
+    top: 56px;
+    z-index: 40;
+    height: var(--subnav-h);
+    background: var(--panel);
+    border-bottom: 1px solid var(--line);
+  }
+  .subnav-inner {
+    width: 100%;
+    margin: 0;
+    padding: 0 24px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .subnav-back {
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .subnav-back:hover { color: var(--accent); }
+  .subnav-tabs { display: flex; align-items: center; gap: 4px; }
+  .subnav-tabs a {
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+  .subnav-tabs a:hover { color: var(--accent); background: #F5F5F5; }
+  .subnav-tabs a.active { color: var(--accent); background: #F5F5F5; font-weight: 600; }
+
+
+  .page-wrapper {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    min-height: calc(100vh - var(--topbar-h) - var(--subnav-h));
+    background: var(--bg);
+  }
+
+  .comp-sidebar {
+    width: var(--sidebar-w);
+    flex-shrink: 0;
+    position: sticky;
+    top: calc(var(--topbar-h) + var(--subnav-h));
+    height: calc(100vh - var(--topbar-h) - var(--subnav-h));
+    overflow-y: auto;
+    padding: 16px 0 32px;
+    border-right: 1px solid var(--line);
+    background: var(--panel);
+  }
+  .comp-sidebar-title {
+    font-size: 11px; font-weight: 700; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--muted);
+    padding: 0 20px 10px;
+  }
+  .comp-nav ul { list-style: none; margin: 0; padding: 0; }
+  .comp-group-label {
+    font-size: 11px; font-weight: 700; letter-spacing: .04em;
+    color: var(--muted);
+    padding: 12px 20px 4px;
+    margin-top: 8px;
+    border-top: 1px solid var(--line);
+  }
+  .comp-nav > .comp-group-label:first-child {
+    margin-top: 0; border-top: none; padding-top: 10px;
+  }
+  .comp-nav a,
+  .comp-nav .comp-pending {
+    display: block;
+    padding: 8px 20px;
+    font-size: 13px; line-height: 1.5;
+    text-decoration: none;
+    border-left: 2px solid transparent;
+  }
+  .comp-nav a { color: var(--muted); }
+  .comp-nav a:hover { color: var(--text); background: #F5F5F5; }
+  .comp-nav a.active {
+    color: var(--accent); font-weight: 600;
+    background: #EEF5FF; border-left-color: var(--accent);
+  }
+  .comp-nav .comp-pending { color: #bfbfbf; cursor: default; }
+
+  .main-content {
+    flex: 1;
+    min-width: 0;
+    background: var(--panel);
+    border-right: 1px solid var(--line);
+    padding: 28px var(--content-pad-x) 80px;
+    box-sizing: border-box;
+  }
+
+  .page-header { margin-bottom: 8px; }
+  .page-header h1 {
+    margin: 0;
+    font-size: clamp(28px, 4vw, 36px);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+  }
+  .page-desc {
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.65;
+    margin: 0 0 28px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+  }
+  .page-desc-line { display: block; }
+  .page-desc-line + .page-desc-line { margin-top: 8px; }
+  .page-desc strong { color: var(--text); font-weight: 600; }
+
+  .section { margin-bottom: 40px; }
+  .section > h2 {
+    margin: 0 0 16px;
+    font-size: 22px; line-height: 30px; font-weight: 650;
+  }
+  .section > h3 {
+    margin: 20px 0 10px;
+    font-size: 15px; font-weight: 650;
+  }
+  .section > h3:first-of-type { margin-top: 0; }
+
+  .principle-suggestions {
+    margin: 0;
+    padding-left: 18px;
+    color: var(--muted);
+  }
+  .principle-suggestions li { margin-bottom: 8px; }
+  .principle-suggestions li strong { color: var(--text); font-weight: 600; }
+
+  .principle-example {
+    margin-top: 16px;
+    padding: 16px 18px;
+    background: var(--panel2);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+  }
+  .principle-example > h4 {
+    margin: 0 0 12px;
+    font-size: 14px; font-weight: 650;
+  }
+  .principle-example + .principle-example { margin-top: 12px; }
+
+  .compare-grid { display: grid; gap: 12px; }
+  .compare-label {
+    margin: 0;
+    font-size: 12px; font-weight: 650;
+    letter-spacing: 0.02em;
+  }
+  .compare-label--machine { color: #b54708; }
+  .compare-label--human { color: #027a48; }
+  .compare-col {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+
+  .render-frame { font-size: 13px; color: var(--text); }
+  .rf-banner {
+    background: linear-gradient(120deg, #1a2744, #2a3f66);
+    color: #fff;
+    border-radius: 8px;
+    padding: 18px 16px;
+    min-height: 72px;
+  }
+  .rf-banner h5 { margin: 0 0 6px; font-size: 15px; font-weight: 650; }
+  .rf-banner p { margin: 0; font-size: 12px; opacity: 0.85; }
+  .rf-muted { margin: 8px 0 0; font-size: 12px; color: var(--muted); }
+  .rf-meta {
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--line);
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .rf-meta strong { color: var(--text); }
+  .rf-list { margin: 8px 0 0; padding-left: 16px; color: var(--muted); font-size: 12px; }
+  .rf-list li { margin-bottom: 4px; }
+
+  .arch-diagram {
+    margin: 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--text);
+  }
+
+  .accept-list {
+    margin: 0;
+    padding-left: 18px;
+    color: var(--muted);
+  }
+  .accept-list li { margin-bottom: 8px; }
+  .accept-list strong { color: var(--text); }
+
+  .page-toc {
+    width: var(--toc-w);
+    flex-shrink: 0;
+    position: sticky;
+    top: calc(var(--topbar-h) + var(--subnav-h));
+    align-self: flex-start;
+    height: calc(100vh - var(--topbar-h) - var(--subnav-h));
+    overflow-y: auto;
+    padding: 28px 16px 40px 20px;
+    background: var(--bg);
+  }
+  .page-toc-title {
+    font-size: 12px; font-weight: 600; color: var(--muted);
+    margin-bottom: 12px; line-height: 1.4;
+  }
+  .page-toc-nav ul { list-style: none; margin: 0; padding: 0; }
+  .page-toc-nav li + li { margin-top: 2px; }
+  .page-toc-nav a {
+    display: block;
+    font-size: 13px; line-height: 1.5;
+    color: var(--muted);
+    padding: 4px 0;
+    text-decoration: none;
+    border-left: 2px solid transparent;
+  }
+  .page-toc-nav a.toc-h3 { padding-left: 12px; font-size: 12px; }
+  .page-toc-nav a:hover { color: var(--accent); }
+  .page-toc-nav a.active {
+    color: var(--accent); font-weight: 600;
+    border-left-color: var(--accent);
+    padding-left: 8px; margin-left: -8px;
+  }
+  .page-toc-nav a.toc-h3.active {
+    padding-left: 12px; margin-left: 0;
+    border-left-color: transparent;
+  }
+
+  @media (max-width: 1100px) {
+    .page-toc { display: none; }
+    .main-content { border-right: none; }
+  }
+  @media (max-width: 900px) {
+    .page-wrapper { flex-direction: column; }
+    .comp-sidebar {
+      position: static; width: 100%; height: auto;
+      border-right: none; border-bottom: 1px solid var(--line);
+    }
+  }
+
+</style>
+</head>
+<body data-module="principles" data-page="odatetable">
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html">社区 <span>AI 亲和原则</span></a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="mintlify.html">友商对照</a>
+      <a href="reachability.html">社区诊断</a>
+      <a href="community-ui.html" class="active">组件亲和</a>
+    </nav>
+  </div>
+</div>
+
+<div class="subnav" aria-label="组件详情二级导航">
+  <div class="subnav-inner">
+    <a class="subnav-back" href="community-ui.html">← 返回</a>
+    <nav class="subnav-tabs">
+      <a href="problems-odatetable.html">实测问题</a>
+      <a href="principles-odatetable.html" class="active">亲和原则</a>
+    </nav>
+  </div>
+</div>
+
+<div class="page-wrapper">
+  <aside class="comp-sidebar" aria-label="组件列表">
+    <div class="comp-sidebar-title">组件列表</div>
+    <nav class="comp-nav">
+      <div class="comp-group-label">导航类</div>
+      <ul>
+        <li><a href="principles-omenu.html">OMenu 菜单</a></li>
+        <li><a href="principles-otab.html">OTab 标签页</a></li>
+        <li><a href="principles-obreadcrumb.html">OBreadcrumb 面包屑</a></li>
+        <li><a href="principles-oanchor.html">OAnchor 锚点</a></li>
+        <li><a href="principles-opagination.html">OPagination 分页</a></li>
+        <li><a href="principles-ostep.html">OStep 步骤条</a></li>
+        <li><a href="principles-onavigation.html">ONavigation 导航</a></li>
+        <li><a href="principles-ofooternav.html">底部导航</a></li>
+      </ul>
+      <div class="comp-group-label">操作类</div>
+      <ul>
+        <li><a href="principles-obutton.html">OButton 按钮</a></li>
+        <li><a href="principles-olink.html">OLink 链接</a></li>
+        <li><a href="principles-odropdown.html">ODropdown 下拉菜单</a></li>
+        <li><a href="principles-oradio.html">ORadio 单选框</a></li>
+        <li><a href="principles-ocheckbox.html">OCheckbox 多选框</a></li>
+        <li><a href="principles-oswitch.html">OSwitch 开关</a></li>
+        <li><a href="principles-oscrollbar.html">OScrollbar 滚动条</a></li>
+        <li><a href="principles-otoggle.html">OToggle 选择块</a></li>
+      </ul>
+      <div class="comp-group-label">输入类</div>
+      <ul>
+        <li><a href="principles-oinput.html">OInput 输入框</a></li>
+        <li><a href="principles-otextarea.html">OTextarea 多行文本输入框</a></li>
+        <li><a href="principles-osearch.html">OSearch 搜索框</a></li>
+        <li><a href="principles-oselect.html">OSelect 选择器</a></li>
+        <li><a href="principles-odatepicker.html">DatePicker 日期选择器</a></li>
+        <li><a href="principles-otimepicker.html">TimePicker 时间选择器</a></li>
+        <li><a href="principles-otrees.html">Trees 树</a></li>
+        <li><a href="principles-oupload.html">OUpload 上传</a></li>
+        <li><a href="principles-orate.html">ORate 评分</a></li>
+        <li><a href="principles-ocascader.html">OCascader 级联选择</a></li>
+        <li><a href="principles-oslider.html">OSlider 滑动条</a></li>
+      </ul>
+      <div class="comp-group-label">展示类</div>
+      <ul>
+        <li><a href="principles-odivider.html">ODivider 分割线</a></li>
+        <li><a href="principles-otag.html">OTag 标签</a></li>
+        <li><a href="principles-obadge.html">OBadge 徽标</a></li>
+      </ul>
+      <div class="comp-group-label">容器类</div>
+      <ul>
+        <li><a href="principles-affinity.html">OCarousel 幻灯片</a></li>
+        <li><a href="principles-odialog.html">ODialog 对话框</a></li>
+        <li><a href="principles-ocard.html">OCard 卡片</a></li>
+        <li><a href="principles-odatetable.html" class="active">Odate-table 数据表格</a></li>
+      </ul>
+      <div class="comp-group-label">反馈类</div>
+      <ul>
+        <li><a href="principles-oprogress.html">OProgress 进度条</a></li>
+        <li><a href="principles-omessage.html">OMessage 消息提示</a></li>
+        <li><a href="principles-otoast.html">OToast 轻提示</a></li>
+        <li><a href="principles-opopover.html">气泡卡片</a></li>
+        <li><a href="principles-oloading.html">OLoading 加载</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <h1>表格语义化可问答</h1>
+      <p class="page-desc page-desc--split">
+        <span class="page-desc-line">规格表用<strong>真实 table/th/td</strong>，禁截图表或 div 伪表；md 平行表可问答。</span>
+        <span class="page-desc-line">读的懂 · 社区 UI · 对应 <a href="problems-odatetable.html">问题实测 · 表格语义缺失</a>。</span>
+      </p>
+    </div>
+
+    <section class="section" id="design-ui">
+      <h2>设计UI调整</h2>
+      <h3 id="design-suggestions">调整建议</h3>
+      <ul class="principle-suggestions">
+        <li><strong>本原则无独立设计改动</strong>：以内容/前端交付面为主；设计稿标注组件角色即可。</li>
+      </ul>
+      <h3 id="design-example">调整示例</h3>
+      <div class="principle-example">
+        <h4>1. 交付稿对比</h4>
+        <div class="compare-grid compare-grid--stack compare-grid--no-mid-divider">
+          <h4 class="compare-label compare-label--machine">Before · 仅交互壳/视觉态</h4>
+          <div class="compare-col machine">
+            <pre class="arch-diagram">Odate-table 交互态/视觉壳；规格说明缺失或绑在点击/hover 上。</pre>
+          </div>
+          <h4 class="compare-label compare-label--human">After · 可见文案位 + 角色标注</h4>
+          <div class="compare-col human">
+            <pre class="arch-diagram">稿面预留可见文案位；以内容/前端交付面为主；设计稿标注组件角色即可。</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="content-adjust">
+      <h2>文档内容调整</h2>
+      <h3 id="content-suggestions">调整建议</h3>
+      <ul class="principle-suggestions">
+        <li><strong>正文承载规格</strong>：关键说明写入可引用文档页或旁注段落，勿绑在交互态。</li>
+      </ul>
+      <h3 id="content-example">调整示例</h3>
+      <div class="principle-example">
+        <h4>1. 正文/MD 对比</h4>
+        <div class="compare-grid compare-grid--stack compare-grid--no-mid-divider">
+          <h4 class="compare-label compare-label--machine">Before · 说明绑在 UI 态</h4>
+          <div class="compare-col machine">
+            <pre class="arch-diagram">（无）关键说明只在 表格语义缺失 交互态或 UI 文案中。</pre>
+          </div>
+          <h4 class="compare-label compare-label--human">After · 规格进可引用正文</h4>
+          <div class="compare-col human">
+            <pre class="arch-diagram">规格写入正文/MD；关键说明写入可引用文档页或旁注段落，勿绑在交互态。</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="frontend-adjust">
+      <h2>前端调整</h2>
+      <h3 id="frontend-suggestions">调整建议</h3>
+      <ul class="principle-suggestions">
+        <li><strong>参数图代替表</strong>：改 HTML/Markdown 表。</li>
+        <li><strong>div 伪表</strong>：用语义 table。</li>
+        <li><strong>合并单元格滥用</strong>：规范表头。</li>
+        <li><strong>真 table</strong>：th/td 语义。</li>
+      </ul>
+      <h3 id="frontend-example">调整示例</h3>
+      <div class="principle-example">
+        <h4>1. HTML/管道对比</h4>
+        <div class="compare-grid compare-grid--stack compare-grid--no-mid-divider">
+          <h4 class="compare-label compare-label--machine">Before · 首包缺文本/链接</h4>
+          <div class="compare-col machine">
+            <pre class="arch-diagram">&amp;lt;div class=&quot;o-datetable&quot;&amp;gt;…&amp;lt;/div&amp;gt;
+&amp;lt;!-- 关键文本未 SSR / 无 href --&amp;gt;</pre>
+          </div>
+          <h4 class="compare-label compare-label--human">After · SSR + 管道规则</h4>
+          <div class="compare-col human">
+            <pre class="arch-diagram">&amp;lt;!-- SSR 全量文本 + 真实链接 --&amp;gt;
+&amp;lt;!-- 改 HTML/Markdown 表 --&amp;gt;</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="acceptance">
+      <h2>验收标准</h2>
+      <ul class="accept-list">
+        <li><strong>静态可达</strong>：禁 JS 抓取后，表格语义缺失相关关键文本/链接仍在首包 HTML 中。。</li>
+        <li><strong>可证伪</strong>：对探针问句的回答可引用具体 href/段落，与 &lt;a href=&quot;problems-odatetable.html&quot;&gt;问题实测&lt;/a&gt; 失败判据互斥。。</li>
+        <li><strong>管道</strong>：Chunk 规则明确：该收录的文本/链接进库，纯 UI 控件/瞬时态可跳过。。</li>
+      </ul>
+    </section>
+  </main>
+
+  <aside class="page-toc" id="page-toc" aria-label="本篇目录">
+    <div class="page-toc-title">本篇目录</div>
+    <nav class="page-toc-nav">
+      <ul id="page-toc-list"></ul>
+    </nav>
+  </aside>
+</div>
+
+<script>
+(function () {
+  var main = document.querySelector('.main-content');
+  var tocList = document.getElementById('page-toc-list');
+  var used = {};
+  function slugify(text) {
+    var base = (text || '').trim().toLowerCase()
+      .replace(/[^\w\u4e00-\u9fff]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+    if (!base) base = 'section';
+    var slug = base, n = 2;
+    while (used[slug]) slug = base + '-' + n++;
+    used[slug] = true;
+    return slug;
+  }
+  var headings = main ? main.querySelectorAll('h2, h3') : [];
+  var tocItems = [];
+  headings.forEach(function (el) {
+    var text = el.textContent.replace(/\s+/g, ' ').trim();
+    if (!text) return;
+    if (!el.id) el.id = slugify(text);
+    tocItems.push({ id: el.id, text: text, level: el.tagName === 'H3' ? 3 : 2, el: el });
+  });
+  if (tocList) {
+    tocList.innerHTML = tocItems.map(function (item) {
+      var cls = item.level === 3 ? ' class="toc-h3"' : '';
+      return '<li><a href="#' + item.id + '"' + cls + ' data-toc-link>' + item.text + '</a></li>';
+    }).join('');
+  }
+  var tocLinks = document.querySelectorAll('[data-toc-link]');
+  function setTocActive(id) {
+    tocLinks.forEach(function (a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+    });
+  }
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      var visible = entries
+        .filter(function (e) { return e.isIntersecting; })
+        .sort(function (a, b) { return a.boundingClientRect.top - b.boundingClientRect.top; });
+      if (visible.length) setTocActive(visible[0].target.id);
+    }, { rootMargin: '-20% 0px -60% 0px', threshold: [0, 0.25, 0.5] });
+    tocItems.forEach(function (item) { io.observe(item.el); });
+  }
+  function syncHash() {
+    var id = (location.hash || '').replace('#', '');
+    if (id) setTocActive(id);
+  }
+  window.addEventListener('hashchange', syncHash);
+  syncHash();
+})();
+</script>
+
+</body>
+</html>
