@@ -252,37 +252,23 @@
     line-height: var(--body-lh);
   }
 
-  .section .domain-level {
+  /* 域 Level：说明下方、左对齐 */
+  .section > .domain-level {
     display: flex;
     flex-wrap: wrap;
+    justify-content: flex-start;
     align-items: center;
     gap: 8px;
     margin: 0 0 16px;
   }
-  .section .domain-level .lvl {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 3px 8px;
-    border-radius: 4px;
-    font-size: 11px;
-    font-weight: 600;
-    line-height: 1;
-    box-sizing: border-box;
-    border: 1px solid transparent;
-    white-space: nowrap;
-  }
-  .section .domain-level .lv-k {
-    font-family: var(--mono);
-    font-size: 10px;
-    font-weight: 700;
-    color: inherit;
-  }
   .section .domain-desc {
-    margin: 0 0 8px;
+    margin: 0 0 16px;
     color: var(--muted);
     font-size: var(--body-size);
     line-height: var(--body-lh);
+  }
+  .section > .domain-desc {
+    margin: 0 0 8px;
   }
   .domain-why {
     margin: 0 0 16px;
@@ -450,72 +436,106 @@
   }
   .domain-table col.col-cat { width: 140px; }
   .domain-table col.col-page { width: auto; }
-  .domain-table col.col-static { width: 100px; }
-  .domain-table col.col-md { width: 88px; }
-  .domain-table col.col-sitemap { width: 118px; }
-  .domain-table col.col-llms { width: 118px; }
+  .domain-table col.col-static { width: 108px; }
+  .domain-table col.col-md { width: 118px; }
+  .domain-table col.col-sitemap { width: 128px; }
+  .domain-table col.col-llms { width: 108px; }
 
-  .domain-table col.col-level { width: 232px; }
+  .domain-table col.col-level { width: 120px; }
   .domain-table td.model-lv {
     white-space: nowrap;
     vertical-align: middle;
   }
-  .domain-table td.model-lv .lvl {
+  .aff-tier {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 4px;
-    padding: 3px 8px;
+    height: 24px;
+    padding: 0 10px;
     border-radius: 4px;
-    font-size: 11px;
-    font-weight: 600;
+    font-size: 12px;
+    font-weight: 650;
     line-height: 1;
     box-sizing: border-box;
     border: 1px solid transparent;
-    margin: 0 4px 0 0;
     white-space: nowrap;
   }
-  .domain-table td.model-lv .lvl:last-child { margin-right: 0; }
-  .domain-table td.model-lv .lv-k {
-    font-family: var(--mono);
-    font-size: 10px;
-    font-weight: 700;
-    color: inherit;
-  }
-  /* 索引轴：软 → 实（对齐首页 axis-card） */
-  .domain-table td.model-lv .lvl.axis-r.lvl-0,
-  .domain-table td.model-lv .lvl.axis-c.lvl-0,
-  .section .domain-level .lvl.axis-r.lvl-0,
-  .section .domain-level .lvl.axis-c.lvl-0 {
+  .aff-tier.tier-0 {
     background: #eceff3;
     color: #4a5568;
     border-color: #d5dae1;
   }
-  .domain-table td.model-lv .lvl.axis-r.lvl-1,
-  .section .domain-level .lvl.axis-r.lvl-1 {
+  .aff-tier.tier-1 {
     background: #EEF4FF;
     color: #1476FF;
     border-color: #C9DCFF;
   }
-  .domain-table td.model-lv .lvl.axis-r.lvl-2,
-  .section .domain-level .lvl.axis-r.lvl-2 {
+  .aff-tier.tier-2 {
     background: #1476FF;
     color: #fff;
     border-color: #1476FF;
   }
-  /* 交付轴：软 → 实（对齐首页 axis-card.cite） */
-  .domain-table td.model-lv .lvl.axis-c.lvl-1,
-  .section .domain-level .lvl.axis-c.lvl-1 {
-    background: #F3EBFF;
-    color: #6D28D9;
-    border-color: #DCC9F7;
+
+  .section .domain-level .aff-note {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.4;
   }
-  .domain-table td.model-lv .lvl.axis-c.lvl-2,
-  .section .domain-level .lvl.axis-c.lvl-2 {
-    background: #6D28D9;
-    color: #fff;
-    border-color: #6D28D9;
+
+
+  /* 收录列：hover 显示文件名与地址 */
+  .domain-table a.res-tip {
+    position: relative;
+    text-decoration: none;
   }
+  .domain-table a.res-tip::after {
+    content: attr(data-tip);
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 8px);
+    transform: translateX(-50%) translateY(4px);
+    min-width: 180px;
+    max-width: 360px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    background: #0f172a;
+    color: #f8fafc;
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.45;
+    letter-spacing: 0;
+    text-transform: none;
+    white-space: pre-wrap;
+    word-break: break-all;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.18);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .12s ease, transform .12s ease;
+    z-index: 40;
+  }
+  .domain-table a.res-tip::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 2px);
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: #0f172a;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .12s ease;
+    z-index: 40;
+  }
+  .domain-table a.res-tip:hover::after,
+  .domain-table a.res-tip:focus-visible::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  .domain-table a.res-tip:hover::before,
+  .domain-table a.res-tip:focus-visible::before {
+    opacity: 1;
+  }
+
   .domain-table th,
   .domain-table td {
     text-align: left;
@@ -532,6 +552,52 @@
     border-top: none;
     background: var(--panel2);
   }
+
+  /* 双层表头：分组行 + 指标行 */
+  .domain-table thead th {
+    text-align: center;
+    vertical-align: middle;
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 600;
+    border-top: none;
+    background: var(--panel2);
+  }
+  .domain-table thead .th-stub {
+    text-align: left;
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 650;
+  }
+  .domain-table thead .th-group {
+    font-size: 12px;
+    font-weight: 650;
+    color: var(--text);
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--line);
+  }
+  .domain-table thead .th-leaf {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--muted);
+    padding: 8px 10px;
+    line-height: 1.35;
+  }
+  .domain-table thead .th-group-find {
+    background: #F0F5FF;
+  }
+  .domain-table thead .th-group-html {
+    background: #F3FBF6;
+  }
+  .domain-table thead .th-group-md {
+    background: #F7F3FC;
+  }
+  .domain-table thead tr.th-row-leaf th {
+    border-top: none;
+  }
+
+
+
   .domain-table td.path {
     overflow-wrap: anywhere;
   }
@@ -784,14 +850,14 @@
 
   #panel-ascend .domain-table col.col-page { width: auto; }
 
-  #panel-ascend .domain-table col.col-static { width: 100px; }
+  #panel-ascend .domain-table col.col-static { width: 108px; }
 
-  #panel-ascend .domain-table col.col-md { width: 88px; }
+  #panel-ascend .domain-table col.col-md { width: 118px; }
 
-  #panel-ascend .domain-table col.col-sitemap { width: 118px; }
+  #panel-ascend .domain-table col.col-sitemap { width: 128px; }
 
-  #panel-ascend .domain-table col.col-llms { width: 118px; }
-  #panel-ascend .domain-table col.col-level { width: 232px; }
+  #panel-ascend .domain-table col.col-llms { width: 108px; }
+  #panel-ascend .domain-table col.col-level { width: 120px; }
   #panel-ascend .domain-table td.model-lv { white-space: nowrap; vertical-align: middle; }
 
   #panel-ascend .domain-table th,
@@ -811,6 +877,52 @@
     border-top: none;
     background: var(--panel2);
   }
+
+  /* 双层表头：分组行 + 指标行 */
+  #panel-ascend .domain-table thead th {
+    text-align: center;
+    vertical-align: middle;
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 600;
+    border-top: none;
+    background: var(--panel2);
+  }
+  #panel-ascend .domain-table thead .th-stub {
+    text-align: left;
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 650;
+  }
+  #panel-ascend .domain-table thead .th-group {
+    font-size: 12px;
+    font-weight: 650;
+    color: var(--text);
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--line);
+  }
+  #panel-ascend .domain-table thead .th-leaf {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--muted);
+    padding: 8px 10px;
+    line-height: 1.35;
+  }
+  #panel-ascend .domain-table thead .th-group-find {
+    background: #F0F5FF;
+  }
+  #panel-ascend .domain-table thead .th-group-html {
+    background: #F3FBF6;
+  }
+  #panel-ascend .domain-table thead .th-group-md {
+    background: #F7F3FC;
+  }
+  #panel-ascend .domain-table thead tr.th-row-leaf th {
+    border-top: none;
+  }
+
+
+
 
   #panel-ascend .domain-table td.cat {
     font-weight: 600;
@@ -996,227 +1108,254 @@
   <header>
     <h1>Mintlify · 找的到（收录索引）</h1>
     <p class="sub" style="color:var(--muted);font-size: var(--body-size);margin:0 0 24px;line-height: var(--body-lh);">
-      Mintlify 并不是盲目追求「全站 AI 友好」，而是展现了一种「精准克制」的务实策略。
+      收录怎么分面、谁进 llms、谁只停在 Sitemap——Mintlify 用「精准克制」给出可对照样本。
     </p>
   </header>
 
-  <h2 class="block-title" >分析总结</h2>
-<section class="section">
+  <h2 class="block-title">分析总结</h2>
+  <section class="section">
     <ul class="summary-points">
-      <li><strong>策展纪律：只认文档，不认全站。</strong>AI 能力严格锁定在 <code>/docs</code> 与 <code>/api</code> 范围内，主动屏蔽新闻、博客等噪声。底层逻辑极简：导航能点到，绝不等于该成为 AI 知识源。源头严格把关，是建立用户信任最核心的防线。</li>
-      <li><strong>产出机制：自然副产物，非额外工程。</strong>AI 能力应随文档发布自然生成（如 MDX 自动同步 <code>llms.txt</code>）。核心在于将策展标准前置——先把「什么内容才配得上进文档库」想清楚，而非事后再去修补全站的兼容性。</li>
-      <li><strong>交付目标：追求精准，不贪全面。</strong>与 NVIDIA 的「处处可达」不同，我们主动收窄语料边界，坚决剥离营销话术。底层目标不是「收录了多少页」，而是确保「每一次回答都经得起对照原文的溯源查验」。</li>
-      <li><strong>落地原则：事实与叙事物理分层。</strong>基准与主页定位对齐：只有官方愿背书的客观事实，才推入深度知识层；其余叙事类内容止步于搜索层。严格遵循「分面管道 + 窄目录背书」的策略，彻底杜绝无差别抓取全站的机械堆砌。</li>
+      <li><strong>只认知识面，不认全站。</strong>深度亲和锁在 <code>/docs</code>（及学习站）：llms 收录 + Markdown 可读。营销、博客、生态、招聘等导航能点到，也不进 Agent 目录。</li>
+      <li><strong>叙事与事实分层。</strong>基线亲和 = Sitemap 可发现 + HTML 可读，服务 SEO / 转化；只有官方愿背书的规格与操作，才升到深度亲和。</li>
+      <li><strong>产出跟发布走，策展标准前置。</strong>MDX 发布即可同步 <code>llms.txt</code> 与平行 MD——先定「什么配进文档库」，再谈管道，而不是事后全站补亲和。</li>
+      <li><strong>目标是可溯源，不是页数。</strong>相对 NVIDIA「处处可达」，Mintlify 收窄语料边界；缺口（如 changelog 未进 Sitemap / llms）应补收录，不等于放开全站。</li>
     </ul>
   </section>
 
   <h2 class="block-title" id="index">实测分析</h2>
   <section class="section">
     <h2 class="card-title">介绍/营销</h2>
-    <p class="domain-desc">站点总入口、用例叙事、客户证明及转化工具页。营销页做到人能看、引擎能抓就好，再进一步就是把广告包装成事实，得不偿失。</p>
-    <div class="domain-level" aria-label="本域默认模型层级">
-      <span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span>
-      <span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span>
+    <p class="domain-desc">站点总入口、用例叙事、客户证明及转化工具页</p>
+    <div class="domain-level" aria-label="本域默认 AI亲和 Level">
+      <span class="aff-tier tier-1">基线亲和</span>
+      <span class="aff-note">Sitemap 可发现 · HTML 可读</span>
     </div>
     <ul class="domain-why">
-      <li>营销页的唯一使命是打动人和促成转化，做到「人可读（D1）＋搜索引擎可发现（R1）」就已经把获客和流量的本职工作做到位了。</li>
-      <li>不继续升级到 AI 可引用的知识源（R2 / D2）是主动避险——营销内容主观、易变、说服性强，不适合拿来当作客观事实背书，否则容易制造过时甚至误导的信息。</li>
-      <li>客观产品事实交给专门的 <code>/docs</code> 处理，把「讲故事的页面」和「当事实的页面」彻底分开，既保证了营销的灵活性，又维护了知识的严肃性。</li>
+      <li><strong>做到基线即可。</strong>人能看、引擎能抓——Sitemap 可发现 + HTML 可读，服务获客转化。</li>
+      <li><strong>不升深度亲和。</strong>再往上就是把广告包装成事实；话术主观、易变，不进 llms、不产出 Markdown。产品事实归 <code>/docs</code>。</li>
     </ul>
     <table class="domain-table">
       <colgroup>
         <col class="col-cat" />
         <col class="col-page" />
+        <col class="col-llms" />
+        <col class="col-sitemap" />
         <col class="col-static" />
         <col class="col-md" />
-        <col class="col-sitemap" />
-        <col class="col-llms" />
         <col class="col-level" />
       </colgroup>
-      <thead><tr><th>分类</th><th>页面</th><th>HTML主信息（交付 D1）</th><th>MD文件（交付 D2）</th><th>收录Sitemap（索引 R1）</th><th>收录llms.txt（索引 R2）</th><th>实测模型层级</th></tr></thead>
+      <thead>
+        <tr class="th-row-group">
+          <th rowspan="2" class="th-stub">分类</th>
+          <th rowspan="2" class="th-stub">页面</th>
+          <th colspan="2" class="th-group th-group-find">找的到</th>
+          <th class="th-group th-group-html">读的懂</th>
+          <th class="th-group th-group-md">读的顺</th>
+          <th rowspan="2" class="th-stub">AI亲和 Level</th>
+        </tr>
+        <tr class="th-row-leaf">
+          <th class="th-leaf th-group-find">llms 收录</th>
+          <th class="th-leaf th-group-find">Sitemap 可发现</th>
+          <th class="th-leaf th-group-html">HTML 可读</th>
+          <th class="th-leaf th-group-md">Markdown 可读</th>
+        </tr>
+      </thead>
       <tbody>
         <tr>
           <td class="cat">首页</td>
           <td class="path"><a href="https://www.mintlify.com/" target="_blank" rel="noopener">/</a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.mintlify.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-full">完整</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.mintlify.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
         </tr>
         <tr>
           <td class="cat" rowspan="5">营销</td>
           <td class="path"><a href="https://www.mintlify.com/use-cases/knowledge-base" target="_blank" rel="noopener">/use-cases/knowledge-base</a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.mintlify.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-full">完整</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.mintlify.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.mintlify.com/customers" target="_blank" rel="noopener">/customers</a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.mintlify.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-full">完整</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.mintlify.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.mintlify.com/wall-of-love" target="_blank" rel="noopener">/wall-of-love</a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.mintlify.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-full">完整</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.mintlify.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.mintlify.com/switch" target="_blank" rel="noopener">/switch</a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.mintlify.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-full">完整</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.mintlify.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.mintlify.com/score" target="_blank" rel="noopener">/score</a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><span class="tag tag-no">无</span></td>
           <td><span class="tag tag-full">完整</span></td>
-          <td><a href="https://www.mintlify.com/score.md" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-2 axis-c"><span class="lv-k">D2</span>MD 可托管</span></td>
+          <td><a href="https://www.mintlify.com/score.md" class="res-tip" target="_blank" rel="noopener" data-tip="score.md&#10;https://www.mintlify.com/score.md" title="score.md · https://www.mintlify.com/score.md"><span class="tag tag-yes">有</span></a></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
         </tr>
       </tbody>
     </table>
   </section>
   <section class="section">
     <h2 class="card-title">知识</h2>
-    <p class="domain-desc">文档、学习与支持知识库。这里才是 AI 亲和的主战场——规格、操作与可引用事实都放在这。</p>
-    <div class="domain-level" aria-label="本域默认模型层级">
-      <span class="lvl lvl-2 axis-r"><span class="lv-k">R2</span>llms 目录收录</span>
-      <span class="lvl lvl-2 axis-c"><span class="lv-k">D2</span>MD 可托管</span>
+    <p class="domain-desc">文档、学习与支持知识库</p>
+    <div class="domain-level" aria-label="本域默认 AI亲和 Level">
+      <span class="aff-tier tier-2">深度亲和</span>
+      <span class="aff-note">llms 收录 · Markdown 可读</span>
     </div>
     <ul class="domain-why">
-      <li>知识域的使命是让人（和 Agent）查得到、用得上：进文档面 Sitemap、写入 <code>docs/llms.txt</code>（R2），并提供平行 Markdown（D2）。</li>
-      <li>和营销页相反——这里愿意为准确性背书，所以两根轴都往上推；支持若本身是知识库，也归这一域。</li>
-      <li>例外提醒：有 MD 仍可能索引不满（如 <code>/docs/changelog</code> 实测停在 R0·D2）——那是知识面缺口，应补收录，不是「不做亲和」。</li>
+      <li><strong>主战场推深度亲和。</strong>规格、操作与可引用事实放这里：Sitemap 可发现 + llms 收录 + Markdown 可读；官方愿为准确性背书。</li>
     </ul>
     <table class="domain-table">
       <colgroup>
         <col class="col-cat" />
         <col class="col-page" />
+        <col class="col-llms" />
+        <col class="col-sitemap" />
         <col class="col-static" />
         <col class="col-md" />
-        <col class="col-sitemap" />
-        <col class="col-llms" />
         <col class="col-level" />
       </colgroup>
-      <thead><tr><th>分类</th><th>页面</th><th>HTML主信息（交付 D1）</th><th>MD文件（交付 D2）</th><th>收录Sitemap（索引 R1）</th><th>收录llms.txt（索引 R2）</th><th>实测模型层级</th></tr></thead>
+      <thead>
+        <tr class="th-row-group">
+          <th rowspan="2" class="th-stub">分类</th>
+          <th rowspan="2" class="th-stub">页面</th>
+          <th colspan="2" class="th-group th-group-find">找的到</th>
+          <th class="th-group th-group-html">读的懂</th>
+          <th class="th-group th-group-md">读的顺</th>
+          <th rowspan="2" class="th-stub">AI亲和 Level</th>
+        </tr>
+        <tr class="th-row-leaf">
+          <th class="th-leaf th-group-find">llms 收录</th>
+          <th class="th-leaf th-group-find">Sitemap 可发现</th>
+          <th class="th-leaf th-group-html">HTML 可读</th>
+          <th class="th-leaf th-group-md">Markdown 可读</th>
+        </tr>
+      </thead>
       <tbody>
         <tr>
           <td class="cat" rowspan="12">文档</td>
           <td class="path"><a href="https://www.mintlify.com/docs" target="_blank" rel="noopener">/docs</a></td>
+          <td><a href="https://www.mintlify.com/docs/llms.txt" class="res-tip" target="_blank" rel="noopener" data-tip="llms.txt&#10;https://www.mintlify.com/docs/llms.txt" title="llms.txt · https://www.mintlify.com/docs/llms.txt"><span class="tag tag-yes">有</span></a></td>
+          <td><a href="https://www.mintlify.com/docs/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/docs/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/docs/sitemap.xml"><span class="tag tag-yes">site+docs</span></a></td>
           <td><span class="tag tag-full">完整</span></td>
-          <td><a href="https://www.mintlify.com/docs.md" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
-          <td><a href="https://www.mintlify.com/docs/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site+docs</span></a></td>
-          <td><a href="https://www.mintlify.com/docs/llms.txt" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
-          <td class="model-lv"><span class="lvl lvl-2 axis-r"><span class="lv-k">R2</span>llms 目录收录</span><span class="lvl lvl-2 axis-c"><span class="lv-k">D2</span>MD 可托管</span></td>
+          <td><a href="https://www.mintlify.com/docs.md" class="res-tip" target="_blank" rel="noopener" data-tip="docs.md&#10;https://www.mintlify.com/docs.md" title="docs.md · https://www.mintlify.com/docs.md"><span class="tag tag-yes">有</span></a></td>
+          <td class="model-lv"><span class="aff-tier tier-2">深度亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.mintlify.com/docs/editor" target="_blank" rel="noopener">/docs/editor</a></td>
+          <td><a href="https://www.mintlify.com/docs/llms.txt" class="res-tip" target="_blank" rel="noopener" data-tip="llms.txt&#10;https://www.mintlify.com/docs/llms.txt" title="llms.txt · https://www.mintlify.com/docs/llms.txt"><span class="tag tag-yes">有</span></a></td>
+          <td><a href="https://www.mintlify.com/docs/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/docs/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/docs/sitemap.xml"><span class="tag tag-yes">site+docs</span></a></td>
           <td><span class="tag tag-full">完整</span></td>
-          <td><a href="https://www.mintlify.com/docs/editor.md" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
-          <td><a href="https://www.mintlify.com/docs/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site+docs</span></a></td>
-          <td><a href="https://www.mintlify.com/docs/llms.txt" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
-          <td class="model-lv"><span class="lvl lvl-2 axis-r"><span class="lv-k">R2</span>llms 目录收录</span><span class="lvl lvl-2 axis-c"><span class="lv-k">D2</span>MD 可托管</span></td>
+          <td><a href="https://www.mintlify.com/docs/editor.md" class="res-tip" target="_blank" rel="noopener" data-tip="editor.md&#10;https://www.mintlify.com/docs/editor.md" title="editor.md · https://www.mintlify.com/docs/editor.md"><span class="tag tag-yes">有</span></a></td>
+          <td class="model-lv"><span class="aff-tier tier-2">深度亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.mintlify.com/docs/deploy/authentication-setup" target="_blank" rel="noopener">/docs/deploy/authentication-setup</a></td>
+          <td><a href="https://www.mintlify.com/docs/llms.txt" class="res-tip" target="_blank" rel="noopener" data-tip="llms.txt&#10;https://www.mintlify.com/docs/llms.txt" title="llms.txt · https://www.mintlify.com/docs/llms.txt"><span class="tag tag-yes">有</span></a></td>
+          <td><a href="https://www.mintlify.com/docs/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/docs/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/docs/sitemap.xml"><span class="tag tag-yes">site+docs</span></a></td>
           <td><span class="tag tag-full">完整</span></td>
-          <td><a href="https://www.mintlify.com/docs/deploy/authentication-setup.md" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
-          <td><a href="https://www.mintlify.com/docs/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site+docs</span></a></td>
-          <td><a href="https://www.mintlify.com/docs/llms.txt" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
-          <td class="model-lv"><span class="lvl lvl-2 axis-r"><span class="lv-k">R2</span>llms 目录收录</span><span class="lvl lvl-2 axis-c"><span class="lv-k">D2</span>MD 可托管</span></td>
+          <td><a href="https://www.mintlify.com/docs/deploy/authentication-setup.md" class="res-tip" target="_blank" rel="noopener" data-tip="authentication-setup.md&#10;https://www.mintlify.com/docs/deploy/authentication-setup.md" title="authentication-setup.md · https://www.mintlify.com/docs/deploy/authentication-setup.md"><span class="tag tag-yes">有</span></a></td>
+          <td class="model-lv"><span class="aff-tier tier-2">深度亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.mintlify.com/docs/automations" target="_blank" rel="noopener">/docs/automations</a></td>
+          <td><a href="https://www.mintlify.com/docs/llms.txt" class="res-tip" target="_blank" rel="noopener" data-tip="llms.txt&#10;https://www.mintlify.com/docs/llms.txt" title="llms.txt · https://www.mintlify.com/docs/llms.txt"><span class="tag tag-yes">有</span></a></td>
+          <td><a href="https://www.mintlify.com/docs/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/docs/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/docs/sitemap.xml"><span class="tag tag-yes">site+docs</span></a></td>
           <td><span class="tag tag-full">完整</span></td>
-          <td><a href="https://www.mintlify.com/docs/automations.md" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
-          <td><a href="https://www.mintlify.com/docs/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site+docs</span></a></td>
-          <td><a href="https://www.mintlify.com/docs/llms.txt" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
-          <td class="model-lv"><span class="lvl lvl-2 axis-r"><span class="lv-k">R2</span>llms 目录收录</span><span class="lvl lvl-2 axis-c"><span class="lv-k">D2</span>MD 可托管</span></td>
+          <td><a href="https://www.mintlify.com/docs/automations.md" class="res-tip" target="_blank" rel="noopener" data-tip="automations.md&#10;https://www.mintlify.com/docs/automations.md" title="automations.md · https://www.mintlify.com/docs/automations.md"><span class="tag tag-yes">有</span></a></td>
+          <td class="model-lv"><span class="aff-tier tier-2">深度亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.mintlify.com/docs/agent" target="_blank" rel="noopener">/docs/agent</a></td>
+          <td><a href="https://www.mintlify.com/docs/llms.txt" class="res-tip" target="_blank" rel="noopener" data-tip="llms.txt&#10;https://www.mintlify.com/docs/llms.txt" title="llms.txt · https://www.mintlify.com/docs/llms.txt"><span class="tag tag-yes">有</span></a></td>
+          <td><a href="https://www.mintlify.com/docs/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/docs/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/docs/sitemap.xml"><span class="tag tag-yes">site+docs</span></a></td>
           <td><span class="tag tag-full">完整</span></td>
-          <td><a href="https://www.mintlify.com/docs/agent.md" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
-          <td><a href="https://www.mintlify.com/docs/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site+docs</span></a></td>
-          <td><a href="https://www.mintlify.com/docs/llms.txt" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
-          <td class="model-lv"><span class="lvl lvl-2 axis-r"><span class="lv-k">R2</span>llms 目录收录</span><span class="lvl lvl-2 axis-c"><span class="lv-k">D2</span>MD 可托管</span></td>
+          <td><a href="https://www.mintlify.com/docs/agent.md" class="res-tip" target="_blank" rel="noopener" data-tip="agent.md&#10;https://www.mintlify.com/docs/agent.md" title="agent.md · https://www.mintlify.com/docs/agent.md"><span class="tag tag-yes">有</span></a></td>
+          <td class="model-lv"><span class="aff-tier tier-2">深度亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.mintlify.com/docs/assistant" target="_blank" rel="noopener">/docs/assistant</a></td>
+          <td><a href="https://www.mintlify.com/docs/llms.txt" class="res-tip" target="_blank" rel="noopener" data-tip="llms.txt&#10;https://www.mintlify.com/docs/llms.txt" title="llms.txt · https://www.mintlify.com/docs/llms.txt"><span class="tag tag-yes">有</span></a></td>
+          <td><a href="https://www.mintlify.com/docs/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/docs/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/docs/sitemap.xml"><span class="tag tag-yes">site+docs</span></a></td>
           <td><span class="tag tag-full">完整</span></td>
-          <td><a href="https://www.mintlify.com/docs/assistant.md" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
-          <td><a href="https://www.mintlify.com/docs/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site+docs</span></a></td>
-          <td><a href="https://www.mintlify.com/docs/llms.txt" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
-          <td class="model-lv"><span class="lvl lvl-2 axis-r"><span class="lv-k">R2</span>llms 目录收录</span><span class="lvl lvl-2 axis-c"><span class="lv-k">D2</span>MD 可托管</span></td>
+          <td><a href="https://www.mintlify.com/docs/assistant.md" class="res-tip" target="_blank" rel="noopener" data-tip="assistant.md&#10;https://www.mintlify.com/docs/assistant.md" title="assistant.md · https://www.mintlify.com/docs/assistant.md"><span class="tag tag-yes">有</span></a></td>
+          <td class="model-lv"><span class="aff-tier tier-2">深度亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.mintlify.com/docs/automations/integrations" target="_blank" rel="noopener">/docs/automations/integrations</a></td>
+          <td><a href="https://www.mintlify.com/docs/llms.txt" class="res-tip" target="_blank" rel="noopener" data-tip="llms.txt&#10;https://www.mintlify.com/docs/llms.txt" title="llms.txt · https://www.mintlify.com/docs/llms.txt"><span class="tag tag-yes">有</span></a></td>
+          <td><a href="https://www.mintlify.com/docs/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/docs/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/docs/sitemap.xml"><span class="tag tag-yes">site+docs</span></a></td>
           <td><span class="tag tag-full">完整</span></td>
-          <td><a href="https://www.mintlify.com/docs/automations/integrations.md" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
-          <td><a href="https://www.mintlify.com/docs/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site+docs</span></a></td>
-          <td><a href="https://www.mintlify.com/docs/llms.txt" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
-          <td class="model-lv"><span class="lvl lvl-2 axis-r"><span class="lv-k">R2</span>llms 目录收录</span><span class="lvl lvl-2 axis-c"><span class="lv-k">D2</span>MD 可托管</span></td>
+          <td><a href="https://www.mintlify.com/docs/automations/integrations.md" class="res-tip" target="_blank" rel="noopener" data-tip="integrations.md&#10;https://www.mintlify.com/docs/automations/integrations.md" title="integrations.md · https://www.mintlify.com/docs/automations/integrations.md"><span class="tag tag-yes">有</span></a></td>
+          <td class="model-lv"><span class="aff-tier tier-2">深度亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.mintlify.com/docs/ai/model-context-protocol" target="_blank" rel="noopener">/docs/ai/model-context-protocol</a></td>
+          <td><a href="https://www.mintlify.com/docs/llms.txt" class="res-tip" target="_blank" rel="noopener" data-tip="llms.txt&#10;https://www.mintlify.com/docs/llms.txt" title="llms.txt · https://www.mintlify.com/docs/llms.txt"><span class="tag tag-yes">有</span></a></td>
+          <td><a href="https://www.mintlify.com/docs/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/docs/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/docs/sitemap.xml"><span class="tag tag-yes">site+docs</span></a></td>
           <td><span class="tag tag-full">完整</span></td>
-          <td><a href="https://www.mintlify.com/docs/ai/model-context-protocol.md" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
-          <td><a href="https://www.mintlify.com/docs/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site+docs</span></a></td>
-          <td><a href="https://www.mintlify.com/docs/llms.txt" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
-          <td class="model-lv"><span class="lvl lvl-2 axis-r"><span class="lv-k">R2</span>llms 目录收录</span><span class="lvl lvl-2 axis-c"><span class="lv-k">D2</span>MD 可托管</span></td>
+          <td><a href="https://www.mintlify.com/docs/ai/model-context-protocol.md" class="res-tip" target="_blank" rel="noopener" data-tip="model-context-protocol.md&#10;https://www.mintlify.com/docs/ai/model-context-protocol.md" title="model-context-protocol.md · https://www.mintlify.com/docs/ai/model-context-protocol.md"><span class="tag tag-yes">有</span></a></td>
+          <td class="model-lv"><span class="aff-tier tier-2">深度亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.mintlify.com/docs/api-playground/overview" target="_blank" rel="noopener">/docs/api-playground/overview</a></td>
+          <td><a href="https://www.mintlify.com/docs/llms.txt" class="res-tip" target="_blank" rel="noopener" data-tip="llms.txt&#10;https://www.mintlify.com/docs/llms.txt" title="llms.txt · https://www.mintlify.com/docs/llms.txt"><span class="tag tag-yes">有</span></a></td>
+          <td><a href="https://www.mintlify.com/docs/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/docs/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/docs/sitemap.xml"><span class="tag tag-yes">site+docs</span></a></td>
           <td><span class="tag tag-full">完整</span></td>
-          <td><a href="https://www.mintlify.com/docs/api-playground/overview.md" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
-          <td><a href="https://www.mintlify.com/docs/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site+docs</span></a></td>
-          <td><a href="https://www.mintlify.com/docs/llms.txt" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
-          <td class="model-lv"><span class="lvl lvl-2 axis-r"><span class="lv-k">R2</span>llms 目录收录</span><span class="lvl lvl-2 axis-c"><span class="lv-k">D2</span>MD 可托管</span></td>
+          <td><a href="https://www.mintlify.com/docs/api-playground/overview.md" class="res-tip" target="_blank" rel="noopener" data-tip="overview.md&#10;https://www.mintlify.com/docs/api-playground/overview.md" title="overview.md · https://www.mintlify.com/docs/api-playground/overview.md"><span class="tag tag-yes">有</span></a></td>
+          <td class="model-lv"><span class="aff-tier tier-2">深度亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.mintlify.com/docs/components" target="_blank" rel="noopener">/docs/components</a></td>
+          <td><a href="https://www.mintlify.com/docs/llms.txt" class="res-tip" target="_blank" rel="noopener" data-tip="llms.txt&#10;https://www.mintlify.com/docs/llms.txt" title="llms.txt · https://www.mintlify.com/docs/llms.txt"><span class="tag tag-yes">有</span></a></td>
+          <td><a href="https://www.mintlify.com/docs/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/docs/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/docs/sitemap.xml"><span class="tag tag-yes">site+docs</span></a></td>
           <td><span class="tag tag-full">完整</span></td>
-          <td><a href="https://www.mintlify.com/docs/components.md" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
-          <td><a href="https://www.mintlify.com/docs/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site+docs</span></a></td>
-          <td><a href="https://www.mintlify.com/docs/llms.txt" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
-          <td class="model-lv"><span class="lvl lvl-2 axis-r"><span class="lv-k">R2</span>llms 目录收录</span><span class="lvl lvl-2 axis-c"><span class="lv-k">D2</span>MD 可托管</span></td>
+          <td><a href="https://www.mintlify.com/docs/components.md" class="res-tip" target="_blank" rel="noopener" data-tip="components.md&#10;https://www.mintlify.com/docs/components.md" title="components.md · https://www.mintlify.com/docs/components.md"><span class="tag tag-yes">有</span></a></td>
+          <td class="model-lv"><span class="aff-tier tier-2">深度亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.mintlify.com/docs/api/introduction" target="_blank" rel="noopener">/docs/api/introduction</a></td>
+          <td><a href="https://www.mintlify.com/docs/llms.txt" class="res-tip" target="_blank" rel="noopener" data-tip="llms.txt&#10;https://www.mintlify.com/docs/llms.txt" title="llms.txt · https://www.mintlify.com/docs/llms.txt"><span class="tag tag-yes">有</span></a></td>
+          <td><a href="https://www.mintlify.com/docs/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/docs/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/docs/sitemap.xml"><span class="tag tag-yes">site+docs</span></a></td>
           <td><span class="tag tag-full">完整</span></td>
-          <td><a href="https://www.mintlify.com/docs/api/introduction.md" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
-          <td><a href="https://www.mintlify.com/docs/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site+docs</span></a></td>
-          <td><a href="https://www.mintlify.com/docs/llms.txt" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
-          <td class="model-lv"><span class="lvl lvl-2 axis-r"><span class="lv-k">R2</span>llms 目录收录</span><span class="lvl lvl-2 axis-c"><span class="lv-k">D2</span>MD 可托管</span></td>
+          <td><a href="https://www.mintlify.com/docs/api/introduction.md" class="res-tip" target="_blank" rel="noopener" data-tip="introduction.md&#10;https://www.mintlify.com/docs/api/introduction.md" title="introduction.md · https://www.mintlify.com/docs/api/introduction.md"><span class="tag tag-yes">有</span></a></td>
+          <td class="model-lv"><span class="aff-tier tier-2">深度亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.mintlify.com/docs/changelog" target="_blank" rel="noopener">/docs/changelog</a></td>
-          <td><span class="tag tag-full">完整</span></td>
-          <td><a href="https://www.mintlify.com/docs/changelog.md" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
-          <td><a href="https://www.mintlify.com/docs/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-warn">两边无</span></a></td>
           <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-2 axis-c"><span class="lv-k">D2</span>MD 可托管</span></td>
+          <td><a href="https://www.mintlify.com/docs/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/docs/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/docs/sitemap.xml"><span class="tag tag-warn">两边无</span></a></td>
+          <td><span class="tag tag-full">完整</span></td>
+          <td><a href="https://www.mintlify.com/docs/changelog.md" class="res-tip" target="_blank" rel="noopener" data-tip="changelog.md&#10;https://www.mintlify.com/docs/changelog.md" title="changelog.md · https://www.mintlify.com/docs/changelog.md"><span class="tag tag-yes">有</span></a></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
         </tr>
         <tr>
           <td class="cat">学习</td>
           <td class="path"><a href="https://learn.mintlify.com/" target="_blank" rel="noopener">learn.mintlify.com/</a></td>
+          <td><a href="https://learn.mintlify.com/llms.txt" class="res-tip" target="_blank" rel="noopener" data-tip="llms.txt&#10;https://learn.mintlify.com/llms.txt" title="llms.txt · https://learn.mintlify.com/llms.txt"><span class="tag tag-yes">自有 + Optional</span></a></td>
+          <td><a href="https://learn.mintlify.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://learn.mintlify.com/sitemap.xml" title="sitemap.xml · https://learn.mintlify.com/sitemap.xml"><span class="tag tag-no">不在 www</span></a></td>
           <td><span class="tag tag-full">完整</span></td>
-          <td><a href="https://learn.mintlify.com/index.md" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
-          <td><a href="https://learn.mintlify.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-no">不在 www</span></a></td>
-          <td><a href="https://learn.mintlify.com/llms.txt" target="_blank" rel="noopener"><span class="tag tag-yes">自有 + Optional</span></a></td>
-          <td class="model-lv"><span class="lvl lvl-2 axis-r"><span class="lv-k">R2</span>llms 目录收录</span><span class="lvl lvl-2 axis-c"><span class="lv-k">D2</span>MD 可托管</span></td>
+          <td><a href="https://learn.mintlify.com/index.md" class="res-tip" target="_blank" rel="noopener" data-tip="index.md&#10;https://learn.mintlify.com/index.md" title="index.md · https://learn.mintlify.com/index.md"><span class="tag tag-yes">有</span></a></td>
+          <td class="model-lv"><span class="aff-tier tier-2">深度亲和</span></td>
         </tr>
         <tr>
           <td class="cat">支持</td>
@@ -1233,45 +1372,59 @@
 
   <section class="section">
     <h2 class="card-title">生态</h2>
-    <p class="domain-desc">企业 / 创业等分群与伙伴计划落地页。获客与生态招募，不当产品知识源。</p>
-    <div class="domain-level" aria-label="本域默认模型层级">
-      <span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span>
-      <span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span>
+    <p class="domain-desc">企业 / 创业等分群与伙伴计划落地页</p>
+    <div class="domain-level" aria-label="本域默认 AI亲和 Level">
+      <span class="aff-tier tier-1">基线亲和</span>
+      <span class="aff-note">Sitemap 可发现 · HTML 可读</span>
     </div>
     <ul class="domain-why">
-      <li>生态页做到「人可读（D1）＋搜索可发现（R1）」即可：让对的人找到计划入口，不必升级成 AI 可引用知识源。</li>
-      <li>和营销同属「不做亲和」——差别只在话术对象：营销偏品牌卖点与客户证明，生态偏「跟谁合作 / 哪类客户加入」；拆开是为了和 NVIDIA 伙伴 / 创业 / ISV 对照。</li>
-      <li>计划权益与分群话术会变、说服性强，写进 llms 容易把招募文案当成事实，故主动停在 R1·D1。</li>
+      <li><strong>基线亲和。</strong>获客与生态招募，让对的人找到计划入口即可；不当产品知识源，不进 llms。</li>
+      <li><strong>与营销同策略、对象不同。</strong>生态偏合作 / 分群招募；拆开便于对照 NVIDIA 伙伴域。</li>
     </ul>
     <table class="domain-table">
       <colgroup>
         <col class="col-cat" />
         <col class="col-page" />
+        <col class="col-llms" />
+        <col class="col-sitemap" />
         <col class="col-static" />
         <col class="col-md" />
-        <col class="col-sitemap" />
-        <col class="col-llms" />
         <col class="col-level" />
       </colgroup>
-      <thead><tr><th>分类</th><th>页面</th><th>HTML主信息（交付 D1）</th><th>MD文件（交付 D2）</th><th>收录Sitemap（索引 R1）</th><th>收录llms.txt（索引 R2）</th><th>实测模型层级</th></tr></thead>
+      <thead>
+        <tr class="th-row-group">
+          <th rowspan="2" class="th-stub">分类</th>
+          <th rowspan="2" class="th-stub">页面</th>
+          <th colspan="2" class="th-group th-group-find">找的到</th>
+          <th class="th-group th-group-html">读的懂</th>
+          <th class="th-group th-group-md">读的顺</th>
+          <th rowspan="2" class="th-stub">AI亲和 Level</th>
+        </tr>
+        <tr class="th-row-leaf">
+          <th class="th-leaf th-group-find">llms 收录</th>
+          <th class="th-leaf th-group-find">Sitemap 可发现</th>
+          <th class="th-leaf th-group-html">HTML 可读</th>
+          <th class="th-leaf th-group-md">Markdown 可读</th>
+        </tr>
+      </thead>
       <tbody>
         <tr>
           <td class="cat">企业</td>
           <td class="path"><a href="https://www.mintlify.com/enterprise" target="_blank" rel="noopener">/enterprise</a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.mintlify.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-full">完整</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.mintlify.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
         </tr>
         <tr>
           <td class="cat">创业</td>
           <td class="path"><a href="https://www.mintlify.com/startups" target="_blank" rel="noopener">/startups</a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.mintlify.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-full">完整</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.mintlify.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
         </tr>
       </tbody>
     </table>
@@ -1281,36 +1434,50 @@
 
   <section class="section">
     <h2 class="card-title">商业转化</h2>
-    <p class="domain-desc">套餐与购买决策页。给人比价下单，不给 AI 当「产品怎么用」的说明书。</p>
-    <div class="domain-level" aria-label="本域默认模型层级">
-      <span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span>
-      <span class="lvl lvl-2 axis-c"><span class="lv-k">D2</span>MD 可托管</span>
+    <p class="domain-desc">套餐与购买决策页</p>
+    <div class="domain-level" aria-label="本域默认 AI亲和 Level">
+      <span class="aff-tier tier-1">基线亲和</span>
+      <span class="aff-note">Sitemap 可发现 · HTML 可读</span>
     </div>
     <ul class="domain-why">
-      <li>定价要给人做购买决策，所以进站点 Sitemap（R1）合理；但默认不进 llms（不上 R2）——报价易变，写进目录容易让模型拿过期价格当事实。</li>
-      <li><code>/pricing</code> 实测有平行 MD（到了 D2），这是实现例外，不改变「不做 AI 亲和」的域判定：有 MD ≠ 该进 Agent 主索引。</li>
-      <li>产品怎么用仍归 <code>/docs</code>；商业页只服务转化漏斗，策展闸门卡在 R2。</li>
+      <li><strong>进 Sitemap，不进 llms。</strong>给人比价下单；报价易变，不宜当 Agent 事实源，更不给 AI 当「产品怎么用」的说明书。</li>
+      <li><strong>有 MD ≠ 深度亲和。</strong><code>/pricing</code> 实测有平行 MD，仍判定为基线；产品怎么用归 <code>/docs</code>。</li>
     </ul>
     <table class="domain-table">
       <colgroup>
         <col class="col-cat" />
         <col class="col-page" />
+        <col class="col-llms" />
+        <col class="col-sitemap" />
         <col class="col-static" />
         <col class="col-md" />
-        <col class="col-sitemap" />
-        <col class="col-llms" />
         <col class="col-level" />
       </colgroup>
-      <thead><tr><th>分类</th><th>页面</th><th>HTML主信息（交付 D1）</th><th>MD文件（交付 D2）</th><th>收录Sitemap（索引 R1）</th><th>收录llms.txt（索引 R2）</th><th>实测模型层级</th></tr></thead>
+      <thead>
+        <tr class="th-row-group">
+          <th rowspan="2" class="th-stub">分类</th>
+          <th rowspan="2" class="th-stub">页面</th>
+          <th colspan="2" class="th-group th-group-find">找的到</th>
+          <th class="th-group th-group-html">读的懂</th>
+          <th class="th-group th-group-md">读的顺</th>
+          <th rowspan="2" class="th-stub">AI亲和 Level</th>
+        </tr>
+        <tr class="th-row-leaf">
+          <th class="th-leaf th-group-find">llms 收录</th>
+          <th class="th-leaf th-group-find">Sitemap 可发现</th>
+          <th class="th-leaf th-group-html">HTML 可读</th>
+          <th class="th-leaf th-group-md">Markdown 可读</th>
+        </tr>
+      </thead>
       <tbody>
         <tr>
           <td class="cat">价格</td>
           <td class="path"><a href="https://www.mintlify.com/pricing" target="_blank" rel="noopener">/pricing</a></td>
-          <td><span class="tag tag-full">完整</span></td>
-          <td><a href="https://www.mintlify.com/pricing.md" target="_blank" rel="noopener"><span class="tag tag-yes">有</span></a></td>
-          <td><a href="https://www.mintlify.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-2 axis-c"><span class="lv-k">D2</span>MD 可托管</span></td>
+          <td><a href="https://www.mintlify.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
+          <td><span class="tag tag-full">完整</span></td>
+          <td><a href="https://www.mintlify.com/pricing.md" class="res-tip" target="_blank" rel="noopener" data-tip="pricing.md&#10;https://www.mintlify.com/pricing.md" title="pricing.md · https://www.mintlify.com/pricing.md"><span class="tag tag-yes">有</span></a></td>
+          <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
         </tr>
       </tbody>
     </table>
@@ -1318,105 +1485,133 @@
 
   <section class="section">
     <h2 class="card-title">内容运营</h2>
-    <p class="domain-desc">博客等阅读向内容。给人看、做 SEO 就好，不当产品说明书。</p>
-    <div class="domain-level" aria-label="本域默认模型层级">
-      <span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span>
-      <span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span>
+    <p class="domain-desc">博客等阅读向内容</p>
+    <div class="domain-level" aria-label="本域默认 AI亲和 Level">
+      <span class="aff-tier tier-1">基线亲和</span>
+      <span class="aff-note">Sitemap 可发现 · HTML 可读</span>
     </div>
     <ul class="domain-why">
-      <li>博客的本职是观点、故事与传播：人可读（D1）、进站点 Sitemap 拿流量（R1）就够。</li>
-      <li>不升级到 R2 / D2 是主动避险——时效强、口径偏传播，写进 llms 容易干扰答题；实测里博客 <code>*.md</code> 也常是 HTML 壳，不算可托管正文。</li>
-      <li>可引用的技术说明在 <code>/docs</code>；<code>docs/llms.txt</code> 只收文档站，博客不在列。</li>
+      <li><strong>基线亲和。</strong>给人看、做 SEO 就好，不当产品说明书；不进 llms，技术说明归 <code>/docs</code>。</li>
+      <li><strong>传播向内容不背书。</strong>时效强、口径偏故事，写进目录易干扰答题。</li>
     </ul>
     <table class="domain-table">
       <colgroup>
         <col class="col-cat" />
         <col class="col-page" />
+        <col class="col-llms" />
+        <col class="col-sitemap" />
         <col class="col-static" />
         <col class="col-md" />
-        <col class="col-sitemap" />
-        <col class="col-llms" />
         <col class="col-level" />
       </colgroup>
-      <thead><tr><th>分类</th><th>页面</th><th>HTML主信息（交付 D1）</th><th>MD文件（交付 D2）</th><th>收录Sitemap（索引 R1）</th><th>收录llms.txt（索引 R2）</th><th>实测模型层级</th></tr></thead>
+      <thead>
+        <tr class="th-row-group">
+          <th rowspan="2" class="th-stub">分类</th>
+          <th rowspan="2" class="th-stub">页面</th>
+          <th colspan="2" class="th-group th-group-find">找的到</th>
+          <th class="th-group th-group-html">读的懂</th>
+          <th class="th-group th-group-md">读的顺</th>
+          <th rowspan="2" class="th-stub">AI亲和 Level</th>
+        </tr>
+        <tr class="th-row-leaf">
+          <th class="th-leaf th-group-find">llms 收录</th>
+          <th class="th-leaf th-group-find">Sitemap 可发现</th>
+          <th class="th-leaf th-group-html">HTML 可读</th>
+          <th class="th-leaf th-group-md">Markdown 可读</th>
+        </tr>
+      </thead>
       <tbody>
         <tr>
           <td class="cat" rowspan="4">博客</td>
           <td class="path"><a href="https://www.mintlify.com/blog" target="_blank" rel="noopener">/blog</a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.mintlify.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-full">完整</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.mintlify.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.mintlify.com/blog/developer-documentation" target="_blank" rel="noopener">/blog/developer-documentation</a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.mintlify.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-full">完整</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.mintlify.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.mintlify.com/blog/internal-knowledge-base" target="_blank" rel="noopener">/blog/internal-knowledge-base</a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.mintlify.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-full">完整</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.mintlify.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.mintlify.com/blog/help-centers" target="_blank" rel="noopener">/blog/help-centers</a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.mintlify.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-full">完整</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.mintlify.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
         </tr>
       </tbody>
     </table>
   </section>
   <section class="section">
     <h2 class="card-title">社区运营</h2>
-    <p class="domain-desc">活动与社区 / Wiki。时效入口与 UGC，不为官方产品事实背书。</p>
-    <div class="domain-level" aria-label="本域默认模型层级">
-      <span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span>
-      <span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span>
+    <p class="domain-desc">活动与社区 / Wiki</p>
+    <div class="domain-level" aria-label="本域默认 AI亲和 Level">
+      <span class="aff-tier tier-0">未就绪</span>
+      <span class="aff-note">索引缺失或正文不可读</span>
     </div>
     <ul class="domain-why">
-      <li>活动偏报名与日程，社区 / Wiki 偏讨论与投稿——人能打开页面（D1）即可，不宜当作稳定知识源。</li>
-      <li>刻意停在 R0：实测 <code>/events</code> 与 <code>mintlify.wiki</code> 基本不进 www sitemap，更不会进 <code>docs/llms.txt</code>——发现通道和 Agent 目录都不覆盖。</li>
-      <li>变化快、准确性难背书；产品怎么用仍归知识域，这里不往 R1 / R2 推。</li>
+      <li><strong>刻意未就绪。</strong><code>/events</code>、<code>mintlify.wiki</code> 不进 Sitemap，也不进 llms。</li>
+      <li><strong>不当稳定知识源。</strong>时效入口与 UGC，变化快、难背书，不为官方产品事实背书；产品事实归知识域。</li>
     </ul>
     <table class="domain-table">
       <colgroup>
         <col class="col-cat" />
         <col class="col-page" />
+        <col class="col-llms" />
+        <col class="col-sitemap" />
         <col class="col-static" />
         <col class="col-md" />
-        <col class="col-sitemap" />
-        <col class="col-llms" />
         <col class="col-level" />
       </colgroup>
-      <thead><tr><th>分类</th><th>页面</th><th>HTML主信息（交付 D1）</th><th>MD文件（交付 D2）</th><th>收录Sitemap（索引 R1）</th><th>收录llms.txt（索引 R2）</th><th>实测模型层级</th></tr></thead>
+      <thead>
+        <tr class="th-row-group">
+          <th rowspan="2" class="th-stub">分类</th>
+          <th rowspan="2" class="th-stub">页面</th>
+          <th colspan="2" class="th-group th-group-find">找的到</th>
+          <th class="th-group th-group-html">读的懂</th>
+          <th class="th-group th-group-md">读的顺</th>
+          <th rowspan="2" class="th-stub">AI亲和 Level</th>
+        </tr>
+        <tr class="th-row-leaf">
+          <th class="th-leaf th-group-find">llms 收录</th>
+          <th class="th-leaf th-group-find">Sitemap 可发现</th>
+          <th class="th-leaf th-group-html">HTML 可读</th>
+          <th class="th-leaf th-group-md">Markdown 可读</th>
+        </tr>
+      </thead>
       <tbody>
         <tr>
           <td class="cat">活动</td>
           <td class="path"><a href="https://www.mintlify.com/events" target="_blank" rel="noopener">/events</a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><span class="tag tag-no">无</span></td>
           <td><span class="tag tag-full">完整</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
         </tr>
         <tr>
           <td class="cat">社区</td>
           <td class="path"><a href="https://mintlify.wiki/explore" target="_blank" rel="noopener">mintlify.wiki/explore</a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><span class="tag tag-no">无</span></td>
           <td><span class="tag tag-full">完整</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
         </tr>
       </tbody>
     </table>
@@ -1424,36 +1619,50 @@
 
   <section class="section">
     <h2 class="card-title">公司事务</h2>
-    <p class="domain-desc">招聘与法务 / 信任页。雇主品牌与合规披露，和「产品怎么用」无关。</p>
-    <div class="domain-level" aria-label="本域默认模型层级">
-      <span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span>
-      <span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span>
+    <p class="domain-desc">招聘与法务 / 信任页</p>
+    <div class="domain-level" aria-label="本域默认 AI亲和 Level">
+      <span class="aff-tier tier-1">基线亲和</span>
+      <span class="aff-note">Sitemap 可发现 · HTML 可读</span>
     </div>
     <ul class="domain-why">
-      <li>招聘要给人投递、法务要人能读到条款：做到 HTML 可读（D1）是基本功；职位页进站点 Sitemap（R1）只服务 SEO / 招聘曝光。</li>
-      <li>不上 R2 / D2：AI 答题不应从招聘文案或隐私政策里拼产品事实；进 sitemap ≠ 进 Agent 知识目录。</li>
-      <li>本样本暂无法务页；有法务 / 信任页时，亲和判定同样默认停在这一档。</li>
+      <li><strong>基线亲和。</strong>HTML 可读；职位页可进 Sitemap 做曝光，不进 llms。</li>
+      <li><strong>与产品事实无关。</strong>雇主品牌与合规披露，和「产品怎么用」无关；招聘 / 法务文案不应被拼进产品答案。本样本暂无法务页，判定同此档。</li>
     </ul>
     <table class="domain-table">
       <colgroup>
         <col class="col-cat" />
         <col class="col-page" />
+        <col class="col-llms" />
+        <col class="col-sitemap" />
         <col class="col-static" />
         <col class="col-md" />
-        <col class="col-sitemap" />
-        <col class="col-llms" />
         <col class="col-level" />
       </colgroup>
-      <thead><tr><th>分类</th><th>页面</th><th>HTML主信息（交付 D1）</th><th>MD文件（交付 D2）</th><th>收录Sitemap（索引 R1）</th><th>收录llms.txt（索引 R2）</th><th>实测模型层级</th></tr></thead>
+      <thead>
+        <tr class="th-row-group">
+          <th rowspan="2" class="th-stub">分类</th>
+          <th rowspan="2" class="th-stub">页面</th>
+          <th colspan="2" class="th-group th-group-find">找的到</th>
+          <th class="th-group th-group-html">读的懂</th>
+          <th class="th-group th-group-md">读的顺</th>
+          <th rowspan="2" class="th-stub">AI亲和 Level</th>
+        </tr>
+        <tr class="th-row-leaf">
+          <th class="th-leaf th-group-find">llms 收录</th>
+          <th class="th-leaf th-group-find">Sitemap 可发现</th>
+          <th class="th-leaf th-group-html">HTML 可读</th>
+          <th class="th-leaf th-group-md">Markdown 可读</th>
+        </tr>
+      </thead>
       <tbody>
         <tr>
           <td class="cat">招聘</td>
           <td class="path"><a href="https://www.mintlify.com/careers" target="_blank" rel="noopener">/careers</a></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.mintlify.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-full">完整</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.mintlify.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
         </tr>
         <tr>
           <td class="cat">法务/信任</td>

@@ -346,6 +346,9 @@
     grid-template-columns: 1fr 1fr;
     gap: 16px;
   }
+  .axes.tiers {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
   .axis-card {
     padding: 20px 22px;
     background: var(--panel);
@@ -447,9 +450,9 @@
   }
   .target .t-c {
     margin: 0 0 4px;
-    font-family: var(--mono);
     font-size: 15px;
     font-weight: 700;
+    color: var(--text);
   }
   .target .t-c .r { color: var(--accent); }
   .target .t-c .c { color: #6d28d9; }
@@ -670,7 +673,7 @@
     <h1>社区 AI 亲和原则</h1>
     <p class="hero-lead">整站哪些面该做亲和、索引与交付各做到哪一档——从官网与社区入口层建立基线。</p>
     <div class="hero-desc">
-      <p>文档层已解决「说明书如何被 Agent 读」；本站上移到入口与组件层：运营域取舍、双轴定档、友商可迁移原则，以及社区 UI 的实测与改造。</p>
+      <p>文档层已解决「说明书如何被 Agent 读」；本站上移到入口与组件层：运营域取舍、AI亲和 Level 定档、友商可迁移原则，以及社区 UI 的实测与改造。</p>
     </div>
   </header>
 
@@ -688,7 +691,7 @@
       <a class="module-card" href="reachability.html">
         <div class="m-num">02 · 社区诊断</div>
         <h3>昇腾可达与可引用</h3>
-        <p>用同一双轴验收社区自身：机器入口是否清晰、HTML/MD 能否干净读走、版本与渠道是否可消歧。</p>
+        <p>用同一套 AI亲和 Level 验收社区自身：机器入口是否清晰、HTML/MD 能否干净读走、版本与渠道是否可消歧。</p>
         <div class="m-meta">左侧：分析层面（分析概览 · 找的到 · 读的懂 · 读的顺）</div>
         <span class="m-go">进入社区诊断 →</span>
       </a>
@@ -703,8 +706,8 @@
   </section>
 
   <section class="block" aria-labelledby="model-title">
-    <h2 id="model-title">共用标尺 · 双轴模型</h2>
-    <p class="lead">三条路径共用同一套判定：先过背书闸门，再分开定 R（找得到）与 D（读得走）。</p>
+    <h2 id="model-title">共用标尺 · AI亲和 Level</h2>
+    <p class="lead">三条路径共用同一套判定：先过背书闸门，再定<strong>未就绪 / 基线亲和 / 深度亲和</strong>。四列实测（llms 收录、Sitemap 可发现、HTML 可读、Markdown 可读）用来取证。</p>
 
     <div class="gates">
       <div class="gate">
@@ -712,48 +715,38 @@
           <h3>背书闸门</h3>
           <span class="g-k">G · 敢不敢背书</span>
           <p class="g-b">
-            愿不愿意让 AI 把这页当官方事实原样引用？不愿意就停在基线，业务价值再高也不升档。
+            愿不愿意让 AI 把这页当官方事实原样引用？不愿意就停在基线亲和，业务价值再高也不升档。
             一票否决：定价页价值高却因报价会变而故意不进目录。
           </p>
         </div>
       </div>
     </div>
 
-    <div class="axes">
+    <div class="axes tiers">
       <div class="axis-card">
-        <h3>可达性·索引</h3>
-        <p class="ac-sub">R = Reachability。机器能不能找到这一页。</p>
+        <h3><span class="lvl lvl-0">未就绪</span></h3>
+        <p class="ac-sub">索引缺失或正文不可读</p>
         <ul class="rungs">
           <li>
-            <div class="r-h"><span class="lvl lvl-0"><span class="r-k">R0</span>未进索引</span></div>
-            <p class="r-d">Sitemap 与 llms.txt 都搜不到，只能靠外链偶然撞见。</p>
-          </li>
-          <li>
-            <div class="r-h"><span class="lvl lvl-1"><span class="r-k">R1</span>Sitemap 可发现</span></div>
-            <p class="r-d">URL 稳定，并进入<strong>该内容面</strong>对应的 sitemap。</p>
-          </li>
-          <li>
-            <div class="r-h"><span class="lvl lvl-2"><span class="r-k">R2</span>llms 目录收录</span></div>
-            <p class="r-d">写入机器目录，让 Agent 一次拿到可引用全集。</p>
+            <p class="r-d">Sitemap / llms 都找不到，或 HTML 主信息缺失（正文靠 JS 才出现且无平行 MD）。</p>
           </li>
         </ul>
       </div>
-
-      <div class="axis-card cite">
-        <h3>可读取性·交付</h3>
-        <p class="ac-sub">D = Delivery。找到之后能不能干净地读走。</p>
+      <div class="axis-card">
+        <h3><span class="lvl lvl-1">基线亲和</span></h3>
+        <p class="ac-sub">Sitemap 可发现 · HTML 可读</p>
         <ul class="rungs">
           <li>
-            <div class="r-h"><span class="lvl lvl-0"><span class="r-k">D0</span>正文不可读</span></div>
-            <p class="r-d">正文靠 JS 才出现，且没有平行 MD。</p>
+            <p class="r-d">进对应内容面 Sitemap，不执行 JS 也能读到完整主信息。服务 SEO / 人读，默认不进 llms、不强制 Markdown。</p>
           </li>
+        </ul>
+      </div>
+      <div class="axis-card">
+        <h3><span class="lvl lvl-2">深度亲和</span></h3>
+        <p class="ac-sub">llms 收录 · Markdown 可读</p>
+        <ul class="rungs">
           <li>
-            <div class="r-h"><span class="lvl lvl-1"><span class="r-k">D1</span>HTML 可读</span></div>
-            <p class="r-d">不执行 JS 时，HTML 里已有完整主信息。</p>
-          </li>
-          <li>
-            <div class="r-h"><span class="lvl lvl-2"><span class="r-k">D2</span>MD 可托管</span></div>
-            <p class="r-d">平行 Markdown 与 HTML <strong>同源同步</strong>，且对实际爬取 locale 可用。</p>
+            <p class="r-d">写入机器目录，并提供与 HTML 同源同步的平行 Markdown。只给官方愿背书的事实叶子页。</p>
           </li>
         </ul>
       </div>
@@ -762,12 +755,12 @@
     <div class="targets">
       <div class="target goal">
         <p class="t-l">知识面目标</p>
-        <p class="t-c"><span class="r">R1</span><span class="sep">·</span><span class="c">D1</span> 必达 · <span class="r">R2</span><span class="sep">·</span><span class="c">D2</span> 加码</p>
-        <p class="t-d">文档 / API / 教程 / 支持库。先保证进 sitemap、正文在 HTML；再补机器目录与平行 MD。</p>
+        <p class="t-c">深度亲和</p>
+        <p class="t-d">文档 / API / 教程 / 支持库。先保证 Sitemap + HTML 可读；再补 llms 与平行 MD。</p>
       </div>
       <div class="target base">
         <p class="t-l">非知识面默认</p>
-        <p class="t-c"><span class="r">R1</span><span class="sep">·</span><span class="c">D1</span> 封顶</p>
+        <p class="t-c">基线亲和封顶</p>
         <p class="t-d">营销、生态、博客、定价、活动等。Sitemap 可服务 SEO；不进 llms，不强制 MD。</p>
       </div>
     </div>
@@ -779,16 +772,16 @@
 
     <h3 class="sum-h3">三步决策</h3>
     <ol class="steps">
-      <li><strong>这页公开吗？</strong>是 → <span class="coord"><span class="r">R0</span><span class="sep">·</span><span class="c">D1</span></span>（主信息进 HTML）。</li>
-      <li><strong>用户会拿它问「怎么做 / 是什么」吗？</strong>会 → <span class="coord"><span class="r">R1</span></span>（进对应内容面 sitemap）。</li>
-      <li><strong>长期稳定、愿意背书吗？</strong>是 → 再补 <span class="coord"><span class="c">D2</span></span> 与 <span class="coord"><span class="r">R2</span></span>。可达 ≠ 该被引用。</li>
+      <li><strong>这页公开吗？</strong>是 → 保证 <strong>HTML 可读</strong>（主信息进 HTML，不靠 JS 才出现）。</li>
+      <li><strong>用户会拿它问「怎么做 / 是什么」吗？</strong>会 → 进对应内容面 Sitemap，达到 <strong>基线亲和</strong>。</li>
+      <li><strong>长期稳定、愿意背书吗？</strong>是 → 再补 llms 收录与平行 Markdown，升到 <strong>深度亲和</strong>。能搜到 ≠ 该被引用。</li>
     </ol>
 
     <h3 class="sum-h3">可搬走的结论</h3>
     <ol class="steps">
       <li><strong>管道能力必须学</strong>——分区 sitemap、locale 权威 MD、枢纽 llms。</li>
       <li><strong>全面覆盖必须警惕</strong>——工程学 NVIDIA，收口学 Mintlify。</li>
-      <li><strong>策展以场景为准</strong>——先问愿不愿意背书，再决定是否上 R2·D2。</li>
+      <li><strong>策展以场景为准</strong>——先问愿不愿意背书，再决定是否升到深度亲和。</li>
       <li><strong>叶子重于汇总</strong>——具体可引用页优先；根页最多做入口指针。</li>
       <li><strong>分流是为了场景边界</strong>——目标是分面管道 + 窄目录背书，而非全站镜像。</li>
     </ol>
@@ -804,13 +797,13 @@
 
   <section class="block" aria-labelledby="scene-title">
     <h2 id="scene-title">运营域定档</h2>
-    <p class="lead">按「可达性·索引 × 可读取性·交付」给七个运营域定档。知识域必改；其余多数停在基线。</p>
+    <p class="lead">按 AI亲和 Level 给七个运营域定档。知识域必改到深度亲和；其余多数停在基线或未就绪。</p>
     <table class="levels">
       <thead>
         <tr>
           <th>运营域</th>
-          <th>可达性·索引<span class="sub">AI 能否找到</span></th>
-          <th>可读取性·交付<span class="sub">正文以什么形态交出去</span></th>
+          <th>目标 AI亲和 Level<span class="sub">定到哪一档</span></th>
+          <th>取证要点<span class="sub">四列里盯什么</span></th>
           <th>决策</th>
           <th>改造动作</th>
         </tr>
@@ -818,52 +811,52 @@
       <tbody>
         <tr>
           <td class="name">市场营销</td>
-          <td class="axis-cell"><span class="tag r">R1 Sitemap 可发现</span><span class="hint">Sitemap 服务 SEO</span></td>
-          <td class="axis-cell"><span class="tag c">D1 HTML 可读</span><span class="hint">说服与导流，非说明书</span></td>
+          <td class="axis-cell"><span class="tag r">基线亲和</span><span class="hint">封顶，不升深度</span></td>
+          <td class="axis-cell"><span class="tag c">Sitemap · HTML</span><span class="hint">说服与导流，非说明书</span></td>
           <td class="dec"><span class="tag dec-skip">不改</span></td>
           <td class="act">进 sitemap 即可；<strong>不进 llms</strong>，也不做平行 MD。</td>
         </tr>
         <tr>
           <td class="name">知识</td>
-          <td class="axis-cell"><span class="tag r">R2 llms 目录收录</span><span class="hint">Sitemap + 机器目录</span></td>
-          <td class="axis-cell"><span class="tag c">D2 MD 可托管</span><span class="hint">操作说明书，答错=失败</span></td>
+          <td class="axis-cell"><span class="tag r">深度亲和</span><span class="hint">知识面目标</span></td>
+          <td class="axis-cell"><span class="tag c">llms · Markdown</span><span class="hint">操作说明书，答错=失败</span></td>
           <td class="dec"><span class="tag dec-must">必改</span></td>
-          <td class="act">文档 / API / 教程 / 学习站做满两轴；索引跟知识面走，按子域 / locale 验收。</td>
+          <td class="act">文档 / API / 教程 / 学习站做满四列；索引跟知识面走，按子域 / locale 验收。</td>
         </tr>
         <tr>
           <td class="name">内容运营</td>
-          <td class="axis-cell"><span class="tag r">R1 Sitemap 可发现</span><span class="hint">常更，易被搜到</span></td>
-          <td class="axis-cell"><span class="tag c">D1 HTML 可读</span><span class="hint">时效强、口径偏传播</span></td>
+          <td class="axis-cell"><span class="tag r">基线亲和</span><span class="hint">封顶，不升深度</span></td>
+          <td class="axis-cell"><span class="tag c">Sitemap · HTML</span><span class="hint">时效强、口径偏传播</span></td>
           <td class="dec"><span class="tag dec-skip">不改</span></td>
           <td class="act">进 sitemap；<strong>不进机器目录</strong>，避免稀释文档答题准确率。</td>
         </tr>
         <tr>
           <td class="name">生态</td>
-          <td class="axis-cell"><span class="tag r">R1 Sitemap 可发现</span><span class="hint">计划页可被搜到</span></td>
-          <td class="axis-cell"><span class="tag c">D1 HTML 可读</span><span class="hint">招募与分群，非产品事实</span></td>
+          <td class="axis-cell"><span class="tag r">基线亲和</span><span class="hint">封顶，不升深度</span></td>
+          <td class="axis-cell"><span class="tag c">Sitemap · HTML</span><span class="hint">招募与分群，非产品事实</span></td>
           <td class="dec"><span class="tag dec-skip">不改</span></td>
           <td class="act">与营销相同；不追 MD、不进 llms。</td>
         </tr>
         <tr>
           <td class="name">商业转化</td>
-          <td class="axis-cell"><span class="tag r">R1 Sitemap 可发现</span><span class="hint">可被搜索到</span></td>
-          <td class="axis-cell"><span class="tag c">D1 HTML 可读</span><span class="hint">报价会变，引旧价有风险</span></td>
+          <td class="axis-cell"><span class="tag r">基线亲和</span><span class="hint">封顶，不升深度</span></td>
+          <td class="axis-cell"><span class="tag c">Sitemap · HTML</span><span class="hint">报价会变，引旧价有风险</span></td>
           <td class="dec"><span class="tag dec-skip">不改</span></td>
           <td class="act">允许 SEO；<strong>刻意不进 llms</strong>。</td>
         </tr>
         <tr>
           <td class="name">社区运营</td>
-          <td class="axis-cell"><span class="tag r zero">R0 未进索引</span><span class="hint">可不进 Sitemap</span></td>
-          <td class="axis-cell"><span class="tag c">D1 HTML 可读</span><span class="hint">时效 / UGC，不背书</span></td>
+          <td class="axis-cell"><span class="tag zero">未就绪可接受</span><span class="hint">可不进 Sitemap</span></td>
+          <td class="axis-cell"><span class="tag c">HTML 可读即可</span><span class="hint">时效 / UGC，不背书</span></td>
           <td class="dec"><span class="tag dec-skip">不改</span></td>
           <td class="act">活动、Wiki / Forum 不必进知识目录；精华另做 FAQ 进知识域。</td>
         </tr>
         <tr>
           <td class="name">公司事务</td>
-          <td class="axis-cell"><span class="tag r zero">R0 未进索引</span><span class="hint">与产品用法无关</span></td>
-          <td class="axis-cell"><span class="tag c">D1 HTML 可读</span><span class="hint">组织事务，非知识源</span></td>
+          <td class="axis-cell"><span class="tag zero">未就绪</span><span class="hint">与产品用法无关</span></td>
+          <td class="axis-cell"><span class="tag c">HTML 可读即可</span><span class="hint">组织事务，非知识源</span></td>
           <td class="dec"><span class="tag dec-never">绝对不改</span></td>
-          <td class="act">关于、法务等。招聘可单独升到 R1 做岗位曝光。</td>
+          <td class="act">关于、法务等。招聘可单独做到基线亲和做岗位曝光。</td>
         </tr>
       </tbody>
     </table>
@@ -880,8 +873,8 @@
         <p class="ex">定价页高价值却因引旧价风险——故意不进目录。</p>
       </li>
       <li>
-        <h3>两根轴各到哪一档？</h3>
-        <p>索引与交付<strong>分开定档</strong>。索引缺口归站点配置，交付缺口归前端与内容生产。</p>
+        <h3>目标定到哪一档？</h3>
+        <p>未就绪 / 基线亲和 / 深度亲和<strong>一次定档</strong>。索引缺口归站点配置，正文与 MD 缺口归前端与内容生产。</p>
         <p class="ex">没进 sitemap，和进了 sitemap 但正文全靠 JS，是两种问题。</p>
       </li>
       <li>
@@ -897,7 +890,7 @@
     </p>
     <p class="note-line">
       <strong>robots.txt 不是档位。</strong>
-      「不做亲和」= 停在 R1·D1，仍可进 sitemap；不等于屏蔽爬虫。
+      「不做深度亲和」= 停在基线亲和，仍可进 sitemap；不等于屏蔽爬虫。
     </p>
     <p class="note-line">
       <strong>按季度复检。</strong>

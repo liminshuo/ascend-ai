@@ -240,12 +240,16 @@
     line-height: var(--card-title-lh);
     font-weight: 650;
   }
+  /* 章节 H2 规范 */
   h2.block-title {
     margin: 40px 0 16px;
     font-size: 24px;
     line-height: 32px;
     font-weight: 650;
     letter-spacing: -0.01em;
+    color: var(--text);
+    font-family: "PingFang SC", sans-serif;
+    scroll-margin-top: 72px;
   }
   .section .hint {
     margin: 0 0 16px;
@@ -261,30 +265,23 @@
     gap: 8px;
     margin: 0 0 16px;
   }
-  .section .domain-level .lvl {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 3px 8px;
-    border-radius: 4px;
-    font-size: 11px;
-    font-weight: 600;
-    line-height: 1;
-    box-sizing: border-box;
-    border: 1px solid transparent;
-    white-space: nowrap;
-  }
-  .section .domain-level .lv-k {
-    font-family: var(--mono);
-    font-size: 10px;
-    font-weight: 700;
-    color: inherit;
+  .section .domain-level .dl-label {
+    flex: 0 0 100%;
+    margin: 0 0 2px;
+    font-size: 12px;
+    font-weight: 650;
+    color: var(--text);
+    letter-spacing: 0.02em;
+    line-height: 22px;
   }
   .section .domain-desc {
-    margin: 0 0 8px;
+    margin: 0 0 16px;
     color: var(--muted);
     font-size: var(--body-size);
     line-height: var(--body-lh);
+  }
+  .section > .domain-desc {
+    margin: 0 0 8px;
   }
   .domain-why {
     margin: 0 0 16px;
@@ -439,72 +436,130 @@
   }
   .domain-table col.col-cat { width: 140px; }
   .domain-table col.col-page { width: auto; }
-  .domain-table col.col-static { width: 100px; }
-  .domain-table col.col-md { width: 88px; }
-  .domain-table col.col-sitemap { width: 118px; }
-  .domain-table col.col-llms { width: 118px; }
+  .domain-table col.col-static { width: 108px; }
+  .domain-table col.col-md { width: 118px; }
+  .domain-table col.col-sitemap { width: 128px; }
+  .domain-table col.col-llms { width: 108px; }
 
-  .domain-table col.col-level { width: 232px; }
-  .domain-table td.model-lv {
+  .domain-table col.col-level { width: 110px; }
+  .domain-table col.col-target { width: 110px; }
+  .domain-table td.model-lv,
+  .domain-table td.target-lv {
     white-space: nowrap;
     vertical-align: middle;
+    text-align: center;
   }
-  .domain-table td.model-lv .lvl {
+  /* 收录 / HTML / MD 等指标列居中 */
+  .domain-table tbody td:not(.cat):not(.path) {
+    text-align: center;
+    vertical-align: middle;
+  }
+  .aff-tier {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 4px;
-    padding: 3px 8px;
+    height: 24px;
+    padding: 0 10px;
     border-radius: 4px;
-    font-size: 11px;
-    font-weight: 600;
+    font-size: 12px;
+    font-weight: 650;
     line-height: 1;
     box-sizing: border-box;
     border: 1px solid transparent;
-    margin: 0 4px 0 0;
     white-space: nowrap;
   }
-  .domain-table td.model-lv .lvl:last-child { margin-right: 0; }
-  .domain-table td.model-lv .lv-k {
-    font-family: var(--mono);
-    font-size: 10px;
-    font-weight: 700;
-    color: inherit;
-  }
-  /* 索引轴：软 → 实（对齐首页 axis-card） */
-  .domain-table td.model-lv .lvl.axis-r.lvl-0,
-  .domain-table td.model-lv .lvl.axis-c.lvl-0,
-  .section .domain-level .lvl.axis-r.lvl-0,
-  .section .domain-level .lvl.axis-c.lvl-0 {
+  .aff-tier.tier-0 {
     background: #eceff3;
     color: #4a5568;
     border-color: #d5dae1;
   }
-  .domain-table td.model-lv .lvl.axis-r.lvl-1,
-  .section .domain-level .lvl.axis-r.lvl-1 {
+  .aff-tier.tier-1 {
     background: #EEF4FF;
     color: #1476FF;
     border-color: #C9DCFF;
   }
-  .domain-table td.model-lv .lvl.axis-r.lvl-2,
-  .section .domain-level .lvl.axis-r.lvl-2 {
+  .aff-tier.tier-2 {
     background: #1476FF;
     color: #fff;
     border-color: #1476FF;
   }
-  /* 交付轴：软 → 实（对齐首页 axis-card.cite） */
-  .domain-table td.model-lv .lvl.axis-c.lvl-1,
-  .section .domain-level .lvl.axis-c.lvl-1 {
-    background: #F3EBFF;
-    color: #6D28D9;
-    border-color: #DCC9F7;
+
+  .section .domain-level .aff-note {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.4;
   }
-  .domain-table td.model-lv .lvl.axis-c.lvl-2,
-  .section .domain-level .lvl.axis-c.lvl-2 {
-    background: #6D28D9;
-    color: #fff;
-    border-color: #6D28D9;
+  .domain-table .why-tip {
+    position: relative;
+    cursor: help;
   }
+  .domain-table .why-tip::after {
+    min-width: 200px;
+    max-width: 320px;
+    word-break: break-word;
+  }
+
+
+  /* 收录列：hover 显示文件名与地址 */
+  .domain-table a.res-tip,
+  .domain-table .why-tip {
+    position: relative;
+    text-decoration: none;
+  }
+  .domain-table a.res-tip::after,
+  .domain-table .why-tip::after {
+    content: attr(data-tip);
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 8px);
+    transform: translateX(-50%) translateY(4px);
+    min-width: 180px;
+    max-width: 360px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    background: #0f172a;
+    color: #f8fafc;
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.45;
+    letter-spacing: 0;
+    text-transform: none;
+    white-space: pre-wrap;
+    word-break: break-all;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.18);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .12s ease, transform .12s ease;
+    z-index: 40;
+  }
+  .domain-table a.res-tip::before,
+  .domain-table .why-tip::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 2px);
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: #0f172a;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .12s ease;
+    z-index: 40;
+  }
+  .domain-table a.res-tip:hover::after,
+  .domain-table a.res-tip:focus-visible::after,
+  .domain-table .why-tip:hover::after,
+  .domain-table .why-tip:focus-visible::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  .domain-table a.res-tip:hover::before,
+  .domain-table a.res-tip:focus-visible::before,
+  .domain-table .why-tip:hover::before,
+  .domain-table .why-tip:focus-visible::before {
+    opacity: 1;
+  }
+
   .domain-table th,
   .domain-table td {
     text-align: left;
@@ -521,6 +576,54 @@
     border-top: none;
     background: var(--panel2);
   }
+
+  /* 双层表头：分组行 + 指标行 */
+  .domain-table thead th {
+    text-align: center;
+    vertical-align: middle;
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 600;
+    border-top: none;
+    background: var(--panel2);
+  }
+  .domain-table thead .th-stub {
+    text-align: left;
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 650;
+    white-space: normal;
+    line-height: 1.3;
+  }
+  .domain-table thead .th-group {
+    font-size: 12px;
+    font-weight: 650;
+    color: var(--text);
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--line);
+  }
+  .domain-table thead .th-leaf {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--muted);
+    padding: 8px 10px;
+    line-height: 1.35;
+  }
+  .domain-table thead .th-group-find {
+    background: #F0F5FF;
+  }
+  .domain-table thead .th-group-html {
+    background: #F3FBF6;
+  }
+  .domain-table thead .th-group-md {
+    background: #F7F3FC;
+  }
+  .domain-table thead tr.th-row-leaf th {
+    border-top: none;
+  }
+
+
+
   .domain-table td.path {
     overflow-wrap: anywhere;
   }
@@ -676,11 +779,13 @@
 
 
   #panel-ascend .domain-level .dl-label {
-    font-size: 11px;
+    flex: 0 0 100%;
+    margin: 0 0 2px;
+    font-size: 12px;
     font-weight: 650;
-    color: var(--muted);
-    letter-spacing: 0.04em;
-    margin-right: 2px;
+    color: var(--text);
+    letter-spacing: 0.02em;
+    line-height: 22px;
   }
   #panel-ascend .curate {
     display: inline-flex;
@@ -781,15 +886,25 @@
 
   #panel-ascend .domain-table col.col-page { width: auto; }
 
-  #panel-ascend .domain-table col.col-static { width: 100px; }
+  #panel-ascend .domain-table col.col-static { width: 108px; }
 
-  #panel-ascend .domain-table col.col-md { width: 88px; }
+  #panel-ascend .domain-table col.col-md { width: 118px; }
 
-  #panel-ascend .domain-table col.col-sitemap { width: 118px; }
+  #panel-ascend .domain-table col.col-sitemap { width: 128px; }
 
-  #panel-ascend .domain-table col.col-llms { width: 118px; }
-  #panel-ascend .domain-table col.col-level { width: 232px; }
-  #panel-ascend .domain-table td.model-lv { white-space: nowrap; vertical-align: middle; }
+  #panel-ascend .domain-table col.col-llms { width: 108px; }
+  #panel-ascend .domain-table col.col-level { width: 110px; }
+  .domain-table col.col-target { width: 110px; }
+  #panel-ascend .domain-table td.model-lv,
+  #panel-ascend .domain-table td.target-lv {
+    white-space: nowrap;
+    vertical-align: middle;
+    text-align: center;
+  }
+  #panel-ascend .domain-table tbody td:not(.cat):not(.path) {
+    text-align: center;
+    vertical-align: middle;
+  }
 
   #panel-ascend .domain-table td.cat {
     font-weight: 600;
@@ -965,7 +1080,6 @@
       border-bottom: 1px solid var(--line);
     }
   }
-  .wrap > h2.block-title { scroll-margin-top: 72px; }
 
 </style>
 </head>
@@ -999,861 +1113,956 @@
   <header>
     <h1>Ascend 社区分析</h1>
     <p class="sub" style="color:var(--muted);font-size: var(--body-size);margin:0 0 24px;line-height: var(--body-lh);">
-      本页为昇腾社区实测。Mintlify / NVIDIA 对照见顶栏「Mintlify 分析」「NVIDIA 分析」。
-      「实测模型层级」由四列实测直接推出，取每根轴上达到的最高一档，不代表该页<em>应该</em>做到这一档。
+      昇腾社区实测与改造路径：学 NVIDIA 分面管道，守 Mintlify 策展边界。表内「AI亲和 Level」是实测档位，不等于策展目标。
     </p>
   </header>
 
   <h2 class="block-title" id="overview">实施建议</h2>
   <section class="section">
-    <h3 class="sum-h3">一、策略内核与目标锚定</h3>
+    <h3 class="sum-h3">一、策略：工程可达 × 策展边界</h3>
     <ul class="domain-why">
-      <li>整体策略聚焦于「工程可达」与「策展边界」的平衡：借鉴 NVIDIA 的分面管道能力保障大站发现效率，参考 Mintlify 的收口纪律确保引用可信度。</li>
-      <li>核心目标是仅将「官方愿背书的知识面」推至 <span class="coord"><span class="r">R2</span><span class="sep">·</span><span class="c">D2</span></span>（AI 可溯源引用层），其余内容止步于人读与 SEO 分发层。</li>
-      <li>最终落地为<strong>分面管道 + 窄目录背书</strong>的架构格局，规避全站镜像流水线带来的内容混杂风险。</li>
+      <li><strong>学 NVIDIA 管道，守 Mintlify 收口。</strong>分面发现保效率；窄目录背书保可信。</li>
+      <li><strong>只把愿背书的知识面推到深度亲和。</strong>llms 收录 + Markdown 可读；其余止于基线（Sitemap + HTML）。</li>
+      <li><strong>格局：分面管道 + 窄目录。</strong>不做全站镜像流水线，避免叙事与事实混仓。</li>
     </ul>
 
-    <h3 class="sum-h3">二、内容准入与分层机制</h3>
-    <p class="domain-desc" style="margin-top:0">需预先划定明确的语义边界：</p>
+    <h3 class="sum-h3">二、准入：谁进深度，谁停基线</h3>
     <ul class="domain-why">
-      <li><strong>纳入知识域（<span class="coord"><span class="r">R2</span><span class="sep">·</span><span class="c">D2</span></span>）。</strong>锁定文档中心、FAQ、故障案例、可核对的开发指南及 API 手册——即具备客观性、稳定性和可溯源性的官方事实叶子页。基准判断为：导航能触达，绝不意味着具备进入知识层的资格。</li>
-      <li><strong>止于分发层（<span class="coord"><span class="r">R1</span><span class="sep">·</span><span class="c">D1</span></span>）。</strong>产品 / 方案 / 行业故事、博客新闻及招聘类内容，最高准入至 Sitemap 且确保 HTML 可读，但坚决不录入 <code>llms.txt</code>，不产出平行 MD。此举旨在防止主观话术与客观事实混入同一 Agent 语料库。</li>
-      <li><strong>明确剔除项。</strong>论坛发帖、活动报名、在线工单以及法务协议等事务性内容绝对不切入 Agent 检索范围；论坛精华如需利用，需先经官方审核沉淀为 FAQ 后方可准入。</li>
+      <li><strong>深度亲和（知识域）。</strong>文档中心、FAQ、故障案例、可核对指南 / API——客观、稳定、可溯源的事实叶子页。导航能点到 ≠ 该进 Agent 目录。</li>
+      <li><strong>基线亲和（分发层）。</strong>产品 / 方案故事、博客新闻、招聘等：Sitemap 可发现 + HTML 可读即可；不进 llms、不产出平行 MD。</li>
+      <li><strong>明确剔除。</strong>论坛发帖、活动报名、工单、法务协议不进 Agent 检索；论坛精华须先沉淀为官方 FAQ 再准入知识域。</li>
     </ul>
 
-    <h3 class="sum-h3">三、实施执行序列（前置原则压倒工程）</h3>
-    <p class="domain-desc" style="margin-top:0">为确保策展纪律不被工程惯性冲淡，实施顺序需严格遵循以下四个层级：</p>
+    <h3 class="sum-h3">三、顺序：闸门先于工程</h3>
     <ul class="domain-why">
-      <li><strong>背书闸门前置（一票否决）。</strong>决策优先级高于技术可行性。每一页面先执行「官方是否愿为 AI 原样引用负责」的判断，若为否定，则立即锁定于 <span class="coord"><span class="r">R1</span><span class="sep">·</span><span class="c">D1</span></span> 及以下。</li>
-      <li><strong>知识面管道建设。</strong>为文档、FAQ、案例等知识子域各自维护独立的 sitemap 与 <code>llms.txt</code>；根站仅作枢纽指针，不充当全站统一索引；同时明确唯一的权威 locale 路径（如 <code>/zh/</code>），规避多语言抓取盲区。</li>
-      <li><strong>交付与发布同轨（防止脱节）。</strong>知识叶子页必须在发布时自动同步产出平行 MD 并写入 llms，坚决杜绝「目录有条目、MD 为 404」的链路错位。汇总壳页（如 <code>/document</code> 索引页）仅作为入口指针，不强求生成平行 MD 正文，避免与子页信息打架。</li>
-      <li><strong>基础可读性先行。</strong>若知识域入口尚处于 D0（正文缺失或渲染异常），需优先保证 SSR 与核心信息的 D1 可读能力，再行推进 llms 与平行 MD 产出，避免空转。</li>
+      <li><strong>背书闸门前置。</strong>不愿为 AI 原样引用负责 → 锁定基线及以下，技术可行也不能升。</li>
+      <li><strong>知识面分面建设。</strong>文档 / FAQ / 案例各自 Sitemap + llms；根站只做枢纽；锁定权威 locale（如 <code>/zh/</code>）。</li>
+      <li><strong>发布同轨。</strong>知识叶子页发布即同步 MD 并写入 llms，杜绝「目录有、MD 404」；壳页只作入口，不强求平行 MD。</li>
+      <li><strong>可读性先行。</strong>知识域入口若正文缺失，先保证 HTML 可读，再推 llms / Markdown。</li>
     </ul>
   </section>
 
   <div id="panel-ascend">
-  <header class="hero">
-    <h1>现状分析</h1>
-    <p class="sub">
-      从 hiascend.com 顶栏与页脚导航抓取的全部入口，按七个运营域归类，作为改造范围的基线。
-      各域挂<strong>策展档位</strong>（知识域 / 分发层 / 剔除）——与表内「实测模型层级」分开读；知识域内另标壳页、分发例外等行级例外。
-    </p>
-  </header>
-
-  <section class="block">
-    <h2>按运营域分布</h2>
-    <p class="lead">与友商分析同构的域划分。目标档位沿用<a href="index.html">首页的决策矩阵</a>：只有「知识」默认必改。</p>
-    <table>
-      <thead>
-        <tr>
-          <th>运营域</th><th>条数</th><th>可达性·索引</th><th>可读取性·交付</th><th>决策</th><th>说明</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="name"><a href="#d-市场营销">产品/行业/方案介绍</a></td>
-          <td class="num">32</td>
-          <td class="axis-cell"><span class="tag r">R1 Sitemap 可发现</span></td>
-          <td class="axis-cell"><span class="tag c">D1 HTML 可读</span></td>
-          <td class="dec"><span class="tag dec-skip">不改</span></td>
-          <td class="act">首页、CANN、硬件产品线（集群 / 服务器 / 加速卡 / 模块 / 套件）、九大行业应用与解决方案。选型叙事与导流，不当知识源。</td>
-        </tr>
-        <tr>
-          <td class="name"><a href="#d-知识">知识</a></td>
-          <td class="num">10<span class="ext-n">含站外 1</span></td>
-          <td class="axis-cell"><span class="tag r">R2 llms 目录收录</span></td>
-          <td class="axis-cell"><span class="tag c">D2 MD 可托管</span></td>
-          <td class="dec"><span class="tag dec-must">必改</span></td>
-          <td class="act">文档中心、常见问题、故障案例、产品公告、资源下载 / 驱动 / 镜像。唯一默认做满两轴的域，也是本次改造的主战场。</td>
-        </tr>
-        <tr>
-          <td class="name"><a href="#d-生态">生态</a></td>
-          <td class="num">11<span class="ext-n">含站外 8</span></td>
-          <td class="axis-cell"><span class="tag r">R1 Sitemap 可发现</span></td>
-          <td class="axis-cell"><span class="tag c">D1 HTML 可读</span></td>
-          <td class="dec"><span class="tag dec-skip">不改</span></td>
-          <td class="act">伙伴网络、产业概述、开源资源与友情链接。绝大多数是站外跳转，不在本站亲和范围内。</td>
-        </tr>
-        <tr>
-          <td class="name"><a href="#d-内容运营">内容运营</a></td>
-          <td class="num">3</td>
-          <td class="axis-cell"><span class="tag r">R1 Sitemap 可发现</span></td>
-          <td class="axis-cell"><span class="tag c">D1 HTML 可读</span></td>
-          <td class="dec"><span class="tag dec-skip">不改</span></td>
-          <td class="act">博客、技术干货、新闻资讯。时效强、口径偏传播，进 sitemap 服务 SEO 即可，不进机器目录。</td>
-        </tr>
-        <tr>
-          <td class="name"><a href="#d-社区运营">社区运营</a></td>
-          <td class="num">5</td>
-          <td class="axis-cell"><span class="tag r zero">R0 未进索引</span></td>
-          <td class="axis-cell"><span class="tag c">D1 HTML 可读</span></td>
-          <td class="dec"><span class="tag dec-skip">不改</span></td>
-          <td class="act">论坛、论坛求助、技术工单、昇腾活动。UGC 与交互入口，不为官方事实背书。</td>
-        </tr>
-        <tr>
-          <td class="name"><a href="#d-公司事务">公司事务</a></td>
-          <td class="num">8<span class="ext-n">含站外 3</span></td>
-          <td class="axis-cell"><span class="tag r zero">R0 未进索引</span></td>
-          <td class="axis-cell"><span class="tag c">D1 HTML 可读</span></td>
-          <td class="dec"><span class="tag dec-never">绝对不改</span></td>
-          <td class="act">法律声明、隐私政策、Cookie 协议、用户协议、备案与举报中心。与产品怎么用无关。</td>
-        </tr>
-      </tbody>
-    </table>
-  </section>
 
   <h2 class="block-title" id="index">实测分析</h2>
   <section class="section domain" id="d-市场营销">
     <h2 class="card-title">产品/行业/方案介绍 <span class="cnt">32 条</span></h2>
-    <p class="domain-desc">选型叙事与导流；默认止于分发层，不当知识源。策展档位见下，与「实测模型层级」无关。</p>
-    <div class="domain-level" aria-label="本域策展目标（非表内实测汇总）">
+    <p class="domain-desc">首页、CANN、硬件产品线与九大行业方案</p>
+        <div class="domain-level" aria-label="本域策展目标（非表内实测汇总）">
       <span class="dl-label">策展目标</span>
-      <span class="curate curate-dist">分发层</span>
-      <span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span>
-      <span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span>
+      <span class="aff-tier tier-1">基线亲和</span>
+      <span class="aff-note">首页 / 行业 / 方案 · Sitemap 可发现 + HTML 可读</span>
+      <span class="aff-tier tier-2">深度亲和</span>
+      <span class="aff-note">硬件型号 / CANN · llms 收录 + Markdown 可读</span>
     </div>
     <ul class="domain-why">
-      <li>覆盖首页、CANN、硬件产品线（集群 / 服务器 / 加速卡 / 模块 / 套件）、九大行业应用与解决方案。</li>
-      <li>选型叙事与导流，不当知识源——默认止于分发层。</li>
-      <li>策展档位与表内「实测模型层级」分开读，不以实测档位代替策展目标。</li>
+      <li><strong>域默认基线。</strong>首页、行业故事、解决方案偏选型导流，不进 llms，避免卖点当事实。</li>
+      <li><strong>规格硬的产品页可升深度。</strong>硬件型号页、CANN 等含可核对参数 / 能力边界、且官方愿背书的，目标提到深度亲和；更稳妥的是事实沉淀进知识域再进目录。</li>
     </ul>
     <table class="domain-table">
       <colgroup>
         <col class="col-cat" />
         <col class="col-page" />
+        <col class="col-llms" />
+        <col class="col-sitemap" />
         <col class="col-static" />
         <col class="col-md" />
-        <col class="col-sitemap" />
-        <col class="col-llms" />
         <col class="col-level" />
+        <col class="col-target" />
       </colgroup>
-      <thead><tr><th>分类</th><th>页面</th><th>HTML主信息（交付 D1）</th><th>MD文件（交付 D2）</th><th>收录Sitemap（索引 R1）</th><th>收录llms.txt（索引 R2）</th><th>实测模型层级</th></tr></thead>
+      <thead>
+        <tr class="th-row-group">
+          <th rowspan="2" class="th-stub">分类</th>
+          <th rowspan="2" class="th-stub">页面</th>
+          <th colspan="2" class="th-group th-group-find">找的到</th>
+          <th class="th-group th-group-html">读的懂</th>
+          <th class="th-group th-group-md">读的顺</th>
+          <th rowspan="2" class="th-stub">当前AI亲和 Level</th>
+          <th rowspan="2" class="th-stub">目标AI亲和 Level</th>
+        </tr>
+        <tr class="th-row-leaf">
+          <th class="th-leaf th-group-find">llms 收录</th>
+          <th class="th-leaf th-group-find">Sitemap 可发现</th>
+          <th class="th-leaf th-group-html">HTML 可读</th>
+          <th class="th-leaf th-group-md">Markdown 可读</th>
+        </tr>
+      </thead>
       <tbody>
         <tr>
           <td class="cat" rowspan="2">入口</td>
           <td class="path"><a href="https://www.hiascend.com/zh" target="_blank" rel="noopener">/zh</a><span class="mn-sub">昇腾社区（Logo）</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-partial">部分</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
+          <td class="target-lv"><span class="aff-tier tier-1 why-tip" data-tip="选型叙事 / 导流页：Sitemap 可发现 + HTML 可读即可，不进 llms，避免卖点当事实。" title="选型叙事 / 导流页：Sitemap 可发现 + HTML 可读即可，不进 llms，避免卖点当事实。">基线亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.hiascend.com/cann" target="_blank" rel="noopener">/cann</a><span class="mn-sub">CANN</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-miss">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-2 why-tip" data-tip="硬件型号 / CANN：含可核对规格与能力边界，官方愿背书则可推到 llms + Markdown。" title="硬件型号 / CANN：含可核对规格与能力边界，官方愿背书则可推到 llms + Markdown。">深度亲和</span></td>
         </tr>
         <tr>
           <td class="cat" rowspan="3">产品·集群</td>
           <td class="path"><a href="https://www.hiascend.com/hardware/cluster" target="_blank" rel="noopener">/hardware/cluster</a><span class="mn-sub">Atlas 900 A3 SuperPoD 超节点</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-partial">部分</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
+          <td class="target-lv"><span class="aff-tier tier-2 why-tip" data-tip="硬件型号 / CANN：含可核对规格与能力边界，官方愿背书则可推到 llms + Markdown。" title="硬件型号 / CANN：含可核对规格与能力边界，官方愿背书则可推到 llms + Markdown。">深度亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.hiascend.com/hardware/cluster?tag=900" target="_blank" rel="noopener">/hardware/cluster?tag=900</a><span class="mn-sub">Atlas 900 A2 PoD 集群基础单元</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-partial">部分</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
+          <td class="target-lv"><span class="aff-tier tier-2 why-tip" data-tip="硬件型号 / CANN：含可核对规格与能力边界，官方愿背书则可推到 llms + Markdown。" title="硬件型号 / CANN：含可核对规格与能力边界，官方愿背书则可推到 llms + Markdown。">深度亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.hiascend.com/hardware/cluster?tag=900ai" target="_blank" rel="noopener">/hardware/cluster?tag=900ai</a><span class="mn-sub">Atlas 900 SuperCluster AI集群</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-partial">部分</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
+          <td class="target-lv"><span class="aff-tier tier-2 why-tip" data-tip="硬件型号 / CANN：含可核对规格与能力边界，官方愿背书则可推到 llms + Markdown。" title="硬件型号 / CANN：含可核对规格与能力边界，官方愿背书则可推到 llms + Markdown。">深度亲和</span></td>
         </tr>
         <tr>
           <td class="cat">产品·集群自智引擎</td>
           <td class="path"><a href="https://www.hiascend.com/software/ccae" target="_blank" rel="noopener">/software/ccae</a><span class="mn-sub">CCAE（集群自智引擎）</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-miss">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-2 why-tip" data-tip="硬件型号 / CANN：含可核对规格与能力边界，官方愿背书则可推到 llms + Markdown。" title="硬件型号 / CANN：含可核对规格与能力边界，官方愿背书则可推到 llms + Markdown。">深度亲和</span></td>
         </tr>
         <tr>
           <td class="cat" rowspan="6">产品·服务器</td>
           <td class="path"><a href="https://www.hiascend.com/hardware/ai-server" target="_blank" rel="noopener">/hardware/ai-server</a><span class="mn-sub">Atlas 800T A3 超节点服务器</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-miss">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-2 why-tip" data-tip="硬件型号 / CANN：含可核对规格与能力边界，官方愿背书则可推到 llms + Markdown。" title="硬件型号 / CANN：含可核对规格与能力边界，官方愿背书则可推到 llms + Markdown。">深度亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.hiascend.com/hardware/ai-server?tag=800ia3" target="_blank" rel="noopener">/hardware/ai-server?tag=800ia3</a><span class="mn-sub">Atlas 800I A3 超节点服务器</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-miss">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-2 why-tip" data-tip="硬件型号 / CANN：含可核对规格与能力边界，官方愿背书则可推到 llms + Markdown。" title="硬件型号 / CANN：含可核对规格与能力边界，官方愿背书则可推到 llms + Markdown。">深度亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.hiascend.com/hardware/ai-server?tag=900A2" target="_blank" rel="noopener">/hardware/ai-server?tag=900A2</a><span class="mn-sub">Atlas 800T A2 训练服务器</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-miss">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-2 why-tip" data-tip="硬件型号 / CANN：含可核对规格与能力边界，官方愿背书则可推到 llms + Markdown。" title="硬件型号 / CANN：含可核对规格与能力边界，官方愿背书则可推到 llms + Markdown。">深度亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.hiascend.com/hardware/ai-server?tag=800A2" target="_blank" rel="noopener">/hardware/ai-server?tag=800A2</a><span class="mn-sub">Atlas 800I A2 推理服务器</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-miss">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-2 why-tip" data-tip="硬件型号 / CANN：含可核对规格与能力边界，官方愿背书则可推到 llms + Markdown。" title="硬件型号 / CANN：含可核对规格与能力边界，官方愿背书则可推到 llms + Markdown。">深度亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.hiascend.com/hardware/ai-server?tag=300" target="_blank" rel="noopener">/hardware/ai-server?tag=300</a><span class="mn-sub">Atlas 800 推理服务器</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-miss">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-2 why-tip" data-tip="硬件型号 / CANN：含可核对规格与能力边界，官方愿背书则可推到 llms + Markdown。" title="硬件型号 / CANN：含可核对规格与能力边界，官方愿背书则可推到 llms + Markdown。">深度亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.hiascend.com/hardware/ai-server?tag=500pro" target="_blank" rel="noopener">/hardware/ai-server?tag=500pro</a><span class="mn-sub">Atlas 500 Pro 智能边缘服务器</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-miss">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-2 why-tip" data-tip="硬件型号 / CANN：含可核对规格与能力边界，官方愿背书则可推到 llms + Markdown。" title="硬件型号 / CANN：含可核对规格与能力边界，官方愿背书则可推到 llms + Markdown。">深度亲和</span></td>
         </tr>
         <tr>
           <td class="cat" rowspan="5">产品·加速卡</td>
           <td class="path"><a href="https://www.hiascend.com/hardware/accelerator-card" target="_blank" rel="noopener">/hardware/accelerator-card</a><span class="mn-sub">Atlas 300I A2 推理卡</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-miss">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-2 why-tip" data-tip="硬件型号 / CANN：含可核对规格与能力边界，官方愿背书则可推到 llms + Markdown。" title="硬件型号 / CANN：含可核对规格与能力边界，官方愿背书则可推到 llms + Markdown。">深度亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.hiascend.com/hardware/accelerator-card?tag=300V" target="_blank" rel="noopener">/hardware/accelerator-card?tag=300V</a><span class="mn-sub">Atlas 300V 视频解析卡</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-miss">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-2 why-tip" data-tip="硬件型号 / CANN：含可核对规格与能力边界，官方愿背书则可推到 llms + Markdown。" title="硬件型号 / CANN：含可核对规格与能力边界，官方愿背书则可推到 llms + Markdown。">深度亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.hiascend.com/hardware/accelerator-card?tag=300V-Pro" target="_blank" rel="noopener">/hardware/accelerator-card?tag=300V-Pro</a><span class="mn-sub">Atlas 300V Pro 视频解析卡</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-miss">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-2 why-tip" data-tip="硬件型号 / CANN：含可核对规格与能力边界，官方愿背书则可推到 llms + Markdown。" title="硬件型号 / CANN：含可核对规格与能力边界，官方愿背书则可推到 llms + Markdown。">深度亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.hiascend.com/hardware/accelerator-card?tag=300I-Pro" target="_blank" rel="noopener">/hardware/accelerator-card?tag=300I-Pro</a><span class="mn-sub">Atlas 300I Pro 推理卡</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-miss">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-2 why-tip" data-tip="硬件型号 / CANN：含可核对规格与能力边界，官方愿背书则可推到 llms + Markdown。" title="硬件型号 / CANN：含可核对规格与能力边界，官方愿背书则可推到 llms + Markdown。">深度亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.hiascend.com/hardware/accelerator-card?tag=300I-duo" target="_blank" rel="noopener">/hardware/accelerator-card?tag=300I-duo</a><span class="mn-sub">Atlas 300I Duo 推理卡</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-miss">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-2 why-tip" data-tip="硬件型号 / CANN：含可核对规格与能力边界，官方愿背书则可推到 llms + Markdown。" title="硬件型号 / CANN：含可核对规格与能力边界，官方愿背书则可推到 llms + Markdown。">深度亲和</span></td>
         </tr>
         <tr>
           <td class="cat">产品·智能小站</td>
           <td class="path"><a href="https://www.hiascend.com/hardware/Intelligent-edge-A2" target="_blank" rel="noopener">/hardware/Intelligent-edge-A2</a><span class="mn-sub">Atlas 500 A2 智能小站</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-partial">部分</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
+          <td class="target-lv"><span class="aff-tier tier-2 why-tip" data-tip="硬件型号 / CANN：含可核对规格与能力边界，官方愿背书则可推到 llms + Markdown。" title="硬件型号 / CANN：含可核对规格与能力边界，官方愿背书则可推到 llms + Markdown。">深度亲和</span></td>
         </tr>
         <tr>
           <td class="cat">产品·加速模块</td>
           <td class="path"><a href="https://www.hiascend.com/hardware/accelerator-module-A2" target="_blank" rel="noopener">/hardware/accelerator-module-A2</a><span class="mn-sub">Atlas 200I A2 加速模块</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-partial">部分</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
+          <td class="target-lv"><span class="aff-tier tier-2 why-tip" data-tip="硬件型号 / CANN：含可核对规格与能力边界，官方愿背书则可推到 llms + Markdown。" title="硬件型号 / CANN：含可核对规格与能力边界，官方愿背书则可推到 llms + Markdown。">深度亲和</span></td>
         </tr>
         <tr>
           <td class="cat">产品·开发者套件</td>
           <td class="path"><a href="https://www.hiascend.com/hardware/developer-kit-a2" target="_blank" rel="noopener">/hardware/developer-kit-a2</a><span class="mn-sub">Atlas 200I DK A2 开发者套件</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-partial">部分</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
+          <td class="target-lv"><span class="aff-tier tier-2 why-tip" data-tip="硬件型号 / CANN：含可核对规格与能力边界，官方愿背书则可推到 llms + Markdown。" title="硬件型号 / CANN：含可核对规格与能力边界，官方愿背书则可推到 llms + Markdown。">深度亲和</span></td>
         </tr>
         <tr>
           <td class="cat" rowspan="9">行业应用</td>
           <td class="path"><a href="https://www.hiascend.com/industries/internet" target="_blank" rel="noopener">/industries/internet</a><span class="mn-sub">互联网</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-partial">部分</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
+          <td class="target-lv"><span class="aff-tier tier-1 why-tip" data-tip="选型叙事 / 导流页：Sitemap 可发现 + HTML 可读即可，不进 llms，避免卖点当事实。" title="选型叙事 / 导流页：Sitemap 可发现 + HTML 可读即可，不进 llms，避免卖点当事实。">基线亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.hiascend.com/industries/telecom" target="_blank" rel="noopener">/industries/telecom</a><span class="mn-sub">电信</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-partial">部分</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
+          <td class="target-lv"><span class="aff-tier tier-1 why-tip" data-tip="选型叙事 / 导流页：Sitemap 可发现 + HTML 可读即可，不进 llms，避免卖点当事实。" title="选型叙事 / 导流页：Sitemap 可发现 + HTML 可读即可，不进 llms，避免卖点当事实。">基线亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.hiascend.com/industries/solutions/smart-city" target="_blank" rel="noopener">/industries/solutions/smart-city</a><span class="mn-sub">政府</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-full">完整</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
+          <td class="target-lv"><span class="aff-tier tier-1 why-tip" data-tip="选型叙事 / 导流页：Sitemap 可发现 + HTML 可读即可，不进 llms，避免卖点当事实。" title="选型叙事 / 导流页：Sitemap 可发现 + HTML 可读即可，不进 llms，避免卖点当事实。">基线亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.hiascend.com/industries/fintech" target="_blank" rel="noopener">/industries/fintech</a><span class="mn-sub">金融</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-partial">部分</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
+          <td class="target-lv"><span class="aff-tier tier-1 why-tip" data-tip="选型叙事 / 导流页：Sitemap 可发现 + HTML 可读即可，不进 llms，避免卖点当事实。" title="选型叙事 / 导流页：Sitemap 可发现 + HTML 可读即可，不进 llms，避免卖点当事实。">基线亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.hiascend.com/industries/education" target="_blank" rel="noopener">/industries/education</a><span class="mn-sub">教育</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-partial">部分</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
+          <td class="target-lv"><span class="aff-tier tier-1 why-tip" data-tip="选型叙事 / 导流页：Sitemap 可发现 + HTML 可读即可，不进 llms，避免卖点当事实。" title="选型叙事 / 导流页：Sitemap 可发现 + HTML 可读即可，不进 llms，避免卖点当事实。">基线亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.hiascend.com/industries/electricity" target="_blank" rel="noopener">/industries/electricity</a><span class="mn-sub">能源</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-partial">部分</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
+          <td class="target-lv"><span class="aff-tier tier-1 why-tip" data-tip="选型叙事 / 导流页：Sitemap 可发现 + HTML 可读即可，不进 llms，避免卖点当事实。" title="选型叙事 / 导流页：Sitemap 可发现 + HTML 可读即可，不进 llms，避免卖点当事实。">基线亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.hiascend.com/industries/transportation" target="_blank" rel="noopener">/industries/transportation</a><span class="mn-sub">交通</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-partial">部分</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
+          <td class="target-lv"><span class="aff-tier tier-1 why-tip" data-tip="选型叙事 / 导流页：Sitemap 可发现 + HTML 可读即可，不进 llms，避免卖点当事实。" title="选型叙事 / 导流页：Sitemap 可发现 + HTML 可读即可，不进 llms，避免卖点当事实。">基线亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.hiascend.com/industries/manufacturing" target="_blank" rel="noopener">/industries/manufacturing</a><span class="mn-sub">制造</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-partial">部分</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
+          <td class="target-lv"><span class="aff-tier tier-1 why-tip" data-tip="选型叙事 / 导流页：Sitemap 可发现 + HTML 可读即可，不进 llms，避免卖点当事实。" title="选型叙事 / 导流页：Sitemap 可发现 + HTML 可读即可，不进 llms，避免卖点当事实。">基线亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.hiascend.com/industries/healthcare" target="_blank" rel="noopener">/industries/healthcare</a><span class="mn-sub">医疗</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-partial">部分</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
+          <td class="target-lv"><span class="aff-tier tier-1 why-tip" data-tip="选型叙事 / 导流页：Sitemap 可发现 + HTML 可读即可，不进 llms，避免卖点当事实。" title="选型叙事 / 导流页：Sitemap 可发现 + HTML 可读即可，不进 llms，避免卖点当事实。">基线亲和</span></td>
         </tr>
         <tr>
           <td class="cat" rowspan="3">解决方案</td>
           <td class="path"><a href="https://www.hiascend.com/industries/solutions/large-model" target="_blank" rel="noopener">/industries/solutions/large-model</a><span class="mn-sub">大规模专家并行解决方案</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-partial">部分</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
+          <td class="target-lv"><span class="aff-tier tier-1 why-tip" data-tip="选型叙事 / 导流页：Sitemap 可发现 + HTML 可读即可，不进 llms，避免卖点当事实。" title="选型叙事 / 导流页：Sitemap 可发现 + HTML 可读即可，不进 llms，避免卖点当事实。">基线亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.hiascend.com/solutions/Foundation-Model" target="_blank" rel="noopener">/solutions/Foundation-Model</a><span class="mn-sub">昇腾大模型解决方案</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-partial">部分</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
+          <td class="target-lv"><span class="aff-tier tier-1 why-tip" data-tip="选型叙事 / 导流页：Sitemap 可发现 + HTML 可读即可，不进 llms，避免卖点当事实。" title="选型叙事 / 导流页：Sitemap 可发现 + HTML 可读即可，不进 llms，避免卖点当事实。">基线亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.hiascend.com/marketplace/solution" target="_blank" rel="noopener">/marketplace/solution</a><span class="mn-sub">昇腾生态解决方案</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-miss">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-1 why-tip" data-tip="选型叙事 / 导流页：Sitemap 可发现 + HTML 可读即可，不进 llms，避免卖点当事实。" title="选型叙事 / 导流页：Sitemap 可发现 + HTML 可读即可，不进 llms，避免卖点当事实。">基线亲和</span></td>
         </tr>
       </tbody>
     </table>
   </section>
   <section class="section domain" id="d-知识">
     <h2 class="card-title">知识 <span class="cnt">10 条</span></h2>
-    <p class="domain-desc">默认做满两轴的主战场。行内例外：壳页仅作入口、驱动/镜像 Hub 停分发层、站外不在本站亲和范围。</p>
-    <div class="domain-level" aria-label="本域策展目标（非表内实测汇总）">
+    <p class="domain-desc">文档中心、FAQ、故障案例、公告与资源下载</p>
+            <div class="domain-level" aria-label="本域策展目标（非表内实测汇总）">
       <span class="dl-label">策展目标</span>
-      <span class="curate curate-know">知识域</span>
-      <span class="lvl lvl-2 axis-r"><span class="lv-k">R2</span>llms 目录收录</span>
-      <span class="lvl lvl-2 axis-c"><span class="lv-k">D2</span>MD 可托管</span>
+      <span class="aff-tier tier-2">深度亲和</span>
+      <span class="aff-note">知识叶子 · llms 收录 + Markdown 可读</span>
+      <span class="aff-tier tier-1">基线亲和</span>
+      <span class="aff-note">壳页 / 分发例外 · Sitemap 可发现 + HTML 可读</span>
+      <span class="aff-tier tier-0">未就绪</span>
+      <span class="aff-note">站外 · 不进本站 Agent 目录</span>
     </div>
     <ul class="domain-why">
-      <li>文档中心、常见问题、故障案例、产品公告、资源下载 / 驱动 / 镜像——唯一默认做满两轴的域，也是本次改造的主战场。</li>
-      <li>行内例外：壳页仅作入口、驱动 / 镜像 Hub 停分发层、站外不在本站亲和范围。</li>
-      <li>知识叶子页才是亲和主战场；导航壳页与分发例外不得抬升为知识源。</li>
+      <li><strong>主战场推深度亲和。</strong>官方愿背书的事实叶子页：Sitemap + llms + Markdown。</li>
+      <li><strong>行内例外单独看。</strong>壳页只作入口；驱动 / 镜像 Hub 停基线；站外不在本站亲和范围。</li>
     </ul>
     <table class="domain-table">
       <colgroup>
         <col class="col-cat" />
         <col class="col-page" />
+        <col class="col-llms" />
+        <col class="col-sitemap" />
         <col class="col-static" />
         <col class="col-md" />
-        <col class="col-sitemap" />
-        <col class="col-llms" />
         <col class="col-level" />
+        <col class="col-target" />
       </colgroup>
-      <thead><tr><th>分类</th><th>页面</th><th>HTML主信息（交付 D1）</th><th>MD文件（交付 D2）</th><th>收录Sitemap（索引 R1）</th><th>收录llms.txt（索引 R2）</th><th>实测模型层级</th></tr></thead>
+      <thead>
+        <tr class="th-row-group">
+          <th rowspan="2" class="th-stub">分类</th>
+          <th rowspan="2" class="th-stub">页面</th>
+          <th colspan="2" class="th-group th-group-find">找的到</th>
+          <th class="th-group th-group-html">读的懂</th>
+          <th class="th-group th-group-md">读的顺</th>
+          <th rowspan="2" class="th-stub">当前AI亲和 Level</th>
+          <th rowspan="2" class="th-stub">目标AI亲和 Level</th>
+        </tr>
+        <tr class="th-row-leaf">
+          <th class="th-leaf th-group-find">llms 收录</th>
+          <th class="th-leaf th-group-find">Sitemap 可发现</th>
+          <th class="th-leaf th-group-html">HTML 可读</th>
+          <th class="th-leaf th-group-md">Markdown 可读</th>
+        </tr>
+      </thead>
       <tbody>
         <tr>
           <td class="cat">开发者</td>
           <td class="path"><a href="https://www.hiascend.com/developer" target="_blank" rel="noopener">/developer</a><span class="curate-ex shell">壳·入口</span><span class="mn-sub">原昇腾系列软件（点击查看）</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-miss">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-1 why-tip" data-tip="导航壳页：只作入口指针，停基线；不强求平行 MD / llms。" title="导航壳页：只作入口指针，停基线；不强求平行 MD / llms。">基线亲和</span></td>
         </tr>
         <tr>
           <td class="cat" rowspan="4">文档</td>
           <td class="path"><a href="https://www.hiascend.com/document/detail/zh/AscendFAQ/overview/index.html" target="_blank" rel="noopener">/document/detail/zh/AscendFAQ/overview/index.html</a><span class="curate-ex leaf">知识叶子</span><span class="mn-sub">常见问题</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><span class="tag tag-no">无</span></td>
           <td><span class="tag tag-partial">部分</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-2 why-tip" data-tip="知识叶子：官方愿背书的事实页，主战场推深度亲和（llms + Markdown）。" title="知识叶子：官方愿背书的事实页，主战场推深度亲和（llms + Markdown）。">深度亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.hiascend.com/document/caselibrary" target="_blank" rel="noopener">/document/caselibrary</a><span class="curate-ex leaf">知识叶子</span><span class="mn-sub">故障案例</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-miss">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-2 why-tip" data-tip="知识叶子：官方愿背书的事实页，主战场推深度亲和（llms + Markdown）。" title="知识叶子：官方愿背书的事实页，主战场推深度亲和（llms + Markdown）。">深度亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.hiascend.com/document" target="_blank" rel="noopener">/document</a><span class="curate-ex shell">壳·入口</span><span class="mn-sub">文档</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-miss">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-1 why-tip" data-tip="导航壳页：只作入口指针，停基线；不强求平行 MD / llms。" title="导航壳页：只作入口指针，停基线；不强求平行 MD / llms。">基线亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.hiascend.com/zh/document" target="_blank" rel="noopener">/zh/document</a><span class="curate-ex shell">壳·入口</span><span class="mn-sub">文档</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><span class="tag tag-no">无</span></td>
           <td><span class="tag tag-miss">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-1 why-tip" data-tip="导航壳页：只作入口指针，停基线；不强求平行 MD / llms。" title="导航壳页：只作入口指针，停基线；不强求平行 MD / llms。">基线亲和</span></td>
         </tr>
         <tr>
           <td class="cat">开发</td>
           <td class="path"><a href="https://hidevlab.huawei.com/online-develop-intro?from=hiascend" target="_blank" rel="noopener">hidevlab.huawei.com/online-develop-intro?from=hiascend</a><span class="tag-ext">站外</span><span class="mn-sub">HiDevLab-在线开发</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://hidevlab.huawei.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://hidevlab.huawei.com/sitemap.xml" title="sitemap.xml · https://hidevlab.huawei.com/sitemap.xml"><span class="tag tag-no">站外</span></a></td>
           <td><span class="tag tag-miss">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://hidevlab.huawei.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-no">站外</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-0 why-tip" data-tip="站外入口：不在本站亲和改造范围。" title="站外入口：不在本站亲和改造范围。">未就绪</span></td>
         </tr>
         <tr>
           <td class="cat" rowspan="3">下载</td>
           <td class="path"><a href="https://www.hiascend.com/developer/download" target="_blank" rel="noopener">/developer/download</a><span class="curate-ex dist">分发例外</span><span class="mn-sub">资源下载中心</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><span class="tag tag-no">无</span></td>
           <td><span class="tag tag-partial">部分</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-1 why-tip" data-tip="分发例外：驱动 / 镜像等 Hub 页停基线，不进 Agent 主目录。" title="分发例外：驱动 / 镜像等 Hub 页停基线，不进 Agent 主目录。">基线亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.hiascend.com/hardware/firmware-drivers/community" target="_blank" rel="noopener">/hardware/firmware-drivers/community</a><span class="curate-ex dist">分发例外</span><span class="mn-sub">固件与驱动（社区版）</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-miss">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-1 why-tip" data-tip="分发例外：驱动 / 镜像等 Hub 页停基线，不进 Agent 主目录。" title="分发例外：驱动 / 镜像等 Hub 页停基线，不进 Agent 主目录。">基线亲和</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.hiascend.com/developer/ascendhub" target="_blank" rel="noopener">/developer/ascendhub</a><span class="curate-ex dist">分发例外</span><span class="mn-sub">昇腾镜像仓库</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-miss">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-1 why-tip" data-tip="分发例外：驱动 / 镜像等 Hub 页停基线，不进 Agent 主目录。" title="分发例外：驱动 / 镜像等 Hub 页停基线，不进 Agent 主目录。">基线亲和</span></td>
         </tr>
         <tr>
           <td class="cat">公告</td>
           <td class="path"><a href="https://www.hiascend.com/productbulletins" target="_blank" rel="noopener">/productbulletins</a><span class="curate-ex leaf">知识叶子</span><span class="mn-sub">产品公告</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-miss">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-2 why-tip" data-tip="知识叶子：官方愿背书的事实页，主战场推深度亲和（llms + Markdown）。" title="知识叶子：官方愿背书的事实页，主战场推深度亲和（llms + Markdown）。">深度亲和</span></td>
         </tr>
       </tbody>
     </table>
   </section>
   <section class="section domain" id="d-生态">
     <h2 class="card-title">生态 <span class="cnt">11 条</span></h2>
-    <p class="domain-desc">伙伴与友情链接；默认止于分发层。站外跳转不在本站亲和范围内。</p>
-    <div class="domain-level" aria-label="本域策展目标（非表内实测汇总）">
+    <p class="domain-desc">伙伴网络、产业概述、开源与友情链接</p>
+            <div class="domain-level" aria-label="本域策展目标（非表内实测汇总）">
       <span class="dl-label">策展目标</span>
-      <span class="curate curate-dist">分发层</span>
-      <span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span>
-      <span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span>
+      <span class="aff-tier tier-1">基线亲和</span>
+      <span class="aff-note">本站伙伴入口 + 教育科研平台（站外例外）· Sitemap 可发现 + HTML 可读</span>
+      <span class="aff-tier tier-0">未就绪</span>
+      <span class="aff-note">其余站外跳转 · 不进本站 Agent 目录</span>
     </div>
     <ul class="domain-why">
-      <li>伙伴网络、产业概述、开源资源与友情链接。</li>
-      <li>绝大多数是站外跳转，不在本站亲和范围内。</li>
-      <li>获客与生态招募止于分发层，不当产品知识源。</li>
+      <li><strong>策展停基线。</strong>获客与生态招募，不当产品知识源；教育科研平台虽站外，仍按基线亲和目标覆盖。</li>
+      <li><strong>其余站外跳转不改造。</strong>友情链接等不在本站亲和范围内。</li>
     </ul>
     <table class="domain-table">
       <colgroup>
         <col class="col-cat" />
         <col class="col-page" />
+        <col class="col-llms" />
+        <col class="col-sitemap" />
         <col class="col-static" />
         <col class="col-md" />
-        <col class="col-sitemap" />
-        <col class="col-llms" />
         <col class="col-level" />
+        <col class="col-target" />
       </colgroup>
-      <thead><tr><th>分类</th><th>页面</th><th>HTML主信息（交付 D1）</th><th>MD文件（交付 D2）</th><th>收录Sitemap（索引 R1）</th><th>收录llms.txt（索引 R2）</th><th>实测模型层级</th></tr></thead>
+      <thead>
+        <tr class="th-row-group">
+          <th rowspan="2" class="th-stub">分类</th>
+          <th rowspan="2" class="th-stub">页面</th>
+          <th colspan="2" class="th-group th-group-find">找的到</th>
+          <th class="th-group th-group-html">读的懂</th>
+          <th class="th-group th-group-md">读的顺</th>
+          <th rowspan="2" class="th-stub">当前AI亲和 Level</th>
+          <th rowspan="2" class="th-stub">目标AI亲和 Level</th>
+        </tr>
+        <tr class="th-row-leaf">
+          <th class="th-leaf th-group-find">llms 收录</th>
+          <th class="th-leaf th-group-find">Sitemap 可发现</th>
+          <th class="th-leaf th-group-html">HTML 可读</th>
+          <th class="th-leaf th-group-md">Markdown 可读</th>
+        </tr>
+      </thead>
       <tbody>
         <tr>
           <td class="cat">教育科研</td>
-          <td class="path"><a href="https://edu.hicomputing.huawei.com" target="_blank" rel="noopener">https://edu.hicomputing.huawei.com/</a><span class="tag-ext">站外</span><span class="mn-sub">教育科研平台了解更多</span></td>
+          <td class="path"><a href="https://edu.hicomputing.huawei.com" target="_blank" rel="noopener">https://edu.hicomputing.huawei.com/</a><span class="tag-ext">站外</span><span class="curate-ex dist">站外例外</span><span class="mn-sub">教育科研平台了解更多</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://edu.hicomputing.huawei.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://edu.hicomputing.huawei.com/sitemap.xml" title="sitemap.xml · https://edu.hicomputing.huawei.com/sitemap.xml"><span class="tag tag-no">站外</span></a></td>
           <td><span class="tag tag-partial">部分</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://edu.hicomputing.huawei.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-no">站外</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-1 why-tip" data-tip="教育科研平台（站外例外）：官方教育入口，目标基线亲和；其余站外仍不改造。" title="教育科研平台（站外例外）：官方教育入口，目标基线亲和；其余站外仍不改造。">基线亲和</span></td>
         </tr>
         <tr>
           <td class="cat">合作伙伴</td>
           <td class="path"><a href="https://www.hiascend.com/ecosystem" target="_blank" rel="noopener">/ecosystem</a><span class="mn-sub">昇腾生态伙伴网络了解更多</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-partial">部分</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
+          <td class="target-lv"><span class="aff-tier tier-1 why-tip" data-tip="本站伙伴入口：获客招募止于基线，不当产品知识源。" title="本站伙伴入口：获客招募止于基线，不当产品知识源。">基线亲和</span></td>
         </tr>
         <tr>
           <td class="cat">产业</td>
           <td class="path"><a href="https://www.hiascend.com/ecosystem/industry" target="_blank" rel="noopener">/ecosystem/industry</a><span class="mn-sub">昇腾计算产业概述</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-partial">部分</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
+          <td class="target-lv"><span class="aff-tier tier-1 why-tip" data-tip="本站伙伴入口：获客招募止于基线，不当产品知识源。" title="本站伙伴入口：获客招募止于基线，不当产品知识源。">基线亲和</span></td>
         </tr>
         <tr>
           <td class="cat" rowspan="2">开源</td>
           <td class="path"><a href="https://www.mindspore.cn/" target="_blank" rel="noopener">https://www.mindspore.cn/</a><span class="tag-ext">站外</span><span class="mn-sub">昇思社区</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.mindspore.cn/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mindspore.cn/sitemap.xml" title="sitemap.xml · https://www.mindspore.cn/sitemap.xml"><span class="tag tag-no">站外</span></a></td>
           <td><span class="tag tag-partial">部分</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.mindspore.cn/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-no">站外</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-0 why-tip" data-tip="站外跳转：不在本站亲和改造范围。" title="站外跳转：不在本站亲和改造范围。">未就绪</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.hiascend.com/zh/developer/opensource" target="_blank" rel="noopener">/zh/developer/opensource</a><span class="mn-sub">昇腾开放资源</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><span class="tag tag-no">无</span></td>
           <td><span class="tag tag-miss">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-1 why-tip" data-tip="本站伙伴入口：获客招募止于基线，不当产品知识源。" title="本站伙伴入口：获客招募止于基线，不当产品知识源。">基线亲和</span></td>
         </tr>
         <tr>
           <td class="cat" rowspan="6">友情链接</td>
           <td class="path"><a href="https://www.huawei.com/cn/" target="_blank" rel="noopener">www.huawei.com/cn/</a><span class="tag-ext">站外</span><span class="mn-sub">华为官网</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.huawei.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.huawei.com/sitemap.xml" title="sitemap.xml · https://www.huawei.com/sitemap.xml"><span class="tag tag-no">站外</span></a></td>
           <td><span class="tag tag-miss">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.huawei.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-no">站外</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-0 why-tip" data-tip="站外跳转：不在本站亲和改造范围。" title="站外跳转：不在本站亲和改造范围。">未就绪</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://e.huawei.com/cn/solutions/computing" target="_blank" rel="noopener">e.huawei.com/cn/solutions/computing</a><span class="tag-ext">站外</span><span class="mn-sub">华为计算</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://e.huawei.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://e.huawei.com/sitemap.xml" title="sitemap.xml · https://e.huawei.com/sitemap.xml"><span class="tag tag-no">站外</span></a></td>
           <td><span class="tag tag-miss">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://e.huawei.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-no">站外</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-0 why-tip" data-tip="站外跳转：不在本站亲和改造范围。" title="站外跳转：不在本站亲和改造范围。">未就绪</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.hikunpeng.com/" target="_blank" rel="noopener">https://www.hikunpeng.com/</a><span class="tag-ext">站外</span><span class="mn-sub">鲲鹏社区</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hikunpeng.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hikunpeng.com/sitemap.xml" title="sitemap.xml · https://www.hikunpeng.com/sitemap.xml"><span class="tag tag-no">站外</span></a></td>
           <td><span class="tag tag-partial">部分</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hikunpeng.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-no">站外</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-0 why-tip" data-tip="站外跳转：不在本站亲和改造范围。" title="站外跳转：不在本站亲和改造范围。">未就绪</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.huaweicloud.com/" target="_blank" rel="noopener">https://www.huaweicloud.com/</a><span class="tag-ext">站外</span><span class="mn-sub">华为云</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.huaweicloud.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.huaweicloud.com/sitemap.xml" title="sitemap.xml · https://www.huaweicloud.com/sitemap.xml"><span class="tag tag-no">站外</span></a></td>
           <td><span class="tag tag-full">完整</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.huaweicloud.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-no">站外</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-0 why-tip" data-tip="站外跳转：不在本站亲和改造范围。" title="站外跳转：不在本站亲和改造范围。">未就绪</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.openi.org.cn/" target="_blank" rel="noopener">https://www.openi.org.cn/</a><span class="tag-ext">站外</span><span class="mn-sub">启智社区</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.openi.org.cn/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.openi.org.cn/sitemap.xml" title="sitemap.xml · https://www.openi.org.cn/sitemap.xml"><span class="tag tag-no">站外</span></a></td>
           <td><span class="tag tag-miss">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.openi.org.cn/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-no">站外</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-0 why-tip" data-tip="站外跳转：不在本站亲和改造范围。" title="站外跳转：不在本站亲和改造范围。">未就绪</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://developer.huawei.com/" target="_blank" rel="noopener">https://developer.huawei.com/</a><span class="tag-ext">站外</span><span class="mn-sub">华为开发者</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://developer.huawei.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://developer.huawei.com/sitemap.xml" title="sitemap.xml · https://developer.huawei.com/sitemap.xml"><span class="tag tag-no">站外</span></a></td>
           <td><span class="tag tag-miss">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://developer.huawei.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-no">站外</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-0 why-tip" data-tip="站外跳转：不在本站亲和改造范围。" title="站外跳转：不在本站亲和改造范围。">未就绪</span></td>
         </tr>
       </tbody>
     </table>
   </section>
   <section class="section domain" id="d-内容运营">
     <h2 class="card-title">内容运营 <span class="cnt">3 条</span></h2>
-    <p class="domain-desc">博客 / 新闻 / 干货；进 sitemap 服务 SEO，不进机器目录。</p>
-    <div class="domain-level" aria-label="本域策展目标（非表内实测汇总）">
+    <p class="domain-desc">博客、技术干货与新闻资讯</p>
+            <div class="domain-level" aria-label="本域策展目标（非表内实测汇总）">
       <span class="dl-label">策展目标</span>
-      <span class="curate curate-dist">分发层</span>
-      <span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span>
-      <span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span>
+      <span class="aff-tier tier-1">基线亲和</span>
+      <span class="aff-note">博客 / 新闻 / 干货 · Sitemap 可发现 + HTML 可读，不进 llms</span>
     </div>
     <ul class="domain-why">
-      <li>博客、技术干货、新闻资讯。</li>
-      <li>时效强、口径偏传播，进 sitemap 服务 SEO 即可。</li>
-      <li>不进机器目录，避免传播话术混入 Agent 语料。</li>
+      <li><strong>策展停基线。</strong>给人看、做 SEO；不进 llms。</li>
+      <li><strong>传播向不背书。</strong>时效强、口径偏故事，避免混入 Agent 语料。</li>
     </ul>
     <table class="domain-table">
       <colgroup>
         <col class="col-cat" />
         <col class="col-page" />
+        <col class="col-llms" />
+        <col class="col-sitemap" />
         <col class="col-static" />
         <col class="col-md" />
-        <col class="col-sitemap" />
-        <col class="col-llms" />
         <col class="col-level" />
+        <col class="col-target" />
       </colgroup>
-      <thead><tr><th>分类</th><th>页面</th><th>HTML主信息（交付 D1）</th><th>MD文件（交付 D2）</th><th>收录Sitemap（索引 R1）</th><th>收录llms.txt（索引 R2）</th><th>实测模型层级</th></tr></thead>
+      <thead>
+        <tr class="th-row-group">
+          <th rowspan="2" class="th-stub">分类</th>
+          <th rowspan="2" class="th-stub">页面</th>
+          <th colspan="2" class="th-group th-group-find">找的到</th>
+          <th class="th-group th-group-html">读的懂</th>
+          <th class="th-group th-group-md">读的顺</th>
+          <th rowspan="2" class="th-stub">当前AI亲和 Level</th>
+          <th rowspan="2" class="th-stub">目标AI亲和 Level</th>
+        </tr>
+        <tr class="th-row-leaf">
+          <th class="th-leaf th-group-find">llms 收录</th>
+          <th class="th-leaf th-group-find">Sitemap 可发现</th>
+          <th class="th-leaf th-group-html">HTML 可读</th>
+          <th class="th-leaf th-group-md">Markdown 可读</th>
+        </tr>
+      </thead>
       <tbody>
         <tr>
           <td class="cat">博客</td>
           <td class="path"><a href="https://www.hiascend.com/developer/blog" target="_blank" rel="noopener">/developer/blog</a><span class="mn-sub">博客</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-miss">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-1 why-tip" data-tip="博客 / 新闻 / 干货：给人看、做 SEO；传播向内容不进 llms。" title="博客 / 新闻 / 干货：给人看、做 SEO；传播向内容不进 llms。">基线亲和</span></td>
         </tr>
         <tr>
           <td class="cat">新闻</td>
           <td class="path"><a href="https://www.hiascend.com/activities/news" target="_blank" rel="noopener">/activities/news</a><span class="mn-sub">新闻资讯</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-miss">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-1 why-tip" data-tip="博客 / 新闻 / 干货：给人看、做 SEO；传播向内容不进 llms。" title="博客 / 新闻 / 干货：给人看、做 SEO；传播向内容不进 llms。">基线亲和</span></td>
         </tr>
         <tr>
           <td class="cat">干货</td>
           <td class="path"><a href="https://www.hiascend.com/developer/techArticles" target="_blank" rel="noopener">/developer/techArticles</a><span class="mn-sub">技术干货</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-miss">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-1 why-tip" data-tip="博客 / 新闻 / 干货：给人看、做 SEO；传播向内容不进 llms。" title="博客 / 新闻 / 干货：给人看、做 SEO；传播向内容不进 llms。">基线亲和</span></td>
         </tr>
       </tbody>
     </table>
   </section>
   <section class="section domain" id="d-社区运营">
     <h2 class="card-title">社区运营 <span class="cnt">5 条</span></h2>
-    <p class="domain-desc">UGC 与交互入口；不进 Agent 检索。精华须先沉淀为官方 FAQ 再准入知识域。</p>
-    <div class="domain-level" aria-label="本域策展目标（非表内实测汇总）">
+    <p class="domain-desc">论坛、求助、工单与昇腾活动</p>
+            <div class="domain-level" aria-label="本域策展目标（非表内实测汇总）">
       <span class="dl-label">策展目标</span>
-      <span class="curate curate-out">剔除</span>
-      <span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span>
-      <span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span>
+      <span class="aff-tier tier-0">未就绪</span>
+      <span class="aff-note">论坛 / 工单 / 活动 · 不为官方事实背书，不进 Agent 目录</span>
     </div>
     <ul class="domain-why">
-      <li>论坛、论坛求助、技术工单、昇腾活动。</li>
-      <li>UGC 与交互入口，不为官方事实背书。</li>
-      <li>精华须先沉淀为官方 FAQ 再准入知识域。</li>
+      <li><strong>刻意不进 Agent 目录。</strong>UGC 与交互入口，不为官方事实背书。</li>
+      <li><strong>精华须先沉淀。</strong>经官方审核写成 FAQ 后，再准入知识域。</li>
     </ul>
     <table class="domain-table">
       <colgroup>
         <col class="col-cat" />
         <col class="col-page" />
+        <col class="col-llms" />
+        <col class="col-sitemap" />
         <col class="col-static" />
         <col class="col-md" />
-        <col class="col-sitemap" />
-        <col class="col-llms" />
         <col class="col-level" />
+        <col class="col-target" />
       </colgroup>
-      <thead><tr><th>分类</th><th>页面</th><th>HTML主信息（交付 D1）</th><th>MD文件（交付 D2）</th><th>收录Sitemap（索引 R1）</th><th>收录llms.txt（索引 R2）</th><th>实测模型层级</th></tr></thead>
+      <thead>
+        <tr class="th-row-group">
+          <th rowspan="2" class="th-stub">分类</th>
+          <th rowspan="2" class="th-stub">页面</th>
+          <th colspan="2" class="th-group th-group-find">找的到</th>
+          <th class="th-group th-group-html">读的懂</th>
+          <th class="th-group th-group-md">读的顺</th>
+          <th rowspan="2" class="th-stub">当前AI亲和 Level</th>
+          <th rowspan="2" class="th-stub">目标AI亲和 Level</th>
+        </tr>
+        <tr class="th-row-leaf">
+          <th class="th-leaf th-group-find">llms 收录</th>
+          <th class="th-leaf th-group-find">Sitemap 可发现</th>
+          <th class="th-leaf th-group-html">HTML 可读</th>
+          <th class="th-leaf th-group-md">Markdown 可读</th>
+        </tr>
+      </thead>
       <tbody>
         <tr>
           <td class="cat" rowspan="3">支持</td>
           <td class="path"><a href="https://www.hiascend.com/forum/topicpost" target="_blank" rel="noopener">/forum/topicpost</a><span class="mn-sub">论坛求助</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><span class="tag tag-no">无</span></td>
           <td><span class="tag tag-miss">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-0 why-tip" data-tip="论坛 / 工单 / 活动：UGC 与交互入口，不为官方事实背书。" title="论坛 / 工单 / 活动：UGC 与交互入口，不为官方事实背书。">未就绪</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.hiascend.com/feedback" target="_blank" rel="noopener">/feedback</a><span class="mn-sub">技术工单</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><span class="tag tag-no">无</span></td>
           <td><span class="tag tag-miss">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-0 why-tip" data-tip="论坛 / 工单 / 活动：UGC 与交互入口，不为官方事实背书。" title="论坛 / 工单 / 活动：UGC 与交互入口，不为官方事实背书。">未就绪</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.hiascend.com/zh/feedback" target="_blank" rel="noopener">/zh/feedback</a><span class="mn-sub">技术工单</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><span class="tag tag-no">无</span></td>
           <td><span class="tag tag-miss">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-0 why-tip" data-tip="论坛 / 工单 / 活动：UGC 与交互入口，不为官方事实背书。" title="论坛 / 工单 / 活动：UGC 与交互入口，不为官方事实背书。">未就绪</span></td>
         </tr>
         <tr>
           <td class="cat">论坛</td>
           <td class="path"><a href="https://www.hiascend.com/forum/" target="_blank" rel="noopener">/forum/</a><span class="mn-sub">昇腾论坛</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><span class="tag tag-no">无</span></td>
           <td><span class="tag tag-miss">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-0 why-tip" data-tip="论坛 / 工单 / 活动：UGC 与交互入口，不为官方事实背书。" title="论坛 / 工单 / 活动：UGC 与交互入口，不为官方事实背书。">未就绪</span></td>
         </tr>
         <tr>
           <td class="cat">活动</td>
           <td class="path"><a href="https://www.hiascend.com/activities" target="_blank" rel="noopener">/activities</a><span class="mn-sub">昇腾活动</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-miss">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-0 why-tip" data-tip="论坛 / 工单 / 活动：UGC 与交互入口，不为官方事实背书。" title="论坛 / 工单 / 活动：UGC 与交互入口，不为官方事实背书。">未就绪</span></td>
         </tr>
       </tbody>
     </table>
   </section>
   <section class="section domain" id="d-公司事务">
     <h2 class="card-title">公司事务 <span class="cnt">8 条</span></h2>
-    <p class="domain-desc">法务与组织事务；与产品怎么用无关，绝对不进 Agent 目录。</p>
-    <div class="domain-level" aria-label="本域策展目标（非表内实测汇总）">
+    <p class="domain-desc">法务协议、隐私、备案与举报中心</p>
+            <div class="domain-level" aria-label="本域策展目标（非表内实测汇总）">
       <span class="dl-label">策展目标</span>
-      <span class="curate curate-out">剔除</span>
-      <span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span>
-      <span class="lvl lvl-1 axis-c"><span class="lv-k">D1</span>HTML 可读</span>
+      <span class="aff-tier tier-0">未就绪</span>
+      <span class="aff-note">法务 / 合规披露 · 与产品用法无关，绝对不进 Agent 目录</span>
     </div>
     <ul class="domain-why">
-      <li>法律声明、隐私政策、Cookie 协议、用户协议、备案与举报中心。</li>
-      <li>与产品怎么用无关，绝对不进 Agent 目录。</li>
-      <li>组织与合规披露止于人读，不做亲和改造。</li>
+      <li><strong>绝对不进 Agent 目录。</strong>与「产品怎么用」无关。</li>
+      <li><strong>止于人读。</strong>合规披露不做亲和改造。</li>
     </ul>
     <table class="domain-table">
       <colgroup>
         <col class="col-cat" />
         <col class="col-page" />
+        <col class="col-llms" />
+        <col class="col-sitemap" />
         <col class="col-static" />
         <col class="col-md" />
-        <col class="col-sitemap" />
-        <col class="col-llms" />
         <col class="col-level" />
+        <col class="col-target" />
       </colgroup>
-      <thead><tr><th>分类</th><th>页面</th><th>HTML主信息（交付 D1）</th><th>MD文件（交付 D2）</th><th>收录Sitemap（索引 R1）</th><th>收录llms.txt（索引 R2）</th><th>实测模型层级</th></tr></thead>
+      <thead>
+        <tr class="th-row-group">
+          <th rowspan="2" class="th-stub">分类</th>
+          <th rowspan="2" class="th-stub">页面</th>
+          <th colspan="2" class="th-group th-group-find">找的到</th>
+          <th class="th-group th-group-html">读的懂</th>
+          <th class="th-group th-group-md">读的顺</th>
+          <th rowspan="2" class="th-stub">当前AI亲和 Level</th>
+          <th rowspan="2" class="th-stub">目标AI亲和 Level</th>
+        </tr>
+        <tr class="th-row-leaf">
+          <th class="th-leaf th-group-find">llms 收录</th>
+          <th class="th-leaf th-group-find">Sitemap 可发现</th>
+          <th class="th-leaf th-group-html">HTML 可读</th>
+          <th class="th-leaf th-group-md">Markdown 可读</th>
+        </tr>
+      </thead>
       <tbody>
         <tr>
           <td class="cat">举报</td>
           <td class="path"><a href="https://www.hiascend.com/zh/report" target="_blank" rel="noopener">/zh/report</a><span class="mn-sub">举报中心</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><span class="tag tag-no">无</span></td>
           <td><span class="tag tag-miss">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-0 why-tip" data-tip="法务 / 合规披露：与产品怎么用无关，绝对不进 Agent 目录。" title="法务 / 合规披露：与产品怎么用无关，绝对不进 Agent 目录。">未就绪</span></td>
         </tr>
         <tr>
           <td class="cat" rowspan="2">备案</td>
           <td class="path"><a href="https://beian.miit.gov.cn" target="_blank" rel="noopener">https://beian.miit.gov.cn/</a><span class="tag-ext">站外</span><span class="mn-sub">粤A2-20044005号</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://beian.miit.gov.cn/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://beian.miit.gov.cn/sitemap.xml" title="sitemap.xml · https://beian.miit.gov.cn/sitemap.xml"><span class="tag tag-no">站外</span></a></td>
           <td><span class="tag tag-miss">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://beian.miit.gov.cn/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-no">站外</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-0 why-tip" data-tip="法务 / 合规披露：与产品怎么用无关，绝对不进 Agent 目录。" title="法务 / 合规披露：与产品怎么用无关，绝对不进 Agent 目录。">未就绪</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44030702005057" target="_blank" rel="noopener">www.beian.gov.cn/portal/registerSystemInfo?recordcode=44030702005057</a><span class="tag-ext">站外</span><span class="mn-sub">粤公网安备 44030702005057号</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.beian.gov.cn/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.beian.gov.cn/sitemap.xml" title="sitemap.xml · https://www.beian.gov.cn/sitemap.xml"><span class="tag tag-no">站外</span></a></td>
           <td><span class="tag tag-miss">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.beian.gov.cn/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-no">站外</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-0 why-tip" data-tip="法务 / 合规披露：与产品怎么用无关，绝对不进 Agent 目录。" title="法务 / 合规披露：与产品怎么用无关，绝对不进 Agent 目录。">未就绪</span></td>
         </tr>
         <tr>
           <td class="cat" rowspan="5">法务</td>
           <td class="path"><a href="https://www.hiascend.com/zh/legal/law" target="_blank" rel="noopener">/zh/legal/law</a><span class="mn-sub">法律声明</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-miss">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-0 why-tip" data-tip="法务 / 合规披露：与产品怎么用无关，绝对不进 Agent 目录。" title="法务 / 合规披露：与产品怎么用无关，绝对不进 Agent 目录。">未就绪</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.hiascend.com/zh/legal/privacy" target="_blank" rel="noopener">/zh/legal/privacy</a><span class="mn-sub">隐私政策</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><span class="tag tag-no">无</span></td>
           <td><span class="tag tag-miss">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-0 why-tip" data-tip="法务 / 合规披露：与产品怎么用无关，绝对不进 Agent 目录。" title="法务 / 合规披露：与产品怎么用无关，绝对不进 Agent 目录。">未就绪</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.hiascend.com/zh/legal/cookies" target="_blank" rel="noopener">/zh/legal/cookies</a><span class="mn-sub">Cookie协议</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><span class="tag tag-no">无</span></td>
           <td><span class="tag tag-miss">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-0 why-tip" data-tip="法务 / 合规披露：与产品怎么用无关，绝对不进 Agent 目录。" title="法务 / 合规披露：与产品怎么用无关，绝对不进 Agent 目录。">未就绪</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.hiascend.com/zh/legal/user" target="_blank" rel="noopener">/zh/legal/user</a><span class="mn-sub">用户协议</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.hiascend.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.hiascend.com/sitemap.xml" title="sitemap.xml · https://www.hiascend.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
           <td><span class="tag tag-miss">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.hiascend.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-1 axis-r"><span class="lv-k">R1</span>Sitemap 可发现</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-0 why-tip" data-tip="法务 / 合规披露：与产品怎么用无关，绝对不进 Agent 目录。" title="法务 / 合规披露：与产品怎么用无关，绝对不进 Agent 目录。">未就绪</span></td>
         </tr>
         <tr>
           <td class="path"><a href="https://www.huawei.com/cn/contact-us" target="_blank" rel="noopener">www.huawei.com/cn/contact-us</a><span class="tag-ext">站外</span><span class="mn-sub">联系我们</span></td>
+          <td><span class="tag tag-no">无</span></td>
+          <td><a href="https://www.huawei.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.huawei.com/sitemap.xml" title="sitemap.xml · https://www.huawei.com/sitemap.xml"><span class="tag tag-no">站外</span></a></td>
           <td><span class="tag tag-miss">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><a href="https://www.huawei.com/sitemap.xml" target="_blank" rel="noopener"><span class="tag tag-no">站外</span></a></td>
-          <td><span class="tag tag-no">无</span></td>
-          <td class="model-lv"><span class="lvl lvl-0 axis-r"><span class="lv-k">R0</span>未进索引</span><span class="lvl lvl-0 axis-c"><span class="lv-k">D0</span>正文不可读</span></td>
+          <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
+          <td class="target-lv"><span class="aff-tier tier-0 why-tip" data-tip="法务 / 合规披露：与产品怎么用无关，绝对不进 Agent 目录。" title="法务 / 合规披露：与产品怎么用无关，绝对不进 Agent 目录。">未就绪</span></td>
         </tr>
       </tbody>
     </table>
