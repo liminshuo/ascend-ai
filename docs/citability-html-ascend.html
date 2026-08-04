@@ -219,7 +219,9 @@
     grid-template-columns: 1fr;
     gap: 14px;
   }
+  a.case-card { text-decoration: none; color: inherit; display: block; }
   .case-card {
+    position: relative;
     display: block;
     width: 100%;
     text-align: left;
@@ -236,11 +238,49 @@
     border-color: rgba(20, 118, 255, 0.35);
     background: rgba(20, 118, 255, 0.06);
   }
+  .case-card .case-idx {
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 18px;
+    color: var(--muted);
+    margin-bottom: 6px;
+    padding-right: 180px;
+    box-sizing: border-box;
+  }
   .case-card .meta {
+    position: absolute;
+    top: 16px;
+    right: 16px;
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 10px;
+    justify-content: flex-end;
+    gap: 6px;
+    margin: 0;
+    max-width: calc(100% - 32px);
+  }
+  .case-card .chip {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: var(--accent-soft);
+    color: #0d4db8;
+    white-space: nowrap;
+  }
+  .case-card .chip.md.no {
+    background: #f0f2f5;
+    color: #64748b;
+  }
+  .case-card .comps {
+    margin: 10px 0 0;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--muted);
+  }
+  .case-card .comps strong {
+    color: var(--text);
+    font-weight: 600;
   }
   .chip {
     display: inline-block;
@@ -932,7 +972,7 @@
       <ul>
         <li><a href="reachability.html">分析概览</a></li>
         <li><a href="reachability.html#index">找的到（收录索引）</a></li>
-        <li><a href="citability-html-ascend.html" class="active">读的懂（能抓 html）</a></li>
+        <li><a href="citability-html-ascend.html" class="active">读的懂（html 可读）</a></li>
         <li><a href="citability-ascend.html">读的顺（双轨交付）</a></li>
       </ul>
     </nav>
@@ -942,98 +982,104 @@
   <header class="hero">
     <h1>Ascend 社区（html）分析 · 可引用性·内容（html）分析</h1>
     <p class="sub">
-      本栏对着昇腾自己的页：大模型抓 HTML 时，正文在不在源码、缺到什么程度、站外空壳怎么处理。
-      下面先列<strong>当前问题</strong>，再给<strong>可执行建议</strong>。案例取自可达性表中市场营销 / 知识 / 生态的典型「部分」「缺失」行。
+      聚焦一件事：大模型去抓网页 HTML 时，关键信息能不能读到、链接跟不跟得上、站外空壳会不会丢。
+      下列规则从昇腾八类页面、共 39 个组件实测归纳；蓝 = 可抓全，橙 = 抓不全。
     </p>
   </header>
 
-  <h2 class="block-title" id="principles-title">实施建议</h2>
+  <h2 class="block-title" id="principles-title">分析总结</h2>
   <section class="section" aria-labelledby="principles-title">
     <ul class="summary-points">
-      <li><strong>缺失页优先补 SSR：</strong>如 CCAE、HiDevLab 空壳，curl 几乎无产品说明。先把定位与要点写进 HTML，再谈入库。</li>
-      <li><strong>部分页区分「壳」与「规格」：</strong>首页、集群、下载中心常有导航/定位可抓，规格表或包列表仍偏动态——补表格 SSR，或链到可抓文档。</li>
-      <li><strong>知识壳 ≠ 知识正文：</strong><code>/developer</code> 只有入口卡与短述；可引用内容在 FAQ 等叶子。壳做人读，叶子保可抓。</li>
-      <li><strong>站外单独策展：</strong>教育站、HiDevLab 不在 www 尺子里。社区侧留真链接 + 摘要，或明确「AI 不引用该壳」。</li>
-      <li><strong>改造优先级：</strong>知识叶子（FAQ）与缺失产品页（CCAE）优先于再堆营销首页口号。对照友商：NVIDIA 产品说明页常「完整 + 真链接」。</li>
+      <li><strong>读的懂与 reachability 同标尺：</strong>页级「完整 / 部分 / 缺失」按组件楼层聚合——蓝全可抓或橙标均可不解决 → 完整；有蓝且存在橙标有必要解决 → 部分；无蓝 → 缺失。reachability 表已从此案例数据同步。</li>
+      <li><strong>关键信息要落在静态文本与真链接里：</strong>Nuxt SSR 首页轮播多帧、平台栈与行业方案 inner-desc 可抓；集群/CCAE/下载中心产品要点与下载卡、FAQ 叶子正文与产品表大体可抓；开发者入口工具链短述与 href 可跟。</li>
+      <li><strong>人看得见不等于源码里有：</strong>HiDevLab 首包仅 <code>#app</code>；首页资讯 Tab、商机方案卡、开发者技术热点轮播、教育站部分 Banner 帧、集群详细规格需脚本/交互才有——有必要解决。FAQ 侧栏 TOC 在 <code>__NUXT_DATA__</code> 等属边界，按组件判。</li>
+      <li><strong>抓不全不等于都要改：</strong>首屏视觉图、配图无 alt、下载版本矩阵等，若正文/工具链已复述 → 可不解决。站外域名单独策展，社区入口保真链接；橙标分「有必要解决」与「可不解决」两类。</li>
     </ul>
   </section>
 
   <section class="cases-block" id="cases" aria-labelledby="cases-title">
     <h2 class="block-title" id="cases-title">实测案例</h2>
-    <p class="sub">每条先写<strong>问题</strong>（抓取事实），再写<strong>建议</strong>。点击打开编号热区与分段源码。</p>
     <div class="case-grid">
 
-    <button type="button" class="case-card" data-case="home" aria-haspopup="dialog">
+    <a class="case-card" href="citability-html-ascend-case.html?case=home"><div class="case-idx">案例 1</div>
       <div class="meta">
-        <span class="chip">市场营销</span><span class="chip alt">HTML 部分</span>
+        <span class="chip md no">无 Markdown</span>
+        <span class="chip">市场营销</span>
       </div>
-      <h2 class="card-title">/zh</h2>
-      <p><strong>问题：</strong>导航与 title 可抓，首屏运营主体偏 Nuxt 动态，静态不全。<strong>建议：</strong>首页只做人读与发现；可抓主张写一两句进 SSR，规格放到产品/文档深页。</p>
-      <div class="cta">打开编号热区与楼层源码 →</div>
-    </button>
+      <h2 class="card-title">社区首页 /zh</h2>
+      <p>昇腾社区首页：开发者文档与资源导流入口。</p>
+      <div class="comps"><strong>覆盖 7 个组件</strong>：首屏运营轮播、资讯 Tab 缺少静态卡片、AI 软硬件平台栈、开发者成长楼层、行业方案卡文案、教育科研与生态伙伴、商机方案卡缺少静态列表</div>
+      <div class="cta">查看组件对照 →</div></a>
 
-    <button type="button" class="case-card" data-case="cluster" aria-haspopup="dialog">
+    <a class="case-card" href="citability-html-ascend-case.html?case=cluster"><div class="case-idx">案例 2</div>
       <div class="meta">
-        <span class="chip">市场营销 · 产品</span><span class="chip alt">HTML 部分</span>
+        <span class="chip md no">无 Markdown</span>
+        <span class="chip">市场营销 · 产品</span>
       </div>
-      <h2 class="card-title">/hardware/cluster</h2>
-      <p><strong>问题：</strong>title 有产品名，承诺「技术规格」但静态源码难见完整参数表。<strong>建议：</strong>关键规格 SSR 成 HTML 表，或提供可抓规格文档并带真链接。</p>
-      <div class="cta">打开编号热区与楼层源码 →</div>
-    </button>
+      <h2 class="card-title">集群产品 /hardware/cluster</h2>
+      <p>昇腾社区集群产品页：Atlas 900 等产品规格与场景说明。</p>
+      <div class="comps"><strong>覆盖 5 个组件</strong>：产品导语与型号、产品特性要点、技术规格摘要表、应用场景标签、详细规格缺少静态展开</div>
+      <div class="cta">查看组件对照 →</div></a>
 
-    <button type="button" class="case-card" data-case="ccae" aria-haspopup="dialog">
+    <a class="case-card" href="citability-html-ascend-case.html?case=ccae"><div class="case-idx">案例 3</div>
       <div class="meta">
-        <span class="chip">市场营销 · 软件</span><span class="chip alt">HTML 缺失</span>
+        <span class="chip md no">无 Markdown</span>
+        <span class="chip">市场营销 · 软件</span>
       </div>
-      <h2 class="card-title">/software/ccae</h2>
-      <p><strong>问题：</strong>几乎只有 title 与导航壳，产品说明依赖 JS，正文不可读（未就绪）。<strong>建议：</strong>优先改造：定位、能力要点、文档入口 SSR；未完成前不要进 AI 知识库。</p>
-      <div class="cta">打开编号热区与楼层源码 →</div>
-    </button>
+      <h2 class="card-title">CCAE /software/ccae</h2>
+      <p>昇腾社区 CCAE 页：集群健康评估与 OpenAPI 能力说明。</p>
+      <div class="comps"><strong>覆盖 4 个组件</strong>：产品标题与 CTA、关键特性正文、扩展资源与 OpenAPI、首屏栈图无导语</div>
+      <div class="cta">查看组件对照 →</div></a>
 
-    <button type="button" class="case-card" data-case="developer" aria-haspopup="dialog">
+    <a class="case-card" href="citability-html-ascend-case.html?case=developer"><div class="case-idx">案例 4</div>
       <div class="meta">
-        <span class="chip">知识 · 壳入口</span><span class="chip alt">HTML 缺失</span>
+        <span class="chip md no">无 Markdown</span>
+        <span class="chip">知识 · 壳入口</span>
       </div>
-      <h2 class="card-title">/developer</h2>
-      <p><strong>问题：</strong>有训练/推理等入口卡与工具短述，但无系统说明书，不能当知识正文。<strong>建议：</strong>壳只做人读导航；AI 引用指向 FAQ/文档叶子，卡片保真 href。</p>
-      <div class="cta">打开编号热区与楼层源码 →</div>
-    </button>
+      <h2 class="card-title">开发者入口 /developer</h2>
+      <p>昇腾社区开发者入口：训练/推理/算子导航与工具链导流。</p>
+      <div class="comps"><strong>覆盖 6 个组件</strong>：训练/推理/算子入口卡、工具链名称与短述、学习成长楼层、开发者计划说明、技术热点轮播缺少静态正文、入口卡无短述</div>
+      <div class="cta">查看组件对照 →</div></a>
 
-    <button type="button" class="case-card" data-case="faq" aria-haspopup="dialog">
+    <a class="case-card" href="citability-html-ascend-case.html?case=faq"><div class="case-idx">案例 5</div>
       <div class="meta">
-        <span class="chip">知识 · 文档</span><span class="chip alt">HTML 部分</span>
+        <span class="chip md no">无 Markdown</span>
+        <span class="chip">知识 · 文档</span>
       </div>
       <h2 class="card-title">AscendFAQ /overview</h2>
-      <p><strong>问题：</strong>已有标题与产品系列正文可抓，仍有壳与交互续读，故为「部分」。<strong>建议：</strong>改造优先落在此类叶子：保 SSR 正文；入库剥导航壳。比先改营销首页更划算。</p>
-      <div class="cta">打开编号热区与楼层源码 →</div>
-    </button>
+      <p>昇腾产品形态说明文档：训练/推理产品系列与型号表。</p>
+      <div class="comps"><strong>覆盖 4 个组件</strong>：文档 h1 标题、产品形态说明段落、表1 昇腾产品系列、侧栏目录无静态链接</div>
+      <div class="cta">查看组件对照 →</div></a>
 
-    <button type="button" class="case-card" data-case="hidevlab" aria-haspopup="dialog">
+    <a class="case-card" href="citability-html-ascend-case.html?case=hidevlab"><div class="case-idx">案例 6</div>
       <div class="meta">
-        <span class="chip">知识 · 站外</span><span class="chip alt">HTML 缺失</span>
+        <span class="chip md no">无 Markdown</span>
+        <span class="chip">知识 · 站外</span>
       </div>
-      <h2 class="card-title">hidevlab.huawei.com</h2>
-      <p><strong>问题：</strong>首包空 <code>#app</code>，站外且无说明可抓。<strong>建议：</strong>社区链出时附摘要页；或明确 AI 不引用该壳。不要把空 app 当知识源。</p>
-      <div class="cta">打开编号热区与楼层源码 →</div>
-    </button>
+      <h2 class="card-title">HiDevLab hidevlab.huawei.com</h2>
+      <p>HiDevLab 站外 SPA：在线开发环境入口。</p>
+      <div class="comps"><strong>覆盖 2 个组件</strong>：主体缺少静态正文、仅有 title 元信息</div>
+      <div class="cta">查看组件对照 →</div></a>
 
-    <button type="button" class="case-card" data-case="download" aria-haspopup="dialog">
+    <a class="case-card" href="citability-html-ascend-case.html?case=download"><div class="case-idx">案例 7</div>
       <div class="meta">
-        <span class="chip">知识 · 下载</span><span class="chip alt">HTML 部分</span>
+        <span class="chip md no">无 Markdown</span>
+        <span class="chip">知识 · 下载</span>
       </div>
-      <h2 class="card-title">/developer/download</h2>
-      <p><strong>问题：</strong>定位与社区版/商用版说明、资源卡可抓；完整包表/筛选偏动态。<strong>建议：</strong>保分类说明 SSR；准确版本另做可抓清单或文档页。</p>
-      <div class="cta">打开编号热区与楼层源码 →</div>
-    </button>
+      <h2 class="card-title">资源下载 /developer/download</h2>
+      <p>昇腾开发资源下载中心：CANN、框架与固件驱动入口。</p>
+      <div class="comps"><strong>覆盖 5 个组件</strong>：下载中心定位、社区版商用版说明、框架软件下载卡、固件驱动与其他资源、版本矩阵无静态列表</div>
+      <div class="cta">查看组件对照 →</div></a>
 
-    <button type="button" class="case-card" data-case="edu" aria-haspopup="dialog">
+    <a class="case-card" href="citability-html-ascend-case.html?case=edu"><div class="case-idx">案例 8</div>
       <div class="meta">
-        <span class="chip">生态 · 站外</span><span class="chip alt">HTML 部分</span>
+        <span class="chip md no">无 Markdown</span>
+        <span class="chip">生态 · 站外</span>
       </div>
-      <h2 class="card-title">edu.hicomputing.huawei.com</h2>
-      <p><strong>问题：</strong>主张与角色卡可抓，但属站外，不在 www 索引尺子内。<strong>建议：</strong>社区入口留真链接 + 短摘要；深度内容以教育站为准，勿整站塞进 www llms。</p>
-      <div class="cta">打开编号热区与楼层源码 →</div>
-    </button>
+      <h2 class="card-title">教育科研 edu.hicomputing.huawei.com</h2>
+      <p>鲲鹏昇腾教育科研站外平台：受众入口与方案导流。</p>
+      <div class="comps"><strong>覆盖 6 个组件</strong>：平台主张导语、三类受众入口卡、HPC/数据库方案卡、学习资源与成功案例、轮播帧缺少可抓文案、轮播配图 alt 无效</div>
+      <div class="cta">查看组件对照 →</div></a>
 
     </div>
   </section>
@@ -1041,237 +1087,6 @@
   <footer>昇腾社区 AI 亲和原则研究</footer>
 </div>
 
-<div class="modal" id="case-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-  <div class="modal-head">
-    <div class="modal-head-bar">
-      <h2 class="modal-title" id="modal-title"></h2>
-      <div class="modal-actions">
-        <a class="btn" id="btn-left" href="#" target="_blank" rel="noopener">打开左页</a>
-        <a class="btn" id="btn-right" href="#" target="_blank" rel="noopener">打开右页</a>
-        <button type="button" class="btn close" id="close-modal">关闭</button>
-      </div>
-    </div>
-    <div class="conclude" id="conclude"></div>
-  </div>
-
-  <div class="modal-split">
-    <div class="pane-frame-wrap">
-      <div class="pane-label">
-        <span>左侧 · 人读截图（编号热区）</span>
-        <a id="label-left" href="#" target="_blank" rel="noopener"></a>
-      </div>
-      <div class="pane-frame pane-frame--shot" id="shot-pane">
-        <div class="shot-map" id="shot-map">
-          <img id="shot-left" class="pane-shot" alt="人读页截图" />
-        </div>
-      </div>
-    </div>
-    <div class="pane-frame-wrap">
-      <div class="pane-label">
-        <span>右侧 · 按楼层的 HTML 摘录</span>
-        <a id="label-right" href="#" target="_blank" rel="noopener"></a>
-      </div>
-      <div class="pane-frame pane-frame--md">
-        <div class="md-embed" id="html-embed">
-          <div class="fb-banner">
-            点上方楼层或左图编号，右侧跳到对应源码段 ·
-            <a id="html-source-link" href="#" target="_blank" rel="noopener"></a>
-          </div>
-          <div class="floor-src-list" id="floor-src-list"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<script type="application/json" id="cases-data">{"home":{"title":"社区首页 /zh · HTML 抓取对照（部分）","leftUrl":"https://www.hiascend.com/zh","leftLabel":"hiascend.com/zh","leftShot":"assets/cases-html-ascend/home.png","rightUrl":"https://www.hiascend.com/zh","rightLabel":"按楼层 HTML 摘录","floors":[{"id":"title","idx":1,"kind":"in","name":"页标题 / 口号","badge":"元信息可抓","desc":"「昇腾万里…」写在 title 里；人读首屏大图主张多半靠前端渲染，静态正文偏薄。","shotTop":8,"shotLeft":40,"html":"cale=1,user-scalable=no\"> \u003ctitle>昇腾社区官网-昇腾万里 让智能无所不及\u003c/title> \u003cscript src=\"https://res.hc-cdn.com/CDP-Jssdk/2.6.4/web/uga-cdp-jssdk.window.js\">\u003c/script> \u003cscript src=\"https://res.wx.qq.com/open/js/jweixin-1.6.0.js\">\u003c/script> \u003cstyle>.protocol-dlg{z-index:9999;--dlg-max-height:auto!important}\u003c/style> \u003cstyle>.screen"},{"id":"nav","idx":2,"kind":"peel","name":"顶栏产品导航","badge":"操作/导航","desc":"产品名与真链接在导航源码里能抓到，但这是找页壳，不是首页说明书。","shotTop":2,"shotLeft":30,"html":"hardware/cluster\" target=\"_self\" title=\"Atlas 900 A3 SuperPoD 超节点\">\u003c!--v-if-->\u003cspan class=\"o-link-main\">\u003c!--[-->Atlas 900 A3 SuperPoD 超节点\u003c!--]-->\u003c/span>\u003c!--v-if-->\u003c/a>\u003c/div>\u003cdiv class=\"o-nav-sub-item\">\u003ca class=\"o-link o-link-normal o-link-auto o-nav-sub-link o-nav-sub-link\" href=\"/hardware/cluster?tag=900\" target=\"_sel"},{"id":"nuxt","idx":3,"kind":"warn","name":"Nuxt 载荷 / 主体","badge":"部分可抓","desc":"页带 __NUXT_DATA__；首屏运营位、新闻等主体对人可见，curl 常抓不全——对应「部分」。","shotTop":25,"shotLeft":50,"html":"div>\u003cscript type=\"application/json\" id=\"__NUXT_DATA__\" data-ssr=\"true\">[[\"ShallowReactive\",1],{\"data\":2,\"state\":694,\"once\":698,\"_errors\":699,\"serverRendered\":28,\"path\":701,\"pinia\":702,\"ssrContext.isMobile\":14},[\"ShallowReactive\",3],{\"/ascendgateway/ascendservice/menu/community?tenantCode=community_site\":4,\"/asce"},{"id":"foot","idx":4,"kind":"peel","name":"页脚新闻与活动入口","badge":"操作/噪声","desc":"页脚「新闻与活动」等链接在源码里，属于站内跳转，不是首页知识正文。","shotTop":85,"shotLeft":20,"html":" class=\"link-group\">\u003ch4 class=\"gp-name\">新闻与活动\u003c/h4>\u003cdiv class=\"gp-links\">\u003c!--[-->\u003ca class=\"o-link o-link-normal o-link-auto link-item gp-link link-item gp-link\" href=\"/activities/news\" target=\"_blank\">\u003c!--v-if-->\u003cspan class=\"o-link-main\">\u003c!--[-->新闻资讯\u003c!--]-->\u003c/span>\u003c!--v-if-->\u003c/a>\u003ca class=\"o-link o-link-no"}],"concludeLead":"\u003ch3>当前问题\u003c/h3>\u003cp class=\"d1-verdict\">\u003cspan class=\"tag tag-out\">HTML 档：部分\u003c/span> \u003cspan class=\"tag tag-muted\">导航可抓 · 首屏主体偏动态\u003c/span>\u003c/p>\u003cp class=\"floor-hint\">绿 = 已有文字 · 橙 = 抓不全 · 灰 = 壳/导航\u003c/p>","concludeGeo":"\u003cp class=\"conclude-geo\">\u003cstrong>建议：\u003c/strong>首页只做人读与发现；不要当 AI 规格源。若要可抓主张，把一两句定位文案 SSR 进 HTML，详细说明放到产品/文档深页。\u003c/p>"},"cluster":{"title":"集群产品 /hardware/cluster · HTML 抓取对照（部分）","leftUrl":"https://www.hiascend.com/hardware/cluster","leftLabel":"…/hardware/cluster","leftShot":"assets/cases-html-ascend/cluster.png","rightUrl":"https://www.hiascend.com/hardware/cluster","rightLabel":"按楼层 HTML 摘录","floors":[{"id":"title","idx":1,"kind":"in","name":"产品名在 title","badge":"元信息可抓","desc":"Atlas 900 / SuperPoD 等写在 title；人读页上的规格表未必同等出现在静态 DOM。","shotTop":6,"shotLeft":30,"html":"ximum-scale=1,user-scalable=no\"> \u003ctitle>Atlas 900 A3 SuperPoD Atlas 900 AI 集群-Atlas 900 A2 PoD-技术规格参数-昇腾社区\u003c/title> \u003cscript src=\"https://res.hc-cdn.com/CDP-Jssdk/2.6.4/web/uga-cdp-jssdk.window.js\">\u003c/script> \u003cscript src=\"https://res.wx.qq.com/open/js/jweixin-1.6.0.js\">\u003c/script> \u003cstyle>.protocol-dlg{z-index:9999;--dlg-max"},{"id":"nav","idx":2,"kind":"peel","name":"同站产品导航","badge":"操作/导航","desc":"导航里能看到集群/服务器入口，方便人点，不是本页规格正文。","shotTop":2,"shotLeft":25,"html":"l-group\">\u003cdiv class=\"o-nav-group-title\">集群自智引擎\u003c/div>\u003cdiv class=\"o-nav-group-list\">\u003c!--[-->\u003cdiv class=\"o-nav-sub-item\">\u003ca class=\"o-link o-link-normal o-link-auto o-nav-sub-link o-nav-sub-link\" href=\"/software/ccae\" target=\"_self\" title=\"CCAE\">\u003c!--v-if-->\u003cspan class=\"o-link-main\">\u003c!--[-->CCAE\u003c!--]-->\u003c/span>"},{"id":"body","idx":3,"kind":"warn","name":"规格 / 参数主体","badge":"正文偏弱","desc":"标题承诺「技术规格参数」，静态源码里难见完整参数表——对应「部分」。","shotTop":35,"shotLeft":40,"html":"\u003c!-- 静态 HTML：规格表/参数楼层不明显；主体多在 Nuxt 客户端渲染 -->"},{"id":"nuxt","idx":4,"kind":"warn","name":"Nuxt 数据岛","badge":"部分可抓","desc":"有 __NUXT_DATA__，字符串可抠但不像表格好引用。","shotTop":50,"shotLeft":50,"html":"div>\u003cscript type=\"application/json\" id=\"__NUXT_DATA__\" data-ssr=\"true\">[[\"ShallowReactive\",1],{\"data\":2,\"state\":593,\"once\":597,\"_errors\":598,\"serverRendered\":28,\"path\":46,\"pinia\":600,\"ssrContext.isMobile\":14},[\"ShallowReactive\",3],{\"/ascendgateway/ascendservice/menu/community?tenantCode=community_site\":4,\"wJFqD0"}],"concludeLead":"\u003ch3>当前问题\u003c/h3>\u003cp class=\"d1-verdict\">\u003cspan class=\"tag tag-out\">HTML 档：部分\u003c/span> \u003cspan class=\"tag tag-out\">规格主体难直接抓\u003c/span>\u003c/p>\u003cp class=\"floor-hint\">绿 = title/导航 · 橙 = 规格正文\u003c/p>","concludeGeo":"\u003cp class=\"conclude-geo\">\u003cstrong>建议：\u003c/strong>产品页把关键规格（型号、参数表）SSR 成可见 HTML 表格；或提供可抓的规格文档页，并保证入口真链接。\u003c/p>"},"ccae":{"title":"CCAE /software/ccae · HTML 抓取对照（缺失）","leftUrl":"https://www.hiascend.com/software/ccae","leftLabel":"…/software/ccae","leftShot":"assets/cases-html-ascend/ccae.png","rightUrl":"https://www.hiascend.com/software/ccae","rightLabel":"按楼层 HTML 摘录","floors":[{"id":"title","idx":1,"kind":"warn","name":"几乎只有 title","badge":"正文缺失","desc":"title 仅「CCAE-昇腾社区」；页面级产品说明在静态 HTML 里基本看不到。","shotTop":8,"shotLeft":40,"html":"ximum-scale=1,user-scalable=no\"> \u003ctitle>CCAE-昇腾社区\u003c/title> \u003cscript src=\"https://res.hc-cdn.com/CDP-Jssdk/2.6.4/web/uga-cdp-jssdk.window.js\">\u003c/script> \u003cscript src=\"https://res.wx.qq.com/open/js/jweixin-1.6.0.js\">\u003c/script> \u003cstyle>.protocol-dlg{z-index:9999;--dlg-max-height:auto!important}\u003c/style> \u003cstyle>.screen"},{"id":"nav","idx":2,"kind":"peel","name":"导航里的 CCAE 入口","badge":"操作/导航","desc":"导航有「集群自智引擎 / CCAE」链接，说明人能点到这页，但页内无说明可抓。","shotTop":2,"shotLeft":30,"html":"l-group\">\u003cdiv class=\"o-nav-group-title\">集群自智引擎\u003c/div>\u003cdiv class=\"o-nav-group-list\">\u003c!--[-->\u003cdiv class=\"o-nav-sub-item\">\u003ca class=\"o-link o-link-normal o-link-auto o-nav-sub-link o-nav-sub-link\" href=\"/software/ccae\" target=\"_self\" title=\"CCAE\">\u003c!--v-if-->\u003cspan class=\"o-link-main\">\u003c!--[-->CCAE\u003c!--]-->\u003c/span>"},{"id":"body","idx":3,"kind":"warn","name":"产品正文楼层","badge":"缺失","desc":"curl 结果几乎是站点壳；人读所见内容依赖 JS——表记「缺失」即此。","shotTop":30,"shotLeft":50,"html":"\u003c!-- 静态源码未见 CCAE 产品概述/规格段落；主体依赖客户端渲染 -->"},{"id":"nuxt","idx":4,"kind":"warn","name":"Nuxt 壳","badge":"不可当知识源","desc":"__NUXT_DATA__ 存在，但不等于有可引用的产品说明书。","shotTop":55,"shotLeft":50,"html":"div>\u003cscript type=\"application/json\" id=\"__NUXT_DATA__\" data-ssr=\"true\">[[\"ShallowReactive\",1],{\"data\":2,\"state\":593,\"once\":597,\"_errors\":598,\"serverRendered\":28,\"path\":74,\"pinia\":600,\"ssrContext.isMobile\":14},[\"ShallowReactive\",3],{\"/ascendgateway/ascendservice/menu/community?tenantCode=community_site\":4,\"wJFqD0"}],"concludeLead":"\u003ch3>当前问题\u003c/h3>\u003cp class=\"d1-verdict\">\u003cspan class=\"tag tag-out\">HTML 档：缺失\u003c/span> \u003cspan class=\"tag tag-out\">D0 正文不可读\u003c/span>\u003c/p>\u003cp class=\"floor-hint\">橙 = 缺失 · 灰 = 仅导航壳\u003c/p>","concludeGeo":"\u003cp class=\"conclude-geo\">\u003cstrong>建议：\u003c/strong>优先改造：把 CCAE 定位、能力要点、文档入口写成 SSR HTML；未做完前不要进 AI 知识库，只保留人读。\u003c/p>"},"developer":{"title":"开发者入口 /developer · HTML 抓取对照（缺失）","leftUrl":"https://www.hiascend.com/developer","leftLabel":"…/developer","leftShot":"assets/cases-html-ascend/developer.png","rightUrl":"https://www.hiascend.com/developer","rightLabel":"按楼层 HTML 摘录","floors":[{"id":"cards","idx":1,"kind":"in","name":"分区入口卡（训练/推理…）","badge":"入口可抓","desc":"「训练开发 / 推理开发」等卡标题写在源码里，能当目录线索；仍不是文档正文。","shotTop":28,"shotLeft":20,"html":"s=\"resource-card-title\" data-v-f1f075b5>训练开发\u003c/div>\u003c!--]-->\u003c/span>\u003c!--v-if-->\u003c/a>\u003c!--]-->\u003c/div>\u003c/div>\u003c!-- footer -->\u003c!--v-if-->\u003c/div>\u003c!--]-->\u003c/div>\u003c!--]-->\u003c/a>\u003c!--]-->\u003c/div>\u003cdiv class=\"o-col\" style=\"--col-flex:0 0 33.3%;\" data-v-f1f075b5>\u003c!--[-->\u003ca href=\"/developer/inference\" class=\"o-card o-card-layout-"},{"id":"tools","idx":2,"kind":"in","name":"工具短述（CANN 等）","badge":"摘要可抓","desc":"CANN / MindStudio 等有一两句介绍，信息薄，不够当规格知识源。","shotTop":45,"shotLeft":25,"html":"span class=\"tools-line\" data-v-f1f075b5>CANN 异构计算架构\u003c/span>\u003c/div>\u003c/div>\u003cdiv class=\"tools-item-desc\" data-v-f1f075b5>昇腾针对AI场景推出的异构计算架构，对上支持多种AI框架\u003c/div>\u003c!--]-->\u003c/span>\u003c!--v-if-->\u003c/a>\u003cdiv role=\"separator\" class=\"o-divider o-divider-solid o-divider-v divider\" data-v-f1f075b5>\u003c!--v-if-->\u003c/div>\u003c/div>\u003cdiv class=\"tools"},{"id":"hot","idx":3,"kind":"peel","name":"了解技术热点","badge":"运营位","desc":"热点区偏运营推荐，和稳定说明书应分开。","shotTop":18,"shotLeft":30,"html":"d\">\u003cdiv>\u003ch2 class=\"sec-title initial-h\">了解技术热点\u003c/h2>\u003c!---->\u003c/div>\u003c!---->\u003c/div>\u003c!--]-->\u003cdiv class=\"sec-body\">\u003c!--[-->\u003cdiv class=\"o-row pc-layout\" style=\"justify-content:space-between;flex-wrap:nowrap;--row-gap-x:var(--o3-gap-6);--row-gap-y:var(--o3-gap-6);\" data-v-3b22236a>\u003c!--[-->\u003c!---->\u003cdiv class=\"o-col\" "},{"id":"miss","idx":4,"kind":"warn","name":"知识正文不在此页","badge":"表记缺失","desc":"可达性表记「缺失」：作为知识壳，无可核对的系统说明；真知识在文档/下载叶子页。","shotTop":60,"shotLeft":50,"html":"\u003c!-- 开发者壳：有入口卡与短述；无 FAQ/API/步骤类正文。勿整页入库 -->"}],"concludeLead":"\u003ch3>当前问题\u003c/h3>\u003cp class=\"d1-verdict\">\u003cspan class=\"tag tag-out\">HTML 档：缺失（知识壳）\u003c/span> \u003cspan class=\"tag tag-muted\">仅有入口卡/短述\u003c/span>\u003c/p>\u003cp class=\"floor-hint\">绿 = 入口线索 · 橙 = 不能当正文\u003c/p>","concludeGeo":"\u003cp class=\"conclude-geo\">\u003cstrong>建议：\u003c/strong>壳页只做人读导航；AI 引用指向 FAQ/文档叶子，并保证卡片带真 href。需要可抓摘要时，每张卡下补一句稳定说明并 SSR。\u003c/p>"},"faq":{"title":"AscendFAQ 文档 · HTML 抓取对照（部分）","leftUrl":"https://www.hiascend.com/document/detail/zh/AscendFAQ/overview/index.html","leftLabel":"…/AscendFAQ/overview/","leftShot":"assets/cases-html-ascend/faq.png","rightUrl":"https://www.hiascend.com/document/detail/zh/AscendFAQ/overview/index.html","rightLabel":"按楼层 HTML 摘录","floors":[{"id":"h1","idx":1,"kind":"in","name":"文档标题","badge":"正文可抓","desc":"「昇腾产品形态说明」写在 h1/正文，说明书标题可抓。","shotTop":12,"shotLeft":35,"html":"ximum-scale=1,user-scalable=no\"> \u003ctitle>昇腾产品形态说明-产品与技术常见问题-昇腾常见问题开发文档-昇腾社区\u003c/title> \u003cscript src=\"https://res.hc-cdn.com/CDP-Jssdk/2.6.4/web/uga-cdp-jssdk.window.js\">\u003c/script> \u003cscript src=\"https://res.wx.qq.com/open/js/jweixin-1.6.0.js\">\u003c/script> \u003cstyle>.protocol-dlg{z-index:9999;--dlg-max-height:auto!importa"},{"id":"body","idx":2,"kind":"in","name":"产品系列说明与表","badge":"正文可抓","desc":"产品系列说明与表1 型号等出现在源码文本，比营销壳可引用得多。","shotTop":28,"shotLeft":35,"html":"时支持训练和推理业务，各个组件支持的产品范围请参见组件对应文档的产品支持列表。 表1 昇腾产品系列产品系列 产品型号 Atlas 350 加速卡 Atlas 350 加速卡 Atlas A3 训练系列产品 Atlas 800T A3 超节点服务器Atlas 900 A3 Supe\"> \u003cmeta property=\"og:title\" content=\"昇腾产品形态说明-产品与技术常见问题-昇腾常见问题开发文档-昇腾社区\"> \u003cmeta property=\"og:description\" content=\"\u003c!DOCTYPE html> 昇腾产品形态说明 昇腾AI产品包含训练和推理产品，主要产品系列如表1所示，"},{"id":"chrome","idx":3,"kind":"peel","name":"站点导航壳","badge":"操作/导航","desc":"外层仍是社区导航，入库时应剥掉壳，只留文档正文。","shotTop":2,"shotLeft":20,"html":"\" href=\"/support\" target=\"_self\" title=\"支持与服务\">\u003c!--v-if-->\u003cspan class=\"o-link-main\">\u003c!--[-->支持与服务\u003c!--]-->\u003c/span>\u003c!--v-if-->\u003c/a>\u003c!---->\u003c/div>\u003c!--]-->\u003cdiv id=\"more-nav-ele\" class=\"o-nav-item\">\u003cdiv class=\"o-link o-link-normal o-link-auto item-link o-nav-item-link item-link o-nav-item-link\">\u003c!--v-if-->\u003cspan "},{"id":"partial","idx":4,"kind":"warn","name":"侧栏/续页与交互","badge":"部分可抓","desc":"文档站常见侧栏、折叠、续读依赖脚本；本页有正文但仍标「部分」。","shotTop":50,"shotLeft":15,"html":"div>\u003cscript type=\"application/json\" id=\"__NUXT_DATA__\" data-ssr=\"true\">[[\"ShallowReactive\",1],{\"data\":2,\"state\":1015,\"once\":1019,\"_errors\":1020,\"serverRendered\":10,\"path\":1022,\"pinia\":1023,\"ssrContext.isMobile\":13},[\"ShallowReactive\",3],{\"/ascendgateway/ascendservice/doc/product/display/mode\":4,\"/ascendgateway/a"}],"concludeLead":"\u003ch3>当前问题\u003c/h3>\u003cp class=\"d1-verdict\">\u003cspan class=\"tag tag-out\">HTML 档：部分\u003c/span> \u003cspan class=\"tag tag-in\">已有可引用正文\u003c/span>\u003c/p>\u003cp class=\"floor-hint\">绿 = 文档正文 · 灰 = 壳 · 橙 = 交互续读\u003c/p>","concludeGeo":"\u003cp class=\"conclude-geo\">\u003cstrong>建议：\u003c/strong>知识改造优先落在此类叶子文档：保 SSR 正文与真链接目录；侧栏/壳入库时剥掉。比先改营销首页更划算。\u003c/p>"},"hidevlab":{"title":"HiDevLab 在线开发 · HTML 抓取对照（缺失·站外）","leftUrl":"https://hidevlab.huawei.com/online-develop-intro?from=hiascend","leftLabel":"hidevlab.huawei.com/…","leftShot":"assets/cases-html-ascend/hidevlab.png","rightUrl":"https://hidevlab.huawei.com/online-develop-intro?from=hiascend","rightLabel":"按楼层 HTML 摘录","floors":[{"id":"empty","idx":1,"kind":"warn","name":"空壳 #app","badge":"正文缺失","desc":"首包几乎只有 \u003cdiv id='app'>\u003c/div>，无任何产品说明——典型 SPA 空壳。","shotTop":40,"shotLeft":50,"html":"ead> \u003cbody data-o-theme='k.light'> \u003cdiv id='app'>\u003c/div> \u003cscript nomodule>!function(){var e=document,t=e.createElement(\"script\");if(!(\"noModule\"in t)&&\"onbeforeload\"in t){var n=!1;e.addEventListener(\"beforeload\",(function(e){if(e.target===t)n=!0;else if(!e.target.hasAttribute(\"nomodule\")||!n)return;e.prev"},{"id":"title","idx":2,"kind":"warn","name":"仅有 title","badge":"元信息极薄","desc":"title 为 HiDevLab；除此之外静态几乎无可读中文。","shotTop":5,"shotLeft":50,"html":"rossorigin src=\"//r.huaweistatic.com/s//HiDevLabWeb/lst/static/polyfills-CepqtR5p.js\">\u003c/script> \u003cmeta charset='UTF-8' /> \u003clink rel='icon' href='//r.huaweistatic.com/s//HiDevLabWeb/lst/favicon.ico' /> \u003cmeta name='viewport' content='width=device-width, initial-scale=1.0' /> \u003ctitle>HiDevLab\u003c/title> "},{"id":"ext","idx":3,"kind":"peel","name":"站外域名","badge":"站外","desc":"不在 www.hiascend.com；社区 sitemap/llms 尺子量不到，属站外交付。","shotTop":10,"shotLeft":20,"html":"\u003c!-- host: hidevlab.huawei.com · 站外 · 空 app 壳 -->"}],"concludeLead":"\u003ch3>当前问题\u003c/h3>\u003cp class=\"d1-verdict\">\u003cspan class=\"tag tag-out\">HTML 档：缺失\u003c/span> \u003cspan class=\"tag tag-out\">站外空壳\u003c/span>\u003c/p>\u003cp class=\"floor-hint\">橙 = 无正文 · 灰 = 站外\u003c/p>","concludeGeo":"\u003cp class=\"conclude-geo\">\u003cstrong>建议：\u003c/strong>社区侧链出时附可抓摘要页（做什么、谁用、文档链接）；或接受「工具在站外、AI 不引用该壳」。不要把空 app 当知识源。\u003c/p>"},"download":{"title":"资源下载 /developer/download · HTML 抓取对照（部分）","leftUrl":"https://www.hiascend.com/developer/download","leftLabel":"…/developer/download","leftShot":"assets/cases-html-ascend/download.png","rightUrl":"https://www.hiascend.com/developer/download","rightLabel":"按楼层 HTML 摘录","floors":[{"id":"hero","idx":1,"kind":"in","name":"资源下载中心定位","badge":"正文可抓","desc":"「一站式资源聚合下载」等写在源码，页主题可抓。","shotTop":12,"shotLeft":30,"html":"v-261fcc7e>\u003c!--[-->\u003cdiv data-v-261fcc7e>一站式资源聚合下载\u003c/div>\u003c!--]-->\u003c/div>\u003cdiv class=\"bottom-bar\" data-v-261fcc7e>\u003c!--[-->\u003cdiv class=\"notice\" data-v-8c14c69e>\u003c!--[-->\u003cdiv class=\"floor-notice\" data-v-fdcdcdd1>\u003cdiv class=\"the-section-v3 design-v3 floor-notice-section\" data-v-fdcdcdd1>\u003c!--[-->\u003c!--[-->\u003c!---->\u003c!--]-->"},{"id":"tabs","idx":2,"kind":"in","name":"社区版 / 商用版说明","badge":"正文可抓","desc":"两版差异说明在 HTML 里，模型能读到下载策略梗概。","shotTop":22,"shotLeft":35,"html":"社区版和商业版下载，其中，社区版快速提供新特性的体验版，供开发者提前试用；商业版满足商用标准的稳定版本。\"> \u003cmeta property=\"og:title\" content=\"昇腾开发资源下载中心-昇腾社区\"> \u003cmeta property=\"og:description\" content=\"提供社区版和商业版下载，其中，社区版快速提供新特性的体验版，供开发者提前试用；商业版满足商用标准的稳定版本。\"> \u003cscript type=\"module\" src=\"/_static3/6CD_7pyE.js\" crossorigin>\u003c/script>\u003c/head>\u003cbody class=\"design-v3\">\u003c!"},{"id":"cards","idx":3,"kind":"in","name":"CANN 等资源卡","badge":"列表可抓","desc":"CANN 等卡片标题与短述在源码；具体包列表/版本矩阵可能仍动态。","shotTop":40,"shotLeft":25,"html":"style=\"\">\u003c!--[-->CANN作为华为昇腾AI基础软硬件平台的核心，以极致性能、极简开发、开放生态为目标\u003c!--]-->\u003c/div>\u003c!--[-->\u003c!--]-->\u003c/div>\u003c/div>\u003c!-- footer -->\u003c!--v-if-->\u003c/div>\u003c!--]-->\u003c/div>\u003c!--]-->\u003c/a>\u003c!--]-->\u003c/div>\u003cdiv class=\"o-col\" style=\"--col-flex:0 0 33.33333%;\" data-v-8c14c69e>\u003c!--[-->\u003ca href=\"/zh/developer/software/ai-frameworks/pytorch/download\" class"},{"id":"partial","idx":4,"kind":"warn","name":"包列表 / 筛选","badge":"部分可抓","desc":"版本筛选、完整包表常靠交互加载——故仍为「部分」。","shotTop":55,"shotLeft":50,"html":"div>\u003cscript type=\"application/json\" id=\"__NUXT_DATA__\" data-ssr=\"true\">[[\"ShallowReactive\",1],{\"data\":2,\"state\":617,\"once\":621,\"_errors\":622,\"serverRendered\":46,\"path\":193,\"pinia\":624,\"ssrContext.isMobile\":14},[\"ShallowReactive\",3],{\"/ascendgateway/ascendservice/menu/community?tenantCode=developer_sub_site\":4,\"w"}],"concludeLead":"\u003ch3>当前问题\u003c/h3>\u003cp class=\"d1-verdict\">\u003cspan class=\"tag tag-out\">HTML 档：部分\u003c/span> \u003cspan class=\"tag tag-in\">定位与分类可抓\u003c/span>\u003c/p>\u003cp class=\"floor-hint\">绿 = 说明/分类 · 橙 = 动态包表\u003c/p>","concludeGeo":"\u003cp class=\"conclude-geo\">\u003cstrong>建议：\u003c/strong>下载中心保分类说明 SSR；若 AI 需准确版本，另提供可抓的版本清单页或文档，不要只靠筛选器结果。\u003c/p>"},"edu":{"title":"教育科研平台 · HTML 抓取对照（部分·站外）","leftUrl":"https://edu.hicomputing.huawei.com/","leftLabel":"edu.hicomputing.huawei.com","leftShot":"assets/cases-html-ascend/edu.png","rightUrl":"https://edu.hicomputing.huawei.com/","rightLabel":"按楼层 HTML 摘录","floors":[{"id":"hero","idx":1,"kind":"in","name":"平台主张","badge":"正文可抓","desc":"「鲲鹏&昇腾教育科研平台」及定位句写在源码，主题可抓。","shotTop":15,"shotLeft":40,"html":"66c1>\u003cdiv class=\"title\" data-v-d57f66c1>鲲鹏与昇腾为教育科研领域提供全方位技术支持和生态资源，助力新一代科研工作者、教师、学生及创业者加速创新\u003c/div>\u003c/div>\u003cdiv class=\"plan-content\" data-v-d57f66c1>\u003cdiv class=\"o-row\" style=\"flex-wrap:wrap;--row-gap-x:var(--grid-column-gutter);--row-gap-y:var(--grid-column-gutter);\" data-v-d57f66c1>\u003c!--[-->\u003c!--[-->\u003cdiv class=\"o-col o-col-"},{"id":"roles","idx":2,"kind":"in","name":"角色卡（科研/教育/学生）","badge":"正文可抓","desc":"三类受众说明在 HTML 里，入口语义清楚。","shotTop":35,"shotLeft":25,"html":"57f66c1>鲲鹏与昇腾为教育科研领域提供全方位技术支持和生态资源，助力新一代科研工作者、教师、学生及创业者加速创新\u003c/div>\u003c/div>\u003cdiv class=\"plan-content\" data-v-d57f66c1>\u003cdiv class=\"o-row\" style=\"flex-wrap:wrap;--row-gap-x:var(--grid-column-gutter);--row-gap-y:var(--grid-column-gutter);\" data-v-d57f66c1>\u003c!--[-->\u003c!--[-->\u003cdiv class=\"o-col o-col-phone\" style=\"--c"},{"id":"cards","idx":3,"kind":"in","name":"方案卡短述","badge":"正文可抓","desc":"高性能计算等卡片有标题与短述；细节仍可能在二级页。","shotTop":55,"shotLeft":25,"html":"style=\"--card-title-max-row:1;\">\u003c!--[-->高性能计算基础软件\u003c!--]-->\u003c/div>\u003c!--]-->\u003c/div>\u003c!-- content -->\u003cdiv class=\"o-card-content\">\u003cdiv class=\"o-card-detail o-card-detail-limited\" style=\"--card-detail-max-row:2;\">\u003c!--[-->针对鲲鹏平台深度优化的高性能计算基础软件，实现一键部署和最优协同，使能高性能计算领域应用实现极致性能\u003c!--]-->\u003c/div>\u003c!--[-->\u003c!--]-->\u003c/div>\u003c/div>\u003c!-- f"},{"id":"ext","idx":4,"kind":"warn","name":"站外 + 部分动态","badge":"站外/部分","desc":"域名不在 www；社区表记站外。活动/列表类模块仍可能不全。","shotTop":5,"shotLeft":15,"html":"\u003c!-- host: edu.hicomputing.huawei.com · 站外 · Nuxt SSR 有正文但仍标部分 -->"}],"concludeLead":"\u003ch3>当前问题\u003c/h3>\u003cp class=\"d1-verdict\">\u003cspan class=\"tag tag-out\">HTML 档：部分\u003c/span> \u003cspan class=\"tag tag-muted\">站外 · 主张可抓\u003c/span>\u003c/p>\u003cp class=\"floor-hint\">绿 = 主张/角色 · 橙 = 站外边界\u003c/p>","concludeGeo":"\u003cp class=\"conclude-geo\">\u003cstrong>建议：\u003c/strong>社区生态入口保留真链接 + 一两句可抓摘要；深度内容以教育站为准。不把站外整站塞进 www 的 llms 目录。\u003c/p>"}}</script>
-<script>
-  let CASES = {};
-
-  const modal = document.getElementById('case-modal');
-  const closeBtn = document.getElementById('close-modal');
-  const concludeEl = document.getElementById('conclude');
-  const titleEl = document.getElementById('modal-title');
-  const btnLeft = document.getElementById('btn-left');
-  const btnRight = document.getElementById('btn-right');
-  const labelLeft = document.getElementById('label-left');
-  const labelRight = document.getElementById('label-right');
-  const shotLeft = document.getElementById('shot-left');
-  const shotMap = document.getElementById('shot-map');
-  const shotPane = document.getElementById('shot-pane');
-  const htmlSourceLink = document.getElementById('html-source-link');
-  const floorSrcList = document.getElementById('floor-src-list');
-  let activeFloorId = null;
-  let currentCase = null;
-  let dataReady = null;
-
-  function loadCases() {
-    if (!dataReady) {
-      dataReady = Promise.resolve().then(() => {
-        const el = document.getElementById('cases-data');
-        if (!el) throw new Error('cases-data missing');
-        CASES = JSON.parse(el.textContent);
-        return CASES;
-      });
-    }
-    return dataReady;
-  }
-
-  function esc(s) {
-    return String(s)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
-  }
-
-  function renderConclude(c) {
-    const floors = c.floors || [];
-    const items = floors.map((f) => `
-      <button type="button" class="floor-item ${f.kind}" data-floor="${esc(f.id)}">
-        <div class="idx">${f.idx}</div>
-        <div class="body">
-          <div class="name">${esc(f.name)}</div>
-          <p class="desc">${esc(f.desc)}</p>
-        </div>
-        <div class="right-meta"><span class="badge">${esc(f.badge)}</span></div>
-      </button>
-    `).join('');
-    concludeEl.innerHTML = `
-      ${c.concludeLead || ''}
-      <div class="floor-stack">${items}</div>
-      ${c.concludeGeo || ''}
-    `;
-    concludeEl.querySelectorAll('[data-floor]').forEach((el) => {
-      el.addEventListener('click', () => selectFloor(el.getAttribute('data-floor')));
-    });
-  }
-
-  function renderHotspots(c) {
-    shotMap.querySelectorAll('.shot-hotspot').forEach((n) => n.remove());
-    (c.floors || []).forEach((f) => {
-      if (f.shotTop == null) return;
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = ('shot-hotspot ' + (f.kind === 'in' ? '' : f.kind)).trim();
-      btn.textContent = String(f.idx);
-      btn.style.top = f.shotTop + '%';
-      btn.style.left = f.shotLeft + '%';
-      btn.title = f.name;
-      btn.setAttribute('data-floor', f.id);
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        selectFloor(f.id);
-      });
-      shotMap.appendChild(btn);
-    });
-  }
-
-  function renderFloorSources(c) {
-    floorSrcList.innerHTML = (c.floors || []).map((f) => `
-      <section class="floor-src ${f.kind}" data-floor="${esc(f.id)}" id="src-${esc(f.id)}">
-        <div class="floor-src-head">
-          <span>${f.idx} · ${esc(f.name)}</span>
-          <span class="badge">${esc(f.badge)}</span>
-        </div>
-        <pre>${esc(f.html)}</pre>
-      </section>
-    `).join('');
-    floorSrcList.querySelectorAll('[data-floor]').forEach((el) => {
-      el.addEventListener('click', () => selectFloor(el.getAttribute('data-floor')));
-    });
-  }
-
-  function selectFloor(id) {
-    activeFloorId = id;
-    const c = currentCase;
-    if (!c) return;
-
-    concludeEl.querySelectorAll('.floor-item').forEach((el) => {
-      el.classList.toggle('active', el.getAttribute('data-floor') === id);
-    });
-    shotMap.querySelectorAll('.shot-hotspot').forEach((el) => {
-      el.classList.toggle('active', el.getAttribute('data-floor') === id);
-    });
-    floorSrcList.querySelectorAll('.floor-src').forEach((el) => {
-      el.classList.toggle('active', el.getAttribute('data-floor') === id);
-    });
-
-    const src = document.getElementById('src-' + id);
-    if (src) src.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-
-    const pin = shotMap.querySelector('.shot-hotspot[data-floor="' + id + '"]');
-    if (pin && shotPane) {
-      const target = pin.offsetTop - shotPane.clientHeight * 0.25;
-      shotPane.scrollTo({ top: Math.max(0, target), behavior: 'smooth' });
-    } else {
-      const item = concludeEl.querySelector('.floor-item[data-floor="' + id + '"]');
-      if (item) item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
-  }
-
-  function openModal(key) {
-    loadCases()
-      .then(() => {
-        const c = CASES[key];
-        if (!c) {
-          console.error('unknown case', key);
-          return;
-        }
-        currentCase = c;
-        titleEl.textContent = c.title;
-        btnLeft.href = c.leftUrl;
-        btnRight.href = c.rightUrl || '#';
-        labelLeft.href = c.leftUrl;
-        labelLeft.textContent = c.leftLabel;
-        labelRight.href = c.rightUrl || '#';
-        labelRight.textContent = c.rightLabel;
-        htmlSourceLink.href = c.rightUrl || '#';
-        htmlSourceLink.textContent = c.leftUrl || '';
-        shotLeft.src = c.leftShot || '';
-        shotLeft.alt = (c.leftLabel || '人读页') + ' 截图';
-        renderConclude(c);
-        renderFloorSources(c);
-        const placePins = () => {
-          renderHotspots(c);
-          const first = (c.floors && c.floors[0] && c.floors[0].id) || null;
-          if (first) selectFloor(first);
-        };
-        if (shotLeft.complete && shotLeft.naturalHeight) placePins();
-        else shotLeft.onload = placePins;
-        modal.classList.add('open');
-        document.body.classList.add('modal-open');
-      })
-      .catch((err) => {
-        console.error(err);
-        alert('案例数据加载失败，请刷新重试。');
-      });
-  }
-
-  function closeModal() {
-    modal.classList.remove('open');
-    document.body.classList.remove('modal-open');
-    shotLeft.removeAttribute('src');
-    shotLeft.onload = null;
-    shotMap.querySelectorAll('.shot-hotspot').forEach((n) => n.remove());
-    floorSrcList.innerHTML = '';
-    concludeEl.innerHTML = '';
-    currentCase = null;
-    activeFloorId = null;
-  }
-
-  document.querySelectorAll('[data-case]').forEach((btn) => {
-    btn.addEventListener('click', () => openModal(btn.dataset.case));
-  });
-  closeBtn.addEventListener('click', closeModal);
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
-  });
-
-  // preload
-  loadCases().catch(() => {});
-</script>
 </div><!-- /.peer-main -->
 </div><!-- /.page-wrapper -->
 </body>

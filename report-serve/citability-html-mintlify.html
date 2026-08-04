@@ -182,7 +182,9 @@
     grid-template-columns: 1fr;
     gap: 14px;
   }
+  a.case-card { text-decoration: none; color: inherit; display: block; }
   .case-card {
+    position: relative;
     display: block;
     width: 100%;
     text-align: left;
@@ -199,12 +201,45 @@
     border-color: rgba(20, 118, 255, 0.35);
     background: rgba(20, 118, 255, 0.06);
   }
+  .case-card .case-idx {
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 18px;
+    color: var(--muted);
+    margin-bottom: 6px;
+    padding-right: 180px;
+    box-sizing: border-box;
+  }
   .case-card .meta {
+    position: absolute;
+    top: 16px;
+    right: 16px;
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 10px;
+    justify-content: flex-end;
+    gap: 6px;
+    margin: 0;
+    max-width: calc(100% - 32px);
   }
+  .case-card .chip {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: var(--accent-soft);
+    color: #0d4db8;
+    white-space: nowrap;
+  }
+  .case-card .chip.md.yes {
+    background: rgba(20, 118, 255, 0.12);
+    color: #1476FF;
+  }
+  .case-card .chip.md.no {
+    background: #f0f2f5;
+    color: #64748b;
+  }
+
   .chip {
     display: inline-block;
     font-size: 11px;
@@ -225,6 +260,16 @@
     margin: 0;
     color: var(--muted);
     font-size: 14px;
+  }
+  .case-card .comps {
+    margin: 10px 0 0;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--muted);
+  }
+  .case-card .comps strong {
+    color: var(--text);
+    font-weight: 600;
   }
   .case-card .cta {
     margin-top: 14px;
@@ -793,7 +838,7 @@
 
   .cases-block { margin-top: 40px; }
   .cases-block > h2 {
-    margin: 40px 0 8px;
+    margin: 40px 0 16px;
     font-size: 24px;
     line-height: 32px;
     font-weight: 650;
@@ -908,7 +953,7 @@
       <ul>
         <li><a href="mintlify.html">分析概览</a></li>
         <li><a href="mintlify-index.html">找的到（收录索引）</a></li>
-        <li><a href="citability-html-mintlify.html" class="active">读的懂（能抓 html）</a></li>
+        <li><a href="citability-html-mintlify.html" class="active">读的懂（html 可读）</a></li>
         <li><a href="citability-mintlify.html">读的顺（双轨交付）</a></li>
       </ul>
     </nav>
@@ -918,67 +963,69 @@
   <header class="hero">
     <h1>Mintlify（html）分析 · 可引用性·内容（html）分析</h1>
     <p class="sub">
-      聚焦一件事：大模型去抓网页 HTML 时，关键信息能不能读到、链接跟不跟得上、图和提示有没有字、广告会不会和正文搅在一起。
-      下列观点从 Mintlify 五类页面实测提炼，并给出可执行建议。
+      聚焦一件事：大模型去抓网页 HTML 时，关键信息能不能读到、链接跟不跟得上、图和提示有没有字。
+      下列规则从 Mintlify 五类页面（首页 / 定价 / 文档编辑器 / 博客 / Score）组件实测归纳。
     </p>
   </header>
 
-  <h2 class="block-title" id="principles-title">实施建议</h2>
+  <h2 class="block-title" id="principles-title">分析总结</h2>
   <section class="section" aria-labelledby="principles-title">
     <ul class="summary-points">
-      <li><strong>先看源码里有没有关键文字：</strong>不点按钮也能读到标题、正文、价格、步骤，才算「抓得到」。Mintlify 这几类页大体做到了。</li>
-      <li><strong>抓得到不等于适合整页当依据：</strong>口号、按钮、客户 Logo 也会进源码；若整页吞下去，容易把宣传当成事实。看友商：说明书在文档站，营销页不当文档知识源。</li>
-      <li><strong>链接要写在标签里：</strong>只有样子能点、源码没有地址，模型看得见标题却跟丢下一页——文档入口卡片上出现过。</li>
-      <li><strong>图和提示不能只靠「看起来像」：</strong>图缺说明、警告只靠颜色，人能懂、模型常丢一层。</li>
-      <li><strong>对昇腾：</strong>重要页先把关键文字写进 HTML；入库时剥掉壳和转化文案；营销/资讯保可读即可，说明书类页面再精修链接与图意。</li>
+      <li><strong>关键信息要落在静态文本里：</strong>标题、正文、价格、分数、步骤写进源码节点，不点按钮也能读到，才算抓得到。Mintlify 五类页的主文案大体如此；滚轮动效数字、只画在 canvas/图里的细节则抓不全。</li>
+      <li><strong>入口要看得见也跟得上：</strong>卡片和列表不仅要有标题，还要有真实 <code>href</code>。博客做到了；文档 Explore 卡只有样子能点，模型会跟丢。</li>
+      <li><strong>抓不全不等于都要改：</strong>关键可核对信息缺失、入口断链 → 有必要解决；封面/Logo/示意层缺字、但旁白已复述 → 可不解决。本模块只判源码能不能抓全该组件。</li>
     </ul>
   </section>
 
   <section class="cases-block" id="cases" aria-labelledby="cases-title">
     <h2 class="block-title" id="cases-title">实测案例</h2>
-    <p class="sub">每条先写抓取事实，再给建议。点击打开编号热区与分段源码。</p>
     <div class="case-grid">
 
-    <button type="button" class="case-card" data-case="home" aria-haspopup="dialog">
+    <a class="case-card" href="citability-html-mintlify-case.html?case=home"><div class="case-idx">案例 1</div>
       <div class="meta">
-        <span class="chip">介绍/营销</span><span class="chip alt">HTML 可抓</span>
+        <span class="chip md no">无 Markdown</span>
+        <span class="chip">介绍/营销</span>
       </div>
-      <h2 class="card-title">/</h2>
-      <p>抓取首页源码时，宣传口号、数字会和按钮文案一起出现；Mintlify 未把该页当作文档知识源，说明书在 <code>/docs</code>。<strong>建议：</strong>营销首页只做人读与搜索，不要整页当作 AI 的官方说明。</p>
-      <div class="cta">打开编号热区与楼层源码 →</div>
-    </button>
-    <button type="button" class="case-card" data-case="pricing" aria-haspopup="dialog">
+      <h2 class="card-title">首页 /</h2>
+      <p>Mintlify 官网首页：面向 AI 文档与知识平台的产品介绍与获客落地页。</p>
+      <div class="comps"><strong>覆盖 13 个组件</strong>：Agent traffic 数值缺少完整百分比、Agent traffic 链接、价值主张正文、首屏按钮链接、Hero 产品大图缺少图注、公司卡片、实时统计缺少完整数字、能力卖点缺少说明正文、案例照无图注、多帧案例文案、规模数字正文、客户证言网格、博客卡配图无 alt</div>
+      <div class="cta">查看组件对照 →</div></a>
+    <a class="case-card" href="citability-html-mintlify-case.html?case=pricing"><div class="case-idx">案例 2</div>
       <div class="meta">
-        <span class="chip">商业页</span><span class="chip alt">价目可抓</span>
+        <span class="chip md yes">有 Markdown</span>
+        <span class="chip">商业转化</span>
       </div>
-      <h2 class="card-title">/pricing</h2>
-      <p>价格、套餐说明写在源码里，模型能抓到；同页还有「联系销售」等按钮文案，和价目混在一起。<strong>建议：</strong>入库或引用时只保留价目与条款，转化按钮文案单独剥掉。</p>
-      <div class="cta">打开编号热区与楼层源码 →</div>
-    </button>
-    <button type="button" class="case-card" data-case="docs-editor" aria-haspopup="dialog">
+      <h2 class="card-title">定价 /pricing</h2>
+      <p>定价页：展示套餐、价格与商业条款，承接订阅与销售咨询。</p>
+      <div class="comps"><strong>覆盖 6 个组件</strong>：价目主张与副文、套餐价格缺少完整数字、功能对照与额度、FAQ 收起态问题、FAQ 答文缺少静态正文、案例 Logo 无 alt</div>
+      <div class="cta">查看组件对照 →</div></a>
+    <a class="case-card" href="citability-html-mintlify-case.html?case=docs-editor"><div class="case-idx">案例 3</div>
       <div class="meta">
-        <span class="chip">知识页</span><span class="chip alt">正文可抓</span>
+        <span class="chip md yes">有 Markdown</span>
+        <span class="chip">知识</span>
       </div>
-      <h2 class="card-title">/docs/editor</h2>
-      <p>说明书正文在源码里，抓取没问题；部分入口卡片没有真实链接地址，模型看得见标题却跟不到下一页。<strong>建议：</strong>入口做成带真实地址的链接，避免只有点击后才跳转。</p>
-      <div class="cta">打开编号热区与楼层源码 →</div>
-    </button>
-    <button type="button" class="case-card" data-case="blog" aria-haspopup="dialog">
+      <h2 class="card-title">文档编辑器 /docs/editor</h2>
+      <p>文档站说明书页：介绍编辑器能力与内容编写方式。</p>
+      <div class="comps"><strong>覆盖 5 个组件</strong>：标题与导读正文、提示说明、布局图无控件 alt、Explore 入口缺少真实链接、Related topics 相关链接</div>
+      <div class="cta">查看组件对照 →</div></a>
+    <a class="case-card" href="citability-html-mintlify-case.html?case=blog"><div class="case-idx">案例 4</div>
       <div class="meta">
-        <span class="chip">内容运营</span><span class="chip alt">列表可抓</span>
+        <span class="chip md no">无 Markdown</span>
+        <span class="chip">内容运营</span>
       </div>
-      <h2 class="card-title">/blog</h2>
-      <p>文章标题和链接能从源码抓到；页面定位是内容浏览，不是产品规格说明。<strong>建议：</strong>博客保网页可读即可，不要当作产品规格知识源。</p>
-      <div class="cta">打开编号热区与楼层源码 →</div>
-    </button>
-    <button type="button" class="case-card" data-case="score" aria-haspopup="dialog">
+      <h2 class="card-title">博客 /blog</h2>
+      <p>博客列表页：发布产品动态、公告与运营内容。</p>
+      <div class="comps"><strong>覆盖 4 个组件</strong>：精选标题与链接、精选配图无 alt、文章列表与链接、列表缩略图无 alt</div>
+      <div class="cta">查看组件对照 →</div></a>
+    <a class="case-card" href="citability-html-mintlify-case.html?case=score"><div class="case-idx">案例 5</div>
       <div class="meta">
-        <span class="chip">工具/营销</span><span class="chip alt">榜单可抓</span>
+        <span class="chip md yes">有 Markdown</span>
+        <span class="chip">介绍/营销</span>
       </div>
-      <h2 class="card-title">/score</h2>
-      <p>榜单分数在源码里能读到；同页上方还有宣传故事，和榜单数字处在不同楼层。<strong>建议：</strong>只取榜单等可核对楼层；宣传故事与主张不要和数字混进同一段依据。</p>
-      <div class="cta">打开编号热区与楼层源码 →</div>
-    </button>
+      <h2 class="card-title">Agent Score /score</h2>
+      <p>Agent Score 工具页：用榜单与案例展示文档对 Agent 的可读性评分。</p>
+      <div class="comps"><strong>覆盖 6 个组件</strong>：宣传主张正文、Leaderboard 榜单、叙事说明正文、可视化画布无文本说明、Insights 证言网格、页脚转化主张</div>
+      <div class="cta">查看组件对照 →</div></a>
 
     </div>
   </section>
@@ -986,237 +1033,6 @@
   <footer>昇腾社区 AI 亲和原则研究</footer>
 </div>
 
-<div class="modal" id="case-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-  <div class="modal-head">
-    <div class="modal-head-bar">
-      <h2 class="modal-title" id="modal-title"></h2>
-      <div class="modal-actions">
-        <a class="btn" id="btn-left" href="#" target="_blank" rel="noopener">打开左页</a>
-        <a class="btn" id="btn-right" href="#" target="_blank" rel="noopener">打开右页</a>
-        <button type="button" class="btn close" id="close-modal">关闭</button>
-      </div>
-    </div>
-    <div class="conclude" id="conclude"></div>
-  </div>
-
-  <div class="modal-split">
-    <div class="pane-frame-wrap">
-      <div class="pane-label">
-        <span>左侧 · 人读截图（编号热区）</span>
-        <a id="label-left" href="#" target="_blank" rel="noopener"></a>
-      </div>
-      <div class="pane-frame pane-frame--shot" id="shot-pane">
-        <div class="shot-map" id="shot-map">
-          <img id="shot-left" class="pane-shot" alt="人读页截图" />
-        </div>
-      </div>
-    </div>
-    <div class="pane-frame-wrap">
-      <div class="pane-label">
-        <span>右侧 · 按楼层的 HTML 摘录</span>
-        <a id="label-right" href="#" target="_blank" rel="noopener"></a>
-      </div>
-      <div class="pane-frame pane-frame--md">
-        <div class="md-embed" id="html-embed">
-          <div class="fb-banner">
-            点上方楼层或左图编号，右侧跳到对应源码段 ·
-            <a id="html-source-link" href="#" target="_blank" rel="noopener"></a>
-          </div>
-          <div class="floor-src-list" id="floor-src-list"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<script type="application/json" id="cases-data">{"home": {"title": "首页 / · HTML 抓取对照", "leftUrl": "https://www.mintlify.com/", "leftLabel": "mintlify.com/", "leftShot": "assets/cases-html/home.png", "rightUrl": "https://www.mintlify.com/", "rightLabel": "按楼层 HTML 摘录", "floors": [{"id": "nav", "idx": 1, "kind": "peel", "name": "顶栏 · Get started / 转化 CTA", "desc": "源码里有导航和「开始使用」等按钮文案；跟人读操作有关，不是产品说明正文。", "badge": "操作/按钮", "shotTop": 1.2, "shotLeft": 88, "html": " href=\"https://app.mintlify.com/signup\">Get started\u003c/a>\u003ca referrerPolicy=\"no-referrer\" class=\"inline-flex shrink-0 items-center justify-center gap-1.5 rounded-[4px] border border-border-sub bg-background-main py-3 pl-3 pr-4 text-sm/4 font-medium text-text-main outline-offset-2 transition-colors duration-100 hover:bg-ba"}, {"id": "hero", "idx": 2, "kind": "in", "name": "Hero 主张与副文案", "desc": "「knowledge infrastructure…」等宣传标题和副文写在源码里，不点按钮也能读到。", "badge": "正文可抓", "shotTop": 8, "shotLeft": 6, "html": "3.125rem]/[3.25rem] lg:tracking-[-2px]\">The knowledge infrastructure agents build on\u003c/h1>\u003cp class=\"text-lg/6 text-text-sub\">Self-updating documentation for\u003c!-- --> \u003cspan class=\"font-medium text-text-main\">startups\u003c/span>,\u003c!-- --> \u003cspan class=\"font-medium text-text-main\">enterprises\u003c/span>, and\u003c!-- --> \u003cspan class=\"font-medium text-text-main\">agents\u003c/span>.\u003c/p>\u003c/div>\u003cdiv class=\"col-span-full flex flex-wrap items-start gap-2 lg:col-start-1 lg:col-end-9 lg:ro"}, {"id": "hero-img", "idx": 3, "kind": "warn", "name": "Hero 产品大图 / 仪表盘截图", "desc": "大图的说明文字为空，且被隐藏；图上 Quickstart 等字，抓源码时读不到。", "badge": "图缺说明", "shotTop": 10, "shotLeft": 62, "html": "alt=\"\" aria-hidden=\"true\" decoding=\"async\" data-nimg=\"fill\" class=\"pointer-events-none object-contain object-top dark:hidden\" style=\"position:absolute;height:100%;width:100%;left:0;top:0;right:0;bottom:0;color:transparen"}, {"id": "logo", "idx": 4, "kind": "peel", "name": "客户 Logo 墙", "desc": "客户品牌以图片出现，部分有名称说明；属于信任背书，不是规格条文。", "badge": "证明/背书", "shotTop": 22, "shotLeft": 8, "html": ",000+\u003c/strong> of the world&#x27;s most ambitious companies building for agents.\u003c/h2>\u003ca data-slot=\"button\" class=\"group inline-flex shrink-0 cursor-pointer items-center justify-center gap-1 whitespace-nowrap rounded-[4px] border border-transparent pl-4 pr-3 font-medium text-sm/4 outline-offset-2 transition-[color,background-color,border-color] duration-100 focus-visible:outline-2 focus-visible:outline-brand [&amp;_sv"}, {"id": "features", "idx": 5, "kind": "in", "name": "功能卡文案（One platform…）", "desc": "各功能卡标题写在源码里；内容偏卖点口号，信息较薄。", "badge": "正文可抓", "shotTop": 36, "shotLeft": 8, "html": "und-primary lg:text-[2.25rem]/[2.5rem]\">One platform for your entire knowledge stack.\u003cspan class=\"block text-foreground-tertiary\">Agents that keep work moving 24/7.\u003c/span>\u003c/h2>\u003c/div>\u003c/div>\u003cdiv class=\"shrink-0 md:pb-1\">\u003ca data-slot=\"button\" class=\"group inline-flex shrink-0 cursor-pointer items-center justify-center gap-1 whitespace-nowrap rounded-[4px] border border-transparent pl-4 pr-3 font-medium text-sm/4 outline-offset-2 transition-[color,background-c"}, {"id": "case", "idx": 6, "kind": "in", "name": "案例与规模数字", "desc": "Anthropic 故事和 300M+ / 2B+ / 99.99% 等数字在源码文本里，能抓到，属于传播证明。", "badge": "正文可抓", "shotTop": 58, "shotLeft": 8, "html": "g-[-0.72px] whitespace-nowrap text-foreground-primary tabular-nums lining-nums\">300M+\u003c/p>\u003cp class=\"text-base/6 font-normal text-foreground-secondary\">visitors in the past year\u003c/p>\u003c/div>\u003c/div>\u003cdiv class=\"flex flex-col gap-6\">\u003cdiv class=\"flex flex-col gap-2\">\u003cp class=\"text-[2.25rem]/[2.5rem] font-normal tracking-[-0.72px] whitespace-nowrap text-foreground-primary tabular-nums lining-nums\">2B+\u003c/p>\u003cp class=\"text-base/6 font-normal text-foreground-secondary\">agents in the past year\u003c/p>\u003c/div>\u003c/div>\u003cdi"}], "concludeLead": "\u003ch3>组件可读性结论\u003c/h3>\u003cp class=\"d1-verdict\">\u003cspan class=\"tag tag-in\">关键文字可抓\u003c/span> \u003cspan class=\"tag tag-muted\">宣传与按钮混在同页\u003c/span>\u003c/p>\u003cp class=\"floor-hint\">绿 = 正文可抓 · 橙 = 需改造 · 灰 = 操作/背书噪声\u003c/p>", "concludeGeo": "\u003cp class=\"conclude-geo\">\u003cstrong>建议：\u003c/strong>营销首页只做人读与搜索；不要整页当作 AI 的官方说明。说明书在文档站。\u003c/p>"}, "pricing": {"title": "定价 /pricing · HTML 抓取对照", "leftUrl": "https://www.mintlify.com/pricing", "leftLabel": "mintlify.com/pricing", "leftShot": "assets/cases-html/pricing.png", "rightUrl": "https://www.mintlify.com/pricing", "rightLabel": "按楼层 HTML 摘录", "floors": [{"id": "cta", "idx": 1, "kind": "peel", "name": "顶栏 · 开始使用等按钮", "badge": "操作/按钮", "desc": "源码里有「开始使用」等按钮文案，方便人注册转化，不是价目正文。", "html": "-primary text-base/[150%] text-balance\">Get started for free, your first month of credits on us.\u003c/p>\u003cp class=\"text-center text-foreground-primary text-base/[150%]\">No credit card required.\u003c/p>\u003c/div>\u003c/div>\u003cdiv class=\"w-full border-t border-border-line\">\u003cdiv class=\"flex flex-col gap-4 px-3 py-6 md:px-", "shotTop": 1.5, "shotLeft": 88}, {"id": "plans", "idx": 2, "kind": "in", "name": "套餐价目（Starter / Pro / Enterprise）", "badge": "正文可抓", "desc": "Starter / Pro / Enterprise 等套餐名和价格写在源码里，不点按钮也能读到。", "html": "ground-primary text-base/6 font-medium\">Starter\u003c/p>\u003c/div>\u003c/div>\u003cdiv class=\"flex flex-col gap-1\">\u003cp class=\"font-serif text-foreground-primary text-[36px] font-normal leading-[40px] tracking-[-0.72px]\">\u003cspan>$\u003c/span>\u003cspan class=\"inline-flex h-[1em] items-center leading-[1em] tabular-nums\">\u003cspan class=\"relative inline-flex h-[1em] overflow-hidden leading-[1em]\">\u003cspan class=\"flex flex-col transition-transform duration-700 ease-[var(--ease-out-soft)] motion-reduce:transition-none\" style=\"tr", "shotTop": 12, "shotLeft": 8}, {"id": "credits", "idx": 3, "kind": "in", "name": "计费与额度说明", "badge": "正文可抓", "desc": "计费、额度等说明写在源码文本里，模型能直接抓到。", "html": "econdary text-sm/5 tracking-[-0.084px]\">Credits\u003c/span>\u003c/div>\u003cdiv class=\"py-3 min-md:px-5 justify-center pl-5 border-b border-border-primary flex items-center [&amp;&gt;svg]:text-foreground-primary [&amp;&gt;svg]:size-3 max-md:data-[selected=false]:hidden\" data-plan=\"Starter\" data-selected=\"true\">\u003c/div>\u003cdiv class=\"py-3 min-md:px-5 justify-center pl-5 border-b border-border-primary flex items-center [&amp;&gt;svg]:text-foreground-primary ", "shotTop": 38, "shotLeft": 8}, {"id": "contact", "idx": 4, "kind": "peel", "name": "联系销售 / 转化引导", "badge": "操作/按钮", "desc": "「联系我们 / 销售」类文案与价目出现在同一页，属于转化引导。", "html": "rmal leading-[40px] tracking-[-0.72px]\">Contact us\u003c/p>\u003cp class=\"text-foreground-secondary text-base/6\">For scaling and global teams\u003c/p>\u003c/div>\u003cdiv class=\"h-px w-full bg-border-primary\">\u003c/div>\u003cdiv class=\"flex flex-col gap-3\">\u003cdiv class=\"flex items-start gap-2\">\u003cspan class=\"flex h-[1lh] shrink-0 items-center text-base/6\">", "shotTop": 18, "shotLeft": 70}, {"id": "mdnote", "idx": 5, "kind": "warn", "name": "价目与按钮文案同页", "badge": "注意拆分", "desc": "价目能抓到，但转化按钮文案和价目混在同一页源码里，引用时容易搅在一起。", "html": "\u003c!-- 有 https://www.mintlify.com/pricing.md ；未进 docs/llms.txt。 -->", "shotTop": null, "shotLeft": null}], "concludeLead": "\u003ch3>组件可读性结论\u003c/h3>\u003cp class=\"d1-verdict\">\u003cspan class=\"tag tag-in\">价目可抓\u003c/span> \u003cspan class=\"tag tag-out\">同页有转化文案\u003c/span>\u003c/p>\u003cp class=\"floor-hint\">绿 = 价目/条款 · 灰 = 按钮 · 橙 = 引用时注意拆分\u003c/p>", "concludeGeo": "\u003cp class=\"conclude-geo\">\u003cstrong>建议：\u003c/strong>入库或引用时只保留价目与条款，转化按钮文案单独剥掉。\u003c/p>"}, "docs-editor": {"title": "文档 /docs/editor · HTML 抓取对照", "leftUrl": "https://www.mintlify.com/docs/editor", "leftLabel": "mintlify.com/docs/editor", "leftShot": "assets/cases-html/docs-editor.png", "rightUrl": "https://www.mintlify.com/docs/editor", "rightLabel": "按楼层 HTML 摘录", "floors": [{"id": "chrome", "idx": 1, "kind": "peel", "name": "顶栏 / 侧栏 / 搜索", "badge": "操作/导航", "desc": "导航、侧栏、搜索写在源码里，方便人找页，不是说明书正文。", "html": "anywhere] text-[1.875rem] leading-[2.25rem] tracking-[-0.03125rem] font-medium\">Editor overview\u003c/h1>\u003cdiv id=\"page-context-menu\" class=\"items-center shrink-0 min-w-[156px] justify-end ml-auto hidden @[", "shotTop": 1.2, "shotLeft": 8}, {"id": "body", "idx": 2, "kind": "in", "name": "标题与操作步骤", "badge": "正文可抓", "desc": "「Editor overview」标题和操作步骤写在正文源码里，不点按钮也能读到。", "html": "em] tracking-[-0.03125rem] font-medium\">Editor overview\u003c/h1>\u003cdiv id=\"page-context-menu\" class=\"items-center shrink-0 min-w-[156px] justify-end ml-auto hidden @[520px]/page-header:flex\">\u003cbutton id=\"page-context-menu-button\" class=\"rounded-l-xl px-3 text-gray-700 dark:text-gray-300 py-1.5 border border-gray-200 dark:border-white/[0.07] bg-background-light dark:bg-background-dark hover:bg-gray-600/5 dark:hover:bg-gray-200/5 border-r-0\" aria-label=\"Copy page\">\u003cdiv class=\"flex items-center ", "shotTop": 8, "shotLeft": 35}, {"id": "tip", "idx": 3, "kind": "in", "name": "提示说明（Tip）", "badge": "正文可抓", "desc": "提示块带有文字（含 Reset 等），写在源码里，不只靠颜色区分。", "html": "n> \u003cdiv role=\"note\" aria-label=\"Tip\" class=\"callout my-4 px-5 py-4 overflow-hidden rounded-2xl flex gap-3 border border-green-200 bg-green-50 dark:border-green-900 dark:bg-green-600/20 [&amp;_[data-component-part=&#x27;callout-icon&#x27;]]:mt-px\" data-callout-type=\"tip\">\u003cdiv class=\"mt-0.5 w-4\" data-component-part=\"callout-icon\">\u003c/div>\u003cdiv class=\"text-sm prose dark:prose-invert min-w-0 w-full [&amp;_kbd]:bg-background", "shotTop": 28, "shotLeft": 35}, {"id": "layout-img", "idx": 4, "kind": "warn", "name": "布局示意图", "badge": "图意偏弱", "desc": "图有简要说明，但缺少更细的图意描述；复杂界面单靠短说明不够。", "html": "\u003cimg data-path=\"images/editor/editor-layout-light.png\" src=\"https://mintcdn.com/mintlify/yLHAwTnwTq05X1uS/images/editor/editor-layout-light.png?fit=max&amp;auto=format&amp;n=yLHAwTnwTq05X1uS&amp;q=85&amp;s=c77d11b14d15c8853724fb67afa2af13\" alt=\"Screenshot of the editor showing the branch selector, ask agent button, publish button, navigation sidebar, and top bar.\" class=\"object-contain block dark:hidden\" width=\"2537\" height=\"420\" decoding=\"async\" sizes=\"(max-width: 1024px) 100vw, 696px\" srcSet=\"https://mintcdn.com/mintlify/yLHAwTnwTq05X1uS/images/editor/editor-layout-light.png?w=280&amp;fit=max&amp;auto=format&amp;n=yLHAwTnwTq05X1uS&amp;q=85&amp;s=b4212aa60b0b08f4f54f1f1dc88246be 280w, https://mintcdn.com/mintlify/yLHAwTnwTq05X1uS/images/editor/editor-layout-light.png?w=560&amp;fit=max&amp;auto=format&amp;n=yLHAwTnwTq05X1uS&amp;q=85&amp;s=37053d09271e01eadbf72b4a86b14f48 560w, https://mintcdn.com/mintlify/yLHAwTnwTq05X1uS/images/editor/editor-layout-light.png?w=840&amp;fit=max&amp;auto=format&amp;n=yLHAwTnwTq05X1uS&amp;q=85&amp;s=08e6ed0039557e88378b4143a6bf684a 840w, https://mintcdn.com/mintlify/yLHAwTnwTq05X1uS/images/editor/editor-layout-light.png?w=1100&amp;fit=max&amp;auto=format&amp;n=yLHAwTnwTq05X1uS&amp;q=85&amp;s=5d92e995b90548014965090a1a28ff36 1100w, https://mintcdn.com/mintlify/yLHAwTnwTq05X1uS/images/editor/editor-layout-light.png?w=1650&amp;fit=max&amp;auto=format&amp;n=yLHAwTnwTq05X1uS&amp;q=85&amp;s=ba000c8adf0f9c34ac21ea6c1e73dc89 1650w, https://mintcdn.com/mintlify/yLHAwTnwTq05X1uS/images/editor/editor-layout-light.png?w=2500&amp;fit=max&amp;auto=format&amp;n=yLHAwTnwTq05X1uS&amp;q=85&amp;s=ddf82eacaa775f3b73d77eb9d358833c 2500w\" data-optimize=\"true\" style=\"aspect-ratio:2537 / 420\"/>", "shotTop": 42, "shotLeft": 40}, {"id": "cards", "idx": 5, "kind": "warn", "name": "Explore 入口卡片", "badge": "缺真链接", "desc": "卡片上能看到标题和摘要，但不少没有真实链接地址，模型看得见却跟不到下一页。", "html": "\u003cdiv class=\"card block font-normal group relative my-2 ring-2 ring-transparent rounded-2xl bg-white dark:bg-background-dark border border-gray-950/10 dark:border-white/10 overflow-hidden w-full cursor-pointer hover:border-primary! dark:hover:border-primary-light!\" aria-labelledby=\"_R_2lbddbsnlhisnisnpfiulb_\" tabindex=\"0\" role=\"link\">\u003cdiv class=\"px-6 py-5 relative flex items-center gap-x-4\" data-component-part=\"card-content-container\">\u003cdiv class=\"", "shotTop": 58, "shotLeft": 35}], "concludeLead": "\u003ch3>组件可读性结论\u003c/h3>\u003cp class=\"d1-verdict\">\u003cspan class=\"tag tag-in\">说明书正文可抓\u003c/span> \u003cspan class=\"tag tag-out\">部分入口缺真链接\u003c/span>\u003c/p>\u003cp class=\"floor-hint\">绿 = 正文 · 橙 = 链接/图意 · 灰 = 导航壳\u003c/p>", "concludeGeo": "\u003cp class=\"conclude-geo\">\u003cstrong>建议：\u003c/strong>入口做成带真实地址的链接，避免只有点击后才跳转；图下补清说明。\u003c/p>"}, "blog": {"title": "博客 /blog · HTML 抓取对照", "leftUrl": "https://www.mintlify.com/blog", "leftLabel": "mintlify.com/blog", "leftShot": "assets/cases-html/blog.png", "rightUrl": "https://www.mintlify.com/blog", "rightLabel": "按楼层 HTML 摘录", "floors": [{"id": "nav", "idx": 1, "kind": "peel", "name": "顶栏 · 转化按钮", "badge": "操作/按钮", "desc": "顶栏和注册/开始类按钮文案写在源码里，服务浏览与转化。", "html": " href=\"https://app.mintlify.com/signup\">Get started\u003c/a>\u003c/div>\u003c/div>\u003c/div>\u003c/section>\u003c/main>", "shotTop": 1.2, "shotLeft": 88}, {"id": "hero", "idx": 2, "kind": "in", "name": "页头 / 精选标题", "badge": "正文可抓", "desc": "博客页头或精选标题写在源码里，不点按钮也能读到。", "html": "border-border-line\">\u003ch1 class=\"sr-only\">Blog\u003c/h1>\u003cdiv class=\"px-7 py-10 lg:px-10\">\u003cdiv class=\"group relative flex h-[420px] items-end overflow-hidden rounded-[6px] p-8 after:pointer-events-none after:absolute after:inset-0 after:rounded-[6px] after:border after:border-white-5 after:content-[&#x27;&#x27;] lg:h-[480px]\">\u003cimg alt=\"\" loading=\"lazy\" decoding=\"async\" data-nimg=\"fill\" class=\"object-cover\" style=\"position:ab", "shotTop": 8, "shotLeft": 8}, {"id": "list", "idx": 3, "kind": "in", "name": "文章列表与链接", "badge": "正文可抓", "desc": "文章标题和跳转地址写在源码里，列表可以被完整抓取。", "html": "r:content-[&#x27;&#x27;] focus-visible:outline-solid\" href=\"/blog/state-of-docs-traffic\">The state of docs traffic: a 2026 midyear report\u003c/a>\u003c/h2>\u003cp class=\"text-base/6 text-white/70\">Agents now account for 66% of measured web-traffic across docs powered by Mintlify, with July logging over 213 million agent web requests and 105 million human page loads as the month comes to a close.\u003c/p>\u003c/div>\u003cdiv class=\"flex items-center gap-6\">\u003cdiv clas", "shotTop": 28, "shotLeft": 8}, {"id": "cta", "idx": 4, "kind": "peel", "name": "页内运营 / 转化位", "badge": "操作/噪声", "desc": "页内还有运营或转化文案，和文章列表出现在同一页源码里。", "html": "vents-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 bg-background-invert text-text-invert hover:bg-background-invert/90 py-3 pl-5\" href=\"https://app.mintlify.com/signup\">Get started\u003c/a>\u003c/div>\u003c/div>\u003c/div>\u003c/section>\u003c/main>", "shotTop": 70, "shotLeft": 20}], "concludeLead": "\u003ch3>组件可读性结论\u003c/h3>\u003cp class=\"d1-verdict\">\u003cspan class=\"tag tag-in\">列表可抓\u003c/span> \u003cspan class=\"tag tag-muted\">定位是内容浏览\u003c/span>\u003c/p>\u003cp class=\"floor-hint\">绿 = 文章列表 · 灰 = 按钮/运营\u003c/p>", "concludeGeo": "\u003cp class=\"conclude-geo\">\u003cstrong>建议：\u003c/strong>博客保网页可读即可，不要当作产品规格知识源。\u003c/p>"}, "score": {"title": "Score /score · HTML 抓取对照", "leftUrl": "https://www.mintlify.com/score", "leftLabel": "mintlify.com/score", "leftShot": "assets/cases-html/score.png", "rightUrl": "https://www.mintlify.com/score", "rightLabel": "按楼层 HTML 摘录", "floors": [{"id": "hero", "idx": 1, "kind": "peel", "name": "首屏主张与按钮", "badge": "宣传/按钮", "desc": "页首宣传口号和行动按钮写在源码里，偏营销话术。", "html": "e=\"next-size-adjust\" content=\"\"/>\u003ctitle>Agent Score\u003c/title>\u003cmeta name=\"description\" content=\"Explore agent scores and the signals that make documentation usable by AI agents.\"/>\u003cmeta property=\"og:title\" content=\"Agent Score\"/>\u003cmeta property=\"og:description\" content=\"Explore agent scores and the signals that make documentation usable by AI agents.\"/>\u003cmeta property=\"og:site_name\" content=\"Mintlify\"/>\u003cmeta property=\"og:", "shotTop": 6, "shotLeft": 10}, {"id": "why", "idx": 2, "kind": "peel", "name": "Why it matters 叙事", "badge": "宣传叙事", "desc": "「Why it matters」等段落写在源码里，是说服性叙事，不是可核对的榜单数字。", "html": "y-default\" href=\"/score#why-it-matters\">Why it matters\u003c/a>\u003c/nav>\u003cdiv class=\"flex items-center justify-end gap-2\">\u003cbutton type=\"button\" tabindex=\"0\" aria-haspopup=\"menu\" id=\"base-ui-_R_6slflb_\" class=\"inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-[90px] font-mono uppercase leading-[1.4] tracking-[-0.1px] transition-opacity duration-100 hover:opacity-85 focus-visible:outline-hidden focus-visibl", "shotTop": 22, "shotLeft": 10}, {"id": "board", "idx": 3, "kind": "in", "name": "Leaderboard 榜单", "badge": "正文可抓", "desc": "榜单里的站点、分数等信息写在源码文本里，可以核对抓取。", "html": "gray-default\" href=\"/score#leaderboard\">Leaderboard\u003c/a>\u003ca class=\"cursor-pointer rounded-[90px] px-2.5 py-1.5 font-mono text-[13px] font-medium uppercase leading-[1.4] tracking-[-0.1px] text-foreground-gray-subtle transition-colors duration-75 hover:text-foreground-gray-default focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-foreground-gray-default focus-visible:ring-offset-2 focus-visible:ring-offset-background-gray-default\" href=\"/score#why-it-matters\">Why it matt", "shotTop": 40, "shotLeft": 10}, {"id": "mdnote", "idx": 4, "kind": "warn", "name": "宣传故事与榜单同页", "badge": "注意拆分", "desc": "同页上方是宣传故事，下方是榜单数字，抓取时容易混进同一段依据。", "html": "\u003c!-- 有 https://www.mintlify.com/score.md ；未进 www sitemap / llms。 -->", "shotTop": null, "shotLeft": null}], "concludeLead": "\u003ch3>组件可读性结论\u003c/h3>\u003cp class=\"d1-verdict\">\u003cspan class=\"tag tag-in\">榜单可抓\u003c/span> \u003cspan class=\"tag tag-out\">同页有宣传故事\u003c/span>\u003c/p>\u003cp class=\"floor-hint\">绿 = 榜单 · 灰 = 宣传 · 橙 = 引用时拆分\u003c/p>", "concludeGeo": "\u003cp class=\"conclude-geo\">\u003cstrong>建议：\u003c/strong>只取榜单等可核对楼层；宣传故事与主张不要和数字混进同一段依据。\u003c/p>"}}</script>
-<script>
-  let CASES = {};
-
-  const modal = document.getElementById('case-modal');
-  const closeBtn = document.getElementById('close-modal');
-  const concludeEl = document.getElementById('conclude');
-  const titleEl = document.getElementById('modal-title');
-  const btnLeft = document.getElementById('btn-left');
-  const btnRight = document.getElementById('btn-right');
-  const labelLeft = document.getElementById('label-left');
-  const labelRight = document.getElementById('label-right');
-  const shotLeft = document.getElementById('shot-left');
-  const shotMap = document.getElementById('shot-map');
-  const shotPane = document.getElementById('shot-pane');
-  const htmlSourceLink = document.getElementById('html-source-link');
-  const floorSrcList = document.getElementById('floor-src-list');
-  let activeFloorId = null;
-  let currentCase = null;
-  let dataReady = null;
-
-  function loadCases() {
-    if (!dataReady) {
-      dataReady = Promise.resolve().then(() => {
-        const el = document.getElementById('cases-data');
-        if (!el) throw new Error('cases-data missing');
-        CASES = JSON.parse(el.textContent);
-        return CASES;
-      });
-    }
-    return dataReady;
-  }
-
-  function esc(s) {
-    return String(s)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
-  }
-
-  function renderConclude(c) {
-    const floors = c.floors || [];
-    const items = floors.map((f) => `
-      <button type="button" class="floor-item ${f.kind}" data-floor="${esc(f.id)}">
-        <div class="idx">${f.idx}</div>
-        <div class="body">
-          <div class="name">${esc(f.name)}</div>
-          <p class="desc">${esc(f.desc)}</p>
-        </div>
-        <div class="right-meta"><span class="badge">${esc(f.badge)}</span></div>
-      </button>
-    `).join('');
-    concludeEl.innerHTML = `
-      ${c.concludeLead || ''}
-      <div class="floor-stack">${items}</div>
-      ${c.concludeGeo || ''}
-    `;
-    concludeEl.querySelectorAll('[data-floor]').forEach((el) => {
-      el.addEventListener('click', () => selectFloor(el.getAttribute('data-floor')));
-    });
-  }
-
-  function renderHotspots(c) {
-    shotMap.querySelectorAll('.shot-hotspot').forEach((n) => n.remove());
-    (c.floors || []).forEach((f) => {
-      if (f.shotTop == null) return;
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = ('shot-hotspot ' + (f.kind === 'in' ? '' : f.kind)).trim();
-      btn.textContent = String(f.idx);
-      btn.style.top = f.shotTop + '%';
-      btn.style.left = f.shotLeft + '%';
-      btn.title = f.name;
-      btn.setAttribute('data-floor', f.id);
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        selectFloor(f.id);
-      });
-      shotMap.appendChild(btn);
-    });
-  }
-
-  function renderFloorSources(c) {
-    floorSrcList.innerHTML = (c.floors || []).map((f) => `
-      <section class="floor-src ${f.kind}" data-floor="${esc(f.id)}" id="src-${esc(f.id)}">
-        <div class="floor-src-head">
-          <span>${f.idx} · ${esc(f.name)}</span>
-          <span class="badge">${esc(f.badge)}</span>
-        </div>
-        <pre>${esc(f.html)}</pre>
-      </section>
-    `).join('');
-    floorSrcList.querySelectorAll('[data-floor]').forEach((el) => {
-      el.addEventListener('click', () => selectFloor(el.getAttribute('data-floor')));
-    });
-  }
-
-  function selectFloor(id) {
-    activeFloorId = id;
-    const c = currentCase;
-    if (!c) return;
-
-    concludeEl.querySelectorAll('.floor-item').forEach((el) => {
-      el.classList.toggle('active', el.getAttribute('data-floor') === id);
-    });
-    shotMap.querySelectorAll('.shot-hotspot').forEach((el) => {
-      el.classList.toggle('active', el.getAttribute('data-floor') === id);
-    });
-    floorSrcList.querySelectorAll('.floor-src').forEach((el) => {
-      el.classList.toggle('active', el.getAttribute('data-floor') === id);
-    });
-
-    const src = document.getElementById('src-' + id);
-    if (src) src.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-
-    const pin = shotMap.querySelector('.shot-hotspot[data-floor="' + id + '"]');
-    if (pin && shotPane) {
-      const target = pin.offsetTop - shotPane.clientHeight * 0.25;
-      shotPane.scrollTo({ top: Math.max(0, target), behavior: 'smooth' });
-    } else {
-      const item = concludeEl.querySelector('.floor-item[data-floor="' + id + '"]');
-      if (item) item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
-  }
-
-  function openModal(key) {
-    loadCases()
-      .then(() => {
-        const c = CASES[key];
-        if (!c) {
-          console.error('unknown case', key);
-          return;
-        }
-        currentCase = c;
-        titleEl.textContent = c.title;
-        btnLeft.href = c.leftUrl;
-        btnRight.href = c.rightUrl || '#';
-        labelLeft.href = c.leftUrl;
-        labelLeft.textContent = c.leftLabel;
-        labelRight.href = c.rightUrl || '#';
-        labelRight.textContent = c.rightLabel;
-        htmlSourceLink.href = c.rightUrl || '#';
-        htmlSourceLink.textContent = c.leftUrl || '';
-        shotLeft.src = c.leftShot || '';
-        shotLeft.alt = (c.leftLabel || '人读页') + ' 截图';
-        renderConclude(c);
-        renderFloorSources(c);
-        const placePins = () => {
-          renderHotspots(c);
-          const first = (c.floors && c.floors[0] && c.floors[0].id) || null;
-          if (first) selectFloor(first);
-        };
-        if (shotLeft.complete && shotLeft.naturalHeight) placePins();
-        else shotLeft.onload = placePins;
-        modal.classList.add('open');
-        document.body.classList.add('modal-open');
-      })
-      .catch((err) => {
-        console.error(err);
-        alert('案例数据加载失败，请刷新重试。');
-      });
-  }
-
-  function closeModal() {
-    modal.classList.remove('open');
-    document.body.classList.remove('modal-open');
-    shotLeft.removeAttribute('src');
-    shotLeft.onload = null;
-    shotMap.querySelectorAll('.shot-hotspot').forEach((n) => n.remove());
-    floorSrcList.innerHTML = '';
-    concludeEl.innerHTML = '';
-    currentCase = null;
-    activeFloorId = null;
-  }
-
-  document.querySelectorAll('[data-case]').forEach((btn) => {
-    btn.addEventListener('click', () => openModal(btn.dataset.case));
-  });
-  closeBtn.addEventListener('click', closeModal);
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
-  });
-
-  // preload
-  loadCases().catch(() => {});
-</script>
 </div><!-- /.peer-main -->
 </div><!-- /.page-wrapper -->
 </body>

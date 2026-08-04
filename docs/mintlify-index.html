@@ -484,6 +484,70 @@
 
 
   /* 收录列：hover 显示文件名与地址 */
+
+  .domain-table .why-tip {
+    position: relative;
+    cursor: help;
+  }
+  .domain-table a.res-tip,
+  .domain-table .why-tip {
+    position: relative;
+    text-decoration: none;
+  }
+  .domain-table a.res-tip::after,
+  .domain-table .why-tip::after {
+    content: attr(data-tip);
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 8px);
+    transform: translateX(-50%) translateY(4px);
+    min-width: 180px;
+    max-width: 360px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    background: #0f172a;
+    color: #f8fafc;
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.45;
+    letter-spacing: 0;
+    text-transform: none;
+    white-space: pre-wrap;
+    word-break: break-all;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.18);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .12s ease, transform .12s ease;
+    z-index: 40;
+  }
+  .domain-table a.res-tip::before,
+  .domain-table .why-tip::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 2px);
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: #0f172a;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .12s ease;
+    z-index: 40;
+  }
+  .domain-table a.res-tip:hover::after,
+  .domain-table a.res-tip:focus-visible::after,
+  .domain-table .why-tip:hover::after,
+  .domain-table .why-tip:focus-visible::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  .domain-table a.res-tip:hover::before,
+  .domain-table a.res-tip:focus-visible::before,
+  .domain-table .why-tip:hover::before,
+  .domain-table .why-tip:focus-visible::before {
+    opacity: 1;
+  }
+
   .domain-table a.res-tip {
     position: relative;
     text-decoration: none;
@@ -655,6 +719,7 @@
   .tag-full { background: var(--yes-bg); color: var(--yes); }
   .tag-partial { background: #e3f0fb; color: #0b5cab; }
   .tag-miss { background: #fde8e8; color: #8b1a1a; }
+  .tag-pending { background: #f3f4f6; color: #64748b; border: 1px dashed #cbd5e1; }
 
   .takeaways {
     display: grid;
@@ -1098,7 +1163,7 @@
       <ul>
         <li><a href="mintlify.html">分析概览</a></li>
         <li><a href="mintlify-index.html" class="active">找的到（收录索引）</a></li>
-        <li><a href="citability-html-mintlify.html">读的懂（能抓 html）</a></li>
+        <li><a href="citability-html-mintlify.html">读的懂（html 可读）</a></li>
         <li><a href="citability-mintlify.html">读的顺（双轨交付）</a></li>
       </ul>
     </nav>
@@ -1149,7 +1214,7 @@
           <th rowspan="2" class="th-stub">分类</th>
           <th rowspan="2" class="th-stub">页面</th>
           <th colspan="2" class="th-group th-group-find">找的到</th>
-          <th class="th-group th-group-html">读的懂</th>
+          <th class="th-group th-group-html why-tip" data-tip="按组件楼层聚合（与 citability-html 案例同标尺）：完整=全可抓或橙标均可不解决；部分=有蓝楼层且存在橙标需改；缺失=无蓝楼层。优先组件细测案例；其余为批量 HTML 探测。悬停看楼层统计。" title="按组件楼层聚合（与 citability-html 案例同标尺）：完整=全可抓或橙标均可不解决；部分=有蓝楼层且存在橙标需改；缺失=无蓝楼层。优先组件细测案例；其余为批量 HTML 探测。悬停看楼层统计。">读的懂</th>
           <th class="th-group th-group-md">读的顺</th>
           <th rowspan="2" class="th-stub">AI亲和 Level</th>
         </tr>
@@ -1166,7 +1231,7 @@
           <td class="path"><a href="https://www.mintlify.com/" target="_blank" rel="noopener">/</a></td>
           <td><span class="tag tag-no">无</span></td>
           <td><a href="https://www.mintlify.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-partial why-tip" data-tip="组件实测：13 楼层 · 蓝 7 · 橙需改 4 · 橙可不改 2&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;待改：Agent traffic 数值缺少完整百分比、Hero 产品大图缺少图注、实时统计缺少完整数字、能力卖点缺少说明正文&#10;案例：citability-html-mintlify-case.html?case=home&#10;判定：部分" title="组件实测：13 楼层 · 蓝 7 · 橙需改 4 · 橙可不改 2&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;待改：Agent traffic 数值缺少完整百分比、Hero 产品大图缺少图注、实时统计缺少完整数字、能力卖点缺少说明正文&#10;案例：citability-html-mintlify-case.html?case=home&#10;判定：部分">部分</span></td>
           <td><span class="tag tag-no">无</span></td>
           <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
         </tr>
@@ -1175,7 +1240,7 @@
           <td class="path"><a href="https://www.mintlify.com/use-cases/knowledge-base" target="_blank" rel="noopener">/use-cases/knowledge-base</a></td>
           <td><span class="tag tag-no">无</span></td>
           <td><a href="https://www.mintlify.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-miss why-tip" data-tip="批量探测：1 楼层 · 蓝 0 · 橙需改 1 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=0,h=0,main=True&#10;来源：live-fetch&#10;待改：静态正文不足&#10;页面：/use-cases/knowledge-base&#10;判定：缺失" title="批量探测：1 楼层 · 蓝 0 · 橙需改 1 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=0,h=0,main=True&#10;来源：live-fetch&#10;待改：静态正文不足&#10;页面：/use-cases/knowledge-base&#10;判定：缺失">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
           <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
         </tr>
@@ -1183,7 +1248,7 @@
           <td class="path"><a href="https://www.mintlify.com/customers" target="_blank" rel="noopener">/customers</a></td>
           <td><span class="tag tag-no">无</span></td>
           <td><a href="https://www.mintlify.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-full why-tip" data-tip="批量探测：1 楼层 · 蓝 1 · 橙需改 0 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=3526,h=5,main=True&#10;来源：live-fetch&#10;页面：/customers&#10;判定：完整" title="批量探测：1 楼层 · 蓝 1 · 橙需改 0 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=3526,h=5,main=True&#10;来源：live-fetch&#10;页面：/customers&#10;判定：完整">完整</span></td>
           <td><span class="tag tag-no">无</span></td>
           <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
         </tr>
@@ -1191,7 +1256,7 @@
           <td class="path"><a href="https://www.mintlify.com/wall-of-love" target="_blank" rel="noopener">/wall-of-love</a></td>
           <td><span class="tag tag-no">无</span></td>
           <td><a href="https://www.mintlify.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-miss why-tip" data-tip="批量探测：1 楼层 · 蓝 0 · 橙需改 1 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=0,h=0,main=True&#10;来源：live-fetch&#10;待改：静态正文不足&#10;页面：/wall-of-love&#10;判定：缺失" title="批量探测：1 楼层 · 蓝 0 · 橙需改 1 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=0,h=0,main=True&#10;来源：live-fetch&#10;待改：静态正文不足&#10;页面：/wall-of-love&#10;判定：缺失">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
           <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
         </tr>
@@ -1199,7 +1264,7 @@
           <td class="path"><a href="https://www.mintlify.com/switch" target="_blank" rel="noopener">/switch</a></td>
           <td><span class="tag tag-no">无</span></td>
           <td><a href="https://www.mintlify.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-miss why-tip" data-tip="批量探测：1 楼层 · 蓝 0 · 橙需改 1 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=0,h=0,main=True&#10;来源：live-fetch&#10;待改：静态正文不足&#10;页面：/switch&#10;判定：缺失" title="批量探测：1 楼层 · 蓝 0 · 橙需改 1 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=0,h=0,main=True&#10;来源：live-fetch&#10;待改：静态正文不足&#10;页面：/switch&#10;判定：缺失">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
           <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
         </tr>
@@ -1207,7 +1272,7 @@
           <td class="path"><a href="https://www.mintlify.com/score" target="_blank" rel="noopener">/score</a></td>
           <td><span class="tag tag-no">无</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-full why-tip" data-tip="组件实测：6 楼层 · 蓝 5 · 橙需改 0 · 橙可不改 1&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;案例：citability-html-mintlify-case.html?case=score&#10;判定：完整" title="组件实测：6 楼层 · 蓝 5 · 橙需改 0 · 橙可不改 1&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;案例：citability-html-mintlify-case.html?case=score&#10;判定：完整">完整</span></td>
           <td><a href="https://www.mintlify.com/score.md" class="res-tip" target="_blank" rel="noopener" data-tip="score.md&#10;https://www.mintlify.com/score.md" title="score.md · https://www.mintlify.com/score.md"><span class="tag tag-yes">有</span></a></td>
           <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
         </tr>
@@ -1239,7 +1304,7 @@
           <th rowspan="2" class="th-stub">分类</th>
           <th rowspan="2" class="th-stub">页面</th>
           <th colspan="2" class="th-group th-group-find">找的到</th>
-          <th class="th-group th-group-html">读的懂</th>
+          <th class="th-group th-group-html why-tip" data-tip="按组件楼层聚合（与 citability-html 案例同标尺）：完整=全可抓或橙标均可不解决；部分=有蓝楼层且存在橙标需改；缺失=无蓝楼层。优先组件细测案例；其余为批量 HTML 探测。悬停看楼层统计。" title="按组件楼层聚合（与 citability-html 案例同标尺）：完整=全可抓或橙标均可不解决；部分=有蓝楼层且存在橙标需改；缺失=无蓝楼层。优先组件细测案例；其余为批量 HTML 探测。悬停看楼层统计。">读的懂</th>
           <th class="th-group th-group-md">读的顺</th>
           <th rowspan="2" class="th-stub">AI亲和 Level</th>
         </tr>
@@ -1256,7 +1321,7 @@
           <td class="path"><a href="https://www.mintlify.com/docs" target="_blank" rel="noopener">/docs</a></td>
           <td><a href="https://www.mintlify.com/docs/llms.txt" class="res-tip" target="_blank" rel="noopener" data-tip="llms.txt&#10;https://www.mintlify.com/docs/llms.txt" title="llms.txt · https://www.mintlify.com/docs/llms.txt"><span class="tag tag-yes">有</span></a></td>
           <td><a href="https://www.mintlify.com/docs/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/docs/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/docs/sitemap.xml"><span class="tag tag-yes">site+docs</span></a></td>
-          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-partial why-tip" data-tip="批量探测：2 楼层 · 蓝 1 · 橙需改 1 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=493,h=9,main=False&#10;来源：live-fetch&#10;待改：静态正文不足&#10;页面：/docs&#10;判定：部分" title="批量探测：2 楼层 · 蓝 1 · 橙需改 1 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=493,h=9,main=False&#10;来源：live-fetch&#10;待改：静态正文不足&#10;页面：/docs&#10;判定：部分">部分</span></td>
           <td><a href="https://www.mintlify.com/docs.md" class="res-tip" target="_blank" rel="noopener" data-tip="docs.md&#10;https://www.mintlify.com/docs.md" title="docs.md · https://www.mintlify.com/docs.md"><span class="tag tag-yes">有</span></a></td>
           <td class="model-lv"><span class="aff-tier tier-2">深度亲和</span></td>
         </tr>
@@ -1264,7 +1329,7 @@
           <td class="path"><a href="https://www.mintlify.com/docs/editor" target="_blank" rel="noopener">/docs/editor</a></td>
           <td><a href="https://www.mintlify.com/docs/llms.txt" class="res-tip" target="_blank" rel="noopener" data-tip="llms.txt&#10;https://www.mintlify.com/docs/llms.txt" title="llms.txt · https://www.mintlify.com/docs/llms.txt"><span class="tag tag-yes">有</span></a></td>
           <td><a href="https://www.mintlify.com/docs/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/docs/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/docs/sitemap.xml"><span class="tag tag-yes">site+docs</span></a></td>
-          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-partial why-tip" data-tip="组件实测：5 楼层 · 蓝 3 · 橙需改 1 · 橙可不改 1&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;待改：Explore 入口缺少真实链接&#10;案例：citability-html-mintlify-case.html?case=docs-editor&#10;判定：部分" title="组件实测：5 楼层 · 蓝 3 · 橙需改 1 · 橙可不改 1&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;待改：Explore 入口缺少真实链接&#10;案例：citability-html-mintlify-case.html?case=docs-editor&#10;判定：部分">部分</span></td>
           <td><a href="https://www.mintlify.com/docs/editor.md" class="res-tip" target="_blank" rel="noopener" data-tip="editor.md&#10;https://www.mintlify.com/docs/editor.md" title="editor.md · https://www.mintlify.com/docs/editor.md"><span class="tag tag-yes">有</span></a></td>
           <td class="model-lv"><span class="aff-tier tier-2">深度亲和</span></td>
         </tr>
@@ -1272,7 +1337,7 @@
           <td class="path"><a href="https://www.mintlify.com/docs/deploy/authentication-setup" target="_blank" rel="noopener">/docs/deploy/authentication-setup</a></td>
           <td><a href="https://www.mintlify.com/docs/llms.txt" class="res-tip" target="_blank" rel="noopener" data-tip="llms.txt&#10;https://www.mintlify.com/docs/llms.txt" title="llms.txt · https://www.mintlify.com/docs/llms.txt"><span class="tag tag-yes">有</span></a></td>
           <td><a href="https://www.mintlify.com/docs/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/docs/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/docs/sitemap.xml"><span class="tag tag-yes">site+docs</span></a></td>
-          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-full why-tip" data-tip="批量探测：1 楼层 · 蓝 1 · 橙需改 0 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=16987,h=24,main=True&#10;来源：live-fetch&#10;页面：/docs/deploy/authentication-setup&#10;判定：完整" title="批量探测：1 楼层 · 蓝 1 · 橙需改 0 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=16987,h=24,main=True&#10;来源：live-fetch&#10;页面：/docs/deploy/authentication-setup&#10;判定：完整">完整</span></td>
           <td><a href="https://www.mintlify.com/docs/deploy/authentication-setup.md" class="res-tip" target="_blank" rel="noopener" data-tip="authentication-setup.md&#10;https://www.mintlify.com/docs/deploy/authentication-setup.md" title="authentication-setup.md · https://www.mintlify.com/docs/deploy/authentication-setup.md"><span class="tag tag-yes">有</span></a></td>
           <td class="model-lv"><span class="aff-tier tier-2">深度亲和</span></td>
         </tr>
@@ -1280,7 +1345,7 @@
           <td class="path"><a href="https://www.mintlify.com/docs/automations" target="_blank" rel="noopener">/docs/automations</a></td>
           <td><a href="https://www.mintlify.com/docs/llms.txt" class="res-tip" target="_blank" rel="noopener" data-tip="llms.txt&#10;https://www.mintlify.com/docs/llms.txt" title="llms.txt · https://www.mintlify.com/docs/llms.txt"><span class="tag tag-yes">有</span></a></td>
           <td><a href="https://www.mintlify.com/docs/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/docs/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/docs/sitemap.xml"><span class="tag tag-yes">site+docs</span></a></td>
-          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-full why-tip" data-tip="批量探测：1 楼层 · 蓝 1 · 橙需改 0 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=4199,h=11,main=True&#10;来源：live-fetch&#10;页面：/docs/automations&#10;判定：完整" title="批量探测：1 楼层 · 蓝 1 · 橙需改 0 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=4199,h=11,main=True&#10;来源：live-fetch&#10;页面：/docs/automations&#10;判定：完整">完整</span></td>
           <td><a href="https://www.mintlify.com/docs/automations.md" class="res-tip" target="_blank" rel="noopener" data-tip="automations.md&#10;https://www.mintlify.com/docs/automations.md" title="automations.md · https://www.mintlify.com/docs/automations.md"><span class="tag tag-yes">有</span></a></td>
           <td class="model-lv"><span class="aff-tier tier-2">深度亲和</span></td>
         </tr>
@@ -1288,7 +1353,7 @@
           <td class="path"><a href="https://www.mintlify.com/docs/agent" target="_blank" rel="noopener">/docs/agent</a></td>
           <td><a href="https://www.mintlify.com/docs/llms.txt" class="res-tip" target="_blank" rel="noopener" data-tip="llms.txt&#10;https://www.mintlify.com/docs/llms.txt" title="llms.txt · https://www.mintlify.com/docs/llms.txt"><span class="tag tag-yes">有</span></a></td>
           <td><a href="https://www.mintlify.com/docs/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/docs/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/docs/sitemap.xml"><span class="tag tag-yes">site+docs</span></a></td>
-          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-full why-tip" data-tip="批量探测：1 楼层 · 蓝 1 · 橙需改 0 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=4423,h=13,main=True&#10;来源：live-fetch&#10;页面：/docs/agent&#10;判定：完整" title="批量探测：1 楼层 · 蓝 1 · 橙需改 0 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=4423,h=13,main=True&#10;来源：live-fetch&#10;页面：/docs/agent&#10;判定：完整">完整</span></td>
           <td><a href="https://www.mintlify.com/docs/agent.md" class="res-tip" target="_blank" rel="noopener" data-tip="agent.md&#10;https://www.mintlify.com/docs/agent.md" title="agent.md · https://www.mintlify.com/docs/agent.md"><span class="tag tag-yes">有</span></a></td>
           <td class="model-lv"><span class="aff-tier tier-2">深度亲和</span></td>
         </tr>
@@ -1296,7 +1361,7 @@
           <td class="path"><a href="https://www.mintlify.com/docs/assistant" target="_blank" rel="noopener">/docs/assistant</a></td>
           <td><a href="https://www.mintlify.com/docs/llms.txt" class="res-tip" target="_blank" rel="noopener" data-tip="llms.txt&#10;https://www.mintlify.com/docs/llms.txt" title="llms.txt · https://www.mintlify.com/docs/llms.txt"><span class="tag tag-yes">有</span></a></td>
           <td><a href="https://www.mintlify.com/docs/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/docs/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/docs/sitemap.xml"><span class="tag tag-yes">site+docs</span></a></td>
-          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-full why-tip" data-tip="批量探测：1 楼层 · 蓝 1 · 橙需改 0 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=3672,h=9,main=True&#10;来源：live-fetch&#10;页面：/docs/assistant&#10;判定：完整" title="批量探测：1 楼层 · 蓝 1 · 橙需改 0 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=3672,h=9,main=True&#10;来源：live-fetch&#10;页面：/docs/assistant&#10;判定：完整">完整</span></td>
           <td><a href="https://www.mintlify.com/docs/assistant.md" class="res-tip" target="_blank" rel="noopener" data-tip="assistant.md&#10;https://www.mintlify.com/docs/assistant.md" title="assistant.md · https://www.mintlify.com/docs/assistant.md"><span class="tag tag-yes">有</span></a></td>
           <td class="model-lv"><span class="aff-tier tier-2">深度亲和</span></td>
         </tr>
@@ -1304,7 +1369,7 @@
           <td class="path"><a href="https://www.mintlify.com/docs/automations/integrations" target="_blank" rel="noopener">/docs/automations/integrations</a></td>
           <td><a href="https://www.mintlify.com/docs/llms.txt" class="res-tip" target="_blank" rel="noopener" data-tip="llms.txt&#10;https://www.mintlify.com/docs/llms.txt" title="llms.txt · https://www.mintlify.com/docs/llms.txt"><span class="tag tag-yes">有</span></a></td>
           <td><a href="https://www.mintlify.com/docs/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/docs/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/docs/sitemap.xml"><span class="tag tag-yes">site+docs</span></a></td>
-          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-full why-tip" data-tip="批量探测：1 楼层 · 蓝 1 · 橙需改 0 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=7237,h=13,main=True&#10;来源：live-fetch&#10;页面：/docs/automations/integrations&#10;判定：完整" title="批量探测：1 楼层 · 蓝 1 · 橙需改 0 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=7237,h=13,main=True&#10;来源：live-fetch&#10;页面：/docs/automations/integrations&#10;判定：完整">完整</span></td>
           <td><a href="https://www.mintlify.com/docs/automations/integrations.md" class="res-tip" target="_blank" rel="noopener" data-tip="integrations.md&#10;https://www.mintlify.com/docs/automations/integrations.md" title="integrations.md · https://www.mintlify.com/docs/automations/integrations.md"><span class="tag tag-yes">有</span></a></td>
           <td class="model-lv"><span class="aff-tier tier-2">深度亲和</span></td>
         </tr>
@@ -1312,7 +1377,7 @@
           <td class="path"><a href="https://www.mintlify.com/docs/ai/model-context-protocol" target="_blank" rel="noopener">/docs/ai/model-context-protocol</a></td>
           <td><a href="https://www.mintlify.com/docs/llms.txt" class="res-tip" target="_blank" rel="noopener" data-tip="llms.txt&#10;https://www.mintlify.com/docs/llms.txt" title="llms.txt · https://www.mintlify.com/docs/llms.txt"><span class="tag tag-yes">有</span></a></td>
           <td><a href="https://www.mintlify.com/docs/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/docs/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/docs/sitemap.xml"><span class="tag tag-yes">site+docs</span></a></td>
-          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-full why-tip" data-tip="批量探测：1 楼层 · 蓝 1 · 橙需改 0 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=25222,h=21,main=True&#10;来源：live-fetch&#10;页面：/docs/ai/model-context-protocol&#10;判定：完整" title="批量探测：1 楼层 · 蓝 1 · 橙需改 0 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=25222,h=21,main=True&#10;来源：live-fetch&#10;页面：/docs/ai/model-context-protocol&#10;判定：完整">完整</span></td>
           <td><a href="https://www.mintlify.com/docs/ai/model-context-protocol.md" class="res-tip" target="_blank" rel="noopener" data-tip="model-context-protocol.md&#10;https://www.mintlify.com/docs/ai/model-context-protocol.md" title="model-context-protocol.md · https://www.mintlify.com/docs/ai/model-context-protocol.md"><span class="tag tag-yes">有</span></a></td>
           <td class="model-lv"><span class="aff-tier tier-2">深度亲和</span></td>
         </tr>
@@ -1320,7 +1385,7 @@
           <td class="path"><a href="https://www.mintlify.com/docs/api-playground/overview" target="_blank" rel="noopener">/docs/api-playground/overview</a></td>
           <td><a href="https://www.mintlify.com/docs/llms.txt" class="res-tip" target="_blank" rel="noopener" data-tip="llms.txt&#10;https://www.mintlify.com/docs/llms.txt" title="llms.txt · https://www.mintlify.com/docs/llms.txt"><span class="tag tag-yes">有</span></a></td>
           <td><a href="https://www.mintlify.com/docs/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/docs/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/docs/sitemap.xml"><span class="tag tag-yes">site+docs</span></a></td>
-          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-full why-tip" data-tip="批量探测：1 楼层 · 蓝 1 · 橙需改 0 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=8278,h=10,main=True&#10;来源：live-fetch&#10;页面：/docs/api-playground/overview&#10;判定：完整" title="批量探测：1 楼层 · 蓝 1 · 橙需改 0 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=8278,h=10,main=True&#10;来源：live-fetch&#10;页面：/docs/api-playground/overview&#10;判定：完整">完整</span></td>
           <td><a href="https://www.mintlify.com/docs/api-playground/overview.md" class="res-tip" target="_blank" rel="noopener" data-tip="overview.md&#10;https://www.mintlify.com/docs/api-playground/overview.md" title="overview.md · https://www.mintlify.com/docs/api-playground/overview.md"><span class="tag tag-yes">有</span></a></td>
           <td class="model-lv"><span class="aff-tier tier-2">深度亲和</span></td>
         </tr>
@@ -1328,7 +1393,7 @@
           <td class="path"><a href="https://www.mintlify.com/docs/components" target="_blank" rel="noopener">/docs/components</a></td>
           <td><a href="https://www.mintlify.com/docs/llms.txt" class="res-tip" target="_blank" rel="noopener" data-tip="llms.txt&#10;https://www.mintlify.com/docs/llms.txt" title="llms.txt · https://www.mintlify.com/docs/llms.txt"><span class="tag tag-yes">有</span></a></td>
           <td><a href="https://www.mintlify.com/docs/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/docs/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/docs/sitemap.xml"><span class="tag tag-yes">site+docs</span></a></td>
-          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-full why-tip" data-tip="批量探测：1 楼层 · 蓝 1 · 橙需改 0 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=1820,h=34,main=True&#10;来源：live-fetch&#10;页面：/docs/components&#10;判定：完整" title="批量探测：1 楼层 · 蓝 1 · 橙需改 0 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=1820,h=34,main=True&#10;来源：live-fetch&#10;页面：/docs/components&#10;判定：完整">完整</span></td>
           <td><a href="https://www.mintlify.com/docs/components.md" class="res-tip" target="_blank" rel="noopener" data-tip="components.md&#10;https://www.mintlify.com/docs/components.md" title="components.md · https://www.mintlify.com/docs/components.md"><span class="tag tag-yes">有</span></a></td>
           <td class="model-lv"><span class="aff-tier tier-2">深度亲和</span></td>
         </tr>
@@ -1336,7 +1401,7 @@
           <td class="path"><a href="https://www.mintlify.com/docs/api/introduction" target="_blank" rel="noopener">/docs/api/introduction</a></td>
           <td><a href="https://www.mintlify.com/docs/llms.txt" class="res-tip" target="_blank" rel="noopener" data-tip="llms.txt&#10;https://www.mintlify.com/docs/llms.txt" title="llms.txt · https://www.mintlify.com/docs/llms.txt"><span class="tag tag-yes">有</span></a></td>
           <td><a href="https://www.mintlify.com/docs/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/docs/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/docs/sitemap.xml"><span class="tag tag-yes">site+docs</span></a></td>
-          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-full why-tip" data-tip="批量探测：1 楼层 · 蓝 1 · 橙需改 0 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=7851,h=10,main=True&#10;来源：live-fetch&#10;页面：/docs/api/introduction&#10;判定：完整" title="批量探测：1 楼层 · 蓝 1 · 橙需改 0 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=7851,h=10,main=True&#10;来源：live-fetch&#10;页面：/docs/api/introduction&#10;判定：完整">完整</span></td>
           <td><a href="https://www.mintlify.com/docs/api/introduction.md" class="res-tip" target="_blank" rel="noopener" data-tip="introduction.md&#10;https://www.mintlify.com/docs/api/introduction.md" title="introduction.md · https://www.mintlify.com/docs/api/introduction.md"><span class="tag tag-yes">有</span></a></td>
           <td class="model-lv"><span class="aff-tier tier-2">深度亲和</span></td>
         </tr>
@@ -1344,7 +1409,7 @@
           <td class="path"><a href="https://www.mintlify.com/docs/changelog" target="_blank" rel="noopener">/docs/changelog</a></td>
           <td><span class="tag tag-no">无</span></td>
           <td><a href="https://www.mintlify.com/docs/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/docs/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/docs/sitemap.xml"><span class="tag tag-warn">两边无</span></a></td>
-          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-full why-tip" data-tip="批量探测：1 楼层 · 蓝 1 · 橙需改 0 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=131835,h=325,main=True&#10;来源：live-fetch&#10;页面：/docs/changelog&#10;判定：完整" title="批量探测：1 楼层 · 蓝 1 · 橙需改 0 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=131835,h=325,main=True&#10;来源：live-fetch&#10;页面：/docs/changelog&#10;判定：完整">完整</span></td>
           <td><a href="https://www.mintlify.com/docs/changelog.md" class="res-tip" target="_blank" rel="noopener" data-tip="changelog.md&#10;https://www.mintlify.com/docs/changelog.md" title="changelog.md · https://www.mintlify.com/docs/changelog.md"><span class="tag tag-yes">有</span></a></td>
           <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
         </tr>
@@ -1353,7 +1418,7 @@
           <td class="path"><a href="https://learn.mintlify.com/" target="_blank" rel="noopener">learn.mintlify.com/</a></td>
           <td><a href="https://learn.mintlify.com/llms.txt" class="res-tip" target="_blank" rel="noopener" data-tip="llms.txt&#10;https://learn.mintlify.com/llms.txt" title="llms.txt · https://learn.mintlify.com/llms.txt"><span class="tag tag-yes">自有 + Optional</span></a></td>
           <td><a href="https://learn.mintlify.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://learn.mintlify.com/sitemap.xml" title="sitemap.xml · https://learn.mintlify.com/sitemap.xml"><span class="tag tag-no">不在 www</span></a></td>
-          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-partial why-tip" data-tip="批量探测：2 楼层 · 蓝 1 · 橙需改 1 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=1163,h=11,main=False&#10;来源：live-fetch&#10;待改：正文未达完整&#10;页面：/&#10;判定：部分" title="批量探测：2 楼层 · 蓝 1 · 橙需改 1 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=1163,h=11,main=False&#10;来源：live-fetch&#10;待改：正文未达完整&#10;页面：/&#10;判定：部分">部分</span></td>
           <td><a href="https://learn.mintlify.com/index.md" class="res-tip" target="_blank" rel="noopener" data-tip="index.md&#10;https://learn.mintlify.com/index.md" title="index.md · https://learn.mintlify.com/index.md"><span class="tag tag-yes">有</span></a></td>
           <td class="model-lv"><span class="aff-tier tier-2">深度亲和</span></td>
         </tr>
@@ -1396,7 +1461,7 @@
           <th rowspan="2" class="th-stub">分类</th>
           <th rowspan="2" class="th-stub">页面</th>
           <th colspan="2" class="th-group th-group-find">找的到</th>
-          <th class="th-group th-group-html">读的懂</th>
+          <th class="th-group th-group-html why-tip" data-tip="按组件楼层聚合（与 citability-html 案例同标尺）：完整=全可抓或橙标均可不解决；部分=有蓝楼层且存在橙标需改；缺失=无蓝楼层。优先组件细测案例；其余为批量 HTML 探测。悬停看楼层统计。" title="按组件楼层聚合（与 citability-html 案例同标尺）：完整=全可抓或橙标均可不解决；部分=有蓝楼层且存在橙标需改；缺失=无蓝楼层。优先组件细测案例；其余为批量 HTML 探测。悬停看楼层统计。">读的懂</th>
           <th class="th-group th-group-md">读的顺</th>
           <th rowspan="2" class="th-stub">AI亲和 Level</th>
         </tr>
@@ -1413,7 +1478,7 @@
           <td class="path"><a href="https://www.mintlify.com/enterprise" target="_blank" rel="noopener">/enterprise</a></td>
           <td><span class="tag tag-no">无</span></td>
           <td><a href="https://www.mintlify.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-full why-tip" data-tip="批量探测：1 楼层 · 蓝 1 · 橙需改 0 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=4465,h=22,main=True&#10;来源：live-fetch&#10;页面：/enterprise&#10;判定：完整" title="批量探测：1 楼层 · 蓝 1 · 橙需改 0 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=4465,h=22,main=True&#10;来源：live-fetch&#10;页面：/enterprise&#10;判定：完整">完整</span></td>
           <td><span class="tag tag-no">无</span></td>
           <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
         </tr>
@@ -1422,7 +1487,7 @@
           <td class="path"><a href="https://www.mintlify.com/startups" target="_blank" rel="noopener">/startups</a></td>
           <td><span class="tag tag-no">无</span></td>
           <td><a href="https://www.mintlify.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-full why-tip" data-tip="批量探测：1 楼层 · 蓝 1 · 橙需改 0 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=5464,h=16,main=True&#10;来源：live-fetch&#10;页面：/startups&#10;判定：完整" title="批量探测：1 楼层 · 蓝 1 · 橙需改 0 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=5464,h=16,main=True&#10;来源：live-fetch&#10;页面：/startups&#10;判定：完整">完整</span></td>
           <td><span class="tag tag-no">无</span></td>
           <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
         </tr>
@@ -1458,7 +1523,7 @@
           <th rowspan="2" class="th-stub">分类</th>
           <th rowspan="2" class="th-stub">页面</th>
           <th colspan="2" class="th-group th-group-find">找的到</th>
-          <th class="th-group th-group-html">读的懂</th>
+          <th class="th-group th-group-html why-tip" data-tip="按组件楼层聚合（与 citability-html 案例同标尺）：完整=全可抓或橙标均可不解决；部分=有蓝楼层且存在橙标需改；缺失=无蓝楼层。优先组件细测案例；其余为批量 HTML 探测。悬停看楼层统计。" title="按组件楼层聚合（与 citability-html 案例同标尺）：完整=全可抓或橙标均可不解决；部分=有蓝楼层且存在橙标需改；缺失=无蓝楼层。优先组件细测案例；其余为批量 HTML 探测。悬停看楼层统计。">读的懂</th>
           <th class="th-group th-group-md">读的顺</th>
           <th rowspan="2" class="th-stub">AI亲和 Level</th>
         </tr>
@@ -1475,7 +1540,7 @@
           <td class="path"><a href="https://www.mintlify.com/pricing" target="_blank" rel="noopener">/pricing</a></td>
           <td><span class="tag tag-no">无</span></td>
           <td><a href="https://www.mintlify.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-partial why-tip" data-tip="组件实测：6 楼层 · 蓝 3 · 橙需改 2 · 橙可不改 1&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;待改：套餐价格缺少完整数字、FAQ 答文缺少静态正文&#10;案例：citability-html-mintlify-case.html?case=pricing&#10;判定：部分" title="组件实测：6 楼层 · 蓝 3 · 橙需改 2 · 橙可不改 1&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;待改：套餐价格缺少完整数字、FAQ 答文缺少静态正文&#10;案例：citability-html-mintlify-case.html?case=pricing&#10;判定：部分">部分</span></td>
           <td><a href="https://www.mintlify.com/pricing.md" class="res-tip" target="_blank" rel="noopener" data-tip="pricing.md&#10;https://www.mintlify.com/pricing.md" title="pricing.md · https://www.mintlify.com/pricing.md"><span class="tag tag-yes">有</span></a></td>
           <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
         </tr>
@@ -1509,7 +1574,7 @@
           <th rowspan="2" class="th-stub">分类</th>
           <th rowspan="2" class="th-stub">页面</th>
           <th colspan="2" class="th-group th-group-find">找的到</th>
-          <th class="th-group th-group-html">读的懂</th>
+          <th class="th-group th-group-html why-tip" data-tip="按组件楼层聚合（与 citability-html 案例同标尺）：完整=全可抓或橙标均可不解决；部分=有蓝楼层且存在橙标需改；缺失=无蓝楼层。优先组件细测案例；其余为批量 HTML 探测。悬停看楼层统计。" title="按组件楼层聚合（与 citability-html 案例同标尺）：完整=全可抓或橙标均可不解决；部分=有蓝楼层且存在橙标需改；缺失=无蓝楼层。优先组件细测案例；其余为批量 HTML 探测。悬停看楼层统计。">读的懂</th>
           <th class="th-group th-group-md">读的顺</th>
           <th rowspan="2" class="th-stub">AI亲和 Level</th>
         </tr>
@@ -1526,7 +1591,7 @@
           <td class="path"><a href="https://www.mintlify.com/blog" target="_blank" rel="noopener">/blog</a></td>
           <td><span class="tag tag-no">无</span></td>
           <td><a href="https://www.mintlify.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-full why-tip" data-tip="组件实测：4 楼层 · 蓝 2 · 橙需改 0 · 橙可不改 2&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;案例：citability-html-mintlify-case.html?case=blog&#10;判定：完整" title="组件实测：4 楼层 · 蓝 2 · 橙需改 0 · 橙可不改 2&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;案例：citability-html-mintlify-case.html?case=blog&#10;判定：完整">完整</span></td>
           <td><span class="tag tag-no">无</span></td>
           <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
         </tr>
@@ -1534,7 +1599,7 @@
           <td class="path"><a href="https://www.mintlify.com/blog/developer-documentation" target="_blank" rel="noopener">/blog/developer-documentation</a></td>
           <td><span class="tag tag-no">无</span></td>
           <td><a href="https://www.mintlify.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-full why-tip" data-tip="批量探测：1 楼层 · 蓝 1 · 橙需改 0 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=5082,h=12,main=True&#10;来源：live-fetch&#10;页面：/blog/developer-documentation&#10;判定：完整" title="批量探测：1 楼层 · 蓝 1 · 橙需改 0 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=5082,h=12,main=True&#10;来源：live-fetch&#10;页面：/blog/developer-documentation&#10;判定：完整">完整</span></td>
           <td><span class="tag tag-no">无</span></td>
           <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
         </tr>
@@ -1542,7 +1607,7 @@
           <td class="path"><a href="https://www.mintlify.com/blog/internal-knowledge-base" target="_blank" rel="noopener">/blog/internal-knowledge-base</a></td>
           <td><span class="tag tag-no">无</span></td>
           <td><a href="https://www.mintlify.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-full why-tip" data-tip="批量探测：1 楼层 · 蓝 1 · 橙需改 0 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=5756,h=14,main=True&#10;来源：live-fetch&#10;页面：/blog/internal-knowledge-base&#10;判定：完整" title="批量探测：1 楼层 · 蓝 1 · 橙需改 0 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=5756,h=14,main=True&#10;来源：live-fetch&#10;页面：/blog/internal-knowledge-base&#10;判定：完整">完整</span></td>
           <td><span class="tag tag-no">无</span></td>
           <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
         </tr>
@@ -1550,7 +1615,7 @@
           <td class="path"><a href="https://www.mintlify.com/blog/help-centers" target="_blank" rel="noopener">/blog/help-centers</a></td>
           <td><span class="tag tag-no">无</span></td>
           <td><a href="https://www.mintlify.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-full why-tip" data-tip="批量探测：1 楼层 · 蓝 1 · 橙需改 0 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=5923,h=13,main=True&#10;来源：live-fetch&#10;页面：/blog/help-centers&#10;判定：完整" title="批量探测：1 楼层 · 蓝 1 · 橙需改 0 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=5923,h=13,main=True&#10;来源：live-fetch&#10;页面：/blog/help-centers&#10;判定：完整">完整</span></td>
           <td><span class="tag tag-no">无</span></td>
           <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
         </tr>
@@ -1583,7 +1648,7 @@
           <th rowspan="2" class="th-stub">分类</th>
           <th rowspan="2" class="th-stub">页面</th>
           <th colspan="2" class="th-group th-group-find">找的到</th>
-          <th class="th-group th-group-html">读的懂</th>
+          <th class="th-group th-group-html why-tip" data-tip="按组件楼层聚合（与 citability-html 案例同标尺）：完整=全可抓或橙标均可不解决；部分=有蓝楼层且存在橙标需改；缺失=无蓝楼层。优先组件细测案例；其余为批量 HTML 探测。悬停看楼层统计。" title="按组件楼层聚合（与 citability-html 案例同标尺）：完整=全可抓或橙标均可不解决；部分=有蓝楼层且存在橙标需改；缺失=无蓝楼层。优先组件细测案例；其余为批量 HTML 探测。悬停看楼层统计。">读的懂</th>
           <th class="th-group th-group-md">读的顺</th>
           <th rowspan="2" class="th-stub">AI亲和 Level</th>
         </tr>
@@ -1600,7 +1665,7 @@
           <td class="path"><a href="https://www.mintlify.com/events" target="_blank" rel="noopener">/events</a></td>
           <td><span class="tag tag-no">无</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-full why-tip" data-tip="批量探测：1 楼层 · 蓝 1 · 橙需改 0 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=1963,h=11,main=True&#10;来源：live-fetch&#10;页面：/events&#10;判定：完整" title="批量探测：1 楼层 · 蓝 1 · 橙需改 0 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=1963,h=11,main=True&#10;来源：live-fetch&#10;页面：/events&#10;判定：完整">完整</span></td>
           <td><span class="tag tag-no">无</span></td>
           <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
         </tr>
@@ -1609,7 +1674,7 @@
           <td class="path"><a href="https://mintlify.wiki/explore" target="_blank" rel="noopener">mintlify.wiki/explore</a></td>
           <td><span class="tag tag-no">无</span></td>
           <td><span class="tag tag-no">无</span></td>
-          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-partial why-tip" data-tip="批量探测：2 楼层 · 蓝 1 · 橙需改 1 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=1003,h=2,main=True&#10;来源：live-fetch&#10;待改：正文未达完整&#10;页面：/explore&#10;判定：部分" title="批量探测：2 楼层 · 蓝 1 · 橙需改 1 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=1003,h=2,main=True&#10;来源：live-fetch&#10;待改：正文未达完整&#10;页面：/explore&#10;判定：部分">部分</span></td>
           <td><span class="tag tag-no">无</span></td>
           <td class="model-lv"><span class="aff-tier tier-0">未就绪</span></td>
         </tr>
@@ -1643,7 +1708,7 @@
           <th rowspan="2" class="th-stub">分类</th>
           <th rowspan="2" class="th-stub">页面</th>
           <th colspan="2" class="th-group th-group-find">找的到</th>
-          <th class="th-group th-group-html">读的懂</th>
+          <th class="th-group th-group-html why-tip" data-tip="按组件楼层聚合（与 citability-html 案例同标尺）：完整=全可抓或橙标均可不解决；部分=有蓝楼层且存在橙标需改；缺失=无蓝楼层。优先组件细测案例；其余为批量 HTML 探测。悬停看楼层统计。" title="按组件楼层聚合（与 citability-html 案例同标尺）：完整=全可抓或橙标均可不解决；部分=有蓝楼层且存在橙标需改；缺失=无蓝楼层。优先组件细测案例；其余为批量 HTML 探测。悬停看楼层统计。">读的懂</th>
           <th class="th-group th-group-md">读的顺</th>
           <th rowspan="2" class="th-stub">AI亲和 Level</th>
         </tr>
@@ -1660,7 +1725,7 @@
           <td class="path"><a href="https://www.mintlify.com/careers" target="_blank" rel="noopener">/careers</a></td>
           <td><span class="tag tag-no">无</span></td>
           <td><a href="https://www.mintlify.com/sitemap.xml" class="res-tip" target="_blank" rel="noopener" data-tip="sitemap.xml&#10;https://www.mintlify.com/sitemap.xml" title="sitemap.xml · https://www.mintlify.com/sitemap.xml"><span class="tag tag-yes">site</span></a></td>
-          <td><span class="tag tag-full">完整</span></td>
+          <td><span class="tag tag-miss why-tip" data-tip="批量探测：1 楼层 · 蓝 0 · 橙需改 1 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=0,h=0,main=True&#10;来源：live-fetch&#10;待改：静态正文不足&#10;页面：/careers&#10;判定：缺失" title="批量探测：1 楼层 · 蓝 0 · 橙需改 1 · 橙可不改 0&#10;标准：按组件楼层聚合（与 citability-html 案例同标尺）&#10;完整 = 全部楼层可抓，或橙标均为「可不解决」&#10;部分 = 有蓝楼层，且存在橙标「有必要解决」&#10;缺失 = 无蓝楼层（空壳 / 全靠注入）&#10;说明：自动抓取 HTML 生成；组件细测案例可后续覆盖&#10;探测：text=0,h=0,main=True&#10;来源：live-fetch&#10;待改：静态正文不足&#10;页面：/careers&#10;判定：缺失">缺失</span></td>
           <td><span class="tag tag-no">无</span></td>
           <td class="model-lv"><span class="aff-tier tier-1">基线亲和</span></td>
         </tr>
