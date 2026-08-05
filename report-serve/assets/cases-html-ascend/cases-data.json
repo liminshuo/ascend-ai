@@ -12,22 +12,64 @@
     "hasMarkdown": false,
     "floors": [
       {
-        "id": "banner-slides",
+        "id": "top-nav",
         "idx": 1,
-        "kind": "in",
-        "name": "首屏运营轮播",
-        "badge": "多帧正文",
-        "desc": "Nuxt SSR 首屏 the-carouse-banner 多帧均在 DOM：主帧含 banner-title（如昇腾AI创新大赛2026）、CTA「了解更多」；底部 indicator 各帧标题与短述未点切换也能抓。\n边界：整块偏视觉大图，无独立 h1 导语——可不解决，下方各楼层 h2 与轮播文案已在 SSR。",
-        "html": "<div class=\"the-carouse-banner\"><p class=\"banner-title\">昇腾AI创新大赛2026</p><a class=\"banner-btn\">了解更多</a> … indicator：昇腾智能助手上线 / 昇腾AI创新大赛2026 / 高校专业赛 / 推理开发者认证 HOT …",
-        "shot": "assets/cases-html-ascend/home-banner-slides.jpg?v=20260804ab",
+        "kind": "warn",
+        "name": "顶部主导航",
+        "badge": "部分可抓",
+        "desc": "问题点：顶栏 o-nav 一级项（CANN / 产品 / 解决方案 / 开发者与合作伙伴）文案在首包可见，但多数 o-nav-item-link 为 div 无 href，仅「支持与服务」→ /support；右侧「文档」在折叠 panel 内有 /document，「在线开发」「下载」为 button/div 无稳定 href。\n判断：有必要解决 —— 主导航一级入口应 SSR 真实链接，子菜单链接亦应进首包 HTML。",
+        "html": "<div class=\"o-nav-head\"><!--[--><!--]--></div><div class=\"o-nav-head is-hide\"><div class=\"o-nav-item operation-position-nav\"><span class=\"g-text-ascend-light\">CANN</span></div><div class=\"o-nav-item\"><div class=\"o-link o-nav-item-link\" title=\"产品\"><span class=\"o-link-main\">产品</span></div></div><div class=\"o-nav-item\"><div class=\"o-link o-nav-item-link\" title=\"解决方案\">…</div></div><div class=\"o-nav-item\"><div class=\"o-link o-nav-item-link\" title=\"开发者与合作伙伴\">…</div></div><div class=\"o-nav-item\"><a class=\"o-nav-item-link\" title=\"支持与服务\" href=\"/support\">支持与服务</a></div></div><div class=\"header-item\"><a class=\"develop-btn\" target=\"_blank\"><span>在线开发</span></a></div><div class=\"app-header-download-val\">下载</div>",
+        "shot": "assets/cases-html-ascend/home.png?v=20260805a1",
+        "shotFrom": 0,
+        "shotTo": 10,
+        "shotTop": 0,
+        "shotLeft": 0,
+        "fixNeeded": true,
+        "highlights": [
+          "o-nav-item-link\" title=\"产品\"",
+          "develop-btn\" target=\"_blank\"><!----><span class=\"o-link-main\">"
+        ],
+        "peerReason": "顶栏 o-nav 一级项（CANN / 产品 / 解决方案 / 开发者与合作伙伴）文案在首包可见，但多数 o-nav-item-link 为 div 无 href，仅「支持与服务」→ /support；右侧「文档」在折叠 panel 内有 /document，「在线开发」「下载」为 button/div 无稳定 href。"
+      },
+      {
+        "id": "banner-cta",
+        "idx": 2,
+        "kind": "warn",
+        "name": "首屏轮播 CTA 按钮",
+        "badge": "button 无 href",
+        "desc": "问题点：首屏轮播各帧 CTA（立即查看 / 了解更多 / 立即填写 / 前往认证 / 立即参与等）为 button.o-btn，源码无 href，跳转靠 JS；探针问「这类按钮带到哪个官方 URL」时只能复述文案。\n判断：有必要解决 —— 跳转型 CTA 应改为 a[href] 或 OLink。",
+        "html": "<p class=\"banner-title\">HCCL通信库创新大赛</p><p>粤港澳赛区</p><button type=\"button\" class=\"o-btn o-btn-primary banner-actions-item\">立即查看</button> … <button type=\"button\" class=\"o-btn banner-actions-item\">了解更多</button> … indicator：参与8月问卷调查 / 昇腾AI创新大赛2026 / 推理开发者认证 …",
+        "shot": "assets/cases-html-ascend/home-banner-slides.jpg?v=20260805a1",
         "shotFrom": 2,
         "shotTo": 18,
         "shotTop": 8,
-        "shotLeft": 30
+        "shotLeft": 30,
+        "fixNeeded": true,
+        "highlights": [
+          "type=\"button\"",
+          "banner-actions-item"
+        ],
+        "peerReason": "首屏轮播 CTA（立即查看 / 了解更多 / 立即填写 / 前往认证 / 立即参与等）为 button.o-btn，源码无 href，静态抓取看不到落地 URL。"
+      },
+      {
+        "id": "banner-slides",
+        "idx": 3,
+        "kind": "in",
+        "name": "首屏轮播多帧",
+        "badge": "多帧正文",
+        "desc": "首屏 the-carouse-banner 多帧轮播：6 组 indicator（参与8月问卷调查 / 昇腾AI创新大赛2026 / 高校专业赛 / 推理开发者认证 / CANN社区任务 / 昇腾智能助手上线）与各帧 banner-title、副文案均在静态 HTML SSR，未点击切换也能抓到帧文案；CTA 多为 button 无 href（见 banner-cta 楼层）。",
+        "html": "<div class=\"the-carouse-banner\"><p class=\"banner-title\">昇腾AI创新大赛2026</p><p>非同凡响 我要去闯</p><button class=\"o-btn\">了解更多</button> … indicator：参与8月问卷调查 NEW / 昇腾AI创新大赛2026 / 高校专业赛 / 推理开发者认证 HOT / CANN社区任务 HOT / 昇腾智能助手上线 …",
+        "shot": "assets/cases-html-ascend/home-banner-slides.jpg?v=20260805b",
+        "shotFrom": 2,
+        "shotTo": 18,
+        "shotTop": 8,
+        "shotLeft": 30,
+        "fixNeeded": false,
+        "peerReason": "首屏轮播 6 帧 indicator 与各帧 banner-title、副文案均在静态 HTML，未切换也能抓到；CTA 多为 button 无 href。"
       },
       {
         "id": "news-tabs",
-        "idx": 2,
+        "idx": 4,
         "kind": "warn",
         "name": "资讯 Tab 缺少静态卡片",
         "badge": "客户端渲染",
@@ -42,11 +84,12 @@
         "highlights": [
           "o-tab-nav-list\"></div>",
           "<!--[--><!--]--></div>"
-        ]
+        ],
+        "peerReason": "「昇腾万里，让智能无所不及」楼层 h2 在 SSR，但最新发布/产业资讯/精彩活动/官方技术文章四 Tab 的 o-tab-nav-list 与 pane 内 o-scroller-container 为空；浏览器可见的金融/SWA/CANN 等内容卡靠脚本注入。"
       },
       {
         "id": "platform-stack",
-        "idx": 3,
+        "idx": 5,
         "kind": "in",
         "name": "AI 软硬件平台栈",
         "badge": "平台架构",
@@ -60,7 +103,7 @@
       },
       {
         "id": "developer-floor",
-        "idx": 4,
+        "idx": 6,
         "kind": "in",
         "name": "开发者成长楼层",
         "badge": "导流正文",
@@ -74,7 +117,7 @@
       },
       {
         "id": "solution-cards",
-        "idx": 5,
+        "idx": 7,
         "kind": "in",
         "name": "行业方案卡文案",
         "badge": "多卡正文",
@@ -84,11 +127,12 @@
         "shotFrom": 42,
         "shotTo": 58,
         "shotTop": 48,
-        "shotLeft": 30
+        "shotLeft": 30,
+        "peerReason": "「支撑伙伴打造行业解决方案」：sol-item 含大规模专家并行 / 互联网 / 智慧金融等标签；inner-title 与 inner-desc 长文案写在静态 HTML（未选中项在 display:none 容器内仍可抓），查看详情链至 /industries/solutions/…。"
       },
       {
         "id": "edu-partner",
-        "idx": 6,
+        "idx": 8,
         "kind": "in",
         "name": "教育科研与生态伙伴",
         "badge": "导流正文",
@@ -102,7 +146,7 @@
       },
       {
         "id": "marketplace",
-        "idx": 7,
+        "idx": 9,
         "kind": "warn",
         "name": "商机方案卡缺少静态列表",
         "badge": "客户端渲染",
@@ -116,10 +160,26 @@
         "fixNeeded": true,
         "highlights": [
           "sec-body\"><!--[--><!--]-->"
-        ]
+        ],
+        "peerReason": "「携手昇腾，发掘 AI 产业无限商机」楼层 h2 与底部「了解更多」→ /marketplace/solution 在 SSR，但 sec-body 为空；浏览器可见的 ADTEC / 图灵智感等伙伴方案卡靠脚本注入。"
+      },
+      {
+        "id": "footer-nav",
+        "idx": 10,
+        "kind": "in",
+        "name": "页脚多列导航",
+        "badge": "页脚链接",
+        "desc": "页脚 footer-main 五列（关于昇腾 / 新闻与活动 / 交流与资讯 / 支持与服务 / 开源社区）列名与各链（昇腾计算产业概述 → /ecosystem/industry、文档 → /zh/document、技术工单 → /zh/feedback 等）及底栏法律声明 / 隐私政策 / 联系我们 href 均在首包 HTML。",
+        "html": "<div class=\"footer-main\"><div class=\"link-group\"><h4 class=\"gp-name\">关于昇腾</h4><a class=\"link-item gp-link\" href=\"/ecosystem/industry\">昇腾计算产业概述</a></div><div class=\"link-group\"><h4 class=\"gp-name\">支持与服务</h4><a href=\"/zh/document\">文档</a><a href=\"/zh/feedback\">技术工单</a><a href=\"/zh/report\">举报中心</a></div>…<a href=\"/zh/legal/law\">法律声明</a><a href=\"/zh/legal/privacy\">隐私政策</a><a href=\"https://www.huawei.com/cn/contact-us\">联系我们</a>",
+        "shot": "assets/cases-html-ascend/home.png?v=20260805a2",
+        "shotFrom": 85,
+        "shotTo": 100,
+        "shotTop": 88,
+        "shotLeft": 30,
+        "peerReason": "页脚五列导航与法律声明 / 隐私政策 / 联系我们等链接均在首包 HTML，列名与 href 可抓全。"
       }
     ],
-    "concludeLead": "<p class=\"d1-verdict\"><span class=\"tag tag-in\">轮播与多楼层可抓</span> <span class=\"tag tag-out\">资讯 Tab 靠注入</span></p><p class=\"floor-hint\">蓝 = 可抓全 · 橙 = 抓不全</p>",
+    "concludeLead": "<p class=\"d1-verdict\"><span class=\"tag tag-in\">轮播与多楼层可抓</span> <span class=\"tag tag-out\">资讯 Tab 靠注入</span></p><p class=\"floor-hint\">蓝 = 可抓全 · 橙 = 有必要解决 · 黄 = 可不解决</p>",
     "concludeGeo": "<p class=\"conclude-geo\"><strong>边界：</strong>首页作发现与导流；规格跟深页。</p>"
   },
   "cluster": {
@@ -135,47 +195,95 @@
     "hasMarkdown": false,
     "floors": [
       {
-        "id": "product-intro",
+        "id": "more-products-dropdown",
         "idx": 1,
-        "kind": "in",
-        "name": "产品导语与型号",
-        "badge": "产品说明",
-        "desc": "Atlas 900 A3 SuperPoD 等产品名、导语写在 title/meta 与正文。",
-        "html": "ximum-scale=1,user-scalable=no\"> <title>Atlas 900 A3 SuperPoD Atlas 900 AI 集群-Atlas 900 A2 PoD-技术规格参数-昇腾社区</title> <script src=\"https://res.hc-cdn.com/CDP-Jssdk/2.6.4/web/uga-cdp-jssdk.window.js\"></script> <script src=\"https://res.wx.qq.com/open/js/jweixin-1.6",
+        "kind": "warn",
+        "name": "更多产品下拉缺少静态子链",
+        "badge": "下拉菜单",
+        "desc": "问题点：集群页标题旁浏览器可见「更多产品」下拉及展开项（Atlas 900 A2 PoD 集群基础单元 / Atlas 900 SuperCluster AI 集群等同品类机型），但静态 HTML 仅触发器文案，dropdown-panel 内无 a[href] 列表；须点击/悬停才挂载子链。\n判断：有必要解决 —— 应 SSR 全部下拉子项 label + href。",
+        "html": "<p class=\"product-title\">Atlas 950 SuperPoD 液冷超节点</p><span class=\"more-product-trigger\">更多产品</span><!-- 浏览器展开：Atlas 900 A2 PoD 集群基础单元 → /hardware/cluster?tag=900；Atlas 900 SuperCluster AI 集群 → ?tag=900ai --><!-- 静态 HTML 无 dropdown-panel 内 a[href] -->",
+        "shot": "assets/cases-html-ascend/cluster-product-hero.jpg?v=20260804u2",
+        "shotFrom": 2,
+        "shotTo": 14,
+        "shotTop": 6,
+        "shotLeft": 30,
+        "fixNeeded": true,
+        "highlights": [
+          "更多产品",
+          "dropdown-panel"
+        ],
+        "peerReason": "浏览器可见「更多产品」下拉及 Atlas 900 A2 PoD / SuperCluster AI 集群等同品类项，但静态 HTML 仅触发器文案，panel 内 a[href] 须点击/悬停才挂载。"
+      },
+      {
+        "id": "product-intro",
+        "idx": 2,
+        "kind": "warn",
+        "name": "超节点型号 Tab 缺少静态项",
+        "badge": "客户端渲染",
+        "desc": "问题点：首屏「超节点」楼层标题、四款型号 Tab（Atlas 950 SuperPoD / 850E / 900 A3 / 800 A3）与示意图浏览器可见，但静态 HTML 仅 content-title「集群」、o-tab-nav-list 与 pane 内为空；型号名未以 Tab 列表 SSR。\n判断：有必要解决 —— 应 SSR 默认 Tab 标签与当前选中型号导语。",
+        "html": "<p class=\"content-title\">集群</p><p class=\"content-desc\">面向大规模智算数据中心等场景，构筑性能领先的AI集群</p><div class=\"nav-tab-box\"><div class=\"o-tab\"><div class=\"o-tab-nav-list\"></div>…<div class=\"o-tab-pane o-tab-pane-active pane\"><!--[--><!--]--></div>…其余 pane display:none 亦空 …",
+        "shot": "assets/cases-html-ascend/cluster-product-tabs.jpg?v=20260804u1",
         "shotFrom": 4,
         "shotTo": 20,
         "shotTop": 10,
-        "shotLeft": 30
+        "shotLeft": 30,
+        "fixNeeded": true,
+        "highlights": [
+          "o-tab-nav-list\"></div>",
+          "<!--[--><!--]-->"
+        ],
+        "peerReason": "首屏「超节点」楼层标题、四款型号 Tab（Atlas 950 SuperPoD / 850E / 900 A3 / 800 A3）与示意图浏览器可见，但静态 HTML 仅 content-title「集群」、o-tab-nav-list 与 pane 内为空；型号名未以 Tab 列表 SSR。"
+      },
+      {
+        "id": "product-hero",
+        "idx": 3,
+        "kind": "warn",
+        "name": "非默认型号导语无静态正文",
+        "badge": "导语+CTA",
+        "desc": "问题点：切换型号 Tab 后导语与配图靠脚本替换，非默认款不在 SSR。\n判断：可不解决 —— 默认 Atlas 900 A3 SuperPoD 导语、CTA 与产品图已在静态 HTML（型号 Tab 列表见楼层 1）。",
+        "html": "<div class=\"production-intro-container\"><p class=\"card-title\">Atlas 900 A3 SuperPoD</p><p class=\"card-detail\">Atlas 900 A3 SuperPoD 超节点满足互联网、运营商、金融等行业的大规模智算数据中心建设，支持更高效的大模型训练和推理，提供业界最佳液冷AI超节点方案，通过灵衢高速互联，实现384张NPU像一台计算机一样工作。</p><a …>项目咨询</a>…<button …>固件与驱动</button>…<img src=\"/_static3/Atlas-cluster-41.DMb3Cx3S.png\" class=\"o-figure-img\" …>",
+        "shot": "assets/cases-html-ascend/cluster-product-hero.jpg?v=20260804u2",
+        "shotFrom": 20,
+        "shotTo": 38,
+        "shotTop": 24,
+        "shotLeft": 30,
+        "fixNeeded": false
       },
       {
         "id": "features",
-        "idx": 2,
-        "kind": "in",
-        "name": "产品特性要点",
-        "badge": "规格要点",
-        "desc": "784GB/s、PFLOPS、液冷等特性 bullet 写在静态 HTML。",
-        "html": " data-v-0246f7ed>最大支持384*NPU高速互联，D2D双向带宽784GB/s</p><p data-v-0246f7ed>48TB片上内存统一编址</p><p data-v-0246f7ed>总线带宽1:1无收敛</p><p data-v-0246f7ed>200ns通信单跳时延</p><!--]--></div></div><!--]--></div><!--]--></div><!--]--></div><div class=\"o-col o-col-phone flex-item\" styl",
-        "shotFrom": 22,
-        "shotTo": 38,
-        "shotTop": 28,
-        "shotLeft": 30
+        "idx": 4,
+        "kind": "warn",
+        "name": "特性卡缺少完整静态正文",
+        "badge": "仅默认 SSR",
+        "desc": "问题点：浏览器三列特性卡（超节点架构 / 超强性能 / 超高可靠，含 1024 卡、1 EFLOPS 等大字报）可见，但静态 HTML 仅两张默认卡 bullet 正文（384*NPU、PFLOPS FP16 等）；第三张「超高可靠」缺失，切换 Tab 后数据与配图靠脚本替换；封面数字在 feature 配图内无独立文本。\n判断：有必要解决 —— 各型号特性三卡标题与要点应 SSR，大字报数字宜补 alt/正文。",
+        "html": "<h2 class=\"sec-title\">产品特性</h2><div class=\"o-scroller-container\">…<div class=\"title\">超节点架构</div><p>最大支持384*NPU高速互联，D2D双向带宽784GB/s</p><p>48TB片上内存统一编址</p>…<div class=\"title\">超强性能</div><p>提供307.2/288.7 PFLOPS FP16超强算力</p>…（仅两卡，无「超高可靠」）…</div>",
+        "shot": "assets/cases-html-ascend/cluster-features.jpg?v=20260804u3",
+        "shotFrom": 38,
+        "shotTo": 54,
+        "shotTop": 42,
+        "shotLeft": 30,
+        "fixNeeded": true,
+        "highlights": [
+          "仅两卡",
+          "feature26.ChzzoPNI.png"
+        ]
       },
       {
         "id": "spec-summary",
-        "idx": 3,
+        "idx": 5,
         "kind": "in",
         "name": "技术规格摘要表",
         "badge": "参数表",
         "desc": "摘要规格 table 含形态/NPU/CPU 等行，静态可抓。",
         "html": "class=\"o-table-wrap o-table-border-row\"><table><colgroup><!--[--><!--]--></colgroup><!--v-if--><tbody><!--[--><!--[--><!--[--><!----><!----><tr data-v-ec56ba5f><td class=\"table-col-1\" data-v-ec56ba5f><p class=\"\" data-v-ec56ba5f></p><!----></td><!--[--><td cols",
-        "shotFrom": 39,
+        "shot": "assets/cases-html-ascend/cluster-spec-summary.jpg?v=20260804u4",
         "shotTo": 55,
         "shotTop": 45,
         "shotLeft": 30
       },
       {
         "id": "scenarios",
-        "idx": 4,
+        "idx": 6,
         "kind": "in",
         "name": "应用场景标签",
         "badge": "场景导流",
@@ -184,27 +292,11 @@
         "shotFrom": 52,
         "shotTo": 68,
         "shotTop": 58,
-        "shotLeft": 30
-      },
-      {
-        "id": "spec-detail",
-        "idx": 5,
-        "kind": "warn",
-        "name": "详细规格缺少静态展开",
-        "badge": "折叠规格",
-        "desc": "问题点：title 承诺技术规格参数，静态仅摘要表；查看详细规格需交互展开。\n判断：有必要解决 —— 应 SSR 完整参数表或提供可抓规格文档直链。",
-        "html": "ink-main\"><!--[--><span data-v-ec56ba5f>查看详细规格</span><svg viewbox=\"0 0 24 24\" class=\"o-svg-icon icon-chevron-down type-fill icon-arrow\" data-v-ec56ba5f><!----></svg><!--]--></span><!--v-if--></a></div><!--]--><!----></div><!--]--></div><div class=\"production-s",
-        "shotFrom": 39,
-        "shotTo": 55,
-        "shotTop": 45,
         "shotLeft": 30,
-        "fixNeeded": true,
-        "highlights": [
-          "查看详细规格"
-        ]
+        "peerReason": "互联网/金融/AICC 等场景标签写在源码。"
       }
     ],
-    "concludeLead": "<p class=\"d1-verdict\"><span class=\"tag tag-in\">特性与摘要规格可抓</span> <span class=\"tag tag-out\">详细规格需展开</span></p><p class=\"floor-hint\">蓝 = 可抓全 · 橙 = 抓不全</p>",
+    "concludeLead": "<p class=\"d1-verdict\"><span class=\"tag tag-in\">默认导语与摘要规格可抓</span> <span class=\"tag tag-out\">型号 Tab / 特性卡靠注入</span></p><p class=\"floor-hint\">蓝 = 可抓全 · 橙 = 有必要解决 · 黄 = 可不解决</p>",
     "concludeGeo": "<p class=\"conclude-geo\"><strong>建议：</strong>关键规格 SSR 成 HTML 表。</p>"
   },
   "ccae": {
@@ -222,58 +314,75 @@
       {
         "id": "banner-title",
         "idx": 1,
-        "kind": "in",
-        "name": "产品标题与 CTA",
-        "badge": "Banner",
-        "desc": "CCAE助力昇腾算力高可靠、高可用等标题与 CTA 写在 SSR。",
-        "html": "d\"><div><h2 class=\"sec-title initial-h\">CCAE助力昇腾算力高可靠、高可用</h2><!----></div><!----></div><!--]--><div class=\"sec-body\"><!--[--><div class=\"stack-bg\" data-v-2480c78a></div><div class=\"stack-container\" data-v-2480c78a><img class=\"stack-img__inner\" src=\"/_static3/",
-        "shotFrom": 6,
-        "shotTo": 22,
-        "shotTop": 12,
-        "shotLeft": 30
-      },
-      {
-        "id": "key-features",
-        "idx": 2,
-        "kind": "in",
-        "name": "关键特性正文",
-        "badge": "产品说明",
-        "desc": "集群健康评估、快速/深度评估等 bullet 写在静态 HTML。",
-        "html": "8a><div class=\"top\"><div class=\"title1\">集群健康评估</div><div class=\"para1\">CCAE提供API接口，可对集群软硬件环境进行健康评估并排除潜在隐患，用户可借助API开发工具快速构建所需的自定义应用</div></div><div class=\"bottom ltr\"><div class=\"left ltr-item\"><div class=\"title2\"><!---->特性能力</div><div class=\"feat-desc para2\"><",
-        "shotFrom": 29,
-        "shotTo": 45,
-        "shotTop": 35,
-        "shotLeft": 30
-      },
-      {
-        "id": "ext-resources",
-        "idx": 3,
-        "kind": "in",
-        "name": "扩展资源与 OpenAPI",
-        "badge": "开发资源",
-        "desc": "获取开发工具、OpenAPI 样例等资源写在源码。",
-        "html": "><div class=\"card-desc\">例如：开发者可利用CCAE的开放OpenAPI，通过DIY生成一个属于自己的手机APP，可以根据需要实时查看集群拓扑关联信息进行昇腾资源的就近调度</div><div class=\"card-links-wrap\"><!--[--><a class=\"o-link o-link-hover-underline o-link-primary o-link-auto card-link card-link\" href=\"ccae-api-gitee\" target=\"_b",
-        "shotFrom": 49,
-        "shotTo": 65,
-        "shotTop": 55,
-        "shotLeft": 30
-      },
-      {
-        "id": "banner-visual",
-        "idx": 4,
         "kind": "warn",
-        "name": "首屏栈图无导语",
-        "badge": "图片",
-        "desc": "问题点：首屏栈图无独立 alt 图注。\n判断：可不解决 —— 关键特性正文已在 SSR。",
-        "html": "取资源<!--]--><!--v-if--></button><a href=\"ccae-api-demo-guide\" type class=\"o-btn o-btn-primary o-btn-large o-btn-outline o-btn-round-pill banner-btn\" style=\"\" target=\"_blank\" data-v-2480c78a><!--v-if--><!--[-->查看文档<!--]--><!--v-if--></a></div><!--]--></div></div",
+        "name": "Banner 装饰图无 alt",
+        "badge": "Banner",
+        "desc": "问题点：右侧装饰图在 CSS background，无独立 alt。\n判断：可不解决 —— 产品名、评分、导语与获取资源/查看文档 CTA 正文已在 SSR。",
+        "html": "<div class=\"ccae-banner software-banner\">…<span>CCAE</span>…<div class=\"rate-simple-number\">暂无评分</div>…我要评分…<div class=\"description\">华为面向集群运维和管理的软件，致力于提供计算、网络、存储设备的一站式跨域管理…助力客户高效释放昇腾集群澎湃算力</div>…<button …>获取资源</button><a href=\"ccae-api-demo-guide\" …>查看文档</a>",
+        "shot": "assets/cases-html-ascend/ccae-banner.jpg?v=20260804u5",
         "shotFrom": 6,
         "shotTo": 22,
         "shotTop": 12,
         "shotLeft": 30,
-        "fixNeeded": false
+        "fixNeeded": false,
+        "peerReason": "右侧装饰图在 CSS background，无独立 alt。"
+      },
+      {
+        "id": "stack-visual",
+        "idx": 2,
+        "kind": "warn",
+        "name": "栈图层无图注",
+        "badge": "图片",
+        "desc": "问题点：sec-title「CCAE助力昇腾算力高可靠、高可用」在 SSR，但 stack-img__inner 架构图仅 src 无 alt 图注；模型层/平台层/底座层及 CCAE 能力要点（健康评估、故障诊断等）文字均在配图内，源码不可抓。\n判断：有必要解决 —— 应补 stack 图 alt/正文，或 SSR 架构分层与能力要点列表。",
+        "html": "<h2 class=\"sec-title initial-h\">CCAE助力昇腾算力高可靠、高可用</h2>…<img class=\"stack-img__inner\" src=\"/_static3/ccae_stack.C4nguP60.png\" data-v-2480c78a>",
+        "shot": "assets/cases-html-ascend/ccae-stack.jpg?v=20260804u7",
+        "shotFrom": 22,
+        "shotTo": 38,
+        "shotTop": 26,
+        "shotLeft": 30,
+        "fixNeeded": true,
+        "highlights": [
+          "stack-img__inner",
+          "ccae_stack.C4nguP60.png"
+        ]
+      },
+      {
+        "id": "key-features",
+        "idx": 3,
+        "kind": "warn",
+        "name": "特性 Tab 缺少静态正文",
+        "badge": "客户端渲染",
+        "desc": "问题点：浏览器四 Tab（集群健康评估 / 集群故障诊断 / 作业质量保障 / 集群数字地图）与对应正文、配图可见，但静态 HTML 仅默认「集群健康评估」导语与 bullet（快速/深度健康评估）；其余 Tab 名与「集群数字地图」等文案未 SSR；切换 Tab 后配图 ccaetab 靠脚本替换。\n判断：有必要解决 —— 应 SSR 四 Tab 标签与默认项完整正文，或各 Tab 要点列表。",
+        "html": "<h2 class=\"sec-title\">关键特性</h2>…<div class=\"title1\">集群健康评估</div><div class=\"para1\">CCAE提供API接口…</div>…<b>快速健康评估</b>…<b>深度健康评估</b>…<img src=\"/_static3/ccaetab1.CXazcsNI.jpg\" alt=\"\" …>（仅默认 Tab，无集群故障诊断/作业质量保障/集群数字地图）",
+        "shot": "assets/cases-html-ascend/ccae-key-features.jpg?v=20260804u8",
+        "shotFrom": 29,
+        "shotTo": 45,
+        "shotTop": 35,
+        "shotLeft": 30,
+        "fixNeeded": true,
+        "highlights": [
+          "集群健康评估",
+          "ccaetab1.CXazcsNI.jpg",
+          "alt=\"\""
+        ],
+        "peerReason": "浏览器四 Tab（集群健康评估 / 集群故障诊断 / 作业质量保障 / 集群数字地图）与对应正文、配图可见，但静态 HTML 仅默认「集群健康评估」导语与 bullet（快速/深度健康评估）；其余 Tab 名与「集群数字地图」等文案未 SSR；切换 Tab 后配图 ccaetab 靠脚本替换。"
+      },
+      {
+        "id": "ext-resources",
+        "idx": 4,
+        "kind": "in",
+        "name": "扩展资源与 OpenAPI",
+        "badge": "开发资源",
+        "desc": "扩展资源楼层：h2「扩展资源」、获取开发工具 card-title、OpenAPI DIY 导语、获取样例 / 了解CCAE / 获取CCAE产品 三条真实 href 均在静态 HTML。",
+        "html": "<h2 class=\"sec-title initial-h\">扩展资源</h2>…<div class=\"card-title\">获取开发工具</div><div class=\"card-desc\">例如：开发者可利用CCAE的开放OpenAPI，通过DIY生成一个属于自己的手机APP…昇腾资源的就近调度</div>…<a href=\"ccae-api-gitee\" …>获取样例</a>…<a href=\"ccae-product-documents\" …>了解CCAE</a>…<a href=\"ccae-software-package\" …>获取CCAE产品</a>",
+        "shot": "assets/cases-html-ascend/ccae-ext-resources.jpg?v=20260804u9",
+        "shotFrom": 49,
+        "shotTo": 65,
+        "shotTop": 55,
+        "shotLeft": 30
       }
     ],
-    "concludeLead": "<p class=\"d1-verdict\"><span class=\"tag tag-in\">特性与资源可抓</span> <span class=\"tag tag-out\">首屏偏视觉</span></p><p class=\"floor-hint\">蓝 = 可抓全 · 橙 = 抓不全</p>",
+    "concludeLead": "<p class=\"d1-verdict\"><span class=\"tag tag-in\">Banner/默认特性导语/OpenAPI 可抓</span> <span class=\"tag tag-out\">栈图/特性 Tab 靠注入</span></p><p class=\"floor-hint\">蓝 = 可抓全 · 橙 = 有必要解决 · 黄 = 可不解决</p>",
     "concludeGeo": "<p class=\"conclude-geo\"><strong>边界：</strong>深度 API 文档跟链。</p>"
   },
   "developer": {
@@ -289,98 +398,165 @@
     "hasMarkdown": false,
     "floors": [
       {
-        "id": "resource-cards",
+        "id": "dev-banner",
         "idx": 1,
-        "kind": "in",
-        "name": "训练/推理/算子入口卡",
-        "badge": "入口链接",
-        "desc": "训练开发、推理开发、算子开发卡标题与 href 写在源码。",
-        "html": "s=\"resource-card-title\" data-v-f1f075b5>训练开发</div><!--]--></span><!--v-if--></a><!--]--></div></div><!-- footer --><!--v-if--></div><!--]--></div><!--]--></a><!--]--></div><div class=\"o-col\" style=\"--col-flex:0 0 33.3%;\" data-v-f1f075b5><!--[--><a href=\"/devel",
-        "shotFrom": 12,
-        "shotTo": 28,
-        "shotTop": 18,
-        "shotLeft": 30
-      },
-      {
-        "id": "tools-list",
-        "idx": 2,
-        "kind": "in",
-        "name": "工具链名称与短述",
-        "badge": "工具说明",
-        "desc": "CANN、MindStudio 等标题与 tools-item-desc 写在 HTML。",
-        "html": "span class=\"tools-line\" data-v-f1f075b5>CANN 异构计算架构</span></div></div><div class=\"tools-item-desc\" data-v-f1f075b5>昇腾针对AI场景推出的异构计算架构，对上支持多种AI框架</div><!--]--></span><!--v-if--></a><div role=\"separator\" class=\"o-divider o-divider-solid o-divider-v divider\" data-",
-        "shotFrom": 32,
-        "shotTo": 48,
-        "shotTop": 38,
-        "shotLeft": 30
-      },
-      {
-        "id": "learning",
-        "idx": 3,
-        "kind": "in",
-        "name": "学习成长楼层",
-        "badge": "学习导流",
-        "desc": "精品推荐、学习路径、在线课程等入口写在源码。",
-        "html": " content=\"与昇腾AI一起，进行观点碰撞、技术交流、开发实战、AI创作、学习成长。\"> <meta property=\"og:title\" content=\"昇腾开发者主页-开发者中心-开发资源-昇腾社区\"> <meta property=\"og:description\" content=\"与昇腾AI一起，进行观点碰撞、技术交流、开发实战、AI创作、学习成长。\"> <script type=\"module\" src=\"/_static3/6CD_7pyE.js\" crossorigin></script><",
-        "shotFrom": 46,
-        "shotTo": 62,
-        "shotTop": 52,
-        "shotLeft": 30
-      },
-      {
-        "id": "devplan",
-        "idx": 4,
-        "kind": "in",
-        "name": "开发者计划说明",
-        "badge": "计划正文",
-        "desc": "开发者计划 2026 段落写在 SSR。",
-        "html": " o-nav-item-link\" target=\"_self\" title=\"开发者计划\"><!--v-if--><span class=\"o-link-main\"><!--[-->开发者计划<!--]--></span><!--v-if--></div><!----></div><!--]--><div id=\"more-nav-ele\" class=\"o-nav-item\"><div class=\"o-link o-link-normal o-link-auto item-link o-nav-item-li",
-        "shotFrom": 59,
-        "shotTo": 75,
-        "shotTop": 65,
-        "shotLeft": 30
-      },
-      {
-        "id": "news-carousel",
-        "idx": 5,
         "kind": "warn",
-        "name": "技术热点轮播缺少静态正文",
-        "badge": "动态注入",
-        "desc": "问题点：the-carouse-banner 静态为空，资讯卡靠脚本注入。\n判断：有必要解决 —— 应 SSR 默认列表。",
-        "html": "r-play{font-size:16px;margin-right:4px}.the-carouse-banner{height:var(--banner-height);margin-top:0;overflow:hidden;--border-radius:0}@media (max-width:840px){.the-carouse-banner{margin-top:16px;--border-radius:12px}}.the-carouse-banner.the-carouse-banner-xl{-",
-        "shotFrom": 22,
-        "shotTo": 38,
-        "shotTop": 28,
+        "name": "首屏轮播缺少静态帧",
+        "badge": "客户端渲染",
+        "desc": "问题点：首屏 the-carouse-banner 浏览器可见「昇腾开发者计划 2026」「重磅升级」导语与「了解更多」CTA，但静态 HTML 轮播容器为空（仅 teleport 占位）。\n判断：有必要解决 —— 应 SSR 默认轮播帧标题与链接。",
+        "html": "<div class=\"the-carouse-banner design-v3 the-carouse-banner-l\" …><!----><!--teleport start--><!--teleport end--></div>（无 banner-title / 帧文案）",
+        "shot": "assets/cases-html-ascend/developer-devplan-banner.jpg?v=20260804u10",
+        "shotFrom": 2,
+        "shotTo": 18,
+        "shotTop": 8,
         "shotLeft": 30,
         "fixNeeded": true,
         "highlights": [
-          "the-carouse-banner"
+          "the-carouse-banner",
+          "<!----><!--teleport"
         ]
       },
       {
-        "id": "card-no-desc",
-        "idx": 6,
+        "id": "tech-hotspots",
+        "idx": 2,
         "kind": "warn",
-        "name": "入口卡无短述",
-        "badge": "卡片",
-        "desc": "问题点：训练/推理/算子卡仅有标题与链接。\n判断：可不解决 —— 下方工具链已有短述。",
-        "html": "ight:82.5px}}@media (min-width:1681px){.resource-card-title[data-v-f1f075b5]{--font-size:22px;--line-height:30px}}@media (min-width:1201px) and (max-width:1680px){.resource-card-title[data-v-f1f075b5]{--font-size:18px;--line-height:26px}}@media (min-width:841p",
+        "name": "技术热点缺少静态列表",
+        "badge": "客户端渲染",
+        "desc": "问题点：「了解技术热点」h2 与底部「了解更多」→ /developer/techArticles 在 SSR，但浏览器可见五篇资讯卡（服务器运维监控平台参考实践、NPU虚拟化软切分、昇腾6月精选博文等标题/标签/日期），o-row 内卡片列表为空。\n判断：有必要解决 —— 应 SSR 默认热点列表。",
+        "html": "<h2 class=\"sec-title initial-h\">了解技术热点</h2>…<div class=\"o-row pc-layout\">…<div class=\"o-row\"><!--[--><!--]--></div>…（无文章卡标题/摘要）…<a href=\"/developer/techArticles\" …>了解更多</a>",
+        "shot": "assets/cases-html-ascend/developer-tech-hotspots.jpg?v=20260804u11",
+        "shotFrom": 18,
+        "shotTo": 34,
+        "shotTop": 22,
+        "shotLeft": 30,
+        "fixNeeded": true,
+        "highlights": [
+          "<!--[--><!--]-->"
+        ],
+        "peerReason": "「了解技术热点」h2 与底部「了解更多」→ /developer/techArticles 在 SSR，但浏览器可见五篇资讯卡（服务器运维监控平台参考实践、NPU虚拟化软切分、昇腾6月精选博文等标题/标签/日期），o-row 内卡片列表为空。"
+      },
+      {
+        "id": "resource-cards",
+        "idx": 3,
+        "kind": "warn",
+        "name": "入口卡缺少独立短述",
+        "badge": "入口链接",
+        "desc": "问题点：训练/推理/算子三卡无独立短述（仅标题+链接）。\n判断：可不解决 —— 标题与 href 已在 SSR，下方开发工具与资源卡已有短述。",
+        "html": "s=\"resource-card-title\" data-v-f1f075b5>训练开发</div><!--]--></span><!--v-if--></a><!--]--></div></div><!-- footer --><!--v-if--></div><!--]--></div><!--]--></a><!--]--></div><div class=\"o-col\" style=\"--col-flex:0 0 33.3%;\" data-v-f1f075b5><!--[--><a href=\"/devel",
+        "shot": "assets/cases-html-ascend/developer-tools-section.jpg?v=20260804u12",
         "shotFrom": 12,
         "shotTo": 28,
         "shotTop": 18,
         "shotLeft": 30,
         "fixNeeded": false
+      },
+      {
+        "id": "tools-list",
+        "idx": 4,
+        "kind": "in",
+        "name": "开发工具与资源导流",
+        "badge": "工具说明",
+        "desc": "获取开发资源楼层：h2、开发工具五列（CANN / PyTorch / MindSpeed / MindIE / MindStudio）标题与 tools-item-desc、HiDevLab-在线开发 / 资源下载中心 / 昇腾镜像仓库 卡标题与短述均在静态 HTML。",
+        "html": "<h2 class=\"sec-title initial-h\">获取开发资源</h2>…<div class=\"tools-title\">开发工具</div>…<span class=\"tools-line\">CANN 异构计算架构</span>…<div class=\"tools-item-desc\">昇腾针对AI场景推出的异构计算架构…</div>…PyTorch 框架适配…MindSpeed 训练加速库…MindIE 推理引擎…MindStudio 全流程开发工具链…HiDevLab-在线开发…资源下载中心…昇腾镜像仓库",
+        "shot": "assets/cases-html-ascend/developer-tools-section.jpg?v=20260804u12",
+        "shotFrom": 32,
+        "shotTo": 48,
+        "shotTop": 38,
+        "shotLeft": 30,
+        "peerReason": "获取开发资源楼层：h2、开发工具五列（CANN / PyTorch / MindSpeed / MindIE / MindStudio）标题与 tools-item-desc、HiDevLab-在线开发 / 资源下载中心 / 昇腾镜像仓库 卡标题与短述均在静态 HTML。"
+      },
+      {
+        "id": "dev-resource-cards",
+        "idx": 5,
+        "kind": "in",
+        "name": "开发资源卡文案",
+        "badge": "多卡正文",
+        "desc": "「获取开发资源」楼层底部三卡：HiDevLab-在线开发（提供简单、高效、易用的在线开发平台）/ 资源下载中心（一站式资源聚合下载）/ 昇腾镜像仓库（昇腾开放 Docker 镜像仓库，提供昇腾软件 Docker 镜像）的 o-card-title 与 o-card-detail 短述均在静态 HTML；HiDevLab 链至 hidevlab.hiascend.com。",
+        "html": "<h2 class=\"sec-title initial-h\">获取开发资源</h2>…<a …><div class=\"o-card-title\">HiDevLab-在线开发</div><div class=\"o-card-detail\">提供简单、高效、易用的在线开发平台</div></a>…<div class=\"o-card-title\">资源下载中心</div><div class=\"o-card-detail\">一站式资源聚合下载</div>…<div class=\"o-card-title\">昇腾镜像仓库</div><div class=\"o-card-detail\">昇腾开放Docker镜像仓库，提供昇腾软件Docker镜像</div>",
+        "shot": "assets/cases-html-ascend/developer-dev-resource-cards.jpg?v=20260805",
+        "shotFrom": 32,
+        "shotTo": 48,
+        "shotTop": 72,
+        "shotLeft": 28,
+        "peerReason": "「获取开发资源」底部三卡 HiDevLab-在线开发 / 资源下载中心 / 昇腾镜像仓库 的 o-card-title 与 o-card-detail 短述均在静态 HTML，HiDevLab 为外链 a[href]；未点击也能抓到标题与摘要。"
+      },
+      {
+        "id": "learning",
+        "idx": 6,
+        "kind": "warn",
+        "name": "精品推荐缺少静态列表",
+        "badge": "部分 SSR",
+        "desc": "问题点：h2「开启学习成长」与右侧四格（学习路径 / 在线课程 / 在线实验 / 认证）标题、短述、href 在 SSR；但左侧「精品推荐」浏览器可见认证课程列表（如 Ascend C算子开发能力认证、生成式AI通用知识等），course-left-card 内列表为空。\n判断：有必要解决 —— 应 SSR 精品推荐默认列表。",
+        "html": "<h2 class=\"sec-title initial-h\">开启学习成长</h2>…<div class=\"course-left-title\">精品推荐</div><!---->（列表空）…<a href=\"/edu/growth\" …>学习路径</a>…<div class=\"course-desc\">获取应用开发、模型开发…</div>…在线课程…在线实验…认证",
+        "shot": "assets/cases-html-ascend/developer-learning.jpg?v=20260804u13",
+        "shotFrom": 46,
+        "shotTo": 62,
+        "shotTop": 52,
+        "shotLeft": 30,
+        "fixNeeded": true,
+        "highlights": [
+          "精品推荐</div><!---->"
+        ]
+      },
+      {
+        "id": "community",
+        "idx": 7,
+        "kind": "warn",
+        "name": "互动交流缺少静态列表",
+        "badge": "客户端渲染",
+        "desc": "问题点：h2「参与互动交流」与四卡入口（活动 / 直播 / 论坛 / 博客）标题与 href 在 SSR，但各卡内活动/直播/帖子列表（如 CANN社区任务2026、昇腾软件说直播、论坛帖标题）浏览器可见，o-card-content 为空。\n判断：有必要解决 —— 应 SSR 各卡默认列表项。",
+        "html": "<h2 class=\"sec-title initial-h\">参与互动交流</h2>…<a href=\"/activities\" …>活动</a>…<a href=\"/developer/activities/Live\" …>直播</a>…<a href=\"/forum/\" …>论坛</a>…博客…<div class=\"o-card-content\"><!--[--><!--]--></div>（四卡列表均空）",
+        "shot": "assets/cases-html-ascend/developer-community.jpg?v=20260804u14",
+        "shotFrom": 58,
+        "shotTo": 74,
+        "shotTop": 62,
+        "shotLeft": 30,
+        "fixNeeded": true,
+        "highlights": [
+          "<!--[--><!--]-->"
+        ]
+      },
+      {
+        "id": "devplan",
+        "idx": 8,
+        "kind": "warn",
+        "name": "计划权益图示无独立文本",
+        "badge": "计划正文",
+        "desc": "问题点：右侧四格权益图示（实物礼品/开发资源/身份荣誉/学习资源）文字在配图内，源码无独立文本。\n判断：可不解决 —— 计划标题、导语长文案与了解更多 CTA 已在 SSR。",
+        "html": "<h2 class=\"sec-title initial-h\">加入开发者计划</h2>…<div class=\"card-child-title\">昇腾开发者计划2026</div>…<div class=\"develop-card-decs\">华为围绕昇腾计算平台推出的一项开发者计划，旨在使能和促进昇腾开发者培养开发能力…</div><a href=\"/developer-program\" …>了解更多</a>",
+        "shot": "assets/cases-html-ascend/developer-devplan.jpg?v=20260804u15",
+        "shotFrom": 59,
+        "shotTo": 75,
+        "shotTop": 65,
+        "shotLeft": 30,
+        "fixNeeded": false,
+        "peerReason": "右侧四格权益图示（实物礼品/开发资源/身份荣誉/学习资源）文字在配图内，源码无独立文本。"
+      },
+      {
+        "id": "support-help",
+        "idx": 9,
+        "kind": "in",
+        "name": "支持与帮助导流",
+        "badge": "帮助入口",
+        "desc": "支持与帮助楼层：h2、昇腾论坛 / 支持与服务双卡标题、短述与 /forum、/support 真实 href 均在静态 HTML。",
+        "html": "<h2 class=\"sec-title initial-h\">支持与帮助</h2>…<a href=\"/forum\" …><div class=\"card-title\">昇腾论坛</div>…<div class=\"desc-text\">问题求助，技术探讨，大咖在线答疑解惑</div>…<a href=\"/support\" …><div class=\"card-title\">支持与服务</div>…<div class=\"desc-text\">为您提供多样化的自助查询途径、专业高效的人工服务支持</div>",
+        "shot": "assets/cases-html-ascend/developer-support.jpg?v=20260804u16",
+        "shotFrom": 72,
+        "shotTo": 88,
+        "shotTop": 78,
+        "shotLeft": 30,
+        "peerReason": "支持与帮助楼层：h2、昇腾论坛 / 支持与服务双卡标题、短述与 /forum、/support 真实 href 均在静态 HTML。"
       }
     ],
-    "concludeLead": "<p class=\"d1-verdict\"><span class=\"tag tag-in\">工具链与学习可抓</span> <span class=\"tag tag-out\">轮播靠注入</span></p><p class=\"floor-hint\">蓝 = 可抓全 · 橙 = 抓不全</p>",
+    "concludeLead": "<p class=\"d1-verdict\"><span class=\"tag tag-in\">资源卡/工具链/计划/支持可抓</span> <span class=\"tag tag-out\">轮播/热点/推荐/互动靠注入</span></p><p class=\"floor-hint\">蓝 = 可抓全 · 橙 = 有必要解决 · 黄 = 可不解决</p>",
     "concludeGeo": "<p class=\"conclude-geo\"><strong>边界：</strong>壳页导航；知识在 FAQ 叶子。</p>"
   },
   "faq": {
     "title": "AscendFAQ 文档 · HTML 抓取对照",
-    "leftUrl": "https://www.hiascend.com/document/detail/zh/AscendFAQ/overview/index.html",
-    "leftLabel": "…/AscendFAQ/overview/",
+    "leftUrl": "https://www.hiascend.com/document/detail/zh/AscendFAQ/ProduTech/productform/hardwaredesc_0001.html",
+    "leftLabel": "…/productform/hardwaredesc_0001.html",
     "leftShot": "assets/cases-html-ascend/faq.png?v=20260803b1",
-    "rightUrl": "https://www.hiascend.com/document/detail/zh/AscendFAQ/overview/index.html",
+    "rightUrl": "https://www.hiascend.com/document/detail/zh/AscendFAQ/ProduTech/productform/hardwaredesc_0001.html",
     "rightLabel": "楼层 HTML 摘录",
     "fullHtmlPath": "assets/cases-html-ascend/faq.html",
     "pageDesc": "昇腾产品形态说明文档。",
@@ -398,11 +574,27 @@
         "shotFrom": 4,
         "shotTo": 20,
         "shotTop": 10,
-        "shotLeft": 30
+        "shotLeft": 30,
+        "peerReason": "昇腾产品形态说明写在 h1/title。"
+      },
+      {
+        "id": "doc-breadcrumb",
+        "idx": 2,
+        "kind": "warn",
+        "name": "o-breadcrumb 路径链",
+        "badge": "面包屑",
+        "desc": "问题点：<a href=\"https://www.hiascend.com/document/detail/zh/AscendFAQ/ProduTech/productform/hardwaredesc_0001.html\">昇腾产品形态说明</a> 顶栏可见 o-breadcrumb（昇腾常见问题 › 产品与技术常见问题 › 昇腾产品形态说明）；静态 HTML 的 server-breadcrumb 仅 SSR 2 个 a[href]（文档中心、当前页），中间层级与可见路径不一致。\n判断：抓不全 —— 有面包屑 UI 但首包路径链不完整。",
+        "html": "<div class=\"o-breadcrumb server-breadcrumb\">…<a href=\"/sitemap/sitemapdoc1.xml\" class=\"o-breadcrumb-item-label\">文档中心</a>…<a href=\"/document/detail/zh/AscendFAQ/ProduTech/productform/hardwaredesc_0001.html\" class=\"o-breadcrumb-item-label\">昇腾产品形态说明</a>…（浏览器可见三级路径，首包 ancestors 不完整）",
+        "shotFrom": 4,
+        "shotTo": 20,
+        "shotTop": 10,
+        "shotLeft": 30,
+        "fixNeeded": true,
+        "peerReason": "顶栏 o-breadcrumb 可见三级路径，但静态 HTML 首包仅部分 ancestors 可链，中间层级需客户端补全。"
       },
       {
         "id": "doc-body",
-        "idx": 2,
+        "idx": 3,
         "kind": "in",
         "name": "产品形态说明段落",
         "badge": "正文",
@@ -411,11 +603,12 @@
         "shotFrom": 19,
         "shotTo": 35,
         "shotTop": 25,
-        "shotLeft": 30
+        "shotLeft": 30,
+        "peerReason": "训练/推理产品系列说明段落写在 article。"
       },
       {
         "id": "product-table",
-        "idx": 3,
+        "idx": 4,
         "kind": "in",
         "name": "表1 昇腾产品系列",
         "badge": "参数表",
@@ -424,16 +617,19 @@
         "shotFrom": 36,
         "shotTo": 52,
         "shotTop": 42,
-        "shotLeft": 30
+        "shotLeft": 30,
+        "peerReason": "表1 含 Atlas 350 等型号，完整 table 在静态 HTML。"
       },
       {
         "id": "sidebar-nav",
-        "idx": 4,
+        "idx": 5,
         "kind": "warn",
-        "name": "侧栏目录无静态链接",
+        "name": "左侧竖向 menu",
         "badge": "导航",
-        "desc": "问题点：侧栏 TOC 主要在 __NUXT_DATA__。\n判断：可不解决 —— 本篇正文与表已 SSR。",
-        "html": "div><script type=\"application/json\" id=\"__NUXT_DATA__\" data-ssr=\"true\">[[\"ShallowReactive\",1],{\"data\":2,\"state\":1015,\"once\":1019,\"_errors\":1020,\"serverRendered\":10,\"path\":1022,\"pinia\":1023,\"ssrContext.isMobile\":13},[\"ShallowReactive\",3],{\"/ascendgateway/ascend",
+        "desc": "问题点：浏览器侧栏可见完整 TOC，但静态 HTML 几乎无侧栏 `<a href>` 导航树（线上实测仅 1 条正文链）；目录结构主要在 `__NUXT_DATA__` JSON 中。\n判断（html 可抓取）：抓不全 —— 侧栏链接未 SSR 为可跟链 HTML。",
+        "peerReason": "静态 HTML 无侧栏可跟链导航树，TOC 节点在 __NUXT_DATA__ JSON 中。",
+        "html": "<script type=\"application/json\" id=\"__NUXT_DATA__\" data-ssr=\"true\">…{\"label\":\"昇腾常见问题\"}…（TOC 节点在 JSON，非侧栏 `<a href>` 列表）",
+        "shot": "assets/cases-html-ascend/faq-sidebar.jpg?v=20260804u17",
         "shotFrom": 9,
         "shotTo": 25,
         "shotTop": 15,
@@ -444,58 +640,8 @@
         ]
       }
     ],
-    "concludeLead": "<p class=\"d1-verdict\"><span class=\"tag tag-in\">正文与产品表可抓</span> <span class=\"tag tag-out\">侧栏在 NUXT</span></p><p class=\"floor-hint\">蓝 = 可抓全 · 橙 = 抓不全</p>",
+    "concludeLead": "<p class=\"d1-verdict\"><span class=\"tag tag-in\">正文与产品表可抓</span> <span class=\"tag tag-warn-ok\">侧栏在 NUXT 可不解决</span></p><p class=\"floor-hint\">蓝 = 可抓全 · 橙 = 有必要解决 · 黄 = 可不解决</p>",
     "concludeGeo": "<p class=\"conclude-geo\"><strong>建议：</strong>知识改造优先落在此类叶子。</p>"
-  },
-  "hidevlab": {
-    "title": "HiDevLab · HTML 抓取对照",
-    "leftUrl": "https://hidevlab.huawei.com/online-develop-intro?from=hiascend",
-    "leftLabel": "hidevlab.huawei.com/…",
-    "leftShot": "assets/cases-html-ascend/hidevlab.png?v=20260803b1",
-    "rightUrl": "https://hidevlab.huawei.com/online-develop-intro?from=hiascend",
-    "rightLabel": "楼层 HTML 摘录",
-    "fullHtmlPath": "assets/cases-html-ascend/hidevlab.html",
-    "pageDesc": "HiDevLab 站外 SPA。",
-    "pageName": "HiDevLab",
-    "hasMarkdown": false,
-    "floors": [
-      {
-        "id": "empty-app",
-        "idx": 1,
-        "kind": "warn",
-        "name": "主体缺少静态正文",
-        "badge": "SPA 空壳",
-        "desc": "问题点：首包仅 <div id=\"app\"></div>，说明依赖客户端渲染。\n判断：有必要解决 —— 应 SSR 或附可抓摘要页。",
-        "html": "> </head> <body data-o-theme='k.light'> <div id='app'></div> <script nomodule>!function(){var e=document,t=e.createElement(\"script\");if(!(\"noModule\"in t)&&\"onbeforeload\"in t){var n=!1;e.addEventListener(\"beforeload\",(function(e){if(e.target===t)n=!0;else if",
-        "shotFrom": 34,
-        "shotTo": 50,
-        "shotTop": 40,
-        "shotLeft": 30,
-        "fixNeeded": true,
-        "highlights": [
-          "id='app'"
-        ]
-      },
-      {
-        "id": "title-only",
-        "idx": 2,
-        "kind": "warn",
-        "name": "仅有 title 元信息",
-        "badge": "元信息",
-        "desc": "问题点：除 <title>HiDevLab</title> 外几乎无可读中文。\n判断：有必要解决 —— 不能把空 SPA 当知识源。",
-        "html": "h=device-width, initial-scale=1.0' /> <title>HiDevLab</title> <script> // 运行时动态设置 cdn 地址 window.wcm_domain_url = '//r.huaweistatic.com'; // 可以根据需求动态设置 window.wcm_domain_env = ''; // 可以根据需求动态设置 window.__toCdnUrl = (path) => { let domai",
-        "shotFrom": 0,
-        "shotTo": 15,
-        "shotTop": 5,
-        "shotLeft": 30,
-        "fixNeeded": true,
-        "highlights": [
-          "<title>HiDevLab"
-        ]
-      }
-    ],
-    "concludeLead": "<p class=\"d1-verdict\"><span class=\"tag tag-out\">空壳 SPA</span> <span class=\"tag tag-out\">正文不可读</span></p><p class=\"floor-hint\">蓝 = 可抓全 · 橙 = 抓不全</p>",
-    "concludeGeo": "<p class=\"conclude-geo\"><strong>建议：</strong>社区链出附摘要或明确不引用。</p>"
   },
   "download": {
     "title": "资源下载 · HTML 抓取对照",
@@ -515,69 +661,114 @@
         "kind": "in",
         "name": "下载中心定位",
         "badge": "Banner",
-        "desc": "一站式资源聚合下载写在 SSR。",
-        "html": "v-261fcc7e><!--[--><div data-v-261fcc7e>一站式资源聚合下载</div><!--]--></div><div class=\"bottom-bar\" data-v-261fcc7e><!--[--><div class=\"notice\" data-v-8c14c69e><!--[--><div class=\"floor-notice\" data-v-fdcdcdd1><div class=\"the-section-v3 design-v3 floor-notice-section",
+        "desc": "资源下载中心标题、一站式资源聚合下载副标题、公告条（notice-title / 日期 / 查看公告）均在静态 HTML。\n边界：轮播公告帧可能随时间替换，默认帧文案在 SSR。",
+        "html": "<div class=\"title\">资源下载中心</div><div class=\"subtitle\">一站式资源聚合下载</div>…<a class=\"notice-title\" …>昇腾社区资源下载中心改版上线公告</a><p class=\"notice-date\">2026/05/08</p>…查看公告",
+        "shot": "assets/cases-html-ascend/download-hero.jpg?v=20260804u18",
         "shotFrom": 4,
         "shotTo": 20,
         "shotTop": 10,
-        "shotLeft": 30
+        "shotLeft": 30,
+        "peerReason": "资源下载中心标题、一站式资源聚合下载副标题、公告条（notice-title / 日期 / 查看公告）均在静态 HTML。"
       },
       {
         "id": "edition-note",
         "idx": 2,
-        "kind": "in",
-        "name": "社区版商用版说明",
+        "kind": "warn",
+        "name": "改版 Tab 与配套横幅无静态正文",
         "badge": "策略说明",
-        "desc": "社区版/商用版差异写在 meta 与正文。",
-        "html": "e\"> <meta name=\"description\" content=\"提供社区版和商业版下载，其中，社区版快速提供新特性的体验版，供开发者提前试用；商业版满足商用标准的稳定版本。\"> <meta property=\"og:title\" content=\"昇腾开发资源下载中心-昇腾社区\"> <meta property=\"og:description\" content=\"提供社区版和商业版下载，其中，社区版快速提供新特性的体验版，供开发者提前试用；商业版满足商用标准的稳定版本。\"> <script type=\"",
+        "desc": "问题点：线上 Tab 已改为「下载资源 / 昇腾资源·三方资源」；「版本配套查询助手」横幅当前 HTML 快照无正文。\n判断：可不解决 —— meta、社区版/商用版 Tab 文案与区块标题仍在 SSR。",
+        "html": "<meta name=\"description\" content=\"提供社区版和商业版下载…\"><div class=\"tab-title\">社区版</div><div class=\"tab-des\">快速提供新特性的体验版，供开发者提前试用</div>…<div class=\"tab-title\">商用版</div><div class=\"tab-des\">满足商用标准的稳定版本</div>…<h2 class=\"sec-title\">下载昇腾社区版资源</h2>",
+        "shot": "assets/cases-html-ascend/download-edition-note.jpg?v=20260804u19",
         "shotFrom": 16,
         "shotTo": 32,
         "shotTop": 22,
-        "shotLeft": 30
+        "shotLeft": 30,
+        "fixNeeded": false,
+        "peerReason": "线上 Tab 已改为「下载资源 / 昇腾资源·三方资源」；「版本配套查询助手」横幅当前 HTML 快照无正文。"
       },
       {
-        "id": "software-cards",
+        "id": "framework-cards",
         "idx": 3,
         "kind": "in",
         "name": "框架软件下载卡",
         "badge": "下载列表",
-        "desc": "CANN、PyTorch 等 o-card 标题、短述与 href 写在源码。",
-        "html": " class=\"o-card-detail\" style=\"\"><!--[-->CANN作为华为昇腾AI基础软硬件平台的核心，以极致性能、极简开发、开放生态为目标<!--]--></div><!--[--><!--]--></div></div><!-- footer --><!--v-if--></div><!--]--></div><!--]--></a><!--]--></div><div class=\"o-col\" style=\"--col-flex:0 0 33.33333%;\" data-v-8c14c",
+        "desc": "CANN、PyTorch、TensorFlow、MindSpore、MindSpeed、MindIE 等 o-card 标题、短述与 href 写在静态 HTML。",
+        "html": "<div class=\"o-card-title\">CANN</div><div class=\"o-card-detail\">CANN作为华为昇腾AI基础软硬件平台的核心，以极致性能、极简开发、开放生态为目标</div>…<div class=\"o-card-title\">PyTorch</div>…<div class=\"o-card-title\">MindSpore</div>",
+        "shot": "assets/cases-html-ascend/download-framework-cards.jpg?v=20260804u23",
         "shotFrom": 34,
         "shotTo": 50,
         "shotTop": 40,
-        "shotLeft": 30
+        "shotLeft": 30,
+        "peerReason": "CANN、PyTorch、TensorFlow、MindSpore、MindSpeed、MindIE 等 o-card 标题、短述与 href 写在静态 HTML。"
+      },
+      {
+        "id": "software-cards",
+        "idx": 4,
+        "kind": "warn",
+        "name": "历史包标题缺少快照文案",
+        "badge": "配套下载",
+        "desc": "问题点：线上区块标题为「获取历史软件包」，HTML 快照为「获取软件包配套下载」。\n判断：可不解决 —— 旧版资源下载中心卡标题、短述与 href 已在 SSR。",
+        "html": "<h2 class=\"sec-title\">获取软件包配套下载</h2>…<a href=\"/developer/download/old\" …><div class=\"o-card-title\">旧版资源下载中心</div><div class=\"o-card-detail\">如您仍需获取基于软件配套版本的下载方式，可点击前往旧版资源下载中心</div></a>",
+        "shot": "assets/cases-html-ascend/download-software-cards.jpg?v=20260804u24",
+        "shotFrom": 34,
+        "shotTo": 50,
+        "shotTop": 40,
+        "shotLeft": 30,
+        "fixNeeded": false,
+        "peerReason": "线上区块标题为「获取历史软件包」，HTML 快照为「获取软件包配套下载」。"
       },
       {
         "id": "other-resources",
-        "idx": 4,
+        "idx": 5,
         "kind": "in",
         "name": "固件驱动与其他资源",
         "badge": "资源导流",
-        "desc": "固件与驱动、镜像仓库等入口写在 HTML。",
-        "html": "class=\"resources-title\" data-v-8c14c69e>固件与驱动</div><div class=\"resources-des g-text-overflow2\" data-v-8c14c69e>使用华为提供的固件包、驱动包完成昇腾设备的基础环境部署</div><div class=\"resources-btn\" data-v-8c14c69e><a class=\"o-link o-link-hover-underline o-link-primary o-link-medium\" dat",
+        "desc": "「其他资源」区块及六张导流卡（固件与驱动、昇腾镜像仓库、Ascend Deployer、昇腾开放资源、开发板专区、更多资源）的标题、短述与链接文案均在静态 HTML。",
+        "html": "<h2 class=\"sec-title\">其他资源</h2>…<div class=\"resources-title\">固件与驱动</div>…社区版 / 商用版…<div class=\"resources-title\">昇腾镜像仓库</div>…了解详情…Ascend Deployer部署工具…立即下载 / 查看文档…昇腾开放资源…开发板专区…更多资源…MindSpore / ModelZoo",
+        "shot": "assets/cases-html-ascend/download-other-resources.jpg?v=20260804u21",
         "shotFrom": 52,
         "shotTo": 68,
         "shotTop": 58,
         "shotLeft": 30
-      },
+      }
+    ],
+    "concludeLead": "<p class=\"d1-verdict\"><span class=\"tag tag-in\">分类与软件卡可抓</span></p><p class=\"floor-hint\">蓝 = 可抓全 · 橙 = 有必要解决 · 黄 = 可不解决</p>",
+    "concludeGeo": "<p class=\"conclude-geo\"><strong>建议：</strong>保分类 SSR；版本矩阵见固件与驱动页。</p>"
+  },
+  "firmware-drivers": {
+    "title": "固件与驱动 /hardware/firmware-drivers · HTML 抓取对照",
+    "leftUrl": "https://www.hiascend.com/hardware/firmware-drivers",
+    "leftLabel": "…/hardware/firmware-drivers",
+    "leftShot": "assets/cases-html-ascend/download-other-resources.jpg?v=20260804u21",
+    "rightUrl": "https://www.hiascend.com/hardware/firmware-drivers",
+    "rightLabel": "楼层 HTML 摘录",
+    "fullHtmlPath": "assets/cases-html-ascend/download.html",
+    "pageDesc": "昇腾固件与驱动下载页：产品型号/架构/安装方式 Toggle 筛选与包列表。",
+    "pageName": "固件与驱动",
+    "hasMarkdown": false,
+    "floors": [
       {
         "id": "version-matrix",
-        "idx": 5,
+        "idx": 1,
         "kind": "warn",
         "name": "版本矩阵无静态列表",
         "badge": "动态筛选",
-        "desc": "问题点：版本筛选/完整包表靠交互加载。\n判断：可不解决 —— 分类卡已可抓，准确版本跟详情页。",
-        "html": "div><script type=\"application/json\" id=\"__NUXT_DATA__\" data-ssr=\"true\">[[\"ShallowReactive\",1],{\"data\":2,\"state\":617,\"once\":621,\"_errors\":622,\"serverRendered\":46,\"path\":193,\"pinia\":624,\"ssrContext.isMobile\":14},[\"ShallowReactive\",3],{\"/ascendgateway/ascendservi",
-        "shotFrom": 64,
-        "shotTo": 80,
-        "shotTop": 70,
+        "desc": "问题点：浏览器可见产品型号/架构/安装方式等 Toggle 筛选与固件驱动包列表，但静态 HTML 无完整 option 矩阵；选中组合靠 URL ?ids= 与 __NUXT_DATA__ 客户端恢复，禁 JS 抓不全。\n判断：有必要解决 —— 若 Toggle 映射版本/包路径，应 SSR 全量 option 或 llms 补映射表。",
+        "html": "<title>固件与驱动-昇腾设备环境部署-软件下载-昇腾社区</title>…<div id=\"__NUXT_DATA__\">…/hardware/firmware-drivers?ids=d802,…,AArch64,online_apt_get…<!-- 浏览器可见型号/架构/安装方式 Toggle，首包无完整 option 列表 -->",
+        "shotFrom": 0,
+        "shotTo": 100,
+        "shotTop": 20,
         "shotLeft": 30,
-        "fixNeeded": false
+        "fixNeeded": true,
+        "highlights": [
+          "__NUXT_DATA__",
+          "ids="
+        ],
+        "peerReason": "浏览器可见产品型号/架构/安装方式 Toggle 与包列表，但静态 HTML 无完整 option 矩阵；选中态靠 ?ids= 与 __NUXT_DATA__ 恢复，禁 JS 抓不全。"
       }
     ],
-    "concludeLead": "<p class=\"d1-verdict\"><span class=\"tag tag-in\">分类与软件卡可抓</span> <span class=\"tag tag-out\">版本矩阵靠交互</span></p><p class=\"floor-hint\">蓝 = 可抓全 · 橙 = 抓不全</p>",
-    "concludeGeo": "<p class=\"conclude-geo\"><strong>建议：</strong>保分类 SSR；版本清单另页提供。</p>"
+    "concludeLead": "<p class=\"d1-verdict\"><span class=\"tag tag-out\">Toggle 版本矩阵靠 ids/NUXT</span></p><p class=\"floor-hint\">蓝 = 可抓全 · 橙 = 有必要解决 · 黄 = 可不解决</p>",
+    "concludeGeo": "<p class=\"conclude-geo\"><strong>建议：</strong>Toggle 选项 SSR 全量 label；包表跟详情页或 llms 映射。</p>"
   },
   "edu": {
     "title": "教育科研平台 · HTML 抓取对照",
@@ -596,56 +787,18 @@
         "idx": 1,
         "kind": "in",
         "name": "平台主张导语",
-        "badge": "正文",
-        "desc": "鲲鹏&昇腾教育科研平台定位句写在 SSR。",
-        "html": "le=1,user-scalable=no\"> <title>鲲鹏&amp;昇腾教育科研平台</title> <script src=\"https://res.hc-cdn.com/CDP-Jssdk/2.6.4/web/uga-cdp-jssdk.window.js\"></script> <script src=\"https://res.wx.qq.com/open/js/jweixin-1.6.0.js\"></script> <style>:root{--layout-content-width:1440px;",
+        "badge": "Banner",
+        "desc": "首屏轮播默认帧「鲲鹏&昇腾优才计划」banner-title、副文案与「查看详情」CTA 均在静态 HTML。",
+        "html": "<p class=\"banner-title\">鲲鹏&amp;昇腾优才计划</p><p class=\"banner-desc\">聚集顶尖人才作战，欢迎加入华为及生态合作企业产业实践</p>…<a …><span class=\"o-link-label\">查看详情</span></a>",
+        "shot": "assets/cases-html-ascend/edu-platform-intro.jpg?v=20260804u25",
         "shotFrom": 6,
         "shotTo": 22,
         "shotTop": 12,
         "shotLeft": 30
       },
       {
-        "id": "role-cards",
-        "idx": 2,
-        "kind": "in",
-        "name": "三类受众入口卡",
-        "badge": "多卡正文",
-        "desc": "科研工作者/教育工作者/学生开发者卡标题、短述与 href 可抓。",
-        "html": "57f66c1>鲲鹏与昇腾为教育科研领域提供全方位技术支持和生态资源，助力新一代科研工作者、教师、学生及创业者加速创新</div></div><div class=\"plan-content\" data-v-d57f66c1><div class=\"o-row\" style=\"flex-wrap:wrap;--row-gap-x:var(--grid-column-gutter);--row-gap-y:var(--grid-column-gutter);\" data-v-d57f66c1><!--[--><!--",
-        "shotFrom": 24,
-        "shotTo": 40,
-        "shotTop": 30,
-        "shotLeft": 30
-      },
-      {
-        "id": "tech-cards",
-        "idx": 3,
-        "kind": "in",
-        "name": "HPC/数据库方案卡",
-        "badge": "方案短述",
-        "desc": "高性能计算基础软件等方案卡写在 HTML。",
-        "html": "style=\"--card-title-max-row:1;\"><!--[-->高性能计算基础软件<!--]--></div><!--]--></div><!-- content --><div class=\"o-card-content\"><div class=\"o-card-detail o-card-detail-limited\" style=\"--card-detail-max-row:2;\"><!--[-->针对鲲鹏平台深度优化的高性能计算基础软件，实现一键部署和最优协同，使能高性能计算领域应用实现极致性",
-        "shotFrom": 42,
-        "shotTo": 58,
-        "shotTop": 48,
-        "shotLeft": 30
-      },
-      {
-        "id": "learning-cases",
-        "idx": 4,
-        "kind": "in",
-        "name": "学习资源与成功案例",
-        "badge": "内容列表",
-        "desc": "学习资源、成功案例卡写在源码。",
-        "html": "=\"sec-head\"><div><div class=\"sec-title\">成功案例</div><!----></div><!----></div><!--]--><div class=\"sec-body\"><!--[--><div class=\"award-content\" data-v-e28ef825><div class=\"o-carousel o-carousel-effect-gallery slides\" style=\"--carousel-interval:5000ms;\" loop data-",
-        "shotFrom": 56,
-        "shotTo": 72,
-        "shotTop": 62,
-        "shotLeft": 30
-      },
-      {
         "id": "banner-slides",
-        "idx": 5,
+        "idx": 2,
         "kind": "warn",
         "name": "轮播帧缺少可抓文案",
         "badge": "轮播",
@@ -658,13 +811,14 @@
         "fixNeeded": true,
         "highlights": [
           "undefined-undefined"
-        ]
+        ],
+        "peerReason": "部分 Banner 帧文案仅在 __NUXT_DATA__。"
       },
       {
         "id": "banner-alt",
-        "idx": 6,
+        "idx": 3,
         "kind": "warn",
-        "name": "轮播配图 alt 无效",
+        "name": "轮播配图无有效 alt",
         "badge": "图片",
         "desc": "问题点：banner alt 为 undefined-undefined。\n判断：可不解决 —— 首帧正文已在 DOM。",
         "html": "erImage/1778294462348-优才计划-MB.png\" alt=\"undefined-undefined\" class=\"o-figure-img\" loading=\"eager\"><!--]--><div class=\"o-figure-main\"><!--[--><div class=\"banner-content\"><div class=\"banner-title-box\"><p class=\"banner-title\">鲲鹏&amp;昇腾优才计划</p><p class=\"banner-des",
@@ -676,9 +830,161 @@
         "highlights": [
           "undefined-undefined"
         ]
+      },
+      {
+        "id": "role-cards",
+        "idx": 4,
+        "kind": "in",
+        "name": "三类受众入口卡",
+        "badge": "多卡正文",
+        "desc": "sec-title「鲲鹏&昇腾教育科研平台」、导语与科研工作者 / 教育工作者 / 学生开发者三卡标题、短述及 href（/researchers、/teachers、/students）均在静态 HTML。",
+        "html": "<div class=\"sec-title\">鲲鹏&amp;昇腾教育科研平台</div>…<div class=\"title\">鲲鹏与昇腾为教育科研领域提供全方位技术支持和生态资源…</div>…<a href=\"/researchers\" …><div class=\"card-title\">科研工作者</div><div class=\"card-des\">了解前沿科研动向，获得创新项目孵化支持</div></a>…<a href=\"/teachers\" …>教育工作者</a>…对接产业技术资源，升级课堂教学方案…<a href=\"/students\" …>学生开发者</a>…参与实践项目，提升创新能力",
+        "shot": "assets/cases-html-ascend/edu-role-cards.jpg?v=20260804u26",
+        "shotFrom": 24,
+        "shotTo": 40,
+        "shotTop": 30,
+        "shotLeft": 30
+      },
+      {
+        "id": "tech-cards",
+        "idx": 5,
+        "kind": "in",
+        "name": "HPC/数据库方案卡",
+        "badge": "方案短述",
+        "desc": "sec-title「使用鲲鹏昇腾技术帮助你的项目」、默认鲲鹏 Tab 下三卡（高性能计算基础软件 / 高性能计算解决方案 / 数据库 openGauss）标题、短述、href 与「查看详情」均在静态 HTML。\n边界：鲲鹏/昇腾 Tab 标签 o-tab-nav-list 为空，靠脚本渲染。",
+        "html": "<div class=\"sec-title\">使用鲲鹏昇腾技术帮助你的项目</div>…<a href=\"https://www.hikunpeng.com/developer/hpc\" …><div class=\"o-card-title\">高性能计算基础软件</div><div class=\"o-card-detail\">针对鲲鹏平台深度优化的高性能计算基础软件…</div></a>…<a href=\"https://www.hikunpeng.com/solutions/hpc\" …>高性能计算解决方案</a>…<a href=\"https://docs.opengauss.org/zh/\" …><div class=\"o-card-title\">数据库</div>…openGauss-企业级开源关系型数据库…</a>…查看详情",
+        "shot": "assets/cases-html-ascend/edu-tech-cards.jpg?v=20260804u27",
+        "shotFrom": 42,
+        "shotTo": 58,
+        "shotTop": 48,
+        "shotLeft": 30
+      },
+      {
+        "id": "learning-cases",
+        "idx": 6,
+        "kind": "warn",
+        "name": "学习资源库缺少静态正文",
+        "badge": "客户端渲染",
+        "desc": "问题点：sec-title「你的学习资源库」在 SSR，但五 Tab（学习课程 / 教学资源 / 技术直播等）o-tab-nav-list 与 pane 为空；浏览器可见的鲲鹏学习 / 昇腾学习卡（在线课程、在线实验、了解更多）靠脚本注入。\n判断：有必要解决 —— 应 SSR 默认 Tab 与资源卡正文。",
+        "html": "<div class=\"sec-title\">你的学习资源库</div>…<div class=\"o-tab-nav-list\"></div>…<div class=\"o-tab-body\"><!--[--><!--]--></div>（鲲鹏学习 / 昇腾学习 / 在线课程 / 在线实验 未在正文 DOM）",
+        "shot": "assets/cases-html-ascend/edu-learning-cases.jpg?v=20260804u28",
+        "shotFrom": 56,
+        "shotTo": 72,
+        "shotTop": 62,
+        "shotLeft": 30,
+        "fixNeeded": true,
+        "highlights": [
+          "o-tab-nav-list\"></div>",
+          "<!--[--><!--]--></div>"
+        ]
+      },
+      {
+        "id": "success-cases",
+        "idx": 7,
+        "kind": "in",
+        "name": "成功案例轮播",
+        "badge": "内容列表",
+        "desc": "成功案例轮播多帧标题、摘要与封面图 src 写在静态 HTML。",
+        "html": "<div class=\"sec-title\">成功案例</div>…<div class=\"o-card-title\">NPU算子「智能编译」：TileLang Developer模式来了</div><div class=\"o-card-detail\">TileLang AscendNPU IR Developer模式具备「智能编译」能力…</div>…DeepSeek-R1-Safe 基础大模型发布…",
+        "shotFrom": 64,
+        "shotTo": 80,
+        "shotTop": 70,
+        "shotLeft": 30,
+        "peerReason": "成功案例轮播多帧标题、摘要与封面图 src 写在静态 HTML。"
       }
     ],
-    "concludeLead": "<p class=\"d1-verdict\"><span class=\"tag tag-in\">主张与角色卡可抓</span> <span class=\"tag tag-out\">轮播帧不全</span></p><p class=\"floor-hint\">蓝 = 可抓全 · 橙 = 抓不全</p>",
+    "concludeLead": "<p class=\"d1-verdict\"><span class=\"tag tag-in\">主张与角色卡可抓</span> <span class=\"tag tag-out\">轮播帧不全</span></p><p class=\"floor-hint\">蓝 = 可抓全 · 橙 = 有必要解决 · 黄 = 可不解决</p>",
     "concludeGeo": "<p class=\"conclude-geo\"><strong>边界：</strong>站外域名；社区入口留真链接。</p>"
+  },
+  "cann-aolapi-intro": {
+    "title": "CANN 算子库简介 · HTML 抓取对照",
+    "leftUrl": "https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/910beta3/API/aolapi/operatorlist_00001.html",
+    "leftLabel": "…/aolapi/operatorlist_00001.html",
+    "leftShot": "assets/cases-html-ascend/faq.png?v=20260803b1",
+    "rightUrl": "https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/910beta3/API/aolapi/operatorlist_00001.html",
+    "rightLabel": "楼层 HTML 摘录",
+    "fullHtmlPath": "assets/cases-html-ascend/cann-aolapi-intro.html",
+    "pageDesc": "CANN 算子库 API 简介长文：右侧章节目录锚点 + 正文 section id。",
+    "pageName": "CANN 算子库简介",
+    "hasMarkdown": false,
+    "floors": [
+      {
+        "id": "doc-anchor-nav",
+        "idx": 1,
+        "kind": "warn",
+        "name": "右侧章节目录锚点",
+        "badge": "锚点导航",
+        "desc": "问题点：浏览器右侧可见 document-anc 章节目录（概述 / 使用说明 / 使用向导等），但静态 HTML 无 document-anc 可跟链 nav 列表；正文 h4.sectiontitle 与 section id 已在首包。\n判断：抓不全 —— 锚点目录 UI 需客户端补全，heading id 可抓。",
+        "html": "<h4 class=\"sectiontitle\">概述</h4>…id=\"ZH-CN_TOPIC_0000002594808280__section10818103975019\"…（正文 section id 在 SSR；document-anc nav-item 列表不在首包）",
+        "peerReason": "右侧锚点目录浏览器可见，但静态 HTML 无 document-anc 可跟链列表；正文 section id 已在源码。",
+        "fixNeeded": true,
+        "shotFrom": 4,
+        "shotTo": 25,
+        "shotTop": 15,
+        "shotLeft": 70
+      },
+      {
+        "id": "doc-section-ids",
+        "idx": 2,
+        "kind": "in",
+        "name": "正文 section id",
+        "badge": "heading id",
+        "desc": "概述 / 使用说明 / 使用向导等 h4.sectiontitle 与 div.section id 写在静态 HTML，可供 #id 对齐。",
+        "html": "<div class=\"section\" id=\"ZH-CN_TOPIC_0000002594808280__section10818103975019\"><h4 class=\"sectiontitle\">概述</h4>…",
+        "peerReason": "正文 h4 标题与 section id 在静态 HTML 可抓，可与锚点 href 对齐。"
+      },
+      {
+        "id": "wizard-table-links",
+        "idx": 3,
+        "kind": "in",
+        "name": "使用向导表内链接",
+        "badge": "链接",
+        "desc": "「使用向导」表格内「基本概念 / 公共接口 / Math类接口 / NN类接口 / CV类接口 / Transformer类接口 / Ascend IR算子规格说明 / AI框架算子支持清单 / 附录」等 OLink 文案与 href（含 operatorlist_00010.html 等相对路径及完整 document/detail URL）均在静态 HTML 可抓；图1/图2 为 #hash 锚点，无 javascript:void。",
+        "html": "<a href=\"…/context/common/两段式接口.md\" data-outer=\"inner\">基本概念</a> <a href=\"operatorlist_00010.html\" data-outer=\"inner\">公共接口</a> <a href=\"…/ops-math/op_api_list.md\" data-outer=\"inner\">Math类接口</a> <a href=\"…/ops-nn/op_api_list.md\">NN类接口</a> …",
+        "peerReason": "使用向导表格内 OLink（基本概念 / Math类接口 / 公共接口 / Ascend IR算子规格说明等）文案与 href 均在首包 HTML，含相对路径 operatorlist_*.html 与完整 document/detail URL。",
+        "shotFrom": 55,
+        "shotTo": 92,
+        "shotTop": 58,
+        "shotLeft": 18
+      }
+    ],
+    "concludeLead": "<p class=\"d1-verdict\"><span class=\"tag tag-in\">正文 section id 可抓</span> <span class=\"tag tag-out\">右侧锚点 nav 首包缺失</span></p><p class=\"floor-hint\">蓝 = 可抓全 · 橙 = 抓不全</p>",
+    "concludeGeo": "<p class=\"conclude-geo\"><strong>边界：</strong>测锚点目录组件，非左侧手册 menu。</p>"
+  },
+  "training-dev": {
+    "title": "训练开发 · HTML 抓取对照",
+    "leftUrl": "https://www.hiascend.com/cn/developer/training?tab=tab1",
+    "leftLabel": "…/developer/training?tab=tab1",
+    "leftShot": "assets/cases-html-ascend/training-journey-matrix.jpg?v=20260805a1",
+    "rightUrl": "https://www.hiascend.com/cn/developer/training?tab=tab1",
+    "rightLabel": "楼层 HTML 摘录",
+    "fullHtmlPath": "assets/cases-html-ascend/training-dev.html",
+    "pageDesc": "训练开发页 tab1：大语言模型训练用户旅程矩阵（新手入门 / 进阶 / 高阶）。",
+    "pageName": "训练开发",
+    "hasMarkdown": false,
+    "floors": [
+      {
+        "id": "journey-matrix-links",
+        "idx": 1,
+        "kind": "warn",
+        "name": "用户旅程矩阵链接",
+        "badge": "链接",
+        "desc": "问题点：浏览器可见「大语言模型训练用户旅程」矩阵（软件介绍 / 安装指导 / 快速入门 / 模型使用指导等）可点外链图标，但 hcomponent-ascend-user-journey 的 tab-content Vue 挂载点首包为空；label+link 仅在 application/json 脚本（如 MindSpeed-LLM introduction.md、install_guide.md）。\n判断：抓不全 —— 导流链应 SSR 为 a[href]，勿只放 JSON 等脚本注入。",
+        "html": "<div class=\"tab-content\" id=\"vue_…\"></div><!-- 空挂载点 --><script type=\"application/json\">{\"title\":\"大语言模型训练用户旅程\",\"data\":[{\"columns\":[{\"label\":\"软件介绍\",\"link\":\"https://gitcode.com/Ascend/MindSpeed-LLM/…/introduction.md\"}…]}]}</script>",
+        "peerReason": "用户旅程矩阵链接浏览器可见，但首包无 `<a href>`；label+link 在 hcomponent-ascend-user-journey 的 application/json 里，静态抓取跟不到落地 URL。",
+        "shot": "assets/cases-html-ascend/training-journey-matrix.jpg?v=20260805a1",
+        "shotFrom": 8,
+        "shotTo": 55,
+        "shotTop": 12,
+        "shotLeft": 8,
+        "fixNeeded": true,
+        "highlights": [
+          "hcomponent-ascend-user-journey",
+          "application/json"
+        ]
+      }
+    ],
+    "concludeLead": "<p class=\"d1-verdict\"><span class=\"tag tag-out\">旅程矩阵链靠 JSON 注入</span></p><p class=\"floor-hint\">蓝 = 可抓全 · 橙 = 抓不全</p>",
+    "concludeGeo": "<p class=\"conclude-geo\"><strong>边界：</strong>测矩阵内 OLink，非 Tab 切换器本身。</p>"
   }
 }

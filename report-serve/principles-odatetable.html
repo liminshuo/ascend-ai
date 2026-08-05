@@ -6,75 +6,174 @@
 <title>表格语义化可问答 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
 <style>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   :root {
     --bg: #F5F5F5; --panel: #ffffff; --panel2: #FAFAFA; --line: #e2e8f0;
     --text: #191919; --muted: #595959; --accent: #1476FF;
-    --link: #1476FF; --topbar-h: 56px; --subnav-h: 44px;
+    --link: #1476FF; --detail-head-h: 56px;
+    --desc: rgba(0, 0, 0, 0.6);
+    --heading-rule: #f0f0f0;
+    --card-bg: #FAFAFA; --card-border: #F0F0F0;
+    --danger: #dc2626; --danger-bg: rgba(220, 38, 38, 0.08); --danger-border: rgba(220, 38, 38, 0.25);
+    --warning: #d97706; --warning-bg: rgba(217, 119, 6, 0.08); --warning-border: rgba(217, 119, 6, 0.28);
+    --success: #16a34a; --success-bg: rgba(22, 163, 74, 0.08); --success-border: rgba(22, 163, 74, 0.25);
     --sidebar-w: clamp(200px, 12.9167vw, 248px);
     --toc-w: 200px;
-    --content-pad-x: clamp(24px, 3vw, 40px);
+    --content-pad-x: clamp(24px, 4vw, 48px);
+    --content-pad-left: clamp(16px, 5.73vw, 110px);
+    --content-pad-top: clamp(32px, 2.5vw, 48px);
+    --content-max: 1200px;
     --body-size: 14px;
     --body-lh: 22px;
   }
   * { box-sizing: border-box; }
   body {
-    font-size: var(--body-size);
-    margin: 0;
+    font-size: var(--body-size); margin: 0;
     font-family: "PingFang SC", sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    line-height: var(--body-lh);
+    background: var(--bg); color: var(--muted); line-height: var(--body-lh);
   }
+  body.modal-open { overflow: hidden; }
   a { color: var(--link); }
   code {
-    font-size: 12px;
-    background: var(--panel2);
-    border: 1px solid var(--line);
-    border-radius: 4px;
-    padding: 0 4px;
+    font-size: 12px; background: var(--panel2); border: 1px solid var(--line);
+    border-radius: 4px; padding: 0 4px;
   }
-
-  .topbar {
+  .detail-head-bar {
     position: sticky;
     top: 0;
     z-index: 50;
-    height: 56px;
-    min-height: 56px;
-    max-height: 56px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    height: var(--detail-head-h);
+    min-height: var(--detail-head-h);
+    max-height: var(--detail-head-h);
+    padding: 0 24px;
     box-sizing: border-box;
-    background: var(--panel);
     border-bottom: 1px solid var(--line);
+    background: #fff;
     overflow: hidden;
   }
-  .topbar-inner {
-    width: 100%;
-    max-width: none;
-    margin: 0;
-    padding: 0 24px;
-    height: 100%;
+  .modal-title-wrap {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    gap: 0;
+    gap: 12px;
+    min-width: 0;
+    flex: 1;
   }
-  .brand {
-    font-weight: 700;
-    font-size: 15px;
-    letter-spacing: -0.01em;
+  .back-link {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
     color: var(--text);
     text-decoration: none;
+    transition: background .15s, color .15s;
+  }
+  .back-link:hover {
+    background: var(--panel2);
+    color: var(--accent);
+  }
+  .back-link svg {
+    width: 18px;
+    height: 18px;
+    display: block;
+  }
+  .title-divider {
+    flex-shrink: 0;
+    width: 1px;
+    height: 18px;
+    background: var(--line);
+  }
+  .detail-head-bar .modal-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.2;
     white-space: nowrap;
-    margin-right: 40px;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
-  .brand span { color: var(--accent); }
-  .site-nav {
+  .modal-actions {
     display: flex;
+    gap: 8px;
     align-items: center;
-    gap: 4px;
-    flex: 1;
-    flex-wrap: wrap;
+    flex-shrink: 0;
   }
-  .site-nav a {
+  .detail-head-tabs { display: flex; align-items: center; gap: 4px; min-width: 0; }
+  .detail-head-tabs a {
     text-decoration: none;
     color: var(--muted);
     font-size: 14px;
@@ -84,253 +183,213 @@
     white-space: nowrap;
     transition: background .15s, color .15s;
   }
-  .site-nav a:hover { color: var(--accent); background: #F5F5F5; text-decoration: none; }
-  .site-nav a.active { color: var(--accent); background: #F5F5F5; font-weight: 600; }
-
-  .subnav {
-    position: sticky;
-    top: 56px;
-    z-index: 40;
-    height: var(--subnav-h);
-    background: var(--panel);
-    border-bottom: 1px solid var(--line);
-  }
-  .subnav-inner {
-    width: 100%;
-    margin: 0;
-    padding: 0 24px;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-  }
-  .subnav-back {
-    text-decoration: none;
-    color: var(--muted);
-    font-size: 13px;
-    font-weight: 500;
-    white-space: nowrap;
-  }
-  .subnav-back:hover { color: var(--accent); }
-  .subnav-tabs { display: flex; align-items: center; gap: 4px; }
-  .subnav-tabs a {
-    text-decoration: none;
-    color: var(--muted);
-    font-size: 13px;
-    font-weight: 500;
-    padding: 6px 12px;
-    border-radius: 6px;
-    white-space: nowrap;
-  }
-  .subnav-tabs a:hover { color: var(--accent); background: #F5F5F5; }
-  .subnav-tabs a.active { color: var(--accent); background: #F5F5F5; font-weight: 600; }
-
+  .detail-head-tabs a:hover { color: var(--accent); background: #F5F5F5; }
+  .detail-head-tabs a.active { color: var(--accent); background: #F5F5F5; font-weight: 600; }
 
   .page-wrapper {
-    display: flex;
-    align-items: stretch;
-    width: 100%;
-    min-height: calc(100vh - var(--topbar-h) - var(--subnav-h));
-    background: var(--bg);
+    display: flex; align-items: stretch; width: 100%;
+    min-height: calc(100vh - var(--detail-head-h)); background: var(--bg);
   }
-
   .comp-sidebar {
-    width: var(--sidebar-w);
-    flex-shrink: 0;
-    position: sticky;
-    top: calc(var(--topbar-h) + var(--subnav-h));
-    height: calc(100vh - var(--topbar-h) - var(--subnav-h));
-    overflow-y: auto;
-    padding: 16px 0 32px;
-    border-right: 1px solid var(--line);
-    background: var(--panel);
+    width: var(--sidebar-w); flex-shrink: 0; position: sticky; top: var(--detail-head-h);
+    height: calc(100vh - var(--detail-head-h)); overflow-y: auto; padding: 16px 0 32px;
+    border-right: 1px solid var(--line); background: var(--panel);
   }
   .comp-sidebar-title {
     font-size: 11px; font-weight: 700; letter-spacing: .08em;
-    text-transform: uppercase; color: var(--muted);
-    padding: 0 20px 10px;
+    text-transform: uppercase; color: var(--muted); padding: 0 20px 10px;
   }
   .comp-nav ul { list-style: none; margin: 0; padding: 0; }
   .comp-group-label {
-    font-size: 11px; font-weight: 700; letter-spacing: .04em;
-    color: var(--muted);
-    padding: 12px 20px 4px;
-    margin-top: 8px;
-    border-top: 1px solid var(--line);
+    font-size: 11px; font-weight: 700; letter-spacing: .04em; color: var(--muted);
+    padding: 12px 20px 4px; margin-top: 8px; border-top: 1px solid var(--line);
   }
-  .comp-nav > .comp-group-label:first-child {
-    margin-top: 0; border-top: none; padding-top: 10px;
-  }
-  .comp-nav a,
-  .comp-nav .comp-pending {
-    display: block;
-    padding: 8px 20px;
-    font-size: 13px; line-height: 1.5;
-    text-decoration: none;
-    border-left: 2px solid transparent;
+  .comp-nav > .comp-group-label:first-child { margin-top: 0; border-top: none; padding-top: 10px; }
+  .comp-nav a, .comp-nav .comp-pending {
+    display: block; padding: 8px 20px; font-size: 13px; line-height: 1.5;
+    text-decoration: none; border-left: 2px solid transparent;
   }
   .comp-nav a { color: var(--muted); }
   .comp-nav a:hover { color: var(--text); background: #F5F5F5; }
   .comp-nav a.active {
-    color: var(--accent); font-weight: 600;
-    background: #EEF5FF; border-left-color: var(--accent);
+    color: var(--accent); font-weight: 600; background: #EEF5FF; border-left-color: var(--accent);
   }
   .comp-nav .comp-pending { color: #bfbfbf; cursor: default; }
-
   .main-content {
-    flex: 1;
-    min-width: 0;
-    background: var(--panel);
-    border-right: 1px solid var(--line);
-    padding: 28px var(--content-pad-x) 80px;
+    flex: 1; min-width: 0; background: var(--panel); border-right: 1px solid var(--line);
+    min-height: calc(100vh - var(--detail-head-h));
+    padding: var(--content-pad-top) var(--content-pad-x) 32px var(--content-pad-left);
     box-sizing: border-box;
   }
-
-  .page-header { margin-bottom: 8px; }
-  .page-header h1 {
-    margin: 0;
-    font-size: clamp(28px, 4vw, 36px);
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    line-height: 1.25;
+  .main-content > .page-header,
+  .main-content > .page-desc,
+  .main-content > .section {
+    width: 100%; max-width: var(--content-max); margin-inline: 0;
+    padding-left: 0; padding-right: 0; box-sizing: border-box;
   }
+  .page-header {
+    margin-bottom: 36px; padding-bottom: 24px; border-bottom: 1px solid var(--line);
+  }
+  .page-header-top {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; margin-bottom: 0;
+  }
+  .page-header-top h1 {
+    margin: 0; font-size: 32px; font-weight: 800; line-height: 48px;
+    letter-spacing: -0.02em; color: var(--text);
+    display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
+    flex: 1; min-width: 0;
+  }
+  .badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 12px; font-weight: 600; line-height: 1;
+    padding: 4px 10px; border-radius: 4px; vertical-align: middle;
+  }
+  .badge-bad { color: var(--danger); background: var(--danger-bg); border: 1px solid var(--danger-border); }
+  .badge-should { color: var(--warning); background: var(--warning-bg); border: 1px solid var(--warning-border); }
+  .badge-ok { color: var(--success); background: var(--success-bg); border: 1px solid var(--success-border); }
+  .btn-preview {
+    flex-shrink: 0; border: none; background: none; padding: 0;
+    font-size: 14px; font-weight: 600; color: var(--accent);
+    cursor: pointer; font-family: inherit; text-decoration: none;
+  }
+  .btn-preview:hover { text-decoration: underline; color: var(--accent); }
+  .btn-preview:disabled { opacity: 0.5; cursor: not-allowed; text-decoration: none; }
   .page-desc {
-    color: var(--muted);
-    font-size: 15px;
-    line-height: 1.65;
-    margin: 0 0 28px;
-    padding-top: 16px;
-    border-top: 1px solid var(--line);
+    font-size: var(--body-size); line-height: var(--body-lh);
+    color: var(--desc); margin: 0 0 48px;
   }
-  .page-desc-line { display: block; }
-  .page-desc-line + .page-desc-line { margin-top: 8px; }
+  .page-desc-line { display: block; line-height: var(--body-lh); }
+  .page-desc-line + .page-desc-line { margin-top: 4px; }
   .page-desc strong { color: var(--text); font-weight: 600; }
-
-  .section { margin-bottom: 40px; }
+  .section {
+    margin-bottom: 48px;
+    scroll-margin-top: calc(var(--detail-head-h) + 16px);
+  }
   .section > h2 {
-    margin: 0 0 16px;
-    font-size: 22px; line-height: 30px; font-weight: 650;
+    margin: 48px 0 16px; padding-bottom: 24px;
+    font-size: 24px; font-weight: 700; line-height: 36px;
+    color: var(--text); border-bottom: 2px solid var(--heading-rule);
   }
-  .section > h3 {
-    margin: 20px 0 10px;
-    font-size: 15px; font-weight: 650;
+  .section:first-of-type > h2 { margin-top: 0; }
+  .content-unit + .content-unit { margin-top: 40px; }
+  .section h3 {
+    margin: 32px 0 16px; font-size: 18px; font-weight: 700; line-height: 28px; color: var(--text);
   }
-  .section > h3:first-of-type { margin-top: 0; }
-
-  .principle-suggestions {
-    margin: 0;
-    padding-left: 18px;
-    color: var(--muted);
+  .section h4 {
+    margin: 24px 0 16px; font-size: 14px; font-weight: 700; color: var(--text);
   }
-  .principle-suggestions li { margin-bottom: 8px; }
-  .principle-suggestions li strong { color: var(--text); font-weight: 600; }
-
-  .principle-example {
-    margin-top: 16px;
-    padding: 16px 18px;
-    background: var(--panel2);
-    border: 1px solid var(--line);
-    border-radius: 12px;
+  .section p { margin: 0 0 8px; color: var(--muted); }
+  .section ul { margin: 8px 0 0; padding-left: 20px; color: var(--muted); }
+  .section li { margin-bottom: 6px; }
+  .section li:last-child { margin-bottom: 0; }
+  .section li strong { color: var(--text); font-weight: 600; }
+  .test-prompt-card {
+    background: rgba(222, 236, 255, 0.5); border-radius: 8px;
+    padding: 24px; margin: 0 0 24px;
+    font-size: 14px; line-height: 22px; color: var(--text);
   }
-  .principle-example > h4 {
-    margin: 0 0 12px;
-    font-size: 14px; font-weight: 650;
+  .test-prompt-card p { margin: 0; color: var(--text); line-height: 22px; }
+  .test-prompt-card a { color: var(--accent); }
+  .test-prompt-card strong { color: var(--text); }
+  .fix-suggestion {
+    background: var(--card-bg); border: 1px solid var(--card-border);
+    border-radius: 8px; padding: 16px 18px; margin: 12px 0 0;
   }
-  .principle-example + .principle-example { margin-top: 12px; }
-
-  .compare-grid { display: grid; gap: 12px; }
-  .compare-label {
-    margin: 0;
-    font-size: 12px; font-weight: 650;
-    letter-spacing: 0.02em;
+  .fix-suggestion > :first-child { margin-top: 0; }
+  .fix-suggestion > :last-child { margin-bottom: 0; }
+  .fix-suggestion h4 { margin: 0 0 8px; font-size: 14px; font-weight: 700; color: var(--text); }
+  .fix-suggestion p { margin: 0; font-size: 14px; line-height: 22px; color: var(--muted); }
+  .issue-body p { margin: 0; font-size: 14px; line-height: 22px; color: var(--text); }
+  .issue-body p + p { margin-top: 8px; }
+  .issue-body code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 13px; background: #f1f5f9; padding: 1px 5px; border-radius: 4px;
   }
-  .compare-label--machine { color: #b54708; }
-  .compare-label--human { color: #027a48; }
-  .compare-col {
-    background: var(--panel);
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    padding: 12px 14px;
+  .peer-test-table {
+    width: 100%; border-collapse: collapse; font-size: 13.5px;
+    margin: 16px 0 0; background: var(--panel); border-radius: 8px;
+    overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,.08);
   }
-
-  .render-frame { font-size: 13px; color: var(--text); }
-  .rf-banner {
-    background: linear-gradient(120deg, #1a2744, #2a3f66);
-    color: #fff;
-    border-radius: 8px;
-    padding: 18px 16px;
-    min-height: 72px;
+  .peer-test-table th {
+    background: #f1f5f9; padding: 10px 14px; text-align: left;
+    font-weight: 600; color: var(--text); border-bottom: 1px solid var(--line);
+    vertical-align: middle;
   }
-  .rf-banner h5 { margin: 0 0 6px; font-size: 15px; font-weight: 650; }
-  .rf-banner p { margin: 0; font-size: 12px; opacity: 0.85; }
-  .rf-muted { margin: 8px 0 0; font-size: 12px; color: var(--muted); }
-  .rf-meta {
-    margin-top: 10px;
-    padding-top: 8px;
-    border-top: 1px dashed var(--line);
-    font-size: 12px;
-    color: var(--muted);
+  .peer-test-table td {
+    padding: 10px 14px; border-bottom: 1px solid var(--line);
+    vertical-align: middle; color: var(--muted); line-height: 22px;
   }
-  .rf-meta strong { color: var(--text); }
-  .rf-list { margin: 8px 0 0; padding-left: 16px; color: var(--muted); font-size: 12px; }
-  .rf-list li { margin-bottom: 4px; }
-
-  .arch-diagram {
-    margin: 0;
-    white-space: pre-wrap;
+  /* auto 布局下 width:1% = 按内容收缩；末列自然占满剩余宽度 */
+  .peer-test-table th:nth-child(1),
+  .peer-test-table td:nth-child(1),
+  .peer-test-table th:nth-child(2),
+  .peer-test-table td:nth-child(2),
+  .peer-test-table th:nth-child(3),
+  .peer-test-table td:nth-child(3),
+  .peer-test-table th:nth-child(4),
+  .peer-test-table td:nth-child(4) {
+    white-space: nowrap;
+    width: 1%;
+  }
+  .peer-test-table th:nth-child(5),
+  .peer-test-table td:nth-child(5) {
+    white-space: normal;
     word-break: break-word;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: 12px;
-    line-height: 1.55;
-    color: var(--text);
   }
-
-  .accept-list {
-    margin: 0;
-    padding-left: 18px;
-    color: var(--muted);
+  .peer-test-table tr:last-child td { border-bottom: none; }
+  .peer-test-table a { color: var(--accent); text-decoration: none; }
+  .peer-test-table a:hover { text-decoration: underline; }
+  .peer-tag {
+    display: inline-block; font-size: 12px; font-weight: 600;
+    padding: 2px 8px; border-radius: 4px; white-space: nowrap;
   }
-  .accept-list li { margin-bottom: 8px; }
-  .accept-list strong { color: var(--text); }
-
+  .peer-tag-ok { color: var(--success); background: var(--success-bg); border: 1px solid var(--success-border); }
+  .peer-tag-partial { color: var(--warning); background: var(--warning-bg); border: 1px solid var(--warning-border); }
+  .peer-tag-warn-ok { color: var(--muted); background: var(--panel2); border: 1px solid var(--line); }
+  .peer-reason { font-size: 13px; color: var(--muted); line-height: 22px; }
+  .peer-test-empty { margin: 12px 0 0; font-size: 14px; line-height: 22px; color: var(--muted); }
+  .peer-test-note {
+    margin: 8px 0 0; font-size: 13px; line-height: 22px; color: var(--desc);
+  }
+  .peer-test-note strong { color: var(--text); font-weight: 600; }
+  .peer-th-sub {
+    display: block; font-size: 11px; font-weight: 500; color: var(--muted);
+    margin-top: 2px; line-height: 1.3;
+  }
+  .peer-floor-badge {
+    display: inline-block; font-size: 11px; font-weight: 500;
+    color: var(--muted); white-space: nowrap;
+  }
+  .peer-object-link {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    line-height: 1.35;
+    text-decoration: none;
+  }
+  .peer-object-link:hover .peer-object-name { text-decoration: underline; }
+  .peer-object-name { color: var(--accent); }
   .page-toc {
-    width: var(--toc-w);
-    flex-shrink: 0;
-    position: sticky;
-    top: calc(var(--topbar-h) + var(--subnav-h));
-    align-self: flex-start;
-    height: calc(100vh - var(--topbar-h) - var(--subnav-h));
-    overflow-y: auto;
-    padding: 28px 16px 40px 20px;
-    background: var(--bg);
+    width: var(--toc-w); flex-shrink: 0; position: sticky; top: var(--detail-head-h);
+    align-self: flex-start; height: calc(100vh - var(--detail-head-h));
+    overflow-y: auto; padding: 28px 16px 40px 20px; background: var(--bg);
   }
-  .page-toc-title {
-    font-size: 12px; font-weight: 600; color: var(--muted);
-    margin-bottom: 12px; line-height: 1.4;
-  }
+  .page-toc-title { font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 12px; }
   .page-toc-nav ul { list-style: none; margin: 0; padding: 0; }
   .page-toc-nav li + li { margin-top: 2px; }
   .page-toc-nav a {
-    display: block;
-    font-size: 13px; line-height: 1.5;
-    color: var(--muted);
-    padding: 4px 0;
-    text-decoration: none;
-    border-left: 2px solid transparent;
+    display: block; font-size: 13px; line-height: 1.5; color: var(--muted);
+    padding: 4px 0; text-decoration: none; border-left: 2px solid transparent;
   }
   .page-toc-nav a.toc-h3 { padding-left: 12px; font-size: 12px; }
   .page-toc-nav a:hover { color: var(--accent); }
   .page-toc-nav a.active {
-    color: var(--accent); font-weight: 600;
-    border-left-color: var(--accent);
+    color: var(--accent); font-weight: 600; border-left-color: var(--accent);
     padding-left: 8px; margin-left: -8px;
   }
-  .page-toc-nav a.toc-h3.active {
-    padding-left: 12px; margin-left: 0;
-    border-left-color: transparent;
-  }
-
+  .page-toc-nav a.toc-h3.active { padding-left: 12px; margin-left: 0; border-left-color: transparent; }
   @media (max-width: 1100px) {
     .page-toc { display: none; }
     .main-content { border-right: none; }
@@ -342,30 +401,407 @@
       border-right: none; border-bottom: 1px solid var(--line);
     }
   }
+  .modal[hidden] { display: none !important; }
+  .modal {
+    position: fixed; inset: 0; z-index: 100; background: rgba(17, 24, 39, 0.45);
+    display: flex; align-items: center; justify-content: center; padding: 24px;
+  }
+  .modal-panel {
+    width: min(720px, 100%); max-height: min(86vh, 900px); background: var(--panel);
+    border-radius: 16px; border: 1px solid var(--line);
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  .modal-head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; padding: 14px 18px; border-bottom: 1px solid var(--line);
+  }
+  .modal-title { margin: 0; font-size: 16px; font-weight: 650; }
+  .modal-close {
+    border: 1px solid var(--line); background: var(--panel); border-radius: 8px;
+    padding: 6px 10px; cursor: pointer; font-size: 13px; color: var(--muted); font-family: inherit;
+  }
+  .modal-close:hover { color: var(--accent); border-color: var(--accent); }
+  .modal-body { padding: 18px 20px; overflow: auto; background: var(--panel2); }
+  .dialog-card {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 12px; padding: 14px 16px; margin-bottom: 12px;
+  }
+  .dialog-card:last-child { margin-bottom: 0; }
+  .dialog-role { display: block; font-size: 12px; font-weight: 650; color: var(--muted); margin-bottom: 6px; }
+  .dialog-card p { margin: 0 0 8px; color: var(--text); line-height: 1.65; }
+  .dialog-card p:last-child { margin-bottom: 0; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  .comp-nav a, .comp-nav .comp-pending {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  }
+  .comp-nav-label { flex: 1; min-width: 0; }
+  .comp-nav .aff {
+    display: inline-block; flex-shrink: 0;
+    font-size: 11px; font-weight: 600; line-height: 18px;
+    padding: 0 6px; border-radius: 999px; white-space: nowrap;
+  }
+  .comp-nav .aff-need { color: #b42318; background: #fef3f2; }
+  .comp-nav .aff-maybe { color: #b54708; background: #fffaeb; }
+  .comp-nav .aff-no { color: #595959; background: #F5F5F5; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  .comp-nav .comp-dot {
+    flex-shrink: 0;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #2563eb;
+  }
+
+
+
+  .page-header > h1 {
+    margin: 0 0 16px;
+    font-size: 32px; font-weight: 800; line-height: 48px;
+    letter-spacing: -0.02em; color: var(--text);
+  }
+  .page-header .page-desc { margin-bottom: 0; }
+
+  .role-split-card {
+    margin: 0 0 36px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+  }
+  .role-split-card .rsc-title {
+    margin: 0 0 14px;
+    font-size: 14px; font-weight: 700; line-height: 22px;
+    color: var(--text);
+  }
+  .role-split-grid {
+    display: grid; grid-template-columns: 1fr; gap: 14px;
+  }
+  .role-split-item {
+    border-radius: 8px; padding: 14px 16px;
+    border: 1px solid var(--line);
+  }
+  .role-split-item h4 {
+    margin: 0 0 6px;
+    display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
+    font-size: 13.5px; font-weight: 700; line-height: 20px;
+    color: var(--text);
+  }
+  .role-split-item h4 .rsc-verdict {
+    font-size: 11.5px; font-weight: 700; line-height: 18px;
+    padding: 1px 8px; border-radius: 999px;
+    border: 1px solid transparent;
+  }
+  .rsc-verdict--keep {
+    color: var(--accent); background: rgba(20, 118, 255, 0.08); border-color: rgba(20, 118, 255, 0.28);
+  }
+  .rsc-verdict--strip {
+    color: var(--muted); background: rgba(0, 0, 0, 0.05); border-color: var(--line);
+  }
+  .role-split-item p {
+    margin: 0;
+    font-size: 13px; line-height: 21px; color: var(--muted);
+  }
+  .role-split-item code {
+    font-family: var(--mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 12px;
+    padding: 1px 5px; border-radius: 4px;
+    background: rgba(0,0,0,0.05); color: var(--text);
+  }
+  .role-split-item--keep {
+    background: rgba(20, 118, 255, 0.06); border-color: rgba(20, 118, 255, 0.25);
+  }
+  .role-split-item--keep h4 { color: var(--accent); }
+  .role-split-item--strip {
+    background: rgba(0, 0, 0, 0.03); border-color: var(--line);
+  }
+  .role-split-item--strip h4 { color: var(--muted); }
+
+  .principle-suggestions {
+    margin: 0; padding-left: 20px;
+    color: var(--muted); font-size: 14px; line-height: 22px;
+  }
+  .principle-suggestions li { margin-bottom: 8px; }
+  .principle-suggestions li:last-child { margin-bottom: 0; }
+  .principle-suggestions li strong { color: var(--text); font-weight: 600; }
+
+  .principle-example {
+    margin-top: 16px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+  }
+  .principle-example > h4 {
+    margin: 0 0 12px;
+    font-size: 14px; font-weight: 700; line-height: 22px;
+    color: var(--text);
+  }
+  .principle-example + .principle-example {
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px dashed var(--line);
+  }
+
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 0;
+  }
+  .compare-grid--stack { grid-template-columns: 1fr; gap: 16px; }
+  .compare-grid--stack .compare-label--human {
+    margin-top: 8px;
+    padding-top: 20px;
+    border-top: 1px dashed var(--line);
+  }
+  .compare-grid--no-mid-divider .compare-label--human {
+    margin-top: 8px;
+    padding-top: 0;
+    border-top: none;
+  }
+  .section .principle-example .compare-grid h4.compare-label {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 20px;
+  }
+  .compare-label {
+    margin: 0;
+    font-size: 13px; font-weight: 700; line-height: 20px;
+  }
+  .compare-label--machine { color: var(--danger); }
+  .compare-label--human { color: var(--success); }
+  .compare-col {
+    border-radius: 8px;
+    padding: 18px 20px;
+    font-size: 13.5px;
+    line-height: 22px;
+  }
+  .compare-col.machine {
+    background: var(--danger-bg);
+    border: 1px solid var(--danger-border);
+  }
+  .compare-col.human {
+    background: var(--success-bg);
+    border: 1px solid var(--success-border);
+  }
+  .compare-col .arch-diagram { margin-top: 0; }
+
+  .render-frame {
+    background: var(--panel);
+    border: 1px solid var(--card-border);
+    border-radius: 6px;
+    padding: 14px 16px;
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--text);
+    min-height: 48px;
+  }
+  .render-frame .rf-muted {
+    margin: 8px 0 0;
+    font-size: 12px;
+    line-height: 18px;
+    color: var(--muted);
+  }
+  .render-frame .rf-caption {
+    margin: 10px 0 0;
+    font-size: 12px;
+    line-height: 18px;
+    color: var(--muted);
+  }
+  .render-frame .rf-caption strong { color: var(--text); font-weight: 600; }
+  .render-frame .rf-sidebar-title {
+    margin: 0 0 8px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .render-frame .rf-sidebar--bad {
+    border: 1px dashed var(--danger-border);
+    border-radius: 6px;
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.6);
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .render-frame .rf-nav-links {
+    margin: 0;
+    padding-left: 18px;
+    color: var(--text);
+    font-size: 12px;
+    line-height: 1.6;
+  }
+  .render-frame .rf-nav-links ul {
+    margin: 4px 0 0;
+    padding-left: 16px;
+  }
+  .render-frame .rf-nav-links a { color: var(--accent); text-decoration: none; }
+  .render-frame .rf-searchbox {
+    display: flex; align-items: center; gap: 8px;
+    border: 1px solid var(--line); border-radius: 999px;
+    padding: 7px 14px; background: #fff; color: var(--muted);
+    font-size: 12.5px;
+  }
+  .render-frame .rf-searchbox .rf-sb-icon { color: var(--accent); font-weight: 700; }
+  .render-frame .rf-searchbox .rf-sb-note { margin-left: auto; font-size: 11px; color: var(--muted); }
+  .render-frame .rf-select {
+    display: inline-flex; align-items: center; gap: 10px; min-width: 160px;
+    border: 1px solid var(--line); border-radius: 6px;
+    padding: 7px 12px; background: #fff; color: var(--text);
+    font-size: 12.5px;
+  }
+  .render-frame .rf-select .rf-caret { margin-left: auto; color: var(--muted); }
+  .render-frame table.rf-spec {
+    margin: 10px 0 0; border-collapse: collapse; font-size: 12px;
+  }
+  .render-frame table.rf-spec th,
+  .render-frame table.rf-spec td {
+    border: 1px solid var(--line); padding: 4px 10px; text-align: left; color: var(--text);
+  }
+  .render-frame table.rf-spec th { background: #f6f8fa; font-weight: 600; }
+  .render-frame pre.rf-code {
+    margin: 0;
+    padding: 10px 12px;
+    background: #f6f8fa;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+    color: var(--text);
+  }
+
+  .arch-diagram {
+    margin: 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px;
+    line-height: 1.7;
+    background: rgba(255, 255, 255, 0.7);
+    color: var(--text);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 6px;
+    padding: 14px 16px;
+  }
+
+  .accept-list {
+    margin: 0;
+    padding-left: 20px;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 22px;
+  }
+  .accept-list li { margin-bottom: 8px; }
+  .accept-list li:last-child { margin-bottom: 0; }
+  .accept-list strong { color: var(--text); font-weight: 600; }
+
+  .principles-framework {
+    margin: 0 0 40px;
+    padding: 14px 18px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    font-size: 14px;
+    line-height: 22px;
+    color: var(--muted);
+  }
+  .main-content > .principles-framework {
+    width: 100%; max-width: var(--content-max); margin-inline: 0;
+    padding-left: 0; padding-right: 0; box-sizing: border-box;
+  }
+  .principles-framework strong { color: var(--text); font-weight: 600; }
+
+  .principle-none {
+    margin: 0;
+    font-size: 14px;
+    line-height: 22px;
+    color: var(--muted);
+  }
+
+  @media (max-width: 900px) {
+    .compare-grid:not(.compare-grid--stack) { grid-template-columns: 1fr; }
+  }
 
 </style>
 </head>
 <body data-module="principles" data-page="odatetable">
-<div class="topbar">
-  <div class="topbar-inner">
-    <a class="brand" href="index.html">社区 <span>AI 亲和原则</span></a>
-    <nav class="site-nav" aria-label="主导航">
-      <a href="index.html">首页</a>
-      <a href="mintlify.html">友商对照</a>
-      <a href="reachability.html">社区诊断</a>
-      <a href="community-ui.html" class="active">组件亲和</a>
-    </nav>
+<div class="detail-head-bar" aria-label="组件详情导航">
+  <div class="modal-title-wrap">
+    <a class="back-link" href="community-ui.html" aria-label="返回组件亲和"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6L9 12l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    <span class="title-divider" aria-hidden="true"></span>
+    <div class="modal-title">组件亲和原则</div>
   </div>
-</div>
-
-<div class="subnav" aria-label="组件详情二级导航">
-  <div class="subnav-inner">
-    <a class="subnav-back" href="community-ui.html">← 返回</a>
-    <nav class="subnav-tabs">
-      <a href="problems-odatetable.html">实测问题</a>
-      <a href="principles-odatetable.html" class="active">亲和原则</a>
-    </nav>
-  </div>
+  <nav class="detail-head-tabs modal-actions" aria-label="视图切换">
+    <a href="problems-odatetable.html">实测问题</a>
+    <a href="principles-odatetable.html" class="active">亲和原则</a>
+  </nav>
 </div>
 
 <div class="page-wrapper">
@@ -374,60 +810,44 @@
     <nav class="comp-nav">
       <div class="comp-group-label">导航类</div>
       <ul>
-        <li><a href="principles-omenu.html">OMenu 菜单</a></li>
-        <li><a href="principles-otab.html">OTab 标签页</a></li>
-        <li><a href="principles-obreadcrumb.html">OBreadcrumb 面包屑</a></li>
-        <li><a href="principles-oanchor.html">OAnchor 锚点</a></li>
-        <li><a href="principles-opagination.html">OPagination 分页</a></li>
-        <li><a href="principles-ostep.html">OStep 步骤条</a></li>
-        <li><a href="principles-onavigation.html">ONavigation 导航</a></li>
-        <li><a href="principles-ofooternav.html">底部导航</a></li>
+        <li><a href="principles-omenu.html"><span class="comp-nav-label">菜单</span><span class="aff aff-need">需要</span><span class="comp-dot" title="设计侧有改动" aria-hidden="true"></span></a></li>
+        <li><a href="principles-otab.html"><span class="comp-nav-label">标签页</span><span class="aff aff-need">需要</span></a></li>
+        <li><a href="principles-obreadcrumb.html"><span class="comp-nav-label">面包屑</span><span class="aff aff-need">需要</span><span class="comp-dot" title="设计侧有改动" aria-hidden="true"></span></a></li>
+        <li><a href="principles-oanchor.html"><span class="comp-nav-label">锚点</span><span class="aff aff-need">需要</span><span class="comp-dot" title="设计侧有改动" aria-hidden="true"></span></a></li>
+        <li><a href="principles-opagination.html"><span class="comp-nav-label">分页</span><span class="aff aff-need">需要</span></a></li>
+        <li><a href="principles-ostep.html"><span class="comp-nav-label">步骤条</span><span class="aff aff-need">需要</span></a></li>
+        <li><a href="principles-onavigation.html"><span class="comp-nav-label">导航</span><span class="aff aff-need">需要</span><span class="comp-dot" title="设计侧有改动" aria-hidden="true"></span></a></li>
+        <li><a href="principles-ofooternav.html"><span class="comp-nav-label">底部导航</span><span class="aff aff-need">需要</span><span class="comp-dot" title="设计侧有改动" aria-hidden="true"></span></a></li>
       </ul>
       <div class="comp-group-label">操作类</div>
       <ul>
-        <li><a href="principles-obutton.html">OButton 按钮</a></li>
-        <li><a href="principles-olink.html">OLink 链接</a></li>
-        <li><a href="principles-odropdown.html">ODropdown 下拉菜单</a></li>
-        <li><a href="principles-oradio.html">ORadio 单选框</a></li>
-        <li><a href="principles-ocheckbox.html">OCheckbox 多选框</a></li>
-        <li><a href="principles-oswitch.html">OSwitch 开关</a></li>
-        <li><a href="principles-oscrollbar.html">OScrollbar 滚动条</a></li>
-        <li><a href="principles-otoggle.html">OToggle 选择块</a></li>
+        <li><a href="principles-obutton.html"><span class="comp-nav-label">按钮</span><span class="aff aff-maybe">视情况</span></a></li>
+        <li><a href="principles-olink.html"><span class="comp-nav-label">链接</span><span class="aff aff-need">需要</span><span class="comp-dot" title="设计侧有改动" aria-hidden="true"></span></a></li>
+        <li><a href="principles-odropdown.html"><span class="comp-nav-label">下拉菜单</span><span class="aff aff-need">需要</span></a></li>
+        <li><a href="principles-otoggle.html"><span class="comp-nav-label">选择块</span><span class="aff aff-maybe">视情况</span></a></li>
       </ul>
       <div class="comp-group-label">输入类</div>
       <ul>
-        <li><a href="principles-oinput.html">OInput 输入框</a></li>
-        <li><a href="principles-otextarea.html">OTextarea 多行文本输入框</a></li>
-        <li><a href="principles-osearch.html">OSearch 搜索框</a></li>
-        <li><a href="principles-oselect.html">OSelect 选择器</a></li>
-        <li><a href="principles-odatepicker.html">DatePicker 日期选择器</a></li>
-        <li><a href="principles-otimepicker.html">TimePicker 时间选择器</a></li>
-        <li><a href="principles-otrees.html">Trees 树</a></li>
-        <li><a href="principles-oupload.html">OUpload 上传</a></li>
-        <li><a href="principles-orate.html">ORate 评分</a></li>
-        <li><a href="principles-ocascader.html">OCascader 级联选择</a></li>
-        <li><a href="principles-oslider.html">OSlider 滑动条</a></li>
+        <li><a href="principles-osearch.html"><span class="comp-nav-label">搜索框</span><span class="aff aff-maybe">视情况</span><span class="comp-dot" title="设计侧有改动" aria-hidden="true"></span></a></li>
+        <li><a href="principles-oselect.html"><span class="comp-nav-label">选择器</span><span class="aff aff-maybe">视情况</span></a></li>
+        <li><a href="principles-otrees.html"><span class="comp-nav-label">树</span><span class="aff aff-need">需要</span></a></li>
+        <li><a href="principles-orate.html"><span class="comp-nav-label">评分</span><span class="aff aff-maybe">视情况</span><span class="comp-dot" title="设计侧有改动" aria-hidden="true"></span></a></li>
+        <li><a href="principles-ocascader.html"><span class="comp-nav-label">级联选择</span><span class="aff aff-maybe">视情况</span></a></li>
       </ul>
       <div class="comp-group-label">展示类</div>
       <ul>
-        <li><a href="principles-odivider.html">ODivider 分割线</a></li>
-        <li><a href="principles-otag.html">OTag 标签</a></li>
-        <li><a href="principles-obadge.html">OBadge 徽标</a></li>
+        <li><a href="principles-otag.html"><span class="comp-nav-label">标签</span><span class="aff aff-maybe">视情况</span></a></li>
       </ul>
       <div class="comp-group-label">容器类</div>
       <ul>
-        <li><a href="principles-affinity.html">OCarousel 幻灯片</a></li>
-        <li><a href="principles-odialog.html">ODialog 对话框</a></li>
-        <li><a href="principles-ocard.html">OCard 卡片</a></li>
-        <li><a href="principles-odatetable.html" class="active">Odate-table 数据表格</a></li>
+        <li><a href="principles-affinity.html"><span class="comp-nav-label">幻灯片</span><span class="aff aff-need">需要</span><span class="comp-dot" title="设计侧有改动" aria-hidden="true"></span></a></li>
+        <li><a href="principles-odialog.html"><span class="comp-nav-label">对话框</span><span class="aff aff-maybe">视情况</span></a></li>
+        <li><a href="principles-ocard.html"><span class="comp-nav-label">卡片</span><span class="aff aff-need">需要</span><span class="comp-dot" title="设计侧有改动" aria-hidden="true"></span></a></li>
+        <li><a href="principles-odatetable.html" class="active"><span class="comp-nav-label">数据表格</span><span class="aff aff-need">需要</span><span class="comp-dot" title="设计侧有改动" aria-hidden="true"></span></a></li>
       </ul>
       <div class="comp-group-label">反馈类</div>
       <ul>
-        <li><a href="principles-oprogress.html">OProgress 进度条</a></li>
-        <li><a href="principles-omessage.html">OMessage 消息提示</a></li>
-        <li><a href="principles-otoast.html">OToast 轻提示</a></li>
-        <li><a href="principles-opopover.html">气泡卡片</a></li>
-        <li><a href="principles-oloading.html">OLoading 加载</a></li>
+        <li><a href="principles-opopover.html"><span class="comp-nav-label">气泡卡片</span><span class="aff aff-maybe">视情况</span><span class="comp-dot" title="设计侧有改动" aria-hidden="true"></span></a></li>
       </ul>
     </nav>
   </aside>
@@ -436,28 +856,46 @@
     <div class="page-header">
       <h1>表格语义化可问答</h1>
       <p class="page-desc page-desc--split">
-        <span class="page-desc-line">规格表用<strong>真实 table/th/td</strong>，禁截图表或 div 伪表；md 平行表可问答。</span>
-        <span class="page-desc-line">读的懂 · 社区 UI · 对应 <a href="problems-odatetable.html">问题实测 · 表格语义缺失</a>。</span>
+        <span class="page-desc-line">规格参数须以<strong>真实 table/th/td</strong> 写进网页源码（表头 + 单元格文本可逐行抓取）；禁截图表、div 伪表与空 td；文档页宜备 Markdown 平行表。</span>
+        <span class="page-desc-line">读的懂 · 社区 UI · 以 <a href="https://www.hiascend.com/hardware/cluster" target="_blank" rel="noopener">集群产品页</a> 为例 · 对应 <a href="problems-odatetable.html">问题实测 · 表格语义缺失</a>。</span>
       </p>
     </div>
+
+
+
 
     <section class="section" id="design-ui">
       <h2>设计UI调整</h2>
       <h3 id="design-suggestions">调整建议</h3>
       <ul class="principle-suggestions">
-        <li><strong>本原则无独立设计改动</strong>：以内容/前端交付面为主；设计稿标注组件角色即可。</li>
+        <li><strong>表头列须标注</strong>：硬件/软件规格对照稿须明确 th 列（型号/发行版/参数项）与 td 列（CPU/内存/Kernel/GCC 等），禁把参数只放在产品渲染图或特性插画里。</li>
+        <li><strong>截图表标注排除</strong>：设计交付标注「参数须可编辑文本表，禁截图表入库」；装饰性产品图与规格表分区。</li>
       </ul>
       <h3 id="design-example">调整示例</h3>
       <div class="principle-example">
-        <h4>1. 交付稿对比</h4>
+        <h4>1. 集群规格：截图表 → 语义参数表</h4>
         <div class="compare-grid compare-grid--stack compare-grid--no-mid-divider">
-          <h4 class="compare-label compare-label--machine">Before · 仅交互壳/视觉态</h4>
+          <h4 class="compare-label compare-label--machine">Before · 参数绑在特性 PNG</h4>
           <div class="compare-col machine">
-            <pre class="arch-diagram">Odate-table 交互态/视觉壳；规格说明缺失或绑在点击/hover 上。</pre>
+            <div class="render-frame"><div style="border:1px solid var(--line);border-radius:6px;overflow:hidden;max-width:320px;">
+  <div style="background:linear-gradient(135deg,#334155,#475569);color:#fff;padding:18px 14px;text-align:center;font-size:12.5px;line-height:1.6;">📷 规格参数（截图 / feature.png）<br>型号 · CPU · 内存 · 互联</div>
+</div>
+<p class="rf-muted" style="margin-top:8px;">参数是一张截图 / 特性配图，HTML 里没有 th/td；抓取拿不到任何单元格，无法按型号列问答。</p></div>
           </div>
-          <h4 class="compare-label compare-label--human">After · 可见文案位 + 角色标注</h4>
+          <h4 class="compare-label compare-label--human">After · 表头 + 型号列参数表</h4>
           <div class="compare-col human">
-            <pre class="arch-diagram">稿面预留可见文案位；以内容/前端交付面为主；设计稿标注组件角色即可。</pre>
+            <div class="render-frame"><table class="rf-spec">
+  <thead><tr><th>型号</th><th>CPU</th><th>内存</th><th>互联</th></tr></thead>
+  <tbody>
+    <tr><td>Atlas 900</td><td>…</td><td>…</td><td>…</td></tr>
+    <tr><td>Atlas 800</td><td>…</td><td>…</td><td>…</td></tr>
+  </tbody>
+</table>
+<p class="rf-caption" style="margin-top:8px;"><strong>要点：</strong></p>
+<ul class="rf-caption" style="margin:4px 0 0;padding-left:18px;">
+  <li>用真实 <code>&lt;table&gt;</code> + th/td，每格文本可按行列抓取问答。</li>
+  <li>文档页再镜像一份 Markdown 平行表；禁截图表、div 伪表与空 td。</li>
+</ul></div>
           </div>
         </div>
       </div>
@@ -467,19 +905,23 @@
       <h2>文档内容调整</h2>
       <h3 id="content-suggestions">调整建议</h3>
       <ul class="principle-suggestions">
-        <li><strong>正文承载规格</strong>：关键说明写入可引用文档页或旁注段落，勿绑在交互态。</li>
+        <li><strong>MD 平行规格表</strong>：每个 HTML 规格表在文档 MD/llms 镜像一份 Markdown 表（如 CUDA Table 2 Validated OS Versions、FAQ 表1 昇腾产品系列），表头与单元格与 HTML 一致。</li>
+        <li><strong>表题与引用</strong>：正文写清「表1 …」「Table 3 Supported Compilers」，禁止「见上表」无锚点；Agent 须能引用表题定位。</li>
       </ul>
       <h3 id="content-example">调整示例</h3>
       <div class="principle-example">
-        <h4>1. 正文/MD 对比</h4>
+        <h4>1. CUDA 指南：MD 镜像 OS 表</h4>
         <div class="compare-grid compare-grid--stack compare-grid--no-mid-divider">
-          <h4 class="compare-label compare-label--machine">Before · 说明绑在 UI 态</h4>
+          <h4 class="compare-label compare-label--machine">Before · 仅 HTML 长文档</h4>
           <div class="compare-col machine">
-            <pre class="arch-diagram">（无）关键说明只在 表格语义缺失 交互态或 UI 文案中。</pre>
+            <pre class="arch-diagram">【HTML】Table 2 Validated OS Versions 已在 Sphinx table
+【缺失】llms 未摘 Kernel/GCC/GLIBC 矩阵</pre>
           </div>
-          <h4 class="compare-label compare-label--human">After · 规格进可引用正文</h4>
+          <h4 class="compare-label compare-label--human">After · llms 平铺规格表</h4>
           <div class="compare-col human">
-            <pre class="arch-diagram">规格写入正文/MD；关键说明写入可引用文档页或旁注段落，勿绑在交互态。</pre>
+            <pre class="arch-diagram">## CUDA 13.3 · Validated OS
+| Distribution | Kernel | GCC | GLIBC |
+| RHEL 9 | 5.14… | 11.5.0 | 2.34 | …</pre>
           </div>
         </div>
       </div>
@@ -489,36 +931,31 @@
       <h2>前端调整</h2>
       <h3 id="frontend-suggestions">调整建议</h3>
       <ul class="principle-suggestions">
-        <li><strong>参数图代替表</strong>：改 HTML/Markdown 表。</li>
-        <li><strong>div 伪表</strong>：用语义 table。</li>
-        <li><strong>合并单元格滥用</strong>：规范表头。</li>
-        <li><strong>真 table</strong>：th/td 语义。</li>
+        <li><strong>语义 table SSR</strong>：规格对照须 output 真实 table/thead/tbody/th/td（对标 Mintlify Custom portal Features 三列表、CUDA Table 1–4、FAQ 表1）；禁 div 网格伪表。</li>
+        <li><strong>禁空 td 占位</strong>：集群页 spec-summary 等 table 骨架不得留空 td 等脚本填值；每格须有可读文本。</li>
+        <li><strong>Tab 后注入规格须 SSR</strong>：型号 Tab 切换后才出现的参数矩阵，未切换页签也须在源码可读（visually-hidden 或平铺备用表）。</li>
+        <li><strong>caption 与 scope</strong>：复杂表补 caption、th scope=&quot;col/row&quot;，合并单元格不破坏列对齐。</li>
       </ul>
       <h3 id="frontend-example">调整示例</h3>
       <div class="principle-example">
-        <h4>1. HTML/管道对比</h4>
+        <h4>1. 集群摘要表：空 td → 全量 th/td</h4>
         <div class="compare-grid compare-grid--stack compare-grid--no-mid-divider">
-          <h4 class="compare-label compare-label--machine">Before · 首包缺文本/链接</h4>
+          <h4 class="compare-label compare-label--machine">Before · table 骨架空单元格</h4>
           <div class="compare-col machine">
-            <pre class="arch-diagram">&amp;lt;div class=&quot;o-datetable&quot;&amp;gt;…&amp;lt;/div&amp;gt;
-&amp;lt;!-- 关键文本未 SSR / 无 href --&amp;gt;</pre>
+            <pre class="arch-diagram">&lt;table class="o-table-border-row"&gt;
+  &lt;tr&gt;&lt;td class="table-col-1"&gt;&lt;p&gt;&lt;/p&gt;&lt;/td&gt;&lt;td&gt;&lt;!-- 空 --&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</pre>
           </div>
-          <h4 class="compare-label compare-label--human">After · SSR + 管道规则</h4>
+          <h4 class="compare-label compare-label--human">After · SSR 规格矩阵</h4>
           <div class="compare-col human">
-            <pre class="arch-diagram">&amp;lt;!-- SSR 全量文本 + 真实链接 --&amp;gt;
-&amp;lt;!-- 改 HTML/Markdown 表 --&amp;gt;</pre>
+            <pre class="arch-diagram">&lt;table&gt;
+  &lt;caption&gt;Atlas 900 vs Atlas 800 规格&lt;/caption&gt;
+  &lt;thead&gt;&lt;tr&gt;&lt;th&gt;参数&lt;/th&gt;&lt;th&gt;Atlas 900&lt;/th&gt;&lt;th&gt;Atlas 800&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+  &lt;tbody&gt;&lt;tr&gt;&lt;th scope="row"&gt;CPU&lt;/th&gt;&lt;td&gt;…&lt;/td&gt;&lt;td&gt;…&lt;/td&gt;&lt;/tr&gt;…&lt;/tbody&gt;
+&lt;/table&gt;</pre>
           </div>
         </div>
       </div>
-    </section>
-
-    <section class="section" id="acceptance">
-      <h2>验收标准</h2>
-      <ul class="accept-list">
-        <li><strong>静态可达</strong>：禁 JS 抓取后，表格语义缺失相关关键文本/链接仍在首包 HTML 中。。</li>
-        <li><strong>可证伪</strong>：对探针问句的回答可引用具体 href/段落，与 &lt;a href=&quot;problems-odatetable.html&quot;&gt;问题实测&lt;/a&gt; 失败判据互斥。。</li>
-        <li><strong>管道</strong>：Chunk 规则明确：该收录的文本/链接进库，纯 UI 控件/瞬时态可跳过。。</li>
-      </ul>
     </section>
   </main>
 

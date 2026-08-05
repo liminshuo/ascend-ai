@@ -24,7 +24,8 @@
           "translateY",
           "tabular-nums"
         ],
-        "fixNeeded": true
+        "fixNeeded": true,
+        "peerReason": "「Agent traffic」标签可抓，但百分比用 0–9 滚轮 + transform:translateY 呈现，源码无完整可读数值。"
       },
       {
         "id": "hero-traffic-link",
@@ -52,7 +53,8 @@
         "shotFrom": 0,
         "shotTo": 100,
         "shotTop": 3.8,
-        "shotLeft": 12
+        "shotLeft": 12,
+        "peerReason": "主标题与副文位于 h1/p 文本节点，静态 HTML 即可整段读取。"
       },
       {
         "id": "hero-cta",
@@ -66,7 +68,8 @@
         "shotFrom": 0,
         "shotTo": 100,
         "shotTop": 4.2,
-        "shotLeft": 12
+        "shotLeft": 12,
+        "peerReason": "「Get started」「Sign up with Google」按钮文案与真实 href（signup / Google discovery）写在静态 HTML，可抓全。"
       },
       {
         "id": "hero-img",
@@ -98,7 +101,8 @@
         "shotLeft": 56.24,
         "html": ",000+</strong> of the world&#x27;s most ambitious companies building for agents.</h2><a data-slot=\"button\" class=\"group inline-flex shrink-0 cursor-pointer items-center justify-center gap-1 whitespace-nowrap rounded-[4px] border border-transparent pl-4 pr-3 font-medium text-sm/4 outline-offset-2 transition-[color,background-color,border-color] duration-100 f",
         "shotFrom": 12.8,
-        "shotTo": 17.8
+        "shotTo": 17.8,
+        "peerReason": "区块标题为文本节点；品牌 Logo 使用 img，并提供品牌名 alt，品牌名可抓。"
       },
       {
         "id": "stats",
@@ -117,7 +121,8 @@
           "aria-hidden=\"true\"",
           "font-paper"
         ],
-        "fixNeeded": true
+        "fixNeeded": true,
+        "peerReason": "指标标签可抓，但数值以 0–9 滚轮 + transform 呈现，源码无完整数字，计数不可核对。"
       },
       {
         "id": "platform",
@@ -136,7 +141,8 @@
           "aria-hidden=\"true\""
         ],
         "fixNeeded": true,
-        "shot": "assets/cases-html/home-platform.png?v=20260803f"
+        "shot": "assets/cases-html/home-platform.png?v=20260803f",
+        "peerReason": "能力卡仅 h3 短标题可抓；卡面主视觉为 canvas（aria-hidden），无图注或说明正文。"
       },
       {
         "id": "carousel-photo",
@@ -169,7 +175,8 @@
         "shotTo": 100,
         "shotTop": 44.72,
         "shotLeft": 20,
-        "idx": 10
+        "idx": 10,
+        "peerReason": "企业案例滑动区首包写入 4 帧（Anthropic / Coinbase / HubSpot / AT&T）：每帧 h3、数据点与 /customers/… href 均在静态 HTML，视口外未展示的帧不滑动也能抓到。"
       },
       {
         "id": "case",
@@ -197,7 +204,8 @@
         "shotTo": 100,
         "shotTop": 62,
         "shotLeft": 12,
-        "idx": 12
+        "idx": 12,
+        "peerReason": "「Trusted by teams building for agents.」标题与 Read more → /customers 可抓；6 张证言卡均在静态 HTML：figcaption 署名、职务/公司 span、blockquote 原文齐全，品牌 Logo 虽为内联 SVG，但公司名写在旁侧文本（如 Developer Support, Zapier）。"
       },
       {
         "id": "updates",
@@ -216,7 +224,23 @@
           "data-post-link"
         ],
         "fixNeeded": false,
-        "idx": 13
+        "idx": 13,
+        "peerReason": "区块标题与 All posts → /blog 可抓；3 张卡片的分类标签、日期、标题/摘要与 href 写在链接节点（含 /blog/editor、luma 外链）。但卡片配图均为 img alt=\"\"，缩略图内容不可抓。"
+      },
+      {
+        "id": "footer-nav",
+        "idx": 14,
+        "kind": "in",
+        "name": "页脚多列导航",
+        "badge": "页脚链接",
+        "desc": "页脚 grid 多列（Documentation / Company / Legal）列名与各链（Getting started → /docs、Privacy policy → /legal/privacy、Terms of service → /legal/terms 等）写在首包 HTML。",
+        "html": "<h3>Documentation</h3><ul><li><a href=\"/docs\">Getting started</a></li><li><a href=\"/docs/api/introduction\">API reference</a></li></ul><h3>Company</h3><ul><li><a href=\"/careers\">Careers</a></li>…</ul><h3>Legal</h3><ul><li><a href=\"/legal/privacy\">Privacy policy</a></li><li><a href=\"/legal/terms\">Terms of service</a></li></ul>",
+        "shot": "assets/cases-html/home.png?v=20260805a2",
+        "shotFrom": 88,
+        "shotTo": 100,
+        "shotTop": 90,
+        "shotLeft": 12,
+        "peerReason": "页脚 Documentation / Company / Legal 多列导航与 Privacy policy、Terms of service 等链接均在首包 HTML。"
       }
     ],
     "concludeLead": "<p class=\"d1-verdict\"><span class=\"tag tag-in\">文本层大体可抓</span> <span class=\"tag tag-out\">视觉层多处抓不全</span></p><p class=\"floor-hint\">首页 13 组件：7 蓝 / 6 橙。口号、CTA、案例多帧文案、证言网格、规模数字可抓；Agent traffic 滚轮、Hero/案例照、统计滚轮、能力卡 canvas、博客卡配图 alt 则抓不全。</p>",
@@ -235,8 +259,28 @@
     "rightLabel": "整页 HTML（楼层标注）",
     "floors": [
       {
-        "id": "hero",
+        "id": "products-nav-dropdown",
         "idx": 1,
+        "kind": "warn",
+        "name": "Products 顶栏下拉缺少静态子链",
+        "badge": "下拉菜单",
+        "desc": "问题点：定价页顶栏浏览器可见 Products / Solutions / Resources 触发器，展开后 mega menu 含 Platform / Editor / Authentication / Automations / Agent / Assistant / Connections / MCP server 等项与副文案，但静态 HTML 仅 navigation-menu-trigger（data-state=closed），panel 内子项 a[href] 与副文案未 SSR；须悬停/点击才挂载。\n判断：有必要解决 —— 顶栏下拉子项须 SSR 进首包（对标文档站 Learn 下拉可抓）。",
+        "html": "<button id=\"radix-…-trigger-Products\" data-state=\"closed\" aria-expanded=\"false\" data-navitem=\"Products\">Products</button><button data-navitem=\"Solutions\">Solutions</button><button data-navitem=\"Resources\">Resources</button><!-- 浏览器展开：Platform / Editor / Authentication … --><!-- 静态 HTML 无 content-Products 内 a[href] 与 Agent-native platform 等副文案 -->",
+        "shot": "assets/cases-html/pricing.png?v=20260803c",
+        "shotFrom": 0,
+        "shotTo": 12,
+        "shotTop": 0,
+        "shotLeft": 20,
+        "fixNeeded": true,
+        "highlights": [
+          "data-state=\"closed\"",
+          "navigation-menu-trigger"
+        ],
+        "peerReason": "顶栏 Products/Solutions/Resources 触发器可见，但 mega menu 子项（Platform / Editor / Authentication / Automations / Agent 等）与 href 未 SSR，须悬停/点击才挂载 panel。"
+      },
+      {
+        "id": "hero",
+        "idx": 2,
         "kind": "in",
         "name": "价目主张与副文",
         "badge": "Banner",
@@ -249,7 +293,7 @@
       },
       {
         "id": "plans",
-        "idx": 2,
+        "idx": 3,
         "kind": "warn",
         "name": "套餐价格缺少完整数字",
         "badge": "动效数字",
@@ -264,11 +308,12 @@
           "tabular-nums",
           "overflow-hidden"
         ],
-        "fixNeeded": true
+        "fixNeeded": true,
+        "peerReason": "套餐名（Starter / Pro 等）可抓，但标价以 0–9 滚轮 + transform 呈现，源码无完整可读价格。"
       },
       {
         "id": "matrix",
-        "idx": 3,
+        "idx": 4,
         "kind": "in",
         "name": "功能对照与额度",
         "badge": "对照正文",
@@ -277,7 +322,8 @@
         "shotTop": 30.95,
         "shotLeft": 12,
         "shotFrom": 19.9,
-        "shotTo": 42.0
+        "shotTo": 42.0,
+        "peerReason": "功能勾选、Credits / 定制项等说明写在文本节点，对照表内容可抓。"
       },
       {
         "id": "faq-collapsed",
@@ -291,11 +337,11 @@
         "shotTo": 100,
         "shotTop": 72,
         "shotLeft": 12,
-        "idx": 4
+        "idx": 5
       },
       {
         "id": "faq",
-        "idx": 5,
+        "idx": 6,
         "kind": "warn",
         "name": "FAQ 答文缺少静态正文",
         "badge": "折叠面板",
@@ -311,11 +357,12 @@
           "accordion-content",
           "__next_f"
         ],
-        "fixNeeded": true
+        "fixNeeded": true,
+        "peerReason": "关闭态 accordion-content 是带 hidden 的空 region，答文不在组件 DOM；展开后答文才挂入面板（如 public packages、gtm@mintlify.com），首包答文只在 self.__next_f 飞行数据里。"
       },
       {
         "id": "logos",
-        "idx": 6,
+        "idx": 7,
         "kind": "warn",
         "name": "案例 Logo 无 alt",
         "badge": "图片",
@@ -339,6 +386,70 @@
     "hasMarkdown": true,
     "markdownUrl": "https://www.mintlify.com/pricing.md"
   },
+  "docs": {
+    "title": "文档站 /docs · HTML 抓取对照",
+    "leftUrl": "https://www.mintlify.com/docs",
+    "leftLabel": "mintlify.com/docs",
+    "leftShot": "assets/cases-html/docs-editor.png?v=20260805a1",
+    "rightUrl": "https://www.mintlify.com/docs",
+    "rightLabel": "楼层 HTML 摘录",
+    "pageDesc": "Mintlify 文档站 Introduction 页顶栏与侧栏导航。",
+    "pageName": "文档站",
+    "hasMarkdown": true,
+    "markdownUrl": "https://www.mintlify.com/docs.md",
+    "floors": [
+      {
+        "id": "top-nav",
+        "idx": 1,
+        "kind": "in",
+        "name": "顶部主导航",
+        "badge": "navbar",
+        "desc": "文档站顶栏 navbar：Documentation → /docs、API reference → /docs/api/introduction、Changelog → /docs/changelog、Talk to us → contact/sales、Get started → mintlify.com/start 等一级链均带真实 href；Learn 下拉子项（Customers / Blog 等）亦在首包 HTML。Ask Assistant / 搜索为纯交互可弱化入库。",
+        "html": "<nav class=\"@container/navbar …\"><a href=\"/docs\">Documentation</a><a href=\"/docs/api/introduction\">API reference</a><a href=\"/docs/changelog\">Changelog</a><button>Learn</button>…<a href=\"https://mintlify.com/contact/sales\">Talk to us</a><a href=\"https://mintlify.com/start\">Get started</a></nav>",
+        "shot": "assets/cases-html/docs-editor.png?v=20260805a1",
+        "shotFrom": 0,
+        "shotTo": 8,
+        "shotTop": 0,
+        "shotLeft": 0,
+        "peerReason": "文档站顶栏 navbar：Documentation / API reference / Changelog / Talk to us / Get started 一级链均带真实 href；Learn 下拉子项（Customers / Blog 等）亦在首包 HTML。"
+      }
+    ],
+    "concludeLead": "<p class=\"d1-verdict\"><span class=\"tag tag-in\">顶栏主导航可抓</span></p><p class=\"floor-hint\">蓝 = 可抓全 · 橙 = 抓不全</p>",
+    "concludeGeo": "<p class=\"conclude-geo\"><strong>边界：</strong>顶栏作站点级发现；正文知识跟各文档页。</p>",
+    "fullHtmlPath": "assets/cases-html/docs.html"
+  },
+  "quickstart": {
+    "title": "Quickstart /docs/quickstart · HTML 抓取对照",
+    "leftUrl": "https://www.mintlify.com/docs/quickstart",
+    "leftLabel": "mintlify.com/docs/quickstart",
+    "leftShot": "assets/cases-html/docs-editor.png?v=20260805a2",
+    "rightUrl": "https://www.mintlify.com/docs/quickstart",
+    "rightLabel": "楼层 HTML 摘录",
+    "pageDesc": "Mintlify Quickstart：CLI / Web editor 首改文档流程。",
+    "pageName": "Quickstart",
+    "hasMarkdown": true,
+    "markdownUrl": "https://www.mintlify.com/docs/quickstart.md",
+    "floors": [
+      {
+        "id": "web-editor-steps",
+        "idx": 1,
+        "kind": "in",
+        "name": "Web editor 步骤条",
+        "badge": "Steps",
+        "desc": "「Make your first change」Web editor Tab 内 Steps 组件：Open the web editor / Edit a page / Publish / View live 四步 step-title 与 step-content 说明均在首包 HTML（role=listitem），含 web editor 外链与 Introduction 页编辑说明。",
+        "html": "<div role=\"listitem\" class=\"step\"><p data-component-part=\"step-title\">Open the web editor</p><div data-component-part=\"step-content\">Navigate to the <a href=\"https://app.mintlify.com/editor\">web editor</a>…</div></div><div role=\"listitem\" class=\"step\"><p data-component-part=\"step-title\">Edit a page</p><div data-component-part=\"step-content\">Open the Introduction page and update the description.…</div></div><p data-component-part=\"step-title\">Publish</p>…<p data-component-part=\"step-title\">View live</p>…",
+        "shot": "assets/cases-html/docs-editor.png?v=20260805a2",
+        "shotFrom": 40,
+        "shotTo": 65,
+        "shotTop": 45,
+        "shotLeft": 12,
+        "peerReason": "Web editor Tab 内 Steps：Open the web editor / Edit a page / Publish / View live 四步标题与说明均在首包 HTML（step-title + step-content）。"
+      }
+    ],
+    "concludeLead": "<p class=\"d1-verdict\"><span class=\"tag tag-in\">Web editor 步骤可抓</span></p><p class=\"floor-hint\">蓝 = 可抓全 · 橙 = 抓不全</p>",
+    "concludeGeo": "<p class=\"conclude-geo\"><strong>边界：</strong>本页只判 Steps 组件源码可抓性；CLI Tab 步骤另列。</p>",
+    "fullHtmlPath": "assets/cases-html/quickstart.html"
+  },
   "docs-editor": {
     "title": "文档 /docs/editor · HTML 抓取对照",
     "leftUrl": "https://www.mintlify.com/docs/editor",
@@ -358,7 +469,8 @@
         "shotTop": 9.45,
         "shotLeft": 12,
         "shotFrom": 2.4,
-        "shotTo": 16.5
+        "shotTo": 16.5,
+        "peerReason": "「Editor overview」等标题写在 h1/正文源码里，静态 HTML 即可读取。"
       },
       {
         "id": "tip",
@@ -371,7 +483,8 @@
         "shotTop": 24.5,
         "shotLeft": 12,
         "shotFrom": 22.5,
-        "shotTo": 26.5
+        "shotTo": 26.5,
+        "peerReason": "Tip 提示块带有文字说明（含 Reset editor 等），写在 role=note 文本里，可抓。"
       },
       {
         "id": "layout-img",
@@ -388,7 +501,8 @@
         "highlights": [
           "alt=\"Screenshot"
         ],
-        "fixNeeded": false
+        "fixNeeded": false,
+        "peerReason": "虽有概要 alt，但复杂界面分区/控件细项仍难仅靠一句说明完整还原。"
       },
       {
         "id": "cards",
@@ -406,7 +520,8 @@
           "role=\"link\"",
           "cursor-pointer"
         ],
-        "fixNeeded": true
+        "fixNeeded": true,
+        "peerReason": "卡片标题/摘要可见，但以 role=\"link\" 承载，缺少真实 href，模型看得见却跟不到下一页。"
       },
       {
         "id": "related-topics",
@@ -420,7 +535,51 @@
         "shotTo": 100,
         "shotTop": 88,
         "shotLeft": 12,
-        "idx": 5
+        "idx": 5,
+        "peerReason": "「Related topics」标题与 Editor overview / Automations overview / API playground overview 三条链接文案及真实 href（/docs/editor/index 等）均写在 <a> 节点，静态 HTML 可抓全。"
+      },
+      {
+        "id": "sidebar-nav",
+        "idx": 6,
+        "kind": "in",
+        "name": "左侧竖向 menu",
+        "badge": "导航",
+        "desc": "id=\"sidebar-content\" 内 Get started / Organize / Editor 等分组与条目 href（如 /docs、/docs/editor）均在静态 HTML（线上实测 73 条 docs 链）；左侧文档导航可抓全。",
+        "peerReason": "侧栏 #sidebar-content 内分组与 href 均在静态 HTML（实测 73 条链）。",
+        "html": "<nav id=\"sidebar-content\" …><a href=\"/docs\">Introduction</a>…<a href=\"/docs/editor\" aria-current=\"page\">Overview</a>…",
+        "shotTop": 20,
+        "shotLeft": 8,
+        "shotFrom": 0,
+        "shotTo": 35
+      },
+      {
+        "id": "page-eyebrow",
+        "idx": 7,
+        "kind": "warn",
+        "name": "页眉 section 标签",
+        "badge": "非面包屑",
+        "desc": "问题点：<a href=\"https://www.mintlify.com/docs/editor\">/docs/editor</a> 仅有 h1 上方「Editor」eyebrow 分区标签，无 Docs › Editor › Overview 式可链祖先面包屑；页底 Related topics 为相关链接（属 OLink），不是路径链。\n判断：本页无 OBreadcrumb 组件，不宜拿 Related topics 作面包屑对照。",
+        "html": "<div class=\"eyebrow …\">Editor</div><h1 id=\"page-title\">Editor overview</h1>…（无 breadcrumb nav；Related topics 在页底）",
+        "shotTop": 8,
+        "shotLeft": 12,
+        "shotFrom": 0,
+        "shotTo": 12,
+        "fixNeeded": false,
+        "peerReason": "仅有 section eyebrow，无 ancestors 可链面包屑；Related topics 是相关链接非路径链。"
+      },
+      {
+        "id": "page-anchor-nav",
+        "idx": 8,
+        "kind": "in",
+        "name": "右侧 On this page 锚点",
+        "badge": "锚点导航",
+        "desc": "右侧「On this page」章节目录含 Open the editor / How the editor works / The editor layout / Explore the editor 等项，均带 #open-the-editor 等 hash href，静态 HTML 可抓全。",
+        "html": "<span>On this page</span>…<a href=\"#open-the-editor\">Open the editor</a>…<a href=\"#how-the-editor-works\">How the editor works</a>…<a href=\"#the-editor-layout\">The editor layout</a>…<a href=\"#explore-the-editor\">Explore the editor</a>",
+        "peerReason": "On this page 锚点目录与 #open-the-editor 等 hash 链均在静态 HTML，可与正文 heading id 对齐。",
+        "shotTop": 15,
+        "shotLeft": 75,
+        "shotFrom": 0,
+        "shotTo": 25
       }
     ],
     "concludeLead": "<p class=\"d1-verdict\"><span class=\"tag tag-in\">说明书正文可抓</span> <span class=\"tag tag-out\">Explore 卡缺真链、示意图语义偏粗</span></p>",
@@ -480,7 +639,8 @@
         "shotTop": 40.25,
         "shotLeft": 12,
         "shotFrom": 25.5,
-        "shotTo": 55.0
+        "shotTo": 55.0,
+        "peerReason": "列表中的文章标题与 /blog/... 链接写在源码里，列表可完整抓取。"
       },
       {
         "id": "thumbs",
@@ -598,7 +758,8 @@
         "shotFrom": 82,
         "shotTo": 98,
         "shotTop": 90,
-        "shotLeft": 12
+        "shotLeft": 12,
+        "peerReason": "页脚主文案「Build docs developers (and agents) love」与副文位于文本节点；主按钮为真实 <a href=\"https://www.mintlify.com/contact/sales\">book a demo</a>，文案与目标地址均可抓。"
       }
     ],
     "concludeLead": "<p class=\"d1-verdict\"><span class=\"tag tag-in\">主张、榜单、证言与页脚 CTA 可抓</span> <span class=\"tag tag-out\">canvas 可视化抓不全</span></p>",
@@ -608,5 +769,65 @@
     "pageName": "Agent Score",
     "hasMarkdown": true,
     "markdownUrl": "https://www.mintlify.com/score.md"
+  },
+  "docs-tabs": {
+    "title": "文档 /docs/components/tabs · HTML 抓取对照",
+    "leftUrl": "https://www.mintlify.com/docs/components/tabs",
+    "leftLabel": "mintlify.com/docs/components/tabs",
+    "leftShot": "assets/cases-html/docs-editor.png?v=20260803b",
+    "rightUrl": "https://www.mintlify.com/docs/components/tabs",
+    "rightLabel": "整页 HTML（楼层标注）",
+    "floors": [
+      {
+        "id": "tabs-demo",
+        "idx": 1,
+        "kind": "in",
+        "name": "Tabs 组件示例",
+        "badge": "Tab 页签",
+        "desc": "文档示例区含 role=\"tablist\" 与 3 个 role=\"tab\"（First / Second / Third tab）；各 role=\"tabpanel\" 面板正文均在静态 HTML，未切换页签也可抓全三面板导语与代码块。",
+        "html": "<ul data-component-part=\"tabs-list\"><li id=\"first-tab\" role=\"tab\" aria-selected=\"true\" aria-controls=\"panel-first-tab-0\">First tab</li><li id=\"second-tab\" role=\"tab\" aria-controls=\"panel-second-tab-1\">Second tab</li><li id=\"third-tab\" role=\"tab\" aria-controls=\"panel-third-tab-2\">Third tab</li></ul><div id=\"panel-first-tab-0\" role=\"tabpanel\">Welcome to the content that you can only see inside the first tab.</div><div id=\"panel-second-tab-1\" role=\"tabpanel\">Here's content that's only inside the second tab.</div><div id=\"panel-third-tab-2\" role=\"tabpanel\">Here's content that's only inside the third tab.</div>",
+        "shotTop": 28,
+        "shotLeft": 12,
+        "shotFrom": 20,
+        "shotTo": 45,
+        "peerReason": "3 个 Tab 标签（First / Second / Third tab）与对应 tabpanel 正文均在静态 HTML，未点击切换也可抓全各面板导语。"
+      }
+    ],
+    "concludeLead": "<p class=\"d1-verdict\"><span class=\"tag tag-in\">Tab 页签与多面板正文可抓全</span></p>",
+    "concludeGeo": "<p class=\"conclude-geo\"><strong>可学条件：</strong>tablist / tab / tabpanel 语义完整，非激活面板正文也进首包。<br><strong>边界：</strong>本页只判源码可抓性。</p>",
+    "fullHtmlPath": "assets/cases-html/docs-tabs.html",
+    "pageDesc": "Mintlify 文档 Tabs 组件说明页：展示 Tab 页签与多面板内容的 SSR 写法。",
+    "pageName": "Tabs 组件",
+    "hasMarkdown": true,
+    "markdownUrl": "https://www.mintlify.com/docs/components/tabs.md"
+  },
+  "custom-portal": {
+    "title": "Custom developer portals · HTML 抓取对照",
+    "leftUrl": "https://www.mintlify.com/docs/deploy/custom-portal",
+    "leftLabel": "…/docs/deploy/custom-portal",
+    "rightUrl": "https://www.mintlify.com/docs/deploy/custom-portal",
+    "rightLabel": "楼层 HTML 摘录",
+    "pageDesc": "Mintlify Enterprise 自定义开发者门户说明页：Features 三列对照表与 Steps 流程均在文档 HTML 中。",
+    "pageName": "Custom developer portals",
+    "hasMarkdown": true,
+    "markdownUrl": "https://www.mintlify.com/docs/deploy/custom-portal.md",
+    "floors": [
+      {
+        "id": "features-table",
+        "idx": 1,
+        "kind": "in",
+        "name": "Custom portal 功能表",
+        "badge": "对照正文",
+        "desc": "Features 三列表格（Feature / What ships / Backed by）共 10 行：Custom presentation layer、Product and catalog pages、Sign-in、Applications and credentials、Subscriptions、Profiles and notifications、Support、Search、Personalized content、Ongoing releases 及各自说明与 Backed by 列均在静态 HTML table 中可读。",
+        "html": "<table><thead><tr><th>Feature</th><th>What ships</th><th>Backed by</th></tr></thead><tbody><tr><td>Custom presentation layer</td><td>A full front-end application in your design system…</td><td>Mintlify, alongside the self-hosted platform</td></tr>… Product and catalog pages … Sign-in … Applications and credentials … Subscriptions … Profiles and notifications … Support … Search … Personalized content … Ongoing releases …</tbody></table>",
+        "shotFrom": 0,
+        "shotTo": 100,
+        "shotTop": 18,
+        "shotLeft": 12,
+        "peerReason": "Features 三列表格（Feature / What ships / Backed by）10 行功能对照与 Backed by 说明均在静态 HTML table/th/td 中，禁 JS 可逐行抓取，非截图表。"
+      }
+    ],
+    "concludeLead": "<p class=\"d1-verdict\"><span class=\"tag tag-in\">功能对照表 html 可抓全</span></p>",
+    "concludeGeo": "<p class=\"conclude-geo\"><strong>边界：</strong>文档 table 为可问答规格源；Steps / Card 链为补充发现层。</p>"
   }
 }

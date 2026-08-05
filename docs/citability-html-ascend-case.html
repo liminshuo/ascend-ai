@@ -308,13 +308,25 @@
     border-left-color: #ea580c;
     background: rgba(234, 88, 12, 0.06);
   }
+  .floor-item.warn-ok {
+    border-left-color: #ca8a04;
+    background: rgba(202, 138, 4, 0.06);
+  }
   .floor-item.warn .idx {
     background: rgba(234, 88, 12, 0.12);
     color: #c2410c;
   }
+  .floor-item.warn-ok .idx {
+    background: rgba(202, 138, 4, 0.14);
+    color: #a16207;
+  }
   .floor-item.warn .badge {
     background: rgba(234, 88, 12, 0.12);
     color: #c2410c;
+  }
+  .floor-item.warn-ok .badge {
+    background: rgba(202, 138, 4, 0.14);
+    color: #a16207;
   }
   .floor-item.peel {
     border-left-color: #c5cad3;
@@ -354,6 +366,10 @@
   .conclude .tag-out {
     background: #fff7ed;
     color: #c2410c;
+  }
+  .conclude .tag-warn-ok {
+    background: #fef9c3;
+    color: #a16207;
   }
   .conclude .tag-muted {
     background: #eceff3;
@@ -720,6 +736,10 @@
   .floor-item.warn.active {
     outline-color: rgba(234, 88, 12, 0.45);
     background: rgba(234, 88, 12, 0.1);
+  }
+  .floor-item.warn-ok.active {
+    outline-color: rgba(202, 138, 4, 0.45);
+    background: rgba(202, 138, 4, 0.1);
   }
   .floor-hint {
     margin: 0 0 8px;
@@ -1189,6 +1209,7 @@
   }
   .verdict-bar .tag-in { background: #ecfdf5; color: #047857; }
   .verdict-bar .tag-out { background: #fff7ed; color: #c2410c; }
+  .verdict-bar .tag-warn-ok { background: #fef9c3; color: #a16207; }
   .verdict-bar .tag-muted { background: #eceff3; color: #5a6478; }
 
   .floor-card-list {
@@ -1652,6 +1673,10 @@
     color: #ea580c;
     border-left-color: #ea580c;
   }
+  .comp-anchors .anchor.warn-ok.active {
+    color: #ca8a04;
+    border-left-color: #ca8a04;
+  }
   @media (max-width: 1100px) {
     .comp-anchors { display: none; }
   }
@@ -1673,6 +1698,7 @@
   }
   .comp-card.in { border-left-color: #1476FF; }
   .comp-card.warn { border-left-color: #ea580c; }
+  .comp-card.warn-ok { border-left-color: #ca8a04; }
   .comp-card.active {
     border-color: #1476FF;
     box-shadow: 0 0 0 1px rgba(20, 118, 255, 0.28);
@@ -1680,6 +1706,10 @@
   .comp-card.warn.active {
     border-color: #ea580c;
     box-shadow: 0 0 0 1px rgba(234, 88, 12, 0.28);
+  }
+  .comp-card.warn-ok.active {
+    border-color: #ca8a04;
+    box-shadow: 0 0 0 1px rgba(202, 138, 4, 0.28);
   }
   .comp-card-head {
     display: flex;
@@ -1706,6 +1736,7 @@
     background: #1476FF; color: #fff;
   }
   .comp-card.warn .idx { background: #ea580c; color: #fff; }
+  .comp-card.warn-ok .idx { background: #ca8a04; color: #fff; }
   .comp-card .name {
     flex: 0 1 auto;
     min-width: 0;
@@ -1729,6 +1760,7 @@
     color: #1476FF;
   }
   .comp-card.warn .badge { background: rgba(234, 88, 12, 0.14); color: #c2410c; }
+  .comp-card.warn-ok .badge { background: rgba(202, 138, 4, 0.14); color: #a16207; }
   .comp-card .desc {
     margin: 0;
     font-size: 12px;
@@ -1737,12 +1769,27 @@
     white-space: pre-line;
   }
   .comp-card .desc strong { font-weight: 700; color: var(--text); }
+  .comp-card .desc .problem-label {
+    color: #c2410c;
+    font-weight: 700;
+  }
+  .comp-card.warn-ok .desc .problem-label {
+    color: #a16207;
+  }
   .comp-card .desc .need-fix {
     display: inline;
     padding: 0 4px;
     border-radius: 3px;
     background: #ffedd5;
     color: #c2410c;
+    font-weight: 700;
+  }
+  .comp-card .desc .ok-fix {
+    display: inline;
+    padding: 0 4px;
+    border-radius: 3px;
+    background: #fef9c3;
+    color: #a16207;
     font-weight: 700;
   }
   .comp-shot {
@@ -1792,6 +1839,9 @@
   }
   .comp-card.warn pre {
     background: #fffaf5;
+  }
+  .comp-card.warn-ok pre {
+    background: #fffef5;
   }
   .comp-card pre mark.hl-warn {
     background: #ffedd5;
@@ -1850,9 +1900,9 @@
 
 <script>
   const LIST_PAGE = "citability-html-ascend.html";
-  const DATA_URL = "assets/cases-html-ascend/cases-data.json?v=20260804aj";
+  const DATA_URL = "assets/cases-html-ascend/cases-data.json?v=20260804ap";
   const PAGE_TITLE = "昇腾 实测案例 · html 可读";
-  const NAV = [{"key": "home", "path": "/zh", "chips": ["市场营销"], "summary": "轮播/平台栈/行业方案可抓；资讯 Tab 与商机方案卡靠注入（有必要解决）；配图无 alt 可不解决。无平行 Markdown。", "name": "社区首页"}, {"key": "cluster", "path": "/hardware/cluster", "chips": ["市场营销 · 产品"], "summary": "特性与摘要规格表可抓；详细规格需展开（有必要解决）。无平行 Markdown。", "name": "集群产品"}, {"key": "ccae", "path": "/software/ccae", "chips": ["市场营销 · 软件"], "summary": "特性正文与 OpenAPI 资源可抓；首屏栈图无导语可不解决。无平行 Markdown。", "name": "CCAE"}, {"key": "developer", "path": "/developer", "chips": ["知识 · 壳入口"], "summary": "工具链与学习成长可抓；技术热点轮播靠注入（有必要解决）。无平行 Markdown。", "name": "开发者入口"}, {"key": "faq", "path": "AscendFAQ /overview", "chips": ["知识 · 文档"], "summary": "正文与产品表可抓；侧栏在 NUXT 可不解决。无平行 Markdown。", "name": "AscendFAQ"}, {"key": "hidevlab", "path": "hidevlab.huawei.com", "chips": ["知识 · 站外"], "summary": "空壳 SPA 仅有 title（有必要解决）。无平行 Markdown。", "name": "HiDevLab"}, {"key": "download", "path": "/developer/download", "chips": ["知识 · 下载"], "summary": "分类与软件卡可抓；版本矩阵靠交互可不解决。无平行 Markdown。", "name": "资源下载"}, {"key": "edu", "path": "edu.hicomputing.huawei.com", "chips": ["生态 · 站外"], "summary": "主张与角色卡可抓；轮播帧不全（有必要解决）。站外域名。", "name": "教育科研"}];
+  const NAV = [{"key": "home", "path": "/zh", "chips": ["市场营销"], "summary": "轮播/平台栈/行业方案可抓；资讯 Tab 与商机方案卡靠注入（有必要解决）；配图无 alt 可不解决。无平行 Markdown。", "name": "社区首页"}, {"key": "cluster", "path": "/hardware/cluster", "chips": ["市场营销 · 产品"], "summary": "默认导语卡/摘要规格可抓；型号 Tab、特性卡靠注入或仅默认 SSR（有必要解决）。无平行 Markdown。", "name": "集群产品"}, {"key": "ccae", "path": "/software/ccae", "chips": ["市场营销 · 软件"], "summary": "Banner/默认特性导语/OpenAPI 可抓；栈图、特性 Tab 靠注入或配图无 alt（有必要解决）。无平行 Markdown。", "name": "CCAE"}, {"key": "developer", "path": "/developer", "chips": ["知识 · 壳入口"], "summary": "资源卡/工具链/计划/支持可抓；轮播、热点、精品推荐、互动列表靠注入（有必要解决）。无平行 Markdown。", "name": "开发者入口"}, {"key": "faq", "path": "AscendFAQ /overview", "chips": ["知识 · 文档"], "summary": "正文与产品表可抓；侧栏在 NUXT 可不解决。无平行 Markdown。", "name": "AscendFAQ"}, {"key": "download", "path": "/developer/download", "chips": ["知识 · 下载"], "summary": "分类与软件卡可抓；版本矩阵靠交互可不解决。无平行 Markdown。", "name": "资源下载"}, {"key": "edu", "path": "edu.hicomputing.huawei.com", "chips": ["生态 · 站外"], "summary": "主张与角色卡可抓；轮播帧不全（有必要解决）。站外域名。", "name": "教育科研"}];
   let CASES = {};
   let activeFloorId = null;
   let currentCase = null;
@@ -1935,7 +1985,7 @@
     const nMust = list.filter((f) => f.kind === 'warn' && f.fixNeeded !== false).length;
     const nOk = list.filter((f) => f.kind === 'warn' && f.fixNeeded === false).length;
     const lines = [
-      `组件实测：${list.length} 楼层 · 蓝 ${nIn} · 橙需改 ${nMust} · 橙可不改 ${nOk}`,
+      `组件实测：${list.length} 楼层 · 蓝 ${nIn} · 橙需改 ${nMust} · 黄可不改 ${nOk}`,
       '标准：与 reachability「读的懂」同标尺',
       '完整 = 全部楼层可抓，或橙标均为可不解决',
       '部分 = 有蓝楼层，且存在橙标有必要解决',
@@ -2011,7 +2061,7 @@
       anchorsEl.innerHTML =
         '<div class="toc-title">本篇目录</div>' +
         (c.floors || []).map((f) =>
-          '<button type="button" class="anchor ' + (f.kind || 'in') + '" data-anchor="' + esc(f.id) + '">' +
+          '<button type="button" class="anchor ' + floorCardClass(f) + '" data-anchor="' + esc(f.id) + '">' +
             esc(f.idx + '. ' + f.name) +
           '</button>'
         ).join('');
@@ -2080,7 +2130,14 @@
   function formatDesc(desc) {
     return esc(desc || '')
       .replace(/(^|\n)([^：\n]{1,16}：)/g, '$1<strong>$2</strong>')
-      .replace(/有必要解决/g, '<span class="need-fix">有必要解决</span>');
+      .replace(/(^|\n)问题点：/g, '$1<span class="problem-label">问题点：</span>')
+      .replace(/有必要解决/g, '<span class="need-fix">有必要解决</span>')
+      .replace(/可不解决/g, '<span class="ok-fix">可不解决</span>');
+  }
+
+  function floorCardClass(f) {
+    if (f.kind === 'warn' && f.fixNeeded === false) return 'warn-ok';
+    return f.kind || 'in';
   }
 
   const DEFAULT_WARN_HL = [
@@ -2123,7 +2180,7 @@
       const shotStyle = isFullShot ? '' : ` style="height:${frameH}px"`;
       const fullAttr = isFullShot ? ' data-full="1"' : '';
       return `
-      <article class="comp-card ${f.kind || 'in'}" data-floor="${esc(f.id)}" id="comp-card-${esc(f.id)}" tabindex="0">
+      <article class="comp-card ${floorCardClass(f)}" data-floor="${esc(f.id)}" id="comp-card-${esc(f.id)}" tabindex="0">
         <div class="comp-card-head">
           <div class="comp-card-meta">
             <span class="idx">${f.idx}</span>
