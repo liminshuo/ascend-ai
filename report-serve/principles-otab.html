@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Tab 隐藏语义全量展开 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
+<title>标签页面板首包可抓全 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
 <style>
+
 
 
 
@@ -517,12 +518,71 @@
 
 
 
-  .page-header > h1 {
-    margin: 0 0 16px;
+
+  .page-header-top {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; margin-bottom: 16px;
+  }
+  .page-header-top h1 {
+    margin: 0;
     font-size: 32px; font-weight: 800; line-height: 48px;
     letter-spacing: -0.02em; color: var(--text);
+    flex: 1; min-width: 0;
   }
   .page-header .page-desc { margin-bottom: 0; }
+  button.comp-link {
+    appearance: none; border: 0; background: transparent;
+    padding: 0; margin: 0; flex-shrink: 0;
+    font: inherit; font-size: 14px; font-weight: 600;
+    color: var(--accent); cursor: pointer; text-align: right;
+    white-space: nowrap;
+  }
+  button.comp-link:hover { text-decoration: underline; }
+  #shot-modal.modal {
+    display: none; position: fixed; inset: 0; z-index: 100;
+    background: rgba(25, 25, 25, 0.45);
+    align-items: center; justify-content: center; padding: 24px;
+  }
+  #shot-modal.modal.open { display: flex; }
+  #shot-modal .modal-panel {
+    width: min(920px, 100%); max-height: min(88vh, 900px);
+    background: var(--panel); border-radius: 16px;
+    border: 1px solid var(--line);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.18);
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  #shot-modal .modal-head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; padding: 16px 20px; border-bottom: 1px solid var(--line);
+    flex-shrink: 0;
+  }
+  #shot-modal .shot-modal-title {
+    margin: 0; font-size: 18px; font-weight: 650; line-height: 28px;
+    color: var(--text);
+  }
+  #shot-modal .modal-close {
+    appearance: none; border: 1px solid var(--line); background: var(--panel2);
+    color: var(--text); border-radius: 8px; padding: 6px 12px;
+    font-size: 13px; font-weight: 500; cursor: pointer;
+  }
+  #shot-modal .modal-close:hover { color: var(--accent); border-color: var(--accent); }
+  #shot-modal .modal-body {
+    padding: 20px; overflow: auto; background: var(--panel2);
+  }
+  #shot-modal .modal-shots {
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  #shot-modal .modal-shot {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 12px; padding: 16px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  #shot-modal .modal-shot img {
+    max-width: 100%; height: auto; display: block;
+  }
+  #shot-modal .modal-caption {
+    margin: 0 0 8px; font-size: 13px; color: var(--muted); font-weight: 500;
+  }
 
   .role-split-card {
     margin: 0 0 36px;
@@ -549,7 +609,7 @@
     font-size: 13.5px; font-weight: 700; line-height: 20px;
     color: var(--text);
   }
-  .role-split-item h4 .rsc-verdict {
+  .rsc-verdict {
     font-size: 11.5px; font-weight: 700; line-height: 18px;
     padding: 1px 8px; border-radius: 999px;
     border: 1px solid transparent;
@@ -579,11 +639,30 @@
   }
   .role-split-item--strip h4 { color: var(--muted); }
 
+  .scene-judge-item {
+    margin: 0 0 16px;
+    font-size: var(--body-size); line-height: var(--body-lh);
+    color: var(--text);
+  }
+  .scene-judge-item:last-child { margin-bottom: 0; }
+  .scene-judge-head {
+    margin: 0 0 4px;
+    display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
+  }
+  .scene-judge-head strong { font-weight: 700; color: var(--text); }
+  .scene-judge-body { margin: 0; color: var(--text); }
+
   .principle-suggestions {
     margin: 0; padding-left: 20px;
     color: var(--muted); font-size: 14px; line-height: 22px;
   }
   .principle-suggestions li { margin-bottom: 8px; }
+  .principle-lead {
+    margin: 0 0 12px; font-size: 14px; line-height: 22px; color: var(--text);
+  }
+  .principle-subhead {
+    margin: 0 0 8px; font-size: 14px; font-weight: 700; line-height: 22px; color: var(--text);
+  }
   .principle-suggestions li:last-child { margin-bottom: 0; }
   .principle-suggestions li strong { color: var(--text); font-weight: 600; }
 
@@ -612,6 +691,14 @@
     margin: 0;
   }
   .compare-grid--stack { grid-template-columns: 1fr; gap: 16px; }
+  .compare-grid--cols { grid-template-columns: 1fr 1fr; gap: 16px; align-items: stretch; }
+  .compare-grid--cols .compare-side { display: flex; flex-direction: column; gap: 8px; min-width: 0; height: 100%; }
+  .compare-grid--cols .compare-col { flex: 1; display: flex; flex-direction: column; }
+  .compare-grid--cols .compare-col .render-frame,
+  .compare-grid--cols .compare-col .arch-diagram { flex: 1; }
+  @media (max-width: 720px) {
+    .compare-grid--cols { grid-template-columns: 1fr; }
+  }
   .compare-grid--stack .compare-label--human {
     margin-top: 8px;
     padding-top: 20px;
@@ -621,6 +708,9 @@
     margin-top: 8px;
     padding-top: 0;
     border-top: none;
+  }
+  .compare-grid--stack .compare-col.human + .compare-label.compare-label--human {
+    margin-top: 4px;
   }
   .section .principle-example .compare-grid h4.compare-label {
     margin: 0;
@@ -634,6 +724,9 @@
   }
   .compare-label--machine { color: var(--danger); }
   .compare-label--human { color: var(--success); }
+  .cmp-mark { font-weight: 800; }
+  .cmp-mark--x { color: var(--danger); }
+  .cmp-mark--v { color: var(--success); }
   .compare-col {
     border-radius: 8px;
     padding: 18px 20px;
@@ -673,6 +766,13 @@
     color: var(--muted);
   }
   .render-frame .rf-caption strong { color: var(--text); font-weight: 600; }
+  .compare-col .rf-frame-caption {
+    margin: 16px 0 0;
+    font-size: 12.5px;
+    line-height: 19px;
+    color: var(--muted);
+  }
+  .compare-col .rf-frame-caption strong { color: var(--text); font-weight: 600; }
   .render-frame .rf-sidebar-title {
     margin: 0 0 8px;
     font-size: 12px;
@@ -810,7 +910,7 @@
       <div class="comp-group-label">导航类</div>
       <ul>
         <li><a href="principles-omenu.html"><span class="comp-nav-label">菜单</span><span class="aff aff-need">需要</span><span class="comp-dot" title="设计侧有改动" aria-hidden="true"></span></a></li>
-        <li><a href="principles-otab.html" class="active"><span class="comp-nav-label">标签页</span><span class="aff aff-need">需要</span></a></li>
+        <li><a href="principles-otab.html" class="active"><span class="comp-nav-label">标签页</span><span class="aff aff-maybe">视情况</span></a></li>
         <li><a href="principles-obreadcrumb.html"><span class="comp-nav-label">面包屑</span><span class="aff aff-need">需要</span><span class="comp-dot" title="设计侧有改动" aria-hidden="true"></span></a></li>
         <li><a href="principles-oanchor.html"><span class="comp-nav-label">锚点</span><span class="aff aff-need">需要</span><span class="comp-dot" title="设计侧有改动" aria-hidden="true"></span></a></li>
         <li><a href="principles-opagination.html"><span class="comp-nav-label">分页</span><span class="aff aff-need">需要</span></a></li>
@@ -853,13 +953,27 @@
 
   <main class="main-content">
     <div class="page-header">
-      <h1>Tab 隐藏语义全量展开</h1>
+      <div class="page-header-top">
+        <h1>标签页面板首包可抓全</h1>
+        <button type="button" class="comp-link" data-name="OTab 标签页" data-shots="o-tab.png">OTab 标签页</button>
+      </div>
       <p class="page-desc page-desc--split">
-        <span class="page-desc-line">关键步骤不得只放在交互切换的面板里；<strong>各 Tab 面板须 SSR 全量输出</strong>，禁 JS 抓取仍得全面板正文，视觉隐藏不得删除文本节点。</span>
-        <span class="page-desc-line">读的懂 · 社区 UI · 以 <a href="https://www.hiascend.com/developer/download" target="_blank" rel="noopener">CANN 软件下载</a> 为例 · 对应 <a href="problems-otab.html">问题实测 · Tab 隐藏语义</a>。</span>
+        <span class="page-desc-line">内容型标签页的各面板须<strong>首包 SSR 全量输出</strong>；可用 <code>display:none</code> 隐藏，但静态抓取仍须读到全部页签正文，禁止点击后才注入。</span>
+
       </p>
     </div>
 
+    <section class="section" id="scene-judge">
+      <h2>场景判断</h2>
+        <div class="scene-judge-item">
+          <p class="scene-judge-head"><strong>场景1·内容型 Tab</strong><span class="rsc-verdict rsc-verdict--keep">要做亲和</span></p>
+          <p class="scene-judge-body">每个页签面板承载独立内容（说明 / 列表 / 步骤 / 规格），切换页签即切换知识块。所有面板须 SSR 全量输出至首包 HTML，可用 <code>display:none</code> 隐藏，但禁止点击后 JS 动态注入。<br>对应页面：<a href="https://www.hiascend.com/developer/download" target="_blank" rel="noopener">CANN 软件下载</a></p>
+        </div>
+        <div class="scene-judge-item">
+          <p class="scene-judge-head"><strong>场景2·纯交互 / 装饰型 Tab</strong><span class="rsc-verdict rsc-verdict--strip">不做亲和 · 入库剥离</span></p>
+          <p class="scene-judge-body">只换样式、布局或空壳，不承载可引用正文。入库管道宜标 <code>data-llm-exclude</code> 或剥离，别当知识正文。</p>
+        </div>
+    </section>
 
 
 
@@ -869,47 +983,84 @@
     </section>
 
     <section class="section" id="content-adjust">
-      <h2>文档内容调整</h2>
+      <h2>文档内容调整 · 场景1</h2>
       <h3 id="content-suggestions">调整建议</h3>
       <ul class="principle-suggestions">
-        <li><strong>安装链须有独立文档</strong>：下载页 CANN 卡片仅有短述（如「CANN作为华为昇腾AI基础软硬件平台的核心…」），Atlas 800 离线安装命令等须链到 document 安装页，并在 Markdown 写出完整 wget/步骤，不得只留在页签切换后。</li>
-        <li><strong>MD 按下载页 Tab 平铺</strong>：按 [资源下载中心](https://www.hiascend.com/developer/download) 顶栏「下载资源 → 昇腾资源 / 三方资源」及「固件与驱动 → 社区版 / 商用版」展开 llms 或 .md 章节。</li>
+        <li><strong>面板内容须有平行持久版本</strong>：每个页签的核心要点须写入 Markdown / 独立文档，不得仅存在于切换后才出现的面板中。</li>
+        <li><strong>MD 按页签结构平铺</strong>：一级标题对应页签名，下级展开条目。例：资源下载中心 → 昇腾资源 / 三方资源 → 各软件要点与文档链。</li>
       </ul>
       <h3 id="content-example">调整示例</h3>
       <div class="principle-example">
-        <h4>1. 下载页 CANN：短述在页、安装链在 MD</h4>
+        <h4>示例1. 内容型 Tab：面板知识进 MD 平行轨</h4>
         <div class="compare-grid compare-grid--stack compare-grid--no-mid-divider">
-          <h4 class="compare-label compare-label--machine">Before · 页上仅有 CANN 一句短述</h4>
+          <h4 class="compare-label compare-label--machine"><span class="cmp-mark cmp-mark--x">✗</span> 当前问题 · 要点只在切换后的面板里</h4>
           <div class="compare-col machine">
-            <pre class="arch-diagram">【HTML 快照】CANN作为华为昇腾AI基础软硬件平台的核心…\n【缺失】Atlas 800 离线安装 wget 命令；「三方资源」pane 内 MindSDK 等未进快照</pre>
+            <pre class="arch-diagram">页面默认只看到「昇腾资源」下 CANN 等部分卡片短述；
+切到「三方资源」才出现该面板说明，
+且没有按页签结构写的 Markdown / 独立文档可对照。</pre>
           </div>
-          <h4 class="compare-label compare-label--human">After · MD 按下载页 Tab 结构平铺</h4>
+          <h4 class="compare-label compare-label--human"><span class="cmp-mark cmp-mark--v">✓</span> 推荐做法 · MD 按页签结构平铺</h4>
           <div class="compare-col human">
-            <pre class="arch-diagram">## 下载资源\n### 昇腾资源\n#### CANN\n短述…\n- 安装指南：https://…/cann-install\n- Atlas 800 离线：wget …\n### 三方资源\n#### MindSDK\n…\n## 固件与驱动\n- 社区版 …\n- 商用版 …</pre>
+            <pre class="arch-diagram">## 下载资源
+### 昇腾资源
+#### CANN
+短述…
+- 安装指南：https://…/cann-install
+#### MindSDK
+短述…
+- 文档：https://…/mindsdk
+### 三方资源
+#### （三方资源面板条目）
+短述…
+- 文档：https://…</pre>
           </div>
         </div>
       </div>
     </section>
 
     <section class="section" id="frontend-adjust">
-      <h2>前端调整</h2>
+      <h2>前端调整 · 场景1</h2>
       <h3 id="frontend-suggestions">调整建议</h3>
+      <p class="principle-lead">内容型 Tab 的页签名与各面板正文须写入首包 HTML；静态抓取（不执行 JS）仍可读全部页签名称与面板内容。</p>
+      <p class="principle-subhead">具体要求：</p>
       <ul class="principle-suggestions">
-        <li><strong>顶栏「下载资源 / 昇腾资源 / 三方资源」须进源码</strong>：页面上可见三个顶栏页签，但 HTML 快照里 o-tab-nav-list 常为空；须把「昇腾资源」「三方资源」等名称写进源码。</li>
-        <li><strong>各 pane 内卡片须预先输出</strong>：「昇腾资源」pane 内 CANN/PyTorch 等卡片标题与短述部分已在 SSR，但切到「三方资源」后的 MindSDK 等卡片、以及 pane 切换后才出现的列表，须写进对应 tabpanel。</li>
-        <li><strong>配套助手与 Tab 区块勿空壳</strong>：「版本配套查询助手」横幅、tab-title「社区版 / 商用版」等若出现在页面，须带可见正文或链接，勿仅留空 div。</li>
+        <li><strong>页签名进首包</strong>：每个页签名称写进源码（以下载中心为例：昇腾资源 / 三方资源），勿只留空的 tab nav；浏览器可见但源码读不到的页签名不算达标。</li>
+        <li><strong>未激活面板也进首包</strong>：各 tabpanel 全量 SSR；可用 hidden / display:none 做视觉隐藏，禁止点击页签后才 JS 注入正文。</li>
+        <li><strong>面板内知识节点可抓</strong>：卡片标题、短述、文档链等可见文本写进对应 pane（如昇腾资源下的 CANN / MindSDK）；未激活的三方资源 pane 同样须预先输出。</li>
       </ul>
       <h3 id="frontend-example">调整示例</h3>
       <div class="principle-example">
-        <h4>1. 资源下载中心：空 nav → 全量 pane</h4>
+        <h4>示例1. 下载中心 Tab：空 nav → 双面板进源码</h4>
         <div class="compare-grid compare-grid--stack compare-grid--no-mid-divider">
-          <h4 class="compare-label compare-label--machine">Before · o-tab-nav-list 为空</h4>
+          <h4 class="compare-label compare-label--machine"><span class="cmp-mark cmp-mark--x">✗</span> 当前问题 · 页签未进源码、未激活面板缺失</h4>
           <div class="compare-col machine">
-            <pre class="arch-diagram">&lt;div class="o-tab"&gt;&lt;div class="o-tab-nav-list"&gt;&lt;/div&gt;&lt;div class="o-tab-pane"&gt;&lt;!-- 浏览器可见：下载资源|昇腾资源|三方资源 --&gt;&lt;div class="o-card-title"&gt;CANN&lt;/div&gt;&lt;div class="o-card-detail"&gt;CANN作为华为昇腾…&lt;/div&gt;&lt;/div&gt;&lt;!-- 版本配套查询助手：快照无正文 --&gt;</pre>
+            <pre class="arch-diagram">&lt;div class="o-tab"&gt;
+  &lt;div class="o-tab-nav-list"&gt;&lt;/div&gt;
+  &lt;!-- 浏览器可见「昇腾资源 / 三方资源」，源码无页签名 --&gt;
+  &lt;div class="o-tab-pane"&gt;
+    &lt;div class="o-card-title"&gt;CANN&lt;/div&gt;
+    &lt;div class="o-card-detail"&gt;CANN作为华为昇腾…&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</pre>
+            <p class="rf-frame-caption">页签名只在浏览器里渲染，源码 tab nav 为空；未激活面板也未进首包，静态抓取列不全页签与内容。</p>
           </div>
-          <h4 class="compare-label compare-label--human">After · 页签 + 昇腾/三方 pane 进源码</h4>
+          <h4 class="compare-label compare-label--human"><span class="cmp-mark cmp-mark--v">✓</span> 推荐做法 · 页签 + 双 pane 全量 SSR</h4>
           <div class="compare-col human">
-            <pre class="arch-diagram">&lt;div class="o-tab-nav-list"&gt;&lt;span role="tab"&gt;下载资源&lt;/span&gt;&lt;span role="tab" aria-selected="true"&gt;昇腾资源&lt;/span&gt;&lt;span role="tab"&gt;三方资源&lt;/span&gt;&lt;/div&gt;\n&lt;div role="tabpanel" id="pane-ascend"&gt;&lt;div class="o-card-title"&gt;CANN&lt;/div&gt;&lt;div class="o-card-detail"&gt;…&lt;/div&gt;&lt;a href="/document/…/cann"&gt;查看文档&lt;/a&gt;&lt;/div&gt;\n&lt;div role="tabpanel" id="pane-third" hidden&gt;…MindSDK…&lt;/div&gt;</pre>
+            <pre class="arch-diagram">&lt;div class="o-tab-nav-list"&gt;
+  &lt;span role="tab" aria-selected="true"&gt;昇腾资源&lt;/span&gt;
+  &lt;span role="tab"&gt;三方资源&lt;/span&gt;
+&lt;/div&gt;
+&lt;div role="tabpanel" id="pane-ascend"&gt;
+  &lt;div class="o-card-title"&gt;CANN&lt;/div&gt;
+  &lt;div class="o-card-detail"&gt;…&lt;/div&gt;
+  &lt;div class="o-card-title"&gt;MindSDK&lt;/div&gt;
+  &lt;div class="o-card-detail"&gt;沉淀行业能力…&lt;/div&gt;
+  &lt;a href="/document/…/cann"&gt;查看文档&lt;/a&gt;
+&lt;/div&gt;
+&lt;div role="tabpanel" id="pane-third" hidden&gt;
+  …三方资源面板条目…
+&lt;/div&gt;</pre>
+            <p class="rf-frame-caption">页签名与双面板均在首包；未激活 pane 可用 hidden，文本仍可抓。</p>
           </div>
         </div>
       </div>
@@ -974,6 +1125,75 @@
   }
   window.addEventListener('hashchange', syncHash);
   syncHash();
+})();
+</script>
+
+
+<div class="modal" id="shot-modal" role="dialog" aria-modal="true" aria-labelledby="shot-modal-title" hidden>
+  <div class="modal-panel">
+    <div class="modal-head">
+      <h2 class="shot-modal-title" id="shot-modal-title">组件截图</h2>
+      <button type="button" class="modal-close" id="shot-modal-close">关闭</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-shots" id="modal-shots"></div>
+    </div>
+  </div>
+</div>
+<script>
+(function () {
+  var modal = document.getElementById('shot-modal');
+  var titleEl = document.getElementById('shot-modal-title');
+  var shotsEl = document.getElementById('modal-shots');
+  var closeBtn = document.getElementById('shot-modal-close');
+  if (!modal || !titleEl || !shotsEl || !closeBtn) return;
+  var ASSET = 'design-system/assets/';
+  function openModal(name, shotsRaw) {
+    titleEl.textContent = name;
+    shotsEl.innerHTML = '';
+    String(shotsRaw || '').split(',').filter(Boolean).forEach(function (item) {
+      var parts = item.split('|');
+      var file = parts[0];
+      var caption = parts[1];
+      var wrap = document.createElement('div');
+      if (caption) {
+        var cap = document.createElement('p');
+        cap.className = 'modal-caption';
+        cap.textContent = caption;
+        wrap.appendChild(cap);
+      }
+      var box = document.createElement('div');
+      box.className = 'modal-shot';
+      var img = document.createElement('img');
+      img.src = ASSET + file;
+      img.alt = name + (caption ? ' · ' + caption : '');
+      box.appendChild(img);
+      wrap.appendChild(box);
+      shotsEl.appendChild(wrap);
+    });
+    modal.hidden = false;
+    modal.classList.add('open');
+    document.body.classList.add('modal-open');
+    closeBtn.focus();
+  }
+  function closeModal() {
+    modal.classList.remove('open');
+    modal.hidden = true;
+    document.body.classList.remove('modal-open');
+    shotsEl.innerHTML = '';
+  }
+  document.querySelectorAll('.comp-link').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      openModal(btn.getAttribute('data-name'), btn.getAttribute('data-shots'));
+    });
+  });
+  closeBtn.addEventListener('click', closeModal);
+  modal.addEventListener('click', function (e) {
+    if (e.target === modal) closeModal();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+  });
 })();
 </script>
 

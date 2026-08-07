@@ -74,6 +74,7 @@
 
 
 
+
   :root {
     --bg: #F5F5F5; --panel: #ffffff; --panel2: #FAFAFA; --line: #e2e8f0;
     --text: #191919; --muted: #595959; --accent: #1476FF;
@@ -517,12 +518,71 @@
 
 
 
-  .page-header > h1 {
-    margin: 0 0 16px;
+
+  .page-header-top {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; margin-bottom: 16px;
+  }
+  .page-header-top h1 {
+    margin: 0;
     font-size: 32px; font-weight: 800; line-height: 48px;
     letter-spacing: -0.02em; color: var(--text);
+    flex: 1; min-width: 0;
   }
   .page-header .page-desc { margin-bottom: 0; }
+  button.comp-link {
+    appearance: none; border: 0; background: transparent;
+    padding: 0; margin: 0; flex-shrink: 0;
+    font: inherit; font-size: 14px; font-weight: 600;
+    color: var(--accent); cursor: pointer; text-align: right;
+    white-space: nowrap;
+  }
+  button.comp-link:hover { text-decoration: underline; }
+  #shot-modal.modal {
+    display: none; position: fixed; inset: 0; z-index: 100;
+    background: rgba(25, 25, 25, 0.45);
+    align-items: center; justify-content: center; padding: 24px;
+  }
+  #shot-modal.modal.open { display: flex; }
+  #shot-modal .modal-panel {
+    width: min(920px, 100%); max-height: min(88vh, 900px);
+    background: var(--panel); border-radius: 16px;
+    border: 1px solid var(--line);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.18);
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  #shot-modal .modal-head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; padding: 16px 20px; border-bottom: 1px solid var(--line);
+    flex-shrink: 0;
+  }
+  #shot-modal .shot-modal-title {
+    margin: 0; font-size: 18px; font-weight: 650; line-height: 28px;
+    color: var(--text);
+  }
+  #shot-modal .modal-close {
+    appearance: none; border: 1px solid var(--line); background: var(--panel2);
+    color: var(--text); border-radius: 8px; padding: 6px 12px;
+    font-size: 13px; font-weight: 500; cursor: pointer;
+  }
+  #shot-modal .modal-close:hover { color: var(--accent); border-color: var(--accent); }
+  #shot-modal .modal-body {
+    padding: 20px; overflow: auto; background: var(--panel2);
+  }
+  #shot-modal .modal-shots {
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  #shot-modal .modal-shot {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 12px; padding: 16px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  #shot-modal .modal-shot img {
+    max-width: 100%; height: auto; display: block;
+  }
+  #shot-modal .modal-caption {
+    margin: 0 0 8px; font-size: 13px; color: var(--muted); font-weight: 500;
+  }
 
   .role-split-card {
     margin: 0 0 36px;
@@ -549,7 +609,7 @@
     font-size: 13.5px; font-weight: 700; line-height: 20px;
     color: var(--text);
   }
-  .role-split-item h4 .rsc-verdict {
+  .rsc-verdict {
     font-size: 11.5px; font-weight: 700; line-height: 18px;
     padding: 1px 8px; border-radius: 999px;
     border: 1px solid transparent;
@@ -579,11 +639,30 @@
   }
   .role-split-item--strip h4 { color: var(--muted); }
 
+  .scene-judge-item {
+    margin: 0 0 16px;
+    font-size: var(--body-size); line-height: var(--body-lh);
+    color: var(--text);
+  }
+  .scene-judge-item:last-child { margin-bottom: 0; }
+  .scene-judge-head {
+    margin: 0 0 4px;
+    display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
+  }
+  .scene-judge-head strong { font-weight: 700; color: var(--text); }
+  .scene-judge-body { margin: 0; color: var(--text); }
+
   .principle-suggestions {
     margin: 0; padding-left: 20px;
     color: var(--muted); font-size: 14px; line-height: 22px;
   }
   .principle-suggestions li { margin-bottom: 8px; }
+  .principle-lead {
+    margin: 0 0 12px; font-size: 14px; line-height: 22px; color: var(--text);
+  }
+  .principle-subhead {
+    margin: 0 0 8px; font-size: 14px; font-weight: 700; line-height: 22px; color: var(--text);
+  }
   .principle-suggestions li:last-child { margin-bottom: 0; }
   .principle-suggestions li strong { color: var(--text); font-weight: 600; }
 
@@ -612,6 +691,14 @@
     margin: 0;
   }
   .compare-grid--stack { grid-template-columns: 1fr; gap: 16px; }
+  .compare-grid--cols { grid-template-columns: 1fr 1fr; gap: 16px; align-items: stretch; }
+  .compare-grid--cols .compare-side { display: flex; flex-direction: column; gap: 8px; min-width: 0; height: 100%; }
+  .compare-grid--cols .compare-col { flex: 1; display: flex; flex-direction: column; }
+  .compare-grid--cols .compare-col .render-frame,
+  .compare-grid--cols .compare-col .arch-diagram { flex: 1; }
+  @media (max-width: 720px) {
+    .compare-grid--cols { grid-template-columns: 1fr; }
+  }
   .compare-grid--stack .compare-label--human {
     margin-top: 8px;
     padding-top: 20px;
@@ -621,6 +708,9 @@
     margin-top: 8px;
     padding-top: 0;
     border-top: none;
+  }
+  .compare-grid--stack .compare-col.human + .compare-label.compare-label--human {
+    margin-top: 4px;
   }
   .section .principle-example .compare-grid h4.compare-label {
     margin: 0;
@@ -634,6 +724,9 @@
   }
   .compare-label--machine { color: var(--danger); }
   .compare-label--human { color: var(--success); }
+  .cmp-mark { font-weight: 800; }
+  .cmp-mark--x { color: var(--danger); }
+  .cmp-mark--v { color: var(--success); }
   .compare-col {
     border-radius: 8px;
     padding: 18px 20px;
@@ -673,6 +766,13 @@
     color: var(--muted);
   }
   .render-frame .rf-caption strong { color: var(--text); font-weight: 600; }
+  .compare-col .rf-frame-caption {
+    margin: 16px 0 0;
+    font-size: 12.5px;
+    line-height: 19px;
+    color: var(--muted);
+  }
+  .compare-col .rf-frame-caption strong { color: var(--text); font-weight: 600; }
   .render-frame .rf-sidebar-title {
     margin: 0 0 8px;
     font-size: 12px;
@@ -810,7 +910,7 @@
       <div class="comp-group-label">导航类</div>
       <ul>
         <li><a href="principles-omenu.html"><span class="comp-nav-label">菜单</span><span class="aff aff-need">需要</span><span class="comp-dot" title="设计侧有改动" aria-hidden="true"></span></a></li>
-        <li><a href="principles-otab.html"><span class="comp-nav-label">标签页</span><span class="aff aff-need">需要</span></a></li>
+        <li><a href="principles-otab.html"><span class="comp-nav-label">标签页</span><span class="aff aff-maybe">视情况</span></a></li>
         <li><a href="principles-obreadcrumb.html"><span class="comp-nav-label">面包屑</span><span class="aff aff-need">需要</span><span class="comp-dot" title="设计侧有改动" aria-hidden="true"></span></a></li>
         <li><a href="principles-oanchor.html"><span class="comp-nav-label">锚点</span><span class="aff aff-need">需要</span><span class="comp-dot" title="设计侧有改动" aria-hidden="true"></span></a></li>
         <li><a href="principles-opagination.html"><span class="comp-nav-label">分页</span><span class="aff aff-need">需要</span></a></li>
@@ -853,10 +953,13 @@
 
   <main class="main-content">
     <div class="page-header">
-      <h1>下拉菜单子链须可抓</h1>
+      <div class="page-header-top">
+        <h1>下拉菜单子链须可抓</h1>
+        <button type="button" class="comp-link" data-name="ODropdown 下拉菜单" data-shots="o-dropdown.png">ODropdown 下拉菜单</button>
+      </div>
       <p class="page-desc page-desc--split">
         <span class="page-desc-line">下拉菜单子项须在<strong>首包 HTML 可读</strong>（a[href]+可见文案）；禁仅触发器、portal 延迟挂或外部 JSON 菜单（昇腾「更多产品」/ Mintlify Products / NVIDIA Resources 均须 SSR 链化）。</span>
-        <span class="page-desc-line">找的到 · 社区 UI · 以 <a href="https://www.hiascend.com/hardware/cluster" target="_blank" rel="noopener">集群产品页</a> 为例 · 对应 <a href="problems-odropdown.html">问题实测 · 下拉子链首包缺失</a>。</span>
+        <span class="page-desc-line">对应页面：<a href="https://www.hiascend.com/hardware/cluster" target="_blank" rel="noopener">集群产品页</a></span>
       </p>
     </div>
 
@@ -876,14 +979,14 @@
       </ul>
       <h3 id="content-example">调整示例</h3>
       <div class="principle-example">
-        <h4>1. 集群页：llms 补「更多产品」链</h4>
+        <h4>示例1. 集群页：llms 补「更多产品」链</h4>
         <div class="compare-grid compare-grid--stack compare-grid--no-mid-divider">
-          <h4 class="compare-label compare-label--machine">Before · 子链只在交互 panel</h4>
+          <h4 class="compare-label compare-label--machine"><span class="cmp-mark cmp-mark--x">✗</span> 错误示范 · 子链只在交互 panel</h4>
           <div class="compare-col machine">
             <pre class="arch-diagram">【HTML】仅「更多产品」触发器
 【缺失】Atlas 900 A2 PoD / SuperCluster AI 等 href 未进首包</pre>
           </div>
-          <h4 class="compare-label compare-label--human">After · llms 平铺同品类机型</h4>
+          <h4 class="compare-label compare-label--human"><span class="cmp-mark cmp-mark--v">✓</span> 推荐做法 · llms 平铺同品类机型</h4>
           <div class="compare-col human">
             <pre class="arch-diagram">## 集群产品 · 更多产品
 - Atlas 900 A2 PoD 集群基础单元 → /hardware/cluster?tag=900
@@ -904,15 +1007,15 @@
       </ul>
       <h3 id="frontend-example">调整示例</h3>
       <div class="principle-example">
-        <h4>1. 三站下拉：触发器 vs SSR 子链</h4>
+        <h4>示例1. 三站下拉：触发器 vs SSR 子链</h4>
         <div class="compare-grid compare-grid--stack compare-grid--no-mid-divider">
-          <h4 class="compare-label compare-label--machine">Before · 仅触发器 / JSON / 空壳 header</h4>
+          <h4 class="compare-label compare-label--machine"><span class="cmp-mark cmp-mark--x">✗</span> 错误示范 · 仅触发器 / JSON / 空壳 header</h4>
           <div class="compare-col machine">
             <pre class="arch-diagram">昇腾：&lt;span&gt;更多产品&lt;/span&gt; &lt;!-- panel 无 a[href] --&gt;
 Mintlify：&lt;button data-navitem=&quot;Products&quot; data-state=&quot;closed&quot;&gt;Products&lt;/button&gt;
 NVIDIA：&lt;div id=&quot;header&quot;&gt;&lt;/div&gt; + fetch header-secondary.json</pre>
           </div>
-          <h4 class="compare-label compare-label--human">After · SSR 全量子项可跟链</h4>
+          <h4 class="compare-label compare-label--human"><span class="cmp-mark cmp-mark--v">✓</span> 推荐做法 · SSR 全量子项可跟链</h4>
           <div class="compare-col human">
             <pre class="arch-diagram">&lt;div class=&quot;o-dropdown-panel&quot;&gt;
   &lt;a href=&quot;/hardware/cluster?tag=900&quot;&gt;Atlas 900 A2 PoD 集群基础单元&lt;/a&gt;
@@ -982,6 +1085,75 @@ NVIDIA：&lt;div id=&quot;header&quot;&gt;&lt;/div&gt; + fetch header-secondary.
   }
   window.addEventListener('hashchange', syncHash);
   syncHash();
+})();
+</script>
+
+
+<div class="modal" id="shot-modal" role="dialog" aria-modal="true" aria-labelledby="shot-modal-title" hidden>
+  <div class="modal-panel">
+    <div class="modal-head">
+      <h2 class="shot-modal-title" id="shot-modal-title">组件截图</h2>
+      <button type="button" class="modal-close" id="shot-modal-close">关闭</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-shots" id="modal-shots"></div>
+    </div>
+  </div>
+</div>
+<script>
+(function () {
+  var modal = document.getElementById('shot-modal');
+  var titleEl = document.getElementById('shot-modal-title');
+  var shotsEl = document.getElementById('modal-shots');
+  var closeBtn = document.getElementById('shot-modal-close');
+  if (!modal || !titleEl || !shotsEl || !closeBtn) return;
+  var ASSET = 'design-system/assets/';
+  function openModal(name, shotsRaw) {
+    titleEl.textContent = name;
+    shotsEl.innerHTML = '';
+    String(shotsRaw || '').split(',').filter(Boolean).forEach(function (item) {
+      var parts = item.split('|');
+      var file = parts[0];
+      var caption = parts[1];
+      var wrap = document.createElement('div');
+      if (caption) {
+        var cap = document.createElement('p');
+        cap.className = 'modal-caption';
+        cap.textContent = caption;
+        wrap.appendChild(cap);
+      }
+      var box = document.createElement('div');
+      box.className = 'modal-shot';
+      var img = document.createElement('img');
+      img.src = ASSET + file;
+      img.alt = name + (caption ? ' · ' + caption : '');
+      box.appendChild(img);
+      wrap.appendChild(box);
+      shotsEl.appendChild(wrap);
+    });
+    modal.hidden = false;
+    modal.classList.add('open');
+    document.body.classList.add('modal-open');
+    closeBtn.focus();
+  }
+  function closeModal() {
+    modal.classList.remove('open');
+    modal.hidden = true;
+    document.body.classList.remove('modal-open');
+    shotsEl.innerHTML = '';
+  }
+  document.querySelectorAll('.comp-link').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      openModal(btn.getAttribute('data-name'), btn.getAttribute('data-shots'));
+    });
+  });
+  closeBtn.addEventListener('click', closeModal);
+  modal.addEventListener('click', function (e) {
+    if (e.target === modal) closeModal();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+  });
 })();
 </script>
 

@@ -105,10 +105,11 @@ PROBES: dict[str, dict] = {
     },
     "otab": {
         "title_short": "Tab 隐藏语义",
-        "badge_class": "badge-bad",
-        "badge_text": "抓取差",
+        "badge_class": "badge-should",
+        "badge_text": "视情况",
+        "aff_note": "内容型 Tab（各面板有独立说明 / 列表 / 步骤）须全量 SSR；纯交互或装饰型 Tab 入库剥离。型号 / 架构 / 安装方式等多维选型矩阵归选择块，不按本组件处理",
         "term": "Tab 隐藏语义",
-        "definition": "非激活 Tab 面板被隐藏或未进首包时，默认抓取只得到当前面板，选型/安装等多轴内容丢失",
+        "definition": "非激活 Tab 面板被隐藏或未进首包时，默认抓取只得到当前面板，其它页签正文丢失",
         "sample_url": DOWNLOAD,
         "sample_label": "CANN 软件下载",
         "desc_extra": "社区首页有 o-tab 样例；CANN 下载为自定义 tab-*，亲和问题更重",
@@ -119,7 +120,7 @@ PROBES: dict[str, dict] = {
             ("NVIDIA tabpanel 全进首包", "partners 页 4 个 role=tabpanel 未切换也可抓各面板标题与说明"),
             ("昇腾 Tab 静态空壳", "download 页改版 Tab 与配套横幅在 HTML 快照无正文"),
             ("Mintlify 折叠面板同类", "pricing FAQ 关闭态 region 无答文，展开后才挂入 DOM"),
-            ("多轴叠加丢失", "选型 × 折叠时 RAG 易只答默认面板"),
+            ("未激活面板易丢", "只 SSR 默认页签时，RAG 答不出其它面板里的说明"),
         ],
         "root_cause": "Tab 标签名与各页签里的正文没有写进网页源码，不点切换只能看到默认那一页",
         "subcauses": [

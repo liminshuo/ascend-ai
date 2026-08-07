@@ -74,6 +74,7 @@
 
 
 
+
   :root {
     --bg: #F5F5F5; --panel: #ffffff; --panel2: #FAFAFA; --line: #e2e8f0;
     --text: #191919; --muted: #595959; --accent: #1476FF;
@@ -517,12 +518,71 @@
 
 
 
-  .page-header > h1 {
-    margin: 0 0 16px;
+
+  .page-header-top {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; margin-bottom: 16px;
+  }
+  .page-header-top h1 {
+    margin: 0;
     font-size: 32px; font-weight: 800; line-height: 48px;
     letter-spacing: -0.02em; color: var(--text);
+    flex: 1; min-width: 0;
   }
   .page-header .page-desc { margin-bottom: 0; }
+  button.comp-link {
+    appearance: none; border: 0; background: transparent;
+    padding: 0; margin: 0; flex-shrink: 0;
+    font: inherit; font-size: 14px; font-weight: 600;
+    color: var(--accent); cursor: pointer; text-align: right;
+    white-space: nowrap;
+  }
+  button.comp-link:hover { text-decoration: underline; }
+  #shot-modal.modal {
+    display: none; position: fixed; inset: 0; z-index: 100;
+    background: rgba(25, 25, 25, 0.45);
+    align-items: center; justify-content: center; padding: 24px;
+  }
+  #shot-modal.modal.open { display: flex; }
+  #shot-modal .modal-panel {
+    width: min(920px, 100%); max-height: min(88vh, 900px);
+    background: var(--panel); border-radius: 16px;
+    border: 1px solid var(--line);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.18);
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  #shot-modal .modal-head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; padding: 16px 20px; border-bottom: 1px solid var(--line);
+    flex-shrink: 0;
+  }
+  #shot-modal .shot-modal-title {
+    margin: 0; font-size: 18px; font-weight: 650; line-height: 28px;
+    color: var(--text);
+  }
+  #shot-modal .modal-close {
+    appearance: none; border: 1px solid var(--line); background: var(--panel2);
+    color: var(--text); border-radius: 8px; padding: 6px 12px;
+    font-size: 13px; font-weight: 500; cursor: pointer;
+  }
+  #shot-modal .modal-close:hover { color: var(--accent); border-color: var(--accent); }
+  #shot-modal .modal-body {
+    padding: 20px; overflow: auto; background: var(--panel2);
+  }
+  #shot-modal .modal-shots {
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  #shot-modal .modal-shot {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 12px; padding: 16px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  #shot-modal .modal-shot img {
+    max-width: 100%; height: auto; display: block;
+  }
+  #shot-modal .modal-caption {
+    margin: 0 0 8px; font-size: 13px; color: var(--muted); font-weight: 500;
+  }
 
   .role-split-card {
     margin: 0 0 36px;
@@ -549,7 +609,7 @@
     font-size: 13.5px; font-weight: 700; line-height: 20px;
     color: var(--text);
   }
-  .role-split-item h4 .rsc-verdict {
+  .rsc-verdict {
     font-size: 11.5px; font-weight: 700; line-height: 18px;
     padding: 1px 8px; border-radius: 999px;
     border: 1px solid transparent;
@@ -579,11 +639,30 @@
   }
   .role-split-item--strip h4 { color: var(--muted); }
 
+  .scene-judge-item {
+    margin: 0 0 16px;
+    font-size: var(--body-size); line-height: var(--body-lh);
+    color: var(--text);
+  }
+  .scene-judge-item:last-child { margin-bottom: 0; }
+  .scene-judge-head {
+    margin: 0 0 4px;
+    display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
+  }
+  .scene-judge-head strong { font-weight: 700; color: var(--text); }
+  .scene-judge-body { margin: 0; color: var(--text); }
+
   .principle-suggestions {
     margin: 0; padding-left: 20px;
     color: var(--muted); font-size: 14px; line-height: 22px;
   }
   .principle-suggestions li { margin-bottom: 8px; }
+  .principle-lead {
+    margin: 0 0 12px; font-size: 14px; line-height: 22px; color: var(--text);
+  }
+  .principle-subhead {
+    margin: 0 0 8px; font-size: 14px; font-weight: 700; line-height: 22px; color: var(--text);
+  }
   .principle-suggestions li:last-child { margin-bottom: 0; }
   .principle-suggestions li strong { color: var(--text); font-weight: 600; }
 
@@ -612,6 +691,14 @@
     margin: 0;
   }
   .compare-grid--stack { grid-template-columns: 1fr; gap: 16px; }
+  .compare-grid--cols { grid-template-columns: 1fr 1fr; gap: 16px; align-items: stretch; }
+  .compare-grid--cols .compare-side { display: flex; flex-direction: column; gap: 8px; min-width: 0; height: 100%; }
+  .compare-grid--cols .compare-col { flex: 1; display: flex; flex-direction: column; }
+  .compare-grid--cols .compare-col .render-frame,
+  .compare-grid--cols .compare-col .arch-diagram { flex: 1; }
+  @media (max-width: 720px) {
+    .compare-grid--cols { grid-template-columns: 1fr; }
+  }
   .compare-grid--stack .compare-label--human {
     margin-top: 8px;
     padding-top: 20px;
@@ -621,6 +708,9 @@
     margin-top: 8px;
     padding-top: 0;
     border-top: none;
+  }
+  .compare-grid--stack .compare-col.human + .compare-label.compare-label--human {
+    margin-top: 4px;
   }
   .section .principle-example .compare-grid h4.compare-label {
     margin: 0;
@@ -634,6 +724,9 @@
   }
   .compare-label--machine { color: var(--danger); }
   .compare-label--human { color: var(--success); }
+  .cmp-mark { font-weight: 800; }
+  .cmp-mark--x { color: var(--danger); }
+  .cmp-mark--v { color: var(--success); }
   .compare-col {
     border-radius: 8px;
     padding: 18px 20px;
@@ -673,6 +766,13 @@
     color: var(--muted);
   }
   .render-frame .rf-caption strong { color: var(--text); font-weight: 600; }
+  .compare-col .rf-frame-caption {
+    margin: 16px 0 0;
+    font-size: 12.5px;
+    line-height: 19px;
+    color: var(--muted);
+  }
+  .compare-col .rf-frame-caption strong { color: var(--text); font-weight: 600; }
   .render-frame .rf-sidebar-title {
     margin: 0 0 8px;
     font-size: 12px;
@@ -810,7 +910,7 @@
       <div class="comp-group-label">导航类</div>
       <ul>
         <li><a href="principles-omenu.html"><span class="comp-nav-label">菜单</span><span class="aff aff-need">需要</span><span class="comp-dot" title="设计侧有改动" aria-hidden="true"></span></a></li>
-        <li><a href="principles-otab.html"><span class="comp-nav-label">标签页</span><span class="aff aff-need">需要</span></a></li>
+        <li><a href="principles-otab.html"><span class="comp-nav-label">标签页</span><span class="aff aff-maybe">视情况</span></a></li>
         <li><a href="principles-obreadcrumb.html" class="active"><span class="comp-nav-label">面包屑</span><span class="aff aff-need">需要</span><span class="comp-dot" title="设计侧有改动" aria-hidden="true"></span></a></li>
         <li><a href="principles-oanchor.html"><span class="comp-nav-label">锚点</span><span class="aff aff-need">需要</span><span class="comp-dot" title="设计侧有改动" aria-hidden="true"></span></a></li>
         <li><a href="principles-opagination.html"><span class="comp-nav-label">分页</span><span class="aff aff-need">需要</span></a></li>
@@ -853,10 +953,13 @@
 
   <main class="main-content">
     <div class="page-header">
-      <h1>面包屑路径可链回溯</h1>
+      <div class="page-header-top">
+        <h1>面包屑路径可链回溯</h1>
+        <button type="button" class="comp-link" data-name="OBreadcrumb 面包屑" data-shots="o-breadcrumb.png">OBreadcrumb 面包屑</button>
+      </div>
       <p class="page-desc page-desc--split">
         <span class="page-desc-line">文档页顶栏面包屑须把<strong>每一级祖先页写成可点的链接</strong>（a[href]），当前页用纯文本即可；首包 HTML 就要输出完整路径，文案与 sitemap / 手册目录保持一致。</span>
-        <span class="page-desc-line">找的到 · 社区 UI · 以 <a href="https://www.hiascend.com/document/detail/zh/AscendFAQ/ProduTech/productform/hardwaredesc_0001.html" target="_blank" rel="noopener">昇腾产品形态说明</a> 为例 · 对应 <a href="problems-obreadcrumb.html">问题实测 · 路径链断裂</a>。</span>
+        <span class="page-desc-line">对应页面：<a href="https://www.hiascend.com/document/detail/zh/AscendFAQ/ProduTech/productform/hardwaredesc_0001.html" target="_blank" rel="noopener">昇腾产品形态说明</a></span>
       </p>
     </div>
 
@@ -867,25 +970,30 @@
       <h2>设计UI调整</h2>
       <h3 id="design-suggestions">调整建议</h3>
       <ul class="principle-suggestions">
-        <li><strong>每级路径用真实层级名</strong>：面包屑每一级写清真实层级名（文档中心 › CANN › 安装部署），别用「首页 › … › 当前页」这类泛词；祖先级为 a[href]、当前页纯文本。</li>
+        <li><strong>路径文案须自描述</strong>：写清真实层级（如「文档中心 › CANN › 安装部署」），避免「首页 / 详情 / 当前页」等泛词。</li>
+        <li><strong>祖先可点、当前页纯文本</strong>：上级每一级为真实 a[href]，末级当前页用纯文本（避免自链）。</li>
       </ul>
       <h3 id="design-example">调整示例</h3>
       <div class="principle-example">
-        <h4>1. 面包屑：泛词 → 真实层级名</h4>
-        <div class="compare-grid compare-grid--stack compare-grid--no-mid-divider">
-          <h4 class="compare-label compare-label--machine">Before · 泛词路径</h4>
+        <h4>示例1. 面包屑：泛词 → 真实层级名</h4>
+        <div class="compare-grid compare-grid--cols">
+          <div class="compare-side">
+            <h4 class="compare-label compare-label--machine"><span class="cmp-mark cmp-mark--x">✗</span> 错误示范 · 泛词路径</h4>
           <div class="compare-col machine">
             <div class="render-frame"><nav aria-label="Breadcrumb" style="font-size:12.5px;color:var(--muted);">
-  <a href="#" style="color:var(--accent);text-decoration:none;">首页</a> › <a href="#" style="color:var(--accent);text-decoration:none;">详情</a> › <span>当前页</span>
-</nav>
-<p class="rf-muted">「首页 › 详情 › 当前页」看不出在站点结构的哪个位置，Agent 无法据此定位或回溯到祖先页。</p></div>
+  <span>首页</span> › <span>详情</span> › <span>当前页</span>
+</nav></div>
+            <p class="rf-frame-caption">「首页 › 详情 › 当前页」看不出在站点哪一层，也无法据此回溯到祖先页。</p>
           </div>
-          <h4 class="compare-label compare-label--human">After · 真实层级名 + 可跟链</h4>
+          </div>
+          <div class="compare-side">
+            <h4 class="compare-label compare-label--human"><span class="cmp-mark cmp-mark--v">✓</span> 推荐做法 · 真实层级名 + 可跟链</h4>
           <div class="compare-col human">
             <div class="render-frame"><nav aria-label="Breadcrumb" style="font-size:12.5px;">
   <a href="#" style="color:var(--accent);text-decoration:none;">文档中心</a> › <a href="#" style="color:var(--accent);text-decoration:none;">CANN</a> › <a href="#" style="color:var(--accent);text-decoration:none;">安装部署</a> › <span style="color:var(--muted);">CANN 安装指南</span>
-</nav>
-<p class="rf-caption"><strong>要点：</strong>每级为真实层级名 + 可跟链，末级当前页纯文本；据此能回溯到任一祖先页。</p></div>
+</nav></div>
+            <p class="rf-frame-caption"><strong>要点：</strong>每级为真实层级名；祖先可跟链，末级当前页纯文本。</p>
+          </div>
           </div>
         </div>
       </div>
@@ -895,19 +1003,20 @@
       <h2>文档内容调整</h2>
       <h3 id="content-suggestions">调整建议</h3>
       <ul class="principle-suggestions">
-        <li><strong>llms 临时补路径链</strong>：面包屑 html 未达标前，llms 或 MD 页头可临时写出「昇腾常见问题 › 产品与技术常见问题 › 当前页」及各级链接；达标后以 SSR o-breadcrumb 为准，避免双轨不一致。</li>
-        <li><strong>MD 页头写清层级</strong>：Markdown 版文档在 h1 上方用嵌套列表或一行路径链写出 ancestors，文案与 URL 须与 HTML 面包屑、sitemap 一致。</li>
+        <li><strong>统一命名</strong>：面包屑、sitemap、侧栏目录与 MD 路径链使用同一套层级名与 URL，避免同一页因名称差异被识别成多个入口。</li>
+        <li><strong>MD 页头写路径</strong>：Markdown 版在 h1 上方用列表或一行路径链写出 ancestors（标题 + 链接）；末级当前页纯文本即可。</li>
+        <li><strong>过渡补位</strong>：页面面包屑未达标前，用 llms.txt 临时写出关键祖先链；达标后以页面为准，去掉重复维护。</li>
       </ul>
       <h3 id="content-example">调整示例</h3>
       <div class="principle-example">
-        <h4>1. 昇腾产品形态说明：title 链 vs MD 路径</h4>
+        <h4>示例1. 昇腾产品形态说明：路径链平行轨</h4>
         <div class="compare-grid compare-grid--stack compare-grid--no-mid-divider">
-          <h4 class="compare-label compare-label--machine">Before · 路径只在 title/meta</h4>
+          <h4 class="compare-label compare-label--machine"><span class="cmp-mark cmp-mark--x">✗</span> 当前问题 · 只有 title，无路径链（连续阅读模式开启情况下）</h4>
           <div class="compare-col machine">
             <pre class="arch-diagram">【HTML】&lt;title&gt;昇腾产品形态说明-产品与技术常见问题-昇腾常见问题…&lt;/title&gt;
-【缺失】MD 页头无各级 ancestors 的可跟链</pre>
+【缺失】MD / llms 均无各级 ancestors 的可跟链</pre>
           </div>
-          <h4 class="compare-label compare-label--human">After · MD 页头平铺路径链</h4>
+          <h4 class="compare-label compare-label--human"><span class="cmp-mark cmp-mark--v">✓</span> 推荐做法 · MD 页头平铺路径链</h4>
           <div class="compare-col human">
             <pre class="arch-diagram">## 路径
 - [昇腾常见问题](/document/detail/zh/AscendFAQ/…)
@@ -917,6 +1026,14 @@
 # 昇腾产品形态说明
 …</pre>
           </div>
+          <h4 class="compare-label compare-label--human"><span class="cmp-mark cmp-mark--v">✓</span> 推荐做法 · llms 临时补祖先链</h4>
+          <div class="compare-col human">
+            <pre class="arch-diagram"># llms.txt（过渡）
+- [昇腾常见问题](/document/detail/zh/AscendFAQ/…)
+- [产品与技术常见问题](/document/detail/zh/AscendFAQ/ProduTech/…)
+- [昇腾产品形态说明](/document/detail/zh/AscendFAQ/…/hardwaredesc_0001.html)</pre>
+            <p class="rf-frame-caption">页面面包屑达标后以 HTML 为准，llms 中重复路径可移除。</p>
+          </div>
         </div>
       </div>
     </section>
@@ -924,31 +1041,34 @@
     <section class="section" id="frontend-adjust">
       <h2>前端调整</h2>
       <h3 id="frontend-suggestions">调整建议</h3>
+      <p class="principle-lead">文档页顶栏面包屑须在首包 HTML 输出完整祖先路径；静态抓取（不执行 JS）仍能列出每一级 <code>a[href]</code> 并回溯到祖先页（对标：NVIDIA cuQuantum bd-breadcrumbs）。</p>
+      <p class="principle-subhead">具体要求：</p>
       <ul class="principle-suggestions">
-        <li><strong>首包 SSR 完整 o-breadcrumb</strong>：顶栏须输出与可见 UI 一致的全量 breadcrumb（对标友商：NVIDIA cuQuantum bd-breadcrumbs 首包 Home → cuDensityMat → Release Notes）；禁 JS 须仍能列出每一级 ancestors 的 href。</li>
-        <li><strong>祖先级须为 a[href]</strong>：每一级祖先输出带真实地址的 a[href]；当前页用 span 或纯文本。Ascend FAQ 实测：server-breadcrumb 仅 2 链、缺「昇腾常见问题 / 产品与技术常见问题」中间级。</li>
-        <li><strong>禁仅客户端补路径</strong>：路径节点不得只在 __NUXT_DATA__ 或前端脚本里才出现；须与 problems-obreadcrumb 探针判据互斥。</li>
-        <li><strong>文案与 sitemap 对齐</strong>：面包屑显示文案与 href 须与 sitemap、侧栏目录一致，禁 SSR 写「文档中心」而 UI 显示「昇腾常见问题」等错位。</li>
+        <li><strong>全量祖先进首包</strong>：输出与可见 UI 一致的全量路径；中间级不得缺失（Ascend FAQ 实测：server-breadcrumb 仅 2 链，缺「昇腾常见问题 / 产品与技术常见问题」）。</li>
+        <li><strong>祖先为真实 a[href]</strong>：每一级祖先须为带真实地址的 a 标签 + 可见文案；当前页用 span 或纯文本，勿做成自链。</li>
+        <li><strong>禁仅 JSON/脚本补路径</strong>：路径节点不得只在 __NUXT_DATA__ 或前端脚本里才出现；静态 HTML 内须已有完整可跟链。</li>
       </ul>
       <h3 id="frontend-example">调整示例</h3>
       <div class="principle-example">
-        <h4>1. Ascend FAQ o-breadcrumb</h4>
+        <h4>示例1. Ascend FAQ o-breadcrumb</h4>
         <div class="compare-grid compare-grid--stack compare-grid--no-mid-divider">
-          <h4 class="compare-label compare-label--machine">Before · server-breadcrumb 仅 2 链</h4>
+          <h4 class="compare-label compare-label--machine"><span class="cmp-mark cmp-mark--x">✗</span> 当前问题 · server-breadcrumb 仅 2 链，中间级缺失</h4>
           <div class="compare-col machine">
             <pre class="arch-diagram">&lt;div class="o-breadcrumb server-breadcrumb"&gt;
   &lt;a href="/sitemap/sitemapdoc1.xml"&gt;文档中心&lt;/a&gt;
   &lt;a href="…/hardwaredesc_0001.html"&gt;昇腾产品形态说明&lt;/a&gt;
 &lt;/div&gt;
 &lt;!-- 浏览器可见三级路径；中间级在 __NUXT_DATA__ --&gt;</pre>
+            <p class="rf-frame-caption">首包只有「文档中心 → 当前页」两链；中间祖先只在 __NUXT_DATA__，静态抓取无法逐级回溯。</p>
           </div>
-          <h4 class="compare-label compare-label--human">After · SSR 全量 ancestors 可链</h4>
+          <h4 class="compare-label compare-label--human"><span class="cmp-mark cmp-mark--v">✓</span> 推荐做法 · SSR 全量 ancestors 可链</h4>
           <div class="compare-col human">
             <pre class="arch-diagram">&lt;nav aria-label="Breadcrumb" class="o-breadcrumb"&gt;
   &lt;a href="/document/detail/zh/AscendFAQ/…"&gt;昇腾常见问题&lt;/a&gt;
   &lt;a href="/document/detail/zh/AscendFAQ/ProduTech/…"&gt;产品与技术常见问题&lt;/a&gt;
   &lt;span aria-current="page"&gt;昇腾产品形态说明&lt;/span&gt;
 &lt;/nav&gt;</pre>
+            <p class="rf-frame-caption">祖先级均为真实 a[href]；末级当前页纯文本。静态抓取即可列出完整路径并跟链。</p>
           </div>
         </div>
       </div>
@@ -1013,6 +1133,75 @@
   }
   window.addEventListener('hashchange', syncHash);
   syncHash();
+})();
+</script>
+
+
+<div class="modal" id="shot-modal" role="dialog" aria-modal="true" aria-labelledby="shot-modal-title" hidden>
+  <div class="modal-panel">
+    <div class="modal-head">
+      <h2 class="shot-modal-title" id="shot-modal-title">组件截图</h2>
+      <button type="button" class="modal-close" id="shot-modal-close">关闭</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-shots" id="modal-shots"></div>
+    </div>
+  </div>
+</div>
+<script>
+(function () {
+  var modal = document.getElementById('shot-modal');
+  var titleEl = document.getElementById('shot-modal-title');
+  var shotsEl = document.getElementById('modal-shots');
+  var closeBtn = document.getElementById('shot-modal-close');
+  if (!modal || !titleEl || !shotsEl || !closeBtn) return;
+  var ASSET = 'design-system/assets/';
+  function openModal(name, shotsRaw) {
+    titleEl.textContent = name;
+    shotsEl.innerHTML = '';
+    String(shotsRaw || '').split(',').filter(Boolean).forEach(function (item) {
+      var parts = item.split('|');
+      var file = parts[0];
+      var caption = parts[1];
+      var wrap = document.createElement('div');
+      if (caption) {
+        var cap = document.createElement('p');
+        cap.className = 'modal-caption';
+        cap.textContent = caption;
+        wrap.appendChild(cap);
+      }
+      var box = document.createElement('div');
+      box.className = 'modal-shot';
+      var img = document.createElement('img');
+      img.src = ASSET + file;
+      img.alt = name + (caption ? ' · ' + caption : '');
+      box.appendChild(img);
+      wrap.appendChild(box);
+      shotsEl.appendChild(wrap);
+    });
+    modal.hidden = false;
+    modal.classList.add('open');
+    document.body.classList.add('modal-open');
+    closeBtn.focus();
+  }
+  function closeModal() {
+    modal.classList.remove('open');
+    modal.hidden = true;
+    document.body.classList.remove('modal-open');
+    shotsEl.innerHTML = '';
+  }
+  document.querySelectorAll('.comp-link').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      openModal(btn.getAttribute('data-name'), btn.getAttribute('data-shots'));
+    });
+  });
+  closeBtn.addEventListener('click', closeModal);
+  modal.addEventListener('click', function (e) {
+    if (e.target === modal) closeModal();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+  });
 })();
 </script>
 

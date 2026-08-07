@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>侧栏目录 SSR 可爬 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
+<title>侧栏菜单目录可发现 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
 <style>
+
 
 
 
@@ -517,12 +518,71 @@
 
 
 
-  .page-header > h1 {
-    margin: 0 0 16px;
+
+  .page-header-top {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; margin-bottom: 16px;
+  }
+  .page-header-top h1 {
+    margin: 0;
     font-size: 32px; font-weight: 800; line-height: 48px;
     letter-spacing: -0.02em; color: var(--text);
+    flex: 1; min-width: 0;
   }
   .page-header .page-desc { margin-bottom: 0; }
+  button.comp-link {
+    appearance: none; border: 0; background: transparent;
+    padding: 0; margin: 0; flex-shrink: 0;
+    font: inherit; font-size: 14px; font-weight: 600;
+    color: var(--accent); cursor: pointer; text-align: right;
+    white-space: nowrap;
+  }
+  button.comp-link:hover { text-decoration: underline; }
+  #shot-modal.modal {
+    display: none; position: fixed; inset: 0; z-index: 100;
+    background: rgba(25, 25, 25, 0.45);
+    align-items: center; justify-content: center; padding: 24px;
+  }
+  #shot-modal.modal.open { display: flex; }
+  #shot-modal .modal-panel {
+    width: min(920px, 100%); max-height: min(88vh, 900px);
+    background: var(--panel); border-radius: 16px;
+    border: 1px solid var(--line);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.18);
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  #shot-modal .modal-head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; padding: 16px 20px; border-bottom: 1px solid var(--line);
+    flex-shrink: 0;
+  }
+  #shot-modal .shot-modal-title {
+    margin: 0; font-size: 18px; font-weight: 650; line-height: 28px;
+    color: var(--text);
+  }
+  #shot-modal .modal-close {
+    appearance: none; border: 1px solid var(--line); background: var(--panel2);
+    color: var(--text); border-radius: 8px; padding: 6px 12px;
+    font-size: 13px; font-weight: 500; cursor: pointer;
+  }
+  #shot-modal .modal-close:hover { color: var(--accent); border-color: var(--accent); }
+  #shot-modal .modal-body {
+    padding: 20px; overflow: auto; background: var(--panel2);
+  }
+  #shot-modal .modal-shots {
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  #shot-modal .modal-shot {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 12px; padding: 16px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  #shot-modal .modal-shot img {
+    max-width: 100%; height: auto; display: block;
+  }
+  #shot-modal .modal-caption {
+    margin: 0 0 8px; font-size: 13px; color: var(--muted); font-weight: 500;
+  }
 
   .role-split-card {
     margin: 0 0 36px;
@@ -549,7 +609,7 @@
     font-size: 13.5px; font-weight: 700; line-height: 20px;
     color: var(--text);
   }
-  .role-split-item h4 .rsc-verdict {
+  .rsc-verdict {
     font-size: 11.5px; font-weight: 700; line-height: 18px;
     padding: 1px 8px; border-radius: 999px;
     border: 1px solid transparent;
@@ -579,11 +639,30 @@
   }
   .role-split-item--strip h4 { color: var(--muted); }
 
+  .scene-judge-item {
+    margin: 0 0 16px;
+    font-size: var(--body-size); line-height: var(--body-lh);
+    color: var(--text);
+  }
+  .scene-judge-item:last-child { margin-bottom: 0; }
+  .scene-judge-head {
+    margin: 0 0 4px;
+    display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
+  }
+  .scene-judge-head strong { font-weight: 700; color: var(--text); }
+  .scene-judge-body { margin: 0; color: var(--text); }
+
   .principle-suggestions {
     margin: 0; padding-left: 20px;
     color: var(--muted); font-size: 14px; line-height: 22px;
   }
   .principle-suggestions li { margin-bottom: 8px; }
+  .principle-lead {
+    margin: 0 0 12px; font-size: 14px; line-height: 22px; color: var(--text);
+  }
+  .principle-subhead {
+    margin: 0 0 8px; font-size: 14px; font-weight: 700; line-height: 22px; color: var(--text);
+  }
   .principle-suggestions li:last-child { margin-bottom: 0; }
   .principle-suggestions li strong { color: var(--text); font-weight: 600; }
 
@@ -612,6 +691,14 @@
     margin: 0;
   }
   .compare-grid--stack { grid-template-columns: 1fr; gap: 16px; }
+  .compare-grid--cols { grid-template-columns: 1fr 1fr; gap: 16px; align-items: stretch; }
+  .compare-grid--cols .compare-side { display: flex; flex-direction: column; gap: 8px; min-width: 0; height: 100%; }
+  .compare-grid--cols .compare-col { flex: 1; display: flex; flex-direction: column; }
+  .compare-grid--cols .compare-col .render-frame,
+  .compare-grid--cols .compare-col .arch-diagram { flex: 1; }
+  @media (max-width: 720px) {
+    .compare-grid--cols { grid-template-columns: 1fr; }
+  }
   .compare-grid--stack .compare-label--human {
     margin-top: 8px;
     padding-top: 20px;
@@ -621,6 +708,9 @@
     margin-top: 8px;
     padding-top: 0;
     border-top: none;
+  }
+  .compare-grid--stack .compare-col.human + .compare-label.compare-label--human {
+    margin-top: 4px;
   }
   .section .principle-example .compare-grid h4.compare-label {
     margin: 0;
@@ -634,6 +724,9 @@
   }
   .compare-label--machine { color: var(--danger); }
   .compare-label--human { color: var(--success); }
+  .cmp-mark { font-weight: 800; }
+  .cmp-mark--x { color: var(--danger); }
+  .cmp-mark--v { color: var(--success); }
   .compare-col {
     border-radius: 8px;
     padding: 18px 20px;
@@ -673,6 +766,13 @@
     color: var(--muted);
   }
   .render-frame .rf-caption strong { color: var(--text); font-weight: 600; }
+  .compare-col .rf-frame-caption {
+    margin: 16px 0 0;
+    font-size: 12.5px;
+    line-height: 19px;
+    color: var(--muted);
+  }
+  .compare-col .rf-frame-caption strong { color: var(--text); font-weight: 600; }
   .render-frame .rf-sidebar-title {
     margin: 0 0 8px;
     font-size: 12px;
@@ -810,7 +910,7 @@
       <div class="comp-group-label">导航类</div>
       <ul>
         <li><a href="principles-omenu.html" class="active"><span class="comp-nav-label">菜单</span><span class="aff aff-need">需要</span><span class="comp-dot" title="设计侧有改动" aria-hidden="true"></span></a></li>
-        <li><a href="principles-otab.html"><span class="comp-nav-label">标签页</span><span class="aff aff-need">需要</span></a></li>
+        <li><a href="principles-otab.html"><span class="comp-nav-label">标签页</span><span class="aff aff-maybe">视情况</span></a></li>
         <li><a href="principles-obreadcrumb.html"><span class="comp-nav-label">面包屑</span><span class="aff aff-need">需要</span><span class="comp-dot" title="设计侧有改动" aria-hidden="true"></span></a></li>
         <li><a href="principles-oanchor.html"><span class="comp-nav-label">锚点</span><span class="aff aff-need">需要</span><span class="comp-dot" title="设计侧有改动" aria-hidden="true"></span></a></li>
         <li><a href="principles-opagination.html"><span class="comp-nav-label">分页</span><span class="aff aff-need">需要</span></a></li>
@@ -853,76 +953,130 @@
 
   <main class="main-content">
     <div class="page-header">
-      <h1>侧栏目录 SSR 可爬</h1>
+      <div class="page-header-top">
+        <h1>侧栏菜单目录可发现</h1>
+        <button type="button" class="comp-link" data-name="OMenu 菜单" data-shots="o-menu.png">OMenu 菜单</button>
+      </div>
       <p class="page-desc page-desc--split">
-        <span class="page-desc-line">文档侧栏/层级菜单须在首包输出<strong>完整可爬目录树</strong>，每个节点为真实 <code>a[href]</code>；勿把发现层绑在前端注入的 OMenu 上。</span>
-        <span class="page-desc-line">找的到 · 社区 UI · 以 <a href="https://www.hiascend.com/document/detail/zh/AscendFAQ/ProduTech/productform/hardwaredesc_0001.html" target="_blank" rel="noopener">Ascend FAQ 概览</a> 为例 · 对应 <a href="problems-omenu.html">问题实测 · 侧栏菜单不可达</a>。</span>
+        <span class="page-desc-line">侧栏菜单是文档的<strong>发现层</strong>：目录树须首包 SSR、每项为真实 <code>a[href]</code>，静态抓取即可列全并跟链到各章节，勿只靠前端注入。</span>
+
       </p>
     </div>
 
+    <section class="section" id="scene-judge">
+      <h2>场景判断</h2>
+        <div class="scene-judge-item">
+          <p class="scene-judge-head"><strong>场景1·跳转型侧栏（换 URL 到独立页面）</strong><span class="rsc-verdict rsc-verdict--keep">要做亲和</span></p>
+          <p class="scene-judge-body">点击侧栏项切换 URL，跳转至独立页面（如：文档手册目录）。<br>它是爬虫发现深层页面的关键入口：每项须为真实 <code>a[href]</code> 链接 + 自描述锚文本/标题，首屏 SSR 全量输出，禁用 JS 仍完整可见并可跟链。<br>对应页面：<a href="https://www.hiascend.com/document/detail/zh/AscendFAQ/ProduTech/productform/hardwaredesc_0001.html" target="_blank" rel="noopener">Ascend FAQ 概览</a></p>
+        </div>
+        <div class="scene-judge-item">
+          <p class="scene-judge-head"><strong>场景2·同页切换内容块（类 Tab）</strong><span class="rsc-verdict rsc-verdict--keep">要做亲和</span></p>
+          <p class="scene-judge-body">点击侧栏不刷新 URL，仅切换右侧内容（竖向 Tab）。<br>所有内容块的文字须写入首包 HTML（SSR 全量输出），可 <code>display:none</code> 视觉隐藏、但不能靠 JS 注入才出现（详见 <a href="principles-otab.html">标签页 otab</a>）。</p>
+        </div>
+        <div class="scene-judge-item">
+          <p class="scene-judge-head"><strong>场景3·后台 / 个人中心管理菜单</strong><span class="rsc-verdict rsc-verdict--strip">不做亲和 · 入库剥离</span></p>
+          <p class="scene-judge-body">如控制台、个人中心左侧的功能操作菜单。它指向登录后的应用操作、非公开知识，入库管道宜标 <code>data-llm-exclude</code> 或直接剥离，别当可引用文档。</p>
+        </div>
+    </section>
 
 
 
     <section class="section" id="design-ui">
-      <h2>设计UI调整</h2>
+      <h2>设计UI调整 · 场景1</h2>
       <h3 id="design-suggestions">调整建议</h3>
       <ul class="principle-suggestions">
-        <li><strong>菜单项用自描述文案</strong>：侧栏目录项写清对象 / 文档名（如「CANN 软件安装指南」），别用「简介 / 安装 / 更多」等泛词；每项底层为真实 a[href]，锚文本即可读标题。</li>
+        <li><strong>跳转型侧栏文案须自描述</strong>：明确文档 / 对象名（如「CANN 软件安装指南」），避免「简介 / 安装 / 更多」等泛词。</li>
+        <li><strong>锚文本即标题</strong>：每项为真实 a[href]，锚文本即可读的文档标题本身。</li>
       </ul>
       <h3 id="design-example">调整示例</h3>
       <div class="principle-example">
-        <h4>1. 侧栏菜单：泛词 → 自描述标题</h4>
-        <div class="compare-grid compare-grid--stack compare-grid--no-mid-divider">
-          <h4 class="compare-label compare-label--machine">Before · 泛词菜单项</h4>
+        <h4>示例1. 侧栏菜单：泛词 → 自描述标题</h4>
+        <div class="compare-grid compare-grid--cols">
+          <div class="compare-side">
+            <h4 class="compare-label compare-label--machine"><span class="cmp-mark cmp-mark--x">✗</span> 错误示范 · 泛词菜单项</h4>
           <div class="compare-col machine">
             <div class="render-frame"><p class="rf-sidebar-title">手册目录</p>
 <ul class="rf-nav-links">
   <li><a href="#">简介</a></li>
   <li><a href="#">安装</a></li>
   <li><a href="#">更多 ›</a></li>
-</ul>
-<p class="rf-muted">「简介 / 安装 / 更多」脱离上下文说不清是哪个产品的哪篇文档，Agent 拿到锚文本也判断不了去向。</p></div>
+</ul></div>
+            <p class="rf-frame-caption">「简介 / 安装 / 更多」脱离上下文说不清是哪个产品的哪篇文档，Agent 拿到锚文本也判断不了去向。</p>
           </div>
-          <h4 class="compare-label compare-label--human">After · 自描述标题</h4>
+          </div>
+          <div class="compare-side">
+            <h4 class="compare-label compare-label--human"><span class="cmp-mark cmp-mark--v">✓</span> 推荐做法 · 自描述标题</h4>
           <div class="compare-col human">
             <div class="render-frame"><p class="rf-sidebar-title">手册目录</p>
 <ul class="rf-nav-links">
   <li><a href="#">CANN 简介</a></li>
   <li><a href="#">CANN 软件安装指南</a></li>
   <li><a href="#">CANN 全部文档索引</a></li>
-</ul>
-<p class="rf-caption"><strong>要点：</strong>每项锚文本含产品 + 文档名，脱离侧栏层级也自解释；底层是真实 a[href]。</p></div>
+</ul></div>
+            <p class="rf-frame-caption"><strong>要点：</strong>每项锚文本含产品 + 文档名，脱离侧栏层级也自解释；底层是真实 a[href]。</p>
+          </div>
           </div>
         </div>
       </div>
     </section>
 
     <section class="section" id="content-adjust">
-      <h2>文档内容调整</h2>
+      <h2>文档内容调整 · 场景1</h2>
       <h3 id="content-suggestions">调整建议</h3>
       <ul class="principle-suggestions">
-        <li><strong>llms 过渡补位</strong>：侧栏 html 未达标前，llms 可临时补关键深链；达标后不必重复维护。</li>
+        <li><strong>统一命名</strong>：确保侧栏目录、sitemap 与手册 MD 目录中的文档标题对齐。同一文档在各处使用相同名称，避免 Agent 因名称差异而将同一页面识别为两个独立入口。</li>
+        <li><strong>备选目录</strong>：在 Markdown / llms.txt 中提供手册章节清单（标题 + 链接），作为侧栏的平行可达入口；即使侧栏未被抓取，也可枚举全部页面。</li>
+        <li><strong>过渡补位</strong>：侧栏 HTML 未达标前，用 llms.txt 临时补充关键深链；达标后以 HTML 为准，无需重复维护。</li>
       </ul>
+      <h3 id="content-example">调整示例</h3>
+      <div class="principle-example">
+        <h4>示例1. 手册目录 → MD / llms 平行清单</h4>
+        <div class="compare-grid compare-grid--stack compare-grid--no-mid-divider">
+          <h4 class="compare-label compare-label--machine"><span class="cmp-mark cmp-mark--x">✗</span> 当前问题 · 只有前端注入的侧栏</h4>
+          <div class="compare-col machine">
+            <pre class="arch-diagram">手册目录仅由 OMenu 前端渲染；
+没有 Markdown / llms 版章节清单，
+静态抓取时无法枚举本手册有哪些页。</pre>
+          </div>
+          <h4 class="compare-label compare-label--human"><span class="cmp-mark cmp-mark--v">✓</span> 推荐做法 · MD 平行目录清单</h4>
+          <div class="compare-col human">
+            <pre class="arch-diagram">## CANN 手册目录
+- [CANN 简介](/document/zh/CANN/overview.html)
+- [CANN 软件安装指南](/document/zh/CANN/install.html)
+- [CANN 全部文档索引](/document/zh/CANN/index.html)</pre>
+          </div>
+          <h4 class="compare-label compare-label--human"><span class="cmp-mark cmp-mark--v">✓</span> 推荐做法 · llms 临时补关键深链</h4>
+          <div class="compare-col human">
+            <pre class="arch-diagram"># llms.txt（过渡）
+- [CANN 软件安装指南](/document/zh/CANN/install.html)
+- [Ascend FAQ 安装部署](/document/zh/AscendFAQ/install.html)</pre>
+            <p class="rf-frame-caption">侧栏 SSR 达标后以 HTML 为准，llms 中重复项可移除。</p>
+          </div>
+        </div>
+      </div>
     </section>
 
     <section class="section" id="frontend-adjust">
-      <h2>前端调整</h2>
+      <h2>前端调整 · 场景1</h2>
       <h3 id="frontend-suggestions">调整建议</h3>
+      <p class="principle-lead">侧栏（nav/aside）须在首包 HTML 中全量输出当前手册的 a[href] 目录树（对标：Mintlify 侧栏 73 链、NVIDIA 文档导航 700+ 链），确保不执行 JS 即可抓取完整章节并跟进链接。</p>
+      <p class="principle-subhead">具体要求：</p>
       <ul class="principle-suggestions">
-        <li><strong>首包 SSR 侧栏树</strong>：nav/aside 内输出当前手册全量 a[href]（对标友商：Mintlify #sidebar-content 实测 73 链、NVIDIA bd-docs-nav 700+ 链）；禁 JS 须仍可列出章节并跟链。</li>
-        <li><strong>禁 NUXT 注入 TOC</strong>：目录节点不得只在 __NUXT_DATA__ 等 JSON 中（Ascend FAQ 实测失败态）；须与 problems-omenu 探针判据互斥。</li>
-        <li><strong>节点为真实链接</strong>：每个目录项须为带 href 的 a 标签 + 可见文本，禁 span/div 仅作点击态；须含「安装部署」等分支及可跟深链。</li>
+        <li><strong>禁用 NUXT 式 JSON 注入</strong>：目录节点不得仅存于 __NUXT_DATA__ 等 JSON 中（Ascend FAQ 即为此类失败案例），否则静态 HTML 无可跟链的目录树。</li>
+        <li><strong>禁用懒加载吞节点</strong>：长目录不得使用虚拟滚动或按需渲染只输出可视区少量节点，全量 a[href] 须在首包 HTML 中一次输出。</li>
+        <li><strong>节点须为真实链接</strong>：每个目录项须为带 href 的 a 标签 + 可见文本，禁止用 span/div 模拟点击；须包含「安装部署」等分支章节及可跟进深层链接。</li>
       </ul>
       <h3 id="frontend-example">调整示例</h3>
       <div class="principle-example">
-        <h4>1. Ascend FAQ 侧栏 html</h4>
+        <h4>示例1. Ascend FAQ 侧栏 html</h4>
         <div class="compare-grid compare-grid--stack compare-grid--no-mid-divider">
-          <h4 class="compare-label compare-label--machine">Before · TOC 仅在 __NUXT_DATA__</h4>
+          <h4 class="compare-label compare-label--machine"><span class="cmp-mark cmp-mark--x">✗</span> 错误示范 · TOC 仅注入 __NUXT_DATA__，未输出真实 &lt;a[href]&gt;，导致静态抓取无目录可跟</h4>
           <div class="compare-col machine">
             <pre class="arch-diagram">&lt;script id="__NUXT_DATA__"&gt;{"label":"安装部署",…}&lt;/script&gt;
 &lt;!-- 静态 HTML 无 aside/nav 内可跟链 a[href] 树 --&gt;</pre>
+            <p class="rf-frame-caption">目录数据只在 __NUXT_DATA__ 里，静态 HTML 的 aside/nav 内没有可跟链的 a，静态抓取拿不到章节结构。</p>
           </div>
-          <h4 class="compare-label compare-label--human">After · SSR 输出全量 nav 链</h4>
+          <h4 class="compare-label compare-label--human"><span class="cmp-mark cmp-mark--v">✓</span> 推荐做法 · SSR 输出全量 nav 链</h4>
           <div class="compare-col human">
             <pre class="arch-diagram">&lt;aside class="doc-sidebar"&gt;
   &lt;nav aria-label="手册目录"&gt;
@@ -931,6 +1085,7 @@
     &lt;a href="/document/detail/zh/AscendFAQ/install/step1.html"&gt;第一篇官方文档&lt;/a&gt;
   &lt;/nav&gt;
 &lt;/aside&gt;</pre>
+            <p class="rf-frame-caption">章节层级直接写成 nav 内的 a[href]，静态抓取即可列全并跟链到具体文档。</p>
           </div>
         </div>
       </div>
@@ -995,6 +1150,75 @@
   }
   window.addEventListener('hashchange', syncHash);
   syncHash();
+})();
+</script>
+
+
+<div class="modal" id="shot-modal" role="dialog" aria-modal="true" aria-labelledby="shot-modal-title" hidden>
+  <div class="modal-panel">
+    <div class="modal-head">
+      <h2 class="shot-modal-title" id="shot-modal-title">组件截图</h2>
+      <button type="button" class="modal-close" id="shot-modal-close">关闭</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-shots" id="modal-shots"></div>
+    </div>
+  </div>
+</div>
+<script>
+(function () {
+  var modal = document.getElementById('shot-modal');
+  var titleEl = document.getElementById('shot-modal-title');
+  var shotsEl = document.getElementById('modal-shots');
+  var closeBtn = document.getElementById('shot-modal-close');
+  if (!modal || !titleEl || !shotsEl || !closeBtn) return;
+  var ASSET = 'design-system/assets/';
+  function openModal(name, shotsRaw) {
+    titleEl.textContent = name;
+    shotsEl.innerHTML = '';
+    String(shotsRaw || '').split(',').filter(Boolean).forEach(function (item) {
+      var parts = item.split('|');
+      var file = parts[0];
+      var caption = parts[1];
+      var wrap = document.createElement('div');
+      if (caption) {
+        var cap = document.createElement('p');
+        cap.className = 'modal-caption';
+        cap.textContent = caption;
+        wrap.appendChild(cap);
+      }
+      var box = document.createElement('div');
+      box.className = 'modal-shot';
+      var img = document.createElement('img');
+      img.src = ASSET + file;
+      img.alt = name + (caption ? ' · ' + caption : '');
+      box.appendChild(img);
+      wrap.appendChild(box);
+      shotsEl.appendChild(wrap);
+    });
+    modal.hidden = false;
+    modal.classList.add('open');
+    document.body.classList.add('modal-open');
+    closeBtn.focus();
+  }
+  function closeModal() {
+    modal.classList.remove('open');
+    modal.hidden = true;
+    document.body.classList.remove('modal-open');
+    shotsEl.innerHTML = '';
+  }
+  document.querySelectorAll('.comp-link').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      openModal(btn.getAttribute('data-name'), btn.getAttribute('data-shots'));
+    });
+  });
+  closeBtn.addEventListener('click', closeModal);
+  modal.addEventListener('click', function (e) {
+    if (e.target === modal) closeModal();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+  });
 })();
 </script>
 

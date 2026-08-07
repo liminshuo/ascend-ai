@@ -29,15 +29,190 @@ all_components = _probe_mod.all_components
 OCAROUSEL_CANONICAL = DOCS / "principles-affinity.html"
 SKIP_BODY = {"ocarousel"}
 
+COMP_SHOT_SPECIAL = {
+    "ofooternav": "o-footer-nav.png",
+    "odatetable": "o-date-table.png",
+}
+
+
+def comp_shot_file(slug: str) -> str | None:
+    if slug in COMP_SHOT_SPECIAL:
+        shot = COMP_SHOT_SPECIAL[slug]
+    elif slug.startswith("o") and len(slug) > 1:
+        shot = f"o-{slug[1:]}.png"
+    else:
+        shot = f"{slug}.png"
+    if (DOCS / "design-system" / "assets" / shot).exists():
+        return shot
+    return None
+
+
+def render_comp_link(slug: str, name: str) -> str:
+    shot = comp_shot_file(slug)
+    if not shot:
+        return ""
+    return (
+        f'<button type="button" class="comp-link" data-name="{esc(name)}" '
+        f'data-shots="{esc(shot)}">{esc(name)}</button>'
+    )
+
+
+def render_page_header(title: str, one_liner: str, slug: str, name: str, data: dict[str, Any]) -> str:
+    link = render_comp_link(slug, name)
+    if data.get("hide_page_h1"):
+        top = f'      <div class="page-header-top">\n        {link}\n      </div>\n' if link else ""
+    else:
+        right = f"\n        {link}" if link else ""
+        top = (
+            f'      <div class="page-header-top">\n'
+            f'        <h1>{esc(title)}</h1>{right}\n'
+            f'      </div>\n'
+        )
+    return f"""    <div class="page-header">
+{top}      <p class="page-desc page-desc--split">
+        <span class="page-desc-line">{one_liner}</span>
+{principles_meta_line(data, slug)}
+      </p>
+    </div>"""
+
+
+SHOT_MODAL_HTML = """
+<div class="modal" id="shot-modal" role="dialog" aria-modal="true" aria-labelledby="shot-modal-title" hidden>
+  <div class="modal-panel">
+    <div class="modal-head">
+      <h2 class="shot-modal-title" id="shot-modal-title">组件截图</h2>
+      <button type="button" class="modal-close" id="shot-modal-close">关闭</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-shots" id="modal-shots"></div>
+    </div>
+  </div>
+</div>
+<script>
+(function () {
+  var modal = document.getElementById('shot-modal');
+  var titleEl = document.getElementById('shot-modal-title');
+  var shotsEl = document.getElementById('modal-shots');
+  var closeBtn = document.getElementById('shot-modal-close');
+  if (!modal || !titleEl || !shotsEl || !closeBtn) return;
+  var ASSET = 'design-system/assets/';
+  function openModal(name, shotsRaw) {
+    titleEl.textContent = name;
+    shotsEl.innerHTML = '';
+    String(shotsRaw || '').split(',').filter(Boolean).forEach(function (item) {
+      var parts = item.split('|');
+      var file = parts[0];
+      var caption = parts[1];
+      var wrap = document.createElement('div');
+      if (caption) {
+        var cap = document.createElement('p');
+        cap.className = 'modal-caption';
+        cap.textContent = caption;
+        wrap.appendChild(cap);
+      }
+      var box = document.createElement('div');
+      box.className = 'modal-shot';
+      var img = document.createElement('img');
+      img.src = ASSET + file;
+      img.alt = name + (caption ? ' · ' + caption : '');
+      box.appendChild(img);
+      wrap.appendChild(box);
+      shotsEl.appendChild(wrap);
+    });
+    modal.hidden = false;
+    modal.classList.add('open');
+    document.body.classList.add('modal-open');
+    closeBtn.focus();
+  }
+  function closeModal() {
+    modal.classList.remove('open');
+    modal.hidden = true;
+    document.body.classList.remove('modal-open');
+    shotsEl.innerHTML = '';
+  }
+  document.querySelectorAll('.comp-link').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      openModal(btn.getAttribute('data-name'), btn.getAttribute('data-shots'));
+    });
+  });
+  closeBtn.addEventListener('click', closeModal);
+  modal.addEventListener('click', function (e) {
+    if (e.target === modal) closeModal();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+  });
+})();
+</script>
+"""
+
 render_nav_item = _probe_mod.render_nav_item
 
 PRINCIPLES_CSS_EXTRA = """
-  .page-header > h1 {
-    margin: 0 0 16px;
+  .page-header-top {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; margin-bottom: 16px;
+  }
+  .page-header-top h1 {
+    margin: 0;
     font-size: 32px; font-weight: 800; line-height: 48px;
     letter-spacing: -0.02em; color: var(--text);
+    flex: 1; min-width: 0;
   }
   .page-header .page-desc { margin-bottom: 0; }
+  button.comp-link {
+    appearance: none; border: 0; background: transparent;
+    padding: 0; margin: 0; flex-shrink: 0;
+    font: inherit; font-size: 14px; font-weight: 600;
+    color: var(--accent); cursor: pointer; text-align: right;
+    white-space: nowrap;
+  }
+  button.comp-link:hover { text-decoration: underline; }
+  #shot-modal.modal {
+    display: none; position: fixed; inset: 0; z-index: 100;
+    background: rgba(25, 25, 25, 0.45);
+    align-items: center; justify-content: center; padding: 24px;
+  }
+  #shot-modal.modal.open { display: flex; }
+  #shot-modal .modal-panel {
+    width: min(920px, 100%); max-height: min(88vh, 900px);
+    background: var(--panel); border-radius: 16px;
+    border: 1px solid var(--line);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.18);
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  #shot-modal .modal-head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; padding: 16px 20px; border-bottom: 1px solid var(--line);
+    flex-shrink: 0;
+  }
+  #shot-modal .shot-modal-title {
+    margin: 0; font-size: 18px; font-weight: 650; line-height: 28px;
+    color: var(--text);
+  }
+  #shot-modal .modal-close {
+    appearance: none; border: 1px solid var(--line); background: var(--panel2);
+    color: var(--text); border-radius: 8px; padding: 6px 12px;
+    font-size: 13px; font-weight: 500; cursor: pointer;
+  }
+  #shot-modal .modal-close:hover { color: var(--accent); border-color: var(--accent); }
+  #shot-modal .modal-body {
+    padding: 20px; overflow: auto; background: var(--panel2);
+  }
+  #shot-modal .modal-shots {
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  #shot-modal .modal-shot {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 12px; padding: 16px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  #shot-modal .modal-shot img {
+    max-width: 100%; height: auto; display: block;
+  }
+  #shot-modal .modal-caption {
+    margin: 0 0 8px; font-size: 13px; color: var(--muted); font-weight: 500;
+  }
 
   .role-split-card {
     margin: 0 0 36px;
@@ -64,7 +239,7 @@ PRINCIPLES_CSS_EXTRA = """
     font-size: 13.5px; font-weight: 700; line-height: 20px;
     color: var(--text);
   }
-  .role-split-item h4 .rsc-verdict {
+  .rsc-verdict {
     font-size: 11.5px; font-weight: 700; line-height: 18px;
     padding: 1px 8px; border-radius: 999px;
     border: 1px solid transparent;
@@ -94,11 +269,30 @@ PRINCIPLES_CSS_EXTRA = """
   }
   .role-split-item--strip h4 { color: var(--muted); }
 
+  .scene-judge-item {
+    margin: 0 0 16px;
+    font-size: var(--body-size); line-height: var(--body-lh);
+    color: var(--text);
+  }
+  .scene-judge-item:last-child { margin-bottom: 0; }
+  .scene-judge-head {
+    margin: 0 0 4px;
+    display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
+  }
+  .scene-judge-head strong { font-weight: 700; color: var(--text); }
+  .scene-judge-body { margin: 0; color: var(--text); }
+
   .principle-suggestions {
     margin: 0; padding-left: 20px;
     color: var(--muted); font-size: 14px; line-height: 22px;
   }
   .principle-suggestions li { margin-bottom: 8px; }
+  .principle-lead {
+    margin: 0 0 12px; font-size: 14px; line-height: 22px; color: var(--text);
+  }
+  .principle-subhead {
+    margin: 0 0 8px; font-size: 14px; font-weight: 700; line-height: 22px; color: var(--text);
+  }
   .principle-suggestions li:last-child { margin-bottom: 0; }
   .principle-suggestions li strong { color: var(--text); font-weight: 600; }
 
@@ -127,6 +321,14 @@ PRINCIPLES_CSS_EXTRA = """
     margin: 0;
   }
   .compare-grid--stack { grid-template-columns: 1fr; gap: 16px; }
+  .compare-grid--cols { grid-template-columns: 1fr 1fr; gap: 16px; align-items: stretch; }
+  .compare-grid--cols .compare-side { display: flex; flex-direction: column; gap: 8px; min-width: 0; height: 100%; }
+  .compare-grid--cols .compare-col { flex: 1; display: flex; flex-direction: column; }
+  .compare-grid--cols .compare-col .render-frame,
+  .compare-grid--cols .compare-col .arch-diagram { flex: 1; }
+  @media (max-width: 720px) {
+    .compare-grid--cols { grid-template-columns: 1fr; }
+  }
   .compare-grid--stack .compare-label--human {
     margin-top: 8px;
     padding-top: 20px;
@@ -136,6 +338,9 @@ PRINCIPLES_CSS_EXTRA = """
     margin-top: 8px;
     padding-top: 0;
     border-top: none;
+  }
+  .compare-grid--stack .compare-col.human + .compare-label.compare-label--human {
+    margin-top: 4px;
   }
   .section .principle-example .compare-grid h4.compare-label {
     margin: 0;
@@ -149,6 +354,9 @@ PRINCIPLES_CSS_EXTRA = """
   }
   .compare-label--machine { color: var(--danger); }
   .compare-label--human { color: var(--success); }
+  .cmp-mark { font-weight: 800; }
+  .cmp-mark--x { color: var(--danger); }
+  .cmp-mark--v { color: var(--success); }
   .compare-col {
     border-radius: 8px;
     padding: 18px 20px;
@@ -188,6 +396,13 @@ PRINCIPLES_CSS_EXTRA = """
     color: var(--muted);
   }
   .render-frame .rf-caption strong { color: var(--text); font-weight: 600; }
+  .compare-col .rf-frame-caption {
+    margin: 16px 0 0;
+    font-size: 12.5px;
+    line-height: 19px;
+    color: var(--muted);
+  }
+  .compare-col .rf-frame-caption strong { color: var(--text); font-weight: 600; }
   .render-frame .rf-sidebar-title {
     margin: 0 0 8px;
     font-size: 12px;
@@ -447,6 +662,14 @@ def compare_block(
     *,
     before_is_frame: bool = False,
     after_is_frame: bool = False,
+    before_caption: str | None = None,
+    after_caption: str | None = None,
+    side_by_side: bool = False,
+    before_prefix: str = "错误示范",
+    after_prefix: str = "推荐做法",
+    before_mark: bool = True,
+    after_mark: bool = True,
+    after_sections: list[tuple[str, str]] | None = None,
     example_num: int = 1,
 ) -> str:
     def fmt(body: str) -> str:
@@ -457,21 +680,52 @@ def compare_block(
             return body
         return esc(body)
 
-    def col(is_frame: bool, body: str) -> str:
-        inner = f'<div class="render-frame">{body}</div>' if is_frame else f'<pre class="arch-diagram">{fmt(body)}</pre>'
-        return f'          <div class="compare-col machine">\n            {inner}\n          </div>'
+    def label_head(kind: str, prefix: str, text: str, *, mark: bool) -> str:
+        mark_html = ""
+        if mark:
+            mark_cls = "cmp-mark--x" if kind == "machine" else "cmp-mark--v"
+            mark_char = "✗" if kind == "machine" else "✓"
+            mark_html = f'<span class="cmp-mark {mark_cls}">{mark_char}</span> '
+        return f'<h4 class="compare-label compare-label--{kind}">{mark_html}{esc(prefix)} · {esc(text)}</h4>'
 
-    def col_human(is_frame: bool, body: str) -> str:
+    def col(kind: str, is_frame: bool, body: str, caption: str | None) -> str:
         inner = f'<div class="render-frame">{body}</div>' if is_frame else f'<pre class="arch-diagram">{fmt(body)}</pre>'
-        return f'          <div class="compare-col human">\n            {inner}\n          </div>'
+        cap = f'\n            <p class="rf-frame-caption">{caption}</p>' if caption else ""
+        return f'          <div class="compare-col {kind}">\n            {inner}{cap}\n          </div>'
+
+    def after_stack(*, is_frame: bool, caption: str | None) -> str:
+        sections = after_sections or [(after_label, after_body)]
+        parts: list[str] = []
+        for i, section in enumerate(sections):
+            label, body = section[0], section[1]
+            cap = section[2] if len(section) > 2 else (caption if i == 0 else None)
+            parts.append(
+                f'          {label_head("human", after_prefix, label, mark=after_mark)}\n'
+                f'{col("human", is_frame, body, cap)}'
+            )
+        return "\n".join(parts)
+
+    if side_by_side:
+        return f"""      <div class="principle-example">
+        <h4>示例{example_num}. {esc(example_title)}</h4>
+        <div class="compare-grid compare-grid--cols">
+          <div class="compare-side">
+            {label_head("machine", before_prefix, before_label, mark=before_mark)}
+{col("machine", before_is_frame, before_body, before_caption)}
+          </div>
+          <div class="compare-side">
+            {label_head("human", after_prefix, after_label, mark=after_mark)}
+{col("human", after_is_frame, after_body, after_caption)}
+          </div>
+        </div>
+      </div>"""
 
     return f"""      <div class="principle-example">
-        <h4>{example_num}. {esc(example_title)}</h4>
+        <h4>示例{example_num}. {esc(example_title)}</h4>
         <div class="compare-grid compare-grid--stack compare-grid--no-mid-divider">
-          <h4 class="compare-label compare-label--machine">Before · {esc(before_label)}</h4>
-{col(before_is_frame, before_body)}
-          <h4 class="compare-label compare-label--human">After · {esc(after_label)}</h4>
-{col_human(after_is_frame, after_body)}
+          {label_head("machine", before_prefix, before_label, mark=before_mark)}
+{col("machine", before_is_frame, before_body, before_caption)}
+{after_stack(is_frame=after_is_frame, caption=after_caption)}
         </div>
       </div>"""
 
@@ -498,12 +752,12 @@ def principle_title(probe: dict, name: str, slug: str) -> str:
         comp = name.split()[0] if name else slug
         return f"{comp} · 无需亲和改造"
     overrides = {
-        "omenu": "侧栏目录 SSR 可爬",
-        "otab": "Tab 隐藏语义全量展开",
+        "omenu": "侧栏菜单目录可发现",
+        "otab": "标签页面板首包可抓全",
         "obreadcrumb": "面包屑路径可链回溯",
         "oanchor": "锚点目录与正文 id 对齐",
-        "opagination": "分页深页 URL 可爬",
-        "ostep": "流程步骤说明须进源码",
+        "opagination": "列表底部分页深页可爬",
+        "ostep": "流程步骤说明可逐步抓取",
         "onavigation": "顶栏主导航链接可发现",
         "ofooternav": "页脚多列链接可发现",
         "obutton": "跳转型按钮链接可发现",
@@ -532,13 +786,13 @@ def principle_one_liner(probe: dict, slug: str) -> str:
             "本组件<strong>无需亲和改造</strong>；规格说明应写在旁侧正文/文档页，管道可跳过纯控件 DOM。"
         )
     fixes = {
-        "omenu": "文档侧栏/层级菜单须在首包输出<strong>完整可爬目录树</strong>，每个节点为真实 <code>a[href]</code>；勿把发现层绑在前端注入的 OMenu 上。",
-        "otab": "关键步骤不得只放在交互切换的面板里；<strong>各 Tab 面板须 SSR 全量输出</strong>，禁 JS 抓取仍得全面板正文，视觉隐藏不得删除文本节点。",
+        "omenu": "侧栏菜单是文档的<strong>发现层</strong>：目录树须首包 SSR、每项为真实 <code>a[href]</code>，静态抓取即可列全并跟链到各章节，勿只靠前端注入。",
+        "otab": "内容型标签页的各面板须<strong>首包 SSR 全量输出</strong>；可用 <code>display:none</code> 隐藏，但静态抓取仍须读到全部页签正文，禁止点击后才注入。",
         "obreadcrumb": "文档页顶栏面包屑须把<strong>每一级祖先页写成可点的链接</strong>（a[href]），当前页用纯文本即可；首包 HTML 就要输出完整路径，文案与 sitemap / 手册目录保持一致。",
-        "oanchor": "长文页右侧章节目录须把<strong>每一级章节写成 #hash 可点链接</strong>（a[href]），与正文 heading/section id 对齐；首包 HTML 就要输出完整 On this page 式目录，勿仅客户端生成。",
-        "opagination": "列表分页须为<strong>带 query 的真实 URL</strong>；禁纯 button/onClick 翻页导致深页不可达。",
-        "ostep": "流程步骤的<strong>标题与说明须写入 HTML 文本</strong>（step-title + step-content 或等价结构），全部步骤进首包；状态用 aria/文本标注；配图内步骤字须补 alt 或 MD 平行轨（对标 Mintlify Quickstart Steps）。",
-        "onavigation": "社区首页顶栏须把<strong>文档 / 开发者 / 下载等站点入口写成可跟链接</strong>（a[href]），下拉子项亦在首包 HTML 输出；搜索 / 换肤 / 语言切换等纯操作控件标注排除，勿当知识正文。",
+        "oanchor": "长文页右侧「本篇目录」须把<strong>每一级章节写成 #hash 可点链接</strong>（a[href]），与正文 heading/section id 对齐；首包 HTML 就要输出完整目录。左侧侧栏归菜单、页底 Related 归链接，勿与本组件混测。",
+        "opagination": "表格或卡片列表<strong>下方的分页</strong>若翻出公开知识深页，页码须为带 query 的真实 <code>a[href]</code>（如 <code>?page=2</code>）；禁纯 button/onClick。后台表格分页见下方场景判断。",
+        "ostep": "公开流程/逐步说明块的<strong>标题与说明须为可见文本</strong>进首包；状态用文字或 aria 标注；配图内字须旁注或改文本交付。后台向导见下方场景判断。",
+        "onavigation": "顶栏<strong>站点入口</strong>（文档 / 开发者 / 下载等）须为可跟 <code>a[href]</code>，下拉子项亦进首包；搜索 / 换肤 / 语言等纯操作控件见下方场景判断。",
         "ofooternav": "社区首页页脚须把<strong>五列导航与法律声明 / 联系我们等写成可跟链接</strong>（a[href]），列名稳定；并同步进 llms/sitemap，作为顶栏之外的第二发现层。",
         "obutton": "社区首页首屏 CTA（立即查看 / 了解更多等）须用<strong>可抓 a[href]</strong>；纯提交/关闭类 button 管道宜剥离（对标 Mintlify hero、NVIDIA build 列表 CTA）。",
         "olink": "正文与导航链接须带<strong>真实 a[href]</strong>；锚文本宜自描述（禁仅「软件介绍↗」）；禁 JSON/onclick/span 伪链（昇腾训练旅程矩阵须 SSR 链化）。",
@@ -631,10 +885,43 @@ def probe_to_principles(slug: str, name: str, probe: dict) -> dict[str, Any]:
 # Rich overrides for high-traffic / benchmark components
 PRINCIPLES_OVERRIDES: dict[str, dict[str, Any]] = {
     "omenu": {
+        "hide_sample_meta": True,
+        "intro_card": {
+            "plain": True,
+            "title": "场景判断",
+            "items": [
+                (
+                    "keep",
+                    "跳转型侧栏（换 URL 到独立页面）",
+                    "要做亲和",
+                    "点击侧栏项切换 URL，跳转至独立页面（如：文档手册目录）。<br>它是爬虫发现深层页面的关键入口：每项须为真实 <code>a[href]</code> 链接 + 自描述锚文本/标题，首屏 SSR 全量输出，禁用 JS 仍完整可见并可跟链。<br>对应页面：<a href=\"https://www.hiascend.com/document/detail/zh/AscendFAQ/ProduTech/productform/hardwaredesc_0001.html\" target=\"_blank\" rel=\"noopener\">Ascend FAQ 概览</a>",
+                ),
+                (
+                    "keep",
+                    "同页切换内容块（类 Tab）",
+                    "要做亲和",
+                    "点击侧栏不刷新 URL，仅切换右侧内容（竖向 Tab）。<br>所有内容块的文字须写入首包 HTML（SSR 全量输出），可 <code>display:none</code> 视觉隐藏、但不能靠 JS 注入才出现（详见 <a href=\"principles-otab.html\">标签页 otab</a>）。",
+                ),
+                (
+                    "strip",
+                    "后台 / 个人中心管理菜单",
+                    "不做亲和 · 入库剥离",
+                    "如控制台、个人中心左侧的功能操作菜单。它指向登录后的应用操作、非公开知识，入库管道宜标 <code>data-llm-exclude</code> 或直接剥离，别当可引用文档。",
+                ),
+            ],
+        },
+        "design_example_side_by_side": True,
+        "design_heading_suffix": " · 场景1",
+        "content_heading_suffix": " · 场景1",
+        "frontend_heading_suffix": " · 场景1",
         "design": [
             (
-                "菜单项用自描述文案",
-                "侧栏目录项写清对象 / 文档名（如「CANN 软件安装指南」），别用「简介 / 安装 / 更多」等泛词；每项底层为真实 a[href]，锚文本即可读标题",
+                "跳转型侧栏文案须自描述",
+                "明确文档 / 对象名（如「CANN 软件安装指南」），避免「简介 / 安装 / 更多」等泛词",
+            ),
+            (
+                "锚文本即标题",
+                "每项为真实 a[href]，锚文本即可读的文档标题本身",
             ),
         ],
         "design_example": (
@@ -645,273 +932,469 @@ PRINCIPLES_OVERRIDES: dict[str, dict[str, Any]] = {
             '  <li><a href="#">简介</a></li>\n'
             '  <li><a href="#">安装</a></li>\n'
             '  <li><a href="#">更多 ›</a></li>\n'
-            '</ul>\n'
-            '<p class="rf-muted">「简介 / 安装 / 更多」脱离上下文说不清是哪个产品的哪篇文档，Agent 拿到锚文本也判断不了去向。</p>',
+            '</ul>',
             "自描述标题",
             '<p class="rf-sidebar-title">手册目录</p>\n'
             '<ul class="rf-nav-links">\n'
             '  <li><a href="#">CANN 简介</a></li>\n'
             '  <li><a href="#">CANN 软件安装指南</a></li>\n'
             '  <li><a href="#">CANN 全部文档索引</a></li>\n'
-            '</ul>\n'
-            '<p class="rf-caption"><strong>要点：</strong>每项锚文本含产品 + 文档名，脱离侧栏层级也自解释；底层是真实 a[href]。</p>',
+            '</ul>',
             True,
             True,
+            "「简介 / 安装 / 更多」脱离上下文说不清是哪个产品的哪篇文档，Agent 拿到锚文本也判断不了去向。",
+            "<strong>要点：</strong>每项锚文本含产品 + 文档名，脱离侧栏层级也自解释；底层是真实 a[href]。",
         ),
         "content": [
-            ("llms 过渡补位", "侧栏 html 未达标前，llms 可临时补关键深链；达标后不必重复维护"),
+            ("统一命名", "确保侧栏目录、sitemap 与手册 MD 目录中的文档标题对齐。同一文档在各处使用相同名称，避免 Agent 因名称差异而将同一页面识别为两个独立入口"),
+            ("备选目录", "在 Markdown / llms.txt 中提供手册章节清单（标题 + 链接），作为侧栏的平行可达入口；即使侧栏未被抓取，也可枚举全部页面"),
+            ("过渡补位", "侧栏 HTML 未达标前，用 llms.txt 临时补充关键深链；达标后以 HTML 为准，无需重复维护"),
         ],
-        "content_no_example": True,
+        "content_example": (
+            "手册目录 → MD / llms 平行清单",
+            "只有前端注入的侧栏",
+            "手册目录仅由 OMenu 前端渲染；\n没有 Markdown / llms 版章节清单，\n静态抓取时无法枚举本手册有哪些页。",
+            "MD 平行目录清单",
+            "## CANN 手册目录\n- [CANN 简介](/document/zh/CANN/overview.html)\n- [CANN 软件安装指南](/document/zh/CANN/install.html)\n- [CANN 全部文档索引](/document/zh/CANN/index.html)",
+            False,
+            False,
+        ),
+        "content_example_after_sections": [
+            (
+                "MD 平行目录清单",
+                "## CANN 手册目录\n- [CANN 简介](/document/zh/CANN/overview.html)\n- [CANN 软件安装指南](/document/zh/CANN/install.html)\n- [CANN 全部文档索引](/document/zh/CANN/index.html)",
+            ),
+            (
+                "llms 临时补关键深链",
+                "# llms.txt（过渡）\n- [CANN 软件安装指南](/document/zh/CANN/install.html)\n- [Ascend FAQ 安装部署](/document/zh/AscendFAQ/install.html)",
+                "侧栏 SSR 达标后以 HTML 为准，llms 中重复项可移除。",
+            ),
+        ],
+        "content_example_before_prefix": "当前问题",
+        "content_example_before_mark": True,
+        "frontend_lead": "侧栏（nav/aside）须在首包 HTML 中全量输出当前手册的 a[href] 目录树（对标：Mintlify 侧栏 73 链、NVIDIA 文档导航 700+ 链），确保不执行 JS 即可抓取完整章节并跟进链接。",
         "frontend": [
-            ("首包 SSR 侧栏树", "nav/aside 内输出当前手册全量 a[href]（对标友商：Mintlify #sidebar-content 实测 73 链、NVIDIA bd-docs-nav 700+ 链）；禁 JS 须仍可列出章节并跟链"),
-            ("禁 NUXT 注入 TOC", "目录节点不得只在 __NUXT_DATA__ 等 JSON 中（Ascend FAQ 实测失败态）；须与 problems-omenu 探针判据互斥"),
-            ("节点为真实链接", "每个目录项须为带 href 的 a 标签 + 可见文本，禁 span/div 仅作点击态；须含「安装部署」等分支及可跟深链"),
+            ("禁用 NUXT 式 JSON 注入", "目录节点不得仅存于 __NUXT_DATA__ 等 JSON 中（Ascend FAQ 即为此类失败案例），否则静态 HTML 无可跟链的目录树"),
+            ("禁用懒加载吞节点", "长目录不得使用虚拟滚动或按需渲染只输出可视区少量节点，全量 a[href] 须在首包 HTML 中一次输出"),
+            ("节点须为真实链接", "每个目录项须为带 href 的 a 标签 + 可见文本，禁止用 span/div 模拟点击；须包含「安装部署」等分支章节及可跟进深层链接"),
         ],
         "frontend_example": (
             "Ascend FAQ 侧栏 html",
-            "TOC 仅在 __NUXT_DATA__",
+            "TOC 仅注入 __NUXT_DATA__，未输出真实 <a[href]>，导致静态抓取无目录可跟",
             '&lt;script id="__NUXT_DATA__"&gt;{"label":"安装部署",…}&lt;/script&gt;\n&lt;!-- 静态 HTML 无 aside/nav 内可跟链 a[href] 树 --&gt;',
             "SSR 输出全量 nav 链",
             '&lt;aside class="doc-sidebar"&gt;\n  &lt;nav aria-label="手册目录"&gt;\n    &lt;a href="/document/detail/zh/AscendFAQ/product.html"&gt;产品与技术常见问题&lt;/a&gt;\n    &lt;a href="/document/detail/zh/AscendFAQ/install.html"&gt;安装部署&lt;/a&gt;\n    &lt;a href="/document/detail/zh/AscendFAQ/install/step1.html"&gt;第一篇官方文档&lt;/a&gt;\n  &lt;/nav&gt;\n&lt;/aside&gt;',
             False,
             False,
+            "目录数据只在 __NUXT_DATA__ 里，静态 HTML 的 aside/nav 内没有可跟链的 a，静态抓取拿不到章节结构。",
+            "章节层级直接写成 nav 内的 a[href]，静态抓取即可列全并跟链到具体文档。",
         ),
         "acceptance": [
-            ("静态可达", "禁 JS 抓取 Ascend FAQ 后，侧栏仍含可跟链目录节点，能回答探针问句中的章节与深链"),
+            ("静态可达", "静态抓取 Ascend FAQ（不执行 JS）后，侧栏仍含可跟链目录节点，能回答「安装部署下有哪些章节」等问句"),
             ("html 可抓全", "侧栏 html 可抓取达到友商文档页水准（Mintlify/NVIDIA 级：首包 70+ 条 nav 链）"),
-            ("可证伪", "对「安装部署下第一篇官方文档链接」须能引用具体 href，与 problems-omenu 失败判据互斥"),
+            ("可证伪", "对「安装部署下第一篇官方文档链接」须能引用具体 href，与「问题实测」页的失败判据对应"),
         ],
     },
     "otab": {
+        "hide_sample_meta": True,
+        "intro_card": {
+            "plain": True,
+            "title": "场景判断",
+            "items": [
+                (
+                    "keep",
+                    "内容型 Tab",
+                    "要做亲和",
+                    "每个页签面板承载独立内容（说明 / 列表 / 步骤 / 规格），切换页签即切换知识块。所有面板须 SSR 全量输出至首包 HTML，可用 <code>display:none</code> 隐藏，但禁止点击后 JS 动态注入。<br>对应页面：<a href=\"https://www.hiascend.com/developer/download\" target=\"_blank\" rel=\"noopener\">CANN 软件下载</a>",
+                ),
+                (
+                    "strip",
+                    "纯交互 / 装饰型 Tab",
+                    "不做亲和 · 入库剥离",
+                    "只换样式、布局或空壳，不承载可引用正文。入库管道宜标 <code>data-llm-exclude</code> 或剥离，别当知识正文。",
+                ),
+            ],
+        },
+        "content_heading_suffix": " · 场景1",
+        "frontend_heading_suffix": " · 场景1",
         "design_none": True,
         "content": [
             (
-                "安装链须有独立文档",
-                "下载页 CANN 卡片仅有短述（如「CANN作为华为昇腾AI基础软硬件平台的核心…」），Atlas 800 离线安装命令等须链到 document 安装页，并在 Markdown 写出完整 wget/步骤，不得只留在页签切换后",
+                "面板内容须有平行持久版本",
+                "每个页签的核心要点须写入 Markdown / 独立文档，不得仅存在于切换后才出现的面板中",
             ),
             (
-                "MD 按下载页 Tab 平铺",
-                "按 [资源下载中心](https://www.hiascend.com/developer/download) 顶栏「下载资源 → 昇腾资源 / 三方资源」及「固件与驱动 → 社区版 / 商用版」展开 llms 或 .md 章节",
+                "MD 按页签结构平铺",
+                "一级标题对应页签名，下级展开条目。例：资源下载中心 → 昇腾资源 / 三方资源 → 各软件要点与文档链",
             ),
         ],
+        "frontend_lead": "内容型 Tab 的页签名与各面板正文须写入首包 HTML；静态抓取（不执行 JS）仍可读全部页签名称与面板内容。",
         "frontend": [
             (
-                "顶栏「下载资源 / 昇腾资源 / 三方资源」须进源码",
-                "页面上可见三个顶栏页签，但 HTML 快照里 o-tab-nav-list 常为空；须把「昇腾资源」「三方资源」等名称写进源码",
+                "页签名进首包",
+                "每个页签名称写进源码（以下载中心为例：昇腾资源 / 三方资源），勿只留空的 tab nav；浏览器可见但源码读不到的页签名不算达标",
             ),
             (
-                "各 pane 内卡片须预先输出",
-                "「昇腾资源」pane 内 CANN/PyTorch 等卡片标题与短述部分已在 SSR，但切到「三方资源」后的 MindSDK 等卡片、以及 pane 切换后才出现的列表，须写进对应 tabpanel",
+                "未激活面板也进首包",
+                "各 tabpanel 全量 SSR；可用 hidden / display:none 做视觉隐藏，禁止点击页签后才 JS 注入正文",
             ),
             (
-                "配套助手与 Tab 区块勿空壳",
-                "「版本配套查询助手」横幅、tab-title「社区版 / 商用版」等若出现在页面，须带可见正文或链接，勿仅留空 div",
+                "面板内知识节点可抓",
+                "卡片标题、短述、文档链等可见文本写进对应 pane（如昇腾资源下的 CANN / MindSDK）；未激活的三方资源 pane 同样须预先输出",
             ),
         ],
         "content_example": (
-            "下载页 CANN：短述在页、安装链在 MD",
-            "页上仅有 CANN 一句短述",
-            "【HTML 快照】CANN作为华为昇腾AI基础软硬件平台的核心…\\n【缺失】Atlas 800 离线安装 wget 命令；「三方资源」pane 内 MindSDK 等未进快照",
-            "MD 按下载页 Tab 结构平铺",
-            "## 下载资源\\n### 昇腾资源\\n#### CANN\\n短述…\\n- 安装指南：https://…/cann-install\\n- Atlas 800 离线：wget …\\n### 三方资源\\n#### MindSDK\\n…\\n## 固件与驱动\\n- 社区版 …\\n- 商用版 …",
+            "内容型 Tab：面板知识进 MD 平行轨",
+            "要点只在切换后的面板里",
+            "页面默认只看到「昇腾资源」下 CANN 等部分卡片短述；\n切到「三方资源」才出现该面板说明，\n且没有按页签结构写的 Markdown / 独立文档可对照。",
+            "MD 按页签结构平铺",
+            "## 下载资源\n### 昇腾资源\n#### CANN\n短述…\n- 安装指南：https://…/cann-install\n#### MindSDK\n短述…\n- 文档：https://…/mindsdk\n### 三方资源\n#### （三方资源面板条目）\n短述…\n- 文档：https://…",
             False,
             False,
         ),
+        "content_example_before_prefix": "当前问题",
+        "content_example_before_mark": True,
         "frontend_example": (
-            "资源下载中心：空 nav → 全量 pane",
-            "o-tab-nav-list 为空",
-            '&lt;div class="o-tab"&gt;&lt;div class="o-tab-nav-list"&gt;&lt;/div&gt;&lt;div class="o-tab-pane"&gt;&lt;!-- 浏览器可见：下载资源|昇腾资源|三方资源 --&gt;&lt;div class="o-card-title"&gt;CANN&lt;/div&gt;&lt;div class="o-card-detail"&gt;CANN作为华为昇腾…&lt;/div&gt;&lt;/div&gt;&lt;!-- 版本配套查询助手：快照无正文 --&gt;',
-            "页签 + 昇腾/三方 pane 进源码",
-            '&lt;div class="o-tab-nav-list"&gt;&lt;span role="tab"&gt;下载资源&lt;/span&gt;&lt;span role="tab" aria-selected="true"&gt;昇腾资源&lt;/span&gt;&lt;span role="tab"&gt;三方资源&lt;/span&gt;&lt;/div&gt;\\n&lt;div role="tabpanel" id="pane-ascend"&gt;&lt;div class="o-card-title"&gt;CANN&lt;/div&gt;&lt;div class="o-card-detail"&gt;…&lt;/div&gt;&lt;a href="/document/…/cann"&gt;查看文档&lt;/a&gt;&lt;/div&gt;\\n&lt;div role="tabpanel" id="pane-third" hidden&gt;…MindSDK…&lt;/div&gt;',
+            "下载中心 Tab：空 nav → 双面板进源码",
+            "页签未进源码、未激活面板缺失",
+            '&lt;div class="o-tab"&gt;\n  &lt;div class="o-tab-nav-list"&gt;&lt;/div&gt;\n  &lt;!-- 浏览器可见「昇腾资源 / 三方资源」，源码无页签名 --&gt;\n  &lt;div class="o-tab-pane"&gt;\n    &lt;div class="o-card-title"&gt;CANN&lt;/div&gt;\n    &lt;div class="o-card-detail"&gt;CANN作为华为昇腾…&lt;/div&gt;\n  &lt;/div&gt;\n&lt;/div&gt;',
+            "页签 + 双 pane 全量 SSR",
+            '&lt;div class="o-tab-nav-list"&gt;\n  &lt;span role="tab" aria-selected="true"&gt;昇腾资源&lt;/span&gt;\n  &lt;span role="tab"&gt;三方资源&lt;/span&gt;\n&lt;/div&gt;\n&lt;div role="tabpanel" id="pane-ascend"&gt;\n  &lt;div class="o-card-title"&gt;CANN&lt;/div&gt;\n  &lt;div class="o-card-detail"&gt;…&lt;/div&gt;\n  &lt;div class="o-card-title"&gt;MindSDK&lt;/div&gt;\n  &lt;div class="o-card-detail"&gt;沉淀行业能力…&lt;/div&gt;\n  &lt;a href="/document/…/cann"&gt;查看文档&lt;/a&gt;\n&lt;/div&gt;\n&lt;div role="tabpanel" id="pane-third" hidden&gt;\n  …三方资源面板条目…\n&lt;/div&gt;',
             False,
             False,
+            "页签名只在浏览器里渲染，源码 tab nav 为空；未激活面板也未进首包，静态抓取列不全页签与内容。",
+            "页签名与双面板均在首包；未激活 pane 可用 hidden，文本仍可抓。",
         ),
+        "frontend_example_before_prefix": "当前问题",
+        "frontend_example_before_mark": True,
         "acceptance": [
-            ("顶栏页签可读", "查看源码能读到「下载资源 / 昇腾资源 / 三方资源」，o-tab-nav-list 不为空"),
-            ("pane 可抓", "昇腾资源 pane 的 CANN 等卡片、三方资源 pane 的软件列表均在源码中可读"),
-            ("互斥探针", "与 problems-otab 互斥——能回答 Atlas 800 离线安装命令或给出含命令的文档 href"),
+            ("页签可读", "静态抓取后能读到「昇腾资源 / 三方资源」等页签名，tab nav 不为空"),
+            ("面板可抓", "昇腾资源 pane 的 CANN / MindSDK 等卡片、三方资源 pane 内列表均在首包可读"),
+            ("可证伪", "对「各页签有哪些内容 / 某软件卡短述」须能引用源码中的具体文本"),
         ],
     },
     "obreadcrumb": {
+        "design_example_side_by_side": True,
         "design": [
             (
-                "每级路径用真实层级名",
-                "面包屑每一级写清真实层级名（文档中心 › CANN › 安装部署），别用「首页 › … › 当前页」这类泛词；祖先级为 a[href]、当前页纯文本",
+                "路径文案须自描述",
+                "写清真实层级（如「文档中心 › CANN › 安装部署」），避免「首页 / 详情 / 当前页」等泛词",
+            ),
+            (
+                "祖先可点、当前页纯文本",
+                "上级每一级为真实 a[href]，末级当前页用纯文本（避免自链）",
             ),
         ],
         "design_example": (
             "面包屑：泛词 → 真实层级名",
             "泛词路径",
             '<nav aria-label="Breadcrumb" style="font-size:12.5px;color:var(--muted);">\n'
-            '  <a href="#" style="color:var(--accent);text-decoration:none;">首页</a> › <a href="#" style="color:var(--accent);text-decoration:none;">详情</a> › <span>当前页</span>\n'
-            '</nav>\n'
-            '<p class="rf-muted">「首页 › 详情 › 当前页」看不出在站点结构的哪个位置，Agent 无法据此定位或回溯到祖先页。</p>',
+            '  <span>首页</span> › <span>详情</span> › <span>当前页</span>\n'
+            '</nav>',
             "真实层级名 + 可跟链",
             '<nav aria-label="Breadcrumb" style="font-size:12.5px;">\n'
-            '  <a href="#" style="color:var(--accent);text-decoration:none;">文档中心</a> › <a href="#" style="color:var(--accent);text-decoration:none;">CANN</a> › <a href="#" style="color:var(--accent);text-decoration:none;">安装部署</a> › <span style="color:var(--muted);">CANN 安装指南</span>\n'
-            '</nav>\n'
-            '<p class="rf-caption"><strong>要点：</strong>每级为真实层级名 + 可跟链，末级当前页纯文本；据此能回溯到任一祖先页。</p>',
+            '  <a href="#" style="color:var(--accent);text-decoration:none;">文档中心</a> › '
+            '<a href="#" style="color:var(--accent);text-decoration:none;">CANN</a> › '
+            '<a href="#" style="color:var(--accent);text-decoration:none;">安装部署</a> › '
+            '<span style="color:var(--muted);">CANN 安装指南</span>\n'
+            '</nav>',
             True,
             True,
+            "「首页 › 详情 › 当前页」看不出在站点哪一层，也无法据此回溯到祖先页。",
+            "<strong>要点：</strong>每级为真实层级名；祖先可跟链，末级当前页纯文本。",
         ),
         "content": [
             (
-                "llms 临时补路径链",
-                "面包屑 html 未达标前，llms 或 MD 页头可临时写出「昇腾常见问题 › 产品与技术常见问题 › 当前页」及各级链接；达标后以 SSR o-breadcrumb 为准，避免双轨不一致",
+                "统一命名",
+                "面包屑、sitemap、侧栏目录与 MD 路径链使用同一套层级名与 URL，避免同一页因名称差异被识别成多个入口",
             ),
             (
-                "MD 页头写清层级",
-                "Markdown 版文档在 h1 上方用嵌套列表或一行路径链写出 ancestors，文案与 URL 须与 HTML 面包屑、sitemap 一致",
-            ),
-        ],
-        "frontend": [
-            (
-                "首包 SSR 完整 o-breadcrumb",
-                "顶栏须输出与可见 UI 一致的全量 breadcrumb（对标友商：NVIDIA cuQuantum bd-breadcrumbs 首包 Home → cuDensityMat → Release Notes）；禁 JS 须仍能列出每一级 ancestors 的 href",
+                "MD 页头写路径",
+                "Markdown 版在 h1 上方用列表或一行路径链写出 ancestors（标题 + 链接）；末级当前页纯文本即可",
             ),
             (
-                "祖先级须为 a[href]",
-                "每一级祖先输出带真实地址的 a[href]；当前页用 span 或纯文本。Ascend FAQ 实测：server-breadcrumb 仅 2 链、缺「昇腾常见问题 / 产品与技术常见问题」中间级",
-            ),
-            (
-                "禁仅客户端补路径",
-                "路径节点不得只在 __NUXT_DATA__ 或前端脚本里才出现；须与 problems-obreadcrumb 探针判据互斥",
-            ),
-            (
-                "文案与 sitemap 对齐",
-                "面包屑显示文案与 href 须与 sitemap、侧栏目录一致，禁 SSR 写「文档中心」而 UI 显示「昇腾常见问题」等错位",
+                "过渡补位",
+                "页面面包屑未达标前，用 llms.txt 临时写出关键祖先链；达标后以页面为准，去掉重复维护",
             ),
         ],
         "content_example": (
-            "昇腾产品形态说明：title 链 vs MD 路径",
-            "路径只在 title/meta",
-            "【HTML】<title>昇腾产品形态说明-产品与技术常见问题-昇腾常见问题…</title>\n【缺失】MD 页头无各级 ancestors 的可跟链",
+            "昇腾产品形态说明：路径链平行轨",
+            "只有 title，无路径链（连续阅读模式开启情况下）",
+            "【HTML】<title>昇腾产品形态说明-产品与技术常见问题-昇腾常见问题…</title>\n"
+            "【缺失】MD / llms 均无各级 ancestors 的可跟链",
             "MD 页头平铺路径链",
-            "## 路径\n- [昇腾常见问题](/document/detail/zh/AscendFAQ/…)\n- [产品与技术常见问题](…)\n- 昇腾产品形态说明（当前页）\n\n# 昇腾产品形态说明\n…",
+            "## 路径\n"
+            "- [昇腾常见问题](/document/detail/zh/AscendFAQ/…)\n"
+            "- [产品与技术常见问题](…)\n"
+            "- 昇腾产品形态说明（当前页）\n\n"
+            "# 昇腾产品形态说明\n…",
             False,
             False,
         ),
+        "content_example_after_sections": [
+            (
+                "MD 页头平铺路径链",
+                "## 路径\n"
+                "- [昇腾常见问题](/document/detail/zh/AscendFAQ/…)\n"
+                "- [产品与技术常见问题](…)\n"
+                "- 昇腾产品形态说明（当前页）\n\n"
+                "# 昇腾产品形态说明\n…",
+            ),
+            (
+                "llms 临时补祖先链",
+                "# llms.txt（过渡）\n"
+                "- [昇腾常见问题](/document/detail/zh/AscendFAQ/…)\n"
+                "- [产品与技术常见问题](/document/detail/zh/AscendFAQ/ProduTech/…)\n"
+                "- [昇腾产品形态说明](/document/detail/zh/AscendFAQ/…/hardwaredesc_0001.html)",
+                "页面面包屑达标后以 HTML 为准，llms 中重复路径可移除。",
+            ),
+        ],
+        "content_example_before_prefix": "当前问题",
+        "frontend_lead": "文档页顶栏面包屑须在首包 HTML 输出完整祖先路径；静态抓取（不执行 JS）仍能列出每一级 <code>a[href]</code> 并回溯到祖先页（对标：NVIDIA cuQuantum bd-breadcrumbs）。",
+        "frontend": [
+            (
+                "全量祖先进首包",
+                "输出与可见 UI 一致的全量路径；中间级不得缺失（Ascend FAQ 实测：server-breadcrumb 仅 2 链，缺「昇腾常见问题 / 产品与技术常见问题」）",
+            ),
+            (
+                "祖先为真实 a[href]",
+                "每一级祖先须为带真实地址的 a 标签 + 可见文案；当前页用 span 或纯文本，勿做成自链",
+            ),
+            (
+                "禁仅 JSON/脚本补路径",
+                "路径节点不得只在 __NUXT_DATA__ 或前端脚本里才出现；静态 HTML 内须已有完整可跟链",
+            ),
+        ],
         "frontend_example": (
             "Ascend FAQ o-breadcrumb",
-            "server-breadcrumb 仅 2 链",
-            '&lt;div class="o-breadcrumb server-breadcrumb"&gt;\n  &lt;a href="/sitemap/sitemapdoc1.xml"&gt;文档中心&lt;/a&gt;\n  &lt;a href="…/hardwaredesc_0001.html"&gt;昇腾产品形态说明&lt;/a&gt;\n&lt;/div&gt;\n&lt;!-- 浏览器可见三级路径；中间级在 __NUXT_DATA__ --&gt;',
+            "server-breadcrumb 仅 2 链，中间级缺失",
+            '&lt;div class="o-breadcrumb server-breadcrumb"&gt;\n'
+            '  &lt;a href="/sitemap/sitemapdoc1.xml"&gt;文档中心&lt;/a&gt;\n'
+            '  &lt;a href="…/hardwaredesc_0001.html"&gt;昇腾产品形态说明&lt;/a&gt;\n'
+            '&lt;/div&gt;\n'
+            '&lt;!-- 浏览器可见三级路径；中间级在 __NUXT_DATA__ --&gt;',
             "SSR 全量 ancestors 可链",
-            '&lt;nav aria-label="Breadcrumb" class="o-breadcrumb"&gt;\n  &lt;a href="/document/detail/zh/AscendFAQ/…"&gt;昇腾常见问题&lt;/a&gt;\n  &lt;a href="/document/detail/zh/AscendFAQ/ProduTech/…"&gt;产品与技术常见问题&lt;/a&gt;\n  &lt;span aria-current="page"&gt;昇腾产品形态说明&lt;/span&gt;\n&lt;/nav&gt;',
+            '&lt;nav aria-label="Breadcrumb" class="o-breadcrumb"&gt;\n'
+            '  &lt;a href="/document/detail/zh/AscendFAQ/…"&gt;昇腾常见问题&lt;/a&gt;\n'
+            '  &lt;a href="/document/detail/zh/AscendFAQ/ProduTech/…"&gt;产品与技术常见问题&lt;/a&gt;\n'
+            '  &lt;span aria-current="page"&gt;昇腾产品形态说明&lt;/span&gt;\n'
+            '&lt;/nav&gt;',
             False,
             False,
+            "首包只有「文档中心 → 当前页」两链；中间祖先只在 __NUXT_DATA__，静态抓取无法逐级回溯。",
+            "祖先级均为真实 a[href]；末级当前页纯文本。静态抓取即可列出完整路径并跟链。",
         ),
+        "frontend_example_before_prefix": "当前问题",
         "acceptance": [
-            ("静态可达", "禁 JS 抓取昇腾产品形态说明页后，o-breadcrumb 仍含完整 ancestors 可链 href，能回答「每一级祖先的可点击链接是什么」"),
+            ("静态可达", "静态抓取昇腾产品形态说明页后，面包屑仍含完整祖先可链 href，能回答「每一级祖先的可点击链接是什么」"),
             ("html 可抓全", "面包屑 html 可抓取达到友商文档页水准（NVIDIA cuQuantum：bd-breadcrumbs 祖先带 href、当前页纯文本）"),
-            ("可证伪", "对探针问句须能引用具体 href，与 problems-obreadcrumb 失败判据互斥"),
+            ("可证伪", "对探针问句须能引用具体 href，与实测失败判据互斥"),
         ],
     },
     "oanchor": {
+        "design_example_side_by_side": True,
         "design": [
             (
-                "锚点文案 = 章节标题",
-                "右侧「本篇目录 / On this page」每项用与正文标题一致的章节名（安装前提 / 安装步骤），别用「概述 / 其他」泛词；#hash 指向对应 section id",
+                "目录文案勿泛指",
+                "右侧「本篇目录」每项须用与正文标题一致的章节名（如「安装前提」），勿用「步骤 / 其他」等对不上的简称或泛词",
+            ),
+            (
+                "目录与正文一一对应",
+                "有目录项就有对应章节；目录文案、正文章节标题须同一套，避免目录有「安装步骤」而正文写「步骤说明」",
+            ),
+            (
+                "标题旁可标 #",
+                "章节标题旁的 # 表示节级可链（permalink），便于复制带 hash 的链接；亲和硬要求仍是标题有稳定 id + 目录可跟链，符号本身非必须",
+            ),
+            (
+                "每项为真实链接",
+                "目录每项按真实链接出、指向对应节（实现为 a[href=#id]）；勿做成纯点击滚动、无目标的伪链",
             ),
         ],
         "design_example": (
             "页内目录：泛词 → 对齐章节标题",
             "泛词 · 与正文对不上",
-            '<p class="rf-sidebar-title">本篇目录</p>\n'
-            '<ul class="rf-nav-links">\n'
-            '  <li><a href="#">概述</a></li>\n'
-            '  <li><a href="#">步骤</a></li>\n'
-            '  <li><a href="#">其他</a></li>\n'
-            '</ul>\n'
-            '<p class="rf-muted">目录项是泛词、又与正文标题对不上；Agent 无法把「步骤」映射到具体某节或 #id。</p>',
+            '<div style="display:flex;gap:16px;align-items:flex-start;font-size:12.5px;">\n'
+            '  <div style="flex:1;min-width:0;">\n'
+            '    <p style="margin:0 0 10px;font-size:13px;font-weight:600;color:var(--text);">安装指南</p>\n'
+            '    <p style="margin:0 0 4px;font-weight:600;color:var(--text);">安装前提</p>\n'
+            '    <p class="rf-muted" style="margin:0 0 12px;">准备驱动与依赖环境…</p>\n'
+            '    <p style="margin:0 0 4px;font-weight:600;color:var(--text);">安装步骤</p>\n'
+            '    <p class="rf-muted" style="margin:0;">按顺序执行安装命令…</p>\n'
+            '  </div>\n'
+            '  <div style="flex:0 0 112px;border-left:1px solid var(--line);padding-left:12px;">\n'
+            '    <p class="rf-sidebar-title">本篇目录</p>\n'
+            '    <ul class="rf-nav-links">\n'
+            '      <li><a href="#">简介</a></li>\n'
+            '      <li><a href="#">步骤</a></li>\n'
+            '      <li><a href="#">其他</a></li>\n'
+            '    </ul>\n'
+            '  </div>\n'
+            '</div>',
             "对齐章节标题 + #id",
-            '<p class="rf-sidebar-title">本篇目录</p>\n'
-            '<ul class="rf-nav-links">\n'
-            '  <li><a href="#install-prereq">安装前提</a></li>\n'
-            '  <li><a href="#install-steps">安装步骤</a></li>\n'
-            '  <li><a href="#faq">常见问题</a></li>\n'
-            '</ul>\n'
-            '<p class="rf-caption"><strong>要点：</strong>每项锚文本 = 正文章节标题，#hash 指向对应 section id，可精确定位到节。</p>',
+            '<div style="display:flex;gap:16px;align-items:flex-start;font-size:12.5px;">\n'
+            '  <div style="flex:1;min-width:0;">\n'
+            '    <p style="margin:0 0 10px;font-size:13px;font-weight:600;color:var(--text);">安装指南</p>\n'
+            '    <p id="install-prereq" style="margin:0 0 4px;font-weight:600;color:var(--text);">安装前提 <span style="color:var(--muted);font-weight:400;font-size:11px;">#</span></p>\n'
+            '    <p class="rf-muted" style="margin:0 0 12px;">准备驱动与依赖环境…</p>\n'
+            '    <p id="install-steps" style="margin:0 0 4px;font-weight:600;color:var(--text);">安装步骤 <span style="color:var(--muted);font-weight:400;font-size:11px;">#</span></p>\n'
+            '    <p class="rf-muted" style="margin:0;">按顺序执行安装命令…</p>\n'
+            '  </div>\n'
+            '  <div style="flex:0 0 112px;border-left:1px solid var(--line);padding-left:12px;">\n'
+            '    <p class="rf-sidebar-title">本篇目录</p>\n'
+            '    <ul class="rf-nav-links">\n'
+            '      <li><a href="#install-prereq">安装前提</a></li>\n'
+            '      <li><a href="#install-steps">安装步骤</a></li>\n'
+            '      <li><a href="#faq">常见问题</a></li>\n'
+            '    </ul>\n'
+            '  </div>\n'
+            '</div>',
             True,
             True,
+            "正文标题是「安装前提 / 安装步骤」，右侧目录却是「简介 / 步骤 / 其他」，对不上也点不到对应节。",
+            "<strong>要点：</strong>目录文案 = 章节标题、一一对应；目录项为指向该节的真实链接；标题旁 # 表示节级可链（非必须）。",
         ),
         "content": [
             (
-                "MD 按 heading 平铺章节目录",
-                "Markdown 版在 h1 上方用嵌套列表写出「概述 / 使用说明 / 使用向导」及各级 #锚点，与 HTML 右侧 document-anc、正文 section id 一致",
+                "统一命名",
+                "页内目录项、正文章节标题与 MD 章节名使用同一套文案；#锚点指向的 id 须与该标题对应，避免「步骤」对不上「安装步骤」",
             ),
             (
-                "llms 临时补章节目录",
-                "锚点 nav html 未达标前，llms 可临时列出章节标题与 #id；达标后以 SSR 右侧 anchor nav 为准，避免双轨不一致",
-            ),
-        ],
-        "frontend": [
-            (
-                "首包 SSR 右侧 anchor nav",
-                "document-anc / On this page 须与可见 UI 一致全量输出（对标 Mintlify #open-the-editor、NVIDIA pst-page-toc-nav #installing-cuquantum）；禁 JS 须能列出章节目录项",
+                "MD 页头写目录",
+                "Markdown 版在 h1 上方用列表写出本篇章节（标题 + #锚点），作为右侧目录的平行可达入口",
             ),
             (
-                "目录项须 a[href=\"#id\"]",
-                "每一项为 a[href=\"#section-id\"] + 章节名，禁纯 click 滚动。CANN 算子库简介实测：正文 section id 在首包，document-anc nav 列表缺失",
-            ),
-            (
-                "锚点 id 与正文对齐",
-                "#hash 须指向正文 h2/h4.sectiontitle 或 div.section 的稳定 id；须能证伪回答「概述对应哪一节、#id 是什么」",
-            ),
-            (
-                "勿与左侧 menu / Related topics 混淆",
-                "左侧 sidebar 归 OMenu，页底 Related topics 归 OLink；OAnchor 只测右侧页内章节目录锚点",
+                "过渡补位",
+                "页内章节目录未达标前，用 llms.txt 临时列出章节标题与 #id；达标后以页面为准，去掉重复维护",
             ),
         ],
         "content_example": (
-            "CANN 简介：MD 章节目录",
-            "章节只在 UI/document-anc",
-            "【HTML】正文有 h4.sectiontitle + section id\n【缺失】MD 页头无章节目录；静态 HTML 无 document-anc nav",
+            "CANN 简介：章节目录平行轨",
+            "只有正文 id，无目录清单",
+            "【HTML】正文有 h4.sectiontitle + section id\n"
+            "【缺失】MD / llms 均无「概述 / 使用说明 / 使用向导」章节目录",
             "MD 页头平铺章节锚点",
-            "## 本篇目录\n- [概述](#ZH-CN_TOPIC_…__section10818103975019)\n- [使用说明](#…)\n- [使用向导](#…)\n\n# 简介\n…",
+            "## 本篇目录\n"
+            "- [概述](#ZH-CN_TOPIC_…__section10818103975019)\n"
+            "- [使用说明](#…)\n"
+            "- [使用向导](#…)\n\n"
+            "# 简介\n…",
             False,
             False,
         ),
+        "content_example_after_sections": [
+            (
+                "MD 页头平铺章节锚点",
+                "## 本篇目录\n"
+                "- [概述](#ZH-CN_TOPIC_…__section10818103975019)\n"
+                "- [使用说明](#…)\n"
+                "- [使用向导](#…)\n\n"
+                "# 简介\n…",
+            ),
+            (
+                "llms 临时补章节目录",
+                "# llms.txt（过渡）\n"
+                "- [概述](#ZH-CN_TOPIC_…__section10818103975019)\n"
+                "- [使用说明](#…)\n"
+                "- [使用向导](#…)",
+                "页内章节目录达标后以 HTML 为准，llms 中重复项可移除。",
+            ),
+        ],
+        "content_example_before_prefix": "当前问题",
+        "frontend_lead": "长文页右侧「本篇目录」须在首包 HTML 全量输出；静态抓取（不执行 JS）仍能列出章节名与 <code>#hash</code>，并与正文 <code>id</code> 对齐（对标：Mintlify On this page、NVIDIA page-toc）。",
+        "frontend": [
+            (
+                "目录全量进首包",
+                "输出与可见 UI 一致的全量章节目录；不得只有正文 id、缺目录列表（CANN 算子库简介实测：正文 section id 在首包，右侧 nav 缺失）",
+            ),
+            (
+                "目录项为 a[href=#id]",
+                "每一项须为带 hash 的 a 标签 + 章节名；禁纯 click 滚动、无 href 的伪链",
+            ),
+            (
+                "#hash 与正文 id 对齐",
+                "hash 须指向正文标题或 section 的稳定 id；须能回答「概述对应哪一节、#id 是什么」",
+            ),
+        ],
         "frontend_example": (
-            "CANN document-anc",
-            "首包无 document-anc nav",
-            "&lt;!-- 浏览器可见：概述 / 使用说明 / 使用向导 --&gt;\n&lt;div class=\"section\" id=\"ZH-CN_TOPIC_…__section10818103975019\"&gt;\n  &lt;h4 class=\"sectiontitle\"&gt;概述&lt;/h4&gt;\n…\n&lt;!-- 静态 HTML 无 document-anc nav-item 列表 --&gt;",
-            "SSR 全量 On this page 锚点",
-            "&lt;nav class=\"document-anc\" aria-label=\"本篇目录\"&gt;\n  &lt;a href=\"#ZH-CN_TOPIC_…__section10818103975019\"&gt;概述&lt;/a&gt;\n  &lt;a href=\"#ZH-CN_TOPIC_…__section20972124710220\"&gt;使用说明&lt;/a&gt;\n  &lt;a href=\"#ZH-CN_TOPIC_…__section1457612184710\"&gt;使用向导&lt;/a&gt;\n&lt;/nav&gt;",
+            "CANN 本篇目录",
+            "正文有 id，首包无目录 nav",
+            "&lt;!-- 浏览器可见：概述 / 使用说明 / 使用向导 --&gt;\n"
+            "&lt;div class=\"section\" id=\"ZH-CN_TOPIC_…__section10818103975019\"&gt;\n"
+            "  &lt;h4 class=\"sectiontitle\"&gt;概述&lt;/h4&gt;\n"
+            "…\n"
+            "&lt;!-- 静态 HTML 无本篇目录 nav 列表 --&gt;",
+            "SSR 全量本篇目录锚点",
+            "&lt;nav class=\"document-anc\" aria-label=\"本篇目录\"&gt;\n"
+            "  &lt;a href=\"#ZH-CN_TOPIC_…__section10818103975019\"&gt;概述&lt;/a&gt;\n"
+            "  &lt;a href=\"#ZH-CN_TOPIC_…__section20972124710220\"&gt;使用说明&lt;/a&gt;\n"
+            "  &lt;a href=\"#ZH-CN_TOPIC_…__section1457612184710\"&gt;使用向导&lt;/a&gt;\n"
+            "&lt;/nav&gt;",
             False,
             False,
+            "正文节已有 id，但首包没有右侧目录可跟链；静态抓取列不出「概述 / 使用说明 / 使用向导」。",
+            "目录项均为 a[href=#id] + 章节名，hash 与正文 section id 对齐；静态抓取即可按节定位。",
         ),
+        "frontend_example_before_prefix": "当前问题",
         "acceptance": [
-            ("静态可达", "禁 JS 抓取 CANN 算子库简介页后，右侧 anchor nav 仍含可跟链 #hash，能回答「概述对应哪一节、#id 是什么」"),
-            ("html 可抓全", "页内锚点 html 可抓取达到友商文档页水准（Mintlify On this page、NVIDIA page-toc 首包完整）"),
-            ("可证伪", "对探针问句须能引用具体 #id，与 problems-oanchor 失败判据互斥"),
+            ("静态可达", "静态抓取 CANN 算子库简介页后，右侧本篇目录仍含可跟链 #hash，能回答「概述对应哪一节、#id 是什么」"),
+            ("html 可抓全", "页内目录 html 可抓取达到友商文档页水准（Mintlify On this page、NVIDIA page-toc 首包完整）"),
+            ("可证伪", "对探针问句须能引用具体 #id，与实测失败判据互斥"),
         ],
     },
     "onavigation": {
+        "hide_sample_meta": True,
+        "intro_card": {
+            "plain": True,
+            "title": "场景判断",
+            "items": [
+                (
+                    "keep",
+                    "站点信息架构入口",
+                    "要做亲和",
+                    "顶栏「产品 / 文档 / 开发者 / 下载 / 支持」及下拉子项：须为真实 <code>a[href]</code> + 可见文案，子链首包输出，静态抓取可跟到官方落地页。<br>对应页面：<a href=\"https://www.hiascend.com/zh\" target=\"_blank\" rel=\"noopener\">社区首页</a>",
+                ),
+                (
+                    "strip",
+                    "纯操作控件",
+                    "不做亲和 · 入库剥离",
+                    "搜索、换肤、语言切换、登录 / 用户图标等只做当前页操作、不承载站点知识。入库管道宜标 <code>data-llm-exclude</code> 或直接剥离，别当可引用正文。",
+                ),
+            ],
+        },
+        "design_heading_suffix": " · 场景1",
+        "content_heading_suffix": " · 场景1",
+        "frontend_heading_suffix": " · 场景1",
+        "design_example_side_by_side": True,
         "design": [
             (
-                "顶栏入口写清去向",
-                "顶栏与下拉里的入口用明确名称（文档中心 / 开发资源下载），别用「更多 / 了解更多 ›」；每项底层为真实 a[href]，不靠悬停才出现",
+                "入口文案须自描述",
+                "顶栏与下拉用明确去向名（如「文档中心 / 开发资源下载」），勿用「资源 / 更多 / 了解更多 ›」等泛词",
+            ),
+            (
+                "入口按真实链接出",
+                "一级与下拉项在稿面按可点链接呈现；勿做成悬停才出、无目标的伪入口",
             ),
         ],
         "design_example": (
             "顶栏导航：模糊 → 明确入口",
-            "模糊入口 · 悬停才出现",
+            "泛词 · 去向不明",
             '<div style="display:flex;gap:16px;font-size:13px;">\n'
-            '  <a href="#" style="color:var(--accent);text-decoration:none;">产品</a>\n'
-            '  <a href="#" style="color:var(--accent);text-decoration:none;">资源</a>\n'
-            '  <a href="#" style="color:var(--accent);text-decoration:none;">了解更多 ›</a>\n'
-            '</div>\n'
-            '<p class="rf-muted">「资源 / 了解更多」指向不明，且下拉子链悬停才出现；静态 HTML 里 Agent 发现不到文档 / 下载入口。</p>',
-            "明确入口 + 真实链接",
+            '  <span style="color:var(--muted);">产品</span>\n'
+            '  <span style="color:var(--muted);">资源</span>\n'
+            '  <span style="color:var(--muted);">了解更多 ›</span>\n'
+            '</div>',
+            "明确入口 + 可跟链",
             '<div style="display:flex;flex-wrap:wrap;gap:16px;font-size:13px;">\n'
             '  <a href="#" style="color:var(--accent);text-decoration:none;">产品</a>\n'
             '  <a href="#" style="color:var(--accent);text-decoration:none;">文档中心</a>\n'
             '  <a href="#" style="color:var(--accent);text-decoration:none;">开发资源下载</a>\n'
             '  <a href="#" style="color:var(--accent);text-decoration:none;">支持与服务</a>\n'
-            '</div>\n'
-            '<p class="rf-caption"><strong>要点：</strong>一级入口用明确名称 + 真实 a[href]，下拉子链首包 SSR；不靠悬停也能发现文档 / 下载。</p>',
+            '</div>',
             True,
             True,
+            "「资源 / 了解更多」说不清去哪；若再做成悬停才出的伪入口，静态也跟不到文档 / 下载。",
+            "<strong>要点：</strong>入口名自描述；稿面按真实可点链接出。",
         ),
         "content": [
             (
@@ -1054,60 +1537,295 @@ PRINCIPLES_OVERRIDES: dict[str, dict[str, Any]] = {
         ],
     },
     "opagination": {
+        "hide_sample_meta": True,
+        "intro_card": {
+            "plain": True,
+            "title": "场景判断",
+            "items": [
+                (
+                    "keep",
+                    "公开列表底部分页",
+                    "要做亲和",
+                    "挂在表格、卡片列表、论坛帖列表等下方，用来切第 2、3… 页；深页承载公开可引用内容。<br>页码须为真实 <code>a[href]</code>（带稳定 query，如 <code>?page=2</code>），静态抓取可跟到深页；可辅以 <code>rel=next</code> / sitemap 覆盖。<br>对应页面：<a href=\"https://www.hiascend.com/forum/\" target=\"_blank\" rel=\"noopener\">昇腾论坛</a>",
+                ),
+                (
+                    "strip",
+                    "后台 / 登录后表格分页",
+                    "不做亲和 · 入库剥离",
+                    "控制台、个人中心等登录后表格的翻页，指向非公开操作数据。入库管道宜标 <code>data-llm-exclude</code> 或直接剥离，别当可引用文档。",
+                ),
+            ],
+        },
         "design_none": True,
-    },
-    "ostep": {
-        "design_none": True,
+        "content_heading_suffix": " · 场景1",
+        "frontend_heading_suffix": " · 场景1",
         "content": [
             (
-                "MD 平铺安装/认证流程",
-                "HTML 步骤残缺或配图内字不可抓时，Markdown 版须逐步写出标题 + 说明 + 链接（如开发者计划权益、安装认证步骤）；达标后以 SSR Steps 为准",
+                "sitemap / llms 收录深页",
+                "列表第 2、3… 页的稳定 URL 须进 sitemap 或 llms.txt，不单靠翻页控件才能发现深页内容",
             ),
             (
-                "流程页勿只绑 UI 态",
-                "认证/安装/加入计划等流程说明写在可引用文档页，勿只出现在步骤条交互态或 tooltip",
-            ),
-        ],
-        "frontend": [
-            (
-                "每步 title + content SSR",
-                "Steps / OStep 每一项输出可见标题与说明文本（对标 Mintlify quickstart：step-title + step-content、role=listitem）；禁只留数字圈或配图内字",
+                "关键条目可平行清单",
+                "论坛帖、案例卡等关键列表可在 Markdown / llms 平铺「标题 + 链接」；即使分页 HTML 未抓全，也能枚举条目",
             ),
             (
-                "全部步骤进首包 DOM",
-                "勿只渲染 current 步说明、其余步等切换才注入；禁 JS 须能列出完整流程清单",
-            ),
-            (
-                "状态文本/aria 标注",
-                "进行中 / 完成用 aria-current 或可见文本，勿只靠高亮色；Agent 须能答「当前进行到哪一步」",
-            ),
-            (
-                "配图步骤补 alt 或旁注",
-                "昇腾开发者计划四格权益实测：文字在配图内、源码无独立文本——须补逐步 alt/旁注或改 SSR 文本",
+                "过渡补位",
+                "页码尚无真实 URL 前，用 llms / sitemap 临时补全量条目或深页地址；分页达标后以页面为准，去掉重复维护",
             ),
         ],
         "content_example": (
-            "开发者计划：MD 逐步流程",
-            "权益说明只在配图",
-            "【HTML】加入开发者计划 h2 + 导语在 SSR\n【缺失】实物礼品/开发资源/身份荣誉/学习资源逐步说明无独立文本",
-            "MD 平铺步骤",
-            "## 加入开发者计划\n### 1. 实物礼品\n…\n### 2. 开发资源\n…\n### 3. 身份荣誉\n…\n### 4. 学习资源\n…",
+            "论坛列表：深页平行轨",
+            "只有第 1 页，深页未进清单",
+            "【HTML】论坛首页可见第 1 页帖列表 + 翻页控件\n"
+            "【缺失】sitemap / llms 无 ?page=2、?page=3 及深页帖链接",
+            "sitemap 收录深页 URL",
+            "# sitemap（节选）\n"
+            "https://www.hiascend.com/forum/\n"
+            "https://www.hiascend.com/forum/?page=2\n"
+            "https://www.hiascend.com/forum/?page=3",
             False,
             False,
         ),
+        "content_example_after_sections": [
+            (
+                "sitemap 收录深页 URL",
+                "# sitemap（节选）\n"
+                "https://www.hiascend.com/forum/\n"
+                "https://www.hiascend.com/forum/?page=2\n"
+                "https://www.hiascend.com/forum/?page=3",
+            ),
+            (
+                "llms 临时补条目 / 深页",
+                "# llms.txt（过渡）\n"
+                "- [论坛第 2 页](https://www.hiascend.com/forum/?page=2)\n"
+                "- [某帖标题](https://www.hiascend.com/forum/thread-…)\n"
+                "- [另一帖标题](https://www.hiascend.com/forum/thread-…)",
+                "分页控件输出真实 a[href] 且深页可跟后，llms 中重复深页项可移除。",
+            ),
+        ],
+        "content_example_before_prefix": "当前问题",
+        "frontend_lead": "公开列表底部分页的页码须在首包 HTML 输出为带稳定 query 的真实 <code>a[href]</code>；静态抓取（不执行 JS）仍能跟到第 2、3… 页（对标常见文档/博客列表分页）。",
+        "frontend": [
+            (
+                "页码为真实 a[href]",
+                "每一页码（及上一页 / 下一页）须为带地址的 a 标签；禁纯 button / onClick 翻页导致深页无官方 URL",
+            ),
+            (
+                "query 稳定可复用",
+                "深页地址宜用稳定参数（如 ?page=2），同一页多次打开结果一致，便于 sitemap 与引用",
+            ),
+            (
+                "可用 rel=next 辅助",
+                "可在 link[rel=next] / rel=prev 标明相邻页，辅助机器发现；不能替代页码上的真实 a[href]",
+            ),
+        ],
         "frontend_example": (
-            "Mintlify Steps vs 昇腾权益格",
-            "说明绑配图 / 缺 step-content",
-            '&lt;div class="benefit-card"&gt;&lt;img src="…gift.png"/&gt;&lt;!-- 浏览器可见「实物礼品」，源码无文本 --&gt;&lt;/div&gt;\n&lt;!-- 友商 Mintlify quickstart Steps 四步 step-title + step-content 在首包 --&gt;',
-            "SSR 全量 Steps",
-            '&lt;div role="listitem" class="step"&gt;\n  &lt;p data-component-part="step-title"&gt;Open the web editor&lt;/p&gt;\n  &lt;div data-component-part="step-content"&gt;Navigate to the web editor…&lt;/div&gt;\n&lt;/div&gt;\n&lt;div role="listitem" class="step"&gt;\n  &lt;p data-component-part="step-title"&gt;Edit a page&lt;/p&gt;\n  …\n&lt;/div&gt;',
+            "论坛列表底部分页",
+            "页码是 button，无深页 URL",
+            '&lt;div class="o-pagination"&gt;\n'
+            '  &lt;button&gt;1&lt;/button&gt;\n'
+            '  &lt;button&gt;2&lt;/button&gt;\n'
+            '  &lt;button&gt;3&lt;/button&gt;\n'
+            '  &lt;button&gt;下一页&lt;/button&gt;\n'
+            '&lt;/div&gt;\n'
+            '&lt;!-- 浏览器可翻页；静态 HTML 无 ?page=2 可跟链 --&gt;',
+            "页码 a[href] + 稳定 query",
+            '&lt;nav class="o-pagination" aria-label="分页"&gt;\n'
+            '  &lt;a href="/forum/?page=1" aria-current="page"&gt;1&lt;/a&gt;\n'
+            '  &lt;a href="/forum/?page=2"&gt;2&lt;/a&gt;\n'
+            '  &lt;a href="/forum/?page=3"&gt;3&lt;/a&gt;\n'
+            '  &lt;a href="/forum/?page=2" rel="next"&gt;下一页&lt;/a&gt;\n'
+            '&lt;/nav&gt;',
+            False,
+            False,
+            "翻页只靠 button/脚本，静态抓取给不出第 2、3 页官方 URL，深页内容不可达。",
+            "页码均为真实 a[href]；静态抓取即可回答「第 2、3 页官方 URL 是什么」。",
+        ),
+        "frontend_example_before_prefix": "当前问题",
+        "acceptance": [
+            ("静态可达", "静态抓取论坛列表页后，分页仍含 ?page=2、?page=3 等可跟链 href，能回答「第 2、3 页官方 URL」"),
+            ("深页可引用", "深页 URL 稳定可复用，并可被 sitemap / llms 收录"),
+            ("可证伪", "对探针问句须能引用具体 href，与实测失败判据互斥"),
+        ],
+    },
+    "ostep": {
+        "hide_sample_meta": True,
+        "intro_card": {
+            "plain": True,
+            "title": "场景判断",
+            "items": [
+                (
+                    "keep",
+                    "公开流程 / 逐步说明块",
+                    "要做亲和",
+                    "安装·认证·Quickstart 步骤条，或「加入开发者计划」等逐步权益格：每步标题与说明须为可见文本进首包；流程型还须标「进行中 / 已完成」。配图内字须旁注或改为文本交付。<br>对应页面：<a href=\"https://www.hiascend.com/developer\" target=\"_blank\" rel=\"noopener\">开发者入口</a>（对标 Mintlify Quickstart Steps）",
+                ),
+                (
+                    "strip",
+                    "后台 / 登录后向导",
+                    "不做亲和 · 入库剥离",
+                    "控制台表单向导、多步提交进度条等，指向非公开操作流程。入库管道宜标 <code>data-llm-exclude</code> 或直接剥离，别当可引用文档。",
+                ),
+            ],
+        },
+        "design_heading_suffix": " · 场景1",
+        "content_heading_suffix": " · 场景1",
+        "frontend_heading_suffix": " · 场景1",
+        "design_example_side_by_side": True,
+        "design": [
+            (
+                "每步标题 + 说明出可见文案",
+                "稿面为每步预留标题与短说明文本位，勿把「实物礼品 / 开发资源」等字只画进配图里",
+            ),
+            (
+                "状态勿只靠颜色",
+                "「进行中 / 已完成」用文字或可辨标记标出，不只靠高亮色或数字圈",
+            ),
+            (
+                "全步骤文案一并交付",
+                "各步标题与说明都要进设计交付物，勿只标注当前步、其余步留给开发自拟",
+            ),
+        ],
+        "design_example": (
+            "流程步骤：仅数字圈 → 可见文案",
+            "只有数字圈 / 高亮色",
+            '<div style="display:flex;flex-direction:column;gap:10px;font-size:12.5px;">\n'
+            '  <div style="display:flex;gap:10px;align-items:center;">\n'
+            '    <span style="flex:0 0 22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">1</span>\n'
+            '    <span style="color:var(--muted);">（无标题 / 说明）</span>\n'
+            '  </div>\n'
+            '  <div style="display:flex;gap:10px;align-items:center;">\n'
+            '    <span style="flex:0 0 22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;opacity:0.35;">2</span>\n'
+            '    <span style="color:var(--muted);">（仅颜色区分，无「进行中」文案）</span>\n'
+            '  </div>\n'
+            '  <div style="display:flex;gap:10px;align-items:center;">\n'
+            '    <span style="flex:0 0 22px;height:22px;border-radius:50%;border:1px solid var(--line);color:var(--muted);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">3</span>\n'
+            '    <span style="color:var(--muted);">（无标题 / 说明）</span>\n'
+            '  </div>\n'
+            '</div>',
+            "每步可见标题 + 短说明",
+            '<div style="display:flex;flex-direction:column;gap:10px;font-size:12.5px;">\n'
+            '  <div style="display:flex;gap:10px;align-items:flex-start;">\n'
+            '    <span style="flex:0 0 22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">1</span>\n'
+            '    <div><p style="margin:0;font-weight:600;color:var(--text);">实物礼品</p><p class="rf-muted" style="margin:2px 0 0;">完成认证可领取开发套件…</p></div>\n'
+            '  </div>\n'
+            '  <div style="display:flex;gap:10px;align-items:flex-start;">\n'
+            '    <span style="flex:0 0 22px;height:22px;border-radius:50%;border:1px solid var(--line);color:var(--muted);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">2</span>\n'
+            '    <div><p style="margin:0;font-weight:600;color:var(--text);">开发资源 <span style="font-size:11px;color:var(--accent);font-weight:500;">进行中</span></p><p class="rf-muted" style="margin:2px 0 0;">开放文档、样例与工具链…</p></div>\n'
+            '  </div>\n'
+            '  <div style="display:flex;gap:10px;align-items:flex-start;">\n'
+            '    <span style="flex:0 0 22px;height:22px;border-radius:50%;border:1px solid var(--line);color:var(--muted);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">3</span>\n'
+            '    <div><p style="margin:0;font-weight:600;color:var(--text);">身份荣誉</p><p class="rf-muted" style="margin:2px 0 0;">开发者认证与社区标识…</p></div>\n'
+            '  </div>\n'
+            '</div>',
+            True,
+            True,
+            "稿面只有数字圈和高亮色，没有步骤标题与说明文本位，也无法用文字标状态。",
+            "<strong>要点：</strong>每步标题 + 短说明为可见文本；状态用文字标出；各步文案一并交付。",
+        ),
+        "content": [
+            (
+                "统一命名",
+                "步骤标题与 MD / 正文使用同一套文案（如「实物礼品 / 开发资源」），避免 UI 与文档各写各的",
+            ),
+            (
+                "MD 平铺步骤",
+                "Markdown 版逐步写出标题 + 短说明（可附链接），作为页面步骤的平行可达入口",
+            ),
+            (
+                "过渡补位",
+                "页面步骤 HTML 未达标前，用 llms.txt 临时列出逐步标题与说明；达标后以页面为准，去掉重复维护",
+            ),
+        ],
+        "content_example": (
+            "开发者计划：逐步说明平行轨",
+            "只有导语，无逐步文本清单",
+            "【HTML】加入开发者计划 h2 + 导语在首包\n"
+            "【缺失】MD / llms 均无「实物礼品 / 开发资源 / …」逐步说明",
+            "MD 平铺步骤",
+            "## 加入开发者计划\n"
+            "### 1. 实物礼品\n"
+            "完成认证可领取开发套件…\n\n"
+            "### 2. 开发资源\n"
+            "开放文档、样例与工具链…\n\n"
+            "### 3. 身份荣誉\n"
+            "…\n\n"
+            "### 4. 学习资源\n"
+            "…",
             False,
             False,
         ),
+        "content_example_after_sections": [
+            (
+                "MD 平铺步骤",
+                "## 加入开发者计划\n"
+                "### 1. 实物礼品\n"
+                "完成认证可领取开发套件…\n\n"
+                "### 2. 开发资源\n"
+                "开放文档、样例与工具链…\n\n"
+                "### 3. 身份荣誉\n"
+                "…\n\n"
+                "### 4. 学习资源\n"
+                "…",
+            ),
+            (
+                "llms 临时补逐步说明",
+                "# llms.txt（过渡）\n"
+                "## 加入开发者计划\n"
+                "1. 实物礼品：完成认证可领取开发套件…\n"
+                "2. 开发资源：开放文档、样例与工具链…\n"
+                "3. 身份荣誉：…\n"
+                "4. 学习资源：…",
+                "页面步骤 SSR 达标后以 HTML 为准，llms 中重复逐步项可移除。",
+            ),
+        ],
+        "content_example_before_prefix": "当前问题",
+        "frontend_lead": "公开流程 / 逐步说明块的每步标题与说明须写入首包 HTML；静态抓取（不执行 JS）仍能列全步骤，并读出当前步状态（对标：Mintlify Quickstart Steps）。",
+        "frontend": [
+            (
+                "全量步骤进首包",
+                "全部步骤标题 + 说明一次性输出；勿只渲染当前步、其余步等切换才注入（开发者入口实测：可见权益名，源码常缺逐步文本）",
+            ),
+            (
+                "标题 + 说明为可见文本",
+                "每步须有可读的标题与说明节点；禁只留数字圈，也禁把说明只放在配图里",
+            ),
+            (
+                "状态可机读",
+                "「进行中 / 已完成」用可见文本或 aria-current 标注，勿只靠高亮色；须能回答「当前进行到哪一步」",
+            ),
+        ],
+        "frontend_example": (
+            "开发者计划逐步说明",
+            "只有数字圈 / 配图，无 step 文本",
+            '&lt;div class="o-step"&gt;\n'
+            '  &lt;span class="step-index"&gt;1&lt;/span&gt;\n'
+            '  &lt;span class="step-index"&gt;2&lt;/span&gt;\n'
+            '  &lt;img src="…gift.png"/&gt;&lt;!-- 浏览器可见「实物礼品」，源码无标题说明 --&gt;\n'
+            '&lt;/div&gt;',
+            "SSR 全量步骤文本",
+            '&lt;ol class="o-step"&gt;\n'
+            '  &lt;li&gt;\n'
+            '    &lt;p class="step-title"&gt;实物礼品&lt;/p&gt;\n'
+            '    &lt;p class="step-content"&gt;完成认证可领取开发套件…&lt;/p&gt;\n'
+            '  &lt;/li&gt;\n'
+            '  &lt;li aria-current="step"&gt;\n'
+            '    &lt;p class="step-title"&gt;开发资源&lt;/p&gt;\n'
+            '    &lt;p class="step-content"&gt;开放文档、样例与工具链…&lt;/p&gt;\n'
+            '    &lt;span&gt;进行中&lt;/span&gt;\n'
+            '  &lt;/li&gt;\n'
+            '  &lt;li&gt;…身份荣誉…&lt;/li&gt;\n'
+            '&lt;/ol&gt;',
+            False,
+            False,
+            "首包只有圈号或配图，静态抓取列不出逐步标题与说明，也答不出当前步。",
+            "每步标题 + 说明均为文本；当前步有状态标注。静态抓取即可逐步复述。",
+        ),
+        "frontend_example_before_prefix": "当前问题",
         "acceptance": [
-            ("静态可达", "禁 JS 抓取后仍能逐步列出流程标题与说明，能回答 problems-ostep 探针问句"),
-            ("html 可抓全", "步骤 html 达到友商水准（Mintlify quickstart Web editor Steps：四步 step-title + step-content 在首包）"),
-            ("可证伪", "对「每一步标题和说明原文是什么」须能引用具体文本，与昇腾权益配图失败判据互斥"),
+            ("静态可达", "静态抓取开发者入口后，仍能逐步列出标题与说明，并回答「当前进行到哪一步」"),
+            ("html 可抓全", "步骤 html 达到友商水准（Mintlify Quickstart Steps：各步标题 + 说明在首包）"),
+            ("可证伪", "对探针问句须能引用具体文本，与实测失败判据互斥"),
         ],
     },
     "obutton": {
@@ -2112,13 +2830,13 @@ def no_aff_skip_example(comp: str) -> tuple[str, str, str, str]:
 
 
 def principles_meta_line(d: dict[str, Any], slug: str) -> str:
-    node = esc(d["node"])
-    meta = f"{node} · 社区 UI" if node != "社区 UI" else node
+    if d.get("hide_sample_meta"):
+        return ""
     url = d.get("sample_url")
     label = d.get("sample_label")
-    if url and label:
-        meta += f' · 以 <a href="{url}" target="_blank" rel="noopener">{esc(label)}</a> 为例'
-    meta += f' · 对应 <a href="problems-{slug}.html">问题实测 · {esc(d["symptom"])}</a>。'
+    if not (url and label):
+        return ""
+    meta = f'对应页面：<a href="{url}" target="_blank" rel="noopener">{esc(label)}</a>'
     return f'        <span class="page-desc-line">{meta}</span>'
 
 
@@ -2130,6 +2848,19 @@ def render_intro_card(d: dict[str, Any]) -> str:
     card = d.get("intro_card")
     if not card:
         return ""
+    if card.get("plain"):
+        rows = "\n".join(
+            f"""        <div class="scene-judge-item">
+          <p class="scene-judge-head"><strong>场景{i}·{esc(label)}</strong><span class="rsc-verdict rsc-verdict--{esc(kind)}">{esc(verdict)}</span></p>
+          <p class="scene-judge-body">{body}</p>
+        </div>"""
+            for i, (kind, label, verdict, body) in enumerate(card["items"], 1)
+        )
+        return f"""    <section class="section" id="scene-judge">
+      <h2>{esc(card["title"])}</h2>
+{rows}
+    </section>
+"""
     items = "\n".join(
         f"""        <div class="role-split-item role-split-item--{esc(kind)}">
           <h4><span class="rsc-name">{esc(label)}</span><span class="rsc-verdict rsc-verdict--{esc(kind)}">{esc(verdict)}</span></h4>
@@ -2147,21 +2878,22 @@ def render_intro_card(d: dict[str, Any]) -> str:
 
 
 def render_design_section(d: dict[str, Any], design_cmp: str) -> str:
+    h2 = f"设计UI调整{esc(d.get('design_heading_suffix', ''))}"
     if d.get("design_none"):
-        return """    <section class="section" id="design-ui">
-      <h2>设计UI调整</h2>
+        return f"""    <section class="section" id="design-ui">
+      <h2>{h2}</h2>
       <p class="principle-none">无</p>
     </section>"""
     if d.get("design_no_example"):
         return f"""    <section class="section" id="design-ui">
-      <h2>设计UI调整</h2>
+      <h2>{h2}</h2>
       <h3 id="design-suggestions">调整建议</h3>
       <ul class="principle-suggestions">
 {li_items(d["design"])}
       </ul>
     </section>"""
     return f"""    <section class="section" id="design-ui">
-      <h2>设计UI调整</h2>
+      <h2>{h2}</h2>
       <h3 id="design-suggestions">调整建议</h3>
       <ul class="principle-suggestions">
 {li_items(d["design"])}
@@ -2172,16 +2904,17 @@ def render_design_section(d: dict[str, Any], design_cmp: str) -> str:
 
 
 def render_content_section(d: dict[str, Any], content_cmp: str) -> str:
+    h2 = f"文档内容调整{esc(d.get('content_heading_suffix', ''))}"
     if d.get("content_no_example"):
         return f"""    <section class="section" id="content-adjust">
-      <h2>文档内容调整</h2>
+      <h2>{h2}</h2>
       <h3 id="content-suggestions">调整建议</h3>
       <ul class="principle-suggestions">
 {li_items(d["content"])}
       </ul>
     </section>"""
     return f"""    <section class="section" id="content-adjust">
-      <h2>文档内容调整</h2>
+      <h2>{h2}</h2>
       <h3 id="content-suggestions">调整建议</h3>
       <ul class="principle-suggestions">
 {li_items(d["content"])}
@@ -2191,7 +2924,7 @@ def render_content_section(d: dict[str, Any], content_cmp: str) -> str:
     </section>"""
 
 
-def render_principles_body(data: dict[str, Any], slug: str) -> str:
+def render_principles_body(data: dict[str, Any], slug: str, name: str) -> str:
     d = data
     ce = d["content_example"]
     fe = d["frontend_example"]
@@ -2199,7 +2932,13 @@ def render_principles_body(data: dict[str, Any], slug: str) -> str:
     design_cmp = ""
     de = d.get("design_example")
     if de and not d.get("design_none") and not d.get("design_no_example"):
-        design_cmp = compare_block(de[0], de[1], de[2], de[3], de[4], before_is_frame=de[5], after_is_frame=de[6])
+        design_cmp = compare_block(
+            de[0], de[1], de[2], de[3], de[4],
+            before_is_frame=de[5], after_is_frame=de[6],
+            before_caption=(de[7] if len(de) > 7 else None),
+            after_caption=(de[8] if len(de) > 8 else None),
+            side_by_side=bool(d.get("design_example_side_by_side")),
+        )
         extra_de = d.get("design_examples_extra")
         if extra_de:
             design_cmp += "\n" + compare_block(
@@ -2208,16 +2947,44 @@ def render_principles_body(data: dict[str, Any], slug: str) -> str:
             )
     content_cmp = ""
     if not d.get("content_no_example"):
-        content_cmp = compare_block(ce[0], ce[1], ce[2], ce[3], ce[4], before_is_frame=ce[5], after_is_frame=ce[6])
-    frontend_cmp = compare_block(fe[0], fe[1], fe[2], fe[3], fe[4], before_is_frame=fe[5], after_is_frame=fe[6])
+        content_cmp = compare_block(
+            ce[0], ce[1], ce[2], ce[3], ce[4],
+            before_is_frame=ce[5], after_is_frame=ce[6],
+            before_prefix=d.get("content_example_before_prefix", "错误示范"),
+            after_prefix=d.get("content_example_after_prefix", "推荐做法"),
+            before_mark=bool(d.get("content_example_before_mark", True)),
+            after_mark=bool(d.get("content_example_after_mark", True)),
+            after_sections=d.get("content_example_after_sections"),
+        )
+        extra_ce = d.get("content_examples_extra")
+        if extra_ce:
+            content_cmp += "\n" + compare_block(
+                extra_ce[0], extra_ce[1], extra_ce[2], extra_ce[3], extra_ce[4],
+                before_is_frame=extra_ce[5], after_is_frame=extra_ce[6],
+                before_prefix=d.get("content_example_before_prefix", "错误示范"),
+                after_prefix=d.get("content_example_after_prefix", "推荐做法"),
+                before_mark=bool(d.get("content_example_before_mark", True)),
+                after_mark=bool(d.get("content_example_after_mark", True)),
+                example_num=2,
+            )
+    frontend_cmp = compare_block(
+        fe[0], fe[1], fe[2], fe[3], fe[4],
+        before_is_frame=fe[5], after_is_frame=fe[6],
+        before_caption=(fe[7] if len(fe) > 7 else None),
+        after_caption=(fe[8] if len(fe) > 8 else None),
+        before_prefix=d.get("frontend_example_before_prefix", "错误示范"),
+        after_prefix=d.get("frontend_example_after_prefix", "推荐做法"),
+        before_mark=bool(d.get("frontend_example_before_mark", True)),
+        after_mark=bool(d.get("frontend_example_after_mark", True)),
+    )
 
-    h1 = "" if d.get("hide_page_h1") else f"      <h1>{esc(d['title'])}</h1>\n"
-    return f"""    <div class="page-header">
-{h1}      <p class="page-desc page-desc--split">
-        <span class="page-desc-line">{d["one_liner"]}</span>
-{principles_meta_line(d, slug)}
-      </p>
-    </div>
+    fe_lead = d.get("frontend_lead")
+    frontend_lead_html = (
+        f'      <p class="principle-lead">{fe_lead}</p>\n      <p class="principle-subhead">具体要求：</p>\n'
+        if fe_lead else ""
+    )
+
+    return f"""{render_page_header(d["title"], d["one_liner"], slug, name, d)}
 
 {render_intro_card(d)}
 {principles_framework_block()}
@@ -2227,9 +2994,9 @@ def render_principles_body(data: dict[str, Any], slug: str) -> str:
 {render_content_section(d, content_cmp)}
 
     <section class="section" id="frontend-adjust">
-      <h2>前端调整</h2>
+      <h2>前端调整{esc(d.get('frontend_heading_suffix', ''))}</h2>
       <h3 id="frontend-suggestions">调整建议</h3>
-      <ul class="principle-suggestions">
+{frontend_lead_html}      <ul class="principle-suggestions">
 {li_items(d["frontend"])}
       </ul>
       <h3 id="frontend-example">调整示例</h3>
@@ -2244,13 +3011,7 @@ def render_no_aff_body(data: dict[str, Any], slug: str, name: str) -> str:
 
     skip_items = [("无独立改动，管道可跳过", "控件态/placeholder/角标等非知识正文，设计交付无需额外亲和标注")]
 
-    h1 = "" if data.get("hide_page_h1") else f"      <h1>{esc(data['title'])}</h1>\n"
-    return f"""    <div class="page-header">
-{h1}      <p class="page-desc page-desc--split">
-        <span class="page-desc-line">{data["one_liner"]}</span>
-{principles_meta_line(data, slug)}
-      </p>
-    </div>
+    return f"""{render_page_header(data["title"], data["one_liner"], slug, name, data)}
 
 {principles_framework_block()}
 
@@ -2286,7 +3047,7 @@ def render_no_aff_body(data: dict[str, Any], slug: str, name: str) -> str:
 
 
 def render_page(slug: str, name: str, data: dict[str, Any]) -> str:
-    body = render_no_aff_body(data, slug, name) if data.get("no_aff") else render_principles_body(data, slug)
+    body = render_no_aff_body(data, slug, name) if data.get("no_aff") else render_principles_body(data, slug, name)
     sidebar = render_sidebar(slug)
     phref = principles_href(slug)
     return f"""<!DOCTYPE html>
@@ -2327,6 +3088,7 @@ def render_page(slug: str, name: str, data: dict[str, Any]) -> str:
   </aside>
 </div>
 {TOC_SCRIPT}
+{SHOT_MODAL_HTML}
 </body>
 </html>
 """

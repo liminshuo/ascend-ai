@@ -74,6 +74,7 @@
 
 
 
+
   :root {
     --bg: #F5F5F5; --panel: #ffffff; --panel2: #FAFAFA; --line: #e2e8f0;
     --text: #191919; --muted: #595959; --accent: #1476FF;
@@ -517,12 +518,71 @@
 
 
 
-  .page-header > h1 {
-    margin: 0 0 16px;
+
+  .page-header-top {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; margin-bottom: 16px;
+  }
+  .page-header-top h1 {
+    margin: 0;
     font-size: 32px; font-weight: 800; line-height: 48px;
     letter-spacing: -0.02em; color: var(--text);
+    flex: 1; min-width: 0;
   }
   .page-header .page-desc { margin-bottom: 0; }
+  button.comp-link {
+    appearance: none; border: 0; background: transparent;
+    padding: 0; margin: 0; flex-shrink: 0;
+    font: inherit; font-size: 14px; font-weight: 600;
+    color: var(--accent); cursor: pointer; text-align: right;
+    white-space: nowrap;
+  }
+  button.comp-link:hover { text-decoration: underline; }
+  #shot-modal.modal {
+    display: none; position: fixed; inset: 0; z-index: 100;
+    background: rgba(25, 25, 25, 0.45);
+    align-items: center; justify-content: center; padding: 24px;
+  }
+  #shot-modal.modal.open { display: flex; }
+  #shot-modal .modal-panel {
+    width: min(920px, 100%); max-height: min(88vh, 900px);
+    background: var(--panel); border-radius: 16px;
+    border: 1px solid var(--line);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.18);
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  #shot-modal .modal-head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; padding: 16px 20px; border-bottom: 1px solid var(--line);
+    flex-shrink: 0;
+  }
+  #shot-modal .shot-modal-title {
+    margin: 0; font-size: 18px; font-weight: 650; line-height: 28px;
+    color: var(--text);
+  }
+  #shot-modal .modal-close {
+    appearance: none; border: 1px solid var(--line); background: var(--panel2);
+    color: var(--text); border-radius: 8px; padding: 6px 12px;
+    font-size: 13px; font-weight: 500; cursor: pointer;
+  }
+  #shot-modal .modal-close:hover { color: var(--accent); border-color: var(--accent); }
+  #shot-modal .modal-body {
+    padding: 20px; overflow: auto; background: var(--panel2);
+  }
+  #shot-modal .modal-shots {
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  #shot-modal .modal-shot {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 12px; padding: 16px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  #shot-modal .modal-shot img {
+    max-width: 100%; height: auto; display: block;
+  }
+  #shot-modal .modal-caption {
+    margin: 0 0 8px; font-size: 13px; color: var(--muted); font-weight: 500;
+  }
 
   .role-split-card {
     margin: 0 0 36px;
@@ -549,7 +609,7 @@
     font-size: 13.5px; font-weight: 700; line-height: 20px;
     color: var(--text);
   }
-  .role-split-item h4 .rsc-verdict {
+  .rsc-verdict {
     font-size: 11.5px; font-weight: 700; line-height: 18px;
     padding: 1px 8px; border-radius: 999px;
     border: 1px solid transparent;
@@ -579,11 +639,30 @@
   }
   .role-split-item--strip h4 { color: var(--muted); }
 
+  .scene-judge-item {
+    margin: 0 0 16px;
+    font-size: var(--body-size); line-height: var(--body-lh);
+    color: var(--text);
+  }
+  .scene-judge-item:last-child { margin-bottom: 0; }
+  .scene-judge-head {
+    margin: 0 0 4px;
+    display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
+  }
+  .scene-judge-head strong { font-weight: 700; color: var(--text); }
+  .scene-judge-body { margin: 0; color: var(--text); }
+
   .principle-suggestions {
     margin: 0; padding-left: 20px;
     color: var(--muted); font-size: 14px; line-height: 22px;
   }
   .principle-suggestions li { margin-bottom: 8px; }
+  .principle-lead {
+    margin: 0 0 12px; font-size: 14px; line-height: 22px; color: var(--text);
+  }
+  .principle-subhead {
+    margin: 0 0 8px; font-size: 14px; font-weight: 700; line-height: 22px; color: var(--text);
+  }
   .principle-suggestions li:last-child { margin-bottom: 0; }
   .principle-suggestions li strong { color: var(--text); font-weight: 600; }
 
@@ -612,6 +691,14 @@
     margin: 0;
   }
   .compare-grid--stack { grid-template-columns: 1fr; gap: 16px; }
+  .compare-grid--cols { grid-template-columns: 1fr 1fr; gap: 16px; align-items: stretch; }
+  .compare-grid--cols .compare-side { display: flex; flex-direction: column; gap: 8px; min-width: 0; height: 100%; }
+  .compare-grid--cols .compare-col { flex: 1; display: flex; flex-direction: column; }
+  .compare-grid--cols .compare-col .render-frame,
+  .compare-grid--cols .compare-col .arch-diagram { flex: 1; }
+  @media (max-width: 720px) {
+    .compare-grid--cols { grid-template-columns: 1fr; }
+  }
   .compare-grid--stack .compare-label--human {
     margin-top: 8px;
     padding-top: 20px;
@@ -621,6 +708,9 @@
     margin-top: 8px;
     padding-top: 0;
     border-top: none;
+  }
+  .compare-grid--stack .compare-col.human + .compare-label.compare-label--human {
+    margin-top: 4px;
   }
   .section .principle-example .compare-grid h4.compare-label {
     margin: 0;
@@ -634,6 +724,9 @@
   }
   .compare-label--machine { color: var(--danger); }
   .compare-label--human { color: var(--success); }
+  .cmp-mark { font-weight: 800; }
+  .cmp-mark--x { color: var(--danger); }
+  .cmp-mark--v { color: var(--success); }
   .compare-col {
     border-radius: 8px;
     padding: 18px 20px;
@@ -673,6 +766,13 @@
     color: var(--muted);
   }
   .render-frame .rf-caption strong { color: var(--text); font-weight: 600; }
+  .compare-col .rf-frame-caption {
+    margin: 16px 0 0;
+    font-size: 12.5px;
+    line-height: 19px;
+    color: var(--muted);
+  }
+  .compare-col .rf-frame-caption strong { color: var(--text); font-weight: 600; }
   .render-frame .rf-sidebar-title {
     margin: 0 0 8px;
     font-size: 12px;
@@ -810,7 +910,7 @@
       <div class="comp-group-label">导航类</div>
       <ul>
         <li><a href="principles-omenu.html"><span class="comp-nav-label">菜单</span><span class="aff aff-need">需要</span><span class="comp-dot" title="设计侧有改动" aria-hidden="true"></span></a></li>
-        <li><a href="principles-otab.html"><span class="comp-nav-label">标签页</span><span class="aff aff-need">需要</span></a></li>
+        <li><a href="principles-otab.html"><span class="comp-nav-label">标签页</span><span class="aff aff-maybe">视情况</span></a></li>
         <li><a href="principles-obreadcrumb.html"><span class="comp-nav-label">面包屑</span><span class="aff aff-need">需要</span><span class="comp-dot" title="设计侧有改动" aria-hidden="true"></span></a></li>
         <li><a href="principles-oanchor.html" class="active"><span class="comp-nav-label">锚点</span><span class="aff aff-need">需要</span><span class="comp-dot" title="设计侧有改动" aria-hidden="true"></span></a></li>
         <li><a href="principles-opagination.html"><span class="comp-nav-label">分页</span><span class="aff aff-need">需要</span></a></li>
@@ -853,10 +953,13 @@
 
   <main class="main-content">
     <div class="page-header">
-      <h1>锚点目录与正文 id 对齐</h1>
+      <div class="page-header-top">
+        <h1>锚点目录与正文 id 对齐</h1>
+        <button type="button" class="comp-link" data-name="OAnchor 锚点" data-shots="o-anchor.png">OAnchor 锚点</button>
+      </div>
       <p class="page-desc page-desc--split">
-        <span class="page-desc-line">长文页右侧章节目录须把<strong>每一级章节写成 #hash 可点链接</strong>（a[href]），与正文 heading/section id 对齐；首包 HTML 就要输出完整 On this page 式目录，勿仅客户端生成。</span>
-        <span class="page-desc-line">找的到 · 社区 UI · 以 <a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/910beta3/API/aolapi/operatorlist_00001.html" target="_blank" rel="noopener">CANN 算子库简介</a> 为例 · 对应 <a href="problems-oanchor.html">问题实测 · 锚点目录不可达</a>。</span>
+        <span class="page-desc-line">长文页右侧「本篇目录」须把<strong>每一级章节写成 #hash 可点链接</strong>（a[href]），与正文 heading/section id 对齐；首包 HTML 就要输出完整目录。左侧侧栏归菜单、页底 Related 归链接，勿与本组件混测。</span>
+        <span class="page-desc-line">对应页面：<a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/910beta3/API/aolapi/operatorlist_00001.html" target="_blank" rel="noopener">CANN 算子库简介</a></span>
       </p>
     </div>
 
@@ -867,31 +970,60 @@
       <h2>设计UI调整</h2>
       <h3 id="design-suggestions">调整建议</h3>
       <ul class="principle-suggestions">
-        <li><strong>锚点文案 = 章节标题</strong>：右侧「本篇目录 / On this page」每项用与正文标题一致的章节名（安装前提 / 安装步骤），别用「概述 / 其他」泛词；#hash 指向对应 section id。</li>
+        <li><strong>目录文案勿泛指</strong>：右侧「本篇目录」每项须用与正文标题一致的章节名（如「安装前提」），勿用「步骤 / 其他」等对不上的简称或泛词。</li>
+        <li><strong>目录与正文一一对应</strong>：有目录项就有对应章节；目录文案、正文章节标题须同一套，避免目录有「安装步骤」而正文写「步骤说明」。</li>
+        <li><strong>标题旁可标 #</strong>：章节标题旁的 # 表示节级可链（permalink），便于复制带 hash 的链接；亲和硬要求仍是标题有稳定 id + 目录可跟链，符号本身非必须。</li>
+        <li><strong>每项为真实链接</strong>：目录每项按真实链接出、指向对应节（实现为 a[href=#id]）；勿做成纯点击滚动、无目标的伪链。</li>
       </ul>
       <h3 id="design-example">调整示例</h3>
       <div class="principle-example">
-        <h4>1. 页内目录：泛词 → 对齐章节标题</h4>
-        <div class="compare-grid compare-grid--stack compare-grid--no-mid-divider">
-          <h4 class="compare-label compare-label--machine">Before · 泛词 · 与正文对不上</h4>
+        <h4>示例1. 页内目录：泛词 → 对齐章节标题</h4>
+        <div class="compare-grid compare-grid--cols">
+          <div class="compare-side">
+            <h4 class="compare-label compare-label--machine"><span class="cmp-mark cmp-mark--x">✗</span> 错误示范 · 泛词 · 与正文对不上</h4>
           <div class="compare-col machine">
-            <div class="render-frame"><p class="rf-sidebar-title">本篇目录</p>
-<ul class="rf-nav-links">
-  <li><a href="#">概述</a></li>
-  <li><a href="#">步骤</a></li>
-  <li><a href="#">其他</a></li>
-</ul>
-<p class="rf-muted">目录项是泛词、又与正文标题对不上；Agent 无法把「步骤」映射到具体某节或 #id。</p></div>
+            <div class="render-frame"><div style="display:flex;gap:16px;align-items:flex-start;font-size:12.5px;">
+  <div style="flex:1;min-width:0;">
+    <p style="margin:0 0 10px;font-size:13px;font-weight:600;color:var(--text);">安装指南</p>
+    <p style="margin:0 0 4px;font-weight:600;color:var(--text);">安装前提</p>
+    <p class="rf-muted" style="margin:0 0 12px;">准备驱动与依赖环境…</p>
+    <p style="margin:0 0 4px;font-weight:600;color:var(--text);">安装步骤</p>
+    <p class="rf-muted" style="margin:0;">按顺序执行安装命令…</p>
+  </div>
+  <div style="flex:0 0 112px;border-left:1px solid var(--line);padding-left:12px;">
+    <p class="rf-sidebar-title">本篇目录</p>
+    <ul class="rf-nav-links">
+      <li><a href="#">简介</a></li>
+      <li><a href="#">步骤</a></li>
+      <li><a href="#">其他</a></li>
+    </ul>
+  </div>
+</div></div>
+            <p class="rf-frame-caption">正文标题是「安装前提 / 安装步骤」，右侧目录却是「简介 / 步骤 / 其他」，对不上也点不到对应节。</p>
           </div>
-          <h4 class="compare-label compare-label--human">After · 对齐章节标题 + #id</h4>
+          </div>
+          <div class="compare-side">
+            <h4 class="compare-label compare-label--human"><span class="cmp-mark cmp-mark--v">✓</span> 推荐做法 · 对齐章节标题 + #id</h4>
           <div class="compare-col human">
-            <div class="render-frame"><p class="rf-sidebar-title">本篇目录</p>
-<ul class="rf-nav-links">
-  <li><a href="#install-prereq">安装前提</a></li>
-  <li><a href="#install-steps">安装步骤</a></li>
-  <li><a href="#faq">常见问题</a></li>
-</ul>
-<p class="rf-caption"><strong>要点：</strong>每项锚文本 = 正文章节标题，#hash 指向对应 section id，可精确定位到节。</p></div>
+            <div class="render-frame"><div style="display:flex;gap:16px;align-items:flex-start;font-size:12.5px;">
+  <div style="flex:1;min-width:0;">
+    <p style="margin:0 0 10px;font-size:13px;font-weight:600;color:var(--text);">安装指南</p>
+    <p id="install-prereq" style="margin:0 0 4px;font-weight:600;color:var(--text);">安装前提 <span style="color:var(--muted);font-weight:400;font-size:11px;">#</span></p>
+    <p class="rf-muted" style="margin:0 0 12px;">准备驱动与依赖环境…</p>
+    <p id="install-steps" style="margin:0 0 4px;font-weight:600;color:var(--text);">安装步骤 <span style="color:var(--muted);font-weight:400;font-size:11px;">#</span></p>
+    <p class="rf-muted" style="margin:0;">按顺序执行安装命令…</p>
+  </div>
+  <div style="flex:0 0 112px;border-left:1px solid var(--line);padding-left:12px;">
+    <p class="rf-sidebar-title">本篇目录</p>
+    <ul class="rf-nav-links">
+      <li><a href="#install-prereq">安装前提</a></li>
+      <li><a href="#install-steps">安装步骤</a></li>
+      <li><a href="#faq">常见问题</a></li>
+    </ul>
+  </div>
+</div></div>
+            <p class="rf-frame-caption"><strong>要点：</strong>目录文案 = 章节标题、一一对应；目录项为指向该节的真实链接；标题旁 # 表示节级可链（非必须）。</p>
+          </div>
           </div>
         </div>
       </div>
@@ -901,19 +1033,20 @@
       <h2>文档内容调整</h2>
       <h3 id="content-suggestions">调整建议</h3>
       <ul class="principle-suggestions">
-        <li><strong>MD 按 heading 平铺章节目录</strong>：Markdown 版在 h1 上方用嵌套列表写出「概述 / 使用说明 / 使用向导」及各级 #锚点，与 HTML 右侧 document-anc、正文 section id 一致。</li>
-        <li><strong>llms 临时补章节目录</strong>：锚点 nav html 未达标前，llms 可临时列出章节标题与 #id；达标后以 SSR 右侧 anchor nav 为准，避免双轨不一致。</li>
+        <li><strong>统一命名</strong>：页内目录项、正文章节标题与 MD 章节名使用同一套文案；#锚点指向的 id 须与该标题对应，避免「步骤」对不上「安装步骤」。</li>
+        <li><strong>MD 页头写目录</strong>：Markdown 版在 h1 上方用列表写出本篇章节（标题 + #锚点），作为右侧目录的平行可达入口。</li>
+        <li><strong>过渡补位</strong>：页内章节目录未达标前，用 llms.txt 临时列出章节标题与 #id；达标后以页面为准，去掉重复维护。</li>
       </ul>
       <h3 id="content-example">调整示例</h3>
       <div class="principle-example">
-        <h4>1. CANN 简介：MD 章节目录</h4>
+        <h4>示例1. CANN 简介：章节目录平行轨</h4>
         <div class="compare-grid compare-grid--stack compare-grid--no-mid-divider">
-          <h4 class="compare-label compare-label--machine">Before · 章节只在 UI/document-anc</h4>
+          <h4 class="compare-label compare-label--machine"><span class="cmp-mark cmp-mark--x">✗</span> 当前问题 · 只有正文 id，无目录清单</h4>
           <div class="compare-col machine">
             <pre class="arch-diagram">【HTML】正文有 h4.sectiontitle + section id
-【缺失】MD 页头无章节目录；静态 HTML 无 document-anc nav</pre>
+【缺失】MD / llms 均无「概述 / 使用说明 / 使用向导」章节目录</pre>
           </div>
-          <h4 class="compare-label compare-label--human">After · MD 页头平铺章节锚点</h4>
+          <h4 class="compare-label compare-label--human"><span class="cmp-mark cmp-mark--v">✓</span> 推荐做法 · MD 页头平铺章节锚点</h4>
           <div class="compare-col human">
             <pre class="arch-diagram">## 本篇目录
 - [概述](#ZH-CN_TOPIC_…__section10818103975019)
@@ -923,6 +1056,14 @@
 # 简介
 …</pre>
           </div>
+          <h4 class="compare-label compare-label--human"><span class="cmp-mark cmp-mark--v">✓</span> 推荐做法 · llms 临时补章节目录</h4>
+          <div class="compare-col human">
+            <pre class="arch-diagram"># llms.txt（过渡）
+- [概述](#ZH-CN_TOPIC_…__section10818103975019)
+- [使用说明](#…)
+- [使用向导](#…)</pre>
+            <p class="rf-frame-caption">页内章节目录达标后以 HTML 为准，llms 中重复项可移除。</p>
+          </div>
         </div>
       </div>
     </section>
@@ -930,31 +1071,34 @@
     <section class="section" id="frontend-adjust">
       <h2>前端调整</h2>
       <h3 id="frontend-suggestions">调整建议</h3>
+      <p class="principle-lead">长文页右侧「本篇目录」须在首包 HTML 全量输出；静态抓取（不执行 JS）仍能列出章节名与 <code>#hash</code>，并与正文 <code>id</code> 对齐（对标：Mintlify On this page、NVIDIA page-toc）。</p>
+      <p class="principle-subhead">具体要求：</p>
       <ul class="principle-suggestions">
-        <li><strong>首包 SSR 右侧 anchor nav</strong>：document-anc / On this page 须与可见 UI 一致全量输出（对标 Mintlify #open-the-editor、NVIDIA pst-page-toc-nav #installing-cuquantum）；禁 JS 须能列出章节目录项。</li>
-        <li><strong>目录项须 a[href=&quot;#id&quot;]</strong>：每一项为 a[href=&quot;#section-id&quot;] + 章节名，禁纯 click 滚动。CANN 算子库简介实测：正文 section id 在首包，document-anc nav 列表缺失。</li>
-        <li><strong>锚点 id 与正文对齐</strong>：#hash 须指向正文 h2/h4.sectiontitle 或 div.section 的稳定 id；须能证伪回答「概述对应哪一节、#id 是什么」。</li>
-        <li><strong>勿与左侧 menu / Related topics 混淆</strong>：左侧 sidebar 归 OMenu，页底 Related topics 归 OLink；OAnchor 只测右侧页内章节目录锚点。</li>
+        <li><strong>目录全量进首包</strong>：输出与可见 UI 一致的全量章节目录；不得只有正文 id、缺目录列表（CANN 算子库简介实测：正文 section id 在首包，右侧 nav 缺失）。</li>
+        <li><strong>目录项为 a[href=#id]</strong>：每一项须为带 hash 的 a 标签 + 章节名；禁纯 click 滚动、无 href 的伪链。</li>
+        <li><strong>#hash 与正文 id 对齐</strong>：hash 须指向正文标题或 section 的稳定 id；须能回答「概述对应哪一节、#id 是什么」。</li>
       </ul>
       <h3 id="frontend-example">调整示例</h3>
       <div class="principle-example">
-        <h4>1. CANN document-anc</h4>
+        <h4>示例1. CANN 本篇目录</h4>
         <div class="compare-grid compare-grid--stack compare-grid--no-mid-divider">
-          <h4 class="compare-label compare-label--machine">Before · 首包无 document-anc nav</h4>
+          <h4 class="compare-label compare-label--machine"><span class="cmp-mark cmp-mark--x">✗</span> 当前问题 · 正文有 id，首包无目录 nav</h4>
           <div class="compare-col machine">
             <pre class="arch-diagram">&lt;!-- 浏览器可见：概述 / 使用说明 / 使用向导 --&gt;
 &lt;div class="section" id="ZH-CN_TOPIC_…__section10818103975019"&gt;
   &lt;h4 class="sectiontitle"&gt;概述&lt;/h4&gt;
 …
-&lt;!-- 静态 HTML 无 document-anc nav-item 列表 --&gt;</pre>
+&lt;!-- 静态 HTML 无本篇目录 nav 列表 --&gt;</pre>
+            <p class="rf-frame-caption">正文节已有 id，但首包没有右侧目录可跟链；静态抓取列不出「概述 / 使用说明 / 使用向导」。</p>
           </div>
-          <h4 class="compare-label compare-label--human">After · SSR 全量 On this page 锚点</h4>
+          <h4 class="compare-label compare-label--human"><span class="cmp-mark cmp-mark--v">✓</span> 推荐做法 · SSR 全量本篇目录锚点</h4>
           <div class="compare-col human">
             <pre class="arch-diagram">&lt;nav class="document-anc" aria-label="本篇目录"&gt;
   &lt;a href="#ZH-CN_TOPIC_…__section10818103975019"&gt;概述&lt;/a&gt;
   &lt;a href="#ZH-CN_TOPIC_…__section20972124710220"&gt;使用说明&lt;/a&gt;
   &lt;a href="#ZH-CN_TOPIC_…__section1457612184710"&gt;使用向导&lt;/a&gt;
 &lt;/nav&gt;</pre>
+            <p class="rf-frame-caption">目录项均为 a[href=#id] + 章节名，hash 与正文 section id 对齐；静态抓取即可按节定位。</p>
           </div>
         </div>
       </div>
@@ -1019,6 +1163,75 @@
   }
   window.addEventListener('hashchange', syncHash);
   syncHash();
+})();
+</script>
+
+
+<div class="modal" id="shot-modal" role="dialog" aria-modal="true" aria-labelledby="shot-modal-title" hidden>
+  <div class="modal-panel">
+    <div class="modal-head">
+      <h2 class="shot-modal-title" id="shot-modal-title">组件截图</h2>
+      <button type="button" class="modal-close" id="shot-modal-close">关闭</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-shots" id="modal-shots"></div>
+    </div>
+  </div>
+</div>
+<script>
+(function () {
+  var modal = document.getElementById('shot-modal');
+  var titleEl = document.getElementById('shot-modal-title');
+  var shotsEl = document.getElementById('modal-shots');
+  var closeBtn = document.getElementById('shot-modal-close');
+  if (!modal || !titleEl || !shotsEl || !closeBtn) return;
+  var ASSET = 'design-system/assets/';
+  function openModal(name, shotsRaw) {
+    titleEl.textContent = name;
+    shotsEl.innerHTML = '';
+    String(shotsRaw || '').split(',').filter(Boolean).forEach(function (item) {
+      var parts = item.split('|');
+      var file = parts[0];
+      var caption = parts[1];
+      var wrap = document.createElement('div');
+      if (caption) {
+        var cap = document.createElement('p');
+        cap.className = 'modal-caption';
+        cap.textContent = caption;
+        wrap.appendChild(cap);
+      }
+      var box = document.createElement('div');
+      box.className = 'modal-shot';
+      var img = document.createElement('img');
+      img.src = ASSET + file;
+      img.alt = name + (caption ? ' · ' + caption : '');
+      box.appendChild(img);
+      wrap.appendChild(box);
+      shotsEl.appendChild(wrap);
+    });
+    modal.hidden = false;
+    modal.classList.add('open');
+    document.body.classList.add('modal-open');
+    closeBtn.focus();
+  }
+  function closeModal() {
+    modal.classList.remove('open');
+    modal.hidden = true;
+    document.body.classList.remove('modal-open');
+    shotsEl.innerHTML = '';
+  }
+  document.querySelectorAll('.comp-link').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      openModal(btn.getAttribute('data-name'), btn.getAttribute('data-shots'));
+    });
+  });
+  closeBtn.addEventListener('click', closeModal);
+  modal.addEventListener('click', function (e) {
+    if (e.target === modal) closeModal();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+  });
 })();
 </script>
 
