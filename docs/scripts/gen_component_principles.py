@@ -26,8 +26,7 @@ GROUPS = _probe_mod.GROUPS
 PROBES: dict[str, dict] = _probe_mod.PROBES
 all_components = _probe_mod.all_components
 
-OCAROUSEL_CANONICAL = DOCS / "principles-affinity.html"
-SKIP_BODY = {"ocarousel"}
+SKIP_BODY: set[str] = set()  # all principles pages generated from overrides
 
 COMP_SHOT_SPECIAL = {
     "ofooternav": "o-footer-nav.png",
@@ -517,6 +516,8 @@ PRINCIPLES_CSS_EXTRA = """
   @media (max-width: 900px) {
     .compare-grid:not(.compare-grid--stack) { grid-template-columns: 1fr; }
   }
+
+  .comp-sidebar { overflow-anchor: none; }
 """
 
 CSS = _probe_mod.CSS + PRINCIPLES_CSS_EXTRA
@@ -582,6 +583,72 @@ TOC_SCRIPT = """
   syncHash();
 })();
 </script>
+<script>
+(function () {
+  var sidebar = document.querySelector('.comp-sidebar');
+  if (!sidebar) return;
+  var key = 'geo-comp-sidebar-scroll';
+  var y = null;
+  try {
+    var q = new URLSearchParams(location.search).get('sb');
+    if (q !== null && q !== '') y = parseInt(q, 10);
+  } catch (e) {}
+  if (y === null || isNaN(y)) {
+    try {
+      var saved = sessionStorage.getItem(key);
+      if (saved !== null) y = parseInt(saved, 10);
+    } catch (e) {}
+  }
+  if (y === null || isNaN(y)) y = null;
+
+  function restore() {
+    if (y === null) return;
+    sidebar.scrollTop = y;
+  }
+  restore();
+  requestAnimationFrame(function () {
+    restore();
+    requestAnimationFrame(restore);
+  });
+  window.addEventListener('pageshow', restore);
+  window.addEventListener('load', restore);
+  var t0 = Date.now();
+  var iv = setInterval(function () {
+    restore();
+    if (Date.now() - t0 > 600) clearInterval(iv);
+  }, 40);
+
+  try {
+    if (new URLSearchParams(location.search).has('sb')) {
+      var u = new URL(location.href);
+      u.searchParams.delete('sb');
+      history.replaceState(null, '', u.pathname + u.search + u.hash);
+    }
+  } catch (e) {}
+
+  function persist() {
+    y = sidebar.scrollTop;
+    try { sessionStorage.setItem(key, String(y)); } catch (e) {}
+  }
+  sidebar.addEventListener('scroll', persist, { passive: true });
+  sidebar.querySelectorAll('.comp-nav a[href]').forEach(function (a) {
+    a.addEventListener('click', function () {
+      persist();
+      try {
+          var raw = a.getAttribute('href') || '';
+          var hash = '';
+          var hi = raw.indexOf('#');
+          if (hi >= 0) { hash = raw.slice(hi); raw = raw.slice(0, hi); }
+          var qi = raw.indexOf('?');
+          if (qi >= 0) raw = raw.slice(0, qi);
+          if (raw && raw.indexOf('http') !== 0) {
+            a.setAttribute('href', raw + '?sb=' + String(sidebar.scrollTop) + hash);
+          }
+      } catch (e) {}
+    });
+  });
+})();
+</script>
 """
 
 NAV_SLUGS = {
@@ -608,12 +675,10 @@ FRONTEND_KW = (
 
 
 def principles_href(slug: str) -> str:
-    return "principles-affinity.html" if slug == "ocarousel" else f"principles-{slug}.html"
+    return f"principles-{slug}.html"
 
 
 def principles_out_path(slug: str) -> Path:
-    if slug == "ocarousel":
-        return OCAROUSEL_CANONICAL
     return DOCS / f"principles-{slug}.html"
 
 
@@ -763,7 +828,7 @@ def principle_title(probe: dict, name: str, slug: str) -> str:
         "obutton": "跳转型按钮链接可发现",
         "olink": "正文导流链接须可跟",
         "odropdown": "下拉菜单子链须可抓",
-        "otrees": "文档树节点 SSR 可链",
+        "otrees": "同页切换内容树须可读",
         "osearch": "可搜索 URL 全进 sitemap",
         "oselect": "选型选项文本可证伪",
         "otoggle": "Toggle 版本矩阵须进首包",
@@ -792,22 +857,22 @@ def principle_one_liner(probe: dict, slug: str) -> str:
         "oanchor": "长文页右侧「本篇目录」须把<strong>每一级章节写成 #hash 可点链接</strong>（a[href]），与正文 heading/section id 对齐；首包 HTML 就要输出完整目录。左侧侧栏归菜单、页底 Related 归链接，勿与本组件混测。",
         "opagination": "表格或卡片列表<strong>下方的分页</strong>若翻出公开知识深页，页码须为带 query 的真实 <code>a[href]</code>（如 <code>?page=2</code>）；禁纯 button/onClick。后台表格分页见下方场景判断。",
         "ostep": "公开流程/逐步说明块的<strong>标题与说明须为可见文本</strong>进首包；状态用文字或 aria 标注；配图内字须旁注或改文本交付。后台向导见下方场景判断。",
-        "onavigation": "顶栏<strong>站点入口</strong>（文档 / 开发者 / 下载等）须为可跟 <code>a[href]</code>，下拉子项亦进首包；搜索 / 换肤 / 语言等纯操作控件见下方场景判断。",
+        "onavigation": "顶栏<strong>站点入口</strong>（文档 / 开发者 / 下载等）及悬停面板子链须为可跟 <code>a[href]</code> 并进首包；搜索 / 换肤 / 语言等纯操作控件见下方场景判断。",
         "ofooternav": "社区首页页脚须把<strong>五列导航与法律声明 / 联系我们等写成可跟链接</strong>（a[href]），列名稳定；并同步进 llms/sitemap，作为顶栏之外的第二发现层。",
         "obutton": "社区首页首屏 CTA（立即查看 / 了解更多等）须用<strong>可抓 a[href]</strong>；纯提交/关闭类 button 管道宜剥离（对标 Mintlify hero、NVIDIA build 列表 CTA）。",
         "olink": "正文与导航链接须带<strong>真实 a[href]</strong>；锚文本宜自描述（禁仅「软件介绍↗」）；禁 JSON/onclick/span 伪链（昇腾训练旅程矩阵须 SSR 链化）。",
         "odropdown": "下拉菜单子项须在<strong>首包 HTML 可读</strong>（a[href]+可见文案）；禁仅触发器、portal 延迟挂或外部 JSON 菜单（昇腾「更多产品」/ Mintlify Products / NVIDIA Resources 均须 SSR 链化）。",
-        "otrees": "文档树节点须<strong>链接+标题进 HTML</strong>；懒加载子树须 SSR 当前分支或提供 MD 平行轨。",
+        "otrees": "同页切换的文档树：节点<strong>不必都有 URL</strong>；各内容块须<strong>首包 SSR</strong>（可用隐藏，勿点击后才注入）。跳转型手册目录见 <a href=\"principles-omenu.html\">OMenu</a>。",
         "osearch": "搜索框本身<strong>不做亲和改造</strong>（纯交互，入库剥离）；真正的硬要求是<strong>所有可搜索的 URL 都要进 sitemap / llms</strong>，让 Agent 不靠搜索也能发现全部文档。",
         "oselect": "若选项映射文档/版本，<strong>选项文本与落地页须可证伪</strong>；纯表单 select 管道可跳过。",
         "otoggle": "下载/版本页 Toggle 若映射 OS、架构、安装方式等选型，<strong>完整 option 矩阵须 SSR 或写进首包 JSON</strong>（对标 NVIDIA CUDA data-react-props）；?ids= 编码态不能替代可读矩阵；纯 UI 筛选标注 exclude。",
-        "orate": "评分数字若 SSR 可作社会证明；<strong>「我要评分」等操作 CTA 宜剥离</strong>，勿与官方认证混淆。",
-        "ocascader": "级联若代表内容路径，<strong>各级 option 文本须可读</strong>；纯地址表单不必入库。",
-        "otag": "版本/状态类标签须<strong>可读文本进 HTML</strong>；装饰性营销 tag 管道宜剥离。",
-        "odialog": "含安装步骤等<strong>关键说明须在正文 duplicate 或 dialog DOM 进首包</strong>；纯确认框可忽略。",
+        "orate": "评分<strong>数字</strong>若进首包可作社会证明；「我要评分」等<strong>操作 CTA 宜剥离</strong>，勿与官方质量认证混淆（认证说明走正文文档）。",
+        "ocascader": "级联若映射<strong>内容路径</strong>，各级 option 文本须首包可读（宜带落地链）；纯地址 / 表单级联入库剥离。",
+        "otag": "版本 / 状态类<strong>语义标签</strong>须可读文本进首包，并在正文有定义依据；「热门 / 新品」等<strong>营销装饰标签</strong>入库管道剥离，不当官方事实。",
+        "odialog": "含安装步骤等<strong>关键说明须在正文双写或 dialog 进首包</strong>；纯确认框管道剥离。",
         "ocard": "导流卡须静态输出<strong>o-card-title + o-card-detail + a[href]</strong> 三要素；首页资讯/活动列表与卡内嵌套列表须 SSR，禁 o-card-content 空壳注入；封面补 alt，禁整卡 onclick。",
         "odatetable": "规格参数须以<strong>真实 table/th/td</strong> 写进网页源码（表头 + 单元格文本可逐行抓取）；禁截图表、div 伪表与空 td；文档页宜备 Markdown 平行表。",
-        "opopover": "字段规格<strong>勿只放悬停气泡</strong>；正文须 duplicate 或 popover 内容 SSR 进首包。",
+        "opopover": "字段规格<strong>勿只放悬停气泡</strong>；正文须有可引用定义，或 popover 内容进首包；装饰 tooltip 剥离。",
         "ocarousel": "首页/运营轮播多帧虽已写进网页源码，但<strong>运营/活动/招募口号与产品规格混层，须默认 exclude 出 llms 与知识库</strong>；人读发现归轮播，规格事实归文档。白名单产品入口帧须输出「标题 + 可引用摘要 + a[href]」，并完成图意转写；跳转型 CTA 禁 button 伪链。",
     }
     if slug in fixes:
@@ -898,9 +963,9 @@ PRINCIPLES_OVERRIDES: dict[str, dict[str, Any]] = {
                 ),
                 (
                     "keep",
-                    "同页切换内容块（类 Tab）",
+                    "同页切换内容块（不换 URL）",
                     "要做亲和",
-                    "点击侧栏不刷新 URL，仅切换右侧内容（竖向 Tab）。<br>所有内容块的文字须写入首包 HTML（SSR 全量输出），可 <code>display:none</code> 视觉隐藏、但不能靠 JS 注入才出现（详见 <a href=\"principles-otab.html\">标签页 otab</a>）。",
+                    "点击侧栏不刷新 URL，仅切换右侧内容。此类归<strong>同页内容树</strong>：节点不必都有 <code>a[href]</code>，但各内容块文字须写入首包 HTML，可视觉隐藏、不能靠 JS 注入才出现（详见 <a href=\"principles-otrees.html\">树 otrees</a>）。跳转型手册目录仍按场景1。",
                 ),
                 (
                     "strip",
@@ -1352,7 +1417,7 @@ PRINCIPLES_OVERRIDES: dict[str, dict[str, Any]] = {
                     "keep",
                     "站点信息架构入口",
                     "要做亲和",
-                    "顶栏「产品 / 文档 / 开发者 / 下载 / 支持」及下拉子项：须为真实 <code>a[href]</code> + 可见文案，子链首包输出，静态抓取可跟到官方落地页。<br>对应页面：<a href=\"https://www.hiascend.com/zh\" target=\"_blank\" rel=\"noopener\">社区首页</a>",
+                    "顶栏「产品 / 文档 / 开发者 / 下载 / 支持」等一级入口，以及<strong>悬停 / 点击展开面板里的子链</strong>：均须为真实 <code>a[href]</code> + 可见文案，子链须在首包输出（不能等 hover 才挂进 DOM），静态抓取可跟到官方落地页。<br>对应页面：<a href=\"https://www.hiascend.com/zh\" target=\"_blank\" rel=\"noopener\">社区首页</a>",
                 ),
                 (
                     "strip",
@@ -1369,106 +1434,156 @@ PRINCIPLES_OVERRIDES: dict[str, dict[str, Any]] = {
         "design": [
             (
                 "入口文案须自描述",
-                "顶栏与下拉用明确去向名（如「文档中心 / 开发资源下载」），勿用「资源 / 更多 / 了解更多 ›」等泛词",
+                "顶栏与面板子项用明确去向名（如「文档中心 / 开发资源下载」），勿用「资源 / 更多 / 了解更多 ›」等泛词",
             ),
             (
-                "入口按真实链接出",
-                "一级与下拉项在稿面按可点链接呈现；勿做成悬停才出、无目标的伪入口",
+                "一级与面板子链均按真实链接出",
+                "一级入口、悬停/点击展开面板内的子项，稿面均按可点链接呈现；勿做成悬停才挂出、无目标的伪入口",
             ),
         ],
         "design_example": (
-            "顶栏导航：模糊 → 明确入口",
-            "泛词 · 去向不明",
-            '<div style="display:flex;gap:16px;font-size:13px;">\n'
-            '  <span style="color:var(--muted);">产品</span>\n'
-            '  <span style="color:var(--muted);">资源</span>\n'
-            '  <span style="color:var(--muted);">了解更多 ›</span>\n'
+            "顶栏 + 展开面板：泛词伪链 → 明确可跟链",
+            "泛词一级 · 面板子项也泛",
+            '<div style="font-size:12.5px;">\n'
+            '  <div style="display:flex;gap:14px;margin-bottom:8px;">\n'
+            '    <span style="color:var(--muted);">产品</span>\n'
+            '    <span style="color:var(--text);font-weight:600;border-bottom:2px solid var(--accent);padding-bottom:2px;">资源</span>\n'
+            '    <span style="color:var(--muted);">了解更多 ›</span>\n'
+            '  </div>\n'
+            '  <div style="border:1px solid var(--line);border-radius:6px;padding:10px 12px;background:#fff;">\n'
+            '    <p class="rf-sidebar-title" style="margin:0 0 6px;color:var(--muted);">资源</p>\n'
+            '    <ul class="rf-nav-links" style="margin:0;color:var(--muted);">\n'
+            '      <li><span>简介</span></li>\n'
+            '      <li><span>更多</span></li>\n'
+            '      <li><span>了解更多 ›</span></li>\n'
+            '    </ul>\n'
+            '  </div>\n'
             '</div>',
-            "明确入口 + 可跟链",
-            '<div style="display:flex;flex-wrap:wrap;gap:16px;font-size:13px;">\n'
-            '  <a href="#" style="color:var(--accent);text-decoration:none;">产品</a>\n'
-            '  <a href="#" style="color:var(--accent);text-decoration:none;">文档中心</a>\n'
-            '  <a href="#" style="color:var(--accent);text-decoration:none;">开发资源下载</a>\n'
-            '  <a href="#" style="color:var(--accent);text-decoration:none;">支持与服务</a>\n'
+            "明确入口 + 面板子链可见",
+            '<div style="font-size:12.5px;">\n'
+            '  <div style="display:flex;gap:14px;margin-bottom:8px;flex-wrap:wrap;">\n'
+            '    <a href="#" style="color:var(--accent);text-decoration:none;">产品</a>\n'
+            '    <a href="#" style="color:var(--text);font-weight:600;border-bottom:2px solid var(--accent);padding-bottom:2px;text-decoration:none;">文档中心</a>\n'
+            '    <a href="#" style="color:var(--accent);text-decoration:none;">开发资源下载</a>\n'
+            '    <a href="#" style="color:var(--accent);text-decoration:none;">支持与服务</a>\n'
+            '  </div>\n'
+            '  <div style="border:1px solid var(--line);border-radius:6px;padding:10px 12px;background:#fff;">\n'
+            '    <p class="rf-sidebar-title" style="margin:0 0 6px;">文档中心</p>\n'
+            '    <ul class="rf-nav-links" style="margin:0;">\n'
+            '      <li><a href="#">CANN 文档</a></li>\n'
+            '      <li><a href="#">Ascend FAQ</a></li>\n'
+            '      <li><a href="#">全部文档索引</a></li>\n'
+            '    </ul>\n'
+            '  </div>\n'
             '</div>',
             True,
             True,
-            "「资源 / 了解更多」说不清去哪；若再做成悬停才出的伪入口，静态也跟不到文档 / 下载。",
-            "<strong>要点：</strong>入口名自描述；稿面按真实可点链接出。",
+            "Hover 面板里虽有项，但是「简介 / 更多」等泛词，且常按悬停态交付、未当可跟链接画出。",
+            "<strong>要点：</strong>一级与面板子项均自描述，并按真实可点链接交付（实现上须首包输出）。",
         ),
         "content": [
             (
-                "llms / sitemap 临时补站点入口",
-                "顶栏 html 未达标前，llms.txt 或 sitemap 可临时列出「文档 / 开发者 / 下载 / 支持」等一级入口及 URL；达标后以 SSR o-nav 为准，避免双轨不一致",
+                "统一命名",
+                "顶栏一级 / 面板子项、sitemap、llms 与落地页 title 用同一套去向名（如「文档中心 / 开发资源下载」），避免 Agent 因「资源 / 更多」与真实栏目名不一致而认成不同入口",
             ),
             (
-                "MD 不写顶栏交互态",
-                "站点级入口清单写在 llms 或独立「站点地图」文档，勿把悬停展开后才出现的菜单文案当作唯一知识源",
-            ),
-        ],
-        "frontend": [
-            (
-                "一级入口须 a[href]",
-                "顶栏 o-nav 每一项站点入口（产品 / 解决方案 / 开发者与合作伙伴 / 文档 / 下载等）须为 OLink 或 a[href] + 可见文案；禁 div.o-nav-item-link 无 href（Ascend 首页实测：仅「支持与服务」→ /support 可跟；友商 Mintlify navbar、NVIDIA Shop / Drivers 首包可跟）",
+                "站点入口平行清单",
+                "在 llms.txt 或独立「站点地图」MD 中平铺一级入口及关键子链（标题 + URL）；即使顶栏未被抓取或仅靠悬停展开，也可枚举官方文档 / 开发者 / 下载等入口",
             ),
             (
-                "高频导流位禁 button 冒充",
-                "「在线开发」「下载」等常问入口须带真实网址；develop-btn / div 下拉触发会导致探针「文档 / 开发者 / 下载官方链接」答不全",
-            ),
-            (
-                "下拉子链首包 SSR",
-                "o-nav-panel 内子项须在服务端一次性输出完整 a[href] 列表，禁 o-nav-head 首包为空、悬停或脚本才挂链（对标 Mintlify Learn 下拉、NVIDIA mega menu 子链在首包）",
-            ),
-            (
-                "纯操作控件标注排除",
-                "搜索框、换肤、语言、用户图标加 data-llm-exclude；与信息架构入口分区，管道勿当正文 chunk",
+                "过渡补位",
+                "顶栏 HTML 未达标前，用 llms / sitemap 临时补站点入口；达标后以 SSR o-nav 为准，重复项可移除，避免双轨不一致",
             ),
         ],
         "content_example": (
-            "社区首页：llms 补站点入口",
-            "入口只在可见顶栏",
-            "【HTML】产品 / 文档 / 下载文案可见，多数无 href\n【缺失】llms 未列「从首页进官方文档 / 下载」的 URL 清单",
-            "llms 平铺一级入口",
-            "## 站点入口（社区首页顶栏）\n- 文档：https://www.hiascend.com/document\n- 开发者：https://www.hiascend.com/developer\n- 下载：https://www.hiascend.com/developer/download\n- 支持与服务：https://www.hiascend.com/support",
+            "社区首页顶栏 → MD / llms 平行清单",
+            "入口只在可见顶栏、无平行清单",
+            "顶栏文案「产品 / 文档 / 下载」可见，多数无 href；\n无 Markdown / llms 版站点入口清单，\n静态抓取答不全「从首页进官方文档 / 下载」的 URL。",
+            "MD 平行站点入口",
+            "## 站点入口（社区首页顶栏）\n- [文档中心](https://www.hiascend.com/document)\n- [开发者](https://www.hiascend.com/developer)\n- [开发资源下载](https://www.hiascend.com/developer/download)\n- [支持与服务](https://www.hiascend.com/support)",
             False,
             False,
         ),
+        "content_example_after_sections": [
+            (
+                "MD 平行站点入口",
+                "## 站点入口（社区首页顶栏）\n- [文档中心](https://www.hiascend.com/document)\n- [开发者](https://www.hiascend.com/developer)\n- [开发资源下载](https://www.hiascend.com/developer/download)\n- [支持与服务](https://www.hiascend.com/support)",
+            ),
+            (
+                "llms 临时补关键入口",
+                "# llms.txt（过渡）\n- [文档中心](https://www.hiascend.com/document)\n- [开发资源下载](https://www.hiascend.com/developer/download)",
+                "顶栏 SSR 达标后以 HTML 为准，llms 中重复项可移除。",
+            ),
+        ],
+        "content_example_before_prefix": "当前问题",
+        "content_example_before_mark": True,
+        "frontend_lead": "顶栏站点入口与悬停面板子链须写入首包 HTML；静态抓取（不执行 JS）仍能列全一级文案与子链并跟到官方落地页（对标：Mintlify navbar、NVIDIA global-nav）。",
+        "frontend": [
+            (
+                "一级入口须为真实链接",
+                "产品 / 文档 / 下载 / 支持等站点入口须为 a[href] + 可见文案；勿用无 href 的 div.o-nav-item-link 冒充（Ascend 首页实测多入口不可跟）",
+            ),
+            (
+                "面板子链进首包",
+                "o-nav-panel 内子项须在服务端一次性输出完整 a[href] 列表；可用 CSS 隐藏，但勿等悬停或脚本才挂进 DOM",
+            ),
+            (
+                "高频导流位同级可跟",
+                "「在线开发」「下载」等常问入口须带真实网址，勿仅用 button / 无 href 的触发器",
+            ),
+            (
+                "纯操作控件标注排除",
+                "搜索、换肤、语言、用户图标加 data-llm-exclude，与信息架构入口分区，管道勿当正文 chunk",
+            ),
+        ],
         "frontend_example": (
             "社区首页 o-nav",
-            "一级 div 无 href",
-            '&lt;div class="o-nav-item"&gt;&lt;div class="o-nav-item-link" title="产品"&gt;产品&lt;/div&gt;&lt;/div&gt;\n&lt;div class="o-nav-item"&gt;&lt;div class="o-nav-item-link" title="开发者与合作伙伴"&gt;…&lt;/div&gt;&lt;/div&gt;\n&lt;a class="develop-btn"&gt;在线开发&lt;/a&gt;\n&lt;div class="app-header-download-val"&gt;下载&lt;/div&gt;\n&lt;!-- 友商 Mintlify navbar / NVIDIA global-nav：一级或子级 a[href] 在首包 --&gt;',
-            "SSR 全量顶栏可跟链",
-            '&lt;nav class="o-nav-head"&gt;\n  &lt;a class="o-nav-item-link" href="/products" title="产品"&gt;产品&lt;/a&gt;\n  &lt;a class="o-nav-item-link" href="/document" title="文档"&gt;文档&lt;/a&gt;\n  &lt;a class="o-nav-item-link" href="/developer/download" title="下载"&gt;下载&lt;/a&gt;\n&lt;/nav&gt;\n&lt;div class="o-nav-panel"&gt;\n  &lt;a href="/developer"&gt;开发者&lt;/a&gt;…\n&lt;/div&gt;',
+            "一级 div 无 href · 面板未进首包",
+            '&lt;div class="o-nav-item-link" title="产品"&gt;产品&lt;/div&gt;\n&lt;div class="o-nav-item-link" title="文档"&gt;文档&lt;/div&gt;\n&lt;a class="develop-btn"&gt;在线开发&lt;/a&gt;\n&lt;div class="app-header-download-val"&gt;下载&lt;/div&gt;\n&lt;!-- o-nav-panel 悬停后才挂链 / 首包为空 --&gt;',
+            "SSR 一级 + 面板可跟链",
+            '&lt;nav class="o-nav-head"&gt;\n  &lt;a class="o-nav-item-link" href="/products"&gt;产品&lt;/a&gt;\n  &lt;a class="o-nav-item-link" href="/document"&gt;文档&lt;/a&gt;\n  &lt;a class="o-nav-item-link" href="/developer/download"&gt;下载&lt;/a&gt;\n&lt;/nav&gt;\n&lt;div class="o-nav-panel"&gt;\n  &lt;a href="/document/cann"&gt;CANN 文档&lt;/a&gt;\n  &lt;a href="/document/faq"&gt;Ascend FAQ&lt;/a&gt;\n&lt;/div&gt;',
             False,
             False,
+            "一级多为无 href 的 div；「在线开发 / 下载」也不是可跟链；面板子链不在首包，静态抓取答不全官方入口。",
+            "一级与面板子项均写成 a[href]；静态抓取即可列全并跟到落地页。",
         ),
+        "frontend_example_before_prefix": "当前问题",
         "acceptance": [
-            ("静态可达", "禁 JS 抓取社区首页后，顶栏仍含文档 / 开发者 / 下载等可跟链 href，能回答 problems-onavigation 探针问句"),
-            ("html 可抓全", "顶栏 html 可抓取达到友商水准（Mintlify 文档站 navbar、NVIDIA global-nav：一级或子级 href 均在首包）"),
+            ("静态可达", "静态抓取社区首页（不执行 JS）后，顶栏仍含文档 / 开发者 / 下载等可跟链，能回答 problems-onavigation 探针问句"),
+            ("html 可抓全", "顶栏 html 可抓取达到友商水准（Mintlify navbar、NVIDIA global-nav：一级或子级 href 均在首包）"),
             ("可证伪", "对「从首页进文档 / 开发者 / 下载的官方链接」须能引用具体 href，与 problems-onavigation 失败判据互斥"),
         ],
     },
     "ofooternav": {
+        "hide_sample_meta": True,
+        "design_example_side_by_side": True,
         "design": [
             (
-                "页脚链用可读文字",
-                "页脚每列链接用可读文案（法律声明 / 文档中心 / 联系我们），社交等纯图标须配文字或 aria-label；每项为真实 a[href]，可当站点地图",
+                "列与链文案须自描述",
+                "列名与链接用明确去向名（如「支持与服务 / 文档中心 / 法律声明」），勿用「链接 / 更多」；社交等纯图标须配可见文字或 aria-label",
+            ),
+            (
+                "每项按真实链接出",
+                "稿面把页脚当站点地图：每列子项与底栏法律链均按可点 a[href] 呈现，勿只画装饰图标或空列",
             ),
         ],
         "design_example": (
-            "页脚导航：图标 / 泛词 → 可读链接",
+            "页脚导航：泛词 / 纯图标 → 可读可跟链",
             "泛词 · 纯图标",
             '<div style="display:flex;gap:24px;font-size:12.5px;">\n'
             '  <div>\n'
             '    <p class="rf-sidebar-title">支持</p>\n'
-            '    <ul class="rf-nav-links"><li><a href="#">链接</a></li><li><a href="#">更多</a></li></ul>\n'
+            '    <ul class="rf-nav-links"><li><span>链接</span></li><li><span>更多</span></li></ul>\n'
             '  </div>\n'
             '  <div>\n'
             '    <p class="rf-sidebar-title">关注我们</p>\n'
-            '    <div style="font-size:16px;">🔗 🔗 🔗</div>\n'
+            '    <div style="display:flex;gap:8px;margin-top:4px;">\n'
+            '      <span style="width:22px;height:22px;border-radius:4px;background:#e5e7eb;display:inline-block;" title="图标"></span>\n'
+            '      <span style="width:22px;height:22px;border-radius:4px;background:#e5e7eb;display:inline-block;"></span>\n'
+            '      <span style="width:22px;height:22px;border-radius:4px;background:#e5e7eb;display:inline-block;"></span>\n'
+            '    </div>\n'
             '  </div>\n'
-            '</div>\n'
-            '<p class="rf-muted">「链接 / 更多」无意义，社交仅图标无文字；Agent 抓不到法律声明 / 文档等页脚入口。</p>',
+            '</div>',
             "可读文案 + 真实链接",
             '<div style="display:flex;gap:24px;font-size:12.5px;">\n'
             '  <div>\n'
@@ -1479,60 +1594,82 @@ PRINCIPLES_OVERRIDES: dict[str, dict[str, Any]] = {
             '    <p class="rf-sidebar-title">关于</p>\n'
             '    <ul class="rf-nav-links"><li><a href="#">法律声明</a></li><li><a href="#">联系我们</a></li></ul>\n'
             '  </div>\n'
-            '</div>\n'
-            '<p class="rf-caption"><strong>要点：</strong>每列链接用可读文案 + 真实 a[href]，把页脚当站点地图；纯图标配 aria-label。</p>',
+            '</div>',
             True,
             True,
+            "「链接 / 更多」说不清去向；关注区只有灰块图标、无文字，稿面交不出可跟的法律声明 / 文档入口。",
+            "<strong>要点：</strong>列名与子项自描述，每项按真实可点链接交付；页脚按站点地图画。",
         ),
         "content": [
             (
-                "llms / sitemap 收录页脚关键链",
-                "页脚 html 达标后，llms.txt 仍应显式列出「文档 / 法律声明 / 联系我们 / 支持与服务」等页脚 href，与 footer SSR 互证；未达标前可临时用 llms 补位",
+                "统一命名",
+                "页脚列名 / 链接文案与 llms、sitemap、落地页 title 对齐；改版时写明新旧映射并触发重抓，避免旧 chunk 对不上当前 HTML",
             ),
             (
-                "列名改版写 changelog",
-                "页脚分组名（关于昇腾 / 支持与服务等）或链接文案改版时，在 llms 或 changelog 写明新旧映射，避免旧 chunk 对不上当前 HTML",
-            ),
-        ],
-        "frontend": [
-            (
-                "footer-main 五列 SSR",
-                "app-footer footer-main 须输出五列 link-group（关于昇腾 / 新闻与活动 / 交流与资讯 / 支持与服务 / 开源社区），每项 gp-link 为 a[href] + 可见文案（对标友商：Mintlify Documentation/Legal、NVIDIA page-footer、昇腾首页实测可抓全）",
+                "页脚入口平行清单",
+                "在 llms.txt 或站点地图 MD 中显式列出「关于昇腾 / 文档 / 法律声明 / 联系我们」等关键链（标题 + URL），与页脚 HTML 互证；仅靠 RAG 检索仍可能漏入口",
             ),
             (
-                "底栏法律链须可跟",
-                "法律声明 → /zh/legal/law、隐私政策、联系我们等底栏链接须进首包 HTML，禁仅图标或脚本后填",
-            ),
-            (
-                "禁纯图标无 anchor text",
-                "社交/关注我们等若保留，须配可读文字或 aria-label；友情链接 refer-link 同样须 a[href] + 文案",
-            ),
-            (
-                "全站页脚结构一致",
-                "壳页页脚 HTML 结构宜各页一致，便于 Agent 把首页 footer 当站点地图模板；勿某内页页脚空列或缺法律链",
+                "过渡补位",
+                "页脚 HTML 未达标或改版空窗期，用 llms / sitemap 临时补关键链；SSR 稳定后以 HTML 为准，重复项可移除",
             ),
         ],
         "content_example": (
-            "社区首页：llms 补页脚入口",
-            "页脚链未进 llms",
-            "【HTML】footer-main 五列 + 法律声明 / 联系我们 href 已在首包\n【缺失】llms.txt 未列「关于昇腾 / 法律声明 / 联系我们」官方 URL",
-            "llms 平铺页脚关键链",
-            "## 站点入口（页脚）\n- 昇腾计算产业概述：https://www.hiascend.com/ecosystem/industry\n- 文档：https://www.hiascend.com/zh/document\n- 法律声明：https://www.hiascend.com/zh/legal/law\n- 联系我们：https://www.huawei.com/cn/contact-us",
+            "社区首页页脚 → MD / llms 平行清单",
+            "HTML 已有链，llms 未互证",
+            "footer-main 五列 + 法律声明 / 联系我们 href 已在首包；\nllms.txt 未列「关于昇腾 / 法律声明 / 联系我们」官方 URL，\n仅靠检索的 Agent 仍可能漏答页脚入口。",
+            "MD 平行页脚入口",
+            "## 站点入口（页脚）\n- [昇腾计算产业概述](https://www.hiascend.com/ecosystem/industry)\n- [文档](https://www.hiascend.com/zh/document)\n- [法律声明](https://www.hiascend.com/zh/legal/law)\n- [联系我们](https://www.huawei.com/cn/contact-us)",
             False,
             False,
         ),
+        "content_example_after_sections": [
+            (
+                "MD 平行页脚入口",
+                "## 站点入口（页脚）\n- [昇腾计算产业概述](https://www.hiascend.com/ecosystem/industry)\n- [文档](https://www.hiascend.com/zh/document)\n- [法律声明](https://www.hiascend.com/zh/legal/law)\n- [联系我们](https://www.huawei.com/cn/contact-us)",
+            ),
+            (
+                "llms 临时补 / 改版映射",
+                "# llms.txt\n- [法律声明](https://www.hiascend.com/zh/legal/law)\n- [联系我们](https://www.huawei.com/cn/contact-us)\n# 改版映射（示例）\n# 「支持」→「支持与服务」",
+                "页脚 SSR 稳定且命名对齐后，临时补位项可收敛；映射保留至知识库重抓完成。",
+            ),
+        ],
+        "content_example_before_prefix": "当前问题",
+        "content_example_before_mark": True,
+        "frontend_lead": "页脚多列导航与底栏法律链须写入首包 HTML；静态抓取（不执行 JS）仍能列全列名与子链并跟到落地页（对标：Mintlify / NVIDIA page-footer；昇腾首页实测已可抓全，须防改版退化）。",
+        "frontend": [
+            (
+                "多列须为真实链接",
+                "footer-main 各 link-group 子项须为 a[href] + 可见文案；勿空列或等脚本填充（社区首页五列结构可作样板）",
+            ),
+            (
+                "底栏法律链进首包",
+                "法律声明 / 隐私政策 / 联系我们等须在首包可跟；勿仅图标或交互后才挂链",
+            ),
+            (
+                "社交与友情链可读",
+                "关注我们、友情链接若保留，须配可读文字或 aria-label，且仍为 a[href]",
+            ),
+            (
+                "全站页脚结构一致",
+                "壳页页脚 HTML 结构宜各页一致，便于把首页 footer 当站点地图模板；勿某内页空列或缺法律链",
+            ),
+        ],
         "frontend_example": (
             "社区首页 footer-main",
             "空列或脚本后填",
-            '&lt;div class="footer-main"&gt;&lt;div class="link-group"&gt;&lt;h4&gt;支持与服务&lt;/h4&gt;&lt;!-- 浏览器可见列，首包为空 --&gt;&lt;/div&gt;&lt;/div&gt;\n&lt;!-- 友商 Mintlify / NVIDIA / 昇腾首页实测：多列 a[href] 在首包 --&gt;',
-            "SSR 全量五列可跟链",
-            '&lt;div class="footer-main"&gt;\n  &lt;div class="link-group"&gt;&lt;h4 class="gp-name"&gt;关于昇腾&lt;/h4&gt;&lt;a class="gp-link" href="/ecosystem/industry"&gt;昇腾计算产业概述&lt;/a&gt;&lt;/div&gt;\n  &lt;div class="link-group"&gt;&lt;h4 class="gp-name"&gt;支持与服务&lt;/h4&gt;&lt;a href="/zh/document"&gt;文档&lt;/a&gt;&lt;a href="/zh/feedback"&gt;技术工单&lt;/a&gt;&lt;/div&gt;\n  …\n  &lt;a href="/zh/legal/law"&gt;法律声明&lt;/a&gt;&lt;a href="https://www.huawei.com/cn/contact-us"&gt;联系我们&lt;/a&gt;\n&lt;/div&gt;',
+            '&lt;div class="footer-main"&gt;\n  &lt;div class="link-group"&gt;\n    &lt;h4&gt;支持与服务&lt;/h4&gt;\n    &lt;!-- 浏览器可见列，首包无 a[href] --&gt;\n  &lt;/div&gt;\n&lt;/div&gt;',
+            "SSR 多列 + 法律链可跟",
+            '&lt;div class="footer-main"&gt;\n  &lt;div class="link-group"&gt;\n    &lt;h4 class="gp-name"&gt;关于昇腾&lt;/h4&gt;\n    &lt;a class="gp-link" href="/ecosystem/industry"&gt;昇腾计算产业概述&lt;/a&gt;\n  &lt;/div&gt;\n  &lt;div class="link-group"&gt;\n    &lt;h4 class="gp-name"&gt;支持与服务&lt;/h4&gt;\n    &lt;a href="/zh/document"&gt;文档&lt;/a&gt;\n    &lt;a href="/zh/feedback"&gt;技术工单&lt;/a&gt;\n  &lt;/div&gt;\n  …\n  &lt;a href="/zh/legal/law"&gt;法律声明&lt;/a&gt;\n  &lt;a href="https://www.huawei.com/cn/contact-us"&gt;联系我们&lt;/a&gt;\n&lt;/div&gt;',
             False,
             False,
+            "列标题在，子链不在首包（或改版后又变空），静态抓取列不全页脚入口。",
+            "多列子项与底栏法律链均写成 a[href]；静态抓取即可列全并跟链。",
         ),
+        "frontend_example_before_prefix": "当前问题",
         "acceptance": [
-            ("静态可达", "禁 JS 抓取社区首页后，页脚仍含五列导航及法律声明 / 联系我们等可跟链 href，能回答 problems-ofooternav 探针问句"),
-            ("html 可抓全", "页脚 html 可抓取达到友商水准（Mintlify / NVIDIA / 昇腾首页 footer-nav 首包完整）"),
+            ("静态可达", "静态抓取社区首页（不执行 JS）后，页脚仍含多列导航及法律声明 / 联系我们等可跟链，能回答 problems-ofooternav 探针问句"),
+            ("html 可抓全", "页脚 html 可抓取达到友商水准（Mintlify / NVIDIA / 昇腾首页 footer-nav 首包完整）；改版后须复测防退化"),
             ("可证伪", "对「关于昇腾 / 法律声明 / 联系我们分别链到哪」须能引用具体 href，与 problems-ofooternav 失败判据互斥"),
         ],
     },
@@ -1829,325 +1966,477 @@ PRINCIPLES_OVERRIDES: dict[str, dict[str, Any]] = {
         ],
     },
     "obutton": {
+        "hide_sample_meta": True,
         "intro_card": {
-            "title": "为什么按钮是「视情况」——先分清按钮的两种角色",
+            "plain": True,
+            "title": "场景判断",
             "items": [
                 (
                     "keep",
-                    "跳转按钮（点击跳到另一个页面）",
+                    "跳转型 CTA",
                     "要做亲和",
-                    "如「立即查看 / 了解更多 / 前往认证」。它承诺「点了会去哪」，须做亲和：底层用可抓的 <code>a[href]</code>，样式仍可保留按钮外观，让 Agent 能给出官方落地 URL。",
+                    "点击后跳到另一页面或详情（如「立即查看 / 了解更多 / 前往认证」）。外观可仍是按钮，底层须为真实 <code>a[href]</code> + 可见文案，静态抓取能给出官方落地 URL。<br>对应页面：<a href=\"https://www.hiascend.com/zh\" target=\"_blank\" rel=\"noopener\">社区首页</a>",
                 ),
                 (
                     "strip",
-                    "操作按钮（只在当前页做动作）",
+                    "纯操作按钮",
                     "不做亲和 · 入库剥离",
-                    "如「提交 / 关闭 / 确认 / 我知道了」。它不是正文知识，入库管道宜标 <code>data-llm-exclude</code> 或剥离，避免文案被 Agent 误当成可引用结论。",
+                    "只在当前页做动作（提交 / 关闭 / 确认 / 我知道了），不承载站点入口。入库管道宜标 <code>data-llm-exclude</code> 或剥离，别把操作文案当可引用结论。",
                 ),
             ],
         },
-        "design_none": True,
-        "content": [
+        "design_heading_suffix": " · 场景1",
+        "content_heading_suffix": " · 场景1",
+        "frontend_heading_suffix": " · 场景1",
+        "design_example_side_by_side": True,
+        "design": [
             (
-                "MD / llms 补 CTA 落地页",
-                "HTML 仍用 button 伪链时，llms.txt 或活动文档页须列出「立即查看 / 了解更多」等 CTA 对应官方 URL；达标后以 SSR a[href] 为准",
+                "跳转 CTA 文案宜自描述",
+                "尽量写清去向（如「查看大赛详情 / 前往认证」）；若须保留「了解更多」，稿面旁注落地页名，勿只交无目标的泛词按钮",
             ),
             (
-                "活动规则勿只放弹层",
-                "认证须知、问卷规则等关键说明写在可引用正文或详情页 MD，勿只出现在点击 CTA 后的 dialog",
+                "外观可按钮、交付按链接",
+                "视觉可保留 o-btn 样式；稿面按可点链接标注目标 URL，勿做成「点了才知道去哪、实现常交成无 href 的 button」",
             ),
         ],
-        "frontend": [
+        "design_example": (
+            "首屏 CTA：泛词按钮 → 自描述可跟链",
+            "泛词 · 无落地标注",
+            '<div style="font-size:12.5px;">\n'
+            '  <p style="margin:0 0 10px;font-weight:600;">HCCL 通信库创新大赛</p>\n'
+            '  <div style="display:flex;gap:8px;">\n'
+            '    <span style="display:inline-block;padding:6px 14px;border-radius:4px;background:var(--accent);color:#fff;font-size:12px;">立即查看</span>\n'
+            '    <span style="display:inline-block;padding:6px 14px;border-radius:4px;border:1px solid var(--line);color:var(--muted);font-size:12px;">了解更多</span>\n'
+            '  </div>\n'
+            '</div>',
+            "自描述 · 按链接画出",
+            '<div style="font-size:12.5px;">\n'
+            '  <p style="margin:0 0 10px;font-weight:600;">HCCL 通信库创新大赛</p>\n'
+            '  <div style="display:flex;gap:8px;flex-wrap:wrap;">\n'
+            '    <a href="#" style="display:inline-block;padding:6px 14px;border-radius:4px;background:var(--accent);color:#fff;font-size:12px;text-decoration:none;">查看大赛详情</a>\n'
+            '    <a href="#" style="display:inline-block;padding:6px 14px;border-radius:4px;border:1px solid var(--accent);color:var(--accent);font-size:12px;text-decoration:none;">前往开发者认证</a>\n'
+            '  </div>\n'
+            '</div>',
+            True,
+            True,
+            "文案是泛词，稿面也未标落地页；实现上常交成无 href 的 button，人靠点、机器跟不到。",
+            "<strong>要点：</strong>文案尽量自描述；外观可按钮，交付按真实可点链接（实现上须首包 a[href]）。",
+        ),
+        "content": [
             (
-                "跳转型 CTA 须 a[href]",
-                "社区首页 banner「立即查看 / 了解更多 / 立即填写 / 前往认证 / 立即参与」等须为 OLink 或 a[href] + 可见文案；禁 button.o-btn.banner-actions-item 无 href（友商 Mintlify Get started、NVIDIA More Models 首包可跟）",
+                "统一命名",
+                "CTA 文案、活动/认证落地页 title 与 llms 条目对齐；「了解更多」若保留，清单里须写成可区分的对象名 + URL",
             ),
             (
-                "样式可按钮、语义须链接",
-                "保留 o-btn 外观时底层仍输出 href；或 button 旁并列隐藏/可见 a[href] 供爬虫跟链",
+                "CTA 落地平行清单",
+                "在 llms.txt 或活动文档 MD 中平铺首屏各跳转 CTA 的标题 + 官方 URL；规则摘要写在可引用正文，勿只出现在点 CTA 后的弹层",
             ),
             (
-                "纯操作 button 标注排除",
-                "提交 / 关闭 / 我知道了等无导航语义的 button 加 data-llm-exclude，入库管道勿当正文 chunk",
+                "过渡补位",
+                "HTML 仍为 button 伪链时，用 llms / 活动页临时补落地 URL；SSR a[href] 达标后以页面为准，重复项可移除",
             ),
         ],
         "content_example": (
-            "社区首页：llms 补 CTA 落地",
-            "CTA 只有 button 文案",
-            "【HTML】banner 有「立即查看 / 了解更多」文案，无 href\n【缺失】llms 未列各 CTA 对应官方 URL",
-            "llms 平铺 CTA 入口",
-            "## 社区首页 CTA\n- 昇腾AI创新大赛2026 → https://…\n- HCCL通信库创新大赛 → https://…\n- 推理开发者认证 → https://…",
+            "社区首页 CTA → MD / llms 平行清单",
+            "只有 button 文案，无落地清单",
+            "banner 可见「立即查看 / 了解更多」；\n无 Markdown / llms 列出各 CTA 对应官方 URL，\n规则若只在弹层，静态也读不到。",
+            "MD 平行 CTA 落地",
+            "## 社区首页 CTA\n- [查看 HCCL 通信库创新大赛](https://…/hccl-contest)\n- [昇腾 AI 创新大赛 2026](https://…/ascend-ai-2026)\n- [前往推理开发者认证](https://…/cert)",
             False,
             False,
         ),
+        "content_example_after_sections": [
+            (
+                "MD 平行 CTA 落地",
+                "## 社区首页 CTA\n- [查看 HCCL 通信库创新大赛](https://…/hccl-contest)\n- [昇腾 AI 创新大赛 2026](https://…/ascend-ai-2026)\n- [前往推理开发者认证](https://…/cert)",
+            ),
+            (
+                "llms 临时补 CTA URL",
+                "# llms.txt（过渡）\n- [HCCL 通信库创新大赛](https://…/hccl-contest)\n- [推理开发者认证](https://…/cert)",
+                "跳转 CTA 改为首包 a[href] 后，llms 中重复项可移除。",
+            ),
+        ],
+        "content_example_before_prefix": "当前问题",
+        "content_example_before_mark": True,
+        "frontend_lead": "跳转型 CTA 须写入首包 HTML 为真实 <code>a[href]</code>；静态抓取（不执行 JS）仍能读出文案并跟到官方落地页（对标：Mintlify Get started、NVIDIA More Models）。纯操作按钮见场景2，管道剥离。",
+        "frontend": [
+            (
+                "跳转 CTA 须为真实链接",
+                "立即查看 / 了解更多 / 前往认证等须为 a[href] + 可见文案；勿用无 href 的 button.o-btn.banner-actions-item 冒充",
+            ),
+            (
+                "样式可按钮、语义须链接",
+                "可保留 o-btn 外观，底层仍输出 href；勿只靠点击后 JS 跳转",
+            ),
+            (
+                "规则勿只藏弹层",
+                "活动规则、认证须知等若 CTA 点开才出，须在旁侧正文 duplicate，或改为链到已 SSR 的详情页",
+            ),
+            (
+                "纯操作 button 标注排除",
+                "提交 / 关闭 / 我知道了等加 data-llm-exclude，入库勿当正文 chunk",
+            ),
+        ],
         "frontend_example": (
             "社区首页 banner CTA",
             "button 无 href",
-            '&lt;p class="banner-title"&gt;HCCL通信库创新大赛&lt;/p&gt;\n&lt;button type="button" class="o-btn o-btn-primary banner-actions-item"&gt;立即查看&lt;/button&gt;\n&lt;button type="button" class="o-btn banner-actions-item"&gt;了解更多&lt;/button&gt;\n&lt;!-- 友商 Mintlify / NVIDIA build：CTA 为 a[href] 在首包 --&gt;',
-            "SSR 跳转型 CTA 链接化",
-            '&lt;a class="o-btn o-btn-primary banner-actions-item" href="/activity/hccl-contest"&gt;立即查看&lt;/a&gt;\n&lt;a class="o-btn banner-actions-item" href="/activity/ascend-ai-2026"&gt;了解更多&lt;/a&gt;',
+            '&lt;p class="banner-title"&gt;HCCL通信库创新大赛&lt;/p&gt;\n&lt;button type="button" class="o-btn o-btn-primary banner-actions-item"&gt;立即查看&lt;/button&gt;\n&lt;button type="button" class="o-btn banner-actions-item"&gt;了解更多&lt;/button&gt;',
+            "SSR 跳转 CTA 链接化",
+            '&lt;p class="banner-title"&gt;HCCL通信库创新大赛&lt;/p&gt;\n&lt;a class="o-btn o-btn-primary banner-actions-item" href="/activity/hccl-contest"&gt;查看大赛详情&lt;/a&gt;\n&lt;a class="o-btn banner-actions-item" href="/developer/cert"&gt;前往开发者认证&lt;/a&gt;',
             False,
             False,
+            "文案在，href 不在；静态抓取只能复述「立即查看 / 了解更多」，给不出官方落地 URL。",
+            "外观仍可是按钮类名，底层写成 a[href]；静态抓取即可跟链。",
         ),
+        "frontend_example_before_prefix": "当前问题",
         "acceptance": [
-            ("静态可达", "禁 JS 抓取社区首页后，首屏 CTA 仍含可跟链 href，能回答 problems-obutton 探针问句"),
-            ("html 可抓全", "CTA html 达到友商水准（Mintlify hero-cta、NVIDIA build list-cta：按钮文案与 href 在首包）"),
-            ("可证伪", "对「立即查看 / 了解更多分别链到哪」须能引用具体 href，与昇腾 banner button 失败判据互斥"),
+            ("静态可达", "静态抓取社区首页（不执行 JS）后，首屏跳转 CTA 仍含可跟链 href，能回答 problems-obutton 探针问句"),
+            ("html 可抓全", "跳转 CTA html 达到友商水准（Mintlify hero、NVIDIA build 列表 CTA：文案与 href 在首包）"),
+            ("可证伪", "对「立即查看 / 了解更多分别链到哪」须能引用具体 href，与 banner button 失败判据互斥"),
         ],
     },
     "olink": {
+        "hide_sample_meta": True,
+        "design_example_side_by_side": True,
         "design": [
             (
-                "锚文本自描述",
-                "链接文案勿只写「软件介绍 / 快速入门 / 了解更多」等泛化词 + 外链图标；须让读者与 Agent 脱离行列标题也能知道链到哪——宜「行任务 · 目标文档」如「学习了解 · MindSpeed LLM 软件介绍」",
+                "锚文本须自描述",
+                "勿只写「软件介绍 / 快速入门 / 了解更多」等泛词；宜含对象或「行任务 · 目标文档」（如「学习了解 · MindSpeed LLM 软件介绍」），脱离表头也能知道去向",
             ),
             (
-                "站外跳转标清目标站点",
-                "外链锚文本点明目标站点（如「… — GitCode ↗」），并加 title 与 <code>rel=\"noopener\"</code>；底层用绝对 URL 的真实 a[href]，让 Agent 知道去哪个站、可跟链，别用图标替代文案",
+                "站外须标清目标站点",
+                "外链在可见文案中点明目标站（如「… — GitCode」），勿只靠 ↗ 图标暗示；稿面按真实可点链接交付",
             ),
             (
                 "行列语境写进交付稿",
-                "设计稿标注：左列「环境安装」、顶列「进阶」与格内链文案一并交付，前端 / 文档侧 SSR 时合成可读 anchor，勿假设用户记得表头",
+                "矩阵类链接须把左列任务、顶列阶段与格内文案一并标注，便于 SSR 合成可读 anchor，勿假设用户记得表头",
             ),
         ],
         "design_example": (
             "链接：泛词 + 外链图标 → 自描述 + 标清站外",
-            "仅泛化词 + 外链图标",
+            "泛词 · 仅图标暗示外链",
             '<div style="font-size:12.5px;">\n'
             '  <a href="#" style="color:var(--accent);text-decoration:none;">软件介绍 ↗</a>\n'
-            '</div>\n'
-            '<p class="rf-muted">「软件介绍 ↗」只靠图标暗示外链，锚文本泛化、没说链到哪个站；入库后 anchor 仍是泛词，Agent 说不清去向、也不知是站外。</p>',
-            "自描述 anchor + 标清站外目标",
+            '</div>',
+            "自描述 · 标清站外目标",
             '<div style="font-size:12.5px;">\n'
-            '  <a href="#" style="color:var(--accent);text-decoration:none;" title="MindSpeed-LLM introduction.md（GitCode）">学习了解 · MindSpeed LLM 软件介绍<span style="color:var(--muted);"> — GitCode ↗</span></a>\n'
-            '</div>\n'
-            '<p class="rf-caption"><strong>要点：</strong></p>\n'
-            '<ul class="rf-caption" style="margin:4px 0 0;padding-left:18px;">\n'
-            '  <li>锚文本自描述：含「行任务 · 目标文档」（学习了解 · MindSpeed LLM 软件介绍），脱离表头也知道链到哪。</li>\n'
-            '  <li>站外跳转标清目标站点（GitCode ↗）+ title，底层真实 a[href] 绝对 URL、<code>rel="noopener"</code>；别用图标替代文案。</li>\n'
-            '</ul>',
+            '  <a href="#" style="color:var(--accent);text-decoration:none;" title="MindSpeed-LLM introduction.md（GitCode）">学习了解 · MindSpeed LLM 软件介绍<span style="color:var(--muted);"> — GitCode</span></a>\n'
+            '</div>',
             True,
             True,
+            "「软件介绍 ↗」脱离行列说不清对象与站点；入库后 anchor 仍是泛词。",
+            "<strong>要点：</strong>锚文本含任务 + 文档名；站外点明目标站；底层按真实可点链接交付。",
         ),
         "content": [
             (
-                "MD / llms 补 JSON 内链",
-                "HTML 仍把 link 放 application/json 时，llms.txt 或平行 MD 须列出带行列语境的入口，如「[进阶 · 学习了解] 软件介绍 → URL」；勿只写「软件介绍 → URL」",
+                "统一命名",
+                "链文案、落地页 title 与 llms 条目对齐；矩阵内勿多列共用同一「软件介绍」而无对象区分",
             ),
             (
-                "锚文本与目的地一致",
-                "链文案宜点明对象（MindSpeed LLM / CANN 安装指南），与 href 落地页标题一致；禁三列重复使用同一「软件介绍」而无区分",
+                "导流链平行清单",
+                "在 llms.txt 或平行 MD 中平铺带行列语境的入口（如「[进阶 · 学习了解] MindSpeed LLM 软件介绍 → URL」）；文档正文宜用标准 Markdown 链",
             ),
             (
-                "文档正文用标准 Markdown 链",
-                "CANN 算子库等文档页宜 `[Math类接口](url)` 或 HTML OLink；勿只写在脚本 JSON 或 onclick",
-            ),
-        ],
-        "frontend": [
-            (
-                "导流矩阵须 SSR a[href]",
-                "训练开发页 hcomponent-ascend-user-journey 每一格须输出 OLink 或 a[href] + 可见文案；禁 tab-content 空挂载点 + 仅 application/json 存 link（友商 Mintlify Related topics、NVIDIA Quick Links 首包可跟）",
-            ),
-            (
-                "锚文本合成行列语境",
-                "SSR 时可将 row.text（学习了解）+ column.label（进阶）+ cell.label 合成可见 anchor 或 title；外链加 rel=\"noopener\" 与可读 title",
-            ),
-            (
-                "禁 span/div 伪链",
-                "可导航样式底层须 a[href]；禁 div.o-nav-item-link、整卡 onclick 无 href",
-            ),
-            (
-                "占位链与路径规范",
-                "禁 href=\"#\" / javascript:void 占位；站内链用 canonical 绝对或根相对路径",
+                "过渡补位",
+                "HTML 仍把 link 放 application/json 时，用 llms / MD 临时补可跟 URL；SSR OLink 达标后以页面为准，重复项可移除",
             ),
         ],
         "content_example": (
-            "训练开发：llms 补旅程链",
-            "link 只在 JSON",
-            "【HTML】用户旅程矩阵浏览器可见，tab-content 空\n【JSON】application/json 含 label+link\n【缺失】首包无 a[href]",
-            "llms 平铺矩阵入口",
+            "训练开发旅程矩阵 → MD / llms 平行清单",
+            "link 只在 JSON，无平行清单",
+            "用户旅程矩阵浏览器可见，tab-content 空；\nlabel+link 仅在 application/json；\n无 Markdown / llms 带行列语境的入口清单。",
+            "MD 平行矩阵入口",
             "## 大语言模型训练用户旅程\n- [进阶 · 学习了解] MindSpeed LLM 软件介绍 → https://gitcode.com/Ascend/MindSpeed-LLM/…/introduction.md\n- [进阶 · 环境安装] 安装指导 → …/install_guide.md\n- [高阶 · 快速体验] 快速入门 → …/quick_start.md",
             False,
             False,
         ),
+        "content_example_after_sections": [
+            (
+                "MD 平行矩阵入口",
+                "## 大语言模型训练用户旅程\n- [进阶 · 学习了解] MindSpeed LLM 软件介绍 → https://gitcode.com/Ascend/MindSpeed-LLM/…/introduction.md\n- [进阶 · 环境安装] 安装指导 → …/install_guide.md\n- [高阶 · 快速体验] 快速入门 → …/quick_start.md",
+            ),
+            (
+                "llms 临时补关键链",
+                "# llms.txt（过渡）\n- [MindSpeed LLM 软件介绍](https://gitcode.com/Ascend/MindSpeed-LLM/…/introduction.md)\n- [安装指导](…/install_guide.md)",
+                "矩阵 SSR 为 a[href] 后，llms 中重复项可移除。",
+            ),
+        ],
+        "content_example_before_prefix": "当前问题",
+        "content_example_before_mark": True,
+        "frontend_lead": "正文与导流矩阵中的链接须写入首包 HTML 为真实 <code>a[href]</code> + 可见锚文本；静态抓取（不执行 JS）仍能列出文案并跟链（对标：Mintlify Related topics、NVIDIA Quick Links）。",
+        "frontend": [
+            (
+                "导流矩阵须输出真实链接",
+                "用户旅程等矩阵每一格须为 OLink 或 a[href] + 可见文案；勿 tab-content 空挂载、仅 application/json 存 link",
+            ),
+            (
+                "锚文本合成行列语境",
+                "SSR 可将行任务 + 列阶段 + 格内文案合成可见 anchor 或 title；外链加 rel=\"noopener\" 与可读 title",
+            ),
+            (
+                "禁伪链与占位链",
+                "可导航样式底层须 a[href]；勿 span/div/onclick 冒充，勿 href=\"#\" / javascript:void；站内宜绝对或根相对路径",
+            ),
+        ],
         "frontend_example": (
-            "训练开发旅程矩阵 vs 友商",
-            "JSON 无 a[href]",
-            '&lt;div class="tab-content" id="vue_…"&gt;&lt;/div&gt;\n&lt;script type="application/json"&gt;{"label":"软件介绍","link":"https://…/introduction.md"}&lt;/script&gt;\n&lt;!-- 友商 Mintlify Related topics / NVIDIA Quick Links：a[href] 在首包 --&gt;',
+            "训练开发旅程矩阵",
+            "JSON 存 link · 首包无 a",
+            '&lt;div class="tab-content" id="vue_…"&gt;&lt;/div&gt;\n&lt;script type="application/json"&gt;{"label":"软件介绍","link":"https://…/introduction.md"}&lt;/script&gt;',
             "SSR 矩阵 OLink",
-            '&lt;a class="o-link journey-cell-link" href="https://gitcode.com/Ascend/MindSpeed-LLM/…/introduction.md" title="MindSpeed LLM 软件介绍（GitCode）" rel="noopener"&gt;学习了解 · MindSpeed LLM 软件介绍&lt;/a&gt;\n&lt;a class="o-link journey-cell-link" href="…/install_guide.md" title="安装指导"&gt;环境安装 · 安装指导&lt;/a&gt;',
+            '&lt;a class="o-link" href="https://gitcode.com/Ascend/MindSpeed-LLM/…/introduction.md" title="MindSpeed LLM 软件介绍（GitCode）" rel="noopener"&gt;学习了解 · MindSpeed LLM 软件介绍&lt;/a&gt;\n&lt;a class="o-link" href="…/install_guide.md" title="安装指导"&gt;环境安装 · 安装指导&lt;/a&gt;',
             False,
             False,
+            "浏览器可见矩阵，首包只有空挂载点 + JSON；静态抓取列不出可跟 a[href]。",
+            "每格写成 a[href] + 自描述锚文本；静态抓取即可列全并跟链。",
         ),
+        "frontend_example_before_prefix": "当前问题",
         "acceptance": [
-            ("静态可达", "禁 JS 抓取训练开发 tab1 后，用户旅程矩阵仍含可跟链 href，能回答 problems-olink 探针问句"),
-            ("html 可抓全", "正文链 html 达到友商水准（Mintlify related-topics、NVIDIA topics-links：文案与 href 在首包）"),
-            ("可证伪", "对「软件介绍 / 安装指导 / 快速入门 href 是什么」须能引用具体 a[href]，与昇腾 JSON 注入失败判据互斥"),
+            ("静态可达", "静态抓取训练开发 tab1（不执行 JS）后，用户旅程矩阵仍含可跟链，能回答 problems-olink 探针问句"),
+            ("html 可抓全", "正文链 html 达到友商水准（Mintlify Related topics、NVIDIA Quick Links：文案与 href 在首包）"),
+            ("可证伪", "对「软件介绍 / 安装指导 / 快速入门 href 是什么」须能引用具体 a[href]，与 JSON 注入失败判据互斥"),
         ],
     },
     "odropdown": {
-        "design_none": True,
+        "hide_sample_meta": True,
+        "design_example_side_by_side": True,
+        "design": [
+            (
+                "子项文案须自描述",
+                "面板内每项用对象全名（如「Atlas 900 A2 PoD 集群基础单元」），勿只写「产品1 / 更多 / 了解更多」",
+            ),
+            (
+                "面板子链按真实链接出",
+                "展开面板内子项均按可点链接呈现；勿只画触发器，或子项用无目标的泛词伪入口",
+            ),
+        ],
+        "design_example": (
+            "下拉：泛词伪链 → 自描述可跟链",
+            "有面板 · 子项也泛",
+            '<div style="font-size:12.5px;">\n'
+            '  <div style="display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid var(--line);border-radius:4px;font-weight:600;">\n'
+            '    更多产品 <span style="font-size:10px;">▾</span>\n'
+            '  </div>\n'
+            '  <div style="margin-top:6px;border:1px solid var(--line);border-radius:6px;padding:10px 12px;background:#fff;max-width:240px;">\n'
+            '    <ul class="rf-nav-links" style="margin:0;color:var(--muted);">\n'
+            '      <li><span>产品 1</span></li>\n'
+            '      <li><span>产品 2</span></li>\n'
+            '      <li><span>了解更多 ›</span></li>\n'
+            '    </ul>\n'
+            '  </div>\n'
+            '</div>',
+            "触发器 + 自描述子链",
+            '<div style="font-size:12.5px;">\n'
+            '  <div style="display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid var(--accent);border-radius:4px;font-weight:600;">\n'
+            '    更多产品 <span style="font-size:10px;">▾</span>\n'
+            '  </div>\n'
+            '  <div style="margin-top:6px;border:1px solid var(--line);border-radius:6px;padding:10px 12px;background:#fff;max-width:280px;">\n'
+            '    <ul class="rf-nav-links" style="margin:0;">\n'
+            '      <li><a href="#">Atlas 900 A2 PoD 集群基础单元</a></li>\n'
+            '      <li><a href="#">Atlas 900 SuperCluster AI 集群</a></li>\n'
+            '    </ul>\n'
+            '  </div>\n'
+            '</div>',
+            True,
+            True,
+            "面板里虽有项，但是「产品 1 / 了解更多」等泛词，且常按悬停态交付、未当可跟链接画出。",
+            "<strong>要点：</strong>子项用机型全名，并按真实可点链接交付（实现上须首包输出）。",
+        ),
         "content": [
             (
-                "llms 补下拉子链",
-                "HTML 下拉仍靠交互/JSON 挂载时，llms.txt 须平铺子项：昇腾「更多产品」各机型 URL；Mintlify Products 各特性链；NVIDIA Resources（Developer Program / GTC / On-Demand 等）；达标后以 SSR dropdown 为准",
+                "统一命名",
+                "下拉子项文案与落地页 title、llms / sitemap 条目对齐（机型 / 特性 / 资源名全称一致）",
+            ),
+            (
+                "下拉子链平行清单",
+                "在 llms.txt 或平行 MD 中平铺面板子项（标题 + URL），如「更多产品」下各集群机型；即使 panel 未抓全，也可枚举同品类入口",
+            ),
+            (
+                "过渡补位",
+                "HTML 仍靠交互 / JSON 挂载时，用 llms 临时补子链；SSR dropdown 达标后以页面为准，重复项可移除",
             ),
         ],
         "content_example": (
-            "集群页：llms 补「更多产品」链",
-            "子链只在交互 panel",
-            "【HTML】仅「更多产品」触发器\n【缺失】Atlas 900 A2 PoD / SuperCluster AI 等 href 未进首包",
-            "llms 平铺同品类机型",
-            "## 集群产品 · 更多产品\n- Atlas 900 A2 PoD 集群基础单元 → /hardware/cluster?tag=900\n- Atlas 900 SuperCluster AI 集群 → /hardware/cluster?tag=900ai",
+            "集群页「更多产品」→ MD / llms 平行清单",
+            "只有触发器，无子链清单",
+            "首包仅见「更多产品」；\nAtlas 900 A2 PoD / SuperCluster AI 等 href 未进首包，\n也无 Markdown / llms 平行清单。",
+            "MD 平行子链清单",
+            "## 集群产品 · 更多产品\n- [Atlas 900 A2 PoD 集群基础单元](/hardware/cluster?tag=900)\n- [Atlas 900 SuperCluster AI 集群](/hardware/cluster?tag=900ai)",
             False,
             False,
         ),
+        "content_example_after_sections": [
+            (
+                "MD 平行子链清单",
+                "## 集群产品 · 更多产品\n- [Atlas 900 A2 PoD 集群基础单元](/hardware/cluster?tag=900)\n- [Atlas 900 SuperCluster AI 集群](/hardware/cluster?tag=900ai)",
+            ),
+            (
+                "llms 临时补子链",
+                "# llms.txt（过渡）\n- [Atlas 900 A2 PoD 集群基础单元](/hardware/cluster?tag=900)\n- [Atlas 900 SuperCluster AI 集群](/hardware/cluster?tag=900ai)",
+                "dropdown SSR 达标后以 HTML 为准，llms 中重复项可移除。",
+            ),
+        ],
+        "content_example_before_prefix": "当前问题",
+        "content_example_before_mark": True,
+        "frontend_lead": "导航型下拉的面板子项须写入首包 HTML；静态抓取（不执行 JS）仍能列全子项文案与 <code>a[href]</code>（对标要求：Mintlify Products、NVIDIA Resources 亦须 SSR；昇腾「更多产品」同）。",
         "frontend": [
             (
-                "dropdown 子项须 SSR a[href]",
-                "昇腾集群页「更多产品」、Mintlify Products mega menu、NVIDIA developer Resources 等须在首包输出 ODropdown/a[href] + 可见文案；禁仅 navigation-menu-trigger 或 div#header 空壳",
+                "子项须为真实链接",
+                "panel 内每项须为 a[href] + 可见文案；勿仅留触发器（更多产品 / Products）而无子链",
             ),
             (
-                "禁外部 JSON 作唯一菜单",
-                "NVIDIA header-secondary.json、Vue 读 application/json 等不可代替首包子链；JSON 仅作增强",
+                "子链进首包，勿延迟挂",
+                "子项须服务端一次性输出；可用 CSS 隐藏，勿等悬停 / 点击才注入，勿仅挂 body portal",
             ),
             (
-                "禁 portal 延迟挂",
-                "下拉 panel 不得点击后才注入 body；子项宜写在 nav/ul 静态区，视觉可 hidden 但须保留 a 节点",
-            ),
-            (
-                "子项文案自描述",
-                "每项 label 宜含对象全名（机型/特性/资源名），与 href 落地页 title 一致",
+                "外部 JSON 不可作唯一菜单",
+                "header-secondary.json、application/json 等仅可作增强，不能代替首包 a[href] 列表",
             ),
         ],
         "frontend_example": (
-            "三站下拉：触发器 vs SSR 子链",
-            "仅触发器 / JSON / 空壳 header",
-            "昇腾：<span>更多产品</span> <!-- panel 无 a[href] -->\nMintlify：<button data-navitem=\"Products\" data-state=\"closed\">Products</button>\nNVIDIA：<div id=\"header\"></div> + fetch header-secondary.json",
-            "SSR 全量子项可跟链",
-            '<div class="o-dropdown-panel">\n  <a href="/hardware/cluster?tag=900">Atlas 900 A2 PoD 集群基础单元</a>\n  <a href="/hardware/cluster?tag=900ai">Atlas 900 SuperCluster AI 集群</a>\n</div>',
+            "集群页「更多产品」",
+            "仅触发器 · 子链未进首包",
+            '&lt;span&gt;更多产品&lt;/span&gt;\n&lt;!-- panel 悬停后才挂 a[href] / 首包为空 --&gt;\n&lt;!-- 同类：Mintlify Products 触发器；NVIDIA #header + fetch JSON --&gt;',
+            "SSR 面板子链可跟",
+            '&lt;div class="o-dropdown-panel"&gt;\n  &lt;a href="/hardware/cluster?tag=900"&gt;Atlas 900 A2 PoD 集群基础单元&lt;/a&gt;\n  &lt;a href="/hardware/cluster?tag=900ai"&gt;Atlas 900 SuperCluster AI 集群&lt;/a&gt;\n&lt;/div&gt;',
             False,
             False,
+            "首包只有触发器文案；静态抓取列不出各机型落地 URL。",
+            "panel 内子项写成 a[href]；静态抓取即可列全并跟链。",
         ),
+        "frontend_example_before_prefix": "当前问题",
         "acceptance": [
-            ("静态可达", "禁 JS 抓取集群产品页后，「更多产品」下拉子项仍含可跟链 href，能回答 problems-odropdown 探针问句"),
-            ("三站互证", "与 Mintlify Products mega menu、NVIDIA Resources JSON 菜单同类问题须 SSR 解决，不可只修昇腾一处"),
-            ("可证伪", "对「Atlas 900 A2 PoD / SuperCluster AI 集群分别链到哪」须能引用具体 href，与仅触发器文案失败判据互斥"),
+            ("静态可达", "静态抓取集群产品页（不执行 JS）后，「更多产品」下拉子项仍含可跟链，能回答 problems-odropdown 探针问句"),
+            ("html 可抓全", "与 Mintlify Products、NVIDIA Resources 同类问题须 SSR 解决，不可只修昇腾一处"),
+            ("可证伪", "对「Atlas 900 A2 PoD / SuperCluster AI 集群分别链到哪」须能引用具体 href，与仅触发器失败判据互斥"),
         ],
     },
     "ocard": {
+        "hide_sample_meta": True,
+        "design_example_side_by_side": True,
         "design": [
             (
                 "三要素文案位",
-                "导流卡稿面预留 o-card-title（对象名）、o-card-detail（一句话摘要）、CTA 锚文本三块可见位；禁只有封面图 + icon",
+                "导流卡稿面预留标题（对象名）、一句话摘要、可点区域三块可见位；禁只有封面图 + icon",
             ),
             (
                 "封面图角色标注",
-                "信息型封面须预留 figcaption / alt 说明位；纯装饰封面标注 aria-hidden，研发按装饰图处理",
+                "信息型封面预留 figcaption / alt 说明位；纯装饰封面标装饰图，研发按 alt=\"\" 处理",
             ),
             (
                 "卡内列表版式",
-                "「精品推荐 / 互动交流 / 资讯 Tab」等嵌套列表卡，稿面预留列表项标题 + 摘要 + 链接列，勿假设滑动或点击后才出现文案",
+                "「精品推荐 / 资讯 Tab」等嵌套列表卡，稿面预留列表项标题 + 摘要列，勿假设滑动或点击后才出现文案",
             ),
         ],
         "design_example": (
             "开发资源卡：仅 icon + 标题 → 三要素卡",
             "仅 icon + 标题",
             '<div style="border:1px solid var(--line);border-radius:8px;padding:14px;background:#fff;max-width:240px;">\n'
-            '  <div style="width:36px;height:36px;border-radius:8px;background:#eef2ff;display:flex;align-items:center;justify-content:center;font-size:18px;">🧩</div>\n'
+            '  <div style="width:36px;height:36px;border-radius:8px;background:#eef2ff;display:flex;align-items:center;justify-content:center;font-size:18px;">◇</div>\n'
             '  <div style="margin-top:10px;font-weight:600;">HiDevLab-在线开发</div>\n'
-            '</div>\n'
-            '<p class="rf-muted" style="margin-top:8px;">整卡只有图标 + 标题，缺 o-card-detail 摘要、没有 a[href]；抓取只拿到一个标题，说不清卡片是什么、点了去哪。</p>',
-            "标题 + 摘要 + 链接",
+            '</div>',
+            "标题 + 摘要 + 真链接",
             '<a href="https://hidevlab.hiascend.com/" style="display:block;text-decoration:none;border:1px solid var(--line);border-radius:8px;padding:14px;background:#fff;max-width:260px;color:inherit;">\n'
-            '  <div style="width:36px;height:36px;border-radius:8px;background:#eef2ff;display:flex;align-items:center;justify-content:center;font-size:18px;">🧩</div>\n'
+            '  <div style="width:36px;height:36px;border-radius:8px;background:#eef2ff;display:flex;align-items:center;justify-content:center;font-size:18px;">◇</div>\n'
             '  <div style="margin-top:10px;font-weight:600;">HiDevLab-在线开发</div>\n'
             '  <div style="margin-top:4px;font-size:12.5px;color:var(--muted);">提供简单、高效、易用的在线开发平台</div>\n'
-            '</a>\n'
-            '<p class="rf-muted" style="margin-top:8px;">整卡即一个 <code>&lt;a href&gt;</code>：点击跳转，卡面不必显示 URL，但源码里有真链接。</p>\n'
-            '<p class="rf-caption" style="margin-top:8px;"><strong>要点：</strong></p>\n'
-            '<ul class="rf-caption" style="margin:4px 0 0;padding-left:18px;">\n'
-            '  <li>三要素齐全：标题（o-card-title）+ 一句话摘要（o-card-detail）+ 真实 a[href]。</li>\n'
-            '  <li>URL 不必在卡面可见——整卡用真实 <code>&lt;a href&gt;</code> 包裹即可；但禁用 div + onclick 的整卡跳转（爬虫跟不了）。</li>\n'
-            '  <li>封面图补 alt / figcaption，纯装饰图 alt=""。</li>\n'
-            '</ul>',
+            '</a>',
             True,
             True,
+            "只有图标 + 标题，缺摘要与 a[href]；抓取说不清卡片是什么、点了去哪。",
+            "整卡用真实 a[href] 包裹：标题 + 一句话摘要；URL 不必在卡面可见。",
         ),
         "content": [
             (
-                "llms 补卡片入口清单",
-                "首页资讯/活动 Tab 下卡片 html 未达标前，llms 可临时列出「最新发布 / 精彩活动」各卡标题 → URL；达标后以 SSR o-card 为准",
+                "统一命名",
+                "卡片标题与落地页 title、llms 条目对齐（如一律「HiDevLab-在线开发」）",
             ),
             (
-                "MD 平铺资源卡",
-                "按开发者页「获取开发资源」结构在 MD 写出 HiDevLab / 资源下载中心 / 昇腾镜像仓库 三卡标题、摘要与 href",
+                "卡片入口平行清单",
+                "在 MD / llms 平铺「标题 → 摘要 → URL」；资讯 / 活动 Tab 下各卡亦须可枚举，不依赖滑动",
             ),
             (
-                "封面图意转写",
-                "课程/活动卡若用封面图，须在正文或 figcaption 复述图意，禁止「见封面」式指代",
+                "过渡补位",
+                "o-card / scroller 尚未 SSR 时，用 llms 临时补入口清单；达标后以页面为准，临时项可移除",
             ),
         ],
         "content_example": (
-            "首页资讯 Tab：空列表 vs llms 补位",
-            "Tab 下卡片靠注入",
-            "【HTML】o-scroller-container 空\n【浏览器可见】金融/SWA/CANN 资讯卡\n【缺失】llms 未列各卡标题与 URL",
-            "llms 平铺默认 Tab 卡片",
+            "首页资讯 Tab：空列表 → MD / llms 平行入口",
+            "Tab 下卡片靠注入，无平行清单",
+            "浏览器可见金融 / SWA / CANN 资讯卡；\n源码 o-scroller-container 空；\nllms / MD 未列各卡标题与 URL。",
+            "MD 平铺默认 Tab 卡片",
             "## 社区首页 · 精彩活动\n- 昇腾AI创新大赛2026 → https://…\n- HCCL通信库创新大赛 → https://…",
             False,
             False,
         ),
-        "frontend": [
+        "content_example_after_sections": [
             (
-                "导流卡三要素 SSR",
-                "每张 o-card 须输出 o-card-title + o-card-detail + a[href]（开发者页 HiDevLab 三卡已达标）；训练/推理/算子入口卡亦须补 detail 短述",
+                "MD 平铺资源 / 活动卡",
+                "## 获取开发资源\n- [HiDevLab-在线开发](https://hidevlab.hiascend.com/) — 在线开发平台\n- [资源下载中心](https://…) — 一站式资源聚合\n\n## 社区首页 · 精彩活动\n- 昇腾AI创新大赛2026 → https://…",
             ),
             (
-                "卡内列表须进源码",
-                "首页资讯 Tab 的 o-scroller-container、开发者页 o-card-content 须 SSR 列表项，禁 <!--[--><!--]--> 空壳后客户端注入",
+                "llms 临时补入口",
+                "# llms.txt（过渡）\n- [HiDevLab-在线开发](https://hidevlab.hiascend.com/)\n- [昇腾AI创新大赛2026](https://…)",
+                "卡片三要素 SSR 达标后，临时项可移除。",
+            ),
+        ],
+        "content_example_before_prefix": "当前问题",
+        "content_example_before_mark": True,
+        "frontend_lead": "导流卡须在首包输出标题 + 摘要 + 真实 <code>a[href]</code>；卡内列表 / 资讯 scroller 亦须 SSR。静态抓取应能列全入口并跟链，禁整卡 onclick 与空壳注入。",
+        "frontend": [
+            (
+                "三要素进首包",
+                "每张导流卡输出可读标题、一句话摘要与可跟链；训练 / 推理 / 算子入口卡亦须补短述",
+            ),
+            (
+                "卡内列表 SSR",
+                "资讯 Tab scroller、精品推荐等列表项写入首包，禁空壳后客户端注入",
             ),
             (
                 "禁整卡 onclick",
-                "发现卡用 a[href] 包裹标题与摘要，样式可保留卡片外观；纯操作区标注 data-llm-exclude",
+                "发现卡用 a[href] 包裹；纯操作区标 data-llm-exclude",
             ),
             (
                 "封面补 alt",
-                "信息型封面 img 须有区分度 alt 或 figure/figcaption；装饰图 alt=\"\"",
+                "信息型封面非空 alt 或 figcaption；装饰图 alt=\"\"",
             ),
         ],
         "frontend_example": (
-            "开发者页：空 o-card-content → 全量三卡",
-            "卡内列表 / 空 scroller",
-            '&lt;div class="o-scroller-container"&gt;&lt;!-- 空 --&gt;&lt;/div&gt;\n&lt;div class="o-card-content"&gt;&lt;!--[--&gt;&lt;!--]--&gt;&lt;/div&gt;\n&lt;!-- 浏览器可见资讯/课程列表，源码空 --&gt;',
+            "开发者页：空壳 → 全量三要素卡",
+            "卡内列表 / scroller 空",
+            '&lt;div class="o-scroller-container"&gt;&lt;!-- 空 --&gt;&lt;/div&gt;\n&lt;div class="o-card-content"&gt;&lt;!--[--&gt;&lt;!--]--&gt;&lt;/div&gt;',
             "SSR title + detail + href",
-            '&lt;a href="https://hidevlab.hiascend.com/"&gt;\n  &lt;div class="o-card-title"&gt;HiDevLab-在线开发&lt;/div&gt;\n  &lt;div class="o-card-detail"&gt;提供简单、高效、易用的在线开发平台&lt;/div&gt;\n&lt;/a&gt;\n&lt;div class="o-card-title"&gt;资源下载中心&lt;/div&gt;\n&lt;div class="o-card-detail"&gt;一站式资源聚合下载&lt;/div&gt;…',
+            '&lt;a href="https://hidevlab.hiascend.com/"&gt;\n  &lt;div class="o-card-title"&gt;HiDevLab-在线开发&lt;/div&gt;\n  &lt;div class="o-card-detail"&gt;提供简单、高效、易用的在线开发平台&lt;/div&gt;\n&lt;/a&gt;',
             False,
             False,
+            "浏览器看得见列表，源码是空壳，静态抓取列不出入口。",
+            "标题、摘要、href 均在首包，可跟链。",
         ),
+        "frontend_example_before_prefix": "当前问题",
         "acceptance": [
-            ("静态可达", "禁 JS 抓取后，导流卡仍含 title + detail + href，能列表回答 problems-ocard 探针问句"),
-            ("三要素齐", "开发者页 HiDevLab 三卡级：每张卡 title、detail、可跟链均在首包"),
-            ("可证伪", "对「最新课程/社区活动卡片标题、摘要、URL」须能引用具体文本与 href，与 o-scroller-container 空壳失败判据互斥"),
+            ("静态可达", "静态抓取后导流卡仍含标题 + 摘要 + href，能回答 problems-ocard 探针问句"),
+            ("清单齐全", "资讯 / 资源卡入口可从页面或 MD / llms 枚举"),
+            ("可证伪", "对「HiDevLab / 活动卡分别链到哪」须能引用具体文本与 href，与空壳失败判据互斥"),
         ],
     },
     "odatetable": {
+        "hide_sample_meta": True,
+        "design_example_side_by_side": True,
         "design": [
             (
                 "表头列须标注",
-                "硬件/软件规格对照稿须明确 th 列（型号/发行版/参数项）与 td 列（CPU/内存/Kernel/GCC 等），禁把参数只放在产品渲染图或特性插画里",
+                "规格对照稿明确 th / td 列（型号、CPU、内存等），禁把参数只放在产品渲染图或特性插画里",
             ),
             (
-                "截图表标注排除",
-                "设计交付标注「参数须可编辑文本表，禁截图表入库」；装饰性产品图与规格表分区",
+                "截图表标排除",
+                "稿面标注「参数须可编辑文本表，禁截图表入库」；装饰产品图与规格表分区",
             ),
         ],
         "design_example": (
             "集群规格：截图表 → 语义参数表",
             "参数绑在特性 PNG",
             '<div style="border:1px solid var(--line);border-radius:6px;overflow:hidden;max-width:320px;">\n'
-            '  <div style="background:linear-gradient(135deg,#334155,#475569);color:#fff;padding:18px 14px;text-align:center;font-size:12.5px;line-height:1.6;">📷 规格参数（截图 / feature.png）<br>型号 · CPU · 内存 · 互联</div>\n'
-            '</div>\n'
-            '<p class="rf-muted" style="margin-top:8px;">参数是一张截图 / 特性配图，HTML 里没有 th/td；抓取拿不到任何单元格，无法按型号列问答。</p>',
+            '  <div style="background:linear-gradient(135deg,#334155,#475569);color:#fff;padding:18px 14px;text-align:center;font-size:12.5px;line-height:1.6;">规格参数（截图）<br>型号 · CPU · 内存 · 互联</div>\n'
+            '</div>',
             "表头 + 型号列参数表",
             '<table class="rf-spec">\n'
             '  <thead><tr><th>型号</th><th>CPU</th><th>内存</th><th>互联</th></tr></thead>\n'
@@ -2155,184 +2444,471 @@ PRINCIPLES_OVERRIDES: dict[str, dict[str, Any]] = {
             '    <tr><td>Atlas 900</td><td>…</td><td>…</td><td>…</td></tr>\n'
             '    <tr><td>Atlas 800</td><td>…</td><td>…</td><td>…</td></tr>\n'
             '  </tbody>\n'
-            '</table>\n'
-            '<p class="rf-caption" style="margin-top:8px;"><strong>要点：</strong></p>\n'
-            '<ul class="rf-caption" style="margin:4px 0 0;padding-left:18px;">\n'
-            '  <li>用真实 <code>&lt;table&gt;</code> + th/td，每格文本可按行列抓取问答。</li>\n'
-            '  <li>文档页再镜像一份 Markdown 平行表；禁截图表、div 伪表与空 td。</li>\n'
-            '</ul>',
+            '</table>',
             True,
             True,
+            "参数是截图 / 特性配图，HTML 无 th/td，无法按型号列问答。",
+            "真实 table + th/td，每格文本可按行列抓取。",
         ),
         "content": [
             (
-                "MD 平行规格表",
-                "每个 HTML 规格表在文档 MD/llms 镜像一份 Markdown 表（如 CUDA Table 2 Validated OS Versions、FAQ 表1 昇腾产品系列），表头与单元格与 HTML 一致",
+                "统一命名",
+                "表题、列名与文档 / llms 中的参数名对齐（如一律「Atlas 900」、CPU / 内存全称一致）",
             ),
             (
-                "表题与引用",
-                "正文写清「表1 …」「Table 3 Supported Compilers」，禁止「见上表」无锚点；Agent 须能引用表题定位",
+                "规格表平行清单",
+                "每个 HTML 规格表在 MD / llms 镜像一份 Markdown 表；表头与单元格与页面一致",
+            ),
+            (
+                "过渡补位",
+                "页面表尚未语义化时，用 MD / llms 临时补矩阵；table SSR 达标后以页面为准",
             ),
         ],
         "content_example": (
-            "CUDA 指南：MD 镜像 OS 表",
-            "仅 HTML 长文档",
-            "【HTML】Table 2 Validated OS Versions 已在 Sphinx table\n【缺失】llms 未摘 Kernel/GCC/GLIBC 矩阵",
-            "llms 平铺规格表",
-            "## CUDA 13.3 · Validated OS\n| Distribution | Kernel | GCC | GLIBC |\n| RHEL 9 | 5.14… | 11.5.0 | 2.34 | …",
+            "规格表：仅 HTML / 截图 → MD 平行表",
+            "无 Markdown 平行规格表",
+            "页面有或没有 table；\nllms / MD 未摘 Kernel / GCC / 型号矩阵；\nAgent 无法按列引用参数。",
+            "llms / MD 平铺规格表",
+            "## CUDA · Validated OS\n| Distribution | Kernel | GCC | GLIBC |\n| RHEL 9 | 5.14… | 11.5.0 | 2.34 |",
             False,
             False,
         ),
+        "content_example_after_sections": [
+            (
+                "MD 平行规格表",
+                "## Atlas 900 vs Atlas 800\n| 参数 | Atlas 900 | Atlas 800 |\n| CPU | … | … |\n| 内存 | … | … |\n| 互联 | … | … |",
+            ),
+            (
+                "llms 临时补矩阵",
+                "# llms.txt（过渡）\n## Atlas 规格摘要\n- Atlas 900：CPU … / 内存 …\n- Atlas 800：CPU … / 内存 …",
+                "语义 table SSR 达标后，临时项可收敛。",
+            ),
+        ],
+        "content_example_before_prefix": "当前问题",
+        "content_example_before_mark": True,
+        "frontend_lead": "规格对照须以真实 <code>table/th/td</code> 写入首包；禁截图表、div 伪表与空 td。静态抓取应能按行列读出参数，型号 Tab 切换后的矩阵亦须在源码可读。",
         "frontend": [
             (
-                "语义 table SSR",
-                "规格对照须 output 真实 table/thead/tbody/th/td（对标 Mintlify Custom portal Features 三列表、CUDA Table 1–4、FAQ 表1）；禁 div 网格伪表",
+                "语义 table 进首包",
+                "输出真实 table/thead/tbody/th/td；禁 div 网格伪表",
             ),
             (
-                "禁空 td 占位",
-                "集群页 spec-summary 等 table 骨架不得留空 td 等脚本填值；每格须有可读文本",
+                "禁空 td",
+                "表骨架不得留空单元格等脚本填值；每格须有可读文本",
             ),
             (
-                "Tab 后注入规格须 SSR",
-                "型号 Tab 切换后才出现的参数矩阵，未切换页签也须在源码可读（visually-hidden 或平铺备用表）",
+                "Tab 后规格亦 SSR",
+                "型号 Tab 切换后才出现的参数矩阵，未切换页签也须在源码可读",
             ),
             (
                 "caption 与 scope",
-                "复杂表补 caption、th scope=\"col/row\"，合并单元格不破坏列对齐",
+                "复杂表补 caption、th scope；合并单元格不破坏列对齐",
             ),
         ],
         "frontend_example": (
             "集群摘要表：空 td → 全量 th/td",
             "table 骨架空单元格",
-            '&lt;table class="o-table-border-row"&gt;\n  &lt;tr&gt;&lt;td class="table-col-1"&gt;&lt;p&gt;&lt;/p&gt;&lt;/td&gt;&lt;td&gt;&lt;!-- 空 --&gt;&lt;/td&gt;&lt;/tr&gt;\n&lt;/table&gt;',
+            '&lt;table&gt;\n  &lt;tr&gt;&lt;td&gt;&lt;p&gt;&lt;/p&gt;&lt;/td&gt;&lt;td&gt;&lt;!-- 空 --&gt;&lt;/td&gt;&lt;/tr&gt;\n&lt;/table&gt;',
             "SSR 规格矩阵",
             '&lt;table&gt;\n  &lt;caption&gt;Atlas 900 vs Atlas 800 规格&lt;/caption&gt;\n  &lt;thead&gt;&lt;tr&gt;&lt;th&gt;参数&lt;/th&gt;&lt;th&gt;Atlas 900&lt;/th&gt;&lt;th&gt;Atlas 800&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;\n  &lt;tbody&gt;&lt;tr&gt;&lt;th scope="row"&gt;CPU&lt;/th&gt;&lt;td&gt;…&lt;/td&gt;&lt;td&gt;…&lt;/td&gt;&lt;/tr&gt;…&lt;/tbody&gt;\n&lt;/table&gt;',
             False,
             False,
+            "空 td 占位，静态抓取读不到任何参数。",
+            "表头与单元格全文在首包，可按列问答。",
         ),
+        "frontend_example_before_prefix": "当前问题",
         "acceptance": [
-            ("静态可达", "禁 JS 抓取后，规格表仍含 th/td 与单元格文本，能回答 problems-odatetable 探针问句"),
-            ("三站互证", "与 Mintlify Features 表、CUDA Table 1–4、FAQ 表1 同级：表头 + 全行单元格在首包"),
-            ("可证伪", "对「Atlas 900 vs 800 CPU/内存/互联对照」须能按列引用单元格原文，与截图表/空 td 失败判据互斥"),
+            ("静态可达", "静态抓取后规格表仍含 th/td 与单元格文本，能回答 problems-odatetable 探针问句"),
+            ("平行可证", "MD / llms 有与页面一致的规格表，或页面表已语义化可独立引用"),
+            ("可证伪", "对「Atlas 900 vs 800 CPU/内存」须能按列引用单元格原文，与截图 / 空 td 失败判据互斥"),
         ],
     },
-    "otrees": {
-        "design_no_example": True,
-        "design": [
-            (
-                "UI 基本不用改，重点在源码 + Markdown",
-                "目录树的视觉与层级按常规侧栏即可，无需重新设计；真正要做的是让每个节点在 HTML 源码里是真实 <code>&lt;a href&gt;</code>、并在文档 Markdown / llms 写进对应链接。设计稿只需标注「节点 = 标题 + 可跟链」，落地交给前端 SSR 与内容清单",
-            ),
-        ],
-        "content": [
-            (
-                "目录 = 嵌套列表进 llms",
-                "在 llms.txt / 文档 MD 维护一份与侧栏一致的「嵌套列表 = 全量目录 + URL」，HTML 树抓不全时兜底",
-            ),
-            (
-                "叶子标题用全称",
-                "节点文本用完整文档标题（如「CANN 软件安装指南」），别用缩写 / 编号，方便 Agent 按标题定位",
-            ),
-        ],
-        "content_example": (
-            "手册目录：藏在 __NUXT_DATA__ → llms 平行目录",
-            "TOC 只在 __NUXT_DATA__",
-            "【Before】目录结构只序列化进 __NUXT_DATA__\nllms / 正文无等价目录清单",
-            "llms 平行嵌套目录",
-            "## FAQ 手册目录\n- 产品与技术常见问题\n  - [Atlas 800 常见问题](/faq/atlas800)\n  - [CANN 安装 FAQ](/faq/cann-install)\n- 开发工具 FAQ\n  - …",
-            False,
-            False,
-        ),
-        "frontend": [
-            (
-                "目录树 SSR 成 ul/li/a",
-                "侧栏树在首包输出真实嵌套 <code>&lt;ul&gt;&lt;li&gt;&lt;a href&gt;</code>（对标 Mintlify 文档侧栏、cuQuantum 侧栏），别只留客户端 hydrate 的空容器",
-            ),
-            (
-                "子级不靠点击挂载",
-                "至少 SSR 当前分支到当前页路径；懒加载子树须有服务端渲染的降级或一次性平铺全树",
-            ),
-            (
-                "节点用 a[href] 非 span",
-                "每个叶子是真实可跟链 <code>&lt;a href&gt;</code>，展开图标另放；禁 span + onclick 假链接",
-            ),
-            (
-                "TOC 别只进 __NUXT_DATA__",
-                "目录结构须落到可爬 HTML，序列化 JSON 仅作 hydrate、不作唯一来源",
-            ),
-        ],
-        "frontend_example": (
-            "侧栏树：__NUXT_DATA__ 空壳 → SSR 嵌套 a[href]",
-            "空壳容器 · 点击才挂载",
-            '&lt;nav class="o-trees"&gt;&lt;/nav&gt;\n&lt;!-- 树在 __NUXT_DATA__，点击才挂载子级，无 a[href] --&gt;',
-            "SSR 嵌套可跟链目录",
-            '&lt;nav class="o-trees"&gt;\n  &lt;ul&gt;\n    &lt;li&gt;&lt;a href="/faq/atlas800"&gt;Atlas 800 常见问题&lt;/a&gt;&lt;/li&gt;\n    &lt;li&gt;&lt;a href="/faq/cann-install"&gt;CANN 安装 FAQ&lt;/a&gt;&lt;/li&gt;\n  &lt;/ul&gt;\n&lt;/nav&gt;',
-            False,
-            False,
-        ),
-        "acceptance": [
-            ("静态可达", "禁 JS 抓取后，侧栏树仍含全部叶子节点的标题与 a[href]，能回答 problems-otrees 探针问句"),
-            ("三站互证", "与 Mintlify 文档侧栏、cuQuantum 侧栏同级：目录树在首包可枚举叶子 URL"),
-            ("可证伪", "对「某分类下所有叶子文档标题与 URL」须能给出清单，与懒加载 / __NUXT_DATA__ 失败判据互斥"),
-        ],
-    },
-    "otoggle": {
+    "ocarousel": {
+        "hide_sample_meta": True,
         "intro_card": {
-            "title": "为什么选择块是「视情况」——先看 Toggle 是否映射选型",
+            "plain": True,
+            "title": "场景判断",
             "items": [
                 (
                     "keep",
-                    "映射下载 / 版本的 Toggle",
+                    "白名单产品 / 文档入口帧",
                     "要做亲和",
-                    "如固件与驱动的型号 / 架构 / 安装方式：选项映射下载页或包表时，完整 option 矩阵须 SSR 或写进首包 JSON（可读 label + <code>ids=</code> 或 URL，对标 NVIDIA CUDA <code>data-react-props</code>）。",
+                    "帧指向产品能力、文档或认证等可引用入口时：须输出「标题 + 可引用摘要 + <code>a[href]</code>」，并完成图意转写；跳转型 CTA 禁 button 伪链。<br>对应页面：<a href=\"https://www.hiascend.com/zh\" target=\"_blank\" rel=\"noopener\">社区首页</a>",
+                ),
+                (
+                    "strip",
+                    "运营 / 活动 / 招募口号帧",
+                    "不做亲和 · 入库剥离",
+                    "赛事、招募、实习生、纯营销口号与产品规格混层时：默认 <code>data-llm-exclude</code> 出 llms 与知识库；人读发现归轮播，规格事实归文档页。",
+                ),
+            ],
+        },
+        "design_heading_suffix": " · 场景1",
+        "content_heading_suffix": " · 场景1",
+        "frontend_heading_suffix": " · 场景1",
+        "design_example_side_by_side": True,
+        "design": [
+            (
+                "信息帧三块文案位",
+                "白名单入口帧稿面预留标题、一句话事实摘要、CTA 锚文本；禁仅图标按钮或文字烧进图",
+            ),
+            (
+                "图意转写位 + 角色标注",
+                "信息型 Banner 预留 figcaption / 短说明；纯装饰背景图标装饰。运营帧与入口帧在稿面分区标注（后者交付三要素，前者标 exclude）",
+            ),
+        ],
+        "design_example": (
+            "口号 Banner → 可引用入口帧",
+            "仅视觉口号",
+            '<div style="height:70px;border-radius:6px;background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;">算子开发者认证 · 立即前往 ›</div>',
+            "标题 + 摘要 + 入口",
+            '<div style="border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#fff;max-width:320px;">\n'
+            '  <div style="height:56px;background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600;">Banner</div>\n'
+            '  <div style="padding:10px 12px;">\n'
+            '    <div style="font-weight:600;color:var(--text);">算子开发者认证（入门级）</div>\n'
+            '    <div style="margin-top:4px;font-size:12px;color:var(--muted);">官方认证入口，非 CANN API 规格。</div>\n'
+            '    <div style="margin-top:8px;font-size:12.5px;color:var(--accent);">前往算子开发者认证报名 →</div>\n'
+            '  </div>\n'
+            '</div>',
+            True,
+            True,
+            "文字烧进 Banner，无摘要、无真链接，易被当成官方规格入库。",
+            "可见标题 + 事实摘要 + CTA；图意另用 alt / figcaption 转写。",
+        ),
+        "content": [
+            (
+                "统一命名",
+                "帧标题 / CTA 与落地文档 title、认证页名称对齐（如一律「算子开发者认证」）",
+            ),
+            (
+                "入口与规格平行清单",
+                "规格事实写在可引用文档页；白名单帧在 MD / llms 平铺「标题 → 摘要 → URL」。运营帧不进清单",
+            ),
+            (
+                "过渡补位",
+                "帧尚未 SSR 达标时，用 llms 临时补白名单入口；达标后以页面为准。运营 / 活动帧默认不入库",
+            ),
+        ],
+        "content_example": (
+            "帧文案：口号 → 事实摘要 + 文档深链",
+            "只有营销口号，无平行入口",
+            "标题：算子开发者认证（入门级）\n摘要：（无）\nCTA：前往认证\n落地：活动报名页；llms 未列文档深链。",
+            "可引用摘要 + 文档",
+            "标题：算子开发者认证（入门级）\n摘要：官方认证入口，覆盖 Ascend C 入门；安装与 API 见 CANN 文档。\nCTA：前往算子开发者认证报名\n文档：/doc/…/cann-install",
+            False,
+            False,
+        ),
+        "content_example_after_sections": [
+            (
+                "MD 平铺白名单入口",
+                "## 社区首页 · 推广入口（白名单）\n- [算子开发者认证](https://…/cert) — 官方认证入口，非 API 规格\n- [CANN 安装文档](https://…/doc/cann-install)",
+            ),
+            (
+                "llms 临时补入口",
+                "# llms.txt（过渡）\n- [算子开发者认证报名](https://…/cert)\n- [CANN 安装文档](https://…/doc/cann-install)",
+                "白名单帧 SSR 达标后临时项可移除；勿把运营口号帧写入清单。",
+            ),
+        ],
+        "content_example_before_prefix": "当前问题",
+        "content_example_before_mark": True,
+        "frontend_lead": "白名单入口帧：标题、摘要、<code>a[href]</code> 须写入首包，全量帧均可抓（可用位移隐藏，勿删 DOM）。运营轮播根节点默认 <code>data-llm-exclude</code>；静态抓取不应把口号当产品规格。",
+        "frontend": [
+            (
+                "全量帧进首包",
+                "每帧独立节点输出标题、摘要、真实 a[href]；禁止只渲染当前帧",
+            ),
+            (
+                "图意与装饰分流",
+                "信息图 figure + 非空 alt；装饰图 alt=\"\" / aria-hidden",
+            ),
+            (
+                "运营根节点 exclude",
+                "运营轮播加 data-llm-exclude；仅白名单帧可加 data-llm-cite",
+            ),
+        ],
+        "frontend_example": (
+            "轮播：仅当前帧 → 全量帧 + exclude",
+            "仅当前帧 / button 伪链",
+            '&lt;div class="o-carousel"&gt;\n  &lt;div class="banner-title"&gt;算子开发者认证&lt;/div&gt;\n  &lt;button&gt;前往认证&lt;/button&gt;\n  &lt;!-- 其余帧 JS 注入 --&gt;\n&lt;/div&gt;',
+            "全量帧 + 排除标记",
+            '&lt;div class="o-carousel" data-llm-exclude="true"&gt;\n  &lt;article class="o-carousel-item" data-llm-cite="true"&gt;\n    &lt;h2&gt;算子开发者认证（入门级）&lt;/h2&gt;\n    &lt;p&gt;官方认证入口，非 CANN API 规格。&lt;/p&gt;\n    &lt;a href="https://…/cert"&gt;前往算子开发者认证报名&lt;/a&gt;\n  &lt;/article&gt;\n  &lt;!-- 其余帧同样完整输出 --&gt;\n&lt;/div&gt;',
+            False,
+            False,
+            "其余帧不在首包，CTA 是 button，静态抓取跟不了链。",
+            "全量帧可读；运营根 exclude，白名单帧可 cite。",
+        ),
+        "frontend_example_before_prefix": "当前问题",
+        "acceptance": [
+            ("静态可达", "静态抓取后白名单帧仍含标题 + 摘要 + href；运营口号未当规格入库"),
+            ("规格归文档", "产品能力说明可从文档页引用，不依赖 Banner 口号"),
+            ("可证伪", "对「算子认证入口链到哪 / 是不是 API 规格」须能引用摘要与 href，与纯口号失败判据互斥"),
+        ],
+    },
+    "otrees": {
+        "hide_sample_meta": True,
+        "design_example_side_by_side": True,
+        "design": [
+            (
+                "视觉层级可维持",
+                "树外观与展开交互按常规即可，无需为亲和重做视觉",
+            ),
+            (
+                "节点文案自描述",
+                "树节点用可读标题标明对应内容块（如「安装步骤 / 依赖说明」）；勿只写「节点1 / 更多」。节点不必都画成链接",
+            ),
+        ],
+        "design_example": (
+            "同页树：只交当前块 → 各节点内容均交付",
+            "仅当前选中块有内容",
+            '<div style="display:flex;gap:12px;font-size:12.5px;">\n'
+            '  <ul class="rf-nav-links" style="margin:0;min-width:100px;color:var(--muted);">\n'
+            '    <li><span>节点 1</span></li>\n'
+            '    <li><span style="font-weight:600;color:var(--text);border-bottom:2px solid var(--accent);">节点 2</span></li>\n'
+            '    <li><span>更多 ›</span></li>\n'
+            '  </ul>\n'
+            '  <div style="flex:1;border:1px solid var(--line);border-radius:6px;padding:10px;background:#fff;">\n'
+            '    <p style="margin:0 0 4px;font-weight:600;color:var(--muted);">简介</p>\n'
+            '    <p style="margin:0;color:var(--muted);font-size:12px;">一段可见说明…</p>\n'
+            '  </div>\n'
+            '</div>',
+            "节点自描述 · 各块均交付",
+            '<div style="display:flex;gap:12px;font-size:12.5px;">\n'
+            '  <ul class="rf-nav-links" style="margin:0;min-width:120px;">\n'
+            '    <li><span>安装步骤</span></li>\n'
+            '    <li><span style="font-weight:600;border-bottom:2px solid var(--accent);">依赖说明</span></li>\n'
+            '    <li><span>常见问题</span></li>\n'
+            '  </ul>\n'
+            '  <div style="flex:1;">\n'
+            '    <div style="border:1px solid var(--line);border-radius:6px;padding:10px;background:#fff;">\n'
+            '      <p style="margin:0 0 4px;font-weight:600;">依赖说明</p>\n'
+            '      <p style="margin:0;color:var(--muted);font-size:12px;">需 GCC 7.3+、GLIBC 2.27+ …</p>\n'
+            '    </div>\n'
+            '    <p style="margin:8px 0 0;font-size:11px;color:var(--muted);">稿面另交：安装步骤、常见问题全文案位</p>\n'
+            '  </div>\n'
+            '</div>',
+            True,
+            True,
+            "默认选中块看起来有内容，但节点是泛词，其它节点正文未交付；实现上常等切换才注入。",
+            "<strong>要点：</strong>节点自描述；每个节点对应内容块都要交付（实现上须首包输出，不必每节点都有 URL）。",
+        ),
+        "content": [
+            (
+                "统一命名",
+                "树节点标题与内容块标题、MD 章节名对齐，避免「节点2」与正文对不上",
+            ),
+            (
+                "内容块平行清单",
+                "各节点对应要点写入 Markdown / 独立文档；勿只存在于点击树节点后才出现的面板里",
+            ),
+            (
+                "过渡补位",
+                "页面内容块未进首包前，用 MD / llms 临时补各节点说明；SSR 达标后以页面为准",
+            ),
+        ],
+        "content_example": (
+            "同页内容树 → MD 平行结构",
+            "要点只在选中节点后",
+            "默认只看到「依赖说明」一块；\n切到「安装步骤 / 常见问题」才出正文；\n无按树结构写的 Markdown 可对照。",
+            "MD 按树节点平铺",
+            "## 安装与依赖\n### 安装步骤\n1. …\n### 依赖说明\n需 GCC 7.3+、GLIBC 2.27+ …\n### 常见问题\n- …",
+            False,
+            False,
+        ),
+        "content_example_after_sections": [
+            (
+                "MD 按树节点平铺",
+                "## 安装与依赖\n### 安装步骤\n1. …\n### 依赖说明\n需 GCC 7.3+、GLIBC 2.27+ …\n### 常见问题\n- …",
+            ),
+            (
+                "llms 临时补内容块",
+                "# llms.txt（过渡）\n## 依赖说明\n需 GCC 7.3+ …\n## 安装步骤\n1. …",
+                "各内容块 SSR 进首包后，临时项可移除。",
+            ),
+        ],
+        "content_example_before_prefix": "当前问题",
+        "content_example_before_mark": True,
+        "frontend_lead": "同页切换内容树：节点不必都有 <code>a[href]</code>；各内容块须写入首包 HTML。静态抓取（不执行 JS）仍能读到全部节点标题与对应正文。跳转型手册目录见 <a href=\"principles-omenu.html\">OMenu</a>（面板型页签见 <a href=\"principles-otab.html\">OTab</a>）。",
+        "frontend": [
+            (
+                "节点标题进首包",
+                "树节点名称写进源码；勿只留空容器后靠 JS 注入节点文案",
+            ),
+            (
+                "未选中内容块也进首包",
+                "各节点对应正文全量 SSR；可用 hidden / display:none，禁止点击节点后才注入",
+            ),
+            (
+                "勿把 TOC 只放 __NUXT_DATA__",
+                "节点名与内容块文本须落到可爬 HTML；JSON 仅作 hydrate",
+            ),
+        ],
+        "frontend_example": (
+            "同页内容树",
+            "空壳 · 点击才挂内容",
+            '&lt;nav class="o-trees"&gt;&lt;/nav&gt;\n&lt;div class="tree-panel"&gt;&lt;!-- 点击节点后才注入 --&gt;&lt;/div&gt;',
+            "SSR 全量内容块",
+            '&lt;nav class="o-trees"&gt;\n  &lt;button type="button" aria-selected="false"&gt;安装步骤&lt;/button&gt;\n  &lt;button type="button" aria-selected="true"&gt;依赖说明&lt;/button&gt;\n  &lt;button type="button"&gt;常见问题&lt;/button&gt;\n&lt;/nav&gt;\n&lt;div hidden&gt;安装步骤正文…&lt;/div&gt;\n&lt;div&gt;依赖说明：需 GCC 7.3+…&lt;/div&gt;\n&lt;div hidden&gt;常见问题…&lt;/div&gt;',
+            False,
+            False,
+            "节点与正文都不在首包，静态抓取读不到各内容块。",
+            "节点标题与全部内容块进首包；未选中可用 hidden，文本仍可抓。",
+        ),
+        "frontend_example_before_prefix": "当前问题",
+        "acceptance": [
+            ("静态可达", "静态抓取（不执行 JS）后，仍能读到全部树节点标题与对应内容块正文"),
+            ("可证伪", "对「依赖说明 / 安装步骤分别写了什么」须能引用首包文本，与点击后才注入失败判据互斥"),
+            ("与 OMenu 分工", "换 URL 的手册目录归 OMenu；本组件不要求每个节点都有 href"),
+        ],
+    },
+    "otoggle": {
+        "hide_sample_meta": True,
+        "intro_card": {
+            "plain": True,
+            "title": "场景判断",
+            "items": [
+                (
+                    "keep",
+                    "映射下载 / 版本的选型 Toggle",
+                    "要做亲和",
+                    "型号 / 架构 / 安装方式等选项映射下载页或包表时，完整 option 矩阵须进首包（可读 label + <code>ids=</code> 或 URL），或平行写进 MD / llms；<code>?ids=</code> 编码态不能替代可读矩阵。<br>对应页面：<a href=\"https://www.hiascend.com/hardware/firmware-drivers\" target=\"_blank\" rel=\"noopener\">固件与驱动</a>",
                 ),
                 (
                     "strip",
                     "纯 UI 筛选 Toggle",
                     "不做亲和 · 入库剥离",
-                    "不映射内容的显示切换 / 纯前端筛选，选中态不是官网知识，入库管道标 exclude；<code>?ids=</code> 编码态不能替代可读矩阵。",
+                    "不映射内容的显示切换 / 纯前端筛选，选中态不是官网知识。入库管道宜标 <code>data-llm-exclude</code> 或剥离。",
                 ),
             ],
         },
+        "design_heading_suffix": " · 场景1",
+        "content_heading_suffix": " · 场景1",
+        "frontend_heading_suffix": " · 场景1",
         "design_no_example": True,
         "design": [
             (
-                "UI 基本不用改，重点在 SSR 矩阵 / 写文档",
-                "Toggle 的视觉与交互按常规即可、无需重新设计；真正要做的是让映射下载 / 版本的选型矩阵 SSR 或写进首包 JSON（可读 label + <code>ids=</code> / URL），或把规格写进文档 Markdown。设计稿只需标注哪些 Toggle 映射内容、哪些是纯 UI 筛选（后者标 <code>data-llm-exclude</code>）",
+                "视觉交互可维持",
+                "Toggle 外观与点选交互按常规即可，无需为亲和重做视觉",
             ),
+            (
+                "稿面标注角色",
+                "标注哪些 Toggle 映射下载 / 版本（须交全量 option 文案），哪些是纯 UI 筛选（标 exclude）；勿假定「未选中项不用交付」",
+            ),
+        ],
+        "content": [
+            (
+                "统一命名",
+                "option 文案与包表 / 下载页 title、llms 条目对齐（型号 / 架构 / 安装方式全称一致）",
+            ),
+            (
+                "选型矩阵平行清单",
+                "在 llms.txt 或文档 MD 中平铺「选项 → 落地 URL（含 ids=）」或交叉表；即使页面只渲染当前选中态，也能枚举全部组合入口",
+            ),
+            (
+                "过渡补位",
+                "首包尚无完整矩阵时，用 llms / MD 临时补；SSR 或首包 JSON 达标后以页面为准，重复项可移除",
+            ),
+        ],
+        "content_example": (
+            "固件与驱动 → MD / llms 平行矩阵",
+            "只有当前 ids，无全量选项清单",
+            "浏览器可见型号 / 架构 / 安装方式筛选；\n首包无完整 option 文本，靠 ?ids= 与 __NUXT_DATA__ 恢复；\n无 Markdown / llms 的选项 → URL 清单。",
+            "MD 平行选型清单",
+            "## 固件与驱动 · 选型\n- 架构：x86_64 → …?ids=…,x86_64,…\n- 架构：AArch64 → …?ids=…,AArch64,…\n- 安装方式：online_apt_get → …",
+            False,
+            False,
+        ),
+        "content_example_after_sections": [
+            (
+                "MD 平行选型清单",
+                "## 固件与驱动 · 选型\n- 架构：x86_64 → …?ids=…,x86_64,…\n- 架构：AArch64 → …?ids=…,AArch64,…\n- 安装方式：online_apt_get → …",
+            ),
+            (
+                "llms 临时补 option → URL",
+                "# llms.txt（过渡）\n- [AArch64 · online](https://www.hiascend.com/hardware/firmware-drivers?ids=…)\n- [x86_64 · online](https://www.hiascend.com/hardware/firmware-drivers?ids=…)",
+                "页面 SSR / 首包 JSON 矩阵达标后，llms 中重复项可移除。",
+            ),
+        ],
+        "content_example_before_prefix": "当前问题",
+        "content_example_before_mark": True,
+        "frontend_lead": "映射下载 / 版本的 Toggle 须把完整 option 矩阵写入首包 HTML 或首包 JSON；静态抓取（不执行 JS）仍能枚举型号 / 架构 / 安装方式及对应 URL（对标：NVIDIA CUDA <code>data-react-props</code>）。",
+        "frontend": [
+            (
+                "全量 option 进首包",
+                "全部选项以可读 label + ids / URL 输出；未选中项可用隐藏样式保留，勿只留当前选中态",
+            ),
+            (
+                "ids 不能替代可读矩阵",
+                "?ids= 仅表达当前组合；须另有人类可读 option 列表，或把完整矩阵 JSON 写进首包 data-* 并文档化解析方式",
+            ),
+            (
+                "交叉表可静态读",
+                "包列表随 Toggle 切换时，关键交叉表须 SSR 或旁路 JSON / llms；勿仅客户端按选中态注入",
+            ),
+            (
+                "纯 UI Toggle 标注排除",
+                "不映射内容的筛选加 data-llm-exclude，管道勿当正文 chunk",
+            ),
+        ],
+        "frontend_example": (
+            "固件与驱动 Toggle",
+            "仅当前 ids · 无 option 矩阵",
+            '&lt;!-- URL: ?ids=d802,…,AArch64,online_apt_get --&gt;\n&lt;!-- 浏览器可见筛选；首包无「x86_64 / AArch64 / …」全量 option 文本 --&gt;\n&lt;script id="__NUXT_DATA__"&gt;…选中态…&lt;/script&gt;',
+            "SSR option 或首包 JSON 矩阵",
+            '&lt;div class="o-toggle" data-dim="arch"&gt;\n  &lt;button type="button" data-ids="…,x86_64,…"&gt;x86_64&lt;/button&gt;\n  &lt;button type="button" data-ids="…,AArch64,…"&gt;AArch64&lt;/button&gt;\n&lt;/div&gt;\n&lt;!-- 或 data-react-props 含完整 structure，禁 JS 也可解析 --&gt;',
+            False,
+            False,
+            "静态抓取只能看到当前 ?ids=，列不全架构 / 安装方式及对应包表入口。",
+            "全量 option 可读 label 进首包（或首包 JSON 矩阵）；静态抓取即可枚举选型。",
+        ),
+        "frontend_example_before_prefix": "当前问题",
+        "acceptance": [
+            ("静态可达", "静态抓取固件与驱动页（不执行 JS）后，仍能枚举型号 / 架构 / 安装方式等选项及对应 URL，能回答 problems-otoggle 探针问句"),
+            ("html 可抓全", "选型矩阵可读性达到友商水准（NVIDIA CUDA：OS/Architecture 树在首包 data-react-props）"),
+            ("可证伪", "对「各 Toggle 选项对应哪个下载 URL / ids」须能引用具体文本或 JSON 字段，与仅 ?ids= 失败判据互斥"),
         ],
     },
     "osearch": {
+        "hide_sample_meta": True,
         "intro_card": {
-            "title": "为什么搜索框是「视情况」——组件本身免改，责任在发现层",
+            "plain": True,
+            "title": "场景判断",
             "items": [
                 (
                     "keep",
-                    "所有可搜索的 URL → sitemap / llms",
-                    "硬要求",
-                    "凡是搜索能命中的文档，都必须有独立可爬 URL，且收进 sitemap.xml 与 llms.txt（可配合导航 / 索引页），让 Agent 不搜索也能枚举全部文档。注意：要做亲和的是「发现层」，不是搜索框。",
+                    "可搜索文档的发现层",
+                    "要做亲和",
+                    "凡搜索能命中的文档，须有独立可爬 URL，并收进 sitemap / llms（可配合导航 / 索引页），让 Agent 不搜索也能枚举全部文档。要做亲和的是<strong>发现层</strong>，不是搜索框。<br>对应页面：<a href=\"https://www.hiascend.com/zh\" target=\"_blank\" rel=\"noopener\">社区首页</a>",
                 ),
                 (
                     "strip",
                     "搜索框 / 搜索结果本身",
-                    "永不改造 · exclude",
-                    "输入框、结果列表、搜索 API 都是纯交互，别费力把它们做成可爬（结果可点击 ≠ 可被发现）；入库标 data-llm-exclude 或剥离即可。",
+                    "不做亲和 · 入库剥离",
+                    "输入框、结果列表、搜索 API 都是纯交互黑盒（结果靠 JS 返回）。别费力把它们做成可爬；入库标 <code>data-llm-exclude</code> 或剥离即可。",
                 ),
             ],
         },
+        "design_heading_suffix": " · 场景1",
+        "content_heading_suffix": " · 场景1",
+        "frontend_heading_suffix": " · 场景1",
+        "design_example_side_by_side": True,
         "design": [
             (
-                "要求非搜索发现入口",
-                "稿面须提供不依赖搜索的发现路径——导航、文档索引页或 sitemap 入口，别让深页只能靠搜索命中",
+                "预留非搜索发现路径",
+                "稿面须有导航、文档目录或索引入口；别让深页只能靠搜索命中",
+            ),
+            (
+                "搜索只作加速，不作唯一入口",
+                "搜索框可保留，但同屏须能看出不搜索也能逐层到达文档的路径",
             ),
         ],
         "design_example": (
-            "版面发现入口：只有搜索 → 导航 / 目录 + 搜索",
+            "版面发现入口：只有搜索 → 目录 + 搜索",
             "只有搜索框",
-            '<div class="rf-searchbox"><span class="rf-sb-icon">🔍</span><span>搜索 CANN 文档…</span></div>\n'
-            '<p class="rf-muted">版面只放了搜索框，没有导航 / 目录入口——不搜索就走不到任何文档页。</p>',
-            "导航 / 目录 + 搜索",
-            '<div style="display:flex;gap:12px;align-items:flex-start;">\n'
+            '<div style="border:1px solid var(--line);border-radius:6px;padding:10px 12px;background:#fff;color:var(--muted);font-size:12.5px;">\n'
+            '  搜索 CANN 文档…\n'
+            '</div>',
+            "目录 + 搜索",
+            '<div style="display:flex;gap:12px;align-items:flex-start;font-size:12.5px;">\n'
             '  <div style="min-width:118px;border:1px solid var(--line);border-radius:6px;padding:8px 10px;background:#fff;">\n'
             '    <p class="rf-sidebar-title">文档目录</p>\n'
             '    <ul class="rf-nav-links">\n'
@@ -2341,414 +2917,678 @@ PRINCIPLES_OVERRIDES: dict[str, dict[str, Any]] = {
             '      <li><a href="#">API 参考</a></li>\n'
             '    </ul>\n'
             '  </div>\n'
-            '  <div style="flex:1;">\n'
-            '    <div class="rf-searchbox"><span class="rf-sb-icon">🔍</span><span>搜索…</span></div>\n'
-            '    <p class="rf-muted" style="margin-top:8px;">版面同时预留左侧目录（非搜索入口），不靠搜索也能逐层浏览到每篇文档；搜索只是加速查找。</p>\n'
+            '  <div style="flex:1;border:1px solid var(--line);border-radius:6px;padding:10px 12px;background:#fff;color:var(--muted);">\n'
+            '    搜索…\n'
             '  </div>\n'
             '</div>',
             True,
             True,
+            "版面只有搜索框，没有导航 / 目录；不搜索就走不到文档页。",
+            "<strong>要点：</strong>同屏预留目录或索引链；搜索只是加速，不是唯一发现层。",
         ),
         "content": [
             (
-                "所有可搜索 URL 进 sitemap / llms",
-                "凡搜索能命中的文档，都要有独立可爬 URL 且收进 sitemap.xml 与 llms.txt；新增 / 下线同步更新，确保不搜索也能枚举全部文档",
+                "全量 URL 进 sitemap / llms",
+                "凡搜索能命中的文档都要有独立可爬 URL，并收进 sitemap.xml 与 llms.txt；新增 / 下线同步更新",
             ),
             (
                 "检索范围写进正文",
-                "把「本站包含哪些文档 / 版本」写成可引用的正文或文档索引页，别只塞在搜索框 placeholder（如「搜索 CANN 文档」）里",
+                "「本站含哪些文档 / 版本」写成可引用正文或文档索引页，勿只塞在 placeholder（如「搜索 CANN 文档」）",
             ),
             (
-                "导航 / 索引补发现路径",
-                "关键文档除搜索外，另有导航、目录或索引页可跟链到达，避免深页只能靠搜索命中",
+                "过渡补位",
+                "导航尚未覆盖的深页，先用 llms / sitemap 临时补全；发现层达标后以清单 + 页面链为准，去掉重复维护",
             ),
         ],
         "content_example": (
-            "文档发现：搜索兜底 → sitemap/llms 全量",
+            "文档发现 → sitemap / llms 全量清单",
             "深页只能靠站内搜索",
-            "【现状】部分 CANN 文档仅站内搜索可达\n【缺失】sitemap / llms 未列这些文档 URL",
-            "sitemap + llms 平铺清单",
-            "# llms.txt\n## CANN 文档\n- 安装指南 → https://…/document/cann-install\n- 算子开发 → https://…/document/operator\n（sitemap.xml 同步全量 <loc>）",
+            "部分 CANN 文档仅站内搜索可达；\nsitemap / llms 未列这些文档 URL，\n禁 JS 时枚举不全。",
+            "llms 平铺文档清单",
+            "# llms.txt\n## CANN 文档\n- [安装指南](https://…/document/cann-install)\n- [算子开发](https://…/document/operator)",
             False,
             False,
         ),
+        "content_example_after_sections": [
+            (
+                "llms 平铺文档清单",
+                "# llms.txt\n## CANN 文档\n- [安装指南](https://…/document/cann-install)\n- [算子开发](https://…/document/operator)",
+            ),
+            (
+                "sitemap 同步全量",
+                "# sitemap.xml（节选）\nhttps://…/document/cann-install\nhttps://…/document/operator",
+                "新增 / 下线文档须与 llms 同步更新。",
+            ),
+        ],
+        "content_example_before_prefix": "当前问题",
+        "content_example_before_mark": True,
+        "frontend_lead": "搜索框本身不改造；发现层须保证每篇文档有独立可爬 URL，并由 sitemap / llms 枚举。静态抓取（不执行 JS）不靠搜索也能列出文档入口。",
         "frontend": [
             (
-                "每篇文档独立可爬 URL",
-                "文档页 SSR 出独立、稳定、可跟链的 URL（非 ?q= 搜索态、非点击后才渲染）；禁把正文只藏在搜索结果里",
+                "文档独立可爬 URL",
+                "每篇文档 SSR 出稳定可跟链地址；勿把正文只藏在 ?q= 搜索态或点击后才渲染的结果里",
             ),
             (
-                "sitemap 自动输出",
-                "构建时生成 sitemap.xml 覆盖全部文档 URL 并在 robots 声明，供爬虫与 Agent 枚举；无需为搜索结果页做特殊处理",
+                "sitemap 自动覆盖",
+                "构建生成 sitemap.xml 覆盖全部文档 URL，并在 robots 声明；不必为搜索结果页做特殊爬取",
             ),
             (
-                "搜索框控件可 exclude",
-                "search input / 按钮 / 建议下拉是纯交互控件，入库管道可标 data-llm-exclude；发现层责任由 URL + sitemap 承担，不依赖搜索",
+                "搜索控件标注排除",
+                "search input / 按钮 / 建议下拉加 data-llm-exclude；发现层责任由 URL + sitemap 承担",
             ),
         ],
         "frontend_example": (
             "发现层：搜索黑盒 → 可爬 URL + sitemap",
             "内容锁在搜索里",
-            '<div class="o-search">…</div>\n<!-- 深页无独立 a[href]，仅搜索 API 可达 -->',
+            '&lt;div class="o-search"&gt;…&lt;/div&gt;\n&lt;!-- 深页无独立 a[href]，仅搜索 API 可达 --&gt;',
             "SSR URL + sitemap 枚举",
-            '<a href="/document/cann-install">CANN 安装指南</a>\n<!-- sitemap.xml -->\n<url><loc>https://…/document/cann-install</loc></url>',
+            '&lt;a href="/document/cann-install"&gt;CANN 安装指南&lt;/a&gt;\n&lt;!-- sitemap.xml --&gt;\n&lt;url&gt;&lt;loc&gt;https://…/document/cann-install&lt;/loc&gt;&lt;/url&gt;',
             False,
             False,
+            "搜索结果靠 JS 返回，静态抓取拿不到文档列表，深页也无独立入口。",
+            "文档有独立 a[href]，sitemap / llms 可枚举；不搜索也能发现。",
         ),
+        "frontend_example_before_prefix": "当前问题",
         "acceptance": [
-            ("静态可达", "禁 JS 抓取后，不用搜索也能从导航 / sitemap / llms 枚举全部文档 URL，回答 problems-osearch 探针问句"),
-            ("清单齐全", "sitemap.xml 与 llms.txt 覆盖全部文档 URL，新增页同步收录"),
-            ("可证伪", "对「不用搜索列出所有 CANN 安装文档 URL」须能给出清单，与仅靠搜索的失败判据互斥"),
+            ("静态可达", "静态抓取后，不用搜索也能从导航 / sitemap / llms 枚举文档 URL，能回答 problems-osearch 探针问句"),
+            ("清单齐全", "sitemap.xml 与 llms.txt 覆盖全部可搜索文档 URL，新增页同步收录"),
+            ("可证伪", "对「不用搜索列出 CANN 安装文档 URL」须能给出清单，与仅靠搜索的失败判据互斥"),
         ],
     },
     "oselect": {
+        "hide_sample_meta": True,
         "intro_card": {
-            "title": "为什么选择器是「视情况」——先看选项是否映射内容",
+            "plain": True,
+            "title": "场景判断",
             "items": [
                 (
                     "keep",
-                    "映射文档 / 版本的选项",
+                    "映射文档 / 下载的选项",
                     "要做亲和",
-                    "如固件与驱动的型号 / 架构 / 安装方式：选项对应下载页或文档时，完整 option 文本与落地 URL（含 <code>?ids=</code>）须 SSR 可抓。",
+                    "型号 / 架构 / 安装方式等选项对应下载页或文档时，完整 option 文本与落地 URL（含 <code>?ids=</code>）须进首包可读；规格宜有不依赖选中态的平行文档。<br>对应页面：<a href=\"https://www.hiascend.com/hardware/firmware-drivers\" target=\"_blank\" rel=\"noopener\">固件与驱动</a>",
                 ),
                 (
                     "strip",
                     "纯表单筛选选项",
                     "不做亲和 · 入库剥离",
-                    "排序、纯前端筛选等不含信息架构的 select，选项态不是官网知识，入库管道可剥离。",
+                    "排序、纯前端筛选等不含信息架构的 select，选项态不是官网知识。入库管道宜标 <code>data-llm-exclude</code> 或剥离。",
                 ),
             ],
         },
+        "design_heading_suffix": " · 场景1",
+        "content_heading_suffix": " · 场景1",
+        "frontend_heading_suffix": " · 场景1",
         "design_no_example": True,
         "design": [
             (
-                "规格别锁在「选完才显示」",
-                "设计稿要求：选项映射的规格 / 内容要有一份不依赖选择就可读的呈现——最简单是把规格写进文档页 Markdown（有独立可爬 URL），别让参数只在选了某项后才由 JS 注入；Select 保持纯交互、选项态不入库",
+                "视觉交互可维持",
+                "Select 外观与下拉交互按常规即可，无需为亲和重做视觉",
+            ),
+            (
+                "规格勿只锁在选中态",
+                "稿面要求选项映射的规格有一份不依赖选择就可读的呈现（文档页平行表即可）；标注哪些 Select 映射内容、哪些纯筛选（后者 exclude）",
             ),
         ],
         "content": [
             (
-                "规格写进文档 Markdown",
-                "选项映射的规格以 Markdown 平行表写进文档页（有独立可爬 URL），表头与单元格和产品页选项一致；产品页 Select 仅筛选、选项态不入库",
+                "统一命名",
+                "option 文案与落地页 title、规格表、llms 条目对齐（型号 / 架构 / 安装方式全称一致）",
             ),
             (
-                "选项 → 落地 URL 可查",
-                "每个映射内容的选项对应可访问的文档 / 下载 URL（含 <code>?ids=</code>），在正文或 llms 可查，别只靠选中态还原",
+                "规格与选项平行清单",
+                "规格以 Markdown 平行表写进独立可爬文档页；同时在 llms / 正文维护「选项 → 落地 URL（含 ids=）」；产品页 Select 仅筛选，选项态不入库",
+            ),
+            (
+                "过渡补位",
+                "首包尚无完整 option 时，用 llms / MD 临时补映射；SSR 达标后以页面为准，重复项可移除",
             ),
         ],
         "content_example": (
-            "选型规格：绑在选择态 → 文档 Markdown",
-            "规格锁在选择后",
-            "产品页规格靠选中某型号后 JS 注入；\n文档 / MD 未收录该规格 → 禁 JS 抓不到参数。",
+            "选型规格 → 文档 MD / llms 平行轨",
+            "规格锁在选中后，无平行表",
+            "产品页规格靠选中某型号后 JS 注入；\n文档 / MD 未收录该规格，也无选项 → URL 清单；\n禁 JS 时读不到参数与落地地址。",
             "文档 Markdown 平行表",
             "## Atlas 800 规格\n| 参数 | 值 |\n| NPU | 8 × 昇腾 |\n| 内存 | 1TB |\n（文档页独立 URL，可爬）",
             False,
             False,
         ),
+        "content_example_after_sections": [
+            (
+                "文档 Markdown 平行表",
+                "## Atlas 800 规格\n| 参数 | 值 |\n| NPU | 8 × 昇腾 |\n| 内存 | 1TB |",
+            ),
+            (
+                "llms 临时补 option → URL",
+                "# llms.txt（过渡）\n- [Atlas 800 固件与驱动](https://www.hiascend.com/hardware/firmware-drivers?ids=A1)\n- [Atlas 800 规格说明](https://…/document/atlas800-spec)",
+                "option SSR 达标且规格页可爬后，临时映射可收敛。",
+            ),
+        ],
+        "content_example_before_prefix": "当前问题",
+        "content_example_before_mark": True,
+        "frontend_lead": "映射文档 / 下载的 Select 须把完整 option（可读 label + ids / URL）写入首包；静态抓取（不执行 JS）仍能枚举选项并跟到落地页。纯表单筛选见场景2，管道剥离。",
         "frontend": [
             (
-                "关键 option 进首包（SSR）",
-                "映射文档 / 下载的 option 以可读 label + ids / URL 直接 SSR 进首包，别只靠选中后 JS 注入——禁 JS 时也能读到型号 / 版本与落地地址",
+                "关键 option 进首包",
+                "映射内容的 option 以可读 label + ids / URL SSR；勿空 <select> 后靠 JS 注入，也勿只留当前选中项",
             ),
             (
-                "llms 补 option → URL 映射",
-                "无法 SSR 时，在 llms.txt / 正文维护「选项 → 落地 URL（含 <code>?ids=</code>）」映射表，供 Agent 不选也能还原",
+                "label 须人类可读",
+                "可见文案用型号 / 架构 / 安装方式全称；勿仅 value/ids 编码而无可读 text",
             ),
             (
-                "纯交互态可 exclude",
-                "select / 建议下拉等纯交互控件标 <code>data-llm-exclude</code>，与承载知识的正文 / 映射区分，避免选项态污染入库",
+                "纯交互态标注排除",
+                "纯筛选 select 加 data-llm-exclude，与正文 / 映射清单区分，避免选项态污染入库",
             ),
         ],
         "frontend_example": (
-            "选项可达：JS 注入 → SSR option + 落地 URL",
-            "首包缺 option / 靠 JS",
-            '<select id="model"></select>\n<!-- option 由 JS 注入；规格靠选中后渲染，首包无可读 label / URL -->',
-            "SSR option + 落地 URL",
-            '<select>\n  <option value="atlas800?ids=A1">Atlas 800（8×昇腾）</option>\n</select>\n<a href="/download?ids=A1">Atlas 800 固件与驱动</a>\n<!-- 或 llms.txt: Atlas 800 → /download?ids=A1 -->',
+            "固件与驱动 Select",
+            "首包空 select · 靠 JS 注入",
+            '&lt;select id="model"&gt;&lt;/select&gt;\n&lt;!-- option 由 JS 注入；规格靠选中后渲染 --&gt;',
+            "SSR option + 落地链",
+            '&lt;select id="model"&gt;\n  &lt;option value="atlas800?ids=A1"&gt;Atlas 800（8×昇腾）&lt;/option&gt;\n  &lt;option value="atlas800?ids=A2"&gt;Atlas 800I A2&lt;/option&gt;\n&lt;/select&gt;\n&lt;a href="/hardware/firmware-drivers?ids=A1"&gt;Atlas 800 固件与驱动&lt;/a&gt;',
             False,
             False,
+            "静态抓取读不到 option 文本，也无法证伪各型号对应下载 URL。",
+            "option 可读 label 进首包，并可跟到落地页；静态抓取即可枚举选型。",
         ),
+        "frontend_example_before_prefix": "当前问题",
+        "acceptance": [
+            ("静态可达", "静态抓取固件与驱动页（不执行 JS）后，仍能枚举 Select 选项及对应 URL，能回答 problems-oselect 探针问句"),
+            ("可证伪", "对「各选项对应哪个下载 URL / ids」须能引用具体 option 文本或平行清单，与空 select / 仅 ids 失败判据互斥"),
+            ("管道", "映射内容的 option 可入库或由 MD/llms 互证；纯表单 select 标 exclude"),
+        ],
     },
     "orate": {
+        "hide_sample_meta": True,
         "intro_card": {
-            "title": "为什么评分是「视情况」——先分清「分数」与「操作文案」",
+            "plain": True,
+            "title": "场景判断",
             "items": [
                 (
                     "keep",
                     "评分数字（社会证明）",
                     "要做亲和",
-                    "平均分 / 评分人数若在静态 HTML 可见，可作社会证明被引用，宜 SSR 成可读文本。",
+                    "平均分 / 评分人数若需被引用，须在首包以可读文本呈现（如「4.6 分 · 128 人评分」），勿只靠星标图标或客户端拉取。",
                 ),
                 (
                     "strip",
-                    "「我要评分」操作文案",
+                    "「我要评分」等操作 CTA",
                     "不做亲和 · 入库剥离",
-                    "评分按钮是操作 CTA、不是质量规格，入库应过滤；且勿与官方质量认证混淆（认证说明另走正文文档）。",
+                    "评分按钮是操作入口，不是质量规格。入库宜标 <code>data-llm-exclude</code>；官方认证说明另写正文文档，勿与用户评分混为一谈。",
                 ),
             ],
         },
+        "design_heading_suffix": " · 场景1",
+        "content_heading_suffix": " · 场景1",
+        "frontend_heading_suffix": " · 场景1",
+        "design_example_side_by_side": True,
         "design": [
             (
-                "分数留成可见文本位",
-                "设计稿为「平均分 + 评分人数」预留可见文本位（如「4.6 分 · 128 人评分」），别只画星标图标——数字要能作为社会证明被读到",
+                "分数留成可见文本",
+                "稿面为平均分 + 人数预留可读文案位（如「4.6 分 · 128 人评分」），勿只画星标",
             ),
             (
-                "评分按钮标纯交互",
-                "「我要评分 / 提交评分」等操作按钮在稿面标「纯交互 · 入库排除」，与分数文本分区；勿与官方质量认证混淆，认证说明另走正文文档",
+                "操作按钮标纯交互",
+                "「我要评分」与分数文本分区，稿面标 exclude；勿画成官方认证印章",
             ),
         ],
         "design_example": (
-            "评分：只有星标 → 可读分数 + 角色标注",
-            "只有星标图标",
-            '<div style="display:flex;align-items:center;gap:8px;">\n'
-            '  <span style="color:#f5a623;font-size:18px;">★★★★☆</span>\n'
-            '  <button style="border:1px solid var(--line);border-radius:6px;padding:4px 10px;background:#fff;">我要评分</button>\n'
-            '</div>\n'
-            '<p class="rf-muted" style="margin-top:8px;">只有星标图标 +「我要评分」按钮；平均分 / 评分人数没有可读文本——禁 JS 抓不到分数，还容易把操作按钮误当质量规格。</p>',
-            "可读分数 + 角色标注",
-            '<div style="display:flex;align-items:center;gap:10px;">\n'
-            '  <span style="color:#f5a623;font-size:18px;" aria-hidden="true">★★★★☆</span>\n'
-            '  <span style="font-weight:600;">4.6 分</span>\n'
-            '  <span class="rf-muted">· 128 人评分</span>\n'
-            '</div>\n'
-            '<div style="margin-top:8px;">\n'
-            '  <button style="border:1px solid var(--line);border-radius:6px;padding:4px 10px;background:#fff;color:var(--muted);">我要评分</button>\n'
-            '</div>\n'
-            '<p class="rf-caption" style="margin-top:8px;"><strong>要点：</strong></p>\n'
-            '<ul class="rf-caption" style="margin:4px 0 0;padding-left:18px;">\n'
-            '  <li>「4.6 分 · 128 人评分」作为可读文本 SSR 可抓，可作社会证明被引用。</li>\n'
-            '  <li>「我要评分」按钮标 <code>data-llm-exclude</code>，与官方质量认证区分、不入库。</li>\n'
-            '</ul>',
+            "评分：只有星标 → 可读分数 + 角色分区",
+            "只有星标 · 操作混排",
+            '<div style="display:flex;align-items:center;gap:8px;font-size:12.5px;">\n'
+            '  <span style="color:#f5a623;letter-spacing:1px;" aria-hidden="true">★★★★☆</span>\n'
+            '  <span style="display:inline-block;padding:4px 10px;border:1px solid var(--line);border-radius:4px;color:var(--muted);">我要评分</span>\n'
+            '</div>',
+            "可读分数 · CTA 分区",
+            '<div style="font-size:12.5px;">\n'
+            '  <div style="display:flex;align-items:center;gap:8px;">\n'
+            '    <span style="color:#f5a623;letter-spacing:1px;" aria-hidden="true">★★★★☆</span>\n'
+            '    <span style="font-weight:600;">4.6 分</span>\n'
+            '    <span style="color:var(--muted);">· 128 人评分</span>\n'
+            '  </div>\n'
+            '  <div style="margin-top:8px;">\n'
+            '    <span style="display:inline-block;padding:4px 10px;border:1px solid var(--line);border-radius:4px;color:var(--muted);font-size:12px;">我要评分</span>\n'
+            '  </div>\n'
+            '</div>',
             True,
             True,
+            "只有星标 + 操作按钮；平均分 / 人数无可读文本，还容易把 CTA 误当质量规格。",
+            "<strong>要点：</strong>分数与人数作可见文本交付；「我要评分」标纯交互、与认证说明分开。",
         ),
+        "content": [
+            (
+                "统一表述",
+                "若引用社会证明，正文 / llms 与页面分数文案一致（分值、人数口径相同）",
+            ),
+            (
+                "认证说明走独立文档",
+                "官方质量 / 合规认证写进可引用文档页，勿用「我要评分」或星标暗示已认证",
+            ),
+            (
+                "过渡补位",
+                "分数尚未 SSR 时，可在文档旁注临时写明「用户评分约 x 分」；页面达标后以首包文本为准",
+            ),
+        ],
+        "content_example": (
+            "评分社会证明 → 正文可引用",
+            "只有 UI 星标，无正文口径",
+            "页面仅有星标与「我要评分」；\n正文 / MD 未写平均分与人数，\n也未把官方认证与用户评分分开。",
+            "正文旁注社会证明",
+            "## 文档反馈\n- 用户评分：4.6 分（128 人）\n- 官方认证：见《质量认证说明》…\n（「我要评分」为操作入口，不作规格）",
+            False,
+            False,
+        ),
+        "content_example_after_sections": [
+            (
+                "正文旁注社会证明",
+                "## 文档反馈\n- 用户评分：4.6 分（128 人）\n- 官方认证：见《质量认证说明》…",
+            ),
+            (
+                "llms 临时补口径（可选）",
+                "# llms.txt（过渡）\n- 某文档用户评分：4.6 / 128 人",
+                "页面分数 SSR 可读后，临时项可移除。",
+            ),
+        ],
+        "content_example_before_prefix": "当前问题",
+        "content_example_before_mark": True,
+        "frontend_lead": "若需引用评分作社会证明，平均分 / 人数须写入首包可读文本；「我要评分」等操作 CTA 标 exclude。静态抓取应能读到分数，且不会把 CTA 当成认证结论。",
+        "frontend": [
+            (
+                "分数文本进首包",
+                "输出可读的分值与人数节点；勿只渲染星标图标，也勿仅靠 JS 拉取后才出现数字",
+            ),
+            (
+                "操作 CTA 标注排除",
+                "「我要评分 / 提交评分」加 data-llm-exclude，入库勿当正文 chunk",
+            ),
+            (
+                "与认证 DOM 分区",
+                "官方认证徽章 / 说明若存在，用独立区块或链到文档；勿与 ORate 操作区混在同一可抓文案里",
+            ),
+        ],
+        "frontend_example": (
+            "ORate 评分区",
+            "仅星标 + button，无分数字",
+            '&lt;div class="o-rate"&gt;\n  &lt;span class="stars"&gt;★★★★☆&lt;/span&gt;\n  &lt;button type="button"&gt;我要评分&lt;/button&gt;\n&lt;/div&gt;',
+            "分数 SSR · CTA exclude",
+            '&lt;div class="o-rate"&gt;\n  &lt;span aria-hidden="true"&gt;★★★★☆&lt;/span&gt;\n  &lt;span class="o-rate-score"&gt;4.6 分&lt;/span&gt;\n  &lt;span class="o-rate-count"&gt;128 人评分&lt;/span&gt;\n  &lt;button type="button" data-llm-exclude&gt;我要评分&lt;/button&gt;\n&lt;/div&gt;',
+            False,
+            False,
+            "静态抓取读不到平均分，还可能把「我要评分」当质量结论。",
+            "分值与人数进首包可引用；操作按钮 exclude，不与认证混淆。",
+        ),
+        "frontend_example_before_prefix": "当前问题",
+        "acceptance": [
+            ("静态可达", "若需社会证明：静态抓取后仍能读到平均分 / 人数文本"),
+            ("管道分流", "操作 CTA 不入库；分数文本可引用，且不与官方认证说明混读"),
+            ("可证伪", "对「平均分是多少 / 是否等于官方认证」须能区分引用分数与认证文档，与仅星标+CTA 失败判据互斥"),
+        ],
     },
     "ocascader": {
+        "hide_sample_meta": True,
         "intro_card": {
-            "title": "为什么级联选择是「视情况」——先分清「内容路径」与「表单字段」",
+            "plain": True,
+            "title": "场景判断",
             "items": [
                 (
                     "keep",
                     "映射内容路径的级联",
                     "要做亲和",
-                    "各级若代表文档分类 / 地域内容路径，则各级 option 文本须源码可读、最好带落地链；面板勿悬停/点击才挂载。",
+                    "各级代表文档分类 / 内容路径时，option 须用可读全称进首包；映射到落地页的宜带 <code>a[href]</code>。面板勿等悬停 / 点击才挂载选项。",
                 ),
                 (
                     "strip",
                     "纯地址 / 表单字段级联",
                     "不做亲和 · 入库剥离",
-                    "省市区等纯表单级联不是信息架构，选项态不承载官网知识，入库可剥离。",
+                    "省市区等纯表单级联不承载官网知识。入库宜标 <code>data-llm-exclude</code> 或剥离。",
                 ),
             ],
         },
+        "design_heading_suffix": " · 场景1",
+        "content_heading_suffix": " · 场景1",
+        "frontend_heading_suffix": " · 场景1",
         "design_no_example": True,
         "design": [
             (
-                "UI 基本不用改，重点在源码 + 目录",
-                "级联的视觉与交互按常规即可，无需重新设计；真正要做的是让各级 option 在 HTML 源码里是真实 <code>&lt;a href&gt;</code>、并在文档 Markdown / llms 维护一份等价的分类目录。设计稿只需标注「内容路径型级联 = 各级可读 + 可跟链」，落地交给前端 SSR 与内容清单",
+                "视觉交互可维持",
+                "级联外观与逐级展开按常规即可，无需为亲和重做视觉",
+            ),
+            (
+                "稿面标注角色与文案",
+                "标注内容路径型 vs 表单型；内容路径各级用分类 / 文档全称，映射落地的按可跟链交付",
             ),
         ],
         "content": [
             (
-                "分类目录 = 嵌套列表进 llms",
-                "把级联映射的内容路径在 llms.txt / 文档 MD 写成「嵌套列表 = 全量分类 + URL」，与面板层级一致，面板抓不全时兜底",
+                "统一命名",
+                "各级 option 文案与落地页 title、llms 分类名对齐；勿只用编号 / value",
             ),
             (
-                "各级用全称",
-                "各级 option 用完整分类 / 文档名（如「CANN 安装指南」），别用编号 / value，方便 Agent 按名定位",
+                "分类路径平行清单",
+                "在 llms.txt / 文档 MD 写成与级联层级一致的嵌套列表（分类 + URL）；面板抓不全时仍可枚举路径",
+            ),
+            (
+                "过渡补位",
+                "级联 HTML 未达标前，用 llms / MD 临时补分类路径；SSR 达标后以页面为准，重复项可移除",
             ),
         ],
         "content_example": (
-            "内容路径：藏在面板 → llms 平行目录",
+            "内容路径级联 → MD / llms 平行目录",
             "路径只在级联面板里",
-            "【Before】分类层级只在级联面板 JS 态里\nllms / 正文无等价分类目录",
-            "llms 平行分类目录",
+            "分类层级只在级联 JS 面板中；\n首包读不全各级 option；\n无 Markdown / llms 嵌套分类 + URL。",
+            "MD 平行分类目录",
             "## CANN 文档分类\n- CANN\n  - 安装部署\n    - [CANN 安装指南](/document/cann/install/guide)\n    - [驱动安装](/document/cann/install/driver)\n  - API 参考\n    - …",
             False,
             False,
         ),
+        "content_example_after_sections": [
+            (
+                "MD 平行分类目录",
+                "## CANN 文档分类\n- CANN\n  - 安装部署\n    - [CANN 安装指南](/document/cann/install/guide)\n    - [驱动安装](/document/cann/install/driver)\n  - API 参考\n    - …",
+            ),
+            (
+                "llms 临时补路径",
+                "# llms.txt（过渡）\n- [CANN 安装指南](/document/cann/install/guide)\n- [驱动安装](/document/cann/install/driver)",
+                "级联 SSR 达标后以 HTML 为准，临时项可移除。",
+            ),
+        ],
+        "content_example_before_prefix": "当前问题",
+        "content_example_before_mark": True,
+        "frontend_lead": "内容路径型级联：各级 option 可读文本须写入首包；映射落地页的宜为 <code>a[href]</code>。静态抓取仍能枚举路径（表单级联见场景2，管道剥离）。",
         "frontend": [
             (
-                "各级 option SSR 成 a[href]",
-                "内容路径型级联的各级选项在首包输出真实 <code>&lt;a href&gt;</code>，别只在悬停 / 点击后由 JS 挂载",
+                "各级 option 进首包",
+                "用人类可读全称输出；勿空面板后靠悬停 / 点击才挂，也勿仅 value/id 无可见文案",
             ),
             (
-                "面板不靠悬停挂载",
-                "至少 SSR 当前路径分支；懒加载子级须有服务端降级或一次性平铺",
+                "落地项宜为真实链接",
+                "映射文档 / 分类页的选项宜 a[href]；至少当前路径分支须在首包可读",
             ),
             (
-                "表单级联可 exclude",
-                "省市区等纯表单字段级联标 <code>data-llm-exclude</code>，与承载信息架构的内容级联区分",
+                "表单级联标注排除",
+                "省市区等纯表单字段加 data-llm-exclude，与内容路径级联区分",
             ),
         ],
         "frontend_example": (
-            "级联面板：悬停挂载 → SSR 各级 a[href]",
-            "空壳面板 · 悬停才挂载",
-            '&lt;div class="o-cascader"&gt;&lt;/div&gt;\n&lt;!-- 各级 span + onclick，悬停才挂载，无 a[href] --&gt;',
-            "SSR 各级可跟链选项",
-            '&lt;div class="o-cascader"&gt;\n  &lt;a href="/document/cann"&gt;CANN&lt;/a&gt;\n  &lt;a href="/document/cann/install"&gt;安装部署&lt;/a&gt;\n  &lt;a href="/document/cann/install/guide"&gt;CANN 安装指南&lt;/a&gt;\n&lt;/div&gt;',
+            "内容路径级联",
+            "空壳 · 悬停才挂选项",
+            '&lt;div class="o-cascader"&gt;&lt;/div&gt;\n&lt;!-- 各级悬停 / 点击后才挂，无可读 option / a[href] --&gt;',
+            "SSR 可读路径 + 落地链",
+            '&lt;div class="o-cascader"&gt;\n  &lt;span&gt;CANN&lt;/span&gt;\n  &lt;span&gt;安装部署&lt;/span&gt;\n  &lt;a href="/document/cann/install/guide"&gt;CANN 安装指南&lt;/a&gt;\n&lt;/div&gt;',
             False,
             False,
+            "静态抓取读不到各级分类名，也无法跟到安装指南等落地页。",
+            "各级可读文案进首包；叶子落地写成 a[href]，静态抓取即可枚举路径。",
         ),
+        "frontend_example_before_prefix": "当前问题",
+        "acceptance": [
+            ("静态可达", "静态抓取后，内容路径级联仍能读到各级 option 文案，映射落地的可跟链"),
+            ("管道分流", "表单级联 exclude；内容路径可入库或由 MD/llms 互证"),
+            ("可证伪", "对「级联路径对应哪些官方内容 URL」须能引用可读文本或 href，与空面板 / 仅 id 失败判据互斥"),
+        ],
     },
     "otag": {
+        "hide_sample_meta": True,
         "intro_card": {
-            "title": "为什么标签是「视情况」——先分清「语义标签」与「装饰标签」",
+            "plain": True,
+            "title": "场景判断",
             "items": [
                 (
                     "keep",
                     "版本 / 状态语义标签",
                     "要做亲和",
-                    "如「CANN 8.0」「已认证」「停止维护」等承载事实的标签，文本须进 HTML 可读，并在正文有对应定义 / 依据。",
+                    "「CANN 8.0」「已认证」「停止维护」等承载事实的标签：文案须进首包可读，并在正文 / 文档有对应定义与时间点。<br>对应页面：<a href=\"https://www.hiascend.com/developer\" target=\"_blank\" rel=\"noopener\">开发者中心</a>",
                 ),
                 (
                     "strip",
                     "营销 / 装饰标签",
                     "不做亲和 · 入库剥离",
-                    "「热门」「新品」等无规格定义的营销口号标签不是事实，入库管道宜剥离，别当官方结论。",
+                    "「热门」「新品」「推荐」等无规格定义的营销口号不是事实。入库管道宜标 <code>data-llm-exclude</code> 或剥离，别当官方结论。",
                 ),
             ],
         },
-        "design_no_example": True,
+        "design_heading_suffix": " · 场景1",
+        "content_heading_suffix": " · 场景1",
+        "frontend_heading_suffix": " · 场景1",
+        "design_example_side_by_side": True,
         "design": [
             (
-                "UI 基本不用改，重点在正文定义 + 装饰剥离",
-                "现有标签组件本身已是可读文字、无需改视觉；真正要做的是给版本 / 状态类语义标签在正文写清定义 / 时间点，并把「热门 / 新品」等营销装饰标签在入库管道剥离。设计稿只需标注哪些是语义标签、哪些是装饰标签",
+                "视觉可维持",
+                "标签外观（色块 / 圆角 / 字号）按常规即可，无需为亲和重做视觉",
+            ),
+            (
+                "稿面标注角色",
+                "标注哪些是语义标签（须交正文定义）、哪些是装饰标签（标 exclude）；勿把「热门」与「停止维护」画成同级事实",
             ),
         ],
+        "design_example": (
+            "卡片标签：混排无标注 → 语义 / 装饰分流",
+            "两类标签同级混排",
+            '<div style="border:1px solid var(--line);border-radius:8px;padding:12px 14px;background:#fff;">\n'
+            '  <p style="margin:0 0 8px;font-weight:600;color:var(--text);">CANN 软件包</p>\n'
+            '  <p style="margin:0;display:flex;gap:6px;flex-wrap:wrap;">\n'
+            '    <span style="font-size:12px;padding:2px 8px;border-radius:4px;background:#fef3f2;color:#b42318;">停止维护</span>\n'
+            '    <span style="font-size:12px;padding:2px 8px;border-radius:4px;background:#fffaeb;color:#b54708;">热门</span>\n'
+            '    <span style="font-size:12px;padding:2px 8px;border-radius:4px;background:#eff8ff;color:#175cd3;">新品</span>\n'
+            '  </p>\n'
+            '</div>',
+            "语义保留 · 装饰标角色",
+            '<div style="border:1px solid var(--line);border-radius:8px;padding:12px 14px;background:#fff;">\n'
+            '  <p style="margin:0 0 8px;font-weight:600;color:var(--text);">CANN 软件包</p>\n'
+            '  <p style="margin:0;display:flex;gap:6px;flex-wrap:wrap;align-items:center;">\n'
+            '    <span style="font-size:12px;padding:2px 8px;border-radius:4px;background:#fef3f2;color:#b42318;">停止维护</span>\n'
+            '    <span style="font-size:11px;color:var(--muted);">← 语义 · 正文须有定义</span>\n'
+            '  </p>\n'
+            '  <p style="margin:8px 0 0;display:flex;gap:6px;flex-wrap:wrap;align-items:center;">\n'
+            '    <span style="font-size:12px;padding:2px 8px;border-radius:4px;background:#fffaeb;color:#b54708;opacity:.7;">热门</span>\n'
+            '    <span style="font-size:11px;color:var(--muted);">← 装饰 · 入库剥离</span>\n'
+            '  </p>\n'
+            '</div>',
+            True,
+            True,
+            "「停止维护 / 热门 / 新品」同级展示，稿面未区分事实与口号，落地易整批入库。",
+            "语义标签单独成组并要求正文定义；装饰标签标 exclude，不当规格事实。",
+        ),
         "content": [
             (
-                "语义标签配正文定义",
-                "版本 / 状态标签在正文或文档写清官方定义（如「停止维护 = 不再提供补丁，截止 2025-12」），别让标签成为无依据的孤立结论",
+                "统一命名",
+                "标签文案与正文 / 规格表 / 版本说明中的状态名对齐（如一律「停止维护」，勿混用「停维 / EOL / 下线」）",
             ),
             (
-                "营销标签不入正文事实",
-                "「热门 / 推荐」等营销标签不写进规格正文、不当事实来源",
+                "语义定义平行清单",
+                "在文档 MD 或规格页维护「标签 → 官方定义 / 截止时间」；卡片上的短标签只作索引，不作唯一依据",
+            ),
+            (
+                "过渡补位",
+                "正文尚未写清定义时，用 llms / MD 临时补状态口径；页面达标后以正文为准，临时项可移除。营销标签不进清单",
             ),
         ],
         "content_example": (
-            "状态标签：孤立色块 → 正文有定义",
-            "标签无正文依据",
-            "【Before】卡片打「停止维护」标签\n正文 / 文档无对应定义或截止时间",
+            "状态标签：孤立口号 → 正文有定义",
+            "卡片有标签，正文无定义",
+            "开发者中心卡片打「停止维护」「热门」；\n正文 / 文档无对应定义或截止时间；\nAgent 只能复述色块文案，无法引用官方依据。",
             "正文写清定义",
             "## 版本状态说明\n- 停止维护：不再提供补丁与安全更新，截止 2025-12\n- 在维：持续更新（当前 CANN 8.0）",
             False,
             False,
         ),
-        "frontend": [
+        "content_example_after_sections": [
             (
-                "语义标签文本 SSR 可读",
-                "版本 / 状态标签的文字在首包 HTML 可读（非纯 background-color / icon font），保证状态语义能被抓取",
+                "MD 状态定义表",
+                "## 版本状态说明\n| 标签 | 定义 | 截止 |\n| 停止维护 | 不再提供补丁与安全更新 | 2025-12 |\n| 在维 | 持续更新 | — |",
             ),
             (
-                "装饰标签可 exclude",
-                "营销 / 装饰标签标 <code>data-llm-exclude</code> 或在管道剥离，避免「热门」等口号被当作官方事实入库",
+                "llms 临时补口径",
+                "# llms.txt（过渡）\n- 停止维护：不再提供补丁与安全更新，截止 2025-12\n- 在维（CANN 8.0）：持续更新",
+                "正文状态说明达标后，临时项可移除；勿把「热门」写入清单。",
+            ),
+        ],
+        "content_example_before_prefix": "当前问题",
+        "content_example_before_mark": True,
+        "frontend_lead": "语义标签的可见文字须写入首包 HTML；营销装饰标签标 <code>data-llm-exclude</code> 或管道剥离。静态抓取应能读到状态文案，且不会把「热门」当官方事实。",
+        "frontend": [
+            (
+                "语义文案进首包",
+                "版本 / 状态标签用真实文本节点输出（非纯 background / icon font）；静态抓取可读到「停止维护」等字面",
+            ),
+            (
+                "装饰标 exclude",
+                "「热门 / 新品 / 推荐」等营销标签加 <code>data-llm-exclude</code>，或在入库管道按 class / 角色剥离",
             ),
         ],
         "frontend_example": (
-            "标签：全部进库 → 语义留、装饰 exclude",
-            "语义 / 装饰混进库",
-            '&lt;span class="tag"&gt;停止维护&lt;/span&gt;\n&lt;span class="tag"&gt;热门&lt;/span&gt;\n&lt;!-- 两类标签都被当事实入库 --&gt;',
+            "标签：混进库 → 语义留、装饰 exclude",
+            "语义 / 装饰一并入库",
+            '&lt;span class="tag"&gt;停止维护&lt;/span&gt;\n&lt;span class="tag"&gt;热门&lt;/span&gt;\n&lt;!-- 两类都被当事实抓取 --&gt;',
             "装饰标 exclude",
-            '&lt;span class="tag"&gt;停止维护&lt;/span&gt;\n&lt;span class="tag tag--promo" data-llm-exclude&gt;热门&lt;/span&gt;\n&lt;!-- 语义标签入库、营销标签剥离 --&gt;',
+            '&lt;span class="tag"&gt;停止维护&lt;/span&gt;\n&lt;span class="tag tag--promo" data-llm-exclude&gt;热门&lt;/span&gt;\n&lt;!-- 语义入库 · 营销剥离 --&gt;',
             False,
             False,
+            "「热门」与「停止维护」同级进库，易被当成同等官方结论。",
+            "语义标签可抓；装饰标签 exclude，静态抓取不会把口号当事实。",
         ),
+        "frontend_example_before_prefix": "当前问题",
+        "acceptance": [
+            ("静态可读", "静态抓取后能读到语义标签字面，且营销装饰标签未作为事实入库"),
+            ("有依据", "对「停止维护」等状态问句能引用正文 / MD 定义与时间点，与仅复述色块失败判据互斥"),
+            ("管道分流", "装饰标签 exclude 或剥离；语义标签与状态定义表可互证"),
+        ],
     },
     "odialog": {
+        "hide_sample_meta": True,
         "intro_card": {
-            "title": "为什么对话框是「视情况」——先分清「含关键说明」与「纯确认框」",
+            "plain": True,
+            "title": "场景判断",
             "items": [
                 (
                     "keep",
                     "含关键说明的对话框",
                     "要做亲和",
-                    "安装步骤、活动规则等唯一说明若在弹层，须 SSR 进首包或同步到正文页；DOM 文本勿被 <code>aria-hidden</code> 删除。",
+                    "安装步骤、活动规则等唯一说明若在弹层：须写入首包 HTML，或在正文页写一份等价可引用文本；DOM 文本勿被 <code>aria-hidden</code> 删空。",
                 ),
                 (
                     "strip",
                     "纯确认框",
                     "不做亲和 · 入库剥离",
-                    "「确定 / 取消 / 我知道了」这类无内容的 noop 确认框不承载知识，入库管道可过滤。",
+                    "「确定 / 取消 / 我知道了」等无知识的 noop 确认框不承载规格。入库管道宜标 <code>data-llm-exclude</code> 或过滤。",
                 ),
             ],
         },
+        "design_heading_suffix": " · 场景1",
+        "content_heading_suffix": " · 场景1",
+        "frontend_heading_suffix": " · 场景1",
         "design_no_example": True,
         "design": [
             (
-                "UI 不用改，重点在 SSR + 正文双写",
-                "对话框的视觉与交互按常规即可；真正要做的是让含关键说明（安装步骤 / 活动规则）的弹层内容进首包 SSR，或在正文页写一份等价说明。设计稿只需标注「关键说明勿只放弹层」，落地交给前端与内容",
+                "视觉交互可维持",
+                "对话框外观与开关交互按常规即可，无需为亲和重做视觉",
+            ),
+            (
+                "稿面标注角色",
+                "标注哪些弹层含关键说明（须正文双写或交首包文案），哪些是纯确认框（标 exclude）；勿假定「点开才看见的步骤不用交付」",
             ),
         ],
         "content": [
             (
-                "关键说明正文 duplicate",
-                "安装步骤 / 活动规则等唯一说明在正文页或文档也写一份可引用文本，别让弹层成为唯一来源",
+                "统一命名",
+                "弹层标题与正文 / MD 中的步骤名、规则名对齐（如一律「CANN 安装步骤」）",
             ),
             (
-                "纯确认框不入库",
-                "「确定 / 取消 / 我知道了」这类 noop 确认框不承载知识，内容清单不收录",
+                "关键说明平行清单",
+                "安装步骤 / 活动规则在文档 MD 或正文页平铺一份可引用文本；弹层不作唯一来源",
+            ),
+            (
+                "过渡补位",
+                "弹层尚未进首包时，用 llms / MD 临时补步骤；SSR 或正文达标后以页面为准。纯确认框不进清单",
             ),
         ],
         "content_example": (
             "安装步骤：只在弹层 → 正文也有一份",
             "步骤只在 dialog",
-            "【Before】完整安装步骤只在「安装指引」弹层\n正文 / 文档无等价说明",
+            "完整安装步骤只在「安装指引」弹层；\n正文 / 文档无等价说明；\n不点开 / 禁 JS 时读不到步骤。",
             "正文 duplicate",
-            "## CANN 安装步骤\n1. 下载对应版本固件与驱动\n2. 校验依赖（GCC / GLIBC）\n3. 执行安装脚本 …\n（正文可引用，弹层同源）",
+            "## CANN 安装步骤\n1. 下载对应版本固件与驱动\n2. 校验依赖（GCC / GLIBC）\n3. 执行安装脚本 …",
             False,
             False,
         ),
+        "content_example_after_sections": [
+            (
+                "MD 平铺步骤",
+                "## CANN 安装步骤\n1. 下载对应版本固件与驱动\n2. 校验依赖（GCC / GLIBC）\n3. 执行安装脚本 …",
+            ),
+            (
+                "llms 临时补步骤",
+                "# llms.txt（过渡）\n## CANN 安装步骤\n1. 下载固件与驱动\n2. 校验依赖\n3. 执行安装脚本",
+                "弹层 SSR 或正文双写达标后，临时项可移除。",
+            ),
+        ],
+        "content_example_before_prefix": "当前问题",
+        "content_example_before_mark": True,
+        "frontend_lead": "含关键说明的 dialog 内容须写入首包 HTML（可默认视觉隐藏）；纯确认框标 exclude。静态抓取应能读到步骤 / 规则，且不会把「我知道了」当知识入库。",
         "frontend": [
             (
-                "含内容的 dialog SSR 进首包",
-                "承载关键说明的对话框内容在首包 HTML 就存在（可默认视觉隐藏），别等点击才由 JS 注入",
+                "说明进首包",
+                "承载关键说明的弹层正文在首包就存在，别等点击才由 JS 注入",
             ),
             (
-                "勿用 aria-hidden 删文本",
-                "弹层文本保留在 DOM，别在抓取时被移除导致为空",
+                "勿 aria-hidden 删文本",
+                "弹层文本保留在 DOM，抓取时勿被移除为空",
             ),
             (
-                "纯确认框可 exclude",
-                "noop 确认框标 <code>data-llm-exclude</code>，避免「我知道了」等噪声进库",
+                "纯确认框 exclude",
+                "noop 确认框标 <code>data-llm-exclude</code>，避免操作文案进库",
             ),
         ],
         "frontend_example": (
-            "对话框：点击才注入 → SSR 首包可读",
+            "对话框：点击才注入 → 首包可读",
             "点击才注入",
-            '&lt;div class="o-dialog" hidden&gt;&lt;/div&gt;\n&lt;!-- 步骤点击「安装指引」后才 JS 注入 --&gt;',
-            "SSR 首包含文本",
-            '&lt;div class="o-dialog" hidden&gt;\n  &lt;h3&gt;CANN 安装步骤&lt;/h3&gt;\n  &lt;ol&gt;&lt;li&gt;下载固件与驱动&lt;/li&gt;…&lt;/ol&gt;\n&lt;/div&gt;\n&lt;!-- 内容首包可读，仅视觉隐藏 --&gt;',
+            '&lt;div class="o-dialog" hidden&gt;&lt;/div&gt;\n&lt;!-- 步骤点击后才 JS 注入 --&gt;',
+            "首包含文本",
+            '&lt;div class="o-dialog" hidden&gt;\n  &lt;h3&gt;CANN 安装步骤&lt;/h3&gt;\n  &lt;ol&gt;&lt;li&gt;下载固件与驱动&lt;/li&gt;…&lt;/ol&gt;\n&lt;/div&gt;\n&lt;!-- 首包可读，仅视觉隐藏 --&gt;',
             False,
             False,
+            "步骤不在首包，静态抓取读不到安装说明。",
+            "说明在首包；纯确认框另标 exclude。",
         ),
+        "frontend_example_before_prefix": "当前问题",
+        "acceptance": [
+            ("静态可读", "静态抓取后，含说明的 dialog 文案仍可读，或正文 / MD 有等价步骤"),
+            ("可证伪", "对「CANN 安装步骤写了什么」须能引用正文或首包文本，与点击才注入失败判据互斥"),
+            ("管道分流", "纯确认框 exclude；关键说明可入库或由 MD 互证"),
+        ],
     },
     "opopover": {
+        "hide_sample_meta": True,
         "intro_card": {
-            "title": "为什么气泡卡片是「视情况」——先分清「字段定义」与「装饰提示」",
+            "plain": True,
+            "title": "场景判断",
             "items": [
                 (
                     "keep",
                     "含字段定义的气泡",
                     "要做亲和",
-                    "重要字段 / 规格定义（如「CANN 版本」）若只在悬停气泡，须在正文重复一份，或 popover 内容进首包可抓。",
+                    "重要字段 / 规格定义（如「CANN 版本」）若只在悬停气泡：须在正文写一份可引用定义，或 popover 内容写入首包可抓。",
                 ),
                 (
                     "strip",
                     "装饰性 tooltip",
-                    "不做亲和",
-                    "纯提示、装饰性 tooltip 不含唯一知识，入库可忽略；关键在于正文是否另有一份可读定义。",
+                    "不做亲和 · 入库剥离",
+                    "纯提示、装饰性 tooltip 不含唯一知识。入库可忽略或标 <code>data-llm-exclude</code>；关键看正文是否另有定义。",
                 ),
             ],
         },
+        "design_heading_suffix": " · 场景1",
+        "content_heading_suffix": " · 场景1",
+        "frontend_heading_suffix": " · 场景1",
+        "design_example_side_by_side": True,
         "design": [
             (
                 "关键定义留成可见旁注",
-                "重要字段定义（如「CANN 版本」）别只放悬停气泡，稿面为其预留一处可见旁注 / 正文说明；气泡只作补充",
+                "重要字段定义别只放悬停气泡，稿面预留可见旁注 / 正文说明位；气泡只作补充",
             ),
             (
-                "区分定义气泡与装饰 tooltip",
-                "承载字段定义的气泡要在正文另写一份；纯装饰 tooltip 标「纯提示 · 入库排除」",
+                "稿面标注角色",
+                "标注哪些气泡承载字段定义（须正文双写），哪些是纯装饰 tooltip（标 exclude）",
             ),
         ],
         "design_example": (
@@ -2757,61 +3597,88 @@ PRINCIPLES_OVERRIDES: dict[str, dict[str, Any]] = {
             '<div style="display:flex;align-items:center;gap:6px;">\n'
             '  <span>CANN 版本</span>\n'
             '  <span style="width:16px;height:16px;border-radius:50%;border:1px solid var(--line);display:inline-flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);">?</span>\n'
-            '</div>\n'
-            '<p class="rf-muted" style="margin-top:8px;">字段定义只在悬停「?」时弹出气泡；不悬停 / 禁 JS 时正文没有这份说明，抓取读不到定义。</p>',
+            '</div>',
             "正文旁注 + 气泡补充",
             '<div style="display:flex;align-items:center;gap:6px;">\n'
             '  <span>CANN 版本</span>\n'
             '  <span style="width:16px;height:16px;border-radius:50%;border:1px solid var(--line);display:inline-flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);">?</span>\n'
             '</div>\n'
-            '<p class="rf-caption" style="margin-top:8px;">CANN 版本：昇腾异构计算架构的版本号，决定可用算子与框架适配范围（当前 8.0）。</p>\n'
-            '<p class="rf-muted" style="margin-top:4px;">定义写成可见旁注（正文一份），气泡只作 hover 补充。</p>',
+            '<p class="rf-caption" style="margin-top:8px;">CANN 版本：昇腾异构计算架构的版本号，决定可用算子与框架适配范围（当前 8.0）。</p>',
             True,
             True,
+            "字段定义只在悬停「?」时出现；不悬停 / 禁 JS 时正文没有这份说明。",
+            "定义写成可见旁注（正文一份），气泡只作 hover 补充。",
         ),
         "content": [
             (
-                "字段定义正文 duplicate",
-                "悬停气泡里的字段 / 规格定义在正文或文档也写一份可引用文本，气泡不作唯一来源",
+                "统一命名",
+                "字段名与正文 / 规格表 / 气泡文案对齐（如一律「CANN 版本」）",
             ),
             (
-                "装饰 tooltip 可忽略",
-                "纯提示 tooltip 不含唯一知识，入库可忽略；关键看正文是否另有定义",
+                "字段定义平行清单",
+                "在文档 MD 或规格页维护「字段 → 官方定义」；气泡不作唯一来源",
+            ),
+            (
+                "过渡补位",
+                "正文尚未写清时，用 llms / MD 临时补字段口径；页面达标后以正文为准。装饰 tooltip 不进清单",
             ),
         ],
         "content_example": (
             "字段定义：只在气泡 → 正文旁注",
             "定义只在 popover",
-            "【Before】「CANN 版本」定义只在悬停气泡\n正文无等价说明",
+            "「CANN 版本」定义只在悬停气泡；\n正文无等价说明；\nAgent 无法引用官方依据。",
             "正文写一份定义",
             "## 字段说明\n- CANN 版本：昇腾异构计算架构版本号，决定算子与框架适配范围（当前 8.0）",
             False,
             False,
         ),
+        "content_example_after_sections": [
+            (
+                "MD 字段定义表",
+                "## 字段说明\n| 字段 | 定义 |\n| CANN 版本 | 昇腾异构计算架构版本号，决定算子与框架适配范围（当前 8.0） |",
+            ),
+            (
+                "llms 临时补口径",
+                "# llms.txt（过渡）\n- CANN 版本：昇腾异构计算架构版本号（当前 8.0）",
+                "正文旁注达标后，临时项可移除。",
+            ),
+        ],
+        "content_example_before_prefix": "当前问题",
+        "content_example_before_mark": True,
+        "frontend_lead": "含字段定义的 popover 内容须写入首包 HTML（可视觉隐藏），或依赖正文旁注；装饰 tooltip 标 exclude。静态抓取应能读到定义，且不会把纯提示当规格。",
         "frontend": [
             (
-                "含定义的 popover SSR 进首包",
-                "承载字段定义的气泡内容在首包 HTML 就存在（可视觉隐藏），别等 hover 才由 JS 挂载",
+                "定义进首包或旁注",
+                "承载字段定义的气泡文本在首包就存在，别等 hover 才 JS 挂载；更优是正文旁注已可读",
             ),
             (
                 "勿 aria-hidden 删文本",
                 "气泡文本保留在 DOM，避免抓取为空",
             ),
             (
-                "装饰 tooltip 可 exclude",
+                "装饰 tooltip exclude",
                 "纯装饰 tooltip 标 <code>data-llm-exclude</code>",
             ),
         ],
         "frontend_example": (
-            "气泡：hover 才挂载 → SSR 首包可读",
+            "气泡：hover 才挂载 → 首包可读",
             "hover 才挂载",
-            '&lt;span class="o-popover"&gt;&lt;/span&gt;\n&lt;!-- 定义 hover 时才 JS 注入，无 SSR 文本 --&gt;',
-            "SSR 首包含定义",
+            '&lt;span class="o-popover"&gt;&lt;/span&gt;\n&lt;!-- 定义 hover 时才 JS 注入 --&gt;',
+            "首包含定义",
             '&lt;span class="o-popover" role="note"&gt;\n  CANN 版本：异构计算架构版本号（当前 8.0）\n&lt;/span&gt;\n&lt;!-- 首包可读，视觉上悬停展开 --&gt;',
             False,
             False,
+            "定义不在首包，静态抓取读不到字段说明。",
+            "定义在首包；装饰 tooltip 另标 exclude。",
         ),
+        "frontend_example_before_prefix": "当前问题",
+        "acceptance": [
+            ("静态可读", "静态抓取后能读到字段定义（正文旁注或首包 popover），装饰 tooltip 未当事实入库"),
+            ("可证伪", "对「CANN 版本是什么」须能引用正文 / MD 定义，与仅悬停才出现失败判据互斥"),
+            ("管道分流", "装饰 tooltip exclude；字段定义可入库或由 MD 互证"),
+        ],
     },
+
 }
 
 
@@ -3068,8 +3935,8 @@ def render_page(slug: str, name: str, data: dict[str, Any]) -> str:
     <div class="modal-title">组件亲和原则</div>
   </div>
   <nav class="detail-head-tabs modal-actions" aria-label="视图切换">
-    <a href="problems-{slug}.html">实测问题</a>
     <a href="{phref}" class="active">亲和原则</a>
+    <a href="problems-{slug}.html">实测问题</a>
   </nav>
 </div>
 
@@ -3116,22 +3983,21 @@ def patch_principles_topbar(path: Path, slug: str) -> bool:
     text = path.read_text(encoding="utf-8")
     phref = principles_href(slug)
     new_tabs = (
-        f'      <a href="problems-{slug}.html">实测问题</a>\n'
-        f'      <a href="{phref}" class="active">亲和原则</a>'
+        f'    <a href="{phref}" class="active">亲和原则</a>\n'
+        f'    <a href="problems-{slug}.html">实测问题</a>'
     )
     patched, n = re.subn(
-        r'      <a href="problems-[^"]+\.html">实测问题</a>\s*\n'
-        r'      <a href="[^"]+" class="active">亲和原则</a>',
-        new_tabs,
+        r'\s*<a href="[^"]+"(?: class="active")?>亲和原则</a>\s*\n'
+        r'\s*<a href="problems-[^"]+\.html"(?: class="active")?>实测问题</a>',
+        '\n' + new_tabs,
         text,
         count=1,
     )
     if n == 0:
-        # try without active on principles
         patched, n = re.subn(
-            r'      <a href="problems-[^"]+\.html">实测问题</a>\s*\n'
-            r'      <a href="[^"]+">亲和原则</a>',
-            new_tabs,
+            r'\s*<a href="problems-[^"]+\.html"(?: class="active")?>实测问题</a>\s*\n'
+            r'\s*<a href="[^"]+"(?: class="active")?>亲和原则</a>',
+            '\n' + new_tabs,
             text,
             count=1,
         )
@@ -3147,16 +4013,24 @@ def patch_problems_topbar(path: Path, slug: str) -> bool:
     text = path.read_text(encoding="utf-8")
     phref = principles_href(slug)
     new_tabs = (
-        f'      <a href="problems-{slug}.html" class="active">实测问题</a>\n'
-        f'      <a href="{phref}">亲和原则</a>'
+        f'    <a href="{phref}">亲和原则</a>\n'
+        f'    <a href="problems-{slug}.html" class="active">实测问题</a>'
     )
     patched, n = re.subn(
-        r'      <a href="problems-[^"]+\.html" class="active">实测问题</a>\s*\n'
-        r'      <a href="[^"]+">亲和原则</a>',
-        new_tabs,
+        r'\s*<a href="[^"]+"(?: class="active")?>亲和原则</a>\s*\n'
+        r'\s*<a href="problems-[^"]+\.html"(?: class="active")?>实测问题</a>',
+        '\n' + new_tabs,
         text,
         count=1,
     )
+    if n == 0:
+        patched, n = re.subn(
+            r'\s*<a href="problems-[^"]+\.html"(?: class="active")?>实测问题</a>\s*\n'
+            r'\s*<a href="[^"]+"(?: class="active")?>亲和原则</a>',
+            '\n' + new_tabs,
+            text,
+            count=1,
+        )
     if n == 0:
         return False
     if patched != text:
@@ -3250,9 +4124,6 @@ def copy_to_report_serve() -> None:
         shutil.copy2(path, REPORT / path.name)
     for path in DOCS.glob("principles-*.html"):
         shutil.copy2(path, REPORT / path.name)
-    aff = DOCS / "principles-affinity.html"
-    if aff.exists():
-        shutil.copy2(aff, REPORT / aff.name)
 
 
 def main() -> None:
@@ -3274,7 +4145,18 @@ def main() -> None:
 
         probe = PROBES.get(slug)
         if not probe:
-            raise SystemExit(f"Missing probe data for {slug}")
+            if slug in PRINCIPLES_OVERRIDES:
+                probe = {
+                    "title_short": {
+                        "ocarousel": "轮播帧语义隔离",
+                    }.get(slug, name),
+                    "term": name.split()[-1] if name else slug,
+                    "definition": "",
+                    "sample_url": "https://www.hiascend.com/zh",
+                    "sample_label": "社区首页",
+                }
+            else:
+                raise SystemExit(f"Missing probe data for {slug}")
 
         out = principles_out_path(slug)
         data = merge_principles(slug, name, probe)
@@ -3297,10 +4179,6 @@ def main() -> None:
             if patch_remove_principles_framework(path):
                 framework_removed += 1
 
-    aff = DOCS / "principles-affinity.html"
-    if aff.exists() and patch_remove_principles_framework(aff):
-        framework_removed += 1
-
     problems_topbars = 0
     for _, slug, _ in all_components():
         ppath = DOCS / f"problems-{slug}.html"
@@ -3309,9 +4187,6 @@ def main() -> None:
 
     copy_to_report_serve()
 
-    all_principles = sorted(
-        set(generated) | {OCAROUSEL_CANONICAL.name} | {"principles-affinity.html"}
-    )
     print(f"Generated: {len(generated)}")
     for f in sorted(generated):
         print(f"  {f}")
@@ -3321,7 +4196,7 @@ def main() -> None:
     print(f"Principles topbars patched: {topbars_patched}")
     print(f"Principles framework blocks removed: {framework_removed}")
     print(f"Problems topbars patched: {problems_topbars}")
-    print(f"Total principles files: {len(list(DOCS.glob('principles-*.html'))) + (1 if OCAROUSEL_CANONICAL.exists() else 0)}")
+    print(f"Total principles files: {len(list(DOCS.glob('principles-*.html')))}")
     print(f"Copied to {REPORT}")
 
 

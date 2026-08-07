@@ -1800,6 +1800,8 @@ if ".comp-nav .comp-dot" not in CSS:
         "    background: #2563eb;\n"
         "  }\n"
     )
+if "overflow-anchor" not in CSS:
+    CSS += "\n  .comp-sidebar { overflow-anchor: none; }\n"
 
 SCRIPT_BLOCK = """
 <script>
@@ -1863,6 +1865,72 @@ SCRIPT_BLOCK = """
   syncHash();
 })();
 </script>
+<script>
+(function () {
+  var sidebar = document.querySelector('.comp-sidebar');
+  if (!sidebar) return;
+  var key = 'geo-comp-sidebar-scroll';
+  var y = null;
+  try {
+    var q = new URLSearchParams(location.search).get('sb');
+    if (q !== null && q !== '') y = parseInt(q, 10);
+  } catch (e) {}
+  if (y === null || isNaN(y)) {
+    try {
+      var saved = sessionStorage.getItem(key);
+      if (saved !== null) y = parseInt(saved, 10);
+    } catch (e) {}
+  }
+  if (y === null || isNaN(y)) y = null;
+
+  function restore() {
+    if (y === null) return;
+    sidebar.scrollTop = y;
+  }
+  restore();
+  requestAnimationFrame(function () {
+    restore();
+    requestAnimationFrame(restore);
+  });
+  window.addEventListener('pageshow', restore);
+  window.addEventListener('load', restore);
+  var t0 = Date.now();
+  var iv = setInterval(function () {
+    restore();
+    if (Date.now() - t0 > 600) clearInterval(iv);
+  }, 40);
+
+  try {
+    if (new URLSearchParams(location.search).has('sb')) {
+      var u = new URL(location.href);
+      u.searchParams.delete('sb');
+      history.replaceState(null, '', u.pathname + u.search + u.hash);
+    }
+  } catch (e) {}
+
+  function persist() {
+    y = sidebar.scrollTop;
+    try { sessionStorage.setItem(key, String(y)); } catch (e) {}
+  }
+  sidebar.addEventListener('scroll', persist, { passive: true });
+  sidebar.querySelectorAll('.comp-nav a[href]').forEach(function (a) {
+    a.addEventListener('click', function () {
+      persist();
+      try {
+          var raw = a.getAttribute('href') || '';
+          var hash = '';
+          var hi = raw.indexOf('#');
+          if (hi >= 0) { hash = raw.slice(hi); raw = raw.slice(0, hi); }
+          var qi = raw.indexOf('?');
+          if (qi >= 0) raw = raw.slice(0, qi);
+          if (raw && raw.indexOf('http') !== 0) {
+            a.setAttribute('href', raw + '?sb=' + String(sidebar.scrollTop) + hash);
+          }
+      } catch (e) {}
+    });
+  });
+})();
+</script>
 """
 
 
@@ -1880,11 +1948,128 @@ def slug_to_name() -> dict[str, str]:
 
 def aff_status(slug: str) -> tuple[str, str]:
     probe = PROBES.get(slug, {})
-    if probe.get("no_aff"):
+    if probe.get("no_aff") or probe.get("badge_text") == "不需要亲和":
         return "不需要", "aff-no"
     if probe.get("badge_text") == "视情况":
         return "视情况", "aff-maybe"
     return "需要", "aff-need"
+
+
+# 组件清单「是否需要做亲和」列：与原则页场景判断 / 一句话原则对齐
+CATALOG_AFF: dict[str, tuple[str, str]] = {
+    "omenu": (
+        "需要",
+        "跳转型侧栏目录须首包 <code>a[href]</code>；同页切换内容块归树组件。详见<a href=\"principles-omenu.html\">亲和原则</a>",
+    ),
+    "otab": (
+        "视情况",
+        "内容型 Tab 各面板须全量 SSR；纯交互 / 装饰型入库剥离。详见<a href=\"principles-otab.html\">亲和原则</a>",
+    ),
+    "obreadcrumb": (
+        "需要",
+        "祖先页做成可爬 <code>a[href]</code>；当前页可用纯文本；路径文案与 sitemap 对齐",
+    ),
+    "oanchor": (
+        "需要",
+        "本篇目录用真实 <code>#id</code> 与 <code>href</code>；正文标题保留对应 id",
+    ),
+    "opagination": (
+        "需要",
+        "公开列表底部分页须为可抓 URL（如 <code>?page=2</code>）；后台表格分页入库剥离",
+    ),
+    "ostep": (
+        "需要",
+        "公开流程步骤标题与说明写入源码；进行中 / 完成态勿只靠颜色；后台向导剥离",
+    ),
+    "onavigation": (
+        "需要",
+        "站点入口与展开子链须进首包可跟；搜索 / 换肤 / 语言等纯操作控件剥离",
+    ),
+    "ofooternav": (
+        "需要",
+        "页脚多列链接进源码；列名稳定，并与 llms / sitemap 互证",
+    ),
+    "obutton": (
+        "视情况",
+        "跳转型 CTA 做成可抓链接；纯提交 / 关闭 / 弹层按钮入库剥离",
+    ),
+    "olink": (
+        "需要",
+        "导流链接须带真实 <code>href</code>；锚文本宜自描述；禁 JSON / onclick 伪链",
+    ),
+    "odropdown": (
+        "需要",
+        "下拉子项须在首包可读（链接 + 文案）；勿悬停才挂链",
+    ),
+    "otoggle": (
+        "视情况",
+        "映射下载 / 版本的选型矩阵须进首包；纯 UI 筛选剥离",
+    ),
+    "oradio": ("不需要", "表单选项态，非内容载体；勿把选项文案当知识库正文"),
+    "ocheckbox": ("不需要", "同上，交互控件；说明文字应写在旁侧正文而非只靠勾选态"),
+    "oswitch": ("不需要", "开关态对抓取无信息增量"),
+    "oscrollbar": ("不需要", "纯样式，与亲和无关"),
+    "osearch": (
+        "视情况",
+        "要做亲和的是发现层：可搜文档须有独立 URL 并进 sitemap；搜索框本身剥离",
+    ),
+    "oselect": (
+        "视情况",
+        "映射文档 / 下载的选项文本与落地页须可证伪；纯表单筛选剥离",
+    ),
+    "otrees": (
+        "需要",
+        "同页内容树节点可无 URL，但各内容块须首包可读；跳转型手册目录见菜单",
+    ),
+    "orate": (
+        "视情况",
+        "评分数字若作社会证明须可读进首包；「我要评分」等操作 CTA 剥离",
+    ),
+    "ocascader": (
+        "视情况",
+        "映射内容路径的各级选项须可读；纯地址 / 表单级联剥离",
+    ),
+    "oinput": ("不需要", "输入控件本身不承载官网知识；占位符勿写关键说明"),
+    "otextarea": ("不需要", "同上；长说明应放正文段落而非 textarea 占位"),
+    "odatepicker": ("不需要", "日期控件，非内容知识"),
+    "otimepicker": ("不需要", "时间控件，非内容知识"),
+    "oupload": ("不需要", "上传交互；限制说明可进旁注正文，控件本身无需亲和改造"),
+    "oslider": ("不需要", "数值滑条，非叙述内容"),
+    "otag": (
+        "视情况",
+        "版本 / 状态语义标签须进 HTML 文本并有定义依据；营销装饰标签剥离",
+    ),
+    "odivider": ("不需要", "视觉分隔，md 用 --- 即可"),
+    "obadge": ("不需要", "未读角标对知识抓取无价值"),
+    "ocarousel": (
+        "视情况",
+        "白名单产品 / 文档入口帧须标题+摘要+链接；运营 / 活动口号帧默认剥离。详见<a href=\"principles-ocarousel.html\">亲和原则</a>",
+    ),
+    "odialog": (
+        "视情况",
+        "含安装步骤等关键说明须正文双写或弹层进首包；纯确认框剥离",
+    ),
+    "ocard": (
+        "需要",
+        "标题、摘要、链接写入 HTML；图需 alt / 图注；禁空壳卡后注入",
+    ),
+    "odatetable": (
+        "需要",
+        "用真实 table / 单元格文本，勿截图表；表头语义清晰",
+    ),
+    "opopover": (
+        "视情况",
+        "字段定义勿只放悬停气泡，正文须有一份；装饰 tooltip 剥离",
+    ),
+    "oprogress": ("不需要", "进度展示，非知识正文"),
+    "omessage": ("不需要", "瞬时反馈；重要错误说明应落到正文 / 文档页"),
+    "otoast": ("不需要", "轻提示瞬时，勿承载唯一说明"),
+    "oloading": ("不需要", "加载态，与内容亲和无关"),
+}
+
+
+def aff_cls_for(label: str) -> str:
+    return {"需要": "aff-need", "视情况": "aff-maybe", "不需要": "aff-no"}.get(label, "aff-need")
 
 
 def render_aff_tag(slug: str) -> str:
@@ -1894,14 +2079,17 @@ def render_aff_tag(slug: str) -> str:
 
 # 有 UI 小样（设计示例为可视化 render-frame）的组件：侧边栏名称后加一个蓝色圆点标记
 DESIGN_CHANGED_SLUGS = {
-    "omenu", "obreadcrumb", "oanchor", "onavigation", "ofooternav",
-    "olink", "ocard", "odatetable", "osearch", "orate", "opopover", "ocarousel",
+    # principles 页设计栏有 UI 小样（render-frame）的组件
+    "omenu", "obreadcrumb", "oanchor", "ostep", "onavigation", "ofooternav",
+    "obutton", "olink", "odropdown",
+    "osearch", "otrees", "orate", "otag",
+    "ocarousel", "ocard", "odatetable", "opopover",
 }
 
 
 def render_design_dot(slug: str) -> str:
     if slug in DESIGN_CHANGED_SLUGS:
-        return '<span class="comp-dot" title="设计侧有改动" aria-hidden="true"></span>'
+        return '<span class="comp-dot" title="有 UI 小样" aria-hidden="true"></span>'
     return ""
 
 
@@ -1916,7 +2104,7 @@ def render_nav_item(name: str, href: str, slug: str, *, active: bool) -> str:
     cls = ' class="active"' if active else ""
     return (
         f'        <li><a href="{href}"{cls}>'
-        f'<span class="comp-nav-label">{html.escape(sidebar_label(name))}</span>{render_aff_tag(slug)}{render_design_dot(slug)}</a></li>'
+        f'<span class="comp-nav-label">{html.escape(sidebar_label(name))}</span>{render_design_dot(slug)}</a></li>'
     )
 
 
@@ -1926,13 +2114,11 @@ def render_sidebar(active: str | None, *, principles: bool = False) -> str:
         lines.append(f'      <div class="comp-group-label">{group}</div>')
         lines.append("      <ul>")
         for slug, name in items:
-            if principles and slug == "ocarousel":
-                href = "principles-affinity.html"
-                is_active = active == "ocarousel"
+            if principles:
+                href = f"principles-{slug}.html"
             else:
                 href = f"problems-{slug}.html"
-                is_active = active == slug
-            lines.append(render_nav_item(name, href, slug, active=is_active))
+            lines.append(render_nav_item(name, href, slug, active=active == slug))
         lines.append("      </ul>")
     lines.extend(["    </nav>", "  </aside>"])
     return "\n".join(lines)
@@ -2030,7 +2216,7 @@ def render_page(slug: str, name: str, probe: dict) -> str:
       </div>"""
 
     sidebar = render_sidebar(slug)
-    principles_href = "principles-affinity.html" if slug == "ocarousel" else f"principles-{slug}.html"
+    principles_href = f"principles-{slug}.html"
     peer_section = render_peer_section(slug)
 
     return f"""<!DOCTYPE html>
@@ -2051,8 +2237,8 @@ def render_page(slug: str, name: str, probe: dict) -> str:
     <div class="modal-title">组件亲和原则</div>
   </div>
   <nav class="detail-head-tabs modal-actions" aria-label="视图切换">
-    <a href="problems-{slug}.html" class="active">实测问题</a>
     <a href="{principles_href}">亲和原则</a>
+    <a href="problems-{slug}.html" class="active">实测问题</a>
   </nav>
 </div>
 
@@ -2157,22 +2343,10 @@ def delete_no_aff_pages() -> list[str]:
 
 
 def prune_community_ui() -> tuple[int, int]:
-    """Remove 不需要 rows from community-ui.html; renumber and refresh section counts."""
+    """Renumber community-ui rows and refresh section counts (keep 需要/视情况/不需要)."""
     path = DOCS / "community-ui.html"
     text = path.read_text(encoding="utf-8")
     removed = 0
-    while True:
-        new_text, n = re.subn(
-            r'\n\s*<tr data-aff="不需要">.*?</tr>',
-            "",
-            text,
-            count=1,
-            flags=re.DOTALL,
-        )
-        if n == 0:
-            break
-        text = new_text
-        removed += 1
 
     seq = 0
 
@@ -2187,31 +2361,38 @@ def prune_community_ui() -> tuple[int, int]:
         text,
     )
 
-    catalog_count = len(list(all_components()))
+    catalog_count = len(re.findall(r'<tr data-aff="', text))
     text = re.sub(r"共 \d+ 个组件", f"共 {catalog_count} 个组件", text, count=1)
-    text = re.sub(
-        r'(<label><input type="checkbox" name="aff" value="不需要"[^/]*/>不需要</label>\s*)',
-        "",
-        text,
-        count=1,
-    )
 
-    for group, items in GROUPS:
-        section_ids = {
-            "导航类": "cat-nav",
-            "操作类": "cat-action",
-            "输入类": "cat-input",
-            "展示类": "cat-display",
-            "容器类": "cat-container",
-            "反馈类": "cat-feedback",
-        }
-        sid = section_ids.get(group)
-        if not sid:
+    # Ensure 不需要 filter option exists (unchecked by default)
+    if 'value="不需要"' not in text:
+        text = re.sub(
+            r'(<label><input type="checkbox" name="aff" value="视情况" checked />视情况</label>\s*)',
+            r'\1<label><input type="checkbox" name="aff" value="不需要" />不需要</label>\n      ',
+            text,
+            count=1,
+        )
+
+    section_ids = {
+        "导航类": "cat-nav",
+        "操作类": "cat-action",
+        "输入类": "cat-input",
+        "展示类": "cat-display",
+        "容器类": "cat-container",
+        "反馈类": "cat-feedback",
+    }
+    for sid in section_ids.values():
+        m = re.search(
+            rf'<section class="cat-card" aria-labelledby="{sid}">(.*?)</section>',
+            text,
+            flags=re.DOTALL,
+        )
+        if not m:
             continue
-        count = len(items)
+        n = len(re.findall(r'<tr data-aff="', m.group(1)))
         text = re.sub(
             rf'(<h2 id="{sid}">[^<]+<span class="count">)\d+(</span></h2>)',
-            rf"\g<1>{count}\g<2>",
+            rf"\g<1>{n}\g<2>",
             text,
             count=1,
         )
@@ -2222,29 +2403,55 @@ def prune_community_ui() -> tuple[int, int]:
     return removed, catalog_count
 
 
+
 def update_community_ui_samples() -> int:
+    """No-op: 样例URL column removed from community-ui.html."""
+    return 0
+
+
+def update_community_ui_aff_column() -> int:
+    """Refresh data-aff + 「是否需要做亲和」文案，与 CATALOG_AFF / 原则页对齐。"""
     path = DOCS / "community-ui.html"
     text = path.read_text(encoding="utf-8")
+    name_to_slug = {name: slug for _, slug, name in all_components()}
     count = 0
-    for _, slug, name in all_components():
-        probe = PROBES.get(slug, {})
-        url = probe.get("sample_url")
-        label = probe.get("sample_label")
-        if not url or not label:
+    for name, slug in name_to_slug.items():
+        entry = CATALOG_AFF.get(slug)
+        if not entry:
             continue
-        sample_cell = f'<a href="{url}" target="_blank" rel="noopener">{label}</a>'
+        label, reason = entry
+        cls = aff_cls_for(label)
+        cell = (
+            f'<span class="aff {cls}">{label}</span>'
+            f'<span class="aff-reason">{reason}</span>'
+        )
         pattern = (
-            rf'(<tr[^>]*>.*?{re.escape(name)}.*?<td class="col-sample">)'
-            rf'(?:<span class="sample-empty">—</span>|<a href="[^"]+"[^>]*>[^<]+</a>)'
+            rf'(<tr data-aff=")[^"]+("><td class="col-num">\d+</td>'
+            rf'<td class="col-name">{re.escape(name)}</td><td class="col-aff">)'
+            rf'.*?'
             rf'(</td><td class="col-detail">)'
         )
-        new_text, n = re.subn(pattern, rf"\1{sample_cell}\2", text, count=1, flags=re.DOTALL)
+        repl = rf'\g<1>{label}\g<2>{cell}\g<3>'
+        new_text, n = re.subn(pattern, repl, text, count=1, flags=re.DOTALL)
         if n:
             text = new_text
             count += 1
+    # fix broken section open tags if any
+    text = re.sub(
+        r'<section class="cat-card" aria-labelledby="(cat-[a-z]+)"\s*\n',
+        r'<section class="cat-card" aria-labelledby="\1">\n',
+        text,
+    )
     path.write_text(text, encoding="utf-8")
-    shutil.copy2(path, REPORT / "community-ui.html")
     return count
+
+
+def detail_href_for_slug(slug: str) -> str:
+    """Catalog「查看详情」默认进亲和原则；无原则页时回落到实测问题。"""
+    principles = DOCS / f"principles-{slug}.html"
+    if principles.exists():
+        return f"principles-{slug}.html"
+    return f"problems-{slug}.html"
 
 
 def update_community_ui() -> int:
@@ -2253,16 +2460,16 @@ def update_community_ui() -> int:
     name_to_slug = {name: slug for _, slug, name in all_components()}
     count = 0
     for name, slug in name_to_slug.items():
-        old = f'<button type="button" class="comp-link" data-name="{name}"'
-        if old not in text:
+        if f'<td class="col-name">{name}</td>' not in text:
             continue
-        # replace detail cell on same row - match row containing this button
+        href = detail_href_for_slug(slug)
         pattern = (
             rf'(<tr[^>]*>.*?{re.escape(name)}.*?</td><td class="col-detail">)'
-            rf'(?:<span class="detail-empty">查看详情</span>|<a href="problems-{slug}\.html">查看详情</a>)'
+            rf'(?:<span class="detail-empty">查看详情</span>|'
+            rf'<a href="(?:problems|principles)-{slug}\.html">查看详情</a>)'
             rf'(</td></tr>)'
         )
-        new_detail = rf'\1<a href="problems-{slug}.html">查看详情</a>\2'
+        new_detail = rf'\1<a href="{href}">查看详情</a>\2'
         new_text, n = re.subn(pattern, new_detail, text, count=1, flags=re.DOTALL)
         if n:
             text = new_text
@@ -2275,7 +2482,7 @@ def copy_to_report_serve() -> None:
     REPORT.mkdir(parents=True, exist_ok=True)
     for path in DOCS.glob("problems-*.html"):
         shutil.copy2(path, REPORT / path.name)
-    for extra in ("community-ui.html", "principles-affinity.html"):
+    for extra in ("community-ui.html", "principles-affinity.html", "principles-ocarousel.html"):
         src = DOCS / extra
         if src.exists():
             shutil.copy2(src, REPORT / extra)
@@ -2317,10 +2524,14 @@ def main() -> None:
         if path.exists() and patch_sidebar_in_file(path, slug):
             sidebars_patched += 1
 
-    if patch_sidebar_in_file(DOCS / "principles-affinity.html", "ocarousel", principles=True):
+    ocarousel_principles = DOCS / "principles-ocarousel.html"
+    if ocarousel_principles.exists() and patch_sidebar_in_file(
+        ocarousel_principles, "ocarousel", principles=True
+    ):
         sidebars_patched += 1
 
     links_updated = update_community_ui()
+    aff_updated = update_community_ui_aff_column()
     samples_updated = update_community_ui_samples()
     copy_to_report_serve()
 
@@ -2335,6 +2546,7 @@ def main() -> None:
     print(f"Skipped existing/hand-written: {len(skipped)}")
     print(f"Sidebars patched: {sidebars_patched}")
     print(f"community-ui detail links updated: {links_updated} rows")
+    print(f"community-ui aff column updated: {aff_updated} rows")
     print(f"community-ui sample URLs updated: {samples_updated} rows")
     print(f"Copied to {REPORT}")
 
