@@ -2433,22 +2433,41 @@ PRINCIPLES_OVERRIDES: dict[str, dict[str, Any]] = {
         ],
         "design_example": (
             "集群规格：截图表 → 语义参数表",
-            "参数绑在特性 PNG",
-            '<div style="border:1px solid var(--line);border-radius:6px;overflow:hidden;max-width:320px;">\n'
-            '  <div style="background:linear-gradient(135deg,#334155,#475569);color:#fff;padding:18px 14px;text-align:center;font-size:12.5px;line-height:1.6;">规格参数（截图）<br>型号 · CPU · 内存 · 互联</div>\n'
+            "整表是一张 PNG 图",
+            '<div style="border:1px solid var(--line);border-radius:6px;overflow:hidden;max-width:340px;background:#1e293b;">\n'
+            '  <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:#0f172a;color:#94a3b8;font-size:11px;">\n'
+            '    <span>specs-matrix.png</span><span style="color:#f87171;font-weight:700;">整表 = 一张图</span>\n'
+            '  </div>\n'
+            '  <div style="padding:12px 10px;user-select:none;pointer-events:none;filter:blur(0.4px);opacity:0.92;">\n'
+            '    <div style="display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr;gap:1px;background:#334155;font-size:11px;color:#e2e8f0;text-align:center;">\n'
+            '      <div style="background:#475569;padding:6px 4px;font-weight:700;">型号</div>\n'
+            '      <div style="background:#475569;padding:6px 4px;font-weight:700;">CPU</div>\n'
+            '      <div style="background:#475569;padding:6px 4px;font-weight:700;">内存</div>\n'
+            '      <div style="background:#475569;padding:6px 4px;font-weight:700;">互联</div>\n'
+            '      <div style="background:#1e293b;padding:6px 4px;">Atlas 900</div>\n'
+            '      <div style="background:#1e293b;padding:6px 4px;">Kunpeng…</div>\n'
+            '      <div style="background:#1e293b;padding:6px 4px;">1 TB</div>\n'
+            '      <div style="background:#1e293b;padding:6px 4px;">HCCS</div>\n'
+            '      <div style="background:#1e293b;padding:6px 4px;">Atlas 800</div>\n'
+            '      <div style="background:#1e293b;padding:6px 4px;">Kunpeng…</div>\n'
+            '      <div style="background:#1e293b;padding:6px 4px;">768 GB</div>\n'
+            '      <div style="background:#1e293b;padding:6px 4px;">RoCE</div>\n'
+            '    </div>\n'
+            '  </div>\n'
+            '  <p style="margin:0;padding:8px 10px 10px;font-size:11px;line-height:1.45;color:#fca5a5;background:#0f172a;">浏览器看得见格子，源码里只有 &lt;img&gt;，没有 &lt;th&gt;/&lt;td&gt;，AI 读不出「Atlas 900 的内存」。</p>\n'
             '</div>',
-            "表头 + 型号列参数表",
+            "真实 table 单元格文本",
             '<table class="rf-spec">\n'
             '  <thead><tr><th>型号</th><th>CPU</th><th>内存</th><th>互联</th></tr></thead>\n'
             '  <tbody>\n'
-            '    <tr><td>Atlas 900</td><td>…</td><td>…</td><td>…</td></tr>\n'
-            '    <tr><td>Atlas 800</td><td>…</td><td>…</td><td>…</td></tr>\n'
+            '    <tr><td>Atlas 900</td><td>Kunpeng 920</td><td>1 TB</td><td>HCCS</td></tr>\n'
+            '    <tr><td>Atlas 800</td><td>Kunpeng 920</td><td>768 GB</td><td>RoCE</td></tr>\n'
             '  </tbody>\n'
             '</table>',
             True,
             True,
-            "参数是截图 / 特性配图，HTML 无 th/td，无法按型号列问答。",
-            "真实 table + th/td，每格文本可按行列抓取。",
+            "人眼能看「表」，但对抓取来说只是一张图：问「Atlas 900 内存多大」答不出来。",
+            "用真实 &lt;table&gt; + &lt;th&gt;/&lt;td&gt;，每个参数都是可选中的文本，可按行列引用。",
         ),
         "content": [
             (
