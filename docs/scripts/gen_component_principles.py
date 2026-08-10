@@ -2573,7 +2573,7 @@ PRINCIPLES_OVERRIDES: dict[str, dict[str, Any]] = {
         "design": [
             (
                 "信息帧三块文案位",
-                "白名单入口帧稿面预留标题、一句话事实摘要、CTA 锚文本；禁仅图标按钮或文字烧进图",
+                "白名单入口帧稿面预留标题、一句话事实摘要、CTA 锚文本。允许文案视觉叠在 Banner 上，但须是独立 DOM 层（可抓）；禁整段烧进图、禁仅图标按钮",
             ),
             (
                 "图意转写位 + 角色标注",
@@ -2582,21 +2582,21 @@ PRINCIPLES_OVERRIDES: dict[str, dict[str, Any]] = {
         ],
         "design_example": (
             "口号 Banner → 可引用入口帧",
-            "仅视觉口号",
-            '<div style="height:70px;border-radius:6px;background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;">算子开发者认证 · 立即前往 ›</div>',
-            "标题 + 摘要 + 入口",
-            '<div style="border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#fff;max-width:320px;">\n'
-            '  <div style="height:56px;background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600;">Banner</div>\n'
-            '  <div style="padding:10px 12px;">\n'
-            '    <div style="font-weight:600;color:var(--text);">算子开发者认证（入门级）</div>\n'
-            '    <div style="margin-top:4px;font-size:12px;color:var(--muted);">官方认证入口，非 CANN API 规格。</div>\n'
-            '    <div style="margin-top:8px;font-size:12.5px;color:var(--accent);">前往算子开发者认证报名 →</div>\n'
+            "文案烧进图",
+            '<div style="height:118px;border-radius:8px;background:linear-gradient(135deg,#1d4ed8 0%,#3b82f6 55%,#93c5fd 100%);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-weight:600;font-size:13px;letter-spacing:.02em;user-select:none;" role="img" aria-label="算子开发者认证整图"><span style="opacity:.95;">算子开发者认证 · 立即前往 ›</span><span style="font-size:10px;font-weight:500;opacity:.7;">（像素图 · 源码无独立文案层）</span></div>',
+            "叠字也可抓",
+            '<div style="position:relative;border:1px solid var(--line);border-radius:8px;overflow:hidden;max-width:320px;height:118px;background:linear-gradient(135deg,#1d4ed8 0%,#3b82f6 55%,#93c5fd 100%);">\n'
+            '  <div style="position:absolute;inset:0;opacity:.18;background:repeating-linear-gradient(135deg,transparent,transparent 8px,rgba(255,255,255,.35) 8px,rgba(255,255,255,.35) 9px);" aria-hidden="true"></div>\n'
+            '  <div style="position:relative;z-index:1;height:100%;padding:12px 14px;display:flex;flex-direction:column;justify-content:center;color:#fff;">\n'
+            '    <div style="font-weight:650;font-size:14px;">算子开发者认证（入门级）</div>\n'
+            '    <div style="margin-top:4px;font-size:12px;opacity:.9;">官方认证入口，非 CANN API 规格。</div>\n'
+            '    <a href="https://example.com/cert" style="margin-top:8px;font-size:12.5px;font-weight:600;color:#fff;text-decoration:underline;text-underline-offset:2px;">前往算子开发者认证报名 →</a>\n'
             '  </div>\n'
             '</div>',
             True,
             True,
-            "文字烧进 Banner，无摘要、无真链接，易被当成官方规格入库。",
-            "可见标题 + 事实摘要 + CTA；图意另用 alt / figcaption 转写。",
+            "看起来有字，但字是图的一部分；源码抠不到标题 / 摘要 / 真链接。",
+            "字仍叠在 Banner 上，但是独立 DOM（标题 + 摘要 + a[href]）；图意另用 alt / figcaption。",
         ),
         "content": [
             (

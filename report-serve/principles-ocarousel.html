@@ -103,6 +103,28 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   :root {
     --bg: #F5F5F5; --panel: #ffffff; --panel2: #FAFAFA; --line: #e2e8f0;
     --text: #191919; --muted: #595959; --accent: #1476FF;
@@ -667,6 +689,28 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   .page-header-top {
     display: flex; align-items: center; justify-content: space-between;
     gap: 16px; margin-bottom: 16px;
@@ -1131,7 +1175,7 @@
       <h2>设计UI调整 · 场景1</h2>
       <h3 id="design-suggestions">调整建议</h3>
       <ul class="principle-suggestions">
-        <li><strong>信息帧三块文案位</strong>：白名单入口帧稿面预留标题、一句话事实摘要、CTA 锚文本；禁仅图标按钮或文字烧进图。</li>
+        <li><strong>信息帧三块文案位</strong>：白名单入口帧稿面预留标题、一句话事实摘要、CTA 锚文本。允许文案视觉叠在 Banner 上，但须是独立 DOM 层（可抓）；禁整段烧进图、禁仅图标按钮。</li>
         <li><strong>图意转写位 + 角色标注</strong>：信息型 Banner 预留 figcaption / 短说明；纯装饰背景图标装饰。运营帧与入口帧在稿面分区标注（后者交付三要素，前者标 exclude）。</li>
       </ul>
       <h3 id="design-example">调整示例</h3>
@@ -1139,24 +1183,24 @@
         <h4>示例1. 口号 Banner → 可引用入口帧</h4>
         <div class="compare-grid compare-grid--cols">
           <div class="compare-side">
-            <h4 class="compare-label compare-label--machine"><span class="cmp-mark cmp-mark--x">✗</span> 错误示范 · 仅视觉口号</h4>
+            <h4 class="compare-label compare-label--machine"><span class="cmp-mark cmp-mark--x">✗</span> 错误示范 · 文案烧进图</h4>
           <div class="compare-col machine">
-            <div class="render-frame"><div style="height:70px;border-radius:6px;background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;">算子开发者认证 · 立即前往 ›</div></div>
-            <p class="rf-frame-caption">文字烧进 Banner，无摘要、无真链接，易被当成官方规格入库。</p>
+            <div class="render-frame"><div style="height:118px;border-radius:8px;background:linear-gradient(135deg,#1d4ed8 0%,#3b82f6 55%,#93c5fd 100%);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-weight:600;font-size:13px;letter-spacing:.02em;user-select:none;" role="img" aria-label="算子开发者认证整图"><span style="opacity:.95;">算子开发者认证 · 立即前往 ›</span><span style="font-size:10px;font-weight:500;opacity:.7;">（像素图 · 源码无独立文案层）</span></div></div>
+            <p class="rf-frame-caption">看起来有字，但字是图的一部分；源码抠不到标题 / 摘要 / 真链接。</p>
           </div>
           </div>
           <div class="compare-side">
-            <h4 class="compare-label compare-label--human"><span class="cmp-mark cmp-mark--v">✓</span> 推荐做法 · 标题 + 摘要 + 入口</h4>
+            <h4 class="compare-label compare-label--human"><span class="cmp-mark cmp-mark--v">✓</span> 推荐做法 · 叠字也可抓</h4>
           <div class="compare-col human">
-            <div class="render-frame"><div style="border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#fff;max-width:320px;">
-  <div style="height:56px;background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600;">Banner</div>
-  <div style="padding:10px 12px;">
-    <div style="font-weight:600;color:var(--text);">算子开发者认证（入门级）</div>
-    <div style="margin-top:4px;font-size:12px;color:var(--muted);">官方认证入口，非 CANN API 规格。</div>
-    <div style="margin-top:8px;font-size:12.5px;color:var(--accent);">前往算子开发者认证报名 →</div>
+            <div class="render-frame"><div style="position:relative;border:1px solid var(--line);border-radius:8px;overflow:hidden;max-width:320px;height:118px;background:linear-gradient(135deg,#1d4ed8 0%,#3b82f6 55%,#93c5fd 100%);">
+  <div style="position:absolute;inset:0;opacity:.18;background:repeating-linear-gradient(135deg,transparent,transparent 8px,rgba(255,255,255,.35) 8px,rgba(255,255,255,.35) 9px);" aria-hidden="true"></div>
+  <div style="position:relative;z-index:1;height:100%;padding:12px 14px;display:flex;flex-direction:column;justify-content:center;color:#fff;">
+    <div style="font-weight:650;font-size:14px;">算子开发者认证（入门级）</div>
+    <div style="margin-top:4px;font-size:12px;opacity:.9;">官方认证入口，非 CANN API 规格。</div>
+    <a href="https://example.com/cert" style="margin-top:8px;font-size:12.5px;font-weight:600;color:#fff;text-decoration:underline;text-underline-offset:2px;">前往算子开发者认证报名 →</a>
   </div>
 </div></div>
-            <p class="rf-frame-caption">可见标题 + 事实摘要 + CTA；图意另用 alt / figcaption 转写。</p>
+            <p class="rf-frame-caption">字仍叠在 Banner 上，但是独立 DOM（标题 + 摘要 + a[href]）；图意另用 alt / figcaption。</p>
           </div>
           </div>
         </div>
@@ -1347,21 +1391,24 @@ CTA：前往认证
     try { sessionStorage.setItem(key, String(y)); } catch (e) {}
   }
   sidebar.addEventListener('scroll', persist, { passive: true });
+
+  function stampHref(a) {
+    persist();
+    try {
+      var raw = a.getAttribute('href') || '';
+      var hash = '';
+      var hi = raw.indexOf('#');
+      if (hi >= 0) { hash = raw.slice(hi); raw = raw.slice(0, hi); }
+      var qi = raw.indexOf('?');
+      if (qi >= 0) raw = raw.slice(0, qi);
+      if (raw && raw.indexOf('http') !== 0) {
+        a.setAttribute('href', raw + '?sb=' + String(sidebar.scrollTop) + hash);
+      }
+    } catch (e) {}
+  }
   sidebar.querySelectorAll('.comp-nav a[href]').forEach(function (a) {
-    a.addEventListener('click', function () {
-      persist();
-      try {
-          var raw = a.getAttribute('href') || '';
-          var hash = '';
-          var hi = raw.indexOf('#');
-          if (hi >= 0) { hash = raw.slice(hi); raw = raw.slice(0, hi); }
-          var qi = raw.indexOf('?');
-          if (qi >= 0) raw = raw.slice(0, qi);
-          if (raw && raw.indexOf('http') !== 0) {
-            a.setAttribute('href', raw + '?sb=' + String(sidebar.scrollTop) + hash);
-          }
-      } catch (e) {}
-    });
+    a.addEventListener('pointerdown', function () { stampHref(a); }, true);
+    a.addEventListener('click', function () { stampHref(a); }, true);
   });
 })();
 </script>
