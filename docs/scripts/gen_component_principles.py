@@ -631,21 +631,24 @@ TOC_SCRIPT = """
     try { sessionStorage.setItem(key, String(y)); } catch (e) {}
   }
   sidebar.addEventListener('scroll', persist, { passive: true });
+
+  function stampHref(a) {
+    persist();
+    try {
+      var raw = a.getAttribute('href') || '';
+      var hash = '';
+      var hi = raw.indexOf('#');
+      if (hi >= 0) { hash = raw.slice(hi); raw = raw.slice(0, hi); }
+      var qi = raw.indexOf('?');
+      if (qi >= 0) raw = raw.slice(0, qi);
+      if (raw && raw.indexOf('http') !== 0) {
+        a.setAttribute('href', raw + '?sb=' + String(sidebar.scrollTop) + hash);
+      }
+    } catch (e) {}
+  }
   sidebar.querySelectorAll('.comp-nav a[href]').forEach(function (a) {
-    a.addEventListener('click', function () {
-      persist();
-      try {
-          var raw = a.getAttribute('href') || '';
-          var hash = '';
-          var hi = raw.indexOf('#');
-          if (hi >= 0) { hash = raw.slice(hi); raw = raw.slice(0, hi); }
-          var qi = raw.indexOf('?');
-          if (qi >= 0) raw = raw.slice(0, qi);
-          if (raw && raw.indexOf('http') !== 0) {
-            a.setAttribute('href', raw + '?sb=' + String(sidebar.scrollTop) + hash);
-          }
-      } catch (e) {}
-    });
+    a.addEventListener('pointerdown', function () { stampHref(a); }, true);
+    a.addEventListener('click', function () { stampHref(a); }, true);
   });
 })();
 </script>
@@ -859,7 +862,7 @@ def principle_one_liner(probe: dict, slug: str) -> str:
         "ostep": "公开流程/逐步说明块的<strong>标题与说明须为可见文本</strong>进首包；状态用文字或 aria 标注；配图内字须旁注或改文本交付。后台向导见下方场景判断。",
         "onavigation": "顶栏<strong>站点入口</strong>（文档 / 开发者 / 下载等）及悬停面板子链须为可跟 <code>a[href]</code> 并进首包；搜索 / 换肤 / 语言等纯操作控件见下方场景判断。",
         "ofooternav": "社区首页页脚须把<strong>五列导航与法律声明 / 联系我们等写成可跟链接</strong>（a[href]），列名稳定；并同步进 llms/sitemap，作为顶栏之外的第二发现层。",
-        "obutton": "社区首页首屏 CTA（立即查看 / 了解更多等）须用<strong>可抓 a[href]</strong>；纯提交/关闭类 button 管道宜剥离（对标 Mintlify hero、NVIDIA build 列表 CTA）。",
+        "obutton": "社区首页首屏 CTA（立即查看 / 了解更多等）须用<strong>可抓 a[href]</strong>；纯提交/关闭类 button 管道宜剥离（对标 Mintlify hero、NVIDIA en-sg 首屏 CTA）。",
         "olink": "正文与导航链接须带<strong>真实 a[href]</strong>；锚文本宜自描述（禁仅「软件介绍↗」）；禁 JSON/onclick/span 伪链（昇腾训练旅程矩阵须 SSR 链化）。",
         "odropdown": "下拉菜单子项须在<strong>首包 HTML 可读</strong>（a[href]+可见文案）；禁仅触发器、portal 延迟挂或外部 JSON 菜单（昇腾「更多产品」/ Mintlify Products / NVIDIA Resources 均须 SSR 链化）。",
         "otrees": "同页切换的文档树：节点<strong>不必都有 URL</strong>；各内容块须<strong>首包 SSR</strong>（可用隐藏，勿点击后才注入）。跳转型手册目录见 <a href=\"principles-omenu.html\">OMenu</a>。",
@@ -886,10 +889,11 @@ def probe_to_principles(slug: str, name: str, probe: dict) -> dict[str, Any]:
     content: list[tuple[str, str]] = []
     frontend: list[tuple[str, str]] = []
 
-    for title, desc, fix in probe.get("subcauses", []):
+    for item in probe.get("subcauses", []):
+        title, desc, fix = item[0], item[1], item[2]
         col = classify_column(title, desc, fix)
-        item = (title, fix.rstrip("。"))
-        {"design": design, "content": content, "frontend": frontend}[col].append(item)
+        tip = (title, fix.rstrip("。"))
+        {"design": design, "content": content, "frontend": frontend}[col].append(tip)
 
     for title, desc in probe.get("insights", []):
         if title.startswith("结论"):
@@ -959,7 +963,7 @@ PRINCIPLES_OVERRIDES: dict[str, dict[str, Any]] = {
                     "keep",
                     "跳转型侧栏（换 URL 到独立页面）",
                     "要做亲和",
-                    "点击侧栏项切换 URL，跳转至独立页面（如：文档手册目录）。<br>它是爬虫发现深层页面的关键入口：每项须为真实 <code>a[href]</code> 链接 + 自描述锚文本/标题，首屏 SSR 全量输出，禁用 JS 仍完整可见并可跟链。<br>对应页面：<a href=\"https://www.hiascend.com/document/detail/zh/AscendFAQ/ProduTech/productform/hardwaredesc_0001.html\" target=\"_blank\" rel=\"noopener\">Ascend FAQ 概览</a>",
+                    "点击侧栏项切换 URL，跳转至独立页面（如：文档手册目录）。<br>它是爬虫发现深层页面的关键入口：每项须为真实 <code>a[href]</code> 链接 + 自描述锚文本/标题，首屏 SSR 全量输出，禁用 JS 仍完整可见并可跟链。<br>对应页面：<a href=\"https://www.hiascend.com/document/detail/zh/AscendFAQ/CommuFunc/AscendAITrainingCamp/ascendaitrainingcamp_000.html\" target=\"_blank\" rel=\"noopener\">昇腾AI训练营常见问题</a>",
                 ),
                 (
                     "keep",
@@ -1683,7 +1687,7 @@ PRINCIPLES_OVERRIDES: dict[str, dict[str, Any]] = {
                     "keep",
                     "公开列表底部分页",
                     "要做亲和",
-                    "挂在表格、卡片列表、论坛帖列表等下方，用来切第 2、3… 页；深页承载公开可引用内容。<br>页码须为真实 <code>a[href]</code>（带稳定 query，如 <code>?page=2</code>），静态抓取可跟到深页；可辅以 <code>rel=next</code> / sitemap 覆盖。<br>对应页面：<a href=\"https://www.hiascend.com/forum/\" target=\"_blank\" rel=\"noopener\">昇腾论坛</a>",
+                    "挂在表格、卡片列表、文章列表等下方，用来切第 2、3… 页；深页承载公开可引用内容。<br>页码须为真实 <code>a[href]</code>（带稳定 query，如 <code>?page=2</code>），静态抓取可跟到深页；可辅以 <code>rel=next</code> / sitemap 覆盖。<br>对应页面：<a href=\"https://www.hiascend.com/developer/techArticles\" target=\"_blank\" rel=\"noopener\">官方技术文章</a>",
                 ),
                 (
                     "strip",
@@ -1703,7 +1707,7 @@ PRINCIPLES_OVERRIDES: dict[str, dict[str, Any]] = {
             ),
             (
                 "关键条目可平行清单",
-                "论坛帖、案例卡等关键列表可在 Markdown / llms 平铺「标题 + 链接」；即使分页 HTML 未抓全，也能枚举条目",
+                "技术文章、案例卡等公开列表可在 Markdown / llms 平铺「标题 + 链接」；即使分页 HTML 未抓全，也能枚举条目",
             ),
             (
                 "过渡补位",
@@ -1711,15 +1715,15 @@ PRINCIPLES_OVERRIDES: dict[str, dict[str, Any]] = {
             ),
         ],
         "content_example": (
-            "论坛列表：深页平行轨",
+            "技术文章列表：深页平行轨",
             "只有第 1 页，深页未进清单",
-            "【HTML】论坛首页可见第 1 页帖列表 + 翻页控件\n"
-            "【缺失】sitemap / llms 无 ?page=2、?page=3 及深页帖链接",
+            "【HTML】技术文章列表可见第 1 页卡片 + 翻页控件\n"
+            "【缺失】sitemap / llms 无 ?page=2、?page=3 及深页文章链接",
             "sitemap 收录深页 URL",
             "# sitemap（节选）\n"
-            "https://www.hiascend.com/forum/\n"
-            "https://www.hiascend.com/forum/?page=2\n"
-            "https://www.hiascend.com/forum/?page=3",
+            "https://www.hiascend.com/developer/techArticles\n"
+            "https://www.hiascend.com/developer/techArticles?page=2\n"
+            "https://www.hiascend.com/developer/techArticles?page=3",
             False,
             False,
         ),
@@ -1727,16 +1731,16 @@ PRINCIPLES_OVERRIDES: dict[str, dict[str, Any]] = {
             (
                 "sitemap 收录深页 URL",
                 "# sitemap（节选）\n"
-                "https://www.hiascend.com/forum/\n"
-                "https://www.hiascend.com/forum/?page=2\n"
-                "https://www.hiascend.com/forum/?page=3",
+                "https://www.hiascend.com/developer/techArticles\n"
+                "https://www.hiascend.com/developer/techArticles?page=2\n"
+                "https://www.hiascend.com/developer/techArticles?page=3",
             ),
             (
                 "llms 临时补条目 / 深页",
                 "# llms.txt（过渡）\n"
-                "- [论坛第 2 页](https://www.hiascend.com/forum/?page=2)\n"
-                "- [某帖标题](https://www.hiascend.com/forum/thread-…)\n"
-                "- [另一帖标题](https://www.hiascend.com/forum/thread-…)",
+                "- [技术文章第 2 页](https://www.hiascend.com/developer/techArticles?page=2)\n"
+                "- [某篇文章标题](https://www.hiascend.com/developer/techArticles/…)\n"
+                "- [另一篇文章标题](https://www.hiascend.com/developer/techArticles/…)",
                 "分页控件输出真实 a[href] 且深页可跟后，llms 中重复深页项可移除。",
             ),
         ],
@@ -1757,7 +1761,7 @@ PRINCIPLES_OVERRIDES: dict[str, dict[str, Any]] = {
             ),
         ],
         "frontend_example": (
-            "论坛列表底部分页",
+            "技术文章列表底部分页",
             "页码是 button，无深页 URL",
             '&lt;div class="o-pagination"&gt;\n'
             '  &lt;button&gt;1&lt;/button&gt;\n'
@@ -1768,10 +1772,10 @@ PRINCIPLES_OVERRIDES: dict[str, dict[str, Any]] = {
             '&lt;!-- 浏览器可翻页；静态 HTML 无 ?page=2 可跟链 --&gt;',
             "页码 a[href] + 稳定 query",
             '&lt;nav class="o-pagination" aria-label="分页"&gt;\n'
-            '  &lt;a href="/forum/?page=1" aria-current="page"&gt;1&lt;/a&gt;\n'
-            '  &lt;a href="/forum/?page=2"&gt;2&lt;/a&gt;\n'
-            '  &lt;a href="/forum/?page=3"&gt;3&lt;/a&gt;\n'
-            '  &lt;a href="/forum/?page=2" rel="next"&gt;下一页&lt;/a&gt;\n'
+            '  &lt;a href="/developer/techArticles?page=1" aria-current="page"&gt;1&lt;/a&gt;\n'
+            '  &lt;a href="/developer/techArticles?page=2"&gt;2&lt;/a&gt;\n'
+            '  &lt;a href="/developer/techArticles?page=3"&gt;3&lt;/a&gt;\n'
+            '  &lt;a href="/developer/techArticles?page=2" rel="next"&gt;下一页&lt;/a&gt;\n'
             '&lt;/nav&gt;',
             False,
             False,
@@ -1780,7 +1784,7 @@ PRINCIPLES_OVERRIDES: dict[str, dict[str, Any]] = {
         ),
         "frontend_example_before_prefix": "当前问题",
         "acceptance": [
-            ("静态可达", "静态抓取论坛列表页后，分页仍含 ?page=2、?page=3 等可跟链 href，能回答「第 2、3 页官方 URL」"),
+            ("静态可达", "静态抓取技术文章列表页后，分页仍含 ?page=2、?page=3 等可跟链 href，能回答「第 2、3 页官方 URL」"),
             ("深页可引用", "深页 URL 稳定可复用，并可被 sitemap / llms 收录"),
             ("可证伪", "对探针问句须能引用具体 href，与实测失败判据互斥"),
         ],
@@ -2058,7 +2062,7 @@ PRINCIPLES_OVERRIDES: dict[str, dict[str, Any]] = {
         ],
         "content_example_before_prefix": "当前问题",
         "content_example_before_mark": True,
-        "frontend_lead": "跳转型 CTA 须写入首包 HTML 为真实 <code>a[href]</code>；静态抓取（不执行 JS）仍能读出文案并跟到官方落地页（对标：Mintlify Get started、NVIDIA More Models）。纯操作按钮见场景2，管道剥离。",
+        "frontend_lead": "跳转型 CTA 须写入首包 HTML 为真实 <code>a[href]</code>；静态抓取（不执行 JS）仍能读出文案并跟到官方落地页（对标：Mintlify Get started、NVIDIA en-sg Read Blog）。纯操作按钮见场景2，管道剥离。",
         "frontend": [
             (
                 "跳转 CTA 须为真实链接",
@@ -2091,7 +2095,7 @@ PRINCIPLES_OVERRIDES: dict[str, dict[str, Any]] = {
         "frontend_example_before_prefix": "当前问题",
         "acceptance": [
             ("静态可达", "静态抓取社区首页（不执行 JS）后，首屏跳转 CTA 仍含可跟链 href，能回答 problems-obutton 探针问句"),
-            ("html 可抓全", "跳转 CTA html 达到友商水准（Mintlify hero、NVIDIA build 列表 CTA：文案与 href 在首包）"),
+            ("html 可抓全", "跳转 CTA html 达到友商水准（Mintlify hero、NVIDIA en-sg 首屏 CTA：文案与 href 在首包）"),
             ("可证伪", "对「立即查看 / 了解更多分别链到哪」须能引用具体 href，与 banner button 失败判据互斥"),
         ],
     },
@@ -3617,16 +3621,15 @@ PRINCIPLES_OVERRIDES: dict[str, dict[str, Any]] = {
             '  <span>CANN 版本</span>\n'
             '  <span style="width:16px;height:16px;border-radius:50%;border:1px solid var(--line);display:inline-flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);">?</span>\n'
             '</div>',
-            "正文旁注 + 气泡补充",
+            "正文旁注可见",
             '<div style="display:flex;align-items:center;gap:6px;">\n'
             '  <span>CANN 版本</span>\n'
-            '  <span style="width:16px;height:16px;border-radius:50%;border:1px solid var(--line);display:inline-flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);">?</span>\n'
             '</div>\n'
             '<p class="rf-caption" style="margin-top:8px;">CANN 版本：昇腾异构计算架构的版本号，决定可用算子与框架适配范围（当前 8.0）。</p>',
             True,
             True,
             "字段定义只在悬停「?」时出现；不悬停 / 禁 JS 时正文没有这份说明。",
-            "定义写成可见旁注（正文一份），气泡只作 hover 补充。",
+            "定义写成可见旁注（正文一份）；气泡若保留，只作 hover 补充，不能当唯一来源。",
         ),
         "content": [
             (
@@ -3941,6 +3944,9 @@ def render_page(slug: str, name: str, data: dict[str, Any]) -> str:
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
 <title>{esc(data["title"])} · 亲和原则 · 昇腾社区 AI 亲和原则</title>
 <style>
 {CSS}

@@ -3,8 +3,57 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
 <title>链接 href 缺失 · 亲和分析 · 昇腾社区 AI 亲和原则</title>
 <style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -521,6 +570,145 @@
 
   .comp-sidebar { overflow-anchor: none; }
 
+
+
+  .evidence-block {
+    margin: 12px 0 0;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel2);
+    overflow: hidden;
+  }
+  .evidence-block-title {
+    margin: 0;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+    background: var(--panel);
+  }
+  .section .evidence-block > .evidence-block-title {
+    margin: 0;
+    color: var(--muted);
+  }
+  .evidence-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    padding-top: 0;
+  }
+  .evidence-grid--single {
+    grid-template-columns: 1fr;
+  }
+  @media (max-width: 900px) {
+    .evidence-grid { grid-template-columns: 1fr; }
+  }
+  .evidence-pane {
+    min-width: 0;
+    padding: 12px;
+  }
+  .evidence-pane + .evidence-pane {
+    border-left: 1px solid var(--line);
+  }
+  @media (max-width: 900px) {
+    .evidence-pane + .evidence-pane {
+      border-left: none;
+      border-top: 1px solid var(--line);
+    }
+  }
+  .evidence-pane-label {
+    margin: 0 0 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .section .evidence-pane > .evidence-pane-label {
+    margin: 0 0 12px;
+    color: var(--text);
+  }
+  .evidence-pane img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    margin: 0;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #fff;
+  }
+  .evidence-pane pre {
+    margin: 0;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #0f172a;
+    color: #e2e8f0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 11.5px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 220px;
+    overflow: auto;
+  }
+  .evidence-caption {
+    margin: 12px 0 0;
+    padding: 0;
+    font-size: 12.5px;
+    line-height: 19px;
+    color: var(--muted);
+    text-align: left;
+  }
+  .section .evidence-pane > .evidence-caption {
+    margin: 12px 0 0;
+    color: var(--muted);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </style>
 </head>
 <body data-module="problems" data-page="olink">
@@ -594,7 +782,7 @@
 
     <p class="page-desc page-desc--split">
       <span class="page-desc-line"><strong>链接 href 缺失</strong>指正文与导航中的链接必须带真实 href；伪链、javascript: 或空 href 会导致 Agent 无法跟进深页。</span>
-      <span class="page-desc-line">以 <a href="https://www.hiascend.com/cn/developer/training?tab=tab1" target="_blank" rel="noopener">训练开发</a> 为例：大语言模型训练用户旅程矩阵含多级导流链接。</span>
+      <span class="page-desc-line">以 <a href="https://www.hiascend.com/cn/developer/training?tab=tab1" target="_blank" rel="noopener">训练开发</a> 为例：「大语言模型训练用户旅程」矩阵：浏览器可见链，首包无 a[href]，label+link 在 application/json。</span>
     </p>
 
     <section class="section" id="problem">
@@ -631,37 +819,88 @@
     <section class="section" id="guide">
       <h2 id="solution">根因分析</h2>
       <div class="content-unit">
-        <p><strong>链接 href 缺失</strong>的核心原因：<strong style="color:var(--text)">导流链在浏览器里可点，但 URL 若不进首包 a[href]——只放 JSON 脚本、onclick 或 span 冒充——Agent 只能复述文案或从 JSON 片段猜地址，跟不到官方落地页；友商 Mintlify Related topics、NVIDIA Quick Links 等在静态 HTML 即有可跟链</strong>。</p>
+        <p><strong>链接 href 缺失</strong>的核心原因：<strong style="color:var(--text)">人在浏览器里能看见「大语言模型训练用户旅程」矩阵里的可点链，但「查看网页源代码」里几乎没有这些 a[href]——挂载点是空的，地址藏在 application/json 脚本里，要等 JavaScript 跑完才画出来，所以爬虫和 AI 默认跟不到官方落地页</strong>。</p>
+      </div>
+      <div class="evidence-block">
+        <p class="evidence-block-title">实测证据 · 浏览器矩阵 vs 静态源码</p>
+        <div class="evidence-grid">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">浏览器里能看见的旅程矩阵链</p>
+          <img src="assets/cases-html-ascend/training-journey-matrix.jpg" alt="训练开发页浏览器可见大语言模型训练用户旅程矩阵" loading="lazy" />
+          <p class="evidence-caption">左图人眼能点；右边源码没有 a 标签，只有 JSON 里的 link 字段。</p>
+        </div>
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">「查看网页源代码」里没有可跟 a[href]</p>
+          <pre>&lt;!-- 挂载点空壳：无矩阵 a[href] --&gt;
+&lt;div class=&quot;tab-content&quot; id=&quot;vue_…&quot;&gt;&lt;/div&gt;
+
+&lt;!-- 地址只在脚本数据里： --&gt;
+&lt;script type=&quot;application/json&quot;&gt;
+{&quot;title&quot;:&quot;大语言模型训练用户旅程&quot;,&quot;data&quot;:[{
+  &quot;columns&quot;:[{&quot;label&quot;:&quot;软件介绍&quot;,
+    &quot;link&quot;:&quot;https://gitcode.com/…/introduction.md&quot;},
+    {&quot;label&quot;:&quot;安装指导&quot;,&quot;link&quot;:&quot;…/install_guide.md&quot;}]
+}]}
+&lt;/script&gt;</pre>
+        </div>
+        </div>
       </div>
       <div class="content-unit">
-        <h3>1. 用户旅程矩阵链未 SSR 为 a[href]</h3>
+        <h3>1. 矩阵链没有写进网页源码</h3>
         <div class="issue-body">
-        <p><strong>问题：</strong>昇腾侧：训练开发页「大语言模型训练用户旅程」矩阵（软件介绍 / 安装指导 / 快速入门 / 模型使用指导等）浏览器可见，但 hcomponent-ascend-user-journey 的 tab-content 挂载点首包为空，label+link 仅在 application/json；探针问「这些链接 href 是什么」时给不出可跟 a 节点。</p>
-        <p>友商侧：Mintlify 文档编辑器 Related topics（Editor overview / Automations overview 等）、NVIDIA 首页 Quick Links（Overview / Machine Learning 等）文案与 href 均在首包 a 标签。</p>
+        <p><strong>问题：</strong>打开训练开发页（tab=tab1），用「查看网页源代码」核对：hcomponent-ascend-user-journey 的 tab-content 几乎是空的。浏览器看得见「软件介绍 / 安装指导 / 快速入门」等带外链图标的格子，但要等脚本跑完才渲染——禁 JS 时列不出可跟链，也答不出探针要的 href 原文。友商 Mintlify Related topics、NVIDIA Quick Links 在源码里就是 a[href]。</p>
+        </div>
+      <div class="evidence-block">
+        <p class="evidence-block-title">证据 · 矩阵链本来应该长这样</p>
+        <div class="evidence-grid evidence-grid--single">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">期望写进网页的旅程矩阵（示意）</p>
+          <pre>&lt;table class=&quot;user-journey&quot;&gt;
+  &lt;tr&gt;
+    &lt;td&gt;&lt;a href=&quot;https://gitcode.com/…/introduction.md&quot;&gt;软件介绍&lt;/a&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;a href=&quot;…/install_guide.md&quot;&gt;安装指导&lt;/a&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;a href=&quot;…/quick_start.md&quot;&gt;快速入门&lt;/a&gt;&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;</pre>
+          <p class="evidence-caption">每格不同地址是对的；缺的是把它们写成真正的 a[href]。</p>
+        </div>
+        </div>
+      </div>
+        <div class="fix-suggestion">
+          <h4>修改建议</h4>
+          <p>矩阵内每一格导流链直接写成 OLink 或 <code>a[href]</code> + 可见文案进首包；展开收起不能代替链接。</p>
+        </div>
+      </div>
+      <div class="content-unit">
+        <h3>2. 地址只在 JSON 里，形成半成品</h3>
+        <div class="issue-body">
+        <p><strong>问题：</strong>application/json 里往往已有 label + link（如 MindSpeed-LLM introduction.md、install_guide.md），数据并非完全缺失；缺的是首包 DOM 上的可跟 a 节点。标准 HTML 抓取 / 禁 JS 管道读不到这些链，只能靠特判解析脚本——和友商「源码即链」不在同一发现层。</p>
+        </div>
+      <div class="evidence-block">
+        <p class="evidence-block-title">证据 · JSON 有地址 ≠ 可跟链</p>
+        <div class="evidence-grid evidence-grid--single">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">实测脚本摘录（示意）</p>
+          <pre>{&quot;label&quot;:&quot;软件介绍&quot;,
+ &quot;link&quot;:&quot;https://gitcode.com/Ascend/MindSpeed-LLM/…/introduction.md&quot;}
+&lt;!-- ↑ 字段在；首包无对应 &lt;a href=…&gt;软件介绍&lt;/a&gt; --&gt;</pre>
+          <p class="evidence-caption">能从 JSON 抠到 URL，不等于静态抓取能跟链。</p>
+        </div>
+        </div>
+      </div>
+        <div class="fix-suggestion">
+          <h4>修改建议</h4>
+          <p>JSON 若作数据源，构建时仍须把每条 link SSR 成可见 a[href]；勿把脚本数据当作唯一发现层。</p>
+        </div>
+      </div>
+      <div class="content-unit">
+        <h3>3. 也没有备用的旅程链接清单</h3>
+        <div class="issue-body">
+        <p><strong>问题：</strong>矩阵读不到时，如果 llms.txt 或平行 Markdown 里也没有按「新手入门 / 进阶 / 高阶」列出「软件介绍 / 安装指导 / 快速入门」等官方 URL，AI 就只剩当前页零散文案，没有退路补齐发现层。</p>
         </div>
         <div class="fix-suggestion">
           <h4>修改建议</h4>
-          <p>矩阵内每一格导流链 SSR 为 OLink 或 <code>a[href]</code> + 可见文案；勿只把 link 字段留给 Vue 读 JSON 后再渲染。</p>
-        </div>
-      </div>
-      <div class="content-unit">
-        <h3>2. span / div 冒充可导航链</h3>
-        <div class="issue-body">
-        <p><strong>问题：</strong>顶栏 o-nav-item-link、整卡 onclick 等可点击样式若无 a 标签，静态管道看不见 href；Agent 只能读到可见文案，无法证伪「点这里会到哪」。</p>
-        </div>
-        <div class="fix-suggestion">
-          <h4>修改建议</h4>
-          <p>可导航一律 OLink 或 <code>a[href]</code>；样式可保留，底层须输出 href，禁 span/div 伪链。</p>
-        </div>
-      </div>
-      <div class="content-unit">
-        <h3>3. 占位链与相对路径不规范</h3>
-        <div class="issue-body">
-        <p><strong>问题：</strong>href=&quot;#&quot; / javascript:void 占位链未就绪仍渲染；CANN 文档 operatorlist_00010.html 等相对路径在镜像抓取或跨域入库时可能解析失败，Agent 跟链不稳定。</p>
-        </div>
-        <div class="fix-suggestion">
-          <h4>修改建议</h4>
-          <p>未就绪勿渲染假链；站内链宜 canonical 绝对 URL 或稳定的根相对路径，外链补 rel/title。</p>
+          <p>在 llms.txt 或 MD 临时平铺旅程矩阵（阶段名 + 链接）；页面 a[href] SSR 达标后以页面为准。</p>
         </div>
       </div>
     </section>
@@ -686,7 +925,7 @@
       </div>
       <div class="dialog-card">
         <span class="dialog-role">大模型</span>
-        <p>浏览器可见用户旅程矩阵里的可点链，但静态 HTML 里 tab-content 挂载点为空；label+link 在 hcomponent-ascend-user-journey 的 application/json 脚本里，首包无 a[href] 节点，我只能从 JSON 片段复述，无法像正文 OLink 那样直接列出可跟链。</p>
+        <p>浏览器里矩阵「软件介绍 / 安装指导 / 快速入门」等带外链图标、看起来可点；但「查看网页源代码」里 tab-content 挂载点是空的，首包没有 a[href]。label+link 写在 hcomponent-ascend-user-journey 的 application/json 里，我只能从 JSON 片段复述地址，无法像正文 OLink 那样直接列出可跟链。</p>
       </div>
     </div>
   </div>
@@ -785,7 +1024,7 @@
   var t0 = Date.now();
   var iv = setInterval(function () {
     restore();
-    if (Date.now() - t0 > 600) clearInterval(iv);
+    if (Date.now() - t0 > 800) clearInterval(iv);
   }, 40);
 
   try {
@@ -801,21 +1040,24 @@
     try { sessionStorage.setItem(key, String(y)); } catch (e) {}
   }
   sidebar.addEventListener('scroll', persist, { passive: true });
+
+  function stampHref(a) {
+    persist();
+    try {
+      var raw = a.getAttribute('href') || '';
+      var hash = '';
+      var hi = raw.indexOf('#');
+      if (hi >= 0) { hash = raw.slice(hi); raw = raw.slice(0, hi); }
+      var qi = raw.indexOf('?');
+      if (qi >= 0) raw = raw.slice(0, qi);
+      if (raw && raw.indexOf('http') !== 0) {
+        a.setAttribute('href', raw + '?sb=' + String(sidebar.scrollTop) + hash);
+      }
+    } catch (e) {}
+  }
   sidebar.querySelectorAll('.comp-nav a[href]').forEach(function (a) {
-    a.addEventListener('click', function () {
-      persist();
-      try {
-          var raw = a.getAttribute('href') || '';
-          var hash = '';
-          var hi = raw.indexOf('#');
-          if (hi >= 0) { hash = raw.slice(hi); raw = raw.slice(0, hi); }
-          var qi = raw.indexOf('?');
-          if (qi >= 0) raw = raw.slice(0, qi);
-          if (raw && raw.indexOf('http') !== 0) {
-            a.setAttribute('href', raw + '?sb=' + String(sidebar.scrollTop) + hash);
-          }
-      } catch (e) {}
-    });
+    a.addEventListener('pointerdown', function () { stampHref(a); }, true);
+    a.addEventListener('click', function () { stampHref(a); }, true);
   });
 })();
 </script>

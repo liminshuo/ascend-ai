@@ -3,8 +3,58 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
 <title>气泡隐藏说明 · 亲和分析 · 昇腾社区 AI 亲和原则</title>
 <style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -521,6 +571,146 @@
 
   .comp-sidebar { overflow-anchor: none; }
 
+
+
+  .evidence-block {
+    margin: 12px 0 0;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel2);
+    overflow: hidden;
+  }
+  .evidence-block-title {
+    margin: 0;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+    background: var(--panel);
+  }
+  .section .evidence-block > .evidence-block-title {
+    margin: 0;
+    color: var(--muted);
+  }
+  .evidence-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    padding-top: 0;
+  }
+  .evidence-grid--single {
+    grid-template-columns: 1fr;
+  }
+  @media (max-width: 900px) {
+    .evidence-grid { grid-template-columns: 1fr; }
+  }
+  .evidence-pane {
+    min-width: 0;
+    padding: 12px;
+  }
+  .evidence-pane + .evidence-pane {
+    border-left: 1px solid var(--line);
+  }
+  @media (max-width: 900px) {
+    .evidence-pane + .evidence-pane {
+      border-left: none;
+      border-top: 1px solid var(--line);
+    }
+  }
+  .evidence-pane-label {
+    margin: 0 0 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .section .evidence-pane > .evidence-pane-label {
+    margin: 0 0 12px;
+    color: var(--text);
+  }
+  .evidence-pane img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    margin: 0;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #fff;
+  }
+  .evidence-pane pre {
+    margin: 0;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #0f172a;
+    color: #e2e8f0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 11.5px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 220px;
+    overflow: auto;
+  }
+  .evidence-caption {
+    margin: 12px 0 0;
+    padding: 0;
+    font-size: 12.5px;
+    line-height: 19px;
+    color: var(--muted);
+    text-align: left;
+  }
+  .section .evidence-pane > .evidence-caption {
+    margin: 12px 0 0;
+    color: var(--muted);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </style>
 </head>
 <body data-module="problems" data-page="opopover">
@@ -588,13 +778,14 @@
     <div class="page-header">
       <div class="page-header-top">
         <h1>气泡隐藏说明 <span class="badge badge-should">视情况</span></h1>
-        <a class="btn-preview" href="https://www.hiascend.com/zh" target="_blank" rel="noopener">查看测试页面</a>
+        <a class="btn-preview" href="https://www.hiascend.com/edu/growth" target="_blank" rel="noopener">查看测试页面</a>
       </div>
     </div>
 
     <p class="page-desc page-desc--split">
       <span class="page-desc-line"><strong>气泡隐藏说明</strong>指重要说明勿只放悬停/点击气泡；须在页面正文也有一份，否则禁 JS 抓取不到。</span>
-      <span class="page-desc-line">以 <a href="https://www.hiascend.com/zh" target="_blank" rel="noopener">社区首页</a> 为例：首页等或有 tooltip/popover 补充说明。</span>
+      <span class="page-desc-line"><strong>视情况</strong>：路径节点状态、字段定义等说明勿只放悬停气泡；须进首包或正文双写。装饰性「即将上线」类提示可剥离，但节点名本身若作导航发现层须可读。</span>
+      <span class="page-desc-line">以 <a href="https://www.hiascend.com/edu/growth" target="_blank" rel="noopener">学习路径</a> 为例：「探索你的学习路径」应用开发节点悬停可见「内容即将上线」；节点名与气泡说明首包均无。</span>
     </p>
 
     <section class="section" id="problem">
@@ -602,7 +793,7 @@
       <div class="content-unit">
         <h3>1. 向模型提问</h3>
         <div class="test-prompt-card">
-          <p>我在看 <a href="https://www.hiascend.com/zh" target="_blank" rel="noopener">社区首页</a>，不悬停问号图标，能否从静态 HTML 读到「CANN 版本」字段的完整官方定义？</p>
+          <p>我在看 <a href="https://www.hiascend.com/edu/growth" target="_blank" rel="noopener">学习路径</a>，「探索你的学习路径」里应用开发下有哪些节点？「AI4S应用」悬停提示写了什么？请引用可抓原文。</p>
         </div>
       </div>
       <div class="content-unit">
@@ -619,9 +810,9 @@
             <tr><th>友商</th><th>案例</th><th>被测对象</th><th>html 可抓取</th><th>原因</th></tr>
           </thead>
           <tbody>
-            <tr><td>Mintlify</td><td><a href="https://www.mintlify.com/docs/editor" target="_blank" rel="noopener">文档编辑器</a></td><td><a class="peer-object-link" href="https://www.mintlify.com/docs/editor" target="_blank" rel="noopener" title="该页提示说明所在的友商线上页面"><span class="peer-object-name">提示说明</span><span class="peer-floor-badge">提示正文</span></a></td><td><span class="peer-tag peer-tag-ok">可抓全</span></td><td class="peer-reason">Tip 提示块带有文字说明（含 Reset editor 等），写在 role=note 文本里，可抓。</td></tr>
-            <tr><td>NVIDIA</td><td><a href="https://www.nvidia.com/en-gb/data-center/dgx-cloud/" target="_blank" rel="noopener">DGX Cloud</a></td><td><a class="peer-object-link" href="https://www.nvidia.com/en-gb/data-center/dgx-cloud/" target="_blank" rel="noopener" title="该页产品概述与系统卡所在的友商线上页面"><span class="peer-object-name">产品概述与系统卡</span><span class="peer-floor-badge">产品说明</span></a></td><td><span class="peer-tag peer-tag-ok">可抓全</span></td><td class="peer-reason">「DGX Cloud—How NVIDIA Builds AI」等概述与系统/能力卡片文案写在源码文本里，可抓。</td></tr>
-            <tr><td>昇腾社区</td><td><a href="https://www.hiascend.com/developer" target="_blank" rel="noopener">开发者入口</a></td><td><a class="peer-object-link" href="https://www.hiascend.com/developer" target="_blank" rel="noopener" title="该页支持与帮助导流所在的友商线上页面"><span class="peer-object-name">支持与帮助导流</span><span class="peer-floor-badge">帮助入口</span></a></td><td><span class="peer-tag peer-tag-ok">可抓全</span></td><td class="peer-reason">支持与帮助楼层：h2、昇腾论坛 / 支持与服务双卡标题、短述与 /forum、/support 真实 href 均在静态 HTML。</td></tr>
+            <tr><td>Mintlify</td><td><a href="https://www.mintlify.com/enterprise" target="_blank" rel="noopener">Enterprise</a></td><td><a class="peer-object-link" href="https://www.mintlify.com/enterprise" target="_blank" rel="noopener" title="该页流量占比图气泡所在的友商线上页面"><span class="peer-object-name">流量占比图气泡</span><span class="peer-floor-badge">月份悬停</span></a></td><td><span class="peer-tag peer-tag-partial">抓不全</span></td><td class="peer-reason">浏览器悬停 October 柱可见「5% agent share of traffic / Agents 3.5M / Humans 62.1M」；首包有标题与 Agents/Humans 图例及柱高样式，但月份气泡文案不在可读 DOM（仅埋在脚本数据里），禁 JS 引用不了该月份额说明。</td></tr>
+            <tr><td>NVIDIA</td><td><a href="https://build.nvidia.com/spark" target="_blank" rel="noopener">DGX Spark</a></td><td><a class="peer-object-link" href="https://build.nvidia.com/spark" target="_blank" rel="noopener" title="该页标签溢出气泡所在的友商线上页面"><span class="peer-object-name">标签溢出气泡</span><span class="peer-floor-badge">+N 展开</span></a></td><td><span class="peer-tag peer-tag-partial">抓不全</span></td><td class="peer-reason">浏览器「Build Knowledge Graphs with txt2kg」卡可见 station / +6，悬停可展开 vllm / dgx spark / ollama 等完整标签；首包多为 WAF/壳层，卡文案与溢出气泡不在静态 HTML，禁 JS 读不到。</td></tr>
+            <tr><td>昇腾社区</td><td><a href="https://www.hiascend.com/edu/growth" target="_blank" rel="noopener">学习路径</a></td><td><a class="peer-object-link" href="https://www.hiascend.com/edu/growth" target="_blank" rel="noopener" title="该页路径节点气泡所在的友商线上页面"><span class="peer-object-name">路径节点气泡</span><span class="peer-floor-badge">即将上线提示</span></a></td><td><span class="peer-tag peer-tag-partial">抓不全</span></td><td class="peer-reason">浏览器「探索你的学习路径」可见应用开发下 AI4S应用 / RAG原理 等节点，悬停可出「内容即将上线，敬请期待」；首包仅有路径壳层文案，节点名与气泡说明不在静态 HTML，禁 JS 读不到。</td></tr>
           </tbody>
         </table>
       </div>
@@ -631,36 +822,91 @@
     <section class="section" id="guide">
       <h2 id="solution">根因分析</h2>
       <div class="content-unit">
-        <p><strong>气泡隐藏说明</strong>的核心原因：<strong style="color:var(--text)">把字段规格唯一放在悬停气泡中</strong>。</p>
+        <p><strong>视情况</strong>：路径节点状态、字段定义等说明勿只放悬停气泡；须进首包或正文双写。装饰性「即将上线」类提示可剥离，但节点名本身若作导航发现层须可读。</p>
       </div>
       <div class="content-unit">
-        <h3>1. popover 未 SSR</h3>
+        <p><strong>气泡隐藏说明</strong>的核心原因：<strong style="color:var(--text)">人在浏览器里能看见「探索你的学习路径」应用开发下的节点，以及悬停「AI4S应用」时的「内容即将上线，敬请期待」气泡，但「查看网页源代码」里抠不出节点名和气泡字——整块路径要等 JavaScript 注入；重要状态说明若只活在悬停层，禁 JS 永远读不到</strong>。</p>
+      </div>
+      <div class="evidence-block">
+        <p class="evidence-block-title">实测证据 · 浏览器路径节点气泡 vs 静态源码</p>
+        <div class="evidence-grid">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">浏览器里能看见的路径节点与气泡</p>
+          <img src="assets/cases-html-ascend/edu-growth-learning-path.png" alt="学习路径页浏览器可见探索你的学习路径应用开发节点与内容即将上线气泡" loading="lazy" />
+          <p class="evidence-caption">左图是人眼看到的节点与气泡；昇腾侧源码没有，友商 Tip 写在首包。</p>
+        </div>
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">「查看网页源代码」里没有节点名与气泡</p>
+          <pre>&lt;!-- 查看网页源代码 / 禁 JS：无路径节点、无气泡文案 --&gt;
+&lt;!-- /edu/growth 首包可见壳层 --&gt;
+探索你的学习路径
+应用开发
+&lt;!-- ✗ 无：AI4S应用 / 具身智能 / RAG原理 / 内容即将上线，敬请期待 --&gt;
+
+&lt;!-- ✓ 友商 Mintlify Tip：提示正文在首包 --&gt;
+&lt;aside role=&quot;note&quot;&gt;… Reset editor …&lt;/aside&gt;</pre>
+        </div>
+        </div>
+      </div>
+      <div class="content-unit">
+        <h3>1. 源码里没有路径节点与气泡文本</h3>
         <div class="issue-body">
-        <p><strong>问题：</strong>首包无。</p>
+        <p><strong>问题：</strong>打开学习路径页，用「查看网页源代码」核对：搜不到「AI4S应用」「RAG原理」，也搜不到「内容即将上线，敬请期待」。浏览器看得见节点与悬停气泡，要等脚本把路径图画出来——探针问「有哪些节点、气泡写了什么」时，禁 JS 给不出可引用原文。友商 Mintlify Tip 的说明写在 role=note，禁 JS 仍可读。</p>
+        </div>
+      <div class="evidence-block">
+        <p class="evidence-block-title">证据 · 节点与状态本来应该长这样</p>
+        <div class="evidence-grid evidence-grid--single">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">期望写进网页的路径节点（示意）</p>
+          <pre>&lt;section aria-label=&quot;应用开发学习路径&quot;&gt;
+  &lt;h3&gt;应用开发&lt;/h3&gt;
+  &lt;ol&gt;
+    &lt;li&gt;AI4S应用 — 内容即将上线，敬请期待&lt;/li&gt;
+    &lt;li&gt;具身智能&lt;/li&gt;
+    &lt;li&gt;RAG原理&lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/section&gt;</pre>
+          <p class="evidence-caption">节点名与状态同在首包，才可供引用；不必依赖悬停。</p>
+        </div>
+        </div>
+      </div>
+        <div class="fix-suggestion">
+          <h4>修改建议</h4>
+          <p>路径节点名与关键状态说明（含即将上线/下线）页面一出来就写成可读文本；勿只靠悬停层或客户端往空壳里灌。装饰气泡可剥离，但节点发现层须进首包。</p>
+        </div>
+      </div>
+      <div class="content-unit">
+        <h3>2. 关键说明唯一放在悬停气泡</h3>
+        <div class="issue-body">
+        <p><strong>问题：</strong>即便日后节点名进了首包，若「内容即将上线」只出现在 mouseenter 才挂载的 popover，爬虫和禁 JS 场景仍读不到上线状态。字段定义、路径可用性这类说明与装饰 tip 不同，不能只活在气泡里。</p>
+        </div>
+      <div class="evidence-block">
+        <p class="evidence-block-title">证据 · 气泡内容要能在首包找到</p>
+        <div class="evidence-grid evidence-grid--single">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">SSR 气泡 vs 仅悬停挂载</p>
+          <pre>&lt;!-- ✓ 首包即有说明（可视觉隐藏） --&gt;
+&lt;button aria-describedby=&quot;tip-ai4s&quot;&gt;AI4S应用&lt;/button&gt;
+&lt;p id=&quot;tip-ai4s&quot; class=&quot;sr-only&quot;&gt;内容即将上线，敬请期待&lt;/p&gt;
+&lt;!-- ✗ 仅 mouseenter 才插入 DOM --&gt;
+&lt;!-- document.append(tooltip) --&gt;</pre>
+          <p class="evidence-caption">看得见的悬停层，不等于源码里有字。</p>
+        </div>
+        </div>
+      </div>
+        <div class="fix-suggestion">
+          <h4>修改建议</h4>
+          <p>关键状态 / 字段定义：正文或节点旁可见文本双写，或 popover 内容 SSR 进首包（可用 CSS 隐藏，勿删 DOM）；纯装饰 tip 标 data-llm-exclude 或策展剥离。</p>
+        </div>
+      </div>
+      <div class="content-unit">
+        <h3>3. 也没有备用的路径节点清单</h3>
+        <div class="issue-body">
+        <p><strong>问题：</strong>路径图读不全时，如果 llms.txt 或平行 MD 里也没有「应用开发 → 节点列表 + 上线状态」对照，AI 既列不出节点，也不能核「即将上线」是否官方表述。</p>
         </div>
         <div class="fix-suggestion">
           <h4>修改建议</h4>
-          <p>正文同步定义。</p>
-        </div>
-      </div>
-      <div class="content-unit">
-        <h3>2. aria-hidden 删</h3>
-        <div class="issue-body">
-        <p><strong>问题：</strong>文本丢失。</p>
-        </div>
-        <div class="fix-suggestion">
-          <h4>修改建议</h4>
-          <p>保留 DOM。</p>
-        </div>
-      </div>
-      <div class="content-unit">
-        <h3>3. 关键项靠 icon</h3>
-        <div class="issue-body">
-        <p><strong>问题：</strong>无文本。</p>
-        </div>
-        <div class="fix-suggestion">
-          <h4>修改建议</h4>
-          <p>旁注段落说明。</p>
+          <p>在 llms.txt 或平行 MD 临时列出各主题路径下的节点名与状态一句；页面路径 SSR 后以页面为准。</p>
         </div>
       </div>
     </section>
@@ -681,11 +927,11 @@
     <div class="modal-body">
       <div class="dialog-card">
         <span class="dialog-role">用户</span>
-        <p>我在看社区首页（https://www.hiascend.com/zh），不悬停问号图标，能否从静态 HTML 读到「CANN 版本」字段的完整官方定义？</p>
+        <p>我在看学习路径（https://www.hiascend.com/edu/growth），「探索你的学习路径」里应用开发下有哪些节点？「AI4S应用」悬停提示写了什么？请引用可抓原文。</p>
       </div>
       <div class="dialog-card">
         <span class="dialog-role">大模型</span>
-        <p>若定义只在 popover/tooltip 且默认不在 DOM 或未 SSR，我无法读取。重要字段定义必须在正文重复或 popover 内容进首包。</p>
+        <p>浏览器里能看见应用开发下 AI4S应用 / 具身智能 / RAG原理 等节点，悬停 AI4S应用 可出「内容即将上线，敬请期待」；但「查看网页源代码」里只有路径壳层（如「探索你的学习路径」「应用开发」），节点名与气泡文案都不在首包——整块路径图靠脚本注入，禁 JS 既列不全节点，也读不到悬停说明。友商 Mintlify Enterprise 流量图悬停月份气泡（5% agent share / 3.5M / 62.1M）与 NVIDIA DGX Spark 卡 +N 标签溢出气泡同样不在可读 DOM。</p>
       </div>
     </div>
   </div>
@@ -784,7 +1030,7 @@
   var t0 = Date.now();
   var iv = setInterval(function () {
     restore();
-    if (Date.now() - t0 > 600) clearInterval(iv);
+    if (Date.now() - t0 > 800) clearInterval(iv);
   }, 40);
 
   try {
@@ -800,21 +1046,24 @@
     try { sessionStorage.setItem(key, String(y)); } catch (e) {}
   }
   sidebar.addEventListener('scroll', persist, { passive: true });
+
+  function stampHref(a) {
+    persist();
+    try {
+      var raw = a.getAttribute('href') || '';
+      var hash = '';
+      var hi = raw.indexOf('#');
+      if (hi >= 0) { hash = raw.slice(hi); raw = raw.slice(0, hi); }
+      var qi = raw.indexOf('?');
+      if (qi >= 0) raw = raw.slice(0, qi);
+      if (raw && raw.indexOf('http') !== 0) {
+        a.setAttribute('href', raw + '?sb=' + String(sidebar.scrollTop) + hash);
+      }
+    } catch (e) {}
+  }
   sidebar.querySelectorAll('.comp-nav a[href]').forEach(function (a) {
-    a.addEventListener('click', function () {
-      persist();
-      try {
-          var raw = a.getAttribute('href') || '';
-          var hash = '';
-          var hi = raw.indexOf('#');
-          if (hi >= 0) { hash = raw.slice(hi); raw = raw.slice(0, hi); }
-          var qi = raw.indexOf('?');
-          if (qi >= 0) raw = raw.slice(0, qi);
-          if (raw && raw.indexOf('http') !== 0) {
-            a.setAttribute('href', raw + '?sb=' + String(sidebar.scrollTop) + hash);
-          }
-      } catch (e) {}
-    });
+    a.addEventListener('pointerdown', function () { stampHref(a); }, true);
+    a.addEventListener('click', function () { stampHref(a); }, true);
   });
 })();
 </script>

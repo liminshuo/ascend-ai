@@ -3,8 +3,57 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
 <title>分页 URL 不可达 · 亲和分析 · 昇腾社区 AI 亲和原则</title>
 <style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -521,6 +570,145 @@
 
   .comp-sidebar { overflow-anchor: none; }
 
+
+
+  .evidence-block {
+    margin: 12px 0 0;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel2);
+    overflow: hidden;
+  }
+  .evidence-block-title {
+    margin: 0;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+    background: var(--panel);
+  }
+  .section .evidence-block > .evidence-block-title {
+    margin: 0;
+    color: var(--muted);
+  }
+  .evidence-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    padding-top: 0;
+  }
+  .evidence-grid--single {
+    grid-template-columns: 1fr;
+  }
+  @media (max-width: 900px) {
+    .evidence-grid { grid-template-columns: 1fr; }
+  }
+  .evidence-pane {
+    min-width: 0;
+    padding: 12px;
+  }
+  .evidence-pane + .evidence-pane {
+    border-left: 1px solid var(--line);
+  }
+  @media (max-width: 900px) {
+    .evidence-pane + .evidence-pane {
+      border-left: none;
+      border-top: 1px solid var(--line);
+    }
+  }
+  .evidence-pane-label {
+    margin: 0 0 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .section .evidence-pane > .evidence-pane-label {
+    margin: 0 0 12px;
+    color: var(--text);
+  }
+  .evidence-pane img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    margin: 0;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #fff;
+  }
+  .evidence-pane pre {
+    margin: 0;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #0f172a;
+    color: #e2e8f0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 11.5px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 220px;
+    overflow: auto;
+  }
+  .evidence-caption {
+    margin: 12px 0 0;
+    padding: 0;
+    font-size: 12.5px;
+    line-height: 19px;
+    color: var(--muted);
+    text-align: left;
+  }
+  .section .evidence-pane > .evidence-caption {
+    margin: 12px 0 0;
+    color: var(--muted);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </style>
 </head>
 <body data-module="problems" data-page="opagination">
@@ -588,13 +776,13 @@
     <div class="page-header">
       <div class="page-header-top">
         <h1>分页 URL 不可达 <span class="badge badge-should">需可爬页码</span></h1>
-        <a class="btn-preview" href="https://www.hiascend.com/forum/" target="_blank" rel="noopener">查看测试页面</a>
+        <a class="btn-preview" href="https://www.hiascend.com/developer/techArticles" target="_blank" rel="noopener">查看测试页面</a>
       </div>
     </div>
 
     <p class="page-desc page-desc--split">
       <span class="page-desc-line"><strong>分页 URL 不可达</strong>指列表/搜索结果分页须为可抓 URL；纯前端翻页会导致下一页内容对爬虫不可达。</span>
-      <span class="page-desc-line">以 <a href="https://www.hiascend.com/forum/" target="_blank" rel="noopener">昇腾论坛</a> 为例：论坛帖列表含翻页；页码须为可抓 URL，勿纯 button 切换。</span>
+      <span class="page-desc-line">以 <a href="https://www.hiascend.com/developer/techArticles" target="_blank" rel="noopener">官方技术文章</a> 为例：技术文章列表底部分页（共 N 条 / 页码 / 前往）；页码须为可抓 URL，勿纯 button 切换。</span>
     </p>
 
     <section class="section" id="problem">
@@ -602,7 +790,7 @@
       <div class="content-unit">
         <h3>1. 向模型提问</h3>
         <div class="test-prompt-card">
-          <p>我在看 <a href="https://www.hiascend.com/forum/" target="_blank" rel="noopener">昇腾论坛</a> 列表页，第 2、3 页帖子列表的官方 URL 分别是什么？请给出完整 href。</p>
+          <p>我在看 <a href="https://www.hiascend.com/developer/techArticles" target="_blank" rel="noopener">官方技术文章</a> 列表页，第 2、3 页文章列表的官方 URL 分别是什么？请给出完整 href。</p>
         </div>
       </div>
       <div class="content-unit">
@@ -619,9 +807,8 @@
             <tr><th>友商</th><th>案例</th><th>被测对象</th><th>html 可抓取</th><th>原因</th></tr>
           </thead>
           <tbody>
-            <tr><td>Mintlify</td><td><a href="https://www.mintlify.com/blog" target="_blank" rel="noopener">博客</a></td><td><a class="peer-object-link" href="https://www.mintlify.com/blog" target="_blank" rel="noopener" title="该页文章列表与链接所在的友商线上页面"><span class="peer-object-name">文章列表与链接</span><span class="peer-floor-badge">列表正文</span></a></td><td><span class="peer-tag peer-tag-ok">可抓全</span></td><td class="peer-reason">列表中的文章标题与 /blog/... 链接写在源码里，列表可完整抓取。</td></tr>
-            <tr><td>NVIDIA</td><td><a href="https://nvidianews.nvidia.com/" target="_blank" rel="noopener">Newsroom</a></td><td><a class="peer-object-link" href="https://nvidianews.nvidia.com/" target="_blank" rel="noopener" title="该页头条与新闻列表所在的友商线上页面"><span class="peer-object-name">头条与新闻列表</span><span class="peer-floor-badge">列表链接</span></a></td><td><span class="peer-tag peer-tag-ok">可抓全</span></td><td class="peer-reason">Latest News、日期、稿件标题与 Read Press Release 等链接写在源码，列表层可抓、可跟。</td></tr>
-            <tr><td>昇腾社区</td><td><a href="https://edu.hicomputing.huawei.com/" target="_blank" rel="noopener">教育科研</a></td><td><a class="peer-object-link" href="https://edu.hicomputing.huawei.com/" target="_blank" rel="noopener" title="该页成功案例轮播所在的友商线上页面"><span class="peer-object-name">成功案例轮播</span><span class="peer-floor-badge">内容列表</span></a></td><td><span class="peer-tag peer-tag-ok">可抓全</span></td><td class="peer-reason">成功案例轮播多帧标题、摘要与封面图 src 写在静态 HTML。</td></tr>
+            <tr><td>NVIDIA</td><td><a href="https://build.nvidia.com/models" target="_blank" rel="noopener">Models</a></td><td><a class="peer-object-link" href="https://build.nvidia.com/models" target="_blank" rel="noopener" title="该页列表底部分页所在的友商线上页面"><span class="peer-object-name">列表底部分页</span><span class="peer-floor-badge">页码导航</span></a></td><td><span class="peer-tag peer-tag-partial">抓不全</span></td><td class="peer-reason">浏览器可见 Items per page 与页码 1…6 / of N pages，但页码为前端切换、静态 HTML 无稳定 ?page= 可跟链；深页模型卡对禁 JS 抓取不可达。</td></tr>
+            <tr><td>昇腾社区</td><td><a href="https://www.hiascend.com/developer/techArticles" target="_blank" rel="noopener">官方技术文章</a></td><td><a class="peer-object-link" href="https://www.hiascend.com/developer/techArticles" target="_blank" rel="noopener" title="该页列表底部分页所在的友商线上页面"><span class="peer-object-name">列表底部分页</span><span class="peer-floor-badge">页码导航</span></a></td><td><span class="peer-tag peer-tag-partial">抓不全</span></td><td class="peer-reason">浏览器可见「共 N 条 / 页码 / 前往」分页，但静态 HTML 几乎无 ?page= 可跟链；页码多为 button / 客户端切换，深页列表对禁 JS 抓取不可达。</td></tr>
           </tbody>
         </table>
       </div>
@@ -631,36 +818,72 @@
     <section class="section" id="guide">
       <h2 id="solution">根因分析</h2>
       <div class="content-unit">
-        <p><strong>分页 URL 不可达</strong>的核心原因：<strong style="color:var(--text)">分页交互未暴露稳定 URL，列表深页对默认管道不可达</strong>。</p>
+        <p><strong>分页 URL 不可达</strong>的核心原因：<strong style="color:var(--text)">人在浏览器里能看见「共 N 条 / 页码 / 前往」并翻到第 2、3 页，但「查看网页源代码」里几乎没有带 ?page= 的可跟链接——页码多是 button 或脚本切换，所以爬虫和 AI 给不出深页官方 URL，后面几页的文章进不了默认管道</strong>。</p>
+      </div>
+      <div class="evidence-block">
+        <p class="evidence-block-title">实测证据 · 浏览器分页 vs 静态源码</p>
+        <div class="evidence-grid">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">浏览器里能看见的底部分页</p>
+          <img src="assets/cases-html-ascend/tech-articles-pagination.png" alt="官方技术文章列表页浏览器可见底部分页" loading="lazy" />
+          <p class="evidence-caption">左图人能翻页；右边源码跟不到第 2、3 页官方地址。</p>
+        </div>
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">「查看网页源代码」里几乎没有 ?page= 链</p>
+          <pre>&lt;!-- 查看网页源代码 / 禁 JS：几乎无稳定深页 URL --&gt;
+&lt;nav class=&quot;pagination&quot;&gt;&lt;!-- 示意：页码多为 button --&gt;
+  &lt;button&gt;1&lt;/button&gt;
+  &lt;button&gt;2&lt;/button&gt;
+  &lt;button&gt;3&lt;/button&gt;
+  &lt;button&gt;下一页&lt;/button&gt;
+&lt;/nav&gt;
+&lt;!-- 无 &lt;a href=&quot;…/techArticles?page=2&quot;&gt; 这类可跟链 --&gt;</pre>
+        </div>
+        </div>
       </div>
       <div class="content-unit">
-        <h3>1. 页码是 button</h3>
+        <h3>1. 页码是 button，没有真实 URL</h3>
         <div class="issue-body">
-        <p><strong>问题：</strong>无 href。</p>
+        <p><strong>问题：</strong>打开官方技术文章列表，用「查看网页源代码」核对：底部「1 / 2 / … / 35 / 前往」几乎不是带地址的 a[href]。浏览器里能点到第 2、3 页，但禁 JS 时给不出完整官方 URL——问「第 2、3 页 href 是什么」就答不上。</p>
+        </div>
+      <div class="evidence-block">
+        <p class="evidence-block-title">证据 · 页码本来应该长这样</p>
+        <div class="evidence-grid evidence-grid--single">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">期望写进网页的分页链接（示意）</p>
+          <pre>&lt;nav class=&quot;o-pagination&quot; aria-label=&quot;分页&quot;&gt;
+  &lt;a href=&quot;/developer/techArticles?page=1&quot; aria-current=&quot;page&quot;&gt;1&lt;/a&gt;
+  &lt;a href=&quot;/developer/techArticles?page=2&quot;&gt;2&lt;/a&gt;
+  &lt;a href=&quot;/developer/techArticles?page=3&quot;&gt;3&lt;/a&gt;
+  &lt;a href=&quot;/developer/techArticles?page=2&quot; rel=&quot;next&quot;&gt;下一页&lt;/a&gt;
+&lt;/nav&gt;</pre>
+          <p class="evidence-caption">页码必须是可跟的 a[href]；query 稳定，便于引用和收录。</p>
+        </div>
+        </div>
+      </div>
+        <div class="fix-suggestion">
+          <h4>修改建议</h4>
+          <p>每一页码（及上一页 / 下一页）都写成带稳定 query 的真实链接，例如 ?page=2；不要只用 button / onClick 翻页。</p>
+        </div>
+      </div>
+      <div class="content-unit">
+        <h3>2. 深页内容只在翻页后才出现</h3>
+        <div class="issue-body">
+        <p><strong>问题：</strong>首包往往只有默认第 1 页附近的卡片；第 2 页及以后的文章标题与链接要等脚本跑完、点页码后才挂上。所以即便知道「一共 348 条」，也枚举不全深页条目，RAG 默认管道到不了后面几页。</p>
         </div>
         <div class="fix-suggestion">
           <h4>修改建议</h4>
-          <p>每页用带 query 的真实 URL。</p>
+          <p>服务端按页输出列表，或至少让每一页有独立可打开的 URL，打开该 URL 时首包就带上该页卡片标题与链接。</p>
         </div>
       </div>
       <div class="content-unit">
-        <h3>2. 仅 infinite scroll</h3>
+        <h3>3. 也没有 sitemap / llms 兜底深页</h3>
         <div class="issue-body">
-        <p><strong>问题：</strong>无页界。</p>
+        <p><strong>问题：</strong>页码读不到时，如果 sitemap 或 llms.txt 里也没有 ?page=2、?page=3，或没有把文章「标题 + 链接」平铺出来，AI 就只知道当前这一屏，补不出整站技术文章清单。</p>
         </div>
         <div class="fix-suggestion">
           <h4>修改建议</h4>
-          <p>提供分页或完整 sitemap。</p>
-        </div>
-      </div>
-      <div class="content-unit">
-        <h3>3. SEO 与 RAG 未对齐</h3>
-        <div class="issue-body">
-        <p><strong>问题：</strong>深页未收录。</p>
-        </div>
-        <div class="fix-suggestion">
-          <h4>修改建议</h4>
-          <p>llms/sitemap 补列表全量。</p>
+          <p>在 sitemap / llms.txt 收录深页 URL，或平铺关键条目的标题与链接；页面分页达标后以页面为准，去掉重复维护。</p>
         </div>
       </div>
     </section>
@@ -681,11 +904,11 @@
     <div class="modal-body">
       <div class="dialog-card">
         <span class="dialog-role">用户</span>
-        <p>我在看昇腾论坛（https://www.hiascend.com/forum/）列表页，第 2、3 页帖子列表的官方 URL 分别是什么？请给出完整 href。</p>
+        <p>我在看官方技术文章（https://www.hiascend.com/developer/techArticles）列表页，第 2、3 页文章列表的官方 URL 分别是什么？请给出完整 href。</p>
       </div>
       <div class="dialog-card">
         <span class="dialog-role">大模型</span>
-        <p>论坛列表在浏览器可见翻页，但若分页仅 button/onClick 切换、静态 HTML 无 page=2 的链接，我只能描述「还有下一页」但给不出可爬地址，后续页内容对 RAG 不可达。</p>
+        <p>技术文章列表在浏览器可见翻页（共 348 条、页码 1…35、前往），但静态 HTML 几乎无 page= 可跟链；分页多为 button / 客户端切换。我只能描述「还有下一页」但给不出第 2、3 页的可爬地址，后续页文章对 RAG 不可达。</p>
       </div>
     </div>
   </div>
@@ -784,7 +1007,7 @@
   var t0 = Date.now();
   var iv = setInterval(function () {
     restore();
-    if (Date.now() - t0 > 600) clearInterval(iv);
+    if (Date.now() - t0 > 800) clearInterval(iv);
   }, 40);
 
   try {
@@ -800,21 +1023,24 @@
     try { sessionStorage.setItem(key, String(y)); } catch (e) {}
   }
   sidebar.addEventListener('scroll', persist, { passive: true });
+
+  function stampHref(a) {
+    persist();
+    try {
+      var raw = a.getAttribute('href') || '';
+      var hash = '';
+      var hi = raw.indexOf('#');
+      if (hi >= 0) { hash = raw.slice(hi); raw = raw.slice(0, hi); }
+      var qi = raw.indexOf('?');
+      if (qi >= 0) raw = raw.slice(0, qi);
+      if (raw && raw.indexOf('http') !== 0) {
+        a.setAttribute('href', raw + '?sb=' + String(sidebar.scrollTop) + hash);
+      }
+    } catch (e) {}
+  }
   sidebar.querySelectorAll('.comp-nav a[href]').forEach(function (a) {
-    a.addEventListener('click', function () {
-      persist();
-      try {
-          var raw = a.getAttribute('href') || '';
-          var hash = '';
-          var hi = raw.indexOf('#');
-          if (hi >= 0) { hash = raw.slice(hi); raw = raw.slice(0, hi); }
-          var qi = raw.indexOf('?');
-          if (qi >= 0) raw = raw.slice(0, qi);
-          if (raw && raw.indexOf('http') !== 0) {
-            a.setAttribute('href', raw + '?sb=' + String(sidebar.scrollTop) + hash);
-          }
-      } catch (e) {}
-    });
+    a.addEventListener('pointerdown', function () { stampHref(a); }, true);
+    a.addEventListener('click', function () { stampHref(a); }, true);
   });
 })();
 </script>

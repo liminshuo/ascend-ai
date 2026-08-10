@@ -3,8 +3,57 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
 <title>下拉子链首包缺失 · 亲和分析 · 昇腾社区 AI 亲和原则</title>
 <style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -521,6 +570,145 @@
 
   .comp-sidebar { overflow-anchor: none; }
 
+
+
+  .evidence-block {
+    margin: 12px 0 0;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel2);
+    overflow: hidden;
+  }
+  .evidence-block-title {
+    margin: 0;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+    background: var(--panel);
+  }
+  .section .evidence-block > .evidence-block-title {
+    margin: 0;
+    color: var(--muted);
+  }
+  .evidence-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    padding-top: 0;
+  }
+  .evidence-grid--single {
+    grid-template-columns: 1fr;
+  }
+  @media (max-width: 900px) {
+    .evidence-grid { grid-template-columns: 1fr; }
+  }
+  .evidence-pane {
+    min-width: 0;
+    padding: 12px;
+  }
+  .evidence-pane + .evidence-pane {
+    border-left: 1px solid var(--line);
+  }
+  @media (max-width: 900px) {
+    .evidence-pane + .evidence-pane {
+      border-left: none;
+      border-top: 1px solid var(--line);
+    }
+  }
+  .evidence-pane-label {
+    margin: 0 0 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .section .evidence-pane > .evidence-pane-label {
+    margin: 0 0 12px;
+    color: var(--text);
+  }
+  .evidence-pane img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    margin: 0;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #fff;
+  }
+  .evidence-pane pre {
+    margin: 0;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #0f172a;
+    color: #e2e8f0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 11.5px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 220px;
+    overflow: auto;
+  }
+  .evidence-caption {
+    margin: 12px 0 0;
+    padding: 0;
+    font-size: 12.5px;
+    line-height: 19px;
+    color: var(--muted);
+    text-align: left;
+  }
+  .section .evidence-pane > .evidence-caption {
+    margin: 12px 0 0;
+    color: var(--muted);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </style>
 </head>
 <body data-module="problems" data-page="odropdown">
@@ -594,7 +782,7 @@
 
     <p class="page-desc page-desc--split">
       <span class="page-desc-line"><strong>下拉子链首包缺失</strong>指下拉菜单内导航项须在首包 HTML 可读；勿悬停/点击/JSON 注入才挂载子链，否则发现层断裂。</span>
-      <span class="page-desc-line">以 <a href="https://www.hiascend.com/hardware/cluster" target="_blank" rel="noopener">集群产品页</a> 为例：集群页标题旁「更多产品」下拉切换同品类机型。</span>
+      <span class="page-desc-line">以 <a href="https://www.hiascend.com/hardware/cluster" target="_blank" rel="noopener">集群产品页</a> 为例：标题旁「更多产品」下拉：浏览器可展开同品类机型，首包仅触发器、无 panel 内 a[href]。</span>
     </p>
 
     <section class="section" id="problem">
@@ -631,47 +819,79 @@
     <section class="section" id="guide">
       <h2 id="solution">根因分析</h2>
       <div class="content-unit">
-        <p><strong>下拉子链首包缺失</strong>的核心原因：<strong style="color:var(--text)">下拉面板子项依赖点击/悬停或外部 JSON 才挂载，静态抓取只能看到触发器（「更多产品 / Products / Resources」），看不到各子项 a[href]</strong>。</p>
+        <p><strong>下拉子链首包缺失</strong>的核心原因：<strong style="color:var(--text)">人在浏览器里点开「更多产品」能看见同品类机型清单，但「查看网页源代码」里只有触发器文案，没有各子项 a[href]——要等点击或悬停才挂出来，所以爬虫和 AI 默认列不全落地 URL</strong>。</p>
       </div>
-      <div class="content-unit">
-        <h3>1. dropdown-panel 空壳</h3>
-        <div class="issue-body">
-        <p><strong>问题：</strong>昇腾侧：集群页浏览器可见「更多产品」及 Atlas 900 A2 PoD / SuperCluster AI 集群等项，静态 HTML 无 panel 内 a[href] 列表。</p>
-        <p>友商侧：Mintlify pricing 顶栏 Products/Solutions/Resources 触发器在首包，mega menu 子项（Platform / Editor / Authentication / Automations / Agent 等）须悬停/点击才挂载 panel。</p>
+      <div class="evidence-block">
+        <p class="evidence-block-title">实测证据 · 浏览器下拉 vs 静态源码</p>
+        <div class="evidence-grid">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">浏览器里能看见的「更多产品」</p>
+          <img src="assets/cases-html-ascend/cluster-more-products.png" alt="集群产品页标题旁浏览器可见更多产品触发器" loading="lazy" />
+          <p class="evidence-caption">左图触发器人眼能点；右边源码没有子项链接清单。</p>
         </div>
-        <div class="fix-suggestion">
-          <h4>修改建议</h4>
-          <p>SSR 输出完整 dropdown 子项：每项可读 label + href；视觉可折叠但 DOM 须保留 a 节点。</p>
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">「查看网页源代码」里只有触发器</p>
+          <pre>&lt;!-- 当前机型名 + 触发器在首包 --&gt;
+&lt;p class=&quot;nav-text&quot;&gt;Atlas 900 A3 SuperPoD&lt;/p&gt;
+&lt;span class=&quot;more-production&quot;&gt;更多产品&lt;/span&gt;
+&lt;!-- ✗ 无 dropdown-panel 内各机型 a[href] 列表 --&gt;
+&lt;!-- 浏览器展开才见：Atlas 900 A2 PoD → /hardware/cluster?tag=900 等 --&gt;</pre>
         </div>
-      </div>
-      <div class="content-unit">
-        <h3>2. 菜单 JSON 外部注入</h3>
-        <div class="issue-body">
-        <p><strong>问题：</strong>NVIDIA developer.nvidia.com：Resources 下拉含 Developer Program / Community Hub / Discord / GTC / On-Demand 等，静态 HTML 仅 div#header 空壳，子链在 header-secondary.json 须 fetch + NVDeveloperHeader 客户端挂载。</p>
-        </div>
-        <div class="fix-suggestion">
-          <h4>修改建议</h4>
-          <p>关键子链 SSR 进首包 HTML；外部 JSON 菜单仅作增强，不可作唯一发现层。</p>
         </div>
       </div>
       <div class="content-unit">
-        <h3>3. portal / 延迟挂载</h3>
+        <h3>1. 下拉子链没有写进网页源码</h3>
         <div class="issue-body">
-        <p><strong>问题：</strong>下拉项在点击后才注入 DOM 或挂到 body portal，首包无 li/a；与 Mintlify navigation-menu data-state=closed 同类。</p>
+        <p><strong>问题：</strong>打开集群产品页，用「查看网页源代码」核对：标题旁只有「更多产品」触发器（more-production），看不到 Atlas 900 A2 PoD / SuperCluster AI 集群等子项的 a[href]。浏览器展开后能点，但要等脚本挂载——禁 JS 时答不出探针要的同品类落地 URL。友商 Mintlify Products mega menu、NVIDIA developer Resources 下拉也是触发器在、子项后挂，同类问题。</p>
         </div>
+      <div class="evidence-block">
+        <p class="evidence-block-title">证据 · 下拉子链本来应该长这样</p>
+        <div class="evidence-grid evidence-grid--single">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">期望写进网页的「更多产品」面板（示意）</p>
+          <pre>&lt;div class=&quot;more-products-panel&quot;&gt;
+  &lt;a href=&quot;/hardware/cluster?tag=900&quot;&gt;Atlas 900 A2 PoD 集群基础单元&lt;/a&gt;
+  &lt;a href=&quot;/hardware/cluster?tag=900ai&quot;&gt;Atlas 900 SuperCluster AI 集群&lt;/a&gt;
+  …
+&lt;/div&gt;</pre>
+          <p class="evidence-caption">子项可以默认隐藏，但链接必须还在首包里。</p>
+        </div>
+        </div>
+      </div>
         <div class="fix-suggestion">
           <h4>修改建议</h4>
-          <p>子项写在页面静态 nav/ul 区，勿仅 portal 延迟挂。</p>
+          <p>SSR 输出完整下拉子项：每项可读机型名 + 真实 href；视觉可折叠，DOM 须保留 a 节点。</p>
         </div>
       </div>
       <div class="content-unit">
-        <h3>4. 触发器当唯一信息</h3>
+        <h3>2. 触发器在、清单不在，形成半成品</h3>
         <div class="issue-body">
-        <p><strong>问题：</strong>入库 chunk 只有「更多产品 / Products / Resources」等触发器文案，Agent 无法证伪各子项 URL。</p>
+        <p><strong>问题：</strong>当前机型标题（如 Atlas 900 A3 SuperPoD）和「更多产品」文案已经写进首包，人知道这是产品切换入口；缺的是面板里的同品类 URL 清单。所以 Agent 可能答得出「这一页是某款超节点」，却答不出「更多产品里还有哪些机型、链到哪」——发现入口和可跟清单不同步。Mintlify 悬停才挂 panel、NVIDIA 从 header-secondary.json fetch 再挂，同属半成品发现层。</p>
+        </div>
+      <div class="evidence-block">
+        <p class="evidence-block-title">证据 · 半成品对照</p>
+        <div class="evidence-grid evidence-grid--single">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">实测：触发器 ✓ · 子项 ✗</p>
+          <pre>&lt;!-- ✓ --&gt; &lt;span class=&quot;more-production&quot;&gt;更多产品&lt;/span&gt;
+&lt;!-- ✗ --&gt; &lt;!-- 无 Atlas 900 A2 PoD / SuperCluster… 的 a[href] 列表 --&gt;</pre>
+          <p class="evidence-caption">有触发器不等于下拉可达；两边要一起进源码。</p>
+        </div>
+        </div>
+      </div>
+        <div class="fix-suggestion">
+          <h4>修改建议</h4>
+          <p>触发器与子项同批 SSR；勿只输出「更多产品」文案，而把机型列表留给点击后注入。</p>
+        </div>
+      </div>
+      <div class="content-unit">
+        <h3>3. 也没有备用的同品类产品清单</h3>
+        <div class="issue-body">
+        <p><strong>问题：</strong>页内下拉读不到时，如果 llms.txt 或产品目录页也没有按「集群 / 超节点」列出各机型官方 URL，AI 就只剩当前这一款标题，没有退路补齐同品类发现层。</p>
         </div>
         <div class="fix-suggestion">
           <h4>修改建议</h4>
-          <p>子项文案与落地页 title 一致，并带 canonical href。</p>
+          <p>在 llms.txt 或产品索引页临时平铺同品类机型（名称 + URL）；页面下拉 SSR 达标后以页面为准。</p>
         </div>
       </div>
     </section>
@@ -696,7 +916,7 @@
       </div>
       <div class="dialog-card">
         <span class="dialog-role">大模型</span>
-        <p>静态 HTML 首包仅见「更多产品」触发器文案，dropdown-panel 内各机型 a[href] 须点击/悬停才挂载；禁 JS 时无法列出 Atlas 900 A2 PoD、SuperCluster AI 集群等同品类落地 URL。</p>
+        <p>标题旁我能读到「更多产品」触发器，当前机型名也在；但「查看网页源代码」里没有下拉面板内的各机型 a[href]。禁 JS 时列不出 Atlas 900 A2 PoD、SuperCluster AI 集群等同品类落地 URL——子项要等点击/悬停才挂出来。</p>
       </div>
     </div>
   </div>
@@ -795,7 +1015,7 @@
   var t0 = Date.now();
   var iv = setInterval(function () {
     restore();
-    if (Date.now() - t0 > 600) clearInterval(iv);
+    if (Date.now() - t0 > 800) clearInterval(iv);
   }, 40);
 
   try {
@@ -811,21 +1031,24 @@
     try { sessionStorage.setItem(key, String(y)); } catch (e) {}
   }
   sidebar.addEventListener('scroll', persist, { passive: true });
+
+  function stampHref(a) {
+    persist();
+    try {
+      var raw = a.getAttribute('href') || '';
+      var hash = '';
+      var hi = raw.indexOf('#');
+      if (hi >= 0) { hash = raw.slice(hi); raw = raw.slice(0, hi); }
+      var qi = raw.indexOf('?');
+      if (qi >= 0) raw = raw.slice(0, qi);
+      if (raw && raw.indexOf('http') !== 0) {
+        a.setAttribute('href', raw + '?sb=' + String(sidebar.scrollTop) + hash);
+      }
+    } catch (e) {}
+  }
   sidebar.querySelectorAll('.comp-nav a[href]').forEach(function (a) {
-    a.addEventListener('click', function () {
-      persist();
-      try {
-          var raw = a.getAttribute('href') || '';
-          var hash = '';
-          var hi = raw.indexOf('#');
-          if (hi >= 0) { hash = raw.slice(hi); raw = raw.slice(0, hi); }
-          var qi = raw.indexOf('?');
-          if (qi >= 0) raw = raw.slice(0, qi);
-          if (raw && raw.indexOf('http') !== 0) {
-            a.setAttribute('href', raw + '?sb=' + String(sidebar.scrollTop) + hash);
-          }
-      } catch (e) {}
-    });
+    a.addEventListener('pointerdown', function () { stampHref(a); }, true);
+    a.addEventListener('click', function () { stampHref(a); }, true);
   });
 })();
 </script>

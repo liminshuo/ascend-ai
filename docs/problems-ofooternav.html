@@ -3,8 +3,57 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
 <title>页脚链接可发现性 · 亲和分析 · 昇腾社区 AI 亲和原则</title>
 <style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -521,6 +570,145 @@
 
   .comp-sidebar { overflow-anchor: none; }
 
+
+
+  .evidence-block {
+    margin: 12px 0 0;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel2);
+    overflow: hidden;
+  }
+  .evidence-block-title {
+    margin: 0;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+    background: var(--panel);
+  }
+  .section .evidence-block > .evidence-block-title {
+    margin: 0;
+    color: var(--muted);
+  }
+  .evidence-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    padding-top: 0;
+  }
+  .evidence-grid--single {
+    grid-template-columns: 1fr;
+  }
+  @media (max-width: 900px) {
+    .evidence-grid { grid-template-columns: 1fr; }
+  }
+  .evidence-pane {
+    min-width: 0;
+    padding: 12px;
+  }
+  .evidence-pane + .evidence-pane {
+    border-left: 1px solid var(--line);
+  }
+  @media (max-width: 900px) {
+    .evidence-pane + .evidence-pane {
+      border-left: none;
+      border-top: 1px solid var(--line);
+    }
+  }
+  .evidence-pane-label {
+    margin: 0 0 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .section .evidence-pane > .evidence-pane-label {
+    margin: 0 0 12px;
+    color: var(--text);
+  }
+  .evidence-pane img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    margin: 0;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #fff;
+  }
+  .evidence-pane pre {
+    margin: 0;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #0f172a;
+    color: #e2e8f0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 11.5px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 220px;
+    overflow: auto;
+  }
+  .evidence-caption {
+    margin: 12px 0 0;
+    padding: 0;
+    font-size: 12.5px;
+    line-height: 19px;
+    color: var(--muted);
+    text-align: left;
+  }
+  .section .evidence-pane > .evidence-caption {
+    margin: 12px 0 0;
+    color: var(--muted);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </style>
 </head>
 <body data-module="problems" data-page="ofooternav">
@@ -594,7 +782,7 @@
 
     <p class="page-desc page-desc--split">
       <span class="page-desc-line"><strong>页脚链接可发现性</strong>指页脚多列导航链接须进源码；列名与链接文案保持稳定，便于 sitemap 与 Agent 对照站点结构。</span>
-      <span class="page-desc-line">以 <a href="https://www.hiascend.com/zh" target="_blank" rel="noopener">社区首页</a> 为例：首页页脚通常含产品/支持/法律等列。</span>
+      <span class="page-desc-line">以 <a href="https://www.hiascend.com/zh" target="_blank" rel="noopener">社区首页</a> 为例：首页页脚五列 + 底栏法律链；友商表三站均已可抓全。</span>
     </p>
 
     <section class="section" id="problem">
@@ -631,32 +819,70 @@
     <section class="section" id="guide">
       <h2 id="solution">根因分析</h2>
       <div class="content-unit">
-        <p><strong>页脚链接可发现性</strong>的核心原因：<strong style="color:var(--text)">虽社区首页页脚 html 已可抓全（友商表三站均达标），页脚仍是顶栏之外的第二发现层——须防改回脚本注入、守列名稳定、并与 llms 互证，否则 Agent 仍会漏答</strong>。</p>
+        <p><strong>页脚链接可发现性</strong>的核心原因：<strong style="color:var(--text)">人在浏览器里滚到页脚能看见五列入口，「查看网页源代码」里列名与 a[href] 也都在——本页已可抓全；页脚仍是顶栏之外的第二发现层，一旦改版退化、列名漂移或 llms 未收录，Agent 仍会漏答探针问句</strong>。</p>
+      </div>
+      <div class="evidence-block">
+        <p class="evidence-block-title">实测证据 · 页脚已在首包（可抓全）</p>
+        <div class="evidence-grid evidence-grid--single">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">「查看网页源代码」摘录（禁 JS 亦可跟）</p>
+          <pre>&lt;div class=&quot;footer-main&quot;&gt;
+  &lt;div class=&quot;link-group&quot;&gt;
+    &lt;h4 class=&quot;gp-name&quot;&gt;关于昇腾&lt;/h4&gt;
+    &lt;a class=&quot;gp-link&quot; href=&quot;/ecosystem/industry&quot;&gt;昇腾计算产业概述&lt;/a&gt;
+    …
+  &lt;/div&gt;
+  &lt;div class=&quot;link-group&quot;&gt;
+    &lt;h4 class=&quot;gp-name&quot;&gt;支持与服务&lt;/h4&gt;
+    &lt;a href=&quot;/zh/document&quot;&gt;文档&lt;/a&gt;
+    &lt;a href=&quot;/zh/feedback&quot;&gt;技术工单&lt;/a&gt;
+    …
+  &lt;/div&gt;
+  …共五列…
+&lt;/div&gt;
+&lt;a href=&quot;/zh/legal/law&quot;&gt;法律声明&lt;/a&gt;
+&lt;a href=&quot;/zh/legal/privacy&quot;&gt;隐私政策&lt;/a&gt;
+&lt;a href=&quot;https://www.huawei.com/cn/contact-us&quot;&gt;联系我们&lt;/a&gt;</pre>
+          <p class="evidence-caption">与顶栏不同：页脚列名 + 链接已在源码。根因区重点是守住，并补 llms 互证。</p>
+        </div>
+        </div>
       </div>
       <div class="content-unit">
-        <h3>1. 守住 SSR 多列链接</h3>
+        <h3>1. 当前已达标，须防改版退化</h3>
         <div class="issue-body">
-        <p><strong>问题：</strong>首页 footer-main 实测五列 + 法律链已在首包，友商表判「可抓全」；风险不在当前快照，而在后续改版若某列改等 JavaScript 填充、或只剩社交图标无文字链，html 抓取会退化。</p>
+        <p><strong>问题：</strong>打开社区首页，用「查看网页源代码」核对：footer-main 五列（关于昇腾 / 新闻与活动 / 交流与资讯 / 支持与服务 / 开源社区）与底栏法律声明 / 隐私政策 / 联系我们均带真实 href，友商表判「可抓全」。风险不在当前快照，而在后续改版若改成等 JavaScript 填充、或只剩社交图标无文字链，html 抓取会退化到顶栏同级问题。</p>
+        </div>
+      <div class="evidence-block">
+        <p class="evidence-block-title">证据 · 探针问句在源码里可直接答</p>
+        <div class="evidence-grid evidence-grid--single">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">实测可跟链（示意）</p>
+          <pre>关于昇腾 → /ecosystem/industry（列内链）
+法律声明 → /zh/legal/law
+联系我们 → https://www.huawei.com/cn/contact-us</pre>
+          <p class="evidence-caption">当前快照能答满探针；改版后应用同一问句回归。</p>
+        </div>
+        </div>
+      </div>
+        <div class="fix-suggestion">
+          <h4>修改建议</h4>
+          <p>维持每一列 gp-name + gp-link 服务端输出 a[href]；改版后复测本页探针，确保仍禁 JS 可答「法律声明 / 联系我们链到哪」。</p>
+        </div>
+      </div>
+      <div class="content-unit">
+        <h3>2. 页脚是顶栏缺口的第二发现层，列名漂移会错位</h3>
+        <div class="issue-body">
+        <p><strong>问题：</strong>顶栏一级多缺 href（见 ONavigation），文档 / 法律 / 支持等入口常靠页脚才完整可跟。html 可抓全不代表入库后永不过期：若「关于昇腾 / 支持与服务」等列名或锚文本随营销改版，已入库旧 chunk 对不上当前 HTML，Agent 检索会漏。</p>
         </div>
         <div class="fix-suggestion">
           <h4>修改建议</h4>
-          <p>维持每一列 gp-name + gp-link 在服务端输出 a[href]；改版后复测 problems-ofooternav 探针，确保仍禁 JS 可答「法律声明 / 联系我们链到哪」。</p>
+          <p>列名与关键锚文本保持稳定；必须改版时在 llms 或 changelog 写明新旧映射，并触发知识库重抓。</p>
         </div>
       </div>
       <div class="content-unit">
-        <h3>2. 列名改版导致知识库错位</h3>
+        <h3>3. 也须与 llms 互证</h3>
         <div class="issue-body">
-        <p><strong>问题：</strong>html 可抓全不代表入库后永不过期：页脚分组名或链接文案随营销改版，已入库旧 chunk 仍用旧说法，Agent 检索时对不上当前 HTML。</p>
-        </div>
-        <div class="fix-suggestion">
-          <h4>修改建议</h4>
-          <p>列名保持稳定；必须改版时在 llms 或 changelog 写明新旧映射，并触发知识库重抓。</p>
-        </div>
-      </div>
-      <div class="content-unit">
-        <h3>3. 页脚须与 llms 互证</h3>
-        <div class="issue-body">
-        <p><strong>问题：</strong>探针问「关于昇腾 / 法律声明 / 联系我们链到哪」——答案已在页脚 HTML；但若 llms.txt / sitemap 未收录这些 URL，仅靠 RAG 检索的 Agent 仍可能漏入口（这不反映在「html 可抓取」列）。</p>
+        <p><strong>问题：</strong>探针答案已在页脚 HTML；但若 llms.txt / sitemap 未收录这些 URL，仅靠 RAG 检索的 Agent 仍可能漏入口——这不反映在友商表「html 可抓取」列。</p>
         </div>
         <div class="fix-suggestion">
           <h4>修改建议</h4>
@@ -685,7 +911,7 @@
       </div>
       <div class="dialog-card">
         <span class="dialog-role">大模型</span>
-        <p>社区首页页脚我能完整列出五列及法律声明 → /zh/legal/law、联系我们等 href——友商表 html 可抓全。但若 llms 未收录这些链、或日后改版改回脚本注入，Agent 仍可能对不齐站图。</p>
+        <p>可以。页脚五列与底栏链都在首包：例如「关于昇腾」下昇腾计算产业概述 → /ecosystem/industry，法律声明 → /zh/legal/law，联系我们 → https://www.huawei.com/cn/contact-us。友商表判可抓全。若日后改版把页脚改回脚本注入，或 llms 未收录这些 URL，仍可能对不齐站图。</p>
       </div>
     </div>
   </div>
@@ -784,7 +1010,7 @@
   var t0 = Date.now();
   var iv = setInterval(function () {
     restore();
-    if (Date.now() - t0 > 600) clearInterval(iv);
+    if (Date.now() - t0 > 800) clearInterval(iv);
   }, 40);
 
   try {
@@ -800,21 +1026,24 @@
     try { sessionStorage.setItem(key, String(y)); } catch (e) {}
   }
   sidebar.addEventListener('scroll', persist, { passive: true });
+
+  function stampHref(a) {
+    persist();
+    try {
+      var raw = a.getAttribute('href') || '';
+      var hash = '';
+      var hi = raw.indexOf('#');
+      if (hi >= 0) { hash = raw.slice(hi); raw = raw.slice(0, hi); }
+      var qi = raw.indexOf('?');
+      if (qi >= 0) raw = raw.slice(0, qi);
+      if (raw && raw.indexOf('http') !== 0) {
+        a.setAttribute('href', raw + '?sb=' + String(sidebar.scrollTop) + hash);
+      }
+    } catch (e) {}
+  }
   sidebar.querySelectorAll('.comp-nav a[href]').forEach(function (a) {
-    a.addEventListener('click', function () {
-      persist();
-      try {
-          var raw = a.getAttribute('href') || '';
-          var hash = '';
-          var hi = raw.indexOf('#');
-          if (hi >= 0) { hash = raw.slice(hi); raw = raw.slice(0, hi); }
-          var qi = raw.indexOf('?');
-          if (qi >= 0) raw = raw.slice(0, qi);
-          if (raw && raw.indexOf('http') !== 0) {
-            a.setAttribute('href', raw + '?sb=' + String(sidebar.scrollTop) + hash);
-          }
-      } catch (e) {}
-    });
+    a.addEventListener('pointerdown', function () { stampHref(a); }, true);
+    a.addEventListener('click', function () { stampHref(a); }, true);
   });
 })();
 </script>

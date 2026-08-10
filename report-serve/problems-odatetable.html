@@ -3,8 +3,58 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
 <title>表格语义缺失 · 亲和分析 · 昇腾社区 AI 亲和原则</title>
 <style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -521,6 +571,146 @@
 
   .comp-sidebar { overflow-anchor: none; }
 
+
+
+  .evidence-block {
+    margin: 12px 0 0;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel2);
+    overflow: hidden;
+  }
+  .evidence-block-title {
+    margin: 0;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+    background: var(--panel);
+  }
+  .section .evidence-block > .evidence-block-title {
+    margin: 0;
+    color: var(--muted);
+  }
+  .evidence-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    padding-top: 0;
+  }
+  .evidence-grid--single {
+    grid-template-columns: 1fr;
+  }
+  @media (max-width: 900px) {
+    .evidence-grid { grid-template-columns: 1fr; }
+  }
+  .evidence-pane {
+    min-width: 0;
+    padding: 12px;
+  }
+  .evidence-pane + .evidence-pane {
+    border-left: 1px solid var(--line);
+  }
+  @media (max-width: 900px) {
+    .evidence-pane + .evidence-pane {
+      border-left: none;
+      border-top: 1px solid var(--line);
+    }
+  }
+  .evidence-pane-label {
+    margin: 0 0 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .section .evidence-pane > .evidence-pane-label {
+    margin: 0 0 12px;
+    color: var(--text);
+  }
+  .evidence-pane img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    margin: 0;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #fff;
+  }
+  .evidence-pane pre {
+    margin: 0;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #0f172a;
+    color: #e2e8f0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 11.5px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 220px;
+    overflow: auto;
+  }
+  .evidence-caption {
+    margin: 12px 0 0;
+    padding: 0;
+    font-size: 12.5px;
+    line-height: 19px;
+    color: var(--muted);
+    text-align: left;
+  }
+  .section .evidence-pane > .evidence-caption {
+    margin: 12px 0 0;
+    color: var(--muted);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </style>
 </head>
 <body data-module="problems" data-page="odatetable">
@@ -594,7 +784,8 @@
 
     <p class="page-desc page-desc--split">
       <span class="page-desc-line"><strong>表格语义缺失</strong>指规格表须用真实 table/单元格文本，勿截图；表头语义清晰，md 用 Markdown 表。</span>
-      <span class="page-desc-line">以 <a href="https://www.hiascend.com/hardware/cluster" target="_blank" rel="noopener">集群产品页</a> 为例：集群页等含硬件参数表。</span>
+      <span class="page-desc-line"><strong>视情况</strong>：规格 / 对照参数须用真实 table/th/td（或平行 Markdown 表）交付；配图大字报与空单元格不能当唯一规格源。</span>
+      <span class="page-desc-line">以 <a href="https://www.hiascend.com/hardware/cluster" target="_blank" rel="noopener">集群产品页</a> 为例：集群页可见规格摘要与特性卡；缺 Atlas 900 vs 800 对照矩阵，部分规格在配图内。</span>
     </p>
 
     <section class="section" id="problem">
@@ -620,7 +811,7 @@
           </thead>
           <tbody>
             <tr><td>Mintlify</td><td><a href="https://www.mintlify.com/docs/deploy/custom-portal" target="_blank" rel="noopener">Custom developer portals</a></td><td><a class="peer-object-link" href="https://www.mintlify.com/docs/deploy/custom-portal" target="_blank" rel="noopener" title="该页Custom portal 功能表所在的友商线上页面"><span class="peer-object-name">Custom portal 功能表</span><span class="peer-floor-badge">对照正文</span></a></td><td><span class="peer-tag peer-tag-ok">可抓全</span></td><td class="peer-reason">Features 三列表格（Feature / What ships / Backed by）10 行功能对照与 Backed by 说明均在静态 HTML table/th/td 中，禁 JS 可逐行抓取，非截图表。</td></tr>
-            <tr><td>NVIDIA</td><td><a href="https://docs.nvidia.com/cuda/cuda-installation-guide-linux/" target="_blank" rel="noopener">CUDA Linux 安装指南</a></td><td><a class="peer-object-link" href="https://docs.nvidia.com/cuda/cuda-installation-guide-linux/" target="_blank" rel="noopener" title="该页OS/编译器规格表所在的友商线上页面"><span class="peer-object-name">OS/编译器规格表</span><span class="peer-floor-badge">多表正文</span></a></td><td><span class="peer-tag peer-tag-ok">可抓全</span></td><td class="peer-reason">Table 1–4（Supported Linux Distributions / Validated OS Versions / Supported Compilers / Installation Compatibility Matrix）均以真实 HTML table/th/td 写进静态页面，Codename·Kernel·GCC·GLIBC 等规格单元格可逐行抓取，非截图表。</td></tr>
+            <tr><td>NVIDIA</td><td><a href="https://docs.nvidia.com/cuda/cuda-installation-guide-linux/" target="_blank" rel="noopener">CUDA Linux 安装指南</a></td><td><a class="peer-object-link" href="https://docs.nvidia.com/cuda/cuda-installation-guide-linux/" target="_blank" rel="noopener" title="该页OS/编译器规格表所在的友商线上页面"><span class="peer-object-name">OS/编译器规格表</span><span class="peer-floor-badge">多表正文</span></a></td><td><span class="peer-tag peer-tag-ok">可抓全</span></td><td class="peer-reason">Table 1–4（Supported Linux Distributions / Validated OS Versions for CUDA 13.3 Update 1 / Supported Compilers / Installation Compatibility Matrix）均为真实 HTML table/th/td；含 Ubuntu 26.04、Codename·Kernel·GCC·GLIBC 等单元格可逐行抓取，非截图表。</td></tr>
             <tr><td>昇腾社区</td><td><a href="https://www.hiascend.com/document/detail/zh/AscendFAQ/ProduTech/productform/hardwaredesc_0001.html" target="_blank" rel="noopener">AscendFAQ</a></td><td><a class="peer-object-link" href="https://www.hiascend.com/document/detail/zh/AscendFAQ/ProduTech/productform/hardwaredesc_0001.html" target="_blank" rel="noopener" title="该页表1 昇腾产品系列所在的友商线上页面"><span class="peer-object-name">表1 昇腾产品系列</span><span class="peer-floor-badge">参数表</span></a></td><td><span class="peer-tag peer-tag-ok">可抓全</span></td><td class="peer-reason">表1 含 Atlas 350 等型号，完整 table 在静态 HTML。</td></tr>
           </tbody>
         </table>
@@ -631,46 +822,103 @@
     <section class="section" id="guide">
       <h2 id="solution">根因分析</h2>
       <div class="content-unit">
-        <p><strong>表格语义缺失</strong>的核心原因：<strong style="color:var(--text)">规格参数须以语义化 table/th/td 交付；文档页与 FAQ 已达标，但产品页仍存在截图规格、空单元格或 Tab 后注入，Agent 无法按表头逐格问答</strong>。</p>
+        <p><strong>视情况</strong>：规格 / 对照参数须用真实 table/th/td（或平行 Markdown 表）交付；配图大字报与空单元格不能当唯一规格源。</p>
       </div>
       <div class="content-unit">
-        <h3>1. 参数图代替 table</h3>
+        <p><strong>表格语义缺失</strong>的核心原因：<strong style="color:var(--text)">人在浏览器里能看见集群页的规格与特性展示，但「查看网页源代码」里抠不出探针要的「Atlas 900 vs Atlas 800 · CPU/内存/互联」对照表——没有多列表头与逐格参数，部分数字还画在配图里，所以 Agent 无法按表头逐格问答</strong>。</p>
+      </div>
+      <div class="evidence-block">
+        <p class="evidence-block-title">实测证据 · 浏览器规格展示 vs 静态源码</p>
+        <div class="evidence-grid">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">浏览器里能看见的规格摘要</p>
+          <img src="assets/cases-html-ascend/cluster-spec-summary.jpg" alt="集群产品页浏览器可见技术规格摘要表与产品图" loading="lazy" />
+          <p class="evidence-caption">左图是人眼看到的规格区；源码只有单型号三行，对不上「900 vs 800」问句。</p>
+        </div>
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">「查看网页源代码」里没有 900 vs 800 对照矩阵</p>
+          <pre>&lt;!-- 查看网页源代码 / 禁 JS：无 Atlas 900|800 对照表 --&gt;
+&lt;!-- /hardware/cluster 摘要表仅默认型号一列 --&gt;
+&lt;table&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;img …产品图&gt;&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;形态&lt;/td&gt;&lt;td&gt;12 * 计算柜 …&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;NPU&lt;/td&gt;&lt;td&gt;最大支持 384 * 昇腾910&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;CPU&lt;/td&gt;&lt;td&gt;最大支持 192 * 鲲鹏920&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+&lt;!-- ✗ 无：Atlas 800 列 / 内存行 / 互联行 --&gt;
+
+&lt;!-- ✓ 友商 CUDA：多列表格在首包 --&gt;
+&lt;table&gt;&lt;caption&gt;Table 1 Supported Linux Distributions&lt;/caption&gt;
+  &lt;tr&gt;&lt;th&gt;Distribution&lt;/th&gt;&lt;th&gt;Codename&lt;/th&gt;&lt;th&gt;Architecture&lt;/th&gt;&lt;/tr&gt;
+  …
+&lt;/table&gt;</pre>
+        </div>
+        </div>
+      </div>
+      <div class="content-unit">
+        <h3>1. 源码里没有可引用的对照表</h3>
         <div class="issue-body">
-        <p><strong>问题：</strong>集群产品页「产品特性」等区块浏览器可见六格能力说明，但文案在 feature PNG 图内，静态 HTML 无 th/td 参数矩阵；探针问「Atlas 900 与 Atlas 800 CPU/内存/互联对照表原文」时，图表格无法当可检索 chunk。</p>
+        <p><strong>问题：</strong>打开集群产品页，用「查看网页源代码」核对：没有「Atlas 900 | Atlas 800」表头，也没有内存 / 互联对照行。摘要 table 只有默认型号一列的形态 / NPU / CPU——探针问两款产品对照原文时，禁 JS 拼不出矩阵。友商 CUDA Table 1–4、FAQ 表1 是完整 th/td，可按行列引用。</p>
+        </div>
+      <div class="evidence-block">
+        <p class="evidence-block-title">证据 · 对照表本来应该长这样</p>
+        <div class="evidence-grid evidence-grid--single">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">期望写进网页的型号对照（示意）</p>
+          <pre>&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;&lt;th&gt;参数&lt;/th&gt;&lt;th&gt;Atlas 900&lt;/th&gt;&lt;th&gt;Atlas 800&lt;/th&gt;&lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;CPU&lt;/th&gt;&lt;td&gt;…&lt;/td&gt;&lt;td&gt;…&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;内存&lt;/th&gt;&lt;td&gt;…&lt;/td&gt;&lt;td&gt;…&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;th scope=&quot;row&quot;&gt;互联&lt;/th&gt;&lt;td&gt;…&lt;/td&gt;&lt;td&gt;…&lt;/td&gt;&lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;</pre>
+          <p class="evidence-caption">表头 + 全行单元格同在首包，才能按列问答。</p>
+        </div>
+        </div>
+      </div>
+        <div class="fix-suggestion">
+          <h4>修改建议</h4>
+          <p>产品对照写成语义化 HTML table（thead 列型号，tbody 行 CPU/内存/互联等）；每个规格格 SSR 可读文本，勿只留单型号摘要或等 Tab 后再灌。</p>
+        </div>
+      </div>
+      <div class="content-unit">
+        <h3>2. 规格写进配图，表格语义被掏空</h3>
+        <div class="issue-body">
+        <p><strong>问题：</strong>「产品特性」浏览器可见超节点架构 / 超强性能等大字报，但关键数字常在 feature PNG 内；静态 HTML 仅部分 bullet，第三张「超高可靠」等还可能缺失。摘要表首行甚至是产品图单元格。图意无法当 th/td 检索，Agent 容易漏数或读成装饰。</p>
+        </div>
+      <div class="evidence-block">
+        <p class="evidence-block-title">证据 · 图内数字 ≠ 可抓单元格</p>
+        <div class="evidence-grid">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">浏览器里的特性大字报</p>
+          <img src="assets/cases-html-ascend/cluster-features.jpg" alt="集群产品页产品特性卡与配图大字报" loading="lazy" />
+          <p class="evidence-caption">看得见的特性图，不等于规格表已入库。</p>
+        </div>
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">首包特性区（示意）</p>
+          <pre>&lt;img src=&quot;/_static3/feature26….png&quot; class=&quot;o-figure-img&quot;&gt;
+&lt;div class=&quot;title&quot;&gt;超节点架构&lt;/div&gt;
+&lt;p&gt;最大支持384*NPU高速互联…&lt;/p&gt;
+&lt;!-- 大字报数字在 PNG；缺完整三卡 / 无对照表头 --&gt;</pre>
+        </div>
+        </div>
+      </div>
+        <div class="fix-suggestion">
+          <h4>修改建议</h4>
+          <p>规格数字与对照项写进 table/段落文本；配图仅装饰时 alt=&quot;&quot;，正文或表格复述同一组参数。禁止用截图表代替唯一规格源。</p>
+        </div>
+      </div>
+      <div class="content-unit">
+        <h3>3. 也没有备用的 Markdown 对照表</h3>
+        <div class="issue-body">
+        <p><strong>问题：</strong>HTML 对不上「900 vs 800」时，若文档 MD / llms.txt 里也没有同文案的 Markdown 表，AI 没有退路，只能靠导语碎片猜测参数。</p>
         </div>
         <div class="fix-suggestion">
           <h4>修改建议</h4>
-          <p>硬件规格改 HTML table 或 Markdown 表（th 列型号、td 列 CPU/内存/互联）；配图仅装饰时 alt=&quot;&quot; 并正文复述参数。</p>
-        </div>
-      </div>
-      <div class="content-unit">
-        <h3>2. 规格表单元格空壳</h3>
-        <div class="issue-body">
-        <p><strong>问题：</strong>集群页「技术规格摘要」虽有 table 骨架，但部分 td/p 为空或靠客户端填充；探针问「Atlas 900 vs 800 CPU/内存/互联对照」时首包读不出完整规格值矩阵。</p>
-        </div>
-        <div class="fix-suggestion">
-          <h4>修改建议</h4>
-          <p>每个规格行 SSR 可读 label + 值；禁留空 td 占位等待脚本注入。</p>
-        </div>
-      </div>
-      <div class="content-unit">
-        <h3>3. div/grid 伪表</h3>
-        <div class="issue-body">
-        <p><strong>问题：</strong>产品对比若用 div+flex 网格排版而无 th/td，抓取管道无法识别表头与单元格边界，RAG 列错位或丢列。</p>
-        </div>
-        <div class="fix-suggestion">
-          <h4>修改建议</h4>
-          <p>对照表一律用语义 table + thead/tbody；合并单元格须保持列对齐并写 scope。</p>
-        </div>
-      </div>
-      <div class="content-unit">
-        <h3>4. 缺 MD 平行表</h3>
-        <div class="issue-body">
-        <p><strong>问题：</strong>HTML 表不完整时（如仅 meta/og 描述含表1 片段），Agent 只能靠零散文本猜测；应在文档 MD/llms 同步输出完整 Markdown 表。</p>
-        </div>
-        <div class="fix-suggestion">
-          <h4>修改建议</h4>
-          <p>每个规格表在 MD 镜像一份「表头 + 全行单元格」；与 HTML table 文案一致。</p>
+          <p>在平行 MD 或 llms.txt 镜像一份「表头 + 全行单元格」对照表，与页面承诺一致；页面 table SSR 达标后以页面为准。</p>
         </div>
       </div>
     </section>
@@ -695,7 +943,7 @@
       </div>
       <div class="dialog-card">
         <span class="dialog-role">大模型</span>
-        <p>Ascend FAQ「表1 昇腾产品系列」与 NVIDIA CUDA Linux 安装指南 Table 1–4、Mintlify Custom portal Features 表均在静态 HTML 中有 th/td，我能按行列回答。但集群产品页探针问「Atlas 900 与 Atlas 800 CPU/内存/互联对照」时，部分规格绑在特性配图内、摘要表存在空 td，或型号 Tab 切换后才注入，无法可靠还原完整参数矩阵。</p>
+        <p>浏览器里能看见默认型号的「技术规格」摘要（形态 / NPU / CPU）和「产品特性」大字报，但「查看网页源代码」里没有一张「Atlas 900 | Atlas 800」多列对照表，也搜不到按表头展开的内存 / 互联对照行——摘要表只有单型号一列值，特性要点部分写在 feature PNG 里。友商 NVIDIA CUDA Linux 安装指南 Table 1–4、Mintlify Features 表、昇腾 FAQ 表1 都是真实 th/td，可按行列引用；本页探针要的对照原文给不出。</p>
       </div>
     </div>
   </div>
@@ -794,7 +1042,7 @@
   var t0 = Date.now();
   var iv = setInterval(function () {
     restore();
-    if (Date.now() - t0 > 600) clearInterval(iv);
+    if (Date.now() - t0 > 800) clearInterval(iv);
   }, 40);
 
   try {
@@ -810,21 +1058,24 @@
     try { sessionStorage.setItem(key, String(y)); } catch (e) {}
   }
   sidebar.addEventListener('scroll', persist, { passive: true });
+
+  function stampHref(a) {
+    persist();
+    try {
+      var raw = a.getAttribute('href') || '';
+      var hash = '';
+      var hi = raw.indexOf('#');
+      if (hi >= 0) { hash = raw.slice(hi); raw = raw.slice(0, hi); }
+      var qi = raw.indexOf('?');
+      if (qi >= 0) raw = raw.slice(0, qi);
+      if (raw && raw.indexOf('http') !== 0) {
+        a.setAttribute('href', raw + '?sb=' + String(sidebar.scrollTop) + hash);
+      }
+    } catch (e) {}
+  }
   sidebar.querySelectorAll('.comp-nav a[href]').forEach(function (a) {
-    a.addEventListener('click', function () {
-      persist();
-      try {
-          var raw = a.getAttribute('href') || '';
-          var hash = '';
-          var hi = raw.indexOf('#');
-          if (hi >= 0) { hash = raw.slice(hi); raw = raw.slice(0, hi); }
-          var qi = raw.indexOf('?');
-          if (qi >= 0) raw = raw.slice(0, qi);
-          if (raw && raw.indexOf('http') !== 0) {
-            a.setAttribute('href', raw + '?sb=' + String(sidebar.scrollTop) + hash);
-          }
-      } catch (e) {}
-    });
+    a.addEventListener('pointerdown', function () { stampHref(a); }, true);
+    a.addEventListener('click', function () { stampHref(a); }, true);
   });
 })();
 </script>

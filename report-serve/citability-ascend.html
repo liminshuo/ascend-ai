@@ -287,18 +287,65 @@
     position: sticky;
     top: 0;
     z-index: 20;
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    padding: 12px 20px;
+    height: var(--topbar-h);
+    min-height: var(--topbar-h);
+    max-height: var(--topbar-h);
+    padding: 0 24px;
+    box-sizing: border-box;
     border-bottom: 1px solid var(--line);
     background: #fff;
+    overflow: hidden;
+  }
+  .modal-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+  }
+  .back-link {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 8px;
+    padding: 0;
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    text-decoration: none;
+    transition: background .15s, color .15s;
+  }
+  .back-link:hover {
+    background: var(--panel2);
+    color: var(--accent);
+  }
+  .back-link svg {
+    width: 18px;
+    height: 18px;
+    display: block;
+  }
+  .title-divider {
+    flex-shrink: 0;
+    width: 1px;
+    height: 18px;
+    background: var(--line);
   }
   .modal-title {
     font-size: 15px;
     font-weight: 600;
     margin: 0;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .modal-actions { display: flex; gap: 8px; align-items: center; }
   .btn {
@@ -857,11 +904,13 @@
 <div class="modal" id="case-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
   <div class="modal-head">
     <div class="modal-head-bar">
-      <h2 class="modal-title" id="modal-title"></h2>
+      <div class="modal-title-wrap">
+        <button type="button" class="back-link" id="back-modal" aria-label="返回分析"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6L9 12l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <span class="title-divider" aria-hidden="true"></span>
+        <div class="modal-title" id="modal-title"></div>
+      </div>
       <div class="modal-actions">
-        <a class="btn" id="btn-left" href="#" target="_blank" rel="noopener">打开左页</a>
-        <a class="btn" id="btn-right" href="#" target="_blank" rel="noopener">打开建议 MD</a>
-        <button type="button" class="btn close" id="close-modal">关闭</button>
+        <button type="button" class="btn close" id="close-modal">返回分析</button>
       </div>
     </div>
     <div class="conclude" id="conclude"></div>
@@ -1047,10 +1096,9 @@
 
   const modal = document.getElementById('case-modal');
   const closeBtn = document.getElementById('close-modal');
+  const backBtn = document.getElementById('back-modal');
   const concludeEl = document.getElementById('conclude');
   const titleEl = document.getElementById('modal-title');
-  const btnLeft = document.getElementById('btn-left');
-  const btnRight = document.getElementById('btn-right');
   const labelLeft = document.getElementById('label-left');
   const labelRight = document.getElementById('label-right');
   const shotLeft = document.getElementById('shot-left');
@@ -1080,8 +1128,6 @@
     if (!c) return;
     titleEl.textContent = c.title;
     concludeEl.innerHTML = c.conclude;
-    btnLeft.href = c.leftUrl;
-    btnRight.href = c.rightUrl || '#';
     labelLeft.href = c.leftUrl;
     labelLeft.textContent = c.leftLabel;
     labelRight.href = c.rightUrl || '#';
@@ -1105,6 +1151,7 @@
     btn.addEventListener('click', () => openModal(btn.dataset.case));
   });
   closeBtn.addEventListener('click', closeModal);
+  if (backBtn) backBtn.addEventListener('click', closeModal);
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
   });

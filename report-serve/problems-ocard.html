@@ -3,8 +3,58 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
 <title>卡片摘要不可抓 · 亲和分析 · 昇腾社区 AI 亲和原则</title>
 <style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -521,6 +571,146 @@
 
   .comp-sidebar { overflow-anchor: none; }
 
+
+
+  .evidence-block {
+    margin: 12px 0 0;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel2);
+    overflow: hidden;
+  }
+  .evidence-block-title {
+    margin: 0;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+    background: var(--panel);
+  }
+  .section .evidence-block > .evidence-block-title {
+    margin: 0;
+    color: var(--muted);
+  }
+  .evidence-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    padding-top: 0;
+  }
+  .evidence-grid--single {
+    grid-template-columns: 1fr;
+  }
+  @media (max-width: 900px) {
+    .evidence-grid { grid-template-columns: 1fr; }
+  }
+  .evidence-pane {
+    min-width: 0;
+    padding: 12px;
+  }
+  .evidence-pane + .evidence-pane {
+    border-left: 1px solid var(--line);
+  }
+  @media (max-width: 900px) {
+    .evidence-pane + .evidence-pane {
+      border-left: none;
+      border-top: 1px solid var(--line);
+    }
+  }
+  .evidence-pane-label {
+    margin: 0 0 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .section .evidence-pane > .evidence-pane-label {
+    margin: 0 0 12px;
+    color: var(--text);
+  }
+  .evidence-pane img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    margin: 0;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #fff;
+  }
+  .evidence-pane pre {
+    margin: 0;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #0f172a;
+    color: #e2e8f0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 11.5px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 220px;
+    overflow: auto;
+  }
+  .evidence-caption {
+    margin: 12px 0 0;
+    padding: 0;
+    font-size: 12.5px;
+    line-height: 19px;
+    color: var(--muted);
+    text-align: left;
+  }
+  .section .evidence-pane > .evidence-caption {
+    margin: 12px 0 0;
+    color: var(--muted);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </style>
 </head>
 <body data-module="problems" data-page="ocard">
@@ -594,7 +784,8 @@
 
     <p class="page-desc page-desc--split">
       <span class="page-desc-line"><strong>卡片摘要不可抓</strong>指卡片标题、摘要、链接须写入 HTML；图需 alt/图注，否则列表发现层不完整。</span>
-      <span class="page-desc-line">以 <a href="https://www.hiascend.com/zh" target="_blank" rel="noopener">社区首页</a> 为例：首页课程/活动等多为卡片列表。</span>
+      <span class="page-desc-line"><strong>视情况</strong>：导流卡须首包输出标题 + 摘要 + a[href]；列表/Tab 下卡片勿等脚本注入；封面图不能代替文本。</span>
+      <span class="page-desc-line">以 <a href="https://www.hiascend.com/zh" target="_blank" rel="noopener">社区首页</a> 为例：「昇腾万里」楼层资讯/活动 Tab 下卡片浏览器可见，首包 o-scroller-container 为空。</span>
     </p>
 
     <section class="section" id="problem">
@@ -602,7 +793,7 @@
       <div class="content-unit">
         <h3>1. 向模型提问</h3>
         <div class="test-prompt-card">
-          <p>我在看 <a href="https://www.hiascend.com/zh" target="_blank" rel="noopener">社区首页</a>，「最新课程 / 社区活动」卡片各自的标题、摘要和落地页 URL 是什么？</p>
+          <p>我在看 <a href="https://www.hiascend.com/zh" target="_blank" rel="noopener">社区首页</a>，「最新发布 / 精彩活动」等 Tab 下各张卡片的标题、摘要和落地页 URL 是什么？</p>
         </div>
       </div>
       <div class="content-unit">
@@ -631,46 +822,99 @@
     <section class="section" id="guide">
       <h2 id="solution">根因分析</h2>
       <div class="content-unit">
-        <p><strong>卡片摘要不可抓</strong>的核心原因：<strong style="color:var(--text)">OCard 导流卡在同一站点实现不一：部分楼层已 SSR 标题 + 摘要 + 链接，但首页资讯/活动列表与卡内嵌套列表仍靠脚本注入或绑在封面图上，未平铺为可引用文本链</strong>。</p>
+        <p><strong>视情况</strong>：导流卡须首包输出标题 + 摘要 + a[href]；列表/Tab 下卡片勿等脚本注入；封面图不能代替文本。</p>
       </div>
       <div class="content-unit">
-        <h3>1. 卡内列表未写进网页源码</h3>
+        <p><strong>卡片摘要不可抓</strong>的核心原因：<strong style="color:var(--text)">人在浏览器里能看见首页资讯 / 活动卡片，但「查看网页源代码」里列表是空的——卡片要等 JavaScript 灌进 o-scroller-container；同站另一些楼层已经把标题 + 摘要 + 链接写进首包，说明不是做不到，而是这批列表卡没 SSR</strong>。</p>
+      </div>
+      <div class="evidence-block">
+        <p class="evidence-block-title">实测证据 · 浏览器内容卡 vs 静态源码</p>
+        <div class="evidence-grid">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">浏览器里能看见的资讯/活动卡</p>
+          <img src="assets/cases-html-ascend/home-news-tabs.jpg" alt="社区首页昇腾万里楼层浏览器可见最新发布等 Tab 与内容卡片" loading="lazy" />
+          <p class="evidence-caption">左图是人眼看到的卡片；右边首页源码列表为空，同站另有楼层已写全三要素。</p>
+        </div>
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">「查看网页源代码」里卡片列表是空的</p>
+          <pre>&lt;!-- 查看网页源代码 / 禁 JS --&gt;
+&lt;h2 class=&quot;sec-title&quot;&gt;昇腾万里，让智能无所不及&lt;/h2&gt;
+&lt;div class=&quot;o-tab&quot;&gt;
+  &lt;div class=&quot;o-tab-nav-list&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;o-tab-pane o-tab-pane-active&quot;&gt;
+    &lt;div class=&quot;o-scroller-container&quot;&gt;&lt;!--[--&gt;&lt;!--]--&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- ✗ 无：各卡标题 / 摘要 / a[href] --&gt;
+
+&lt;!-- ✓ 同站开发者页资源卡（对照） --&gt;
+&lt;div class=&quot;o-card-title&quot;&gt;HiDevLab-在线开发&lt;/div&gt;
+&lt;div class=&quot;o-card-detail&quot;&gt;…&lt;/div&gt;
+&lt;a href=&quot;…&quot;&gt;…&lt;/a&gt;</pre>
+        </div>
+        </div>
+      </div>
+      <div class="content-unit">
+        <h3>1. 源码里没有卡片列表</h3>
         <div class="issue-body">
-        <p><strong>问题：</strong>社区首页「最新发布 / 产业资讯 / 精彩活动 / 官方技术文章」Tab 下浏览器可见金融/SWA/CANN 等内容卡，但 pane 内 o-scroller-container 为空；开发者页「精品推荐」「参与互动交流」各卡内课程/帖子列表亦靠注入，o-card-content 为 &lt;!--[--&gt;&lt;!--]--&gt;。探针问「最新课程 / 社区活动卡片标题、摘要、URL」时首包列不出。</p>
+        <p><strong>问题：</strong>打开社区首页，用「查看网页源代码」核对「昇腾万里」楼层：最新发布 / 产业资讯 / 精彩活动 / 官方技术文章 的页签导航常为空，激活 pane 里 o-scroller-container 也是空注释。浏览器看得见的金融 / SWA / CANN 等卡要等脚本注入——探针问各卡标题、摘要、URL 时，禁 JS 列不出。开发者页 HiDevLab 三卡、友商 NVIDIA / Mintlify 导流卡则是标题 + 说明 + 链写在首包。</p>
+        </div>
+      <div class="evidence-block">
+        <p class="evidence-block-title">证据 · 卡片本来应该长这样</p>
+        <div class="evidence-grid evidence-grid--single">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">期望写进网页的内容卡（示意）</p>
+          <pre>&lt;article class=&quot;o-card&quot;&gt;
+  &lt;a href=&quot;/news/…&quot;&gt;
+    &lt;h3 class=&quot;o-card-title&quot;&gt;……标题&lt;/h3&gt;
+    &lt;p class=&quot;o-card-detail&quot;&gt;一句话摘要&lt;/p&gt;
+  &lt;/a&gt;
+&lt;/article&gt;</pre>
+          <p class="evidence-caption">未激活 Tab 可以视觉隐藏，但要发现的卡片文本与链接须还在首包。</p>
+        </div>
+        </div>
+      </div>
+        <div class="fix-suggestion">
+          <h4>修改建议</h4>
+          <p>默认 Tab（及需要发现的其它 Tab）把每张卡 SSR 进 HTML：o-card-title + o-card-detail + a[href]；勿只留空 scroller 等客户端填充。</p>
+        </div>
+      </div>
+      <div class="content-unit">
+        <h3>2. 有壳无三要素，形成半成品</h3>
+        <div class="issue-body">
+        <p><strong>问题：</strong>即便有卡容器，若只有封面图 / icon、没有标题与摘要，或整卡 onclick 没有 a[href]，Agent 要么读不出文案，要么复述得出标题却给不出落地 URL。开发者页部分入口卡只有 resource-card-title + href、缺短述，也属于半成品——和 HiDevLab「title + detail + href」齐全写法不一致。</p>
+        </div>
+      <div class="evidence-block">
+        <p class="evidence-block-title">证据 · 缺一即残缺</p>
+        <div class="evidence-grid evidence-grid--single">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">半成品 vs 齐全</p>
+          <pre>&lt;!-- ✗ 半成品 --&gt;
+&lt;div class=&quot;card&quot; onclick=&quot;go(…)&quot;&gt;
+  &lt;img src=&quot;cover.png&quot; alt=&quot;&quot;&gt;  &lt;!-- 无标题/摘要/href --&gt;
+&lt;/div&gt;
+&lt;!-- ✓ 齐全 --&gt;
+&lt;a class=&quot;o-card&quot; href=&quot;…&quot;&gt;
+  &lt;span class=&quot;o-card-title&quot;&gt;…&lt;/span&gt;
+  &lt;span class=&quot;o-card-detail&quot;&gt;…&lt;/span&gt;
+&lt;/a&gt;</pre>
+          <p class="evidence-caption">标题、摘要、链接缺一，发现层就不完整。</p>
+        </div>
+        </div>
+      </div>
+        <div class="fix-suggestion">
+          <h4>修改建议</h4>
+          <p>每张导流卡平铺三要素：可读标题 + 一句话摘要 + 真实 a[href]；封面补 alt；禁只用图或整卡脚本跳转代替链接。</p>
+        </div>
+      </div>
+      <div class="content-unit">
+        <h3>3. 也没有备用的卡片清单</h3>
+        <div class="issue-body">
+        <p><strong>问题：</strong>列表卡读不全时，如果 llms.txt 或平行 MD 里也没有「标题 + 摘要 + URL」清单，AI 只剩楼层口号，没有退路补齐资讯/活动发现层。</p>
         </div>
         <div class="fix-suggestion">
           <h4>修改建议</h4>
-          <p>默认 Tab 与卡内列表项 SSR 进 HTML（o-card-title + o-card-detail + a[href]），不必点击或滑动才加载。</p>
-        </div>
-      </div>
-      <div class="content-unit">
-        <h3>2. 封面图替代 card 文本</h3>
-        <div class="issue-body">
-        <p><strong>问题：</strong>部分课程/活动/权益卡只有封面图或 icon，源码无 o-card-title / o-card-detail，图意无法转写为可检索 chunk。</p>
-        </div>
-        <div class="fix-suggestion">
-          <h4>修改建议</h4>
-          <p>卡片三要素平铺为文本：标题 + 一句话摘要 + 链接；封面补 alt 或 figcaption。</p>
-        </div>
-      </div>
-      <div class="content-unit">
-        <h3>3. 整卡绑点击无 href</h3>
-        <div class="issue-body">
-        <p><strong>问题：</strong>发现卡若用 div 或整卡 onclick 跳转，静态 HTML 无 a[href]，Agent 能复述标题但给不出落地页 URL。</p>
-        </div>
-        <div class="fix-suggestion">
-          <h4>修改建议</h4>
-          <p>跳转型卡片用 a[href] 包裹标题与摘要，样式可保留卡片外观。</p>
-        </div>
-      </div>
-      <div class="content-unit">
-        <h3>4. 入口卡缺摘要</h3>
-        <div class="issue-body">
-        <p><strong>问题：</strong>开发者页训练/推理/算子三卡仅有 resource-card-title + href、无独立短述；虽可跟链，但 RAG 缺可引用摘要句，与 HiDevLab 三卡（title + detail + href 齐全）写法不一致。</p>
-        </div>
-        <div class="fix-suggestion">
-          <h4>修改建议</h4>
-          <p>每张导流卡补齐 o-card-detail 短述；外链卡输出完整 href。</p>
+          <p>在 llms.txt 或 MD 临时平铺该楼层卡片（标题 + 短述 + 链接）；页面 SSR 达标后以页面为准。</p>
         </div>
       </div>
     </section>
@@ -691,11 +935,11 @@
     <div class="modal-body">
       <div class="dialog-card">
         <span class="dialog-role">用户</span>
-        <p>我在看社区首页（https://www.hiascend.com/zh），「最新课程 / 社区活动」卡片各自的标题、摘要和落地页 URL 是什么？</p>
+        <p>我在看社区首页（https://www.hiascend.com/zh），「最新发布 / 精彩活动」等 Tab 下各张卡片的标题、摘要和落地页 URL 是什么？</p>
       </div>
       <div class="dialog-card">
         <span class="dialog-role">大模型</span>
-        <p>开发者页「获取开发资源」底部三卡（HiDevLab / 资源下载中心 / 昇腾镜像仓库）在静态 HTML 中各有 o-card-title 与 o-card-detail，我能列表回答。但社区首页「最新发布 / 精彩活动」等 Tab 下的课程/资讯卡，以及开发者页「精品推荐」「参与互动交流」卡内嵌列表，浏览器可见、源码里 o-scroller-container / o-card-content 为空——须等脚本注入，禁 JS 时列不出标题、摘要与 URL。</p>
+        <p>浏览器里「昇腾万里」楼层能看见金融 / SWA / CANN 等内容卡，但「查看网页源代码」里 o-tab-nav-list 常为空、pane 内 o-scroller-container 是空壳——卡片要等脚本注入。禁 JS 时列不出标题、摘要与落地 URL。同站开发者页「获取开发资源」三卡（HiDevLab 等）已有 o-card-title + o-card-detail + href，说明卡片可以写进首包；友商 NVIDIA DGX Cloud 四列卡、Mintlify 公司卡也是首包可抓。</p>
       </div>
     </div>
   </div>
@@ -794,7 +1038,7 @@
   var t0 = Date.now();
   var iv = setInterval(function () {
     restore();
-    if (Date.now() - t0 > 600) clearInterval(iv);
+    if (Date.now() - t0 > 800) clearInterval(iv);
   }, 40);
 
   try {
@@ -810,21 +1054,24 @@
     try { sessionStorage.setItem(key, String(y)); } catch (e) {}
   }
   sidebar.addEventListener('scroll', persist, { passive: true });
+
+  function stampHref(a) {
+    persist();
+    try {
+      var raw = a.getAttribute('href') || '';
+      var hash = '';
+      var hi = raw.indexOf('#');
+      if (hi >= 0) { hash = raw.slice(hi); raw = raw.slice(0, hi); }
+      var qi = raw.indexOf('?');
+      if (qi >= 0) raw = raw.slice(0, qi);
+      if (raw && raw.indexOf('http') !== 0) {
+        a.setAttribute('href', raw + '?sb=' + String(sidebar.scrollTop) + hash);
+      }
+    } catch (e) {}
+  }
   sidebar.querySelectorAll('.comp-nav a[href]').forEach(function (a) {
-    a.addEventListener('click', function () {
-      persist();
-      try {
-          var raw = a.getAttribute('href') || '';
-          var hash = '';
-          var hi = raw.indexOf('#');
-          if (hi >= 0) { hash = raw.slice(hi); raw = raw.slice(0, hi); }
-          var qi = raw.indexOf('?');
-          if (qi >= 0) raw = raw.slice(0, qi);
-          if (raw && raw.indexOf('http') !== 0) {
-            a.setAttribute('href', raw + '?sb=' + String(sidebar.scrollTop) + hash);
-          }
-      } catch (e) {}
-    });
+    a.addEventListener('pointerdown', function () { stampHref(a); }, true);
+    a.addEventListener('click', function () { stampHref(a); }, true);
   });
 })();
 </script>

@@ -5,11 +5,14 @@
 ## 本地预览
 
 ```bash
-cd docs   # 或 report-serve
-python3 -m http.server 8080
+# 推荐：禁缓存，避免侧栏切换仍看到旧页
+python3 docs/serve.py -p 8080
+
+# 或手动（可能被浏览器缓存旧 HTML）
+# cd docs && python3 -m http.server 8080
 ```
 
-打开 http://localhost:8080/
+打开 http://127.0.0.1:8080/
 
 ## 在线
 

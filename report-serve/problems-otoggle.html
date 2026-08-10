@@ -3,8 +3,57 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
 <title>Toggle 版本矩阵首包缺失 · 亲和分析 · 昇腾社区 AI 亲和原则</title>
 <style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -521,6 +570,145 @@
 
   .comp-sidebar { overflow-anchor: none; }
 
+
+
+  .evidence-block {
+    margin: 12px 0 0;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel2);
+    overflow: hidden;
+  }
+  .evidence-block-title {
+    margin: 0;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+    background: var(--panel);
+  }
+  .section .evidence-block > .evidence-block-title {
+    margin: 0;
+    color: var(--muted);
+  }
+  .evidence-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    padding-top: 0;
+  }
+  .evidence-grid--single {
+    grid-template-columns: 1fr;
+  }
+  @media (max-width: 900px) {
+    .evidence-grid { grid-template-columns: 1fr; }
+  }
+  .evidence-pane {
+    min-width: 0;
+    padding: 12px;
+  }
+  .evidence-pane + .evidence-pane {
+    border-left: 1px solid var(--line);
+  }
+  @media (max-width: 900px) {
+    .evidence-pane + .evidence-pane {
+      border-left: none;
+      border-top: 1px solid var(--line);
+    }
+  }
+  .evidence-pane-label {
+    margin: 0 0 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .section .evidence-pane > .evidence-pane-label {
+    margin: 0 0 12px;
+    color: var(--text);
+  }
+  .evidence-pane img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    margin: 0;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #fff;
+  }
+  .evidence-pane pre {
+    margin: 0;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #0f172a;
+    color: #e2e8f0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 11.5px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 220px;
+    overflow: auto;
+  }
+  .evidence-caption {
+    margin: 12px 0 0;
+    padding: 0;
+    font-size: 12.5px;
+    line-height: 19px;
+    color: var(--muted);
+    text-align: left;
+  }
+  .section .evidence-pane > .evidence-caption {
+    margin: 12px 0 0;
+    color: var(--muted);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </style>
 </head>
 <body data-module="problems" data-page="otoggle">
@@ -594,7 +782,8 @@
 
     <p class="page-desc page-desc--split">
       <span class="page-desc-line"><strong>Toggle 版本矩阵首包缺失</strong>指下载/版本页 Toggle 若映射 OS、架构、安装方式等选型，完整 option 矩阵须在首包可读；纯 UI 筛选则宜 exclude。</span>
-      <span class="page-desc-line">以 <a href="https://www.hiascend.com/hardware/firmware-drivers" target="_blank" rel="noopener">固件与驱动</a> 为例：固件与驱动页含产品型号/架构/安装方式 Toggle 筛选矩阵。</span>
+      <span class="page-desc-line"><strong>视情况</strong>：映射下载包 / 版本落地页的选型 Toggle（型号 / 架构 / 安装方式等）须把完整 option 矩阵写进首包，本页根因分析主要针对这类；纯表单筛选、不承载包表的 Toggle 入库宜标 data-llm-exclude 或剥离。</span>
+      <span class="page-desc-line">以 <a href="https://www.hiascend.com/hardware/firmware-drivers" target="_blank" rel="noopener">固件与驱动</a> 为例：产品型号 / 架构 / 安装方式 Toggle：浏览器可见，首包无全量 option，选中态靠 ?ids= 与 __NUXT_DATA__。</span>
     </p>
 
     <section class="section" id="problem">
@@ -630,47 +819,90 @@
     <section class="section" id="guide">
       <h2 id="solution">根因分析</h2>
       <div class="content-unit">
-        <p><strong>Toggle 版本矩阵首包缺失</strong>的核心原因：<strong style="color:var(--text)">下载选型 Toggle 的完整 option 矩阵未进首包：昇腾固件与驱动页仅 ?ids= 与 __NUXT_DATA__ 恢复选中态，静态 HTML 无型号/架构/安装方式全量列表；对标 NVIDIA CUDA 下载页虽由 React 渲染按钮，但 OS/Architecture 嵌套树已写在 data-react-props JSON</strong>。</p>
+        <p><strong>视情况</strong>：映射下载包 / 版本落地页的选型 Toggle（型号 / 架构 / 安装方式等）须把完整 option 矩阵写进首包，本页根因分析主要针对这类；纯表单筛选、不承载包表的 Toggle 入库宜标 data-llm-exclude 或剥离。</p>
       </div>
       <div class="content-unit">
-        <h3>1. Toggle option 文本未 SSR</h3>
-        <div class="issue-body">
-        <p><strong>问题：</strong>昇腾侧：固件与驱动页浏览器可见产品型号/架构/安装方式 Toggle 与包列表，静态 HTML 无完整 option 文本；选中组合靠 ?ids= 与 __NUXT_DATA__ 恢复，禁 JS 无法枚举矩阵。</p>
-        <p>友商侧：NVIDIA cuda-downloads 页 Operating System（Linux/Windows）、Architecture（x86_64/arm64-sbsa）及 Distribution→Version→Installer 嵌套树写在 data-react-props 的 pageData.structure，target_os / target_arch 映射 URL 选中态。</p>
-        </div>
-        <div class="fix-suggestion">
-          <h4>修改建议</h4>
-          <p>SSR 全量 Toggle option（可读 label + ids 或 href）；或像 NVIDIA 一样把完整矩阵 JSON 写进首包 data-* 属性并文档化解析方式。</p>
-        </div>
+        <p><strong>Toggle 版本矩阵首包缺失</strong>的核心原因：<strong style="color:var(--text)">人在浏览器里能看见固件与驱动页的型号 / 架构 / 安装方式 Toggle，但「查看网页源代码」里没有完整 option 矩阵——只有 ?ids= 与 __NUXT_DATA__ 恢复当前选中态，AI 列不全全部选项与对应下载 URL；友商 NVIDIA CUDA 下载页虽按钮靠 React 画，但 OS/Architecture 嵌套树已写在首包 data-react-props</strong>。</p>
       </div>
-      <div class="content-unit">
-        <h3>2. ids 编码承载 IA</h3>
-        <div class="issue-body">
-        <p><strong>问题：</strong>?ids=d802,…,AArch64,online_apt_get 仅表达当前选中组合，Agent 无法从首包反推「还有哪些架构/安装方式可选」及各选项对应包表。</p>
+      <div class="evidence-block">
+        <p class="evidence-block-title">实测证据 · 昇腾无全表 vs 友商首包有树</p>
+        <div class="evidence-grid">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">友商 NVIDIA：浏览器可见的选型 Toggle</p>
+          <img src="assets/cases-html-nvidia/cuda-downloads-toggle.jpg" alt="NVIDIA CUDA 下载页浏览器可见 Operating System / Architecture Toggle" loading="lazy" />
+          <p class="evidence-caption">左图友商 Toggle 人眼可见，且全树在源码 JSON；昇腾侧源码只有当前 ids，没有全表。</p>
         </div>
-        <div class="fix-suggestion">
-          <h4>修改建议</h4>
-          <p>每项 option 附带人类可读 label 与 canonical URL（或 ids→包表映射写进 llms.txt）。</p>
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">「查看网页源代码」对照</p>
+          <pre>&lt;!-- ✗ 昇腾固件与驱动：无全量 option 列表 --&gt;
+…/hardware/firmware-drivers?ids=d802,…,AArch64,online_apt_get
+&lt;div id=&quot;__NUXT_DATA__&quot;&gt;…&lt;/div&gt;
+&lt;!-- 浏览器看得见型号/架构/安装方式；源码无完整矩阵 --&gt;
+
+&lt;!-- ✓ NVIDIA CUDA：全树在首包 JSON --&gt;
+&lt;div data-react-class=&quot;NestedOptionSelector&quot;
+     data-react-props=&#x27;{&quot;structure&quot;:{
+       &quot;Linux&quot;:{&quot;x86_64&quot;:{…},&quot;arm64-sbsa&quot;:{…}},
+       &quot;Windows&quot;:{…}},&quot;releases&quot;:{…}}&#x27;&gt;&lt;/div&gt;</pre>
         </div>
-      </div>
-      <div class="content-unit">
-        <h3>3. 未选中项 DOM 缺失</h3>
-        <div class="issue-body">
-        <p><strong>问题：</strong>仅当前选中 Toggle 在静态 HTML 可见，其余架构/安装方式选项不在首包 DOM；与 Mintlify pricing 矩阵类对照表不同，此处是动态版本选型而非静态正文。</p>
-        </div>
-        <div class="fix-suggestion">
-          <h4>修改建议</h4>
-          <p>全部选项 SSR 进 DOM（未选中项可用 visually-hidden 保留）；纯 UI 筛选标注 data-llm-exclude。</p>
         </div>
       </div>
       <div class="content-unit">
-        <h3>4. 选中态依赖客户端</h3>
+        <h3>1. 选型 option 矩阵没有写进网页源码</h3>
         <div class="issue-body">
-        <p><strong>问题：</strong>固件与驱动页包列表随 Toggle 切换由 Nuxt 客户端渲染；首包只见当前 ids 对应片段，无法一次性抓取全版本×架构×安装方式交叉表。</p>
+        <p><strong>问题：</strong>打开固件与驱动页，用「查看网页源代码」核对：看不到产品型号 / 架构 / 安装方式的完整 option 文本列表。浏览器里能点切换，但选项要等脚本按当前 ?ids= 恢复——禁 JS 时枚举不了矩阵，也答不出探针要的「各选项对应下载 URL」。友商 NVIDIA CUDA 把 Operating System / Architecture 及嵌套 Distribution→Version→Installer 写在 data-react-props，禁 JS 仍可解析。</p>
+        </div>
+      <div class="evidence-block">
+        <p class="evidence-block-title">证据 · 矩阵本来应该长这样</p>
+        <div class="evidence-grid evidence-grid--single">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">期望写进网页的选型矩阵（示意）</p>
+          <pre>&lt;div class=&quot;download-toggles&quot;&gt;
+  &lt;button type=&quot;button&quot; data-ids=&quot;…&quot;&gt;型号 A&lt;/button&gt;
+  &lt;button type=&quot;button&quot; data-ids=&quot;…&quot;&gt;型号 B&lt;/button&gt;
+  …架构 / 安装方式同理…
+  &lt;a href=&quot;…/firmware-drivers?ids=…&quot;&gt;当前组合包表&lt;/a&gt;
+&lt;/div&gt;
+&lt;!-- 或首包 JSON：{options:[…], packages:[…]} --&gt;</pre>
+          <p class="evidence-caption">未选中项可以藏起来，但全量选项与映射必须还在首包。</p>
+        </div>
+        </div>
+      </div>
+        <div class="fix-suggestion">
+          <h4>修改建议</h4>
+          <p>SSR 全量 Toggle option（可读 label + ids 或落地 href）；或像 NVIDIA 一样把完整矩阵 JSON 写进首包 data-*，并文档化解析方式。</p>
+        </div>
+      </div>
+      <div class="content-unit">
+        <h3>2. ?ids= 只表达当前选中，形成半成品</h3>
+        <div class="issue-body">
+        <p><strong>问题：</strong>URL 上的 ?ids=d802,…,AArch64,online_apt_get 能恢复「此刻选了什么」，甚至 __NUXT_DATA__ 里可能带当前包片段；缺的是「还有哪些型号 / 架构 / 安装方式可选」的全表。所以 Agent 或许能描述当前组合，却列不出完整选型空间——发现层半成品。NVIDIA 用 target_os / target_arch 映射选中态，同时 structure 里仍有全树，两边齐全。</p>
+        </div>
+      <div class="evidence-block">
+        <p class="evidence-block-title">证据 · 当前 ids ≠ 全量矩阵</p>
+        <div class="evidence-grid evidence-grid--single">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">实测选中态摘录</p>
+          <pre>?ids=d802,…,AArch64,online_apt_get
+&lt;!-- ↑ 当前组合编码 --&gt;
+&lt;!-- ✗ 首包无：还有哪些型号 / 架构 / 安装方式？各对应哪张包表？ --&gt;</pre>
+          <p class="evidence-caption">能恢复选中态，不等于选型矩阵可发现。</p>
+        </div>
+        </div>
+      </div>
+        <div class="fix-suggestion">
+          <h4>修改建议</h4>
+          <p>每项 option 附带人类可读 label 与 canonical URL（或 ids→包表映射）；勿只用编码 ids 承载信息架构。</p>
+        </div>
+      </div>
+      <div class="content-unit">
+        <h3>3. 也没有备用的版本矩阵清单</h3>
+        <div class="issue-body">
+        <p><strong>问题：</strong>Toggle 读不全时，如果 llms.txt 或下载说明 MD 里也没有按「型号 × 架构 × 安装方式」列出选项与包 URL，AI 就只剩当前 ids 片段，没有退路补齐选型发现层。</p>
         </div>
         <div class="fix-suggestion">
           <h4>修改建议</h4>
-          <p>关键交叉表 SSR 或旁路 llms/JSON 清单；Toggle 只作 UI，矩阵数据须有静态可读源。</p>
+          <p>在 llms.txt 或平行 MD 临时平铺版本矩阵（选项名 + ids/URL）；页面 option SSR 或首包 JSON 达标后以页面为准。</p>
         </div>
       </div>
     </section>
@@ -695,7 +927,7 @@
       </div>
       <div class="dialog-card">
         <span class="dialog-role">大模型</span>
-        <p>固件与驱动页浏览器可见型号/架构/安装方式筛选与包列表，但静态 HTML 无完整 Toggle option 矩阵；当前组合靠 URL ?ids= 与 __NUXT_DATA__ 恢复，禁 JS 时无法列出全部选项与对应包表。</p>
+        <p>浏览器里能看见型号 / 架构 / 安装方式筛选和当前包列表，但「查看网页源代码」里没有完整 Toggle option 矩阵。URL 上的 ?ids=… 与 __NUXT_DATA__ 只恢复当前选中组合，禁 JS 时列不全全部选项，也给不出各选项对应的官方下载 URL 清单。</p>
       </div>
     </div>
   </div>
@@ -794,7 +1026,7 @@
   var t0 = Date.now();
   var iv = setInterval(function () {
     restore();
-    if (Date.now() - t0 > 600) clearInterval(iv);
+    if (Date.now() - t0 > 800) clearInterval(iv);
   }, 40);
 
   try {
@@ -810,21 +1042,24 @@
     try { sessionStorage.setItem(key, String(y)); } catch (e) {}
   }
   sidebar.addEventListener('scroll', persist, { passive: true });
+
+  function stampHref(a) {
+    persist();
+    try {
+      var raw = a.getAttribute('href') || '';
+      var hash = '';
+      var hi = raw.indexOf('#');
+      if (hi >= 0) { hash = raw.slice(hi); raw = raw.slice(0, hi); }
+      var qi = raw.indexOf('?');
+      if (qi >= 0) raw = raw.slice(0, qi);
+      if (raw && raw.indexOf('http') !== 0) {
+        a.setAttribute('href', raw + '?sb=' + String(sidebar.scrollTop) + hash);
+      }
+    } catch (e) {}
+  }
   sidebar.querySelectorAll('.comp-nav a[href]').forEach(function (a) {
-    a.addEventListener('click', function () {
-      persist();
-      try {
-          var raw = a.getAttribute('href') || '';
-          var hash = '';
-          var hi = raw.indexOf('#');
-          if (hi >= 0) { hash = raw.slice(hi); raw = raw.slice(0, hi); }
-          var qi = raw.indexOf('?');
-          if (qi >= 0) raw = raw.slice(0, qi);
-          if (raw && raw.indexOf('http') !== 0) {
-            a.setAttribute('href', raw + '?sb=' + String(sidebar.scrollTop) + hash);
-          }
-      } catch (e) {}
-    });
+    a.addEventListener('pointerdown', function () { stampHref(a); }, true);
+    a.addEventListener('click', function () { stampHref(a); }, true);
   });
 })();
 </script>

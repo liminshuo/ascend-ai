@@ -3,8 +3,57 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
 <title>选择器选项可抓性 · 亲和分析 · 昇腾社区 AI 亲和原则</title>
 <style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -521,6 +570,145 @@
 
   .comp-sidebar { overflow-anchor: none; }
 
+
+
+  .evidence-block {
+    margin: 12px 0 0;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel2);
+    overflow: hidden;
+  }
+  .evidence-block-title {
+    margin: 0;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+    background: var(--panel);
+  }
+  .section .evidence-block > .evidence-block-title {
+    margin: 0;
+    color: var(--muted);
+  }
+  .evidence-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    padding-top: 0;
+  }
+  .evidence-grid--single {
+    grid-template-columns: 1fr;
+  }
+  @media (max-width: 900px) {
+    .evidence-grid { grid-template-columns: 1fr; }
+  }
+  .evidence-pane {
+    min-width: 0;
+    padding: 12px;
+  }
+  .evidence-pane + .evidence-pane {
+    border-left: 1px solid var(--line);
+  }
+  @media (max-width: 900px) {
+    .evidence-pane + .evidence-pane {
+      border-left: none;
+      border-top: 1px solid var(--line);
+    }
+  }
+  .evidence-pane-label {
+    margin: 0 0 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .section .evidence-pane > .evidence-pane-label {
+    margin: 0 0 12px;
+    color: var(--text);
+  }
+  .evidence-pane img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    margin: 0;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #fff;
+  }
+  .evidence-pane pre {
+    margin: 0;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #0f172a;
+    color: #e2e8f0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 11.5px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 220px;
+    overflow: auto;
+  }
+  .evidence-caption {
+    margin: 12px 0 0;
+    padding: 0;
+    font-size: 12.5px;
+    line-height: 19px;
+    color: var(--muted);
+    text-align: left;
+  }
+  .section .evidence-pane > .evidence-caption {
+    margin: 12px 0 0;
+    color: var(--muted);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </style>
 </head>
 <body data-module="problems" data-page="oselect">
@@ -594,7 +782,8 @@
 
     <p class="page-desc page-desc--split">
       <span class="page-desc-line"><strong>选择器选项可抓性</strong>指若选项映射文档/版本，选项文本与对应页应可抓；纯表单选择则不必入库。</span>
-      <span class="page-desc-line">以 <a href="https://www.hiascend.com/hardware/firmware-drivers" target="_blank" rel="noopener">固件与驱动</a> 为例：固件与驱动页含产品型号/架构/安装方式 Select 筛选。</span>
+      <span class="page-desc-line"><strong>视情况</strong>：映射下载 / 版本文档的 Select 选项须进首包（可读 label + ids/URL）；纯表单筛选入库剥离。</span>
+      <span class="page-desc-line">以 <a href="https://www.hiascend.com/hardware/firmware-drivers" target="_blank" rel="noopener">固件与驱动</a> 为例：固件与驱动页含产品型号/架构/安装方式 Select 筛选；静态未见完整 option。</span>
     </p>
 
     <section class="section" id="problem">
@@ -619,9 +808,9 @@
             <tr><th>友商</th><th>案例</th><th>被测对象</th><th>html 可抓取</th><th>原因</th></tr>
           </thead>
           <tbody>
-            <tr><td>Mintlify</td><td><a href="https://www.mintlify.com/pricing" target="_blank" rel="noopener">定价</a></td><td><a class="peer-object-link" href="https://www.mintlify.com/pricing" target="_blank" rel="noopener" title="该页套餐价格缺少完整数字所在的友商线上页面"><span class="peer-object-name">套餐价格缺少完整数字</span><span class="peer-floor-badge">动效数字</span></a></td><td><span class="peer-tag peer-tag-partial">抓不全</span></td><td class="peer-reason">套餐名（Starter / Pro 等）可抓，但标价以 0–9 滚轮 + transform 呈现，源码无完整可读价格。</td></tr>
-            <tr><td>NVIDIA</td><td><a href="https://www.nvidia.com/en-gb/about-nvidia/partners/" target="_blank" rel="noopener">合作伙伴</a></td><td><a class="peer-object-link" href="https://www.nvidia.com/en-gb/about-nvidia/partners/" target="_blank" rel="noopener" title="该页NPN Partner Types 标签卡所在的友商线上页面"><span class="peer-object-name">NPN Partner Types 标签卡</span><span class="peer-floor-badge">多卡正文</span></a></td><td><span class="peer-tag peer-tag-ok">可抓全</span></td><td class="peer-reason">「NPN Partner Types」标题与 4 个页签（AI Infrastructure / Cloud / Influencer / Seller·Builder Partners）写在 role=&quot;tablist&quot;；各页签对应 role=&quot;tabpanel&quot; 面板与卡片均在静态 HTML，未切换页签也能抓到各面板内 cmp-teaser 标题与说明（如 Architecture/Engineering/Construction、Data Center Partner、Power and Cooling 等）。</td></tr>
-            <tr><td>昇腾社区</td><td><a href="https://www.hiascend.com/hardware/firmware-drivers" target="_blank" rel="noopener">固件与驱动</a></td><td><a class="peer-object-link" href="https://www.hiascend.com/hardware/firmware-drivers" target="_blank" rel="noopener" title="该页版本矩阵无静态列表所在的友商线上页面"><span class="peer-object-name">版本矩阵无静态列表</span><span class="peer-floor-badge">动态筛选</span></a></td><td><span class="peer-tag peer-tag-partial">抓不全</span></td><td class="peer-reason">浏览器可见产品型号/架构/安装方式 Toggle 与包列表，但静态 HTML 无完整 option 矩阵；选中态靠 ?ids= 与 __NUXT_DATA__ 恢复，禁 JS 抓不全。</td></tr>
+            <tr><td>Mintlify</td><td><a href="https://www.mintlify.com/pricing" target="_blank" rel="noopener">定价</a></td><td><a class="peer-object-link" href="https://www.mintlify.com/pricing" target="_blank" rel="noopener" title="该页套餐名可读 · 价格动效所在的友商线上页面"><span class="peer-object-name">套餐名可读 · 价格动效</span><span class="peer-floor-badge">选型对照</span></a></td><td><span class="peer-tag peer-tag-partial">抓不全</span></td><td class="peer-reason">套餐名（Starter / Pro 等）可抓，但标价以 0–9 滚轮 + transform 呈现，源码无完整可读价格数字。</td></tr>
+            <tr><td>NVIDIA</td><td><a href="https://docs.nvidia.com/dynamo/dev/cli/getting-started/quickstart" target="_blank" rel="noopener">Dynamo Quickstart</a></td><td><a class="peer-object-link" href="https://docs.nvidia.com/dynamo/dev/cli/getting-started/quickstart" target="_blank" rel="noopener" title="该页文档版本选择器所在的友商线上页面"><span class="peer-object-name">文档版本选择器</span><span class="peer-floor-badge">version dropdown</span></a></td><td><span class="peer-tag peer-tag-partial">抓不全</span></td><td class="peer-reason">浏览器可展开 fern-version-selector，见 Latest (v1.3.0) / dev / v1.3.0…v0.9.1 等；首包仅触发器 button（data-state=closed），版本清单在 __next_f JSON 的 versions[]，无菜单内 a[href]，禁 JS 列不全各版本文档 URL。</td></tr>
+            <tr><td>昇腾社区</td><td><a href="https://www.hiascend.com/hardware/firmware-drivers" target="_blank" rel="noopener">固件与驱动</a></td><td><a class="peer-object-link" href="https://www.hiascend.com/hardware/firmware-drivers" target="_blank" rel="noopener" title="该页型号 / 架构 / 安装方式选项所在的友商线上页面"><span class="peer-object-name">型号 / 架构 / 安装方式选项</span><span class="peer-floor-badge">动态筛选</span></a></td><td><span class="peer-tag peer-tag-partial">抓不全</span></td><td class="peer-reason">浏览器可见产品型号/架构/安装方式筛选与包列表，但静态 HTML 无完整 option 矩阵；选中态靠 ?ids= 与 __NUXT_DATA__ 恢复，禁 JS 抓不全。</td></tr>
           </tbody>
         </table>
       </div>
@@ -631,36 +820,92 @@
     <section class="section" id="guide">
       <h2 id="solution">根因分析</h2>
       <div class="content-unit">
-        <p><strong>选择器选项可抓性</strong>的核心原因：<strong style="color:var(--text)">固件与驱动页 Select 选项代表版本/架构筛选，但完整 option 列表未 SSR</strong>。</p>
+        <p><strong>视情况</strong>：映射下载 / 版本文档的 Select 选项须进首包（可读 label + ids/URL）；纯表单筛选入库剥离。</p>
       </div>
       <div class="content-unit">
-        <h3>1. Select option 未进首包</h3>
+        <p><strong>选择器选项可抓性</strong>的核心原因：<strong style="color:var(--text)">人在浏览器里能看见固件与驱动页的型号 / 架构 / 安装方式 Select，但「查看网页源代码」里找不到完整 option——没有可读选项列表，只有 ?ids= 与 __NUXT_DATA__ 恢复当前选中；友商 NVIDIA Dynamo 文档版本选择器同样是首包只有触发器、版本清单藏在脚本 JSON，禁 JS 都列不全</strong>。</p>
+      </div>
+      <div class="evidence-block">
+        <p class="evidence-block-title">实测证据 · 浏览器能开下拉 vs 源码无 option</p>
+        <div class="evidence-grid">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">友商同类：浏览器可见的版本 Select</p>
+          <img src="assets/cases-html-nvidia/dynamo-quickstart-version.png" alt="NVIDIA Dynamo 文档页浏览器可见版本选择器下拉" loading="lazy" />
+          <p class="evidence-caption">左图友商下拉人眼可见；两边源码都缺「选项文本 + 可跟地址」的完整清单。</p>
+        </div>
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">「查看网页源代码」对照</p>
+          <pre>&lt;!-- ✗ 昇腾固件与驱动：无 &lt;select&gt;/&lt;option&gt; 全表 --&gt;
+…/hardware/firmware-drivers?ids=d802,…,AArch64,online_apt_get
+&lt;div id=&quot;__NUXT_DATA__&quot;&gt;…&lt;/div&gt;
+&lt;!-- 浏览器看得见型号/架构/安装方式；源码无完整 option --&gt;
+
+&lt;!-- ✗ NVIDIA Dynamo：首包只有触发器 --&gt;
+&lt;button class=&quot;fern-version-selector&quot; data-state=&quot;closed&quot;&gt;…&lt;/button&gt;
+&lt;!-- versions[] 在 __next_f JSON，菜单内无 a[href] --&gt;</pre>
+        </div>
+        </div>
+      </div>
+      <div class="content-unit">
+        <h3>1. 源码里没有完整的 Select option</h3>
         <div class="issue-body">
-        <p><strong>问题：</strong>固件与驱动页浏览器可见产品型号/架构/安装方式等 Select，静态 HTML 无完整 option 文本；选中组合靠 ?ids= 与 __NUXT_DATA__ 恢复。</p>
+        <p><strong>问题：</strong>打开固件与驱动页，用「查看网页源代码」核对：找不到产品型号 / 架构 / 安装方式的完整 option 文本（实测首包无 select/option 标签）。浏览器里能点开下拉，但选项要等脚本按当前 ?ids= 画出来——禁 JS 时枚举不了矩阵，也答不出探针要的「各选项对应下载 URL」。友商 Dynamo 版本选择器同理：展开后可见 Latest / v1.3.0…，源码里却只有关闭态 button。</p>
+        </div>
+      <div class="evidence-block">
+        <p class="evidence-block-title">证据 · option 本来应该长这样</p>
+        <div class="evidence-grid evidence-grid--single">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">期望写进网页的选型 Select（示意）</p>
+          <pre>&lt;label&gt;产品型号
+  &lt;select name=&quot;product&quot;&gt;
+    &lt;option value=&quot;d802&quot; data-href=&quot;…?ids=d802,…&quot;&gt;型号 A&lt;/option&gt;
+    &lt;option value=&quot;…&quot; data-href=&quot;…&quot;&gt;型号 B&lt;/option&gt;
+  &lt;/select&gt;
+&lt;/label&gt;
+&lt;!-- 架构 / 安装方式同理；或平铺为 a[href] 列表 --&gt;</pre>
+          <p class="evidence-caption">未选中项可以默认收起，但全量 option 与映射必须还在首包。</p>
+        </div>
+        </div>
+      </div>
+        <div class="fix-suggestion">
+          <h4>修改建议</h4>
+          <p>页面一出来就把全量 option 写进 HTML：每一项都是人类可读 label，并带 ids 或落地 href（原生 select/option，或等价列表链接）；展开动画不能代替选项进首包。</p>
+        </div>
+      </div>
+      <div class="content-unit">
+        <h3>2. ?ids= 只表达当前选中，形成半成品</h3>
+        <div class="issue-body">
+        <p><strong>问题：</strong>URL 上的 ?ids=d802,…,AArch64,online_apt_get 能恢复「此刻选了什么」，__NUXT_DATA__ 里也可能带当前包片段；缺的是「还有哪些型号 / 架构 / 安装方式可选」的全表。所以 Agent 或许能描述当前组合，却列不出完整选型空间——发现层半成品。Dynamo 侧触发器文案能透露当前版本，versions[] 全表却不在可跟菜单里，同类半成品。</p>
+        </div>
+      <div class="evidence-block">
+        <p class="evidence-block-title">证据 · 当前选中 ≠ 全量 option</p>
+        <div class="evidence-grid evidence-grid--single">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">实测选中态摘录</p>
+          <pre>?ids=d802,…,AArch64,online_apt_get
+&lt;!-- ↑ 当前组合编码 --&gt;
+&lt;!-- ✗ 首包无：还有哪些型号 / 架构 / 安装方式？各对应哪张包表？ --&gt;
+
+&lt;!-- Dynamo 同类： --&gt;
+button[data-state=closed]  &lt;!-- 当前版本文案 --&gt;
+&lt;!-- versions[] 在 __next_f，无菜单 a[href] --&gt;</pre>
+          <p class="evidence-caption">能恢复选中态，不等于选项清单可发现。</p>
+        </div>
+        </div>
+      </div>
+        <div class="fix-suggestion">
+          <h4>修改建议</h4>
+          <p>每项 option 附带人类可读 label 与 canonical URL（或 ids→包表映射）；勿只用编码 ids / 关闭态按钮文案承载信息架构。</p>
+        </div>
+      </div>
+      <div class="content-unit">
+        <h3>3. 也没有备用的选项→包表清单</h3>
+        <div class="issue-body">
+        <p><strong>问题：</strong>Select 读不全时，如果 llms.txt 或下载说明 MD 里也没有按「型号 × 架构 × 安装方式」列出选项与包 URL，AI 就只剩当前 ids 片段，没有退路补齐选型发现层。</p>
         </div>
         <div class="fix-suggestion">
           <h4>修改建议</h4>
-          <p>关键 option SSR 进首包（可读 label + ids/URL）；或 llms 补 option→包表映射。</p>
-        </div>
-      </div>
-      <div class="content-unit">
-        <h3>2. 选项无映射</h3>
-        <div class="issue-body">
-        <p><strong>问题：</strong>若 option 映射不同固件/驱动包，Agent 无法从首包证伪各选项对应包表。</p>
-        </div>
-        <div class="fix-suggestion">
-          <h4>修改建议</h4>
-          <p>版本改链接或旁注表。</p>
-        </div>
-      </div>
-      <div class="content-unit">
-        <h3>3. value 不可读</h3>
-        <div class="issue-body">
-        <p><strong>问题：</strong>仅 ids 编码而无人类可读版本/架构 label 在首包。</p>
-        </div>
-        <div class="fix-suggestion">
-          <h4>修改建议</h4>
-          <p>text 用人类可读型号/架构/安装方式。</p>
+          <p>在 llms.txt 或平行 MD 临时平铺选项矩阵（选项名 + ids/URL）；页面 option SSR 达标后以页面为准。</p>
         </div>
       </div>
     </section>
@@ -685,7 +930,7 @@
       </div>
       <div class="dialog-card">
         <span class="dialog-role">大模型</span>
-        <p>固件与驱动页浏览器可见型号/架构/安装方式筛选与包列表，但静态 HTML 无完整 Select option 列表；当前组合靠 URL ?ids= 与 __NUXT_DATA__ 恢复，禁 JS 时无法列出全部选项。</p>
+        <p>浏览器里能看见型号 / 架构 / 安装方式筛选和当前包列表，但「查看网页源代码」里没有完整 Select option（实测无 select/option 标签）。URL 上的 ?ids=… 与 __NUXT_DATA__ 只恢复当前选中组合，禁 JS 时列不全全部选项，也给不出各选项对应的官方下载 URL 清单。</p>
       </div>
     </div>
   </div>
@@ -784,7 +1029,7 @@
   var t0 = Date.now();
   var iv = setInterval(function () {
     restore();
-    if (Date.now() - t0 > 600) clearInterval(iv);
+    if (Date.now() - t0 > 800) clearInterval(iv);
   }, 40);
 
   try {
@@ -800,21 +1045,24 @@
     try { sessionStorage.setItem(key, String(y)); } catch (e) {}
   }
   sidebar.addEventListener('scroll', persist, { passive: true });
+
+  function stampHref(a) {
+    persist();
+    try {
+      var raw = a.getAttribute('href') || '';
+      var hash = '';
+      var hi = raw.indexOf('#');
+      if (hi >= 0) { hash = raw.slice(hi); raw = raw.slice(0, hi); }
+      var qi = raw.indexOf('?');
+      if (qi >= 0) raw = raw.slice(0, qi);
+      if (raw && raw.indexOf('http') !== 0) {
+        a.setAttribute('href', raw + '?sb=' + String(sidebar.scrollTop) + hash);
+      }
+    } catch (e) {}
+  }
   sidebar.querySelectorAll('.comp-nav a[href]').forEach(function (a) {
-    a.addEventListener('click', function () {
-      persist();
-      try {
-          var raw = a.getAttribute('href') || '';
-          var hash = '';
-          var hi = raw.indexOf('#');
-          if (hi >= 0) { hash = raw.slice(hi); raw = raw.slice(0, hi); }
-          var qi = raw.indexOf('?');
-          if (qi >= 0) raw = raw.slice(0, qi);
-          if (raw && raw.indexOf('http') !== 0) {
-            a.setAttribute('href', raw + '?sb=' + String(sidebar.scrollTop) + hash);
-          }
-      } catch (e) {}
-    });
+    a.addEventListener('pointerdown', function () { stampHref(a); }, true);
+    a.addEventListener('click', function () { stampHref(a); }, true);
   });
 })();
 </script>

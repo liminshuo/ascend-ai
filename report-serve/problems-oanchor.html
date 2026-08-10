@@ -3,8 +3,57 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
 <title>锚点目录不可达 · 亲和分析 · 昇腾社区 AI 亲和原则</title>
 <style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -521,6 +570,145 @@
 
   .comp-sidebar { overflow-anchor: none; }
 
+
+
+  .evidence-block {
+    margin: 12px 0 0;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel2);
+    overflow: hidden;
+  }
+  .evidence-block-title {
+    margin: 0;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+    background: var(--panel);
+  }
+  .section .evidence-block > .evidence-block-title {
+    margin: 0;
+    color: var(--muted);
+  }
+  .evidence-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    padding-top: 0;
+  }
+  .evidence-grid--single {
+    grid-template-columns: 1fr;
+  }
+  @media (max-width: 900px) {
+    .evidence-grid { grid-template-columns: 1fr; }
+  }
+  .evidence-pane {
+    min-width: 0;
+    padding: 12px;
+  }
+  .evidence-pane + .evidence-pane {
+    border-left: 1px solid var(--line);
+  }
+  @media (max-width: 900px) {
+    .evidence-pane + .evidence-pane {
+      border-left: none;
+      border-top: 1px solid var(--line);
+    }
+  }
+  .evidence-pane-label {
+    margin: 0 0 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .section .evidence-pane > .evidence-pane-label {
+    margin: 0 0 12px;
+    color: var(--text);
+  }
+  .evidence-pane img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    margin: 0;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #fff;
+  }
+  .evidence-pane pre {
+    margin: 0;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #0f172a;
+    color: #e2e8f0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 11.5px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 220px;
+    overflow: auto;
+  }
+  .evidence-caption {
+    margin: 12px 0 0;
+    padding: 0;
+    font-size: 12.5px;
+    line-height: 19px;
+    color: var(--muted);
+    text-align: left;
+  }
+  .section .evidence-pane > .evidence-caption {
+    margin: 12px 0 0;
+    color: var(--muted);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </style>
 </head>
 <body data-module="problems" data-page="oanchor">
@@ -631,36 +819,86 @@
     <section class="section" id="guide">
       <h2 id="solution">根因分析</h2>
       <div class="content-unit">
-        <p><strong>锚点目录不可达</strong>的核心原因：<strong style="color:var(--text)">长文页右侧章节目录在浏览器里看得见，但目录项没有完整写进网页源码里的 #hash 链接，或与正文标题 id 对不齐，Agent 无法按章节证伪回答</strong>。</p>
+        <p><strong>锚点目录不可达</strong>的核心原因：<strong style="color:var(--text)">人在浏览器里能看见右侧章节目录，但「查看网页源代码」里没有这些目录的 #hash 链接；正文标题 id 反而已经在首包——形成「能按标题切片、却不能从目录入口定位」的半成品，Agent 无法按目录证伪回答</strong>。</p>
+      </div>
+      <div class="evidence-block">
+        <p class="evidence-block-title">实测证据 · 右侧目录缺失 vs 正文 id 已在</p>
+        <div class="evidence-grid evidence-grid--single">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">「查看网页源代码」对照（禁 JS）</p>
+          <pre>&lt;!-- ✗ 右侧本篇目录：首包无 document-anc 可跟链 nav --&gt;
+&lt;!-- 浏览器可见「概述 / 使用说明 / 使用向导」，要等脚本才出现 --&gt;
+
+&lt;!-- ✓ 正文标题与 id 已在首包： --&gt;
+&lt;section id=&quot;ZH-CN_TOPIC_0000002594808280__section10818103975019&quot;&gt;
+  &lt;h4 class=&quot;sectiontitle&quot;&gt;概述&lt;/h4&gt;
+&lt;/section&gt;
+&lt;section id=&quot;ZH-CN_TOPIC_0000002594808280__section20972124710220&quot;&gt;
+  &lt;h4 class=&quot;sectiontitle&quot;&gt;使用说明&lt;/h4&gt;
+&lt;/section&gt;
+&lt;section id=&quot;ZH-CN_TOPIC_0000002594808280__section1457612184710&quot;&gt;
+  &lt;h4 class=&quot;sectiontitle&quot;&gt;使用向导&lt;/h4&gt;
+&lt;/section&gt;</pre>
+          <p class="evidence-caption">目录链不在源码；正文 id 在——半成品：能切片，不能从目录入口引。</p>
+        </div>
+        </div>
       </div>
       <div class="content-unit">
-        <h3>1. 右侧章节目录未 SSR 进首包</h3>
+        <h3>1. 右侧章节目录没有写进网页源码</h3>
         <div class="issue-body">
-        <p><strong>问题：</strong>CANN 算子库简介页浏览器右侧可见 document-anc（概述 / 使用说明 / 使用向导），但「查看网页源代码」里没有可跟链 nav 列表；友商 Mintlify 的 On this page、NVIDIA 的 page-toc 却在静态 HTML 里带 #open-the-editor、#installing-cuquantum 等 hash，禁 JS 抓取时昇腾侧目录项无法列出。</p>
+        <p><strong>问题：</strong>打开 CANN 算子库简介页，用「查看网页源代码」核对：没有 document-anc 里带 #hash 的目录列表。浏览器右侧能看到「概述 / 使用说明 / 使用向导」，但要等脚本跑完才出现——禁 JS 时列不出目录项，也给不出「概述」对应的入口链接。</p>
+        </div>
+      <div class="evidence-block">
+        <p class="evidence-block-title">证据 · 本篇目录本来应该长这样</p>
+        <div class="evidence-grid evidence-grid--single">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">期望写进网页的章节目录（示意）</p>
+          <pre>&lt;nav class=&quot;document-anc&quot; aria-label=&quot;本篇目录&quot;&gt;
+  &lt;a href=&quot;#ZH-CN_TOPIC_…__section10818103975019&quot;&gt;概述&lt;/a&gt;
+  &lt;a href=&quot;#ZH-CN_TOPIC_…__section20972124710220&quot;&gt;使用说明&lt;/a&gt;
+  &lt;a href=&quot;#ZH-CN_TOPIC_…__section1457612184710&quot;&gt;使用向导&lt;/a&gt;
+&lt;/nav&gt;</pre>
+          <p class="evidence-caption">目录项必须是带真实 #hash 的链接，并指向正文同名 section id。</p>
+        </div>
+        </div>
+      </div>
+        <div class="fix-suggestion">
+          <h4>修改建议</h4>
+          <p>首包直接输出右侧本篇目录：每一项为 a[href=&quot;#section-id&quot;] + 章节名，对齐 Mintlify On this page、NVIDIA page-toc。</p>
+        </div>
+      </div>
+      <div class="content-unit">
+        <h3>2. 正文 id 已在，目录缺失，形成半成品</h3>
+        <div class="issue-body">
+        <p><strong>问题：</strong>同一页上，正文 h4.sectiontitle 与 section id 已经写进首包，按标题切片没问题；缺的是从右侧目录点进去的入口。所以 Agent 可能答得出「有一节叫概述」，却答不出「目录里的概述对应哪个 #id」——发现入口和正文锚点不同步。</p>
+        </div>
+      <div class="evidence-block">
+        <p class="evidence-block-title">证据 · 正文 id 已在首包</p>
+        <div class="evidence-grid evidence-grid--single">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">实测正文摘录</p>
+          <pre>&lt;section id=&quot;ZH-CN_TOPIC_0000002594808280__section10818103975019&quot;&gt;
+  &lt;h4 class=&quot;sectiontitle&quot;&gt;概述&lt;/h4&gt;
+  …
+&lt;/section&gt;
+&lt;!-- 正文可切片；缺的是指向该 id 的目录 a[href] --&gt;</pre>
+          <p class="evidence-caption">有正文 id 不等于目录可达；两边要一起进源码。</p>
+        </div>
+        </div>
+      </div>
+        <div class="fix-suggestion">
+          <h4>修改建议</h4>
+          <p>目录与正文 id 同批 SSR；勿只写正文 id，而把章节目录留给客户端补全。</p>
+        </div>
+      </div>
+      <div class="content-unit">
+        <h3>3. 也没有备用的本篇目录</h3>
+        <div class="issue-body">
+        <p><strong>问题：</strong>右侧目录读不到时，如果 Markdown 页头或 llms.txt 里也没有按章节列出「标题 + #锚点」，AI 就只剩正文标题可猜，没有稳定的本篇导航入口。</p>
         </div>
         <div class="fix-suggestion">
           <h4>修改建议</h4>
-          <p>在服务端（SSR）首包直接输出右侧 anchor nav，每一项为 a[href=&quot;#section-id&quot;] + 可见章节名，对齐 Mintlify/NVIDIA 文档页做法。</p>
-        </div>
-      </div>
-      <div class="content-unit">
-        <h3>2. 锚点 href 须与正文 id 对齐</h3>
-        <div class="issue-body">
-        <p><strong>问题：</strong>目录项若只用 click 滚动、没有 href，或 #hash 与正文 h2/h4.sectiontitle 的 section id 不一致，Agent 无法可靠回答「概述对应哪一节、#id 是什么」——chunk 切片也会对错块。</p>
-        </div>
-        <div class="fix-suggestion">
-          <h4>修改建议</h4>
-          <p>每个可导航标题输出稳定 id；章节目录每一项一律 a[href=&quot;#…&quot;] 指向正文同名 heading/section。</p>
-        </div>
-      </div>
-      <div class="content-unit">
-        <h3>3. 正文有 id 但目录半成品</h3>
-        <div class="issue-body">
-        <p><strong>问题：</strong>昇腾 CANN 页正文 h4.sectiontitle 与 section id（如 …section10818103975019）已在首包，但右侧 document-anc 列表缺失，形成「正文可切片、目录不可引」的半成品态。</p>
-        </div>
-        <div class="fix-suggestion">
-          <h4>修改建议</h4>
-          <p>目录与正文 id 同批 SSR；勿只写正文 id 而把章节目录留给客户端补全。</p>
+          <p>在 MD 页头或 llms.txt 临时平铺本篇章节（标题 + #id）；页面目录 SSR 达标后以页面为准。</p>
         </div>
       </div>
     </section>
@@ -685,7 +923,7 @@
       </div>
       <div class="dialog-card">
         <span class="dialog-role">大模型</span>
-        <p>CANN 算子库简介页浏览器右侧可见章节目录（概述 / 使用说明 / 使用向导），但静态 HTML 无 document-anc 可跟链 nav 列表。正文 h4.sectiontitle 与 section id 已在首包；若锚点 href 与 id 不对齐，我无法可靠映射「目录项 → 正文块」。</p>
+        <p>浏览器右侧能看见章节目录（概述 / 使用说明 / 使用向导），但「查看网页源代码」里没有 document-anc 可跟链列表。正文 h4.sectiontitle 与 section id 已在首包，所以能按标题切片，却无法从右侧目录入口回答「概述对应哪一节、#id 是什么」——目录要等脚本补全。</p>
       </div>
     </div>
   </div>
@@ -784,7 +1022,7 @@
   var t0 = Date.now();
   var iv = setInterval(function () {
     restore();
-    if (Date.now() - t0 > 600) clearInterval(iv);
+    if (Date.now() - t0 > 800) clearInterval(iv);
   }, 40);
 
   try {
@@ -800,21 +1038,24 @@
     try { sessionStorage.setItem(key, String(y)); } catch (e) {}
   }
   sidebar.addEventListener('scroll', persist, { passive: true });
+
+  function stampHref(a) {
+    persist();
+    try {
+      var raw = a.getAttribute('href') || '';
+      var hash = '';
+      var hi = raw.indexOf('#');
+      if (hi >= 0) { hash = raw.slice(hi); raw = raw.slice(0, hi); }
+      var qi = raw.indexOf('?');
+      if (qi >= 0) raw = raw.slice(0, qi);
+      if (raw && raw.indexOf('http') !== 0) {
+        a.setAttribute('href', raw + '?sb=' + String(sidebar.scrollTop) + hash);
+      }
+    } catch (e) {}
+  }
   sidebar.querySelectorAll('.comp-nav a[href]').forEach(function (a) {
-    a.addEventListener('click', function () {
-      persist();
-      try {
-          var raw = a.getAttribute('href') || '';
-          var hash = '';
-          var hi = raw.indexOf('#');
-          if (hi >= 0) { hash = raw.slice(hi); raw = raw.slice(0, hi); }
-          var qi = raw.indexOf('?');
-          if (qi >= 0) raw = raw.slice(0, qi);
-          if (raw && raw.indexOf('http') !== 0) {
-            a.setAttribute('href', raw + '?sb=' + String(sidebar.scrollTop) + hash);
-          }
-      } catch (e) {}
-    });
+    a.addEventListener('pointerdown', function () { stampHref(a); }, true);
+    a.addEventListener('click', function () { stampHref(a); }, true);
   });
 })();
 </script>

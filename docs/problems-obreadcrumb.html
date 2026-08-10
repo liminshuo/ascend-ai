@@ -3,8 +3,57 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
 <title>路径链断裂 · 亲和分析 · 昇腾社区 AI 亲和原则</title>
 <style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -521,6 +570,145 @@
 
   .comp-sidebar { overflow-anchor: none; }
 
+
+
+  .evidence-block {
+    margin: 12px 0 0;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel2);
+    overflow: hidden;
+  }
+  .evidence-block-title {
+    margin: 0;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+    background: var(--panel);
+  }
+  .section .evidence-block > .evidence-block-title {
+    margin: 0;
+    color: var(--muted);
+  }
+  .evidence-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    padding-top: 0;
+  }
+  .evidence-grid--single {
+    grid-template-columns: 1fr;
+  }
+  @media (max-width: 900px) {
+    .evidence-grid { grid-template-columns: 1fr; }
+  }
+  .evidence-pane {
+    min-width: 0;
+    padding: 12px;
+  }
+  .evidence-pane + .evidence-pane {
+    border-left: 1px solid var(--line);
+  }
+  @media (max-width: 900px) {
+    .evidence-pane + .evidence-pane {
+      border-left: none;
+      border-top: 1px solid var(--line);
+    }
+  }
+  .evidence-pane-label {
+    margin: 0 0 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .section .evidence-pane > .evidence-pane-label {
+    margin: 0 0 12px;
+    color: var(--text);
+  }
+  .evidence-pane img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    margin: 0;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #fff;
+  }
+  .evidence-pane pre {
+    margin: 0;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #0f172a;
+    color: #e2e8f0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 11.5px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 220px;
+    overflow: auto;
+  }
+  .evidence-caption {
+    margin: 12px 0 0;
+    padding: 0;
+    font-size: 12.5px;
+    line-height: 19px;
+    color: var(--muted);
+    text-align: left;
+  }
+  .section .evidence-pane > .evidence-caption {
+    margin: 12px 0 0;
+    color: var(--muted);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </style>
 </head>
 <body data-module="problems" data-page="obreadcrumb">
@@ -630,36 +818,82 @@
     <section class="section" id="guide">
       <h2 id="solution">根因分析</h2>
       <div class="content-unit">
-        <p><strong>路径链断裂</strong>的核心原因：<strong style="color:var(--text)">面包屑在页面上看得见，但祖先级没有完整写进网页源码里的可点链接，爬虫和 AI 没法沿路径一层层往上找</strong>。</p>
+        <p><strong>路径链断裂</strong>的核心原因：<strong style="color:var(--text)">人在浏览器里能看见完整面包屑、祖先也能点，但「查看网页源代码」里中间祖先没有写进首包链接——只有「文档中心 → 当前页」两条，还和可见路径对不上，所以爬虫和 AI 没法按人眼看到的层级一层层往上找</strong>。</p>
+      </div>
+      <div class="evidence-block">
+        <p class="evidence-block-title">实测证据 · 浏览器面包屑 vs 静态源码</p>
+        <div class="evidence-grid">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">浏览器里能看见的面包屑</p>
+          <img src="assets/cases-html-ascend/faq-breadcrumb.jpg" alt="昇腾产品形态说明页浏览器可见面包屑路径" loading="lazy" />
+          <p class="evidence-caption">左图祖先开 JS 后能点；右边源码只有「文档中心 → 当前页」，中间级不在。</p>
+        </div>
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">「查看网页源代码」里只有两条，且对不上</p>
+          <pre>&lt;!-- 查看网页源代码 / 禁 JS：server-breadcrumb 仅 2 个 a[href] --&gt;
+&lt;div class=&quot;o-breadcrumb server-breadcrumb&quot;&gt;
+  &lt;a href=&quot;/sitemap/sitemapdoc1.xml&quot;&gt;文档中心&lt;/a&gt;
+  &lt;a href=&quot;…/hardwaredesc_0001.html&quot;&gt;昇腾产品形态说明&lt;/a&gt;
+&lt;/div&gt;
+&lt;!-- 浏览器可见「昇腾常见问题 › 产品与技术常见问题 › …」；中间祖先不在首包 --&gt;</pre>
+        </div>
+        </div>
       </div>
       <div class="content-unit">
-        <h3>1. 祖先级缺少真实链接</h3>
+        <h3>1. 源码里缺少与可见 UI 一致的祖先链</h3>
         <div class="issue-body">
-        <p><strong>问题：</strong>昇腾产品形态说明页顶栏虽显示「昇腾常见问题 › 产品与技术常见问题 › 昇腾产品形态说明」，但「查看网页源代码」里 o-breadcrumb 的 server-breadcrumb 只有 2 个 a[href]，中间层级不在首包；若祖先只渲染成 span 或纯文字、没有 href，Agent 无法从当前页跳到上级章节。</p>
+        <p><strong>问题：</strong>打开昇腾产品形态说明页，用「查看网页源代码」核对：server-breadcrumb 没有「昇腾常见问题 / 产品与技术常见问题」。浏览器里这两级可以点，但要等脚本跑完才补进面包屑——禁 JS 时跟不到与人眼一致的上级文档。</p>
+        </div>
+      <div class="evidence-block">
+        <p class="evidence-block-title">证据 · 祖先链本来应该长这样</p>
+        <div class="evidence-grid evidence-grid--single">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">期望写进网页的面包屑（示意）</p>
+          <pre>&lt;nav aria-label=&quot;Breadcrumb&quot; class=&quot;o-breadcrumb&quot;&gt;
+  &lt;a href=&quot;/document/detail/zh/AscendFAQ/…&quot;&gt;昇腾常见问题&lt;/a&gt;
+  &lt;a href=&quot;/document/detail/zh/AscendFAQ/ProduTech/…&quot;&gt;产品与技术常见问题&lt;/a&gt;
+  &lt;span aria-current=&quot;page&quot;&gt;昇腾产品形态说明&lt;/span&gt;
+&lt;/nav&gt;</pre>
+          <p class="evidence-caption">祖先可跟链；末级当前页用纯文本，不要做成自链。</p>
+        </div>
+        </div>
+      </div>
+        <div class="fix-suggestion">
+          <h4>修改建议</h4>
+          <p>首包直接输出与可见 UI 一致的完整祖先列表：每一级都是带真实文档地址的 a[href]，不要只靠客户端事后补。</p>
+        </div>
+      </div>
+      <div class="content-unit">
+        <h3>2. 首包那两条链接本身也不对</h3>
+        <div class="issue-body">
+        <p><strong>问题：</strong>源码里仅有的「文档中心」链到 <code>/sitemap/sitemapdoc1.xml</code>（站点地图，不是手册祖先页），「昇腾产品形态说明」又链回当前页自己。即便爬虫跟了这两条，也到不了「昇腾常见问题 / 产品与技术常见问题」，还会和可见路径文案错位。</p>
+        </div>
+      <div class="evidence-block">
+        <p class="evidence-block-title">证据 · 首包两条链的问题</p>
+        <div class="evidence-grid evidence-grid--single">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">实测源码摘录</p>
+          <pre>&lt;a href=&quot;/sitemap/sitemapdoc1.xml&quot;&gt;文档中心&lt;/a&gt;
+&lt;!-- ↑ 应是手册祖先，不是 sitemap XML --&gt;
+&lt;a href=&quot;…/hardwaredesc_0001.html&quot;&gt;昇腾产品形态说明&lt;/a&gt;
+&lt;!-- ↑ 当前页自链；末级宜为纯文本 --&gt;</pre>
+          <p class="evidence-caption">有 a[href] 不等于达标：目标页和文案都要对上可见层级。</p>
+        </div>
+        </div>
+      </div>
+        <div class="fix-suggestion">
+          <h4>修改建议</h4>
+          <p>祖先 href 指向真实文档页，文案与侧栏 / sitemap 一致；当前页改为纯文本，勿输出自链。</p>
+        </div>
+      </div>
+      <div class="content-unit">
+        <h3>3. 也没有备用的祖先路径清单</h3>
+        <div class="issue-body">
+        <p><strong>问题：</strong>页面面包屑读不全时，如果 llms.txt 或 Markdown 里也没有写出「当前页 → 各级祖先」的链接，AI 就只知道这一页标题，无法沿手册结构往上找上下文。</p>
         </div>
         <div class="fix-suggestion">
           <h4>修改建议</h4>
-          <p>每一级祖先都输出带真实地址的 a[href]；当前页用纯文本即可，但上级必须可爬、可跟链。</p>
-        </div>
-      </div>
-      <div class="content-unit">
-        <h3>2. 完整路径依赖客户端补全</h3>
-        <div class="issue-body">
-        <p><strong>问题：</strong>浏览器里路径看起来完整，静态 HTML 却缺中间几级——路径数据常在 __NUXT_DATA__ 或前端脚本里，要等 JavaScript 运行后才补进 o-breadcrumb；禁 JS 抓取时只能看到残缺路径，回答不了「每一级祖先的可点击链接是什么」。</p>
-        </div>
-        <div class="fix-suggestion">
-          <h4>修改建议</h4>
-          <p>在服务端（SSR）首包直接输出与可见 UI 一致的完整 breadcrumb 列表，不要把路径链只放在客户端计算。</p>
-        </div>
-      </div>
-      <div class="content-unit">
-        <h3>3. 路径文案与站图对不上</h3>
-        <div class="issue-body">
-        <p><strong>问题：</strong>首包 SSR 的文案（如「文档中心」）与浏览器可见路径（如「昇腾常见问题」）不一致，或 href 与 sitemap / 侧栏目录里的 URL 对不上，Agent 沿链回溯时会和站图结构错位。</p>
-        </div>
-        <div class="fix-suggestion">
-          <h4>修改建议</h4>
-          <p>面包屑每一级的显示文案与 href 须与 sitemap、手册目录保持一致，避免同一层级多套说法。</p>
+          <p>在 llms.txt 或手册平行轨临时补一份祖先链；页面 SSR 达标后以页面为准，去掉重复维护。</p>
         </div>
       </div>
     </section>
@@ -684,7 +918,7 @@
       </div>
       <div class="dialog-card">
         <span class="dialog-role">大模型</span>
-        <p>Ascend FAQ 顶栏有 o-breadcrumb，浏览器可见「昇腾常见问题 › 产品与技术常见问题 › 昇腾产品形态说明」，但静态 HTML 首包仅 SSR 部分祖先为 a[href]，中间层级需客户端补全，沿链回溯仍不完整。</p>
+        <p>浏览器顶栏能看到「昇腾常见问题 › 产品与技术常见问题 › 昇腾产品形态说明」，祖先级开 JS 后也能点。但「查看网页源代码」里 server-breadcrumb 只有「文档中心 → 当前页」两条，中间祖先不在首包；「文档中心」还链到 sitemap XML，当前页被做成了自链。禁 JS 时答不出与可见 UI 一致的完整祖先链接清单。</p>
       </div>
     </div>
   </div>
@@ -783,7 +1017,7 @@
   var t0 = Date.now();
   var iv = setInterval(function () {
     restore();
-    if (Date.now() - t0 > 600) clearInterval(iv);
+    if (Date.now() - t0 > 800) clearInterval(iv);
   }, 40);
 
   try {
@@ -799,21 +1033,24 @@
     try { sessionStorage.setItem(key, String(y)); } catch (e) {}
   }
   sidebar.addEventListener('scroll', persist, { passive: true });
+
+  function stampHref(a) {
+    persist();
+    try {
+      var raw = a.getAttribute('href') || '';
+      var hash = '';
+      var hi = raw.indexOf('#');
+      if (hi >= 0) { hash = raw.slice(hi); raw = raw.slice(0, hi); }
+      var qi = raw.indexOf('?');
+      if (qi >= 0) raw = raw.slice(0, qi);
+      if (raw && raw.indexOf('http') !== 0) {
+        a.setAttribute('href', raw + '?sb=' + String(sidebar.scrollTop) + hash);
+      }
+    } catch (e) {}
+  }
   sidebar.querySelectorAll('.comp-nav a[href]').forEach(function (a) {
-    a.addEventListener('click', function () {
-      persist();
-      try {
-          var raw = a.getAttribute('href') || '';
-          var hash = '';
-          var hi = raw.indexOf('#');
-          if (hi >= 0) { hash = raw.slice(hi); raw = raw.slice(0, hi); }
-          var qi = raw.indexOf('?');
-          if (qi >= 0) raw = raw.slice(0, qi);
-          if (raw && raw.indexOf('http') !== 0) {
-            a.setAttribute('href', raw + '?sb=' + String(sidebar.scrollTop) + hash);
-          }
-      } catch (e) {}
-    });
+    a.addEventListener('pointerdown', function () { stampHref(a); }, true);
+    a.addEventListener('click', function () { stampHref(a); }, true);
   });
 })();
 </script>

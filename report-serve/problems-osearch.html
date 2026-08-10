@@ -3,8 +3,57 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
 <title>搜索框与可达 URL · 亲和分析 · 昇腾社区 AI 亲和原则</title>
 <style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -521,6 +570,145 @@
 
   .comp-sidebar { overflow-anchor: none; }
 
+
+
+  .evidence-block {
+    margin: 12px 0 0;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel2);
+    overflow: hidden;
+  }
+  .evidence-block-title {
+    margin: 0;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+    background: var(--panel);
+  }
+  .section .evidence-block > .evidence-block-title {
+    margin: 0;
+    color: var(--muted);
+  }
+  .evidence-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    padding-top: 0;
+  }
+  .evidence-grid--single {
+    grid-template-columns: 1fr;
+  }
+  @media (max-width: 900px) {
+    .evidence-grid { grid-template-columns: 1fr; }
+  }
+  .evidence-pane {
+    min-width: 0;
+    padding: 12px;
+  }
+  .evidence-pane + .evidence-pane {
+    border-left: 1px solid var(--line);
+  }
+  @media (max-width: 900px) {
+    .evidence-pane + .evidence-pane {
+      border-left: none;
+      border-top: 1px solid var(--line);
+    }
+  }
+  .evidence-pane-label {
+    margin: 0 0 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .section .evidence-pane > .evidence-pane-label {
+    margin: 0 0 12px;
+    color: var(--text);
+  }
+  .evidence-pane img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    margin: 0;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #fff;
+  }
+  .evidence-pane pre {
+    margin: 0;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #0f172a;
+    color: #e2e8f0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 11.5px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 220px;
+    overflow: auto;
+  }
+  .evidence-caption {
+    margin: 12px 0 0;
+    padding: 0;
+    font-size: 12.5px;
+    line-height: 19px;
+    color: var(--muted);
+    text-align: left;
+  }
+  .section .evidence-pane > .evidence-caption {
+    margin: 12px 0 0;
+    color: var(--muted);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </style>
 </head>
 <body data-module="problems" data-page="osearch">
@@ -594,7 +782,8 @@
 
     <p class="page-desc page-desc--split">
       <span class="page-desc-line"><strong>搜索框与可达 URL</strong>指搜索框可有，但站内文档仍需独立可达 URL 与 sitemap；不能只靠搜索作为唯一发现层。</span>
-      <span class="page-desc-line">以 <a href="https://www.hiascend.com/zh" target="_blank" rel="noopener">社区首页</a> 为例：首页含站内搜索；文档发现不能仅靠搜索。</span>
+      <span class="page-desc-line"><strong>视情况</strong>：要做亲和的是「可搜索文档的发现层」（独立 URL + sitemap / llms），不是搜索框本身；输入框、结果列表、搜索 API 为纯交互黑盒，入库宜标 data-llm-exclude 或剥离。</span>
+      <span class="page-desc-line">以 <a href="https://www.hiascend.com/zh" target="_blank" rel="noopener">社区首页</a> 为例：顶栏搜索（如 mindie 占位）三站实测皆抓不全；发现层须靠可爬 URL 与清单兜底。</span>
     </p>
 
     <section class="section" id="problem">
@@ -631,46 +820,92 @@
     <section class="section" id="guide">
       <h2 id="solution">根因分析</h2>
       <div class="content-unit">
-        <p><strong>搜索框与可达 URL</strong>的核心原因：<strong style="color:var(--text)">搜索框是给人用的补充入口、对爬虫是黑盒；文档发现层若只靠搜索而缺少可爬 URL 与 sitemap / llms 清单，Agent 禁 JS 时就枚举不到全部文档</strong>。</p>
+        <p><strong>视情况</strong>：要做亲和的是「可搜索文档的发现层」（独立 URL + sitemap / llms），不是搜索框本身；输入框、结果列表、搜索 API 为纯交互黑盒，入库宜标 data-llm-exclude 或剥离。</p>
       </div>
       <div class="content-unit">
-        <h3>1. 搜索被当唯一发现层</h3>
-        <div class="issue-body">
-        <p><strong>问题：</strong>深页文档只在站内搜索后可达，静态 HTML 无导航或清单可枚举入口；搜索结果又由 JS 返回，禁 JS 抓取时既拿不到结果列表、也发现不到这些文档。</p>
-        </div>
-        <div class="fix-suggestion">
-          <h4>修改建议</h4>
-          <p>每篇文档提供独立、稳定、可跟链的 URL，并进 sitemap.xml 与 llms.txt 全量清单；搜索仅作人用补充入口。</p>
-        </div>
+        <p><strong>搜索框与可达 URL</strong>的核心原因：<strong style="color:var(--text)">人在浏览器里能看见搜索框、也能搜出文档，但「查看网页源代码」里没有搜索结果清单——结果靠 JavaScript 返回，对爬虫是黑盒；若发现层只靠搜索、缺少可爬 URL 与 sitemap / llms，Agent 禁 JS 时就枚举不到全部文档</strong>。</p>
       </div>
-      <div class="content-unit">
-        <h3>2. 缺 sitemap / llms 清单</h3>
-        <div class="issue-body">
-        <p><strong>问题：</strong>没有 sitemap.xml 或 llms.txt 时，爬虫只能顺导航一层层点，深页极易漏收；缺少「全站文档在哪」的显式清单，Agent 无法一次性枚举文档 URL。</p>
+      <div class="evidence-block">
+        <p class="evidence-block-title">实测证据 · 浏览器搜索框 vs 静态源码</p>
+        <div class="evidence-grid">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">浏览器里能看见的搜索框</p>
+          <img src="assets/cases-html-ascend/home-top-nav.png" alt="社区首页顶栏浏览器可见搜索框" loading="lazy" />
+          <p class="evidence-caption">左图人眼能搜；右边源码没有可枚举命中列表——搜索框本身不必改成可爬，缺的是 URL 清单。</p>
         </div>
-        <div class="fix-suggestion">
-          <h4>修改建议</h4>
-          <p>构建时自动生成 sitemap.xml 覆盖全部文档 URL 并在 robots 声明，同时维护 llms.txt / llms-full.txt；新增 / 下线文档同步更新。</p>
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">「查看网页源代码」里没有结果清单</p>
+          <pre>&lt;!-- 顶栏常见只有输入框 / 占位文案 --&gt;
+&lt;input type=&quot;search&quot; placeholder=&quot;搜索…&quot; /&gt;
+&lt;!-- 或 mindie 等占位提示 --&gt;
+
+&lt;!-- ✗ 无：命中文档标题 + a[href] 结果列表 --&gt;
+&lt;!-- 结果要等 JS 请求搜索 API 后才出现 --&gt;
+
+&lt;!-- ✓ 发现层应在别处： --&gt;
+&lt;!-- sitemap.xml / llms.txt 列出各文档 URL --&gt;
+&lt;!-- 或导航 / 索引页 &lt;a href=&quot;…/install/…&quot;&gt;安装文档&lt;/a&gt; --&gt;</pre>
         </div>
-      </div>
-      <div class="content-unit">
-        <h3>3. 检索范围只在 placeholder</h3>
-        <div class="issue-body">
-        <p><strong>问题：</strong>「本站包含哪些文档 / 版本」等范围说明只写在搜索框 placeholder（如「搜索 CANN 文档」「mindie」）或交互提示里，静态正文无对应可引用说明。</p>
-        </div>
-        <div class="fix-suggestion">
-          <h4>修改建议</h4>
-          <p>把文档索引与检索范围写进可引用正文或文档索引页，别只塞在 placeholder / 交互文案。</p>
         </div>
       </div>
       <div class="content-unit">
-        <h3>4. 搜索控件文案误入知识</h3>
+        <h3>1. 搜索结果没有写进网页源码</h3>
         <div class="issue-body">
-        <p><strong>问题：</strong>搜索框、建议下拉、「搜索 / Ask」按钮等纯交互文案若随正文入库，会产生噪声 chunk，并掩盖真正的发现层缺失。</p>
+        <p><strong>问题：</strong>打开社区首页（及友商 Mintlify 文档站、NVIDIA build），用「查看网页源代码」核对：顶栏只有搜索输入框或占位文案，没有「标题 + 落地 URL」的命中列表。结果由前端请求返回——禁 JS 时既看不到列表，也不能把搜索框当成文档发现层。三站友商表均判搜索本身「抓不全」，这是预期，不是要把搜索改成 SSR。</p>
+        </div>
+      <div class="evidence-block">
+        <p class="evidence-block-title">证据 · 三站搜索同属黑盒</p>
+        <div class="evidence-grid evidence-grid--single">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">友商对照（摘要）</p>
+          <pre>Mintlify：Search or ask / Ask Assistant → JS 返回
+NVIDIA build：Search for models… → 客户端渲染
+昇腾：顶栏搜索（mindie 占位）→ 结果靠 JS
+&lt;!-- 共性：源码无静态命中清单 --&gt;</pre>
+          <p class="evidence-caption">抓不全的是搜索产出；亲和要做的是旁边的发现层。</p>
+        </div>
+        </div>
+      </div>
+        <div class="fix-suggestion">
+          <h4>修改建议</h4>
+          <p>搜索控件保持交互即可，标 data-llm-exclude 或入库剥离；不要指望把搜索结果列表做成首包可爬正文。</p>
+        </div>
+      </div>
+      <div class="content-unit">
+        <h3>2. 有搜索框、无可枚举文档清单，形成半成品</h3>
+        <div class="issue-body">
+        <p><strong>问题：</strong>探针问「不用搜索框，能否从静态 HTML 列出全部 CANN 安装文档 URL」——若导航 / 索引页也列不全，而文档又只在搜到后才出现，发现层就是半成品：人靠搜索能到，Agent 禁 JS 枚举不到。搜索框在、sitemap / llms / 可爬索引不在，等于只给人开了门、没给爬虫地图。</p>
+        </div>
+      <div class="evidence-block">
+        <p class="evidence-block-title">证据 · 发现层本来应该长这样</p>
+        <div class="evidence-grid evidence-grid--single">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">期望的不靠搜索也能枚举的清单（示意）</p>
+          <pre># llms.txt / sitemap 摘录
+https://www.hiascend.com/document/…/install/…
+https://www.hiascend.com/document/…/cann/…
+…
+&lt;!-- 或索引页： --&gt;
+&lt;nav aria-label=&quot;文档索引&quot;&gt;
+  &lt;a href=&quot;…/install/…&quot;&gt;CANN 安装&lt;/a&gt;
+&lt;/nav&gt;</pre>
+          <p class="evidence-caption">清单在 sitemap / llms / 索引页；不在搜索结果 DOM 里。</p>
+        </div>
+        </div>
+      </div>
+        <div class="fix-suggestion">
+          <h4>修改建议</h4>
+          <p>每篇可搜索文档提供独立、稳定、可跟链的 URL；构建时生成 sitemap.xml，并维护 llms.txt / llms-full.txt 全量清单；搜索仅作人用补充。</p>
+        </div>
+      </div>
+      <div class="content-unit">
+        <h3>3. 检索范围与控件文案不能代替清单</h3>
+        <div class="issue-body">
+        <p><strong>问题：</strong>「搜索 CANN 文档」「mindie」等 placeholder、建议下拉、「搜索 / Ask」按钮若当唯一范围说明或混入知识 chunk，Agent 会把 UI 提示当成索引，并掩盖真正的 URL 清单缺失。</p>
         </div>
         <div class="fix-suggestion">
           <h4>修改建议</h4>
-          <p>搜索控件标 data-llm-exclude 或入库剥离；发现层责任交给 URL + sitemap，不依赖搜索。</p>
+          <p>文档收录范围写进可引用正文或索引页；搜索控件文案剥离入库。以 sitemap / llms 与页面导航为发现层准绳。</p>
         </div>
       </div>
     </section>
@@ -695,7 +930,7 @@
       </div>
       <div class="dialog-card">
         <span class="dialog-role">大模型</span>
-        <p>搜索框本身不提供可抓文档列表——结果由 JS 返回，对禁 JS 的抓取管道是黑盒（Mintlify、NVIDIA、昇腾三站搜索框实测皆抓不全）。要不靠搜索也能发现全部文档，须每篇文档有独立可爬 URL 并进 sitemap / llms 清单；搜索只是补充，不能当唯一发现层。</p>
+        <p>不能只靠搜索框。顶栏搜索是纯交互，结果由 JS 返回，「查看网页源代码」里没有可枚举的文档命中列表——Mintlify、NVIDIA、昇腾三站搜索框实测皆抓不全。要不搜索也能列出 CANN 安装文档，须每篇有独立可爬 URL，并进 sitemap / llms 清单。</p>
       </div>
     </div>
   </div>
@@ -794,7 +1029,7 @@
   var t0 = Date.now();
   var iv = setInterval(function () {
     restore();
-    if (Date.now() - t0 > 600) clearInterval(iv);
+    if (Date.now() - t0 > 800) clearInterval(iv);
   }, 40);
 
   try {
@@ -810,21 +1045,24 @@
     try { sessionStorage.setItem(key, String(y)); } catch (e) {}
   }
   sidebar.addEventListener('scroll', persist, { passive: true });
+
+  function stampHref(a) {
+    persist();
+    try {
+      var raw = a.getAttribute('href') || '';
+      var hash = '';
+      var hi = raw.indexOf('#');
+      if (hi >= 0) { hash = raw.slice(hi); raw = raw.slice(0, hi); }
+      var qi = raw.indexOf('?');
+      if (qi >= 0) raw = raw.slice(0, qi);
+      if (raw && raw.indexOf('http') !== 0) {
+        a.setAttribute('href', raw + '?sb=' + String(sidebar.scrollTop) + hash);
+      }
+    } catch (e) {}
+  }
   sidebar.querySelectorAll('.comp-nav a[href]').forEach(function (a) {
-    a.addEventListener('click', function () {
-      persist();
-      try {
-          var raw = a.getAttribute('href') || '';
-          var hash = '';
-          var hi = raw.indexOf('#');
-          if (hi >= 0) { hash = raw.slice(hi); raw = raw.slice(0, hi); }
-          var qi = raw.indexOf('?');
-          if (qi >= 0) raw = raw.slice(0, qi);
-          if (raw && raw.indexOf('http') !== 0) {
-            a.setAttribute('href', raw + '?sb=' + String(sidebar.scrollTop) + hash);
-          }
-      } catch (e) {}
-    });
+    a.addEventListener('pointerdown', function () { stampHref(a); }, true);
+    a.addEventListener('click', function () { stampHref(a); }, true);
   });
 })();
 </script>

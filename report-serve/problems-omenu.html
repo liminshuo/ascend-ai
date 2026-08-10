@@ -3,8 +3,57 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
 <title>侧栏菜单不可达 · 亲和分析 · 昇腾社区 AI 亲和原则</title>
 <style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -521,6 +570,145 @@
 
   .comp-sidebar { overflow-anchor: none; }
 
+
+
+  .evidence-block {
+    margin: 12px 0 0;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel2);
+    overflow: hidden;
+  }
+  .evidence-block-title {
+    margin: 0;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+    background: var(--panel);
+  }
+  .section .evidence-block > .evidence-block-title {
+    margin: 0;
+    color: var(--muted);
+  }
+  .evidence-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    padding-top: 0;
+  }
+  .evidence-grid--single {
+    grid-template-columns: 1fr;
+  }
+  @media (max-width: 900px) {
+    .evidence-grid { grid-template-columns: 1fr; }
+  }
+  .evidence-pane {
+    min-width: 0;
+    padding: 12px;
+  }
+  .evidence-pane + .evidence-pane {
+    border-left: 1px solid var(--line);
+  }
+  @media (max-width: 900px) {
+    .evidence-pane + .evidence-pane {
+      border-left: none;
+      border-top: 1px solid var(--line);
+    }
+  }
+  .evidence-pane-label {
+    margin: 0 0 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .section .evidence-pane > .evidence-pane-label {
+    margin: 0 0 12px;
+    color: var(--text);
+  }
+  .evidence-pane img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    margin: 0;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #fff;
+  }
+  .evidence-pane pre {
+    margin: 0;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #0f172a;
+    color: #e2e8f0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 11.5px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 220px;
+    overflow: auto;
+  }
+  .evidence-caption {
+    margin: 12px 0 0;
+    padding: 0;
+    font-size: 12.5px;
+    line-height: 19px;
+    color: var(--muted);
+    text-align: left;
+  }
+  .section .evidence-pane > .evidence-caption {
+    margin: 12px 0 0;
+    color: var(--muted);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </style>
 </head>
 <body data-module="problems" data-page="omenu">
@@ -588,13 +776,13 @@
     <div class="page-header">
       <div class="page-header-top">
         <h1>侧栏菜单不可达 <span class="badge badge-should">样本缺失 · 侧栏难抓</span></h1>
-        <a class="btn-preview" href="https://www.hiascend.com/document/detail/zh/AscendFAQ/ProduTech/productform/hardwaredesc_0001.html" target="_blank" rel="noopener">查看测试页面</a>
+        <a class="btn-preview" href="https://www.hiascend.com/document/detail/zh/AscendFAQ/CommuFunc/AscendAITrainingCamp/ascendaitrainingcamp_000.html" target="_blank" rel="noopener">查看测试页面</a>
       </div>
     </div>
 
     <p class="page-desc page-desc--split">
       <span class="page-desc-line"><strong>侧栏菜单不可达</strong>指设计侧栏/层级菜单（OMenu）上的文档目录与链接；若首包无完整树或无真实 href，RAG 无法按手册结构发现页面。</span>
-      <span class="page-desc-line">以 <a href="https://www.hiascend.com/document/detail/zh/AscendFAQ/ProduTech/productform/hardwaredesc_0001.html" target="_blank" rel="noopener">Ascend FAQ 概览</a> 为例：FAQ 作预期侧栏场景；静态未见 o-menu，目录多依赖前端注入。</span>
+      <span class="page-desc-line">以 <a href="https://www.hiascend.com/document/detail/zh/AscendFAQ/CommuFunc/AscendAITrainingCamp/ascendaitrainingcamp_000.html" target="_blank" rel="noopener">昇腾AI训练营常见问题</a> 为例：FAQ 文档侧栏场景；静态未见 o-menu / 侧栏 a[href] 树，目录节点与 URL 在 __NUXT_DATA__。</span>
     </p>
 
     <section class="section" id="problem">
@@ -602,7 +790,7 @@
       <div class="content-unit">
         <h3>1. 向模型提问</h3>
         <div class="test-prompt-card">
-          <p>我在看 <a href="https://www.hiascend.com/document/detail/zh/AscendFAQ/ProduTech/productform/hardwaredesc_0001.html" target="_blank" rel="noopener">Ascend FAQ 概览</a>，手册左侧目录完整有哪些章节？「安装部署」下第一篇官方文档链接是什么？</p>
+          <p>我在看 <a href="https://www.hiascend.com/document/detail/zh/AscendFAQ/CommuFunc/AscendAITrainingCamp/ascendaitrainingcamp_000.html" target="_blank" rel="noopener">昇腾AI训练营常见问题</a>，手册左侧目录完整有哪些章节？「昇腾AI训练营常见问题」的上一篇、下一篇官方文档链接分别是什么？</p>
         </div>
       </div>
       <div class="content-unit">
@@ -619,9 +807,8 @@
             <tr><th>友商</th><th>案例</th><th>被测对象</th><th>html 可抓取</th><th>原因</th></tr>
           </thead>
           <tbody>
-            <tr><td>Mintlify</td><td><a href="https://www.mintlify.com/docs/editor" target="_blank" rel="noopener">文档编辑器</a></td><td><a class="peer-object-link" href="https://www.mintlify.com/docs/editor" target="_blank" rel="noopener" title="该页左侧竖向 menu所在的友商线上页面"><span class="peer-object-name">左侧竖向 menu</span><span class="peer-floor-badge">导航</span></a></td><td><span class="peer-tag peer-tag-ok">可抓全</span></td><td class="peer-reason">侧栏 #sidebar-content 内分组与 href 均在静态 HTML（实测 73 条链）。</td></tr>
-            <tr><td>NVIDIA</td><td><a href="https://docs.nvidia.com/cuda/cuquantum/latest/getting-started/index.html" target="_blank" rel="noopener">Getting Started</a></td><td><a class="peer-object-link" href="https://docs.nvidia.com/cuda/cuquantum/latest/getting-started/index.html" target="_blank" rel="noopener" title="该页左侧竖向 menu所在的友商线上页面"><span class="peer-object-name">左侧竖向 menu</span><span class="peer-floor-badge">导航</span></a></td><td><span class="peer-tag peer-tag-ok">可抓全</span></td><td class="peer-reason">bd-docs-nav 目录树与 href 均在静态 HTML（实测 700+ 条链）。</td></tr>
-            <tr><td>昇腾社区</td><td><a href="https://www.hiascend.com/document/detail/zh/AscendFAQ/ProduTech/productform/hardwaredesc_0001.html" target="_blank" rel="noopener">AscendFAQ</a></td><td><a class="peer-object-link" href="https://www.hiascend.com/document/detail/zh/AscendFAQ/ProduTech/productform/hardwaredesc_0001.html" target="_blank" rel="noopener" title="该页左侧竖向 menu所在的友商线上页面"><span class="peer-object-name">左侧竖向 menu</span><span class="peer-floor-badge">导航</span></a></td><td><span class="peer-tag peer-tag-partial">抓不全</span></td><td class="peer-reason">静态 HTML 无侧栏可跟链导航树，TOC 节点在 __NUXT_DATA__ JSON 中。</td></tr>
+            <tr><td>NVIDIA</td><td><a href="https://www.nvidia.com/en-us/training/find-training/" target="_blank" rel="noopener">Find Training</a></td><td><a class="peer-object-link" href="https://www.nvidia.com/en-us/training/find-training/" target="_blank" rel="noopener" title="该页左侧竖向 menu所在的友商线上页面"><span class="peer-object-name">左侧竖向 menu</span><span class="peer-floor-badge">Filters</span></a></td><td><span class="peer-tag peer-tag-partial">抓不全</span></td><td class="peer-reason">浏览器可见 Filters：Level / Format / Topics 勾选树，但首包仅为 LIBRARIAN.Home.mount 空壳（preSelectedFilters 空）；Introductory 等选项不在静态 HTML、无筛选项 a[href]，禁 JS 列不全。</td></tr>
+            <tr><td>昇腾社区</td><td><a href="https://edu.hicomputing.huawei.com/teaching?activeTab=%E9%B2%B2%E9%B9%8F%E4%B8%93%E5%8C%BA,%E6%98%87%E8%85%BE%E4%B8%93%E5%8C%BA,%E5%8D%8E%E4%B8%BA%E4%BA%91%E4%B8%93%E5%8C%BA,%E8%81%94%E6%8E%A5%E4%B8%93%E5%8C%BA,%E9%80%9A%E7%94%A8%E8%BD%AF%E4%BB%B6%E4%B8%93%E5%8C%BA&amp;resourceType=%E5%88%9B%E6%96%B0%E5%AE%9E%E8%B7%B5%E8%AF%BE&amp;subTab=openEuler%E6%99%BA%E8%83%BD%E8%B0%83%E4%BC%98%EF%BC%88A-Tune%EF%BC%89" target="_blank" rel="noopener">教学资源</a></td><td><a class="peer-object-link" href="https://edu.hicomputing.huawei.com/teaching?activeTab=%E9%B2%B2%E9%B9%8F%E4%B8%93%E5%8C%BA,%E6%98%87%E8%85%BE%E4%B8%93%E5%8C%BA,%E5%8D%8E%E4%B8%BA%E4%BA%91%E4%B8%93%E5%8C%BA,%E8%81%94%E6%8E%A5%E4%B8%93%E5%8C%BA,%E9%80%9A%E7%94%A8%E8%BD%AF%E4%BB%B6%E4%B8%93%E5%8C%BA&amp;resourceType=%E5%88%9B%E6%96%B0%E5%AE%9E%E8%B7%B5%E8%AF%BE&amp;subTab=openEuler%E6%99%BA%E8%83%BD%E8%B0%83%E4%BC%98%EF%BC%88A-Tune%EF%BC%89" target="_blank" rel="noopener" title="该页左侧竖向 menu所在的友商线上页面"><span class="peer-object-name">左侧竖向 menu</span><span class="peer-floor-badge">课程侧栏</span></a></td><td><span class="peer-tag peer-tag-partial">抓不全</span></td><td class="peer-reason">浏览器可见「教学课程 / 创新实践课」及 openEuler智能调优（A-Tune）等课程项，但静态 HTML 无侧栏 a[href] 树；选中态靠 URL resourceType/subTab 与 __NUXT_DATA__，禁 JS 列不全课程入口。</td></tr>
           </tbody>
         </table>
       </div>
@@ -631,36 +818,85 @@
     <section class="section" id="guide">
       <h2 id="solution">根因分析</h2>
       <div class="content-unit">
-        <p><strong>侧栏菜单不可达</strong>的核心原因：<strong style="color:var(--text)">左侧手册目录没有写进网页源码，章节列表要等脚本运行才出现，爬虫和 AI 默认读不到</strong>。</p>
+        <p><strong>侧栏菜单不可达</strong>的核心原因：<strong style="color:var(--text)">人在浏览器里能看到左侧目录，但「查看网页源代码」里几乎没有这些目录链接——章节名和地址藏在页面脚本数据里，要等 JavaScript 跑完才画出来，所以爬虫和 AI 默认读不到</strong>。</p>
+      </div>
+      <div class="evidence-block">
+        <p class="evidence-block-title">实测证据 · 浏览器侧栏 vs 静态源码</p>
+        <div class="evidence-grid">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">浏览器里能看见的左侧目录</p>
+          <img src="assets/cases-html-ascend/faq-sidebar.jpg" alt="昇腾 FAQ 文档页浏览器可见左侧目录" loading="lazy" />
+          <p class="evidence-caption">左图是人眼看到的目录；右边是源码里实际能抠出来的链接——侧栏整棵树基本不在。</p>
+        </div>
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">「查看网页源代码」里几乎没有侧栏链接</p>
+          <pre>&lt;!-- 查看网页源代码 / 禁 JS：几乎无手册侧栏 a[href] 树 --&gt;
+&lt;!-- 仅见零散文档链，例如： --&gt;
+&lt;a href=&quot;…/AscendFAQ/overview/index.html&quot;&gt;常见问题&lt;/a&gt;
+&lt;a href=&quot;…/ascendaitrainingcamp_000.html&quot;&gt;昇腾AI训练营常见问题&lt;/a&gt;
+&lt;!-- 无「账号与认证 / 伙伴计划 / 活动与大赛…」侧栏目录列表 --&gt;</pre>
+        </div>
+        </div>
       </div>
       <div class="content-unit">
-        <h3>1. 左侧章节目录未写进网页源码</h3>
+        <h3>1. 源码里没有完整的左侧目录</h3>
         <div class="issue-body">
-        <p><strong>问题：</strong>Ascend FAQ 页「查看网页源代码」时，看不到完整的左侧章节目录；目录数据在 __NUXT_DATA__ 里，须执行 JavaScript 才会渲染，因此列不出「安装部署」有哪些小节，也拿不出其下第一篇文档的链接。</p>
+        <p><strong>问题：</strong>打开昇腾AI训练营常见问题页，用「查看网页源代码」核对：左侧那一整棵章节目录几乎找不到，只有很少几条零散链接。各篇其实都有自己的文档地址，但没有写成侧栏上的可点链接，要等脚本跑完才画出来——爬虫打开源码时跟不到目录链。</p>
+        </div>
+      <div class="evidence-block">
+        <p class="evidence-block-title">证据 · 侧栏链接本来应该长这样</p>
+        <div class="evidence-grid evidence-grid--single">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">期望写进网页的侧栏链接（示意，当前页没有）</p>
+          <pre>&lt;nav class=&quot;doc-sidebar&quot;&gt;
+  &lt;a href=&quot;…/accfaq_000.html&quot;&gt;账号与认证&lt;/a&gt;
+  &lt;a href=&quot;…/ascendaitrainingcamp_000.html&quot;&gt;昇腾AI训练营常见问题&lt;/a&gt;
+  &lt;a href=&quot;…/developerpartner_011.html&quot;&gt;伙伴计划&lt;/a&gt;
+&lt;/nav&gt;</pre>
+          <p class="evidence-caption">每篇不同地址是对的；缺的是把它们直接写在侧栏 HTML 里。</p>
+        </div>
+        </div>
+      </div>
+        <div class="fix-suggestion">
+          <h4>修改建议</h4>
+          <p>页面一出来就把完整目录写进 HTML：每一项都是「章节名 + 真实地址」的链接，展开收起按钮不能代替链接。</p>
+        </div>
+      </div>
+      <div class="content-unit">
+        <h3>2. 脚本数据里也只有邻篇，没有整棵目录</h3>
+        <div class="issue-body">
+        <p><strong>问题：</strong>即便从页面脚本数据（__NUXT_DATA__）里抠「上一篇 / 下一篇」，也只能拿到「账号与认证」「伙伴计划」两个邻居，看不到「社区功能与服务」下其余章节。所以既列不全手册结构，也不能靠这段数据补出完整发现层。</p>
+        </div>
+      <div class="evidence-block">
+        <p class="evidence-block-title">证据 · 脚本里只有邻接节点</p>
+        <div class="evidence-grid evidence-grid--single">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">页面脚本数据摘录（训练营 FAQ 实测）</p>
+          <pre>{
+  &quot;finalNodeName&quot;: &quot;昇腾AI训练营常见问题&quot;,
+  &quot;finalNodeUrl&quot;: &quot;zh/AscendFAQ/CommuFunc/AscendAITrainingCamp/ascendaitrainingcamp_000.html&quot;,
+  &quot;upNodeName&quot;: &quot;账号与认证&quot;,
+  &quot;upNodeUrl&quot;: &quot;zh/AscendFAQ/CommuFunc/Account&amp;AuthenticationFAQ/accfaq_000.html&quot;,
+  &quot;nextNodeName&quot;: &quot;伙伴计划&quot;,
+  &quot;nextNodeUrl&quot;: &quot;zh/AscendFAQ/CommuFunc/Developer&amp;partner/developerpartner_011.html&quot;
+}</pre>
+          <p class="evidence-caption">地址有、且每篇不同；但这组字段只有当前页 + 邻篇，不是完整侧栏树。</p>
+        </div>
+        </div>
+      </div>
+        <div class="fix-suggestion">
+          <h4>修改建议</h4>
+          <p>若脚本数据要作备用，须带完整子节点列表（标题 + URL），不能只有当前页和上一篇 / 下一篇。</p>
+        </div>
+      </div>
+      <div class="content-unit">
+        <h3>3. 也没有备用的章节清单</h3>
+        <div class="issue-body">
+        <p><strong>问题：</strong>侧栏读不到时，如果网站地图或 llms.txt 里也没有按手册列出各章链接，AI 就只知道当前这一页写了什么，不知道整本手册还有哪些页。</p>
         </div>
         <div class="fix-suggestion">
           <h4>修改建议</h4>
-          <p>在服务端直接输出完整目录树，每一项都是带地址的链接；不要把目录只放在前端脚本加载的数据里。</p>
-        </div>
-      </div>
-      <div class="content-unit">
-        <h3>2. 目录项没有可点击的链接</h3>
-        <div class="issue-body">
-        <p><strong>问题：</strong>侧栏条目若只是文字或点击事件、没有 href，爬虫和 Agent 无法从当前页跳到上级章节或兄弟页面。</p>
-        </div>
-        <div class="fix-suggestion">
-          <h4>修改建议</h4>
-          <p>每一级目录都输出真实链接地址；展开/收起按钮不能代替链接。</p>
-        </div>
-      </div>
-      <div class="content-unit">
-        <h3>3. 没有备用的章节清单</h3>
-        <div class="issue-body">
-        <p><strong>问题：</strong>侧栏读不到时，若 llms.txt 或 sitemap 也未按手册列出各章链接，AI 只知道当前页正文，不知道这本手册还有哪些页。</p>
-        </div>
-        <div class="fix-suggestion">
-          <h4>修改建议</h4>
-          <p>在 llms.txt 或 Markdown 版手册里列出章节标题与链接，与侧栏目录互为补充。</p>
+          <p>在 llms.txt 或 Markdown 手册里再列一份「章节名 + 链接」，和侧栏目录互相补上。</p>
         </div>
       </div>
     </section>
@@ -681,11 +917,11 @@
     <div class="modal-body">
       <div class="dialog-card">
         <span class="dialog-role">用户</span>
-        <p>我在看 Ascend FAQ 概览（https://www.hiascend.com/document/detail/zh/AscendFAQ/ProduTech/productform/hardwaredesc_0001.html），手册左侧目录完整有哪些章节？「安装部署」下第一篇官方文档链接是什么？</p>
+        <p>我在看昇腾AI训练营常见问题（https://www.hiascend.com/document/detail/zh/AscendFAQ/CommuFunc/AscendAITrainingCamp/ascendaitrainingcamp_000.html），手册左侧目录完整有哪些章节？「昇腾AI训练营常见问题」的上一篇、下一篇官方文档链接分别是什么？</p>
       </div>
       <div class="dialog-card">
         <span class="dialog-role">大模型</span>
-        <p>根据当前静态 HTML，我看不到完整的 o-menu / 侧栏目录树，只能依据页面正文或零散链接猜测。无法可靠列出「安装部署」下的第一篇官方深链——目录很可能由前端注入，禁 JS 抓取时侧栏知识结构丢失。</p>
+        <p>根据当前静态 HTML，我看不到完整的左侧手册目录树（无 o-menu / 侧栏 a[href] 列表），只能看到当前页标题等零散文案。无法可靠列出「社区功能与服务」下各章，也答不出上一篇「账号与认证」、下一篇「伙伴计划」的官方深链——这些节点与各自独立 URL 写在 __NUXT_DATA__ 里，须执行脚本才渲染成可点目录。</p>
       </div>
     </div>
   </div>
@@ -784,7 +1020,7 @@
   var t0 = Date.now();
   var iv = setInterval(function () {
     restore();
-    if (Date.now() - t0 > 600) clearInterval(iv);
+    if (Date.now() - t0 > 800) clearInterval(iv);
   }, 40);
 
   try {
@@ -800,21 +1036,24 @@
     try { sessionStorage.setItem(key, String(y)); } catch (e) {}
   }
   sidebar.addEventListener('scroll', persist, { passive: true });
+
+  function stampHref(a) {
+    persist();
+    try {
+      var raw = a.getAttribute('href') || '';
+      var hash = '';
+      var hi = raw.indexOf('#');
+      if (hi >= 0) { hash = raw.slice(hi); raw = raw.slice(0, hi); }
+      var qi = raw.indexOf('?');
+      if (qi >= 0) raw = raw.slice(0, qi);
+      if (raw && raw.indexOf('http') !== 0) {
+        a.setAttribute('href', raw + '?sb=' + String(sidebar.scrollTop) + hash);
+      }
+    } catch (e) {}
+  }
   sidebar.querySelectorAll('.comp-nav a[href]').forEach(function (a) {
-    a.addEventListener('click', function () {
-      persist();
-      try {
-          var raw = a.getAttribute('href') || '';
-          var hash = '';
-          var hi = raw.indexOf('#');
-          if (hi >= 0) { hash = raw.slice(hi); raw = raw.slice(0, hi); }
-          var qi = raw.indexOf('?');
-          if (qi >= 0) raw = raw.slice(0, qi);
-          if (raw && raw.indexOf('http') !== 0) {
-            a.setAttribute('href', raw + '?sb=' + String(sidebar.scrollTop) + hash);
-          }
-      } catch (e) {}
-    });
+    a.addEventListener('pointerdown', function () { stampHref(a); }, true);
+    a.addEventListener('click', function () { stampHref(a); }, true);
   });
 })();
 </script>

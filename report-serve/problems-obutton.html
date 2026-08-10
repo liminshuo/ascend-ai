@@ -3,8 +3,57 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
 <title>按钮与链接角色混淆 · 亲和分析 · 昇腾社区 AI 亲和原则</title>
 <style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -521,6 +570,145 @@
 
   .comp-sidebar { overflow-anchor: none; }
 
+
+
+  .evidence-block {
+    margin: 12px 0 0;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel2);
+    overflow: hidden;
+  }
+  .evidence-block-title {
+    margin: 0;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+    background: var(--panel);
+  }
+  .section .evidence-block > .evidence-block-title {
+    margin: 0;
+    color: var(--muted);
+  }
+  .evidence-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    padding-top: 0;
+  }
+  .evidence-grid--single {
+    grid-template-columns: 1fr;
+  }
+  @media (max-width: 900px) {
+    .evidence-grid { grid-template-columns: 1fr; }
+  }
+  .evidence-pane {
+    min-width: 0;
+    padding: 12px;
+  }
+  .evidence-pane + .evidence-pane {
+    border-left: 1px solid var(--line);
+  }
+  @media (max-width: 900px) {
+    .evidence-pane + .evidence-pane {
+      border-left: none;
+      border-top: 1px solid var(--line);
+    }
+  }
+  .evidence-pane-label {
+    margin: 0 0 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .section .evidence-pane > .evidence-pane-label {
+    margin: 0 0 12px;
+    color: var(--text);
+  }
+  .evidence-pane img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    margin: 0;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #fff;
+  }
+  .evidence-pane pre {
+    margin: 0;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #0f172a;
+    color: #e2e8f0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 11.5px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 220px;
+    overflow: auto;
+  }
+  .evidence-caption {
+    margin: 12px 0 0;
+    padding: 0;
+    font-size: 12.5px;
+    line-height: 19px;
+    color: var(--muted);
+    text-align: left;
+  }
+  .section .evidence-pane > .evidence-caption {
+    margin: 12px 0 0;
+    color: var(--muted);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </style>
 </head>
 <body data-module="problems" data-page="obutton">
@@ -595,7 +783,7 @@
     <p class="page-desc page-desc--split">
       <span class="page-desc-line"><strong>按钮与链接角色混淆</strong>指跳转型控件应是可抓链接；纯提交/弹层按钮文案入库时宜剥离，避免被当成正文结论。</span>
       <span class="page-desc-line"><strong>视情况</strong>：同一组件要分角色——跳转型 CTA（立即查看 / 了解更多 / 前往认证等）须写成可抓 a[href]，本页根因分析主要针对这类；纯提交 / 关闭 / 弹层确认等操作按钮不必当正文知识，入库管道宜剥离。</span>
-      <span class="page-desc-line">以 <a href="https://www.hiascend.com/zh" target="_blank" rel="noopener">社区首页</a> 为例：首页大量 CTA 按钮。</span>
+      <span class="page-desc-line">以 <a href="https://www.hiascend.com/zh" target="_blank" rel="noopener">社区首页</a> 为例：首页首屏轮播各帧 CTA 多为 button.o-btn，无 href。</span>
     </p>
 
     <section class="section" id="problem">
@@ -603,7 +791,7 @@
       <div class="content-unit">
         <h3>1. 向模型提问</h3>
         <div class="test-prompt-card">
-          <p>我在看 <a href="https://www.hiascend.com/zh" target="_blank" rel="noopener">社区首页</a>，首页上「立即下载 / 了解更多」这类按钮分别会带到哪个官方 URL？把 href 给我。</p>
+          <p>我在看 <a href="https://www.hiascend.com/zh" target="_blank" rel="noopener">社区首页</a>，首页上「立即查看 / 了解更多」这类按钮分别会带到哪个官方 URL？把 href 给我。</p>
         </div>
       </div>
       <div class="content-unit">
@@ -620,9 +808,9 @@
             <tr><th>友商</th><th>案例</th><th>被测对象</th><th>html 可抓取</th><th>原因</th></tr>
           </thead>
           <tbody>
-            <tr><td>Mintlify</td><td><a href="https://www.mintlify.com/" target="_blank" rel="noopener">首页</a></td><td><a class="peer-object-link" href="https://www.mintlify.com/" target="_blank" rel="noopener" title="该页首屏按钮链接所在的友商线上页面"><span class="peer-object-name">首屏按钮链接</span><span class="peer-floor-badge">按钮链接</span></a></td><td><span class="peer-tag peer-tag-ok">可抓全</span></td><td class="peer-reason">「Get started」「Sign up with Google」按钮文案与真实 href（signup / Google discovery）写在静态 HTML，可抓全。</td></tr>
-            <tr><td>NVIDIA</td><td><a href="https://build.nvidia.com/" target="_blank" rel="noopener">build.nvidia.com</a></td><td><a class="peer-object-link" href="https://build.nvidia.com/" target="_blank" rel="noopener" title="该页列表底部按钮所在的友商线上页面"><span class="peer-object-name">列表底部按钮</span><span class="peer-floor-badge">按钮链接</span></a></td><td><span class="peer-tag peer-tag-ok">可抓全</span></td><td class="peer-reason">左右两列底部的「More Models」「View Skills」均为真实 &lt;a href=&quot;/models&quot;&gt;、&lt;a href=&quot;/skills&quot;&gt;，按钮文案与目标地址在首包 HTML 可抓；并带 data-nvtrack-nav-object-label 埋点属性。</td></tr>
-            <tr><td>昇腾社区</td><td><a href="https://www.hiascend.com/zh" target="_blank" rel="noopener">社区首页</a></td><td><a class="peer-object-link" href="https://www.hiascend.com/zh" target="_blank" rel="noopener" title="该页首屏轮播 CTA 按钮所在的友商线上页面"><span class="peer-object-name">首屏轮播 CTA 按钮</span><span class="peer-floor-badge">button 无 href</span></a></td><td><span class="peer-tag peer-tag-partial">抓不全</span></td><td class="peer-reason">首屏轮播 CTA（立即查看 / 了解更多 / 立即填写 / 前往认证 / 立即参与等）为 button.o-btn，源码无 href，静态抓取看不到落地 URL。</td></tr>
+            <tr><td>Mintlify</td><td><a href="https://www.mintlify.com/" target="_blank" rel="noopener">首页</a></td><td><a class="peer-object-link" href="https://www.mintlify.com/" target="_blank" rel="noopener" title="该页首屏 CTA 按钮所在的友商线上页面"><span class="peer-object-name">首屏 CTA 按钮</span><span class="peer-floor-badge">按钮链接</span></a></td><td><span class="peer-tag peer-tag-ok">可抓全</span></td><td class="peer-reason">「Get started」「Sign up with Google」按钮文案与真实 href（signup / Google discovery）写在静态 HTML，可抓全。</td></tr>
+            <tr><td>NVIDIA</td><td><a href="https://www.nvidia.com/en-sg/" target="_blank" rel="noopener">NVIDIA 官网</a></td><td><a class="peer-object-link" href="https://www.nvidia.com/en-sg/" target="_blank" rel="noopener" title="该页首屏 CTA 按钮所在的友商线上页面"><span class="peer-object-name">首屏 CTA 按钮</span><span class="peer-floor-badge">hero CTA</span></a></td><td><span class="peer-tag peer-tag-ok">可抓全</span></td><td class="peer-reason">首屏轮播各帧 CTA（如 Automotive「Read Blog」、Data Center「Learn More」等）为真实 a[href]，按钮文案与落地地址在首包 HTML 可跟。</td></tr>
+            <tr><td>昇腾社区</td><td><a href="https://www.hiascend.com/zh" target="_blank" rel="noopener">社区首页</a></td><td><a class="peer-object-link" href="https://www.hiascend.com/zh" target="_blank" rel="noopener" title="该页首屏轮播 CTA所在的友商线上页面"><span class="peer-object-name">首屏轮播 CTA</span><span class="peer-floor-badge">button 无 href</span></a></td><td><span class="peer-tag peer-tag-partial">抓不全</span></td><td class="peer-reason">首屏轮播各帧 CTA（立即查看 / 了解更多 / 立即填写 / 前往认证 / 立即参与等）为 button.o-btn，源码无 href，跳转靠 JS；探针问落地 URL 时只能复述文案。</td></tr>
           </tbody>
         </table>
       </div>
@@ -635,37 +823,80 @@
         <p><strong>视情况</strong>：同一组件要分角色——跳转型 CTA（立即查看 / 了解更多 / 前往认证等）须写成可抓 a[href]，本页根因分析主要针对这类；纯提交 / 关闭 / 弹层确认等操作按钮不必当正文知识，入库管道宜剥离。</p>
       </div>
       <div class="content-unit">
-        <p><strong>按钮与链接角色混淆</strong>的核心原因：<strong style="color:var(--text)">首屏 CTA 在浏览器里像可点入口，但源码里是 button + JS 跳转、没有 href——AI 只能复述「立即查看 / 了解更多」等文案，给不出官方落地 URL；友商 Mintlify 首屏 Get started、NVIDIA build 列表底部 More Models 等在首包即有 a[href]</strong>。</p>
+        <p><strong>按钮与链接角色混淆</strong>的核心原因：<strong style="color:var(--text)">人在浏览器里能看见首屏「了解更多 / 立即查看」等按钮，但「查看网页源代码」里它们是没有 href 的 button，跳转靠 JavaScript——AI 只能复述文案，给不出官方落地 URL；友商 Mintlify Get started、NVIDIA en-sg Read Blog 在源码里就是 a[href]</strong>。</p>
+      </div>
+      <div class="evidence-block">
+        <p class="evidence-block-title">实测证据 · 浏览器 CTA vs 静态源码</p>
+        <div class="evidence-grid">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">浏览器里能看见的跳转按钮</p>
+          <img src="assets/cases-html-ascend/home-banner-slides.jpg" alt="社区首页首屏轮播浏览器可见了解更多按钮" loading="lazy" />
+          <p class="evidence-caption">左图人眼能点；右边源码只有按钮文案，没有官方 URL。</p>
+        </div>
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">「查看网页源代码」里没有落地地址</p>
+          <pre>&lt;!-- 帧文案在首包，CTA 却是 button 无 href --&gt;
+&lt;p class=&quot;banner-title&quot;&gt;昇腾AI创新大赛2026&lt;/p&gt;
+&lt;p&gt;非同凡响 我要去闯&lt;/p&gt;
+&lt;button type=&quot;button&quot; class=&quot;o-btn banner-actions-item&quot;&gt;了解更多&lt;/button&gt;
+&lt;!-- ✗ 无 href；跳转靠 data-ha-clickid + JS --&gt;</pre>
+        </div>
+        </div>
       </div>
       <div class="content-unit">
-        <h3>1. 首屏轮播 CTA 用 button 伪链</h3>
+        <h3>1. 跳转型 CTA 写成了 button 伪链</h3>
         <div class="issue-body">
-        <p><strong>问题：</strong>昇腾侧：社区首页 banner 各帧 CTA（立即查看 / 了解更多 / 立即填写 / 前往认证 / 立即参与）源码为 <code>button.o-btn.banner-actions-item</code>，无 href，跳转靠 JS；探针问「这类按钮 href 是什么」时只能复述文案。</p>
-        <p>友商侧：Mintlify 首屏「Get started」「Sign up with Google」、NVIDIA build「More Models」「View Skills」均为真实 <code>a[href]</code>，首包可跟链。</p>
+        <p><strong>问题：</strong>打开社区首页，用「查看网页源代码」核对：首屏 the-carouse-banner 各帧 CTA（了解更多 / 立即查看 / 立即填写 / 前往认证 / 立即参与等）都是 <code>button.o-btn.banner-actions-item</code>，带 data-ha-clickid，没有 href。探针问「带到哪个官方 URL」时只能复述文案——友商 Mintlify「Get started」、NVIDIA en-sg「Read Blog」在源码里就是可跟的 a[href]。</p>
         </div>
+      <div class="evidence-block">
+        <p class="evidence-block-title">证据 · 跳转 CTA 本来应该长这样</p>
+        <div class="evidence-grid evidence-grid--single">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">期望写进网页的首屏 CTA（示意）</p>
+          <pre>&lt;p class=&quot;banner-title&quot;&gt;昇腾AI创新大赛2026&lt;/p&gt;
+&lt;a class=&quot;o-btn banner-actions-item&quot; href=&quot;/activity/…&quot;&gt;了解更多&lt;/a&gt;
+&lt;!-- 文案 + 真实落地地址同时进首包 --&gt;</pre>
+          <p class="evidence-caption">看起来仍可像按钮；禁 JS 时也能跟到官方页。</p>
+        </div>
+        </div>
+      </div>
         <div class="fix-suggestion">
           <h4>修改建议</h4>
           <p>跳转型 CTA 一律用 OLink 或 <code>a[href]</code> + 可见文案；样式可保留按钮外观，底层须输出可爬 href。</p>
         </div>
       </div>
       <div class="content-unit">
-        <h3>2. button 文案误入知识 chunk</h3>
+        <h3>2. 帧文案在、落地地址不在，形成半成品</h3>
         <div class="issue-body">
-        <p><strong>问题：</strong>「立即下载 / 提交 / 关闭 / 我知道了」等纯操作词若与正文混排入库，Agent 会把操作提示当成可引用结论，或把无 URL 的 CTA 文本误当「官方入口说明」。</p>
+        <p><strong>问题：</strong>同一轮播里，各帧 banner-title / 副文案和 indicator（昇腾AI创新大赛2026 / 推理开发者认证等）已经写进首包，活动名能抓到；缺的是 CTA 的目标 URL。所以 Agent 可能答得出「有一场创新大赛」，却答不出「了解更多链到哪」——发现入口和落地页不同步。</p>
         </div>
+      <div class="evidence-block">
+        <p class="evidence-block-title">证据 · 半成品对照</p>
+        <div class="evidence-grid evidence-grid--single">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">实测：文案 ✓ · 地址 ✗</p>
+          <pre>&lt;!-- ✓ 在首包 --&gt;
+&lt;p class=&quot;banner-title&quot;&gt;昇腾AI创新大赛2026&lt;/p&gt;
+&lt;!-- ✗ 不在首包 --&gt;
+&lt;button type=&quot;button&quot; class=&quot;o-btn&quot;&gt;了解更多&lt;/button&gt;
+&lt;!-- 无对应 a[href=活动详情页] --&gt;</pre>
+          <p class="evidence-caption">有活动名不等于 CTA 可达；两边要一起进源码。</p>
+        </div>
+        </div>
+      </div>
         <div class="fix-suggestion">
           <h4>修改建议</h4>
-          <p>入库管道对 type=submit、纯关闭、无 href 的 button 标注 data-llm-exclude 或剥离；仅保留带 href 的跳转链作为可证伪入口。</p>
+          <p>标题与 CTA href 同批 SSR；勿只 SSR 营销文案，而把跳转留给点击后的脚本。</p>
         </div>
       </div>
       <div class="content-unit">
-        <h3>3. 弹层 / 对话框里的唯一说明</h3>
+        <h3>3. 跳转与操作按钮未分流，且无备用落地清单</h3>
         <div class="issue-body">
-        <p><strong>问题：</strong>部分 CTA 点开才弹出表单或活动详情，关键落地信息不在首屏 HTML；静态抓取时只有按钮文案，没有目标页 URL 或规则正文。</p>
+        <p><strong>问题：</strong>无 href 的「了解更多」若与「提交 / 关闭 / 我知道了」一类纯操作词混排入库，Agent 会把操作提示或空 CTA 文案当成可引用入口。同时若 llms.txt 也未列出各帧活动 / 认证的官方 URL，顶栏与页脚又补不全时，就没有退路。</p>
         </div>
         <div class="fix-suggestion">
           <h4>修改建议</h4>
-          <p>弹层前的关键说明（活动规则摘要、认证入口 URL）同步写在按钮旁可见正文，或改为 a[href] 指向 SSR 详情页。</p>
+          <p>跳转 CTA 输出 a[href]；纯操作 button 标 data-llm-exclude 或管道剥离。llms 可临时列出首屏关键活动落地链，页面 CTA SSR 达标后以页面为准。</p>
         </div>
       </div>
     </section>
@@ -686,11 +917,11 @@
     <div class="modal-body">
       <div class="dialog-card">
         <span class="dialog-role">用户</span>
-        <p>我在看社区首页（https://www.hiascend.com/zh），首页上「立即下载 / 了解更多」这类按钮分别会带到哪个官方 URL？把 href 给我。</p>
+        <p>我在看社区首页（https://www.hiascend.com/zh），首页上「立即查看 / 了解更多」这类按钮分别会带到哪个官方 URL？把 href 给我。</p>
       </div>
       <div class="dialog-card">
         <span class="dialog-role">大模型</span>
-        <p>若 CTA 是 button + JS 跳转而非 a[href]，静态抓取看不到目标地址，我只能复述按钮文案，给不出可靠落地 URL。</p>
+        <p>首屏轮播各帧标题我能读到（如「昇腾AI创新大赛2026」），但 CTA 是 button.o-btn.banner-actions-item，源码没有 href，跳转靠脚本。静态抓取给不出「了解更多 / 立即查看」的官方落地 URL，只能复述按钮文案。</p>
       </div>
     </div>
   </div>
@@ -789,7 +1020,7 @@
   var t0 = Date.now();
   var iv = setInterval(function () {
     restore();
-    if (Date.now() - t0 > 600) clearInterval(iv);
+    if (Date.now() - t0 > 800) clearInterval(iv);
   }, 40);
 
   try {
@@ -805,21 +1036,24 @@
     try { sessionStorage.setItem(key, String(y)); } catch (e) {}
   }
   sidebar.addEventListener('scroll', persist, { passive: true });
+
+  function stampHref(a) {
+    persist();
+    try {
+      var raw = a.getAttribute('href') || '';
+      var hash = '';
+      var hi = raw.indexOf('#');
+      if (hi >= 0) { hash = raw.slice(hi); raw = raw.slice(0, hi); }
+      var qi = raw.indexOf('?');
+      if (qi >= 0) raw = raw.slice(0, qi);
+      if (raw && raw.indexOf('http') !== 0) {
+        a.setAttribute('href', raw + '?sb=' + String(sidebar.scrollTop) + hash);
+      }
+    } catch (e) {}
+  }
   sidebar.querySelectorAll('.comp-nav a[href]').forEach(function (a) {
-    a.addEventListener('click', function () {
-      persist();
-      try {
-          var raw = a.getAttribute('href') || '';
-          var hash = '';
-          var hi = raw.indexOf('#');
-          if (hi >= 0) { hash = raw.slice(hi); raw = raw.slice(0, hi); }
-          var qi = raw.indexOf('?');
-          if (qi >= 0) raw = raw.slice(0, qi);
-          if (raw && raw.indexOf('http') !== 0) {
-            a.setAttribute('href', raw + '?sb=' + String(sidebar.scrollTop) + hash);
-          }
-      } catch (e) {}
-    });
+    a.addEventListener('pointerdown', function () { stampHref(a); }, true);
+    a.addEventListener('click', function () { stampHref(a); }, true);
   });
 })();
 </script>

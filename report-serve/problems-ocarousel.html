@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
 <title>轮播帧语义噪声 · 亲和分析 · 昇腾社区 AI 亲和原则</title>
 <style>
 
@@ -123,6 +126,7 @@
     min-height: calc(100vh - var(--detail-head-h)); background: var(--bg);
   }
   .comp-sidebar {
+    overflow-anchor: none;
     width: var(--sidebar-w); flex-shrink: 0; position: sticky; top: var(--detail-head-h);
     height: calc(100vh - var(--detail-head-h)); overflow-y: auto; padding: 16px 0 32px;
     border-right: 1px solid var(--line); background: var(--panel);
@@ -373,6 +377,105 @@
   .dialog-card p:last-child { margin-bottom: 0; }
 
 
+
+  .comp-nav .comp-dot {
+    flex-shrink: 0;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #2563eb;
+  }
+
+  .evidence-block {
+    margin: 12px 0 0;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel2);
+    overflow: hidden;
+  }
+  .evidence-block-title {
+    margin: 0;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+    background: var(--panel);
+  }
+  .section .evidence-block > .evidence-block-title {
+    margin: 0;
+    color: var(--muted);
+  }
+  .evidence-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    padding-top: 0;
+  }
+  .evidence-grid--single {
+    grid-template-columns: 1fr;
+  }
+  @media (max-width: 900px) {
+    .evidence-grid { grid-template-columns: 1fr; }
+  }
+  .evidence-pane {
+    min-width: 0;
+    padding: 12px;
+  }
+  .evidence-pane + .evidence-pane {
+    border-left: 1px solid var(--line);
+  }
+  @media (max-width: 900px) {
+    .evidence-pane + .evidence-pane {
+      border-left: none;
+      border-top: 1px solid var(--line);
+    }
+  }
+  .evidence-pane-label {
+    margin: 0 0 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .section .evidence-pane > .evidence-pane-label {
+    margin: 0 0 12px;
+    color: var(--text);
+  }
+  .evidence-pane img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    margin: 0;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #fff;
+  }
+  .evidence-pane pre {
+    margin: 0;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #0f172a;
+    color: #e2e8f0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 11.5px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 220px;
+    overflow: auto;
+  }
+  .evidence-caption {
+    margin: 12px 0 0;
+    padding: 0;
+    font-size: 12.5px;
+    line-height: 19px;
+    color: var(--muted);
+    text-align: left;
+  }
+  .section .evidence-pane > .evidence-caption {
+    margin: 12px 0 0;
+    color: var(--muted);
+  }
 </style>
 </head>
 <body>
@@ -463,6 +566,17 @@
         <h3>2. 大模型回答</h3>
         <p><a href="#" id="btn-answer">查看大模型回答内容</a></p>
       </div>
+
+      <div class="content-unit">
+        <h3>3. 问题洞察</h3>
+        <p>大模型的回答指向 4 点结论：</p>
+        <ul>
+          <li><strong>多帧标题可抓全</strong>：6 帧 indicator 与 banner-title 已在静态 HTML，未切换也能复述。</li>
+          <li><strong>内容是运营噪声</strong>：问卷调查 / 创新大赛 / 认证 / 社区任务等是活动引流，不是 CANN API 规格。</li>
+          <li><strong>CTA 跟不了链</strong>：「了解更多 / 前往认证」多为 button，源码无 href；友商 NVIDIA 轮播 CTA 带可跟链接。</li>
+          <li><strong>半成品</strong>：能列口号，答不出「点进去应去哪篇文档」。</li>
+        </ul>
+      </div>
     </section>
 
     <section class="section" id="peer">
@@ -484,46 +598,90 @@
     <section class="section" id="guide">
       <h2 id="solution">根因分析</h2>
       <div class="content-unit">
-        <p><strong>轮播帧语义噪声</strong>的核心原因：<strong style="color:var(--text)">多帧文案虽已写进网页源码，但运营/活动/招募口号与产品规格混在同一层，缺策展隔离，易被 RAG 当事实入库</strong>。</p>
+        <p><strong>视情况</strong>：白名单产品 / 文档入口帧须标题 + 摘要 + 链接；运营 / 活动口号帧默认剥离。详见 <a href="principles-ocarousel.html">亲和原则</a>。</p>
       </div>
       <div class="content-unit">
-        <h3>1. 运营帧当规格入库</h3>
+        <p><strong>轮播帧语义噪声</strong>的核心原因：<strong style="color:var(--text)">人在浏览器和「查看网页源代码」里都能看见首页 6 帧 banner-title，但这些是活动 / 认证 / 招募口号，和产品规格混在同一抓取层；CTA 又是无 href 的 button——能复述口号，却当不成可靠规格，也给不出文档深链</strong>。</p>
+      </div>
+      <div class="evidence-block">
+        <p class="evidence-block-title">实测证据 · 浏览器轮播多帧 vs 静态源码</p>
+        <div class="evidence-grid">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">浏览器里能看见的首屏轮播</p>
+          <img src="assets/cases-html-ascend/home-banner-slides.jpg" alt="昇腾社区首页首屏轮播多帧与 indicator" loading="lazy" />
+          <p class="evidence-caption">左图是人眼看到的多帧 Banner；右边源码标题可抓，但角色是运营入口。</p>
+        </div>
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">「查看网页源代码」里标题可抓、CTA 无链</p>
+          <pre>&lt;!-- 查看网页源代码：多帧标题在，规格不在 --&gt;
+&lt;div class="the-carouse-banner"&gt;
+  &lt;p class="banner-title"&gt;昇腾AI创新大赛2026&lt;/p&gt;
+  &lt;p&gt;非同凡响 我要去闯&lt;/p&gt;
+  &lt;button type="button" class="o-btn banner-actions-item"&gt;了解更多&lt;/button&gt;
+  &lt;!-- ✗ 无 href；非 CANN 安装/算子 API 规格 --&gt;
+&lt;/div&gt;
+&lt;!-- indicator：问卷调查 / 创新大赛 / 高校专业赛 /
+     推理开发者认证 / CANN社区任务 / 智能助手上线 --&gt;
+
+&lt;!-- ✓ 友商 NVIDIA：帧文案 + CTA a[href] 同在首包 --&gt;</pre>
+        </div>
+        </div>
+      </div>
+      <div class="content-unit">
+        <h3>1. 运营帧与规格混层入库</h3>
         <div class="issue-body">
-        <p><strong>问题：</strong>昇腾首页 6 帧轮播（问卷调查、创新大赛、实习生招募、开发者认证、CANN 社区任务、智能助手）的 <code>banner-title</code> 与副文案均在静态 HTML，Agent 能复述标题；但这些是活动引流与认证入口，不是 CANN / 算子 API 规格。问「哪一帧和算子开发最相关、应去哪一页文档」时，易把认证口号答成产品能力，或给不出文档深链。</p>
+        <p><strong>问题：</strong>打开社区首页，用「查看网页源代码」核对：6 帧 indicator（参与8月问卷调查 / 昇腾AI创新大赛2026 / 高校专业赛 / 推理开发者认证 / CANN社区任务 / 昇腾智能助手上线）与各帧 <code>banner-title</code> 都在。Agent 能复述标题，但这些是活动引流与认证入口，不是 CANN / 算子 API 规格。探针问「哪一帧和算子开发最相关、应去哪一页文档」时，易把认证口号答成产品能力，或给不出文档深链。</p>
         </div>
         <div class="fix-suggestion">
           <h4>修改建议</h4>
-          <p>轮播根节点默认加 <code>data-llm-exclude="true"</code>，不入 llms / 知识库白名单；规格事实落到可引用文档页，轮播只做人读发现。</p>
+          <p>轮播根节点默认加 <code>data-llm-exclude="true"</code>，不入 llms / 知识库白名单；规格事实落到可引用文档页，轮播只做人读发现。若保留个别产品入口帧，须单独白名单并附一句话事实摘要。</p>
+        </div>
+        <div class="evidence-block">
+          <p class="evidence-block-title">证据 · 能抓到 ≠ 该当规格</p>
+          <div class="evidence-grid evidence-grid--single">
+          <div class="evidence-pane">
+            <p class="evidence-pane-label">帧角色分流（示意）</p>
+            <pre>&lt;!-- ✗ 运营帧：可抓，宜剥离 --&gt;
+&lt;p class="banner-title" data-llm-exclude&gt;昇腾AI创新大赛2026&lt;/p&gt;
+
+&lt;!-- ✓ 产品入口帧（若保留）：标题 + 摘要 + 文档链 --&gt;
+&lt;a href="/document/…/cann/"&gt;CANN 开发指南&lt;/a&gt;
+&lt;p&gt;异构计算架构安装与算子开发入口。&lt;/p&gt;</pre>
+            <p class="evidence-caption">看得见的 Banner 标题，不等于可以当规格 chunk。</p>
+          </div>
+          </div>
         </div>
       </div>
       <div class="content-unit">
-        <h3>2. CTA 用 button 无 href</h3>
+        <h3>2. CTA 是 button，跟不出落地 URL</h3>
         <div class="issue-body">
-        <p><strong>问题：</strong>各帧 CTA（立即查看 / 了解更多 / 前往认证 / 操作指导等）源码多为 <code>button</code>，无稳定 <code>href</code>；跳转靠脚本。探针问「点进去应该去哪一页」时，只能复述按钮文案，无法跟链到官方文档或活动落地页。</p>
+        <p><strong>问题：</strong>各帧 CTA（了解更多 / 立即查看 / 前往认证 / 立即参与等）源码是 <code>button.o-btn.banner-actions-item</code>，带 data-ha-clickid，没有 <code>href</code>；跳转靠脚本。探针问「点进去应该去哪一页」时只能复述按钮文案。友商 NVIDIA 首页轮播帧带可跟 <code>a[href]</code>，禁 JS 仍能给出落地链。</p>
         </div>
         <div class="fix-suggestion">
           <h4>修改建议</h4>
           <p>跳转型 CTA 改为 <code>a[href]</code> + 可见锚文本；或在轮播旁提供「本页推广入口」文本清单（标题 → URL），不依赖滑动与点击。</p>
         </div>
+        <div class="evidence-block">
+          <p class="evidence-block-title">证据 · CTA 本来应该长这样</p>
+          <div class="evidence-grid evidence-grid--single">
+          <div class="evidence-pane">
+            <p class="evidence-pane-label">期望写进网页的帧 CTA（示意）</p>
+            <pre>&lt;p class="banner-title"&gt;昇腾AI创新大赛2026&lt;/p&gt;
+&lt;a class="o-btn banner-actions-item" href="/activity/…"&gt;了解更多&lt;/a&gt;
+&lt;!-- ✗ &lt;button type="button" class="o-btn"&gt;了解更多&lt;/button&gt; --&gt;</pre>
+            <p class="evidence-caption">标题能抓到，落地 URL 也要能跟；否则发现入口半成品。</p>
+          </div>
+          </div>
+        </div>
       </div>
       <div class="content-unit">
-        <h3>3. 图意未转写</h3>
+        <h3>3. 缺帧角色标记与平行清单</h3>
         <div class="issue-body">
-        <p><strong>问题：</strong>Banner 配图承载口号与视觉信息，源码无 alt / figcaption；多帧图意无法转写为可检索、可引用的文本 chunk，入库后只剩标题口号。</p>
+        <p><strong>问题：</strong>6 帧在 HTML 平铺，管道无法区分「活动 / 招募帧」与「产品入口帧」；配图口号也无 alt / 图注转写。一律入库即噪声。若 llms.txt 也没有「帧标题 → 角色（运营|规格）→ URL」对照，AI 没有退路核对「这一帧是什么 / 不是什么」。</p>
         </div>
         <div class="fix-suggestion">
           <h4>修改建议</h4>
-          <p>信息型帧补有区分度的 alt 或帧下短说明；纯装饰背景图用 <code>alt=""</code> / <code>aria-hidden</code>，关键图意用正文复述。</p>
-        </div>
-      </div>
-      <div class="content-unit">
-        <h3>4. 缺帧角色区分</h3>
-        <div class="issue-body">
-        <p><strong>问题：</strong>6 帧 indicator 与标题在 HTML 平铺，抓取管道无法区分「活动/招募帧」与「产品入口帧」；一律入库即噪声，且无法回答「这一帧是什么 / 不是什么」。</p>
-        </div>
-        <div class="fix-suggestion">
-          <h4>修改建议</h4>
-          <p>信息帧须备一句话事实摘要（说明边界）；策展管道按帧类型分流——活动帧丢弃，仅白名单产品入口帧保留「标题 + 摘要 + href」三要素。</p>
+          <p>信息帧补有区分度的 alt 或帧下短说明；策展按帧类型分流。临时可在 llms.txt 列出各帧角色与落地 URL；页面 SSR 达标并以文档页承载规格后，以页面 / 文档为准。</p>
         </div>
       </div>
     </section>
@@ -551,8 +709,8 @@
       </div>
       <div class="dialog-card">
         <span class="dialog-role">大模型</span>
-        <p>根据首页轮播可见文案，大致包括：智能助手上线、HCCL 通信库创新大赛、AI 开源实习生招募、算子开发者认证等。</p>
-        <p>与算子开发「看起来」最相关的是认证帧，但这些是<strong>运营/活动入口</strong>，不是 CANN 安装或算子 API 的规格说明。若知识库把首页轮播当正文，我可能把招募口号答成产品能力，或给不出对应的文档深链——可靠答案应去文档/下载页，而不是 Banner。</p>
+        <p>根据首页轮播可见文案，大致包括：参与8月问卷调查、昇腾AI创新大赛2026、高校专业赛、推理开发者认证、CANN社区任务、昇腾智能助手上线等。</p>
+        <p>与算子开发「看起来」最相关的是认证 / CANN 社区任务帧，但这些是<strong>运营/活动入口</strong>，不是 CANN 安装或算子 API 的规格说明。源码里 CTA 又是无 href 的 button，我给不出「点进去」的官方文档深链——可靠答案应去文档/下载页，而不是把 Banner 口号当正文入库。</p>
       </div>
     </div>
   </div>
@@ -659,5 +817,75 @@
   syncHash();
 })();
 </script>
+<script>
+(function () {
+  var sidebar = document.querySelector('.comp-sidebar');
+  if (!sidebar) return;
+  var key = 'geo-comp-sidebar-scroll';
+  var y = null;
+  try {
+    var q = new URLSearchParams(location.search).get('sb');
+    if (q !== null && q !== '') y = parseInt(q, 10);
+  } catch (e) {}
+  if (y === null || isNaN(y)) {
+    try {
+      var saved = sessionStorage.getItem(key);
+      if (saved !== null) y = parseInt(saved, 10);
+    } catch (e) {}
+  }
+  if (y === null || isNaN(y)) y = null;
+
+  function restore() {
+    if (y === null) return;
+    sidebar.scrollTop = y;
+  }
+  restore();
+  requestAnimationFrame(function () {
+    restore();
+    requestAnimationFrame(restore);
+  });
+  window.addEventListener('pageshow', restore);
+  window.addEventListener('load', restore);
+  var t0 = Date.now();
+  var iv = setInterval(function () {
+    restore();
+    if (Date.now() - t0 > 800) clearInterval(iv);
+  }, 40);
+
+  try {
+    if (new URLSearchParams(location.search).has('sb')) {
+      var u = new URL(location.href);
+      u.searchParams.delete('sb');
+      history.replaceState(null, '', u.pathname + u.search + u.hash);
+    }
+  } catch (e) {}
+
+  function persist() {
+    y = sidebar.scrollTop;
+    try { sessionStorage.setItem(key, String(y)); } catch (e) {}
+  }
+  sidebar.addEventListener('scroll', persist, { passive: true });
+
+  function stampHref(a) {
+    persist();
+    try {
+      var raw = a.getAttribute('href') || '';
+      var hash = '';
+      var hi = raw.indexOf('#');
+      if (hi >= 0) { hash = raw.slice(hi); raw = raw.slice(0, hi); }
+      var qi = raw.indexOf('?');
+      if (qi >= 0) raw = raw.slice(0, qi);
+      if (raw && raw.indexOf('http') !== 0) {
+        a.setAttribute('href', raw + '?sb=' + String(sidebar.scrollTop) + hash);
+      }
+    } catch (e) {}
+  }
+  sidebar.querySelectorAll('.comp-nav a[href]').forEach(function (a) {
+    a.addEventListener('pointerdown', function () { stampHref(a); }, true);
+    a.addEventListener('click', function () { stampHref(a); }, true);
+  });
+})();
+</script>
+
 </body>
 </html>

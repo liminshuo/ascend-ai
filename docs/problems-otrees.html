@@ -3,8 +3,57 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
 <title>树形导航不可抓 · 亲和分析 · 昇腾社区 AI 亲和原则</title>
 <style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -521,6 +570,145 @@
 
   .comp-sidebar { overflow-anchor: none; }
 
+
+
+  .evidence-block {
+    margin: 12px 0 0;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel2);
+    overflow: hidden;
+  }
+  .evidence-block-title {
+    margin: 0;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+    background: var(--panel);
+  }
+  .section .evidence-block > .evidence-block-title {
+    margin: 0;
+    color: var(--muted);
+  }
+  .evidence-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    padding-top: 0;
+  }
+  .evidence-grid--single {
+    grid-template-columns: 1fr;
+  }
+  @media (max-width: 900px) {
+    .evidence-grid { grid-template-columns: 1fr; }
+  }
+  .evidence-pane {
+    min-width: 0;
+    padding: 12px;
+  }
+  .evidence-pane + .evidence-pane {
+    border-left: 1px solid var(--line);
+  }
+  @media (max-width: 900px) {
+    .evidence-pane + .evidence-pane {
+      border-left: none;
+      border-top: 1px solid var(--line);
+    }
+  }
+  .evidence-pane-label {
+    margin: 0 0 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .section .evidence-pane > .evidence-pane-label {
+    margin: 0 0 12px;
+    color: var(--text);
+  }
+  .evidence-pane img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    margin: 0;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #fff;
+  }
+  .evidence-pane pre {
+    margin: 0;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #0f172a;
+    color: #e2e8f0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 11.5px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 220px;
+    overflow: auto;
+  }
+  .evidence-caption {
+    margin: 12px 0 0;
+    padding: 0;
+    font-size: 12.5px;
+    line-height: 19px;
+    color: var(--muted);
+    text-align: left;
+  }
+  .section .evidence-pane > .evidence-caption {
+    margin: 12px 0 0;
+    color: var(--muted);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </style>
 </head>
 <body data-module="problems" data-page="otrees">
@@ -594,7 +782,8 @@
 
     <p class="page-desc page-desc--split">
       <span class="page-desc-line"><strong>树形导航不可抓</strong>指树节点为文档导航时须链接+标题进 HTML；展开子级源码可读或可爬，否则手册结构丢失。</span>
-      <span class="page-desc-line">以 <a href="https://www.hiascend.com/document/detail/zh/AscendFAQ/ProduTech/productform/hardwaredesc_0001.html" target="_blank" rel="noopener">Ascend FAQ 概览</a> 为例：文档侧栏树与 OMenu 同类；静态 HTML 几乎无 o-trees 可跟链。</span>
+      <span class="page-desc-line"><strong>视情况</strong>：跳转型手册 / 课程树节点须以「标题 + a[href]」进首包；纯同页折叠树若块正文已 SSR 可读，可另论。</span>
+      <span class="page-desc-line">以 <a href="https://www.hiascend.com/document/detail/zh/AscendFAQ/ProduTech/productform/hardwaredesc_0001.html" target="_blank" rel="noopener">产品形态说明</a> 为例：FAQ 手册树场景；静态几乎无侧栏 a[href] 树，子级依赖客户端展开与 __NUXT_DATA__。</span>
     </p>
 
     <section class="section" id="problem">
@@ -602,7 +791,7 @@
       <div class="content-unit">
         <h3>1. 向模型提问</h3>
         <div class="test-prompt-card">
-          <p>我在看 <a href="https://www.hiascend.com/document/detail/zh/AscendFAQ/ProduTech/productform/hardwaredesc_0001.html" target="_blank" rel="noopener">Ascend FAQ 概览</a>，手册树里「产品与技术常见问题」下所有叶子文档的标题和 URL 是什么？</p>
+          <p>我在看 <a href="https://www.hiascend.com/document/detail/zh/AscendFAQ/ProduTech/productform/hardwaredesc_0001.html" target="_blank" rel="noopener">产品形态说明</a>，手册树里「产品与技术常见问题」下所有叶子文档的标题和 URL 是什么？</p>
         </div>
       </div>
       <div class="content-unit">
@@ -619,9 +808,8 @@
             <tr><th>友商</th><th>案例</th><th>被测对象</th><th>html 可抓取</th><th>原因</th></tr>
           </thead>
           <tbody>
-            <tr><td>Mintlify</td><td><a href="https://www.mintlify.com/docs/editor" target="_blank" rel="noopener">文档编辑器</a></td><td><a class="peer-object-link" href="https://www.mintlify.com/docs/editor" target="_blank" rel="noopener" title="该页左侧竖向 menu所在的友商线上页面"><span class="peer-object-name">左侧竖向 menu</span><span class="peer-floor-badge">导航</span></a></td><td><span class="peer-tag peer-tag-ok">可抓全</span></td><td class="peer-reason">侧栏 #sidebar-content 内分组与 href 均在静态 HTML（实测 73 条链）。</td></tr>
-            <tr><td>NVIDIA</td><td><a href="https://docs.nvidia.com/cuda/cuquantum/latest/getting-started/index.html" target="_blank" rel="noopener">Getting Started</a></td><td><a class="peer-object-link" href="https://docs.nvidia.com/cuda/cuquantum/latest/getting-started/index.html" target="_blank" rel="noopener" title="该页左侧竖向 menu所在的友商线上页面"><span class="peer-object-name">左侧竖向 menu</span><span class="peer-floor-badge">导航</span></a></td><td><span class="peer-tag peer-tag-ok">可抓全</span></td><td class="peer-reason">bd-docs-nav 目录树与 href 均在静态 HTML（实测 700+ 条链）。</td></tr>
-            <tr><td>昇腾社区</td><td><a href="https://www.hiascend.com/document/detail/zh/AscendFAQ/ProduTech/productform/hardwaredesc_0001.html" target="_blank" rel="noopener">AscendFAQ</a></td><td><a class="peer-object-link" href="https://www.hiascend.com/document/detail/zh/AscendFAQ/ProduTech/productform/hardwaredesc_0001.html" target="_blank" rel="noopener" title="该页左侧竖向 menu所在的友商线上页面"><span class="peer-object-name">左侧竖向 menu</span><span class="peer-floor-badge">导航</span></a></td><td><span class="peer-tag peer-tag-partial">抓不全</span></td><td class="peer-reason">静态 HTML 无侧栏可跟链导航树，TOC 节点在 __NUXT_DATA__ JSON 中。</td></tr>
+            <tr><td>NVIDIA</td><td><a href="https://www.nvidia.com/en-us/training/find-training/" target="_blank" rel="noopener">Find Training</a></td><td><a class="peer-object-link" href="https://www.nvidia.com/en-us/training/find-training/" target="_blank" rel="noopener" title="该页左侧竖向 menu所在的友商线上页面"><span class="peer-object-name">左侧竖向 menu</span><span class="peer-floor-badge">Filters</span></a></td><td><span class="peer-tag peer-tag-partial">抓不全</span></td><td class="peer-reason">浏览器可见 Filters：Level / Format / Topics 勾选树，但首包仅为 LIBRARIAN.Home.mount 空壳（preSelectedFilters 空）；Introductory 等选项不在静态 HTML、无筛选项 a[href]，禁 JS 列不全。</td></tr>
+            <tr><td>昇腾社区</td><td><a href="https://edu.hicomputing.huawei.com/teaching?activeTab=%E9%B2%B2%E9%B9%8F%E4%B8%93%E5%8C%BA,%E6%98%87%E8%85%BE%E4%B8%93%E5%8C%BA,%E5%8D%8E%E4%B8%BA%E4%BA%91%E4%B8%93%E5%8C%BA,%E8%81%94%E6%8E%A5%E4%B8%93%E5%8C%BA,%E9%80%9A%E7%94%A8%E8%BD%AF%E4%BB%B6%E4%B8%93%E5%8C%BA&amp;resourceType=%E5%88%9B%E6%96%B0%E5%AE%9E%E8%B7%B5%E8%AF%BE&amp;subTab=openEuler%E6%99%BA%E8%83%BD%E8%B0%83%E4%BC%98%EF%BC%88A-Tune%EF%BC%89" target="_blank" rel="noopener">教学资源</a></td><td><a class="peer-object-link" href="https://edu.hicomputing.huawei.com/teaching?activeTab=%E9%B2%B2%E9%B9%8F%E4%B8%93%E5%8C%BA,%E6%98%87%E8%85%BE%E4%B8%93%E5%8C%BA,%E5%8D%8E%E4%B8%BA%E4%BA%91%E4%B8%93%E5%8C%BA,%E8%81%94%E6%8E%A5%E4%B8%93%E5%8C%BA,%E9%80%9A%E7%94%A8%E8%BD%AF%E4%BB%B6%E4%B8%93%E5%8C%BA&amp;resourceType=%E5%88%9B%E6%96%B0%E5%AE%9E%E8%B7%B5%E8%AF%BE&amp;subTab=openEuler%E6%99%BA%E8%83%BD%E8%B0%83%E4%BC%98%EF%BC%88A-Tune%EF%BC%89" target="_blank" rel="noopener" title="该页左侧竖向 menu所在的友商线上页面"><span class="peer-object-name">左侧竖向 menu</span><span class="peer-floor-badge">课程侧栏</span></a></td><td><span class="peer-tag peer-tag-partial">抓不全</span></td><td class="peer-reason">浏览器可见「教学课程 / 创新实践课」及 openEuler智能调优（A-Tune）等课程项，但静态 HTML 无侧栏 a[href] 树；选中态靠 URL resourceType/subTab 与 __NUXT_DATA__，禁 JS 列不全课程入口。</td></tr>
           </tbody>
         </table>
       </div>
@@ -631,46 +819,93 @@
     <section class="section" id="guide">
       <h2 id="solution">根因分析</h2>
       <div class="content-unit">
-        <p><strong>树形导航不可抓</strong>的核心原因：<strong style="color:var(--text)">文档树是站点的发现层，节点须以「标题 + a[href]」进静态 HTML；昇腾侧手册树依赖客户端展开与 __NUXT_DATA__，静态管道看不到子节点链接，Agent 无法沿树枚举全部叶子文档</strong>。</p>
+        <p><strong>视情况</strong>：跳转型手册 / 课程树节点须以「标题 + a[href]」进首包；纯同页折叠树若块正文已 SSR 可读，可另论。</p>
       </div>
       <div class="content-unit">
-        <h3>1. 懒加载子树只在点击后挂载</h3>
-        <div class="issue-body">
-        <p><strong>问题：</strong>手册树默认只渲染顶层节点，子级要点击父节点才由 JS 请求并挂载；禁 JS 或首包抓取时，「产品与技术常见问题」下的叶子文档根本不在 HTML 里，深页 URL 无法枚举。</p>
-        </div>
-        <div class="fix-suggestion">
-          <h4>修改建议</h4>
-          <p>SSR 当前分支（至少展开到当前页所在路径）或一次性输出全树节点；子级不靠点击也在首包可读。</p>
-        </div>
+        <p><strong>树形导航不可抓</strong>的核心原因：<strong style="color:var(--text)">人在浏览器里能看见左侧手册树，但「查看网页源代码」里几乎没有「标题 + a[href]」的完整节点——树要等 JavaScript 展开才挂出来，章节藏在 __NUXT_DATA__ 里，所以爬虫和 AI 默认沿树枚举不到全部叶子文档</strong>。</p>
       </div>
-      <div class="content-unit">
-        <h3>2. 节点是 span/click 而非 a[href]</h3>
-        <div class="issue-body">
-        <p><strong>问题：</strong>树节点用 span + onclick 跳转，没有真实 a[href]；爬虫只能看到一串无链接的标题文本，无法把标题映射到具体文档 URL。</p>
+      <div class="evidence-block">
+        <p class="evidence-block-title">实测证据 · 浏览器手册树 vs 静态源码</p>
+        <div class="evidence-grid">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">浏览器里能看见的手册树</p>
+          <img src="assets/cases-html-ascend/faq-sidebar.jpg" alt="昇腾 FAQ 文档页浏览器可见左侧手册树" loading="lazy" />
+          <p class="evidence-caption">左图是人眼看到的树；右边是源码里实际能抠出来的链接——整棵分类树基本不在。</p>
         </div>
-        <div class="fix-suggestion">
-          <h4>修改建议</h4>
-          <p>每个叶子节点输出真实 a[href]（展开图标可保留），标题与目标 URL 同在源码。</p>
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">「查看网页源代码」里几乎没有树节点链接</p>
+          <pre>&lt;!-- 查看网页源代码 / 禁 JS：几乎无手册树 a[href] --&gt;
+&lt;!-- 仅见零散文档链，例如： --&gt;
+&lt;a href=&quot;…/AscendFAQ/overview/index.html&quot;&gt;常见问题&lt;/a&gt;
+&lt;a href=&quot;…/hardwaredesc_0001.html&quot;&gt;产品形态说明&lt;/a&gt;
+&lt;!-- 无「产品与技术常见问题」下全部叶子标题 + URL 列表 --&gt;
+&lt;div id=&quot;__NUXT_DATA__&quot;&gt;…&lt;/div&gt;</pre>
         </div>
-      </div>
-      <div class="content-unit">
-        <h3>3. 整棵目录树序列化进 __NUXT_DATA__</h3>
-        <div class="issue-body">
-        <p><strong>问题：</strong>TOC 结构进 __NUXT_DATA__ / 客户端 store，静态 HTML 侧栏近乎空壳；抓取管道读不到层级，手册结构关系丢失。</p>
-        </div>
-        <div class="fix-suggestion">
-          <h4>修改建议</h4>
-          <p>目录树 SSR 成真实 ul/li/a 嵌套列表，别只留客户端 hydrate 的空容器。</p>
         </div>
       </div>
       <div class="content-unit">
-        <h3>4. 缺 llms / MD 平行目录</h3>
+        <h3>1. 源码里没有完整的树节点链接</h3>
         <div class="issue-body">
-        <p><strong>问题：</strong>HTML 树无法完整 SSR 时又没有等价目录清单，Agent 只能在零散页面间迷路，无法确认某分类下有哪些文档。</p>
+        <p><strong>问题：</strong>打开产品形态说明页，用「查看网页源代码」核对：左侧手册树几乎找不到成排 a[href]。有的节点是要点击才懒加载的子级，有的只是可点文案而不是链接——「产品与技术常见问题」下的叶子文档地址要等脚本跑完才挂出来。禁 JS 时枚举不了该分类下全部标题与 URL。友商 Find Training Filters、教学资源课程侧栏同理：人眼可见树/勾选，首包无完整节点链。</p>
+        </div>
+      <div class="evidence-block">
+        <p class="evidence-block-title">证据 · 树节点本来应该长这样</p>
+        <div class="evidence-grid evidence-grid--single">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">期望写进网页的手册树（示意）</p>
+          <pre>&lt;nav class=&quot;doc-tree&quot;&gt;
+  &lt;ul&gt;
+    &lt;li&gt;产品与技术常见问题
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href=&quot;…/hardwaredesc_0001.html&quot;&gt;产品形态说明&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&quot;…/….html&quot;&gt;……其它叶子&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;</pre>
+          <p class="evidence-caption">未展开可以视觉折叠，但标题与 href 必须还在首包。</p>
+        </div>
+        </div>
+      </div>
+        <div class="fix-suggestion">
+          <h4>修改建议</h4>
+          <p>页面一出来就把当前手册树写进 HTML：每个叶子（及需要跳转的父节点）都是「标题 + 真实地址」；展开图标可以保留，但不能代替链接；至少 SSR 当前页所在分支，理想全树可读。</p>
+        </div>
+      </div>
+      <div class="content-unit">
+        <h3>2. 脚本数据也补不出整棵分类树</h3>
+        <div class="issue-body">
+        <p><strong>问题：</strong>即便从 __NUXT_DATA__ 里抠当前页与上一篇 / 下一篇，也只能拿到邻接节点，看不到「产品与技术常见问题」下其余叶子。懒加载未点开的子树根本不在首包数据里。所以既列不全分类结构，也不能靠这段脚本补出完整发现层——半成品。</p>
+        </div>
+      <div class="evidence-block">
+        <p class="evidence-block-title">证据 · 邻篇 ≠ 分类全树</p>
+        <div class="evidence-grid evidence-grid--single">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">页面脚本数据常见形态（示意）</p>
+          <pre>{
+  &quot;finalNodeName&quot;: &quot;产品形态说明&quot;,
+  &quot;finalNodeUrl&quot;: &quot;…/hardwaredesc_0001.html&quot;,
+  &quot;upNodeName&quot;: &quot;…&quot;,
+  &quot;nextNodeName&quot;: &quot;…&quot;
+}
+&lt;!-- ✗ 缺：「产品与技术常见问题」下全部叶子列表 --&gt;</pre>
+          <p class="evidence-caption">能定位当前页，不等于分类树可发现。</p>
+        </div>
+        </div>
+      </div>
+        <div class="fix-suggestion">
+          <h4>修改建议</h4>
+          <p>若脚本数据要作备用，须带完整子节点列表（标题 + URL），不能只有当前页和邻篇；子树勿等点击才请求。</p>
+        </div>
+      </div>
+      <div class="content-unit">
+        <h3>3. 也没有备用的目录清单</h3>
+        <div class="issue-body">
+        <p><strong>问题：</strong>手册树读不全时，如果 llms.txt 或 Markdown 里也没有按分类列出叶子标题与 URL，AI 就只知道当前这一页，无法确认「产品与技术常见问题」下还有哪些文档。</p>
         </div>
         <div class="fix-suggestion">
           <h4>修改建议</h4>
-          <p>在 llms.txt / 文档 MD 维护一份「嵌套列表 = 全量目录 + URL」平行轨，与侧栏树一致。</p>
+          <p>在 llms.txt 或平行 MD 再列一份嵌套目录（标题 + 链接），和侧栏树互相补上；页面树 SSR 达标后以页面为准。</p>
         </div>
       </div>
     </section>
@@ -691,11 +926,11 @@
     <div class="modal-body">
       <div class="dialog-card">
         <span class="dialog-role">用户</span>
-        <p>我在看 Ascend FAQ 概览（https://www.hiascend.com/document/detail/zh/AscendFAQ/ProduTech/productform/hardwaredesc_0001.html），手册树里「产品与技术常见问题」下所有叶子文档的标题和 URL 是什么？</p>
+        <p>我在看产品形态说明（https://www.hiascend.com/document/detail/zh/AscendFAQ/ProduTech/productform/hardwaredesc_0001.html），手册树里「产品与技术常见问题」下所有叶子文档的标题和 URL 是什么？</p>
       </div>
       <div class="dialog-card">
         <span class="dialog-role">大模型</span>
-        <p>Mintlify 文档站左侧目录树在静态 HTML 直接 SSR 出成排 `<a href>`，NVIDIA cuQuantum 入门页侧栏同样可爬，我能顺着树枚举叶子文档。但昇腾 FAQ 概览的手册树几乎没有侧栏 `<a href>`，节点标题与 TOC 序列化在 `__NUXT_DATA__` 里、子级要点击才懒加载；探针问「产品与技术常见问题」下所有叶子文档的标题与 URL 时，我无法从首包枚举，与 OMenu / 侧栏 SSR 问题同类。</p>
+        <p>浏览器里能看见左侧手册树，但「查看网页源代码」里几乎没有侧栏 a[href] 列表——节点标题与 TOC 多在 __NUXT_DATA__，子级常要点击父节点才挂载。探针问「产品与技术常见问题」下全部叶子文档的标题与 URL 时，禁 JS 枚举不全。友商 Find Training 的 Filters 勾选树、昇腾教学资源课程侧栏同样是首包空壳。</p>
       </div>
     </div>
   </div>
@@ -794,7 +1029,7 @@
   var t0 = Date.now();
   var iv = setInterval(function () {
     restore();
-    if (Date.now() - t0 > 600) clearInterval(iv);
+    if (Date.now() - t0 > 800) clearInterval(iv);
   }, 40);
 
   try {
@@ -810,21 +1045,24 @@
     try { sessionStorage.setItem(key, String(y)); } catch (e) {}
   }
   sidebar.addEventListener('scroll', persist, { passive: true });
+
+  function stampHref(a) {
+    persist();
+    try {
+      var raw = a.getAttribute('href') || '';
+      var hash = '';
+      var hi = raw.indexOf('#');
+      if (hi >= 0) { hash = raw.slice(hi); raw = raw.slice(0, hi); }
+      var qi = raw.indexOf('?');
+      if (qi >= 0) raw = raw.slice(0, qi);
+      if (raw && raw.indexOf('http') !== 0) {
+        a.setAttribute('href', raw + '?sb=' + String(sidebar.scrollTop) + hash);
+      }
+    } catch (e) {}
+  }
   sidebar.querySelectorAll('.comp-nav a[href]').forEach(function (a) {
-    a.addEventListener('click', function () {
-      persist();
-      try {
-          var raw = a.getAttribute('href') || '';
-          var hash = '';
-          var hi = raw.indexOf('#');
-          if (hi >= 0) { hash = raw.slice(hi); raw = raw.slice(0, hi); }
-          var qi = raw.indexOf('?');
-          if (qi >= 0) raw = raw.slice(0, qi);
-          if (raw && raw.indexOf('http') !== 0) {
-            a.setAttribute('href', raw + '?sb=' + String(sidebar.scrollTop) + hash);
-          }
-      } catch (e) {}
-    });
+    a.addEventListener('pointerdown', function () { stampHref(a); }, true);
+    a.addEventListener('click', function () { stampHref(a); }, true);
   });
 })();
 </script>

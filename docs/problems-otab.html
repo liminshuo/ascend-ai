@@ -3,8 +3,57 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
 <title>Tab 隐藏语义 · 亲和分析 · 昇腾社区 AI 亲和原则</title>
 <style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -521,6 +570,145 @@
 
   .comp-sidebar { overflow-anchor: none; }
 
+
+
+  .evidence-block {
+    margin: 12px 0 0;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel2);
+    overflow: hidden;
+  }
+  .evidence-block-title {
+    margin: 0;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+    background: var(--panel);
+  }
+  .section .evidence-block > .evidence-block-title {
+    margin: 0;
+    color: var(--muted);
+  }
+  .evidence-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    padding-top: 0;
+  }
+  .evidence-grid--single {
+    grid-template-columns: 1fr;
+  }
+  @media (max-width: 900px) {
+    .evidence-grid { grid-template-columns: 1fr; }
+  }
+  .evidence-pane {
+    min-width: 0;
+    padding: 12px;
+  }
+  .evidence-pane + .evidence-pane {
+    border-left: 1px solid var(--line);
+  }
+  @media (max-width: 900px) {
+    .evidence-pane + .evidence-pane {
+      border-left: none;
+      border-top: 1px solid var(--line);
+    }
+  }
+  .evidence-pane-label {
+    margin: 0 0 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .section .evidence-pane > .evidence-pane-label {
+    margin: 0 0 12px;
+    color: var(--text);
+  }
+  .evidence-pane img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    margin: 0;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #fff;
+  }
+  .evidence-pane pre {
+    margin: 0;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #0f172a;
+    color: #e2e8f0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 11.5px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 220px;
+    overflow: auto;
+  }
+  .evidence-caption {
+    margin: 12px 0 0;
+    padding: 0;
+    font-size: 12.5px;
+    line-height: 19px;
+    color: var(--muted);
+    text-align: left;
+  }
+  .section .evidence-pane > .evidence-caption {
+    margin: 12px 0 0;
+    color: var(--muted);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </style>
 </head>
 <body data-module="problems" data-page="otab">
@@ -635,46 +823,86 @@
         <p><strong>视情况</strong>：内容型 Tab（各面板有独立说明 / 列表 / 步骤）须全量 SSR；纯交互或装饰型 Tab 入库剥离。型号 / 架构 / 安装方式等多维选型矩阵归选择块，不按本组件处理。</p>
       </div>
       <div class="content-unit">
-        <p><strong>Tab 隐藏语义</strong>的核心原因：<strong style="color:var(--text)">Tab 标签名与各页签里的正文没有写进网页源码，不点切换只能看到默认那一页</strong>。</p>
+        <p><strong>Tab 隐藏语义</strong>的核心原因：<strong style="color:var(--text)">人在浏览器里能看见「昇腾资源 / 三方资源」等页签，但「查看网页源代码」里页签导航常常是空的，未激活面板的正文也不在首包——不点切换就列不全页签、读不到其它面板里的说明</strong>。</p>
       </div>
-      <div class="content-unit">
-        <h3>1. Tab 标签名未写进网页源码</h3>
-        <div class="issue-body">
-        <p><strong>问题：</strong>昇腾下载页浏览器里能看到「下载资源 / 昇腾资源·三方资源」等页签名，但查看源码时 Tab 导航区域为空或不完整，AI 不知道这一页有哪些页签维度。</p>
+      <div class="evidence-block">
+        <p class="evidence-block-title">实测证据 · 浏览器页签 vs 静态源码</p>
+        <div class="evidence-grid">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">浏览器里能看见的页签</p>
+          <img src="assets/cases-html-ascend/download-edition-note.jpg" alt="CANN 软件下载页浏览器可见昇腾资源 / 三方资源页签" loading="lazy" />
+          <p class="evidence-caption">左图是人眼看到的页签；右边是源码里实际抠到的导航——页签名基本不在。</p>
         </div>
-        <div class="fix-suggestion">
-          <h4>修改建议</h4>
-          <p>页签标题直接写在网页源码里，使不执行脚本也能读到全部 Tab 名称。</p>
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">「查看网页源代码」里页签导航是空的</p>
+          <pre>&lt;!-- 查看网页源代码 / 禁 JS：页签导航常为空 --&gt;
+&lt;div class=&quot;o-tab&quot;&gt;
+  &lt;div class=&quot;o-tab-nav-list&quot;&gt;&lt;/div&gt;
+  &lt;!-- 浏览器可见「昇腾资源 / 三方资源」，源码无页签名 --&gt;
+  &lt;div class=&quot;o-tab-pane o-tab-pane-active&quot;&gt;&lt;!-- 默认区或空 --&gt;&lt;/div&gt;
+  &lt;!-- 未激活「三方资源」面板正文通常不在首包 --&gt;
+&lt;/div&gt;</pre>
         </div>
-      </div>
-      <div class="content-unit">
-        <h3>2. 未选中页签的内容缺失</h3>
-        <div class="issue-body">
-        <p><strong>问题：</strong>安装命令、版本说明等多在未默认选中的页签里，或要点页签后才加载；CANN 下载页源码里几乎只有外壳，答不出「Atlas 800 离线安装命令原文」。</p>
-        </div>
-        <div class="fix-suggestion">
-          <h4>修改建议</h4>
-          <p>每一个页签对应的正文都预先写进网页源码，不必点击切换才能抓到。</p>
-        </div>
-      </div>
-      <div class="content-unit">
-        <h3>3. 用隐藏让内容从源码里消失</h3>
-        <div class="issue-body">
-        <p><strong>问题：</strong>未激活页签常用 display:none 或干脆不输出 HTML，抓取时当作「没有这些内容」，而不是「还有别的页签可看」。</p>
-        </div>
-        <div class="fix-suggestion">
-          <h4>修改建议</h4>
-          <p>若需视觉隐藏，仍保留文本节点；或为每个页签提供独立页面/锚点链接。</p>
         </div>
       </div>
       <div class="content-unit">
-        <h3>4. 没有不点 Tab 也能读到的说明</h3>
+        <h3>1. 页签名没有写进网页源码</h3>
         <div class="issue-body">
-        <p><strong>问题：</strong>安装步骤、下载链接等没有单独的文档页，也没有在 llms.txt 里按页签列出来，AI 只能依赖这一页的交互。</p>
+        <p><strong>问题：</strong>打开 CANN 软件下载页，用「查看网页源代码」核对：o-tab-nav-list 经常是空的。浏览器里有「昇腾资源 / 三方资源」，源码读不到这些名字——AI 甚至不知道这一页有哪些页签维度。</p>
+        </div>
+      <div class="evidence-block">
+        <p class="evidence-block-title">证据 · 页签导航本来应该长这样</p>
+        <div class="evidence-grid evidence-grid--single">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">期望写进网页的页签名（示意）</p>
+          <pre>&lt;div class=&quot;o-tab-nav-list&quot;&gt;
+  &lt;span role=&quot;tab&quot; aria-selected=&quot;true&quot;&gt;昇腾资源&lt;/span&gt;
+  &lt;span role=&quot;tab&quot;&gt;三方资源&lt;/span&gt;
+&lt;/div&gt;</pre>
+          <p class="evidence-caption">页签名要进源码；只在浏览器里画出来不算达标。</p>
+        </div>
+        </div>
+      </div>
+        <div class="fix-suggestion">
+          <h4>修改建议</h4>
+          <p>每个页签名称直接写进首包 HTML，使不执行脚本也能读到全部 Tab 名称。</p>
+        </div>
+      </div>
+      <div class="content-unit">
+        <h3>2. 未激活面板的正文也不在首包</h3>
+        <div class="issue-body">
+        <p><strong>问题：</strong>默认面板下的部分卡片标题或许还能抓到，但未选中的「三方资源」等面板、以及要点击后才出现的安装 / 配套说明，常常不在源码里。所以既列不全其它页签内容，也答不出「Atlas 离线安装命令原文」。</p>
+        </div>
+      <div class="evidence-block">
+        <p class="evidence-block-title">证据 · 双面板都应进源码</p>
+        <div class="evidence-grid evidence-grid--single">
+        <div class="evidence-pane">
+          <p class="evidence-pane-label">期望写进网页的面板正文（示意）</p>
+          <pre>&lt;div role=&quot;tabpanel&quot; id=&quot;pane-ascend&quot;&gt;
+  &lt;div class=&quot;o-card-title&quot;&gt;CANN&lt;/div&gt;
+  &lt;div class=&quot;o-card-detail&quot;&gt;…&lt;/div&gt;
+  &lt;a href=&quot;/document/…/cann&quot;&gt;查看文档&lt;/a&gt;
+&lt;/div&gt;
+&lt;div role=&quot;tabpanel&quot; id=&quot;pane-third&quot; hidden&gt;
+  …三方资源面板条目…
+&lt;/div&gt;</pre>
+          <p class="evidence-caption">未激活面板可以藏起来，但文本必须还在首包里。</p>
+        </div>
+        </div>
+      </div>
+        <div class="fix-suggestion">
+          <h4>修改建议</h4>
+          <p>每一个页签面板的正文都预先写进源码；可用 hidden / display:none 做视觉隐藏，禁止点击后才 JS 注入。</p>
+        </div>
+      </div>
+      <div class="content-unit">
+        <h3>3. 没有不点 Tab 也能读到的说明</h3>
+        <div class="issue-body">
+        <p><strong>问题：</strong>安装步骤、下载链接等如果没有单独的文档页，也没有在 llms.txt 里按页签列出来，AI 就只能依赖这一页的交互——侧栏 / 源码读不到时就没有退路。</p>
         </div>
         <div class="fix-suggestion">
           <h4>修改建议</h4>
-          <p>安装/下载类内容提供独立文档页，或在 llms.txt 中按页签列出要点与链接。</p>
+          <p>安装 / 下载类内容提供独立文档页，或在 llms.txt 中按页签列出要点与链接。</p>
         </div>
       </div>
     </section>
@@ -699,7 +927,7 @@
       </div>
       <div class="dialog-card">
         <span class="dialog-role">大模型</span>
-        <p>静态 HTML 中安装命令与多轴 Tab 面板正文几乎不在首包，我只能看到页壳与当前默认组合。无法给出 Atlas 800 离线安装的完整命令原文——非激活面板很可能未 SSR 或被 display:none 隐藏。</p>
+        <p>根据当前静态 HTML，我能看到页壳和部分默认区卡片，但页签导航往往是空的，未激活面板与安装命令原文几乎不在首包。无法可靠列出「昇腾资源 / 三方资源」等全部页签，也给不出 Atlas 800 离线安装的完整命令——这些要等脚本跑完、点开对应页签才出现。</p>
       </div>
     </div>
   </div>
@@ -798,7 +1026,7 @@
   var t0 = Date.now();
   var iv = setInterval(function () {
     restore();
-    if (Date.now() - t0 > 600) clearInterval(iv);
+    if (Date.now() - t0 > 800) clearInterval(iv);
   }, 40);
 
   try {
@@ -814,21 +1042,24 @@
     try { sessionStorage.setItem(key, String(y)); } catch (e) {}
   }
   sidebar.addEventListener('scroll', persist, { passive: true });
+
+  function stampHref(a) {
+    persist();
+    try {
+      var raw = a.getAttribute('href') || '';
+      var hash = '';
+      var hi = raw.indexOf('#');
+      if (hi >= 0) { hash = raw.slice(hi); raw = raw.slice(0, hi); }
+      var qi = raw.indexOf('?');
+      if (qi >= 0) raw = raw.slice(0, qi);
+      if (raw && raw.indexOf('http') !== 0) {
+        a.setAttribute('href', raw + '?sb=' + String(sidebar.scrollTop) + hash);
+      }
+    } catch (e) {}
+  }
   sidebar.querySelectorAll('.comp-nav a[href]').forEach(function (a) {
-    a.addEventListener('click', function () {
-      persist();
-      try {
-          var raw = a.getAttribute('href') || '';
-          var hash = '';
-          var hi = raw.indexOf('#');
-          if (hi >= 0) { hash = raw.slice(hi); raw = raw.slice(0, hi); }
-          var qi = raw.indexOf('?');
-          if (qi >= 0) raw = raw.slice(0, qi);
-          if (raw && raw.indexOf('http') !== 0) {
-            a.setAttribute('href', raw + '?sb=' + String(sidebar.scrollTop) + hash);
-          }
-      } catch (e) {}
-    });
+    a.addEventListener('pointerdown', function () { stampHref(a); }, true);
+    a.addEventListener('click', function () { stampHref(a); }, true);
   });
 })();
 </script>
