@@ -24,6 +24,7 @@ from html_readability import (  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 AUTO_PATH = ROOT / "data/html_readability_auto.json"
+SCHEMA_PATH = ROOT / "data/html_schema_probe.json"
 
 HEADER_TIP = attr_esc(
     "按组件楼层聚合（与 citability-html 案例同标尺）："
@@ -100,7 +101,7 @@ PATH_RE = re.compile(
     r'<td class="path"><a href="([^"]+)"[^>]*>.*?</a>.*?</td>\s*'
     r"<td>.*?</td>\s*"
     r"<td>.*?</td>\s*"
-    r"<td>.*?</td>",
+    r"<td(?:\s+class=\"[^\"]*\")?>.*?</td>",
     re.S,
 )
 TR_RE = re.compile(r"<tr>.*?</tr>", re.S)
@@ -147,6 +148,17 @@ def load_auto_site(site: str) -> dict[str, dict]:
     return by_norm
 
 
+def load_schema_by_url() -> dict[str, dict]:
+    if not SCHEMA_PATH.exists():
+        return {}
+    data = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
+    by_norm: dict[str, dict] = {}
+    for site in (data.get("sites") or {}).values():
+        for row in site.get("rows") or []:
+            by_norm[norm_url(row["url"])] = row
+    return by_norm
+
+
 def page_label(tr: str) -> str | None:
     m = NAME_RE.search(tr)
     if not m:
@@ -168,6 +180,31 @@ def add_pending_css(text: str) -> str:
     )
 
 
+STACK_CSS = """
+  .domain-table td.html-stack {
+    vertical-align: middle;
+    line-height: 1.35;
+  }
+  .domain-table td.html-stack > .tag {
+    display: inline-block;
+  }
+  .domain-table td.html-stack > .tag + .tag {
+    display: block;
+    margin-top: 4px;
+    width: fit-content;
+  }
+"""
+
+
+def ensure_stack_css(text: str) -> str:
+    if "td.html-stack > .tag + .tag" in text:
+        return text
+    marker = "  .tag-full { background: var(--yes-bg); color: var(--yes); }"
+    if marker in text:
+        return text.replace(marker, marker + "\n" + STACK_CSS, 1)
+    return text.replace("</style>", STACK_CSS + "\n</style>", 1)
+
+
 def ensure_why_tip_css(text: str) -> str:
     if ".domain-table .why-tip" in text:
         return text
@@ -187,9 +224,11 @@ def patch_html(
     case_page: str,
     case_hint: str,
     scope: str,
+    schema_by_url: dict[str, dict] | None = None,
 ) -> tuple[str, dict]:
     by_url, by_path = build_case_index(cases)
-    stats = {"manual": 0, "inherited": 0, "auto": 0, "pending": 0}
+    schema_by_url = schema_by_url or {}
+    stats = {"manual": 0, "inherited": 0, "auto": 0, "pending": 0, "schema": 0}
 
     text = re.sub(
         r'<th class="th-group th-group-html(?: why-tip)?"[^>]*>读的懂</th>',
@@ -261,10 +300,14 @@ def patch_html(
             tip = pending_tip(page_name, case_page_hint=case_hint)
             stats["pending"] += 1
 
-        new_td = wrap_html_cell(status, tip)
-        start_in_tr = pm.start() + pm.group(0).rfind("<td>")
-        end_in_tr = pm.end()
-        return tr[:start_in_tr] + new_td + tr[end_in_tr:]
+        schema = schema_by_url.get(nurl)
+        if schema and schema.get("has_schema"):
+            stats["schema"] += 1
+        new_td = wrap_html_cell(status, tip, schema=schema)
+        block = pm.group(0)
+        last = block.rfind("<td")
+        new_block = block[:last] + new_td
+        return tr[: pm.start()] + new_block + tr[pm.end() :]
 
     if scope == "panel-ascend":
         panel_m = re.search(
@@ -286,9 +329,11 @@ def sync_target(target: dict) -> dict:
     cases_path = ROOT / "docs" / target["cases"]
     cases = load_cases(cases_path)
     auto_by_url = load_auto_site(target["site"])
+    schema_by_url = load_schema_by_url()
     text = doc_path.read_text(encoding="utf-8")
     text = add_pending_css(text)
     text = ensure_why_tip_css(text)
+    text = ensure_stack_css(text)
     text, stats = patch_html(
         text,
         cases,
@@ -296,6 +341,7 @@ def sync_target(target: dict) -> dict:
         case_page=target["case_page"],
         case_hint=target["case_hint"],
         scope=target["scope"],
+        schema_by_url=schema_by_url,
     )
     doc_path.write_text(text, encoding="utf-8")
     report_path = ROOT / "report-serve" / target["doc"]

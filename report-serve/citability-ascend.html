@@ -645,12 +645,14 @@
     overflow: auto;
     padding: 16px 18px;
     margin: 0;
-    font-family: "SF Mono", "Fira Code", "Cascadia Code", ui-monospace, monospace;
     font-size: var(--body-size);
     line-height: var(--body-lh);
     color: var(--text);
-    white-space: pre-wrap;
     word-break: break-word;
+  }
+  .md-embed .fb-body.md-source {
+    font-family: "SF Mono", "Fira Code", "Cascadia Code", ui-monospace, monospace;
+    white-space: pre-wrap;
   }
   .iframe-fallback {
     position: absolute;
@@ -937,7 +939,7 @@
             内嵌为建议稿参照（非线上实文件）：
             <a id="md-source-link" href="#" target="_blank" rel="noopener"></a>
           </div>
-          <pre class="fb-body" id="md-mirror">加载中…</pre>
+          <div class="fb-body md-source" id="md-mirror">加载中…</div>
         </div>
       </div>
     </div>
@@ -1106,20 +1108,26 @@
   const mdMirror = document.getElementById('md-mirror');
   let mdLoadToken = 0;
 
+  function showMd(text) {
+    mdMirror.classList.remove('md-prose');
+    mdMirror.classList.add('md-source');
+    mdMirror.textContent = text;
+  }
+
   async function loadRightMd(c) {
     const token = ++mdLoadToken;
     mdSourceLink.href = c.rightUrl || '#';
     mdSourceLink.textContent = c.rightLabel || c.rightUrl || '(建议稿)';
-    mdMirror.textContent = '加载中…';
+    showMd('加载中…');
     try {
       const res = await fetch(c.rightMdLocal || c.rightUrl);
       if (!res.ok) throw new Error(String(res.status));
       const text = await res.text();
       if (token !== mdLoadToken) return;
-      mdMirror.textContent = text;
+      showMd(text);
     } catch (_) {
       if (token !== mdLoadToken) return;
-      mdMirror.textContent = '无法加载建议稿。';
+      showMd('无法加载建议稿。');
     }
   }
 
@@ -1144,7 +1152,7 @@
     document.body.classList.remove('modal-open');
     shotLeft.removeAttribute('src');
     mdLoadToken += 1;
-    mdMirror.textContent = '';
+    mdMirror.innerHTML = '';
   }
 
   document.querySelectorAll('[data-case]').forEach((btn) => {

@@ -804,7 +804,9 @@ def render_sidebar(active: str | None) -> str:
         '    <div class="comp-sidebar-title">组件列表</div>',
         '    <nav class="comp-nav">',
     ]
-    for group, items in GROUPS:
+    content_sidebar = getattr(_probe_mod, "CONTENT_SIDEBAR", None)
+    groups = list(GROUPS) + ([content_sidebar] if content_sidebar else [])
+    for group, items in groups:
         lines.append(f'      <div class="comp-group-label">{group}</div>')
         lines.append("      <ul>")
         for slug, name in items:

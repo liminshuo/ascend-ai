@@ -202,13 +202,24 @@ def tag_class(status: str) -> str:
     }.get(status, "tag-no")
 
 
-def wrap_html_cell(status: str, tip: str) -> str:
+def wrap_html_cell(status: str, tip: str, *, schema: dict | None = None) -> str:
     cls = tag_class(status)
     esc = attr_esc(tip)
-    return (
-        f'<td><span class="tag {cls} why-tip" data-tip="{esc}" '
-        f'title="{esc}">{status}</span></td>'
+    main = (
+        f'<span class="tag {cls} why-tip" data-tip="{esc}" '
+        f'title="{esc}">{status}</span>'
     )
+    if schema and schema.get("has_schema"):
+        methods = "/".join(schema.get("methods") or ["json-ld"])
+        types = schema.get("types") or []
+        type_s = "、".join(types[:6]) if types else "（类型未解析）"
+        st = attr_esc(f"首包 HTML 含 Schema.org（{methods}）\n类型：{type_s}")
+        main += (
+            f'\n          <span class="tag tag-yes why-tip tag-schema" '
+            f'data-tip="{st}" title="{st}">Schema</span>'
+        )
+        return f'<td class="html-stack">{main}</td>'
+    return f"<td>{main}</td>"
 
 
 if __name__ == "__main__":

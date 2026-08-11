@@ -3,6 +3,8 @@
 来源：Pixso Symbol 截图整理（2026-07-31）  
 范围：导航类 · 操作类 · 输入类 · 展示类 · 容器类 · 反馈类
 
+> **文档内容载体**（图片 / 热区 / 表格语义 / 代码块 / Note / 折叠）不在本设计系统 39 组件内，见站点 [community-ui.html#cat-content](../community-ui.html#cat-content)，原则与实测自大模型抓取研究站迁入。
+
 ---
 
 ## 索引

@@ -1,0 +1,193 @@
+/* ── Badge（两套样式）── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  line-height: 1;
+  vertical-align: middle;
+  box-sizing: border-box;
+}
+
+/* 状态标签：小节标题、页头实测、表格评级（统一样式 + 分色描边） */
+:is(
+  .badge-status,
+  .page-header-top h1 > .badge,
+  .component-problem .cp-status .badge,
+  .section h3 > .badge:not(.badge-priority),
+  .section h4 > .badge:not(.badge-priority),
+  .data-table td .badge:not(.badge-priority):not(.badge-scope-ui):not(.badge-scope-src):not(.badge-scope-pipe)
+) {
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.section h3:has(> .badge:not(.badge-priority)),
+.section h4:has(> .badge:not(.badge-priority)) {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  height: auto;
+  min-height: 28px;
+}
+
+.section h3 > .badge:not(.badge-priority),
+.section h4 > .badge:not(.badge-priority) {
+  flex-shrink: 0;
+}
+
+:is(
+  .badge-status.badge-bad,
+  .page-header-top h1 > .badge-bad,
+  .component-problem .cp-status .badge-bad,
+  .section h3 > .badge-bad:not(.badge-priority),
+  .section h4 > .badge-bad:not(.badge-priority),
+  .data-table td .badge-bad
+) {
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger-border);
+}
+
+:is(
+  .badge-status.badge-should,
+  .page-header-top h1 > .badge-should,
+  .component-problem .cp-status .badge-should,
+  .section h3 > .badge-should:not(.badge-priority),
+  .section h4 > .badge-should:not(.badge-priority),
+  .data-table td .badge-should
+) {
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
+  border: 1px solid var(--color-warning-border);
+}
+
+:is(
+  .badge-status.badge-ok,
+  .page-header-top h1 > .badge-ok,
+  .component-problem .cp-status .badge-ok,
+  .section h3 > .badge-ok:not(.badge-priority),
+  .section h4 > .badge-ok:not(.badge-priority),
+  .data-table td .badge-ok
+) {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+  border: 1px solid var(--color-success-border);
+}
+
+/* 优先级标签：list-badge-led 内「必要 / 可选」；小节标题内 P0 / P1 */
+.badge-priority,
+.list-badge-led .badge,
+.section h3 > .badge-priority,
+.section h4 > .badge-priority {
+  min-width: 40px;
+  padding: 4px 0;
+  border-radius: 3px;
+  font-size: 11px;
+  border: none;
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.badge-priority.badge-must,
+.list-badge-led .badge-must,
+.section h3 > .badge-priority.badge-must,
+.section h4 > .badge-priority.badge-must {
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+}
+
+.badge-priority.badge-should,
+.list-badge-led .badge-should,
+.section h3 > .badge-priority.badge-should,
+.section h4 > .badge-priority.badge-should {
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
+}
+
+.badge-scope-ui { background: var(--color-danger-bg); color: var(--color-danger); }
+.badge-scope-src { background: var(--color-accent-block-bg); color: var(--color-accent); }
+.badge-scope-pipe { background: var(--color-primary-tint); color: var(--color-primary); }
+
+.data-table td .badge-accent { background: var(--color-accent-tint); color: var(--color-accent); }
+.data-table td .badge-primary { background: var(--color-primary-tint); color: var(--color-primary); }
+
+.scope-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  align-items: center;
+  margin: 0 0 20px;
+  padding: 10px 14px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.scope-legend .badge {
+  margin-right: 4px;
+  padding: 2px 8px;
+  font-size: 11.5px;
+  border-radius: 4px;
+  border: none;
+}
+
+.scope-legend .badge-bad { background: var(--color-danger-bg); color: var(--color-danger); }
+.scope-legend .badge-should { background: var(--color-warning-bg); color: var(--color-warning); }
+.scope-legend .badge-ok { background: var(--color-success-bg); color: var(--color-success); }
+
+td.scope-cell .badge + .badge { margin-left: 4px; }
+
+/* 来源标签：待实测（灰色） */
+.data-table td .badge-muted,
+.badge-status.badge-muted,
+.affinity-source-legend .badge-muted {
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+}
+
+.principle-guide {
+  margin-top: 28px;
+}
+
+.principle-guide h4 {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 16px 0 8px;
+}
+
+.article-header-mock {
+  padding: 16px 20px;
+  border: 1px dashed var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.article-header-mock .mock-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.article-header-mock .mock-tag {
+  padding: 2px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  background: var(--color-primary-tint);
+  color: var(--color-primary);
+}
+
+.article-header-mock .mock-summary {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 13.5px;
+}

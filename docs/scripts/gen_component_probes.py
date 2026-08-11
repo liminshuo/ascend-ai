@@ -84,6 +84,28 @@ GROUPS = [
     ]),
 ]
 
+# 文档层内容载体（侧栏挂载；页面为 principles-*.html / problems-content-*.html，不进 GROUPS 以免误生成）
+CONTENT_SIDEBAR: tuple[str, list[tuple[str, str]]] = (
+    "内容载体",
+    [
+        ("image", "图片图意"),
+        ("hotzone", "图片热区"),
+        ("table", "表格语义"),
+        ("code", "代码块"),
+        ("note", "安全警示"),
+        ("collapse", "折叠面板"),
+    ],
+)
+
+CONTENT_PROBLEM_HREF = {
+    "image": "problems-image.html",
+    "hotzone": "problems-hotzone.html",
+    "table": "problems-table.html",
+    "code": "problems-code.html",
+    "note": "problems-note.html",
+    "collapse": "problems-collapse.html",
+}
+
 # Probe content keyed by slug
 PROBES: dict[str, dict] = {
     "omenu": {
@@ -3311,12 +3333,14 @@ def render_nav_item(name: str, href: str, slug: str, *, active: bool) -> str:
 
 def render_sidebar(active: str | None, *, principles: bool = False) -> str:
     lines = ['  <aside class="comp-sidebar" aria-label="组件列表">', '    <div class="comp-sidebar-title">组件列表</div>', '    <nav class="comp-nav">']
-    for group, items in GROUPS:
+    for group, items in list(GROUPS) + [CONTENT_SIDEBAR]:
         lines.append(f'      <div class="comp-group-label">{group}</div>')
         lines.append("      <ul>")
         for slug, name in items:
             if principles:
                 href = f"principles-{slug}.html"
+            elif slug in CONTENT_PROBLEM_HREF:
+                href = CONTENT_PROBLEM_HREF[slug]
             else:
                 href = f"problems-{slug}.html"
             lines.append(render_nav_item(name, href, slug, active=active == slug))

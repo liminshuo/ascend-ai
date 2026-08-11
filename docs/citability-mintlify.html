@@ -533,12 +533,14 @@
     overflow: auto;
     padding: 16px 18px;
     margin: 0;
-    font-family: "SF Mono", "Fira Code", "Cascadia Code", ui-monospace, monospace;
     font-size: var(--body-size);
     line-height: var(--body-lh);
     color: var(--text);
-    white-space: pre-wrap;
     word-break: break-word;
+  }
+  .md-embed .fb-body.md-source {
+    font-family: "SF Mono", "Fira Code", "Cascadia Code", ui-monospace, monospace;
+    white-space: pre-wrap;
   }
   .iframe-fallback {
     position: absolute;
@@ -700,6 +702,7 @@
       <ul>
         <li><a href="mintlify.html">分析概览</a></li>
         <li><a href="mintlify-index.html">找的到（收录索引）</a></li>
+        <li><a href="mintlify-precision.html">找的准（版本·元数据）</a></li>
         <li><a href="citability-html-mintlify.html">读的懂（html 可读）</a></li>
         <li><a href="citability-mintlify.html" class="active">读的顺（双轨交付）</a></li>
       </ul>
@@ -836,7 +839,7 @@
             内嵌正文来自
             <a id="md-source-link" href="#" target="_blank" rel="noopener"></a>
           </div>
-          <pre class="fb-body" id="md-mirror">加载中…</pre>
+          <div class="fb-body md-source" id="md-mirror">加载中…</div>
         </div>
       </div>
     </div>
@@ -1172,15 +1175,21 @@ A live ranking of how every documentation site we track scores.
   const mdMirror = document.getElementById('md-mirror');
   let mdLoadToken = 0;
 
+  function showMd(text) {
+    mdMirror.classList.remove('md-prose');
+    mdMirror.classList.add('md-source');
+    mdMirror.textContent = text;
+  }
+
   async function loadRightMd(c) {
     const token = ++mdLoadToken;
     mdSourceLink.href = c.rightUrl || '#';
     mdSourceLink.textContent = c.rightUrl || '(无平行 MD)';
     if (!c.rightUrl && !c.rightMdLocal) {
-      mdMirror.textContent = c.mirrorNote || '(无平行 Markdown)';
+      showMd(c.mirrorNote || '(无平行 Markdown)');
       return;
     }
-    mdMirror.textContent = '加载中…';
+    showMd('加载中…');
     const floors = c.floors || [];
     const fallback = c.mirrorNote
       || floors.filter((f) => f.rightMd).map((f) => f.rightMd).join('\n\n')
@@ -1191,10 +1200,10 @@ A live ranking of how every documentation site we track scores.
       if (!res.ok) throw new Error(String(res.status));
       const text = await res.text();
       if (token !== mdLoadToken) return;
-      mdMirror.textContent = text;
+      showMd(text);
     } catch (_) {
       if (token !== mdLoadToken) return;
-      mdMirror.textContent = fallback || '无法加载 Markdown。请点「打开右页」查看原文。';
+      showMd(fallback || '无法加载 Markdown。请点「打开右页」查看原文。');
     }
   }
 
@@ -1221,7 +1230,7 @@ A live ranking of how every documentation site we track scores.
     document.body.classList.remove('modal-open');
     shotLeft.removeAttribute('src');
     mdLoadToken += 1;
-    mdMirror.textContent = '';
+    mdMirror.innerHTML = '';
   }
 
   document.querySelectorAll('[data-case]').forEach((btn) => {
