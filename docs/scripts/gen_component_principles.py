@@ -774,7 +774,7 @@ def compare_block(
         return "\n".join(parts)
 
     if side_by_side:
-        return f"""      <div class="principle-example">
+    return f"""      <div class="principle-example">
         <h4>示例{example_num}. {esc(example_title)}</h4>
         <div class="compare-grid compare-grid--cols">
           <div class="compare-side">
@@ -3763,7 +3763,7 @@ def render_intro_card(d: dict[str, Any]) -> str:
       <p class="rsc-title">{esc(card["title"])}</p>
       <div class="role-split-grid">
 {items}
-      </div>
+    </div>
     </div>
 """
 
@@ -3962,9 +3962,9 @@ def render_page(slug: str, name: str, data: dict[str, Any]) -> str:
     <div class="modal-title">组件亲和原则</div>
   </div>
   <nav class="detail-head-tabs modal-actions" aria-label="视图切换">
-    <a href="{phref}" class="active">亲和原则</a>
+      <a href="{phref}" class="active">亲和原则</a>
     <a href="problems-{slug}.html">实测问题</a>
-  </nav>
+    </nav>
 </div>
 
 <div class="page-wrapper">
@@ -4055,9 +4055,9 @@ def patch_problems_topbar(path: Path, slug: str) -> bool:
             r'\s*<a href="problems-[^"]+\.html"(?: class="active")?>实测问题</a>\s*\n'
             r'\s*<a href="[^"]+"(?: class="active")?>亲和原则</a>',
             '\n' + new_tabs,
-            text,
-            count=1,
-        )
+        text,
+        count=1,
+    )
     if n == 0:
         return False
     if patched != text:
@@ -4183,7 +4183,7 @@ def main() -> None:
                     "sample_label": "社区首页",
                 }
             else:
-                raise SystemExit(f"Missing probe data for {slug}")
+            raise SystemExit(f"Missing probe data for {slug}")
 
         out = principles_out_path(slug)
         data = merge_principles(slug, name, probe)

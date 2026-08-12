@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>手册如何分栏 · 设计指导 · 昇腾社区 AI 亲和原则</title>
+<style>
+  :root {
+    --bg: #F5F5F5;
+    --panel: #ffffff;
+    --panel2: #FAFAFA;
+    --line: #e2e8f0;
+    --text: #191919;
+    --muted: #595959;
+    --accent: #1476FF;
+    --accent-soft: rgba(20, 118, 255, 0.1);
+    --link: #1476FF;
+    --content-max: 1200px;
+    --page-gutter: clamp(16px, 2.5vw, 24px);
+    --body-size: 14px;
+    --body-lh: 22px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-size: var(--body-size);
+    margin: 0;
+    font-family: "PingFang SC", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: var(--body-lh);
+  }
+  a { color: var(--link); }
+  .topbar {
+    position: sticky; top: 0; z-index: 50;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: var(--panel);
+    border-bottom: 1px solid var(--line);
+    overflow: hidden;
+  }
+  .topbar-inner {
+    width: 100%; max-width: none; margin: 0; padding: 0 24px;
+    height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
+  }
+  .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: var(--text); text-decoration: none; white-space: nowrap; margin-right: 40px;
+  }
+  .brand span { color: var(--accent); }
+  .site-nav { display: flex; align-items: center; gap: 4px; flex: 1; flex-wrap: wrap; }
+  .site-nav a {
+    text-decoration: none; color: var(--muted); font-size: 14px; font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .site-nav a:hover { color: var(--accent); background: #F5F5F5; text-decoration: none; }
+  .site-nav a.active { color: var(--accent); background: #F5F5F5; font-weight: 600; }
+  .page-wrapper {
+    display: flex; align-items: stretch; width: 100%;
+    min-height: calc(100vh - 56px); background: var(--bg);
+  }
+  .peer-sidebar {
+    width: clamp(200px, 12.9167vw, 248px); flex-shrink: 0;
+    position: sticky; top: 56px; height: calc(100vh - 56px);
+    overflow-y: auto; padding: 16px 0 32px;
+    border-right: 1px solid var(--line); background: var(--panel);
+  }
+  .peer-nav ul { list-style: none; margin: 0; padding: 0; }
+  .peer-group-label {
+    font-size: 11px; font-weight: 700; letter-spacing: .04em; color: var(--muted);
+    padding: 12px 20px 4px; margin-top: 8px; border-top: 1px solid var(--line);
+  }
+  .peer-nav > .peer-group-label:first-child { margin-top: 0; border-top: none; padding-top: 10px; }
+  .peer-nav a {
+    display: block; padding: 8px 20px; font-size: 13px; line-height: 1.5;
+    text-decoration: none; color: var(--muted); border-left: 2px solid transparent;
+  }
+  .peer-nav a:hover { color: var(--text); background: #F5F5F5; }
+  .peer-nav a.active {
+    color: var(--accent); font-weight: 600; background: #EEF5FF; border-left-color: var(--accent);
+  }
+  .peer-main { flex: 1; min-width: 0; background: #fff; }
+  .peer-main > .wrap {
+    width: min(var(--content-max), calc(100% - 2 * var(--page-gutter)));
+    margin: 0 auto; padding: 32px 0 80px;
+  }
+  header { margin-bottom: 28px; }
+  h1 {
+    font-family: "PingFang SC", sans-serif;
+    font-size: clamp(28px, 4vw, 40px); font-weight: 600;
+    margin: 8px 0 12px; letter-spacing: -0.02em; line-height: 48px;
+  }
+  .sub { color: var(--muted); max-width: none; font-size: 15px; margin: 0 0 24px; line-height: var(--body-lh); }
+  .eyebrow {
+    color: var(--accent); font-size: 12px; font-weight: 700;
+    letter-spacing: .06em; margin: 0 0 4px;
+  }
+  h2.block-title {
+    margin: 40px 0 12px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #f0f0f0;
+    font-size: 24px;
+    line-height: 36px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--text);
+  }
+  .section-block:first-of-type h2.block-title { margin-top: 0; }
+  .section-desc {
+    margin: 0 0 16px;
+    color: var(--muted);
+    max-width: none;
+    width: 100%;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .section-desc ul {
+    margin: 8px 0 0;
+    padding-left: 1.2em;
+    color: var(--text);
+  }
+  .section-desc li { margin: 0.3em 0; }
+  .core-line {
+    margin: 0 0 20px; font-size: 16px; font-weight: 600; color: var(--text);
+  }
+  .detail-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;
+  }
+  .detail-card {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px;
+  }
+  .detail-card h2 {
+    margin: 0 0 10px; font-size: 12px; font-weight: 700;
+    letter-spacing: .04em; color: var(--accent);
+  }
+  .detail-card ul { margin: 0; padding-left: 1.15em; }
+  .detail-card li { margin: 0.25em 0; }
+  .detail-card.muted-card { color: var(--muted); }
+  .rep-list { list-style: none; padding-left: 0; margin: 0; }
+  .rep-list li { margin: 0.25em 0; }
+  .comp-links { margin: 8px 0 0; font-size: 13px; color: var(--muted); }
+  .comp-links a { color: var(--link); }
+
+  .pattern {
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+  }
+  .pattern .pattern-lead { margin: 0 0 16px; color: var(--muted); font-size: 15px; }
+  .pattern-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px; }
+  .pattern-cell h2, .pattern-cell h3, .pattern-cell h4 {
+    margin: 0 0 8px; font-size: 12px; font-weight: 700;
+    letter-spacing: .04em; color: var(--accent);
+  }
+  .pattern-cell ul { margin: 0; padding-left: 1.15em; color: var(--text); }
+  .pattern-cell li { margin: 0.2em 0; }
+  .pattern-cell .muted { color: var(--muted); }
+  .pattern-check {
+    margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line);
+  }
+  .pattern-check h2, .pattern-check h3, .pattern-check h4 {
+    margin: 0 0 8px; font-size: 12px; font-weight: 700;
+    letter-spacing: .04em; color: var(--muted);
+  }
+  .pattern-check ul { margin: 0; padding-left: 1.15em; }
+  .pattern-check li { margin: 0.25em 0; }
+  .pattern-comps { margin: 12px 0 0; font-size: 13px; color: var(--muted); }
+  .pattern-comps a { color: var(--link); }
+
+  .hub-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+  }
+  .hub-card {
+    display: block; background: var(--panel); border: 1px solid var(--line);
+    border-radius: 12px; padding: 16px 18px; text-decoration: none; color: inherit;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .hub-card:hover {
+    border-color: #C9DCFF; box-shadow: 0 4px 16px rgba(20, 118, 255, 0.08);
+    text-decoration: none; color: inherit;
+  }
+  .hub-card .g-label {
+    font-size: 11px; font-weight: 700; letter-spacing: .06em; color: var(--accent); margin: 0 0 6px;
+  }
+  .hub-card h2 { margin: 0 0 6px; font-size: 16px; font-weight: 650; }
+  .hub-card p { margin: 0; color: var(--muted); font-size: 13px; }
+
+  .scheme-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin: 0 0 24px;
+    max-width: none;
+    width: 100%;
+  }
+  .scheme {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 14px 12px;
+    min-width: 0;
+  }
+  .scheme--ok {
+    background: #f3faf7;
+    border-color: #6ee7b7;
+  }
+  .scheme--mid {
+    background: #f5f8ff;
+    border-color: #93c5fd;
+  }
+  .scheme--warn {
+    background: #fff8f3;
+    border-color: #fdba74;
+  }
+  .scheme-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    margin: 0 0 10px;
+  }
+  .scheme-head h3 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 650;
+    color: var(--text);
+  }
+  .scheme--ok .scheme-head h3 { color: #047857; }
+  .scheme--mid .scheme-head h3 { color: #1d4ed8; }
+  .scheme--warn .scheme-head h3 { color: #c2410c; }
+  .scheme-tag {
+    flex-shrink: 0;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+  .scheme-tag--ok {
+    color: #fff;
+    background: #059669;
+    border: 1px solid #047857;
+  }
+  .scheme-tag--mid {
+    color: #fff;
+    background: #2563eb;
+    border: 1px solid #1d4ed8;
+  }
+  .scheme-tag--warn {
+    color: #fff;
+    background: #ea580c;
+    border: 1px solid #c2410c;
+  }
+  .scheme-frame {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fff;
+    padding: 12px;
+  }
+  .scheme--ok .scheme-frame {
+    border-color: #a7f3d0;
+  }
+  .scheme--warn .scheme-frame {
+    border-color: #fed7aa;
+  }
+  .scheme .sf-stack {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    background: transparent;
+    border: none;
+    padding: 0;
+  }
+  .scheme .sf-stack > .sf-pane {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fff;
+    padding: 12px;
+    min-width: 0;
+  }
+  .scheme--ok .sf-stack > .sf-pane {
+    border-color: #a7f3d0;
+  }
+  .scheme--mid .sf-stack > .sf-pane {
+    border-color: #bfdbfe;
+  }
+  .scheme .sf-page-label {
+    margin: 0 0 8px;
+    font-size: 11px;
+    font-weight: 650;
+  }
+  .scheme--ok .sf-page-label { color: #047857; }
+  .scheme--mid .sf-page-label { color: #1d4ed8; }
+  .scheme .sf-page-label code {
+    font-weight: 600;
+    font-size: 10px;
+    color: var(--muted);
+  }
+  .scheme--ok .sf-pager a.is-cur {
+    background: #059669;
+    border-color: #047857;
+  }
+  .scheme--mid .sf-more-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: #1d4ed8;
+    font-size: 13px;
+    font-weight: 650;
+    text-decoration: none;
+  }
+  .scheme--warn .sf-scroll .sf-ghost {
+    background: #ffedd5;
+    color: #9a3412;
+  }
+  .scheme--ok .sf-note { color: #047857; }
+  .scheme--mid .sf-note { color: #1d4ed8; }
+  .scheme--warn .sf-note { color: #9a3412; }
+  .scheme-frame .sf-title {
+    margin: 0 0 10px;
+    font-size: 12px;
+    font-weight: 650;
+    color: var(--text);
+  }
+  .sf-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .sf-card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 10px;
+  }
+  .sf-card .sf-kicker {
+    height: 36px;
+    border-radius: 4px;
+    background: linear-gradient(135deg, #e8eef7, #f5f7fb);
+    margin: 0 0 8px;
+  }
+  .sf-card .sf-name {
+    margin: 0 0 4px;
+    font-size: 12px;
+    font-weight: 650;
+    color: var(--text);
+  }
+  .sf-card .sf-desc {
+    margin: 0 0 6px;
+    font-size: 11px;
+    line-height: 1.4;
+    color: var(--muted);
+  }
+  .sf-card .sf-link {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .sf-pager {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--line);
+    font-size: 11px;
+  }
+  .sf-pager a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 4px;
+    border: 1px solid var(--line);
+    background: #fff;
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .sf-pager a.is-cur {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .sf-pager .sf-url {
+    margin-left: 4px;
+    color: var(--muted);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 10px;
+  }
+  .sf-scroll {
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--line);
+    text-align: center;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .sf-scroll .sf-spinner {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin-right: 6px;
+    vertical-align: -2px;
+    border: 2px solid #fdba74;
+    border-top-color: transparent;
+    border-radius: 50%;
+  }
+  .sf-scroll .sf-ghost {
+    display: block;
+    margin-top: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #f0f0f0;
+    color: #8a8a8a;
+    font-size: 10px;
+  }
+  .sf-note {
+    margin: 8px 0 0;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.45;
+  }
+
+  footer { margin-top: 48px; color: var(--muted); font-size: 12px; }
+  @media (max-width: 900px) {
+    .page-wrapper { flex-direction: column; }
+    .peer-sidebar {
+      position: static; width: 100%; height: auto;
+      border-right: none; border-bottom: 1px solid var(--line);
+    }
+    .detail-grid, .pattern-grid, .hub-grid { grid-template-columns: 1fr; }
+    .scheme .sf-stack { grid-template-columns: 1fr; }
+  }
+
+
+  .mock-page {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 12px;
+    background: #fff;
+  }
+  .scheme--ok .mock-page { border-color: #a7f3d0; }
+  .scheme--mid .mock-page { border-color: #bfdbfe; }
+  .scheme--warn .mock-page { border-color: #fed7aa; }
+  .mock-hub-title {
+    margin: 0 0 10px;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .mock-entry-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+  }
+  .mock-entry {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 10px 12px;
+    background: #fff;
+  }
+  .mock-entry .n {
+    margin: 0 0 4px;
+    font-size: 13px;
+    font-weight: 650;
+  }
+  .mock-entry .d {
+    margin: 0 0 6px;
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+  .mock-entry .l {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .mock-link-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .mock-link-list li {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 13px;
+  }
+  .mock-link-list li:last-child { border-bottom: none; }
+  .mock-link-list .to { color: var(--accent); font-weight: 600; font-size: 12px; white-space: nowrap; }
+  .mock-carousel {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #e8eef7, #f5f7fb);
+    padding: 16px 14px 12px;
+  }
+  .mock-carousel .frame-tag {
+    margin: 0 0 6px;
+    font-size: 10px;
+    font-weight: 700;
+    color: #1d4ed8;
+  }
+  .mock-carousel .frame-h {
+    margin: 0 0 4px;
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .mock-carousel .frame-p {
+    margin: 0 0 8px;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.45;
+  }
+  .mock-carousel .frame-cta {
+    font-size: 12px;
+    font-weight: 650;
+    color: var(--accent);
+  }
+  .mock-carousel.slogan {
+    background: linear-gradient(135deg, #ffedd5, #fff7ed);
+  }
+  .mock-carousel.slogan .frame-tag { color: #c2410c; }
+  .mock-empty-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+  }
+  .mock-empty {
+    border: 1px solid #fed7aa;
+    border-radius: 8px;
+    padding: 10px;
+    background: #fff7ed;
+    text-align: center;
+  }
+  .mock-empty .pic {
+    height: 48px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #fed7aa, #ffedd5);
+    margin: 0 0 8px;
+  }
+  .mock-empty .n {
+    margin: 0 0 4px;
+    font-size: 12px;
+    color: #9a3412;
+  }
+  .mock-empty .l {
+    font-size: 11px;
+    color: #c2410c;
+  }
+  .mock-stuff {
+    border: 1px solid #fed7aa;
+    border-radius: 8px;
+    padding: 10px 12px;
+    background: #fff7ed;
+    margin-top: 8px;
+    font-size: 11px;
+    color: #9a3412;
+    line-height: 1.45;
+  }
+  .pattern-grid { grid-template-columns: 1fr; }
+  @media (max-width: 900px) {
+    .mock-entry-grid, .mock-empty-grid { grid-template-columns: 1fr; }
+  }
+
+
+  .mock-doc-shell {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 0;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
+    min-height: 160px;
+  }
+  .scheme--ok .mock-doc-shell { border-color: #a7f3d0; }
+  .scheme--mid .mock-doc-shell { border-color: #bfdbfe; }
+  .scheme--warn .mock-doc-shell { border-color: #fed7aa; }
+  .mock-side {
+    background: #fafafa;
+    border-right: 1px solid var(--line);
+    padding: 10px 8px;
+    font-size: 11px;
+  }
+  .mock-side .side-label {
+    margin: 0 0 8px;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: .04em;
+  }
+  .mock-side a, .mock-side .side-item {
+    display: block;
+    padding: 5px 8px;
+    margin: 0 0 2px;
+    border-radius: 4px;
+    text-decoration: none;
+    color: var(--text);
+    line-height: 1.35;
+  }
+  .mock-side a.is-cur, .mock-side .side-item.is-cur {
+    background: #EEF5FF;
+    color: var(--accent);
+    font-weight: 650;
+  }
+  .mock-side .side-item.is-fake {
+    color: #9a3412;
+    background: #fff7ed;
+  }
+  .mock-side .side-url {
+    display: block;
+    margin-top: 2px;
+    font-size: 9px;
+    color: var(--muted);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-weight: 500;
+  }
+  .mock-side .side-item.is-fake .side-url { color: #c2410c; }
+  .mock-main {
+    padding: 12px 14px;
+    min-width: 0;
+  }
+  .mock-main .crumb {
+    margin: 0 0 8px;
+    font-size: 10px;
+    color: var(--muted);
+  }
+  .mock-main .h {
+    margin: 0 0 6px;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .mock-main .p {
+    margin: 0 0 8px;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.45;
+  }
+  .mock-anchor-box {
+    margin-top: 8px;
+    padding: 8px 10px;
+    background: #f8fafc;
+    border: 1px dashed #bfdbfe;
+    border-radius: 6px;
+    font-size: 11px;
+  }
+  .mock-anchor-box .al {
+    margin: 0 0 4px;
+    font-weight: 700;
+    color: #1d4ed8;
+    font-size: 10px;
+  }
+  .mock-anchor-box a {
+    display: block;
+    color: var(--accent);
+    text-decoration: none;
+    padding: 2px 0;
+  }
+  .mock-tree-blocks {
+    display: grid;
+    gap: 6px;
+  }
+  .mock-tree-block {
+    padding: 8px 10px;
+    border: 1px solid #bfdbfe;
+    border-radius: 6px;
+    background: #f8fbff;
+    font-size: 11px;
+  }
+  .mock-tree-block .tb-h {
+    margin: 0 0 2px;
+    font-weight: 650;
+    font-size: 12px;
+  }
+  .mock-tree-block .tb-p {
+    margin: 0;
+    color: var(--muted);
+  }
+  .mock-tree-block.is-hidden-note {
+    border-style: dashed;
+    opacity: 0.95;
+  }
+  .mock-warn-note {
+    margin: 8px 0 0;
+    font-size: 11px;
+    color: #9a3412;
+    line-height: 1.45;
+  }
+
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html">社区 <span>AI 亲和原则</span></a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="mintlify.html">友商对照</a>
+      <a href="reachability.html">社区诊断</a>
+      <a href="community-ui.html">组件亲和</a>
+      <a href="design-guide.html" class="active">设计指导</a>
+    </nav>
+  </div>
+</div>
+
+<div class="page-wrapper">
+<aside class="peer-sidebar" aria-label="设计指导导航">
+  <nav class="peer-nav">
+    <div class="peer-group-label">亲和分类</div>
+    <ul>
+      <li><a href="design-guide.html">导流入口</a></li>
+      <li><a href="design-guide-structure.html">结构指引</a></li>
+      <li><a href="design-guide-content.html">内容承载</a></li>
+      <li><a href="design-guide-visibility.html">显隐控制</a></li>
+      <li><a href="design-guide-status.html">状态标识</a></li>
+      <li><a href="design-guide-skip.html">可不做亲和</a></li>
+    </ul>
+    <div class="peer-group-label">延伸指导</div>
+    <ul>
+      <li><a href="design-guide-list-paging.html">列表如何翻页</a></li>
+      <li><a href="design-guide-page-partition.html">同页如何切主题</a></li>
+      <li><a href="design-guide-hub-nav.html">枢纽如何导流</a></li>
+      <li><a href="design-guide-doc-shell.html" class="active">手册如何分栏</a></li>
+      <li><a href="design-guide-main-path.html">主路径如何展开</a></li>
+      <li><a href="design-guide-filter-result.html">筛选后如何交结果</a></li>
+      <li><a href="design-guide-activity-timeline.html">活动规划如何枚举</a></li>
+      <li><a href="design-guide-status-mark.html">状态如何写清</a></li>
+    </ul>
+  </nav>
+</aside>
+<div class="peer-main">
+<div class="wrap">
+  <header>
+    <p class="eyebrow">延伸指导</p>
+    <h1>手册如何分栏</h1>
+    <p class="sub">跨页跳转用菜单；同页章节用锚点——别混用一种壳做两件事。</p>
+  </header>
+
+  <section class="section-block" id="scene">
+    <h2 class="block-title">场景说明</h2>
+    <div class="section-desc">
+      <p>文档阅读壳常见是<strong>左侧目录 + 右侧正文</strong>（FAQ、开发指南、产品手册）。侧栏看起来都叫「目录」，其实在干两件不同的事：<strong>换一篇文档（换 URL）</strong>，或<strong>仍在本页滚到某一章</strong>。</p>
+      <p>对人来说，点一下都能到；对机器来说，要分清「跟链去另一页」还是「同页锚点」。跨页用菜单真链；同页章节用锚点（可与菜单并存）。同页多块切换用树可以，但各块文字要默认可读，别点了才注入。</p>
+      <ul>
+        <li>任务：文档阅读壳</li>
+        <li>页型：左侧目录 + 正文；FAQ / 开发指南 / 产品手册</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section-block" id="schemes">
+    <h2 class="block-title">方式选型</h2>
+    <div class="section-desc">
+      <p>同一壳下三种用法，按推荐程度自上而下；选哪一种，先问侧栏项是「去另一页」还是「滚到本章」。</p>
+      <p>换文档优先真链菜单。本篇章节用锚点，可与菜单一起用。看起来像目录、实际无链接或点了才出正文，机器跟不动。</p>
+    </div>
+
+  <div class="scheme-row" aria-label="三种 UI 方案小样">
+    <section class="scheme scheme--ok">
+      <div class="scheme-head">
+        <h3>方案 A · 侧栏菜单 · 跳转各手册 URL</h3>
+        <span class="scheme-tag scheme-tag--ok">推荐</span>
+      </div>
+      <div class="scheme-frame">
+        <div class="mock-doc-shell">
+          <aside class="mock-side" aria-label="手册目录">
+            <p class="side-label">手册目录 · 换页</p>
+            <a href="#mock-doc-a" class="is-cur">CANN 安装指南<span class="side-url">/docs/cann/install</span></a>
+            <a href="#mock-doc-b">MindIE 部署说明<span class="side-url">/docs/mindie/deploy</span></a>
+            <a href="#mock-doc-c">算子开发入门<span class="side-url">/docs/ops/intro</span></a>
+          </aside>
+          <div class="mock-main" id="mock-doc-a">
+            <p class="crumb">文档 / CANN / 安装指南</p>
+            <p class="h">CANN 安装指南</p>
+            <p class="p">当前页整篇只讲安装。侧栏每一项打开的是另一篇文档地址，项名与目标页标题对齐。</p>
+            <p class="p" style="margin:0;color:#047857;font-size:11px;">换一篇 = 换 URL；静态抓取可跟链枚举整本手册</p>
+          </div>
+        </div>
+      </div>
+      <p class="sf-note">侧栏是发现层：每项真实 a[href]、标题自描述。点开右边是另一页，不是同页偷偷换块。</p>
+    </section>
+
+    <section class="scheme scheme--mid">
+      <div class="scheme-head">
+        <h3>方案 B · 本篇锚点，或同页树（各块默认可读）</h3>
+        <span class="scheme-tag scheme-tag--mid">可接受</span>
+      </div>
+      <div class="scheme-frame sf-stack">
+        <div class="sf-pane">
+          <p class="sf-page-label">本篇目录 · 锚点（可与 A 并存）</p>
+          <div class="mock-doc-shell">
+            <aside class="mock-side">
+              <p class="side-label">仍在本页</p>
+              <a href="#ch-env" class="is-cur">环境准备</a>
+              <a href="#ch-install">安装步骤</a>
+              <a href="#ch-verify">安装验证</a>
+            </aside>
+            <div class="mock-main">
+              <p class="h">CANN 安装指南</p>
+              <div class="mock-anchor-box">
+                <p class="al">正文旁 · 本篇目录</p>
+                <a href="#ch-env"># 环境准备</a>
+                <a href="#ch-install"># 安装步骤</a>
+                <a href="#ch-verify"># 安装验证</a>
+              </div>
+              <p class="p" style="margin:8px 0 0;font-size:11px;">项名与正文标题同名；滚到本章，不换 URL。</p>
+            </div>
+          </div>
+        </div>
+        <div class="sf-pane">
+          <p class="sf-page-label">同页树 · 各内容块已在稿面</p>
+          <div class="mock-page" style="border:1px solid #bfdbfe;border-radius:8px;padding:10px;">
+            <div class="mock-tree-blocks">
+              <div class="mock-tree-block">
+                <p class="tb-h">节点：驱动说明（当前）</p>
+                <p class="tb-p">对应正文已在首包 HTML……</p>
+              </div>
+              <div class="mock-tree-block is-hidden-note">
+                <p class="tb-h">节点：版本兼容（未点开也能读）</p>
+                <p class="tb-p">可视觉隐藏，但不能等点击才注入。</p>
+              </div>
+              <div class="mock-tree-block is-hidden-note">
+                <p class="tb-h">节点：常见问题</p>
+                <p class="tb-p">整块文字同样写在稿面里。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="sf-note">左边：同页章节用锚点。右边：同页树可以，节点不必都有 URL，但每块正文要默认可抓。跨页手册仍用方案 A。</p>
+    </section>
+
+    <section class="scheme scheme--warn">
+      <div class="scheme-head">
+        <h3>方案 C · 伪目录 / 点了才出正文</h3>
+        <span class="scheme-tag scheme-tag--warn">不推荐</span>
+      </div>
+      <div class="scheme-frame">
+        <div class="mock-doc-shell">
+          <aside class="mock-side">
+            <p class="side-label">看起来像目录</p>
+            <span class="side-item is-cur is-fake">简介<span class="side-url">无 href · 仅 onclick</span></span>
+            <span class="side-item is-fake">安装<span class="side-url">无 href · JS 注入</span></span>
+            <span class="side-item is-fake">更多<span class="side-url">泛词 · 去向不明</span></span>
+          </aside>
+          <div class="mock-main">
+            <p class="h">（右侧先空着）</p>
+            <p class="p">点侧栏之后，脚本才把正文塞进来。静态抓取时侧栏跟不动，正文也读不到。</p>
+            <p class="mock-warn-note">或：侧栏既不像换页菜单（没真链），也不像本篇锚点（没章节 id）——一种壳硬做两件事，两边都不达标。</p>
+          </div>
+        </div>
+      </div>
+      <p class="sf-note">侧栏每一项要说得清：是「去另一页」还是「滚到本章」。伪菜单、泛词、点了才注入，机器枚举不了手册。</p>
+    </section>
+  </div>
+  </section>
+
+  <section class="section-block" id="affinity">
+    <h2 class="block-title">亲和说明</h2>
+    <div class="pattern-grid">
+      <div class="pattern-cell">
+        <h3>亲和选型</h3>
+        <ul>
+          <li><strong>方案 A（推荐）</strong>：换一篇文档 / 换 URL → 侧栏菜单真链；项名与目标页标题对齐</li>
+          <li><strong>方案 B（可接受）</strong>：仍在本页切章节 → 锚点（可与 A 并存）；同页多块切换 → 树，各块默认可读</li>
+          <li><strong>方案 C（不推荐）</strong>：看起来像目录、实际无真链；点了才注入正文；一种壳两边都不达标</li>
+          <li>交稿时先标清：每一项是「去另一页」还是「滚到本章」</li>
+        </ul>
+      </div>
+    </div>
+    <p class="pattern-comps">涉及组件与细样：<a href="principles-omenu.html">OMenu 菜单</a> · <a href="principles-otrees.html">Trees 树</a> · <a href="principles-oanchor.html">OAnchor 锚点</a> · <a href="principles-obreadcrumb.html">OBreadcrumb 面包屑</a></p>
+  </section>
+
+  <footer>昇腾社区 AI 亲和原则 · 设计指导 · 手册如何分栏</footer>
+</div>
+</div>
+</div>
+</body>
+</html>

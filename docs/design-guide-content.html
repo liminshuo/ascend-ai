@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>内容承载 · 设计指导 · 昇腾社区 AI 亲和原则</title>
+<style>
+  :root {
+    --bg: #F5F5F5;
+    --panel: #ffffff;
+    --panel2: #FAFAFA;
+    --line: #e2e8f0;
+    --text: #191919;
+    --muted: #595959;
+    --accent: #1476FF;
+    --accent-soft: rgba(20, 118, 255, 0.1);
+    --link: #1476FF;
+    --content-max: 1200px;
+    --page-gutter: clamp(16px, 2.5vw, 24px);
+    --body-size: 14px;
+    --body-lh: 22px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-size: var(--body-size);
+    margin: 0;
+    font-family: "PingFang SC", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: var(--body-lh);
+  }
+  a { color: var(--link); }
+  .topbar {
+    position: sticky; top: 0; z-index: 50;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: var(--panel);
+    border-bottom: 1px solid var(--line);
+    overflow: hidden;
+  }
+  .topbar-inner {
+    width: 100%; max-width: none; margin: 0; padding: 0 24px;
+    height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
+  }
+  .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: var(--text); text-decoration: none; white-space: nowrap; margin-right: 40px;
+  }
+  .brand span { color: var(--accent); }
+  .site-nav { display: flex; align-items: center; gap: 4px; flex: 1; flex-wrap: wrap; }
+  .site-nav a {
+    text-decoration: none; color: var(--muted); font-size: 14px; font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .site-nav a:hover { color: var(--accent); background: #F5F5F5; text-decoration: none; }
+  .site-nav a.active { color: var(--accent); background: #F5F5F5; font-weight: 600; }
+  .page-wrapper {
+    display: flex; align-items: stretch; width: 100%;
+    min-height: calc(100vh - 56px); background: var(--bg);
+  }
+  .peer-sidebar {
+    width: clamp(200px, 12.9167vw, 248px); flex-shrink: 0;
+    position: sticky; top: 56px; height: calc(100vh - 56px);
+    overflow-y: auto; padding: 16px 0 32px;
+    border-right: 1px solid var(--line); background: var(--panel);
+  }
+  .peer-nav ul { list-style: none; margin: 0; padding: 0; }
+  .peer-group-label {
+    font-size: 11px; font-weight: 700; letter-spacing: .04em; color: var(--muted);
+    padding: 12px 20px 4px; margin-top: 8px; border-top: 1px solid var(--line);
+  }
+  .peer-nav > .peer-group-label:first-child { margin-top: 0; border-top: none; padding-top: 10px; }
+  .peer-nav a {
+    display: block; padding: 8px 20px; font-size: 13px; line-height: 1.5;
+    text-decoration: none; color: var(--muted); border-left: 2px solid transparent;
+  }
+  .peer-nav a:hover { color: var(--text); background: #F5F5F5; }
+  .peer-nav a.active {
+    color: var(--accent); font-weight: 600; background: #EEF5FF; border-left-color: var(--accent);
+  }
+  .peer-main { flex: 1; min-width: 0; background: var(--bg); }
+  .peer-main > .wrap {
+    width: min(var(--content-max), calc(100% - 2 * var(--page-gutter)));
+    margin: 0 auto; padding: 32px 0 80px;
+  }
+  header { margin-bottom: 28px; }
+  h1 {
+    font-family: "PingFang SC", sans-serif;
+    font-size: clamp(28px, 4vw, 40px); font-weight: 600;
+    margin: 8px 0 12px; letter-spacing: -0.02em; line-height: 48px;
+  }
+  .sub { color: var(--muted); max-width: none; font-size: 15px; margin: 0 0 24px; line-height: var(--body-lh); }
+  .eyebrow {
+    color: var(--accent); font-size: 12px; font-weight: 700;
+    letter-spacing: .06em; margin: 0 0 4px;
+  }
+  .core-line {
+    margin: 0 0 20px; font-size: 16px; font-weight: 600; color: var(--text);
+  }
+  .detail-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;
+  }
+  .detail-card {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px;
+  }
+  .detail-card h2 {
+    margin: 0 0 10px; font-size: 12px; font-weight: 700;
+    letter-spacing: .04em; color: var(--accent);
+  }
+  .detail-card ul { margin: 0; padding-left: 1.15em; }
+  .detail-card li { margin: 0.25em 0; }
+  .detail-card.muted-card { color: var(--muted); }
+  .rep-list { list-style: none; padding-left: 0; margin: 0; }
+  .rep-list li { margin: 0.25em 0; }
+  .comp-links { margin: 8px 0 0; font-size: 13px; color: var(--muted); }
+  .comp-links a { color: var(--link); }
+
+  .pattern {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 12px; padding: 22px 24px 20px; margin: 0;
+  }
+  .pattern .pattern-lead { margin: 0 0 16px; color: var(--muted); font-size: 15px; }
+  .pattern-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px; }
+  .pattern-cell h2, .pattern-cell h4 {
+    margin: 0 0 8px; font-size: 12px; font-weight: 700;
+    letter-spacing: .04em; color: var(--accent);
+  }
+  .pattern-cell ul { margin: 0; padding-left: 1.15em; color: var(--text); }
+  .pattern-cell li { margin: 0.2em 0; }
+  .pattern-cell .muted { color: var(--muted); }
+  .pattern-check {
+    margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line);
+  }
+  .pattern-check h2, .pattern-check h4 {
+    margin: 0 0 8px; font-size: 12px; font-weight: 700;
+    letter-spacing: .04em; color: var(--muted);
+  }
+  .pattern-check ul { margin: 0; padding-left: 1.15em; }
+  .pattern-check li { margin: 0.25em 0; }
+  .pattern-comps { margin: 12px 0 0; font-size: 13px; color: var(--muted); }
+  .pattern-comps a { color: var(--link); }
+
+  .hub-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+  }
+  .hub-card {
+    display: block; background: var(--panel); border: 1px solid var(--line);
+    border-radius: 12px; padding: 16px 18px; text-decoration: none; color: inherit;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .hub-card:hover {
+    border-color: #C9DCFF; box-shadow: 0 4px 16px rgba(20, 118, 255, 0.08);
+    text-decoration: none; color: inherit;
+  }
+  .hub-card .g-label {
+    font-size: 11px; font-weight: 700; letter-spacing: .06em; color: var(--accent); margin: 0 0 6px;
+  }
+  .hub-card h2 { margin: 0 0 6px; font-size: 16px; font-weight: 650; }
+  .hub-card p { margin: 0; color: var(--muted); font-size: 13px; }
+
+  footer { margin-top: 48px; color: var(--muted); font-size: 12px; }
+  @media (max-width: 900px) {
+    .page-wrapper { flex-direction: column; }
+    .peer-sidebar {
+      position: static; width: 100%; height: auto;
+      border-right: none; border-bottom: 1px solid var(--line);
+    }
+    .detail-grid, .pattern-grid, .hub-grid { grid-template-columns: 1fr; }
+  }
+
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html">社区 <span>AI 亲和原则</span></a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="mintlify.html">友商对照</a>
+      <a href="reachability.html">社区诊断</a>
+      <a href="community-ui.html">组件亲和</a>
+      <a href="design-guide.html" class="active">设计指导</a>
+    </nav>
+  </div>
+</div>
+
+<div class="page-wrapper">
+<aside class="peer-sidebar" aria-label="设计指导导航">
+  <nav class="peer-nav">
+    <div class="peer-group-label">亲和分类</div>
+    <ul>
+      <li><a href="design-guide.html">导流入口</a></li>
+      <li><a href="design-guide-structure.html">结构指引</a></li>
+      <li><a href="design-guide-content.html" class="active">内容承载</a></li>
+      <li><a href="design-guide-visibility.html">显隐控制</a></li>
+      <li><a href="design-guide-status.html">状态标识</a></li>
+      <li><a href="design-guide-skip.html">可不做亲和</a></li>
+    </ul>
+    <div class="peer-group-label">延伸指导</div>
+    <ul>
+      <li><a href="design-guide-list-paging.html">列表如何翻页</a></li>
+      <li><a href="design-guide-page-partition.html">同页如何切主题</a></li>
+      <li><a href="design-guide-hub-nav.html">枢纽如何导流</a></li>
+      <li><a href="design-guide-doc-shell.html">手册如何分栏</a></li>
+      <li><a href="design-guide-main-path.html">主路径如何展开</a></li>
+      <li><a href="design-guide-filter-result.html">筛选后如何交结果</a></li>
+      <li><a href="design-guide-activity-timeline.html">活动规划如何枚举</a></li>
+      <li><a href="design-guide-status-mark.html">状态如何写清</a></li>
+    </ul>
+  </nav>
+</aside>
+<div class="peer-main">
+<div class="wrap">
+  <header>
+    <p class="eyebrow">亲和分类</p>
+    <h1>内容承载</h1>
+    <p class="sub">重要信息有文字位——卡、图、表、代码都要在稿面留下可引用的字。</p>
+  </header>
+  <p class="core-line">设计核心：重要信息有文字位</p>
+  <div class="detail-grid">
+    <div class="detail-card">
+      <h2>代表组件</h2>
+      <ul class="rep-list"><li>OCard 卡片</li><li>OCarousel 幻灯片</li><li>Odate-table 数据表格</li><li>图片图意</li><li>图片热区</li><li>代码块</li></ul>
+      <p class="comp-links"><a href="principles-ocard.html">OCard</a> · <a href="principles-ocarousel.html">OCarousel</a> · <a href="principles-odatetable.html">Odate-table</a> · <a href="principles-image.html">图片图意</a> · <a href="principles-hotzone.html">图片热区</a> · <a href="principles-code.html">代码块</a> · <a href="principles-table.html">表格语义</a></p>
+    </div>
+    <div class="detail-card">
+      <h2>稿面要做什么</h2>
+      <ul><li>卡：标题 + 摘要 + 可点区</li><li>图：图注 / 转写位；装饰图单独标；流程优先交 Mermaid</li><li>热区：图下链接清单；表：表题 + 表头 + 完整词</li><li>代码：语言 / 文件名可见</li></ul>
+    </div>
+    <div class="detail-card muted-card" style="grid-column: 1 / -1;">
+      <h2>常见错误</h2>
+      <ul><li>只有封面图无标题；信息图无说明</li><li>表用 ✅❌ 表意；整段流程只交 PNG</li></ul>
+    </div>
+  </div>
+
+  <footer>昇腾社区 AI 亲和原则 · 设计指导 · 内容承载</footer>
+</div>
+</div>
+</div>
+</body>
+</html>
