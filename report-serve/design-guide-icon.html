@@ -1,0 +1,1430 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>图标 · 设计指导 · 昇腾社区 AI 亲和原则</title>
+<style>
+  :root {
+    --bg: #F5F5F5;
+    --panel: #ffffff;
+    --panel2: #FAFAFA;
+    --line: #e2e8f0;
+    --text: #191919;
+    --muted: #595959;
+    --accent: #1476FF;
+    --accent-soft: rgba(20, 118, 255, 0.1);
+    --link: #1476FF;
+    --content-max: 1200px;
+    --page-gutter: clamp(16px, 2.5vw, 24px);
+    --body-size: 14px;
+    --body-lh: 22px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-size: var(--body-size);
+    margin: 0;
+    font-family: "PingFang SC", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: var(--body-lh);
+  }
+  a { color: var(--link); }
+  .topbar {
+    position: sticky; top: 0; z-index: 50;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: var(--panel);
+    border-bottom: 1px solid var(--line);
+    overflow: hidden;
+  }
+  .topbar-inner {
+    width: 100%; max-width: none; margin: 0; padding: 0 24px;
+    height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
+  }
+  .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: var(--text); text-decoration: none; white-space: nowrap; margin-right: 40px;
+  }
+  .brand span { color: var(--accent); }
+  .site-nav { display: flex; align-items: center; gap: 4px; flex: 1; flex-wrap: wrap; }
+  .site-nav a {
+    text-decoration: none; color: var(--muted); font-size: 14px; font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .site-nav a:hover { color: var(--accent); background: #F5F5F5; text-decoration: none; }
+  .site-nav a.active { color: var(--accent); background: #F5F5F5; font-weight: 600; }
+  .page-wrapper {
+    display: flex; align-items: stretch; width: 100%;
+    min-height: calc(100vh - 56px); background: var(--bg);
+  }
+  .peer-sidebar {
+    width: clamp(200px, 12.9167vw, 248px); flex-shrink: 0;
+    position: sticky; top: 56px; height: calc(100vh - 56px);
+    overflow-y: auto; padding: 16px 0 32px;
+    border-right: 1px solid var(--line); background: var(--panel);
+  }
+  .peer-nav ul { list-style: none; margin: 0; padding: 0; }
+  .peer-group-label {
+    font-size: 11px; font-weight: 700; letter-spacing: .04em; color: var(--muted);
+    padding: 12px 20px 4px; margin-top: 8px; border-top: 1px solid var(--line);
+  }
+  .peer-nav > .peer-group-label:first-child { margin-top: 0; border-top: none; padding-top: 10px; }
+  .peer-nav a {
+    display: block; padding: 8px 20px; font-size: 13px; line-height: 1.5;
+    text-decoration: none; color: var(--muted); border-left: 2px solid transparent;
+  }
+  .peer-nav a:hover { color: var(--text); background: #F5F5F5; }
+  .peer-nav a.active {
+    color: var(--accent); font-weight: 600; background: #EEF5FF; border-left-color: var(--accent);
+  }
+  .peer-main { flex: 1; min-width: 0; background: #fff; }
+  .peer-main > .wrap {
+    width: min(var(--content-max), calc(100% - 2 * var(--page-gutter)));
+    margin: 0 auto; padding: 32px 0 80px;
+  }
+  header { margin-bottom: 28px; }
+  h1 {
+    font-family: "PingFang SC", sans-serif;
+    font-size: clamp(28px, 4vw, 40px); font-weight: 600;
+    margin: 8px 0 12px; letter-spacing: -0.02em; line-height: 48px;
+  }
+  .sub { color: var(--muted); max-width: none; font-size: var(--body-size); margin: 0 0 24px; line-height: var(--body-lh); }
+  .eyebrow {
+    color: var(--accent); font-size: 12px; font-weight: 700;
+    letter-spacing: .06em; margin: 0 0 4px;
+  }
+  .core-line {
+    margin: 0 0 20px; font-size: 16px; font-weight: 600; color: var(--text);
+  }
+  h2.block-title {
+    margin: 40px 0 12px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #f0f0f0;
+    font-size: 24px;
+    line-height: 36px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--text);
+  }
+  h2.block-title:first-of-type {
+    margin-top: 0;
+  }
+  .affinity-group-label {
+    margin: 0 0 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+  }
+  .affinity-principles + .affinity-group-label {
+    margin-top: 18px;
+  }
+  .affinity-principles {
+    margin: 0 0 8px;
+    padding: 0;
+    list-style: none;
+    max-width: 720px;
+  }
+  .affinity-principles li {
+    margin: 0 0 10px;
+    font-size: var(--body-size);
+    line-height: var(--body-lh);
+    color: var(--text);
+  }
+  .affinity-principles li:last-child { margin-bottom: 0; }
+  .affinity-principles strong {
+    font-weight: 700;
+    color: var(--text);
+  }
+  .affinity-principles + .core-line {
+    margin-top: 24px;
+  }
+  .type-lead {
+    margin: 0 0 16px;
+    font-size: var(--body-size);
+    line-height: var(--body-lh);
+    color: var(--muted);
+    max-width: 720px;
+  }
+  .type-lead.fn-lead {
+    max-width: none;
+    width: 100%;
+  }
+  .fn-lead-block {
+    margin: 0 0 16px;
+    width: 100%;
+    max-width: none;
+  }
+  .fn-lead-block p {
+    margin: 0 0 6px;
+    font-size: var(--body-size);
+    line-height: var(--body-lh);
+    color: var(--muted);
+  }
+  .fn-lead-block p:last-child { margin-bottom: 0; }
+  .fn-lead-block strong {
+    color: var(--text);
+    font-weight: 650;
+  }
+  .type-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin: 0 0 8px;
+  }
+  .type-card {
+    display: flex;
+    flex-direction: column;
+    background: #f5f5f5;
+    border: none;
+    border-radius: 12px;
+    padding: 16px 18px;
+  }
+  .type-card h3 {
+    margin: 0 0 6px;
+    font-size: 15px;
+    font-weight: 650;
+    color: var(--text);
+  }
+  .type-card .type-ex {
+    margin: 0 0 10px;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.45;
+  }
+  .type-card > .type-mini-grid,
+  .type-card > .type-mock {
+    flex: 1;
+    min-height: 0;
+  }
+  .type-mini-grid {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    gap: 8px;
+  }
+  .type-mini {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: none;
+    border-radius: 8px;
+    background: #fff;
+    padding: 8px 10px;
+  }
+  .type-mini-tag {
+    display: inline-block;
+    margin: 0 0 8px;
+    padding: 0 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 20px;
+    letter-spacing: 0;
+    color: #595959;
+    background: #F5F5F5;
+    white-space: nowrap;
+    vertical-align: baseline;
+  }
+  .type-mini-tag.is-do {
+    color: var(--accent);
+    background: var(--accent-soft);
+  }
+  .type-mock {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: #fff;
+    border: none;
+  }
+  .type-mini .type-mock {
+    padding: 0;
+    border: none;
+    background: transparent;
+    border-radius: 0;
+    gap: 8px;
+    column-gap: 8px;
+  }
+  .type-mock .mi {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    min-height: 20px;
+    max-width: 20px;
+    max-height: 20px;
+    overflow: hidden;
+    background: transparent;
+    color: var(--text);
+    flex: 0 0 20px;
+  }
+  .type-mock .mi svg {
+    display: block;
+    width: 20px !important;
+    height: 20px !important;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .type-mock .mi.mi--16,
+  .type-mock .mi.mi--16 svg {
+    width: 16px !important;
+    height: 16px !important;
+    min-width: 16px;
+    min-height: 16px;
+    max-width: 16px;
+    max-height: 16px;
+    flex-basis: 16px;
+  }
+  .type-mock .ml,
+  .type-mock a.ml,
+  .type-mock .mst {
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 600;
+  }
+  .type-mock .ml {
+    color: var(--text);
+    text-decoration: none;
+  }
+  .type-mock a.ml {
+    color: var(--text);
+  }
+  .type-card .type-mock a.ml {
+    color: var(--text);
+  }
+  .type-mock .mst {
+    font-weight: 650;
+    color: #047857;
+  }
+  .type-mock--product .ml {
+    display: block;
+    font-size: 14px;
+    line-height: 22px;
+  }
+  .type-mock .mst.is-wait { color: #b45309; }
+  .type-mock--product {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 8px;
+    padding-top: 32px;
+    padding-bottom: 32px;
+  }
+  .type-mock--product .mi {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    min-height: 32px;
+    max-width: 32px;
+    max-height: 32px;
+    flex: 0 0 32px;
+    border-radius: 8px;
+    background: linear-gradient(145deg, #3b82f6, #1476FF);
+    color: #fff;
+    overflow: hidden;
+  }
+  .type-mock--product .mi svg {
+    width: 30px !important;
+    height: 20px !important;
+    stroke: #fff;
+  }
+  .type-mock--product .mp-meta {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .type-mock--status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .type-mock--status .row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 14px;
+    line-height: 22px;
+    color: var(--text);
+  }
+  .type-mock--status .dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .type-mock--status .dot.ok {
+    background: #ecfdf5;
+    color: #047857;
+  }
+  .type-mock--status .dot.wait {
+    background: #fff7ed;
+    color: #c2410c;
+  }
+  @media (max-width: 1100px) {
+    .type-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 640px) {
+    .type-grid { grid-template-columns: 1fr; }
+  }
+  .detail-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;
+  }
+  .detail-card {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px;
+  }
+  .detail-card h2 {
+    margin: 0 0 10px; font-size: 12px; font-weight: 700;
+    letter-spacing: .04em; color: var(--accent);
+  }
+  .detail-card ul { margin: 0; padding-left: 1.15em; }
+  .detail-card li { margin: 0.25em 0; }
+  .detail-card.muted-card { color: var(--muted); }
+  .rep-list { list-style: none; padding-left: 0; margin: 0; }
+  .rep-list li { margin: 0.25em 0; }
+  .comp-links { margin: 8px 0 0; font-size: 13px; color: var(--muted); }
+  .comp-links a { color: var(--link); }
+
+  .pattern {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 12px; padding: 22px 24px 20px; margin: 0;
+  }
+  .pattern .pattern-lead { margin: 0 0 16px; color: var(--muted); font-size: 15px; }
+  .pattern-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px; }
+  .pattern-cell h2, .pattern-cell h4 {
+    margin: 0 0 8px; font-size: 12px; font-weight: 700;
+    letter-spacing: .04em; color: var(--accent);
+  }
+  .pattern-cell ul { margin: 0; padding-left: 1.15em; color: var(--text); }
+  .pattern-cell li { margin: 0.2em 0; }
+  .pattern-cell .muted { color: var(--muted); }
+  .pattern-check {
+    margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line);
+  }
+  .pattern-check h2, .pattern-check h4 {
+    margin: 0 0 8px; font-size: 12px; font-weight: 700;
+    letter-spacing: .04em; color: var(--muted);
+  }
+  .pattern-check ul { margin: 0; padding-left: 1.15em; }
+  .pattern-check li { margin: 0.25em 0; }
+  .pattern-comps { margin: 12px 0 0; font-size: 13px; color: var(--muted); }
+  .pattern-comps a { color: var(--link); }
+
+  .hub-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+  }
+  .hub-card {
+    display: block; background: var(--panel); border: 1px solid var(--line);
+    border-radius: 12px; padding: 16px 18px; text-decoration: none; color: inherit;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .hub-card:hover {
+    border-color: #C9DCFF; box-shadow: 0 4px 16px rgba(20, 118, 255, 0.08);
+    text-decoration: none; color: inherit;
+  }
+  .hub-card .g-label {
+    font-size: 11px; font-weight: 700; letter-spacing: .06em; color: var(--accent); margin: 0 0 6px;
+  }
+  .hub-card h2 { margin: 0 0 6px; font-size: 16px; font-weight: 650; }
+  .hub-card p { margin: 0; color: var(--muted); font-size: 13px; }
+
+  h3.fn-h3 {
+    margin: 24px 0 12px;
+    font-size: 18px;
+    line-height: 28px;
+    font-weight: 650;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+  .fn-panel {
+    width: 100%;
+    max-width: none;
+    margin: 0 0 20px;
+    background: #f5f5f5;
+    border: none;
+    border-radius: 12px;
+    padding: 24px 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .fn-panel .anno-stage {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0;
+    gap: 0;
+  }
+  .fn-panel .anno-cards {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+  }
+  .fn-panel .anno-callouts {
+    display: none;
+  }
+  .fn-panel .anno-side {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-shrink: 0;
+    pointer-events: none;
+  }
+  .fn-panel .anno-side--left {
+    margin-right: 2px;
+  }
+  .fn-panel .anno-side--right {
+    margin-left: 2px;
+  }
+  .fn-panel .anno-side--right .anno-mark {
+    flex-direction: row-reverse;
+  }
+  .fn-panel .anno-side--stack {
+    flex-direction: column;
+    justify-content: center;
+    gap: 22px;
+  }
+  .fn-panel .anno-side .anno-leader {
+    width: 12px;
+    height: 1px;
+  }
+  .fn-panel .type-mini {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-width: 200px;
+    padding: 16px 20px;
+  }
+  .fn-panel .type-mini .type-mock {
+    padding: 0;
+    border: none;
+    background: transparent;
+    gap: 8px;
+  }
+  .fn-panel .type-mini .type-mock--product {
+    padding: 8px 4px;
+  }
+  .anno-mark {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0;
+    pointer-events: none;
+  }
+  .anno-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #424242;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .anno-num--ghost {
+    background: transparent;
+    border: 1.5px solid #424242;
+    color: #424242;
+    box-sizing: border-box;
+  }
+  .anno-leader {
+    width: 12px;
+    height: 1px;
+    background: #424242;
+    flex-shrink: 0;
+  }
+  .anno-tip {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #424242;
+    flex-shrink: 0;
+  }
+  .anno-dot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #424242;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .anno-dot--ghost {
+    background: transparent;
+    border: 1.5px solid #424242;
+    color: #424242;
+    box-sizing: border-box;
+  }
+  .anno-legend li.is-ghost {
+    color: var(--text);
+  }
+  .anno-legend li.is-ghost strong {
+    color: var(--text);
+    font-weight: 650;
+  }
+  .anno-legend li.is-ghost .anno-req {
+    color: #b42318;
+  }
+  .anno-legend-title {
+    margin: 16px 0 8px;
+    font-size: var(--body-size);
+    line-height: var(--body-lh);
+    font-weight: 650;
+    color: var(--text);
+  }
+  .anno-legend {
+    list-style: none;
+    margin: 0 0 20px;
+    padding: 0;
+    display: grid;
+    gap: 6px;
+    width: fit-content;
+    max-width: 720px;
+  }
+  .anno-legend li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    line-height: 22px;
+    color: var(--text);
+  }
+  .anno-legend strong {
+    color: var(--text);
+    font-weight: 650;
+  }
+  .anno-req {
+    color: #b42318;
+    font-weight: 650;
+  }
+  .anno-opt {
+    color: var(--muted);
+  }
+  .fn-ex {
+    margin: 0 0 20px;
+    max-width: 720px;
+  }
+  .fn-ex-label {
+    display: inline-block;
+    margin: 0 0 10px;
+    padding: 0 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 20px;
+    color: #b42318;
+    background: #fef3f2;
+  }
+  .fn-ex-label.is-good {
+    color: #047857;
+    background: #ecfdf5;
+  }
+  .fn-ex-bar {
+    display: block;
+    width: 100%;
+    height: 3px;
+    margin: 0 0 16px;
+    background: #b42318;
+    border-radius: 2px;
+  }
+  .fn-ex-bar.is-good {
+    background: #047857;
+  }
+  .fn-ex-bar + .fn-ex-mock {
+    border-radius: 8px;
+  }
+  .fn-ex-mock {
+    border-radius: 8px;
+    overflow: hidden;
+    background: #2c2c2c;
+    border: 1px solid #3a3a3a;
+  }
+  .status-ex-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 13px;
+    line-height: 20px;
+    color: #f5f5f5;
+  }
+  .status-ex-table th,
+  .status-ex-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid #3f3f3f;
+    border-right: 1px solid #3f3f3f;
+    vertical-align: middle;
+    text-align: left;
+    font-weight: 400;
+  }
+  .status-ex-table th:last-child,
+  .status-ex-table td:last-child {
+    border-right: none;
+  }
+  .status-ex-table tr:last-child td {
+    border-bottom: none;
+  }
+  .status-ex-table thead th {
+    font-weight: 500;
+    color: #e8e8e8;
+    border-bottom: 2px solid #1476FF;
+    background: #2c2c2c;
+  }
+  .status-ex-table .col-scene { width: 16%; }
+  .status-ex-table .col-model { width: 30%; }
+  .status-ex-table .col-hw { width: 27%; text-align: center; }
+  .status-ex-table td.col-hw {
+    text-align: center;
+  }
+  .status-ex-table .ck {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    color: #5b9dff;
+    font-size: 16px;
+    line-height: 1;
+    font-weight: 500;
+  }
+  .status-ex-table .ck-txt {
+    font-size: 13px;
+    line-height: 20px;
+    font-weight: 500;
+    color: #f5f5f5;
+  }
+  .status-ex-table .ck-no {
+    font-size: 13px;
+    line-height: 20px;
+    font-weight: 500;
+    color: #a3a3a3;
+  }
+  .fn-ex-title {
+    margin: 12px 0 0;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 650;
+    color: var(--text);
+  }
+  .fn-ex-list {
+    margin: 8px 0 0;
+    padding: 0 0 0 1.25em;
+    list-style: disc;
+  }
+  .fn-ex-list li {
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+    line-height: 22px;
+    color: var(--text);
+  }
+  .fn-ex-list li + li {
+    margin-top: 8px;
+  }
+  .fn-ex-list strong {
+    font-weight: 650;
+    color: var(--text);
+  }
+  .fn-ex-note {
+    margin: 8px 0 0;
+    font-size: 14px;
+    line-height: 22px;
+    color: var(--text);
+  }
+  .fn-ex-note:first-of-type {
+    margin-top: 10px;
+  }
+  .fn-ex-note strong {
+    font-weight: 650;
+    color: var(--text);
+  }
+  .paper-card {
+    padding: 20px 22px 18px;
+    color: #f5f5f5;
+  }
+  .paper-card-title {
+    margin: 0 0 10px;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 650;
+    color: #fff;
+  }
+  .paper-card-desc {
+    margin: 0 0 14px;
+    font-size: 13px;
+    line-height: 20px;
+    color: #a3a3a3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .paper-card-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0 0 16px;
+  }
+  .paper-card-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    line-height: 20px;
+    color: #d4d4d4;
+  }
+  .paper-card-row .mi {
+    display: inline-flex;
+    width: 16px;
+    height: 16px;
+    color: #e5e5e5;
+    flex-shrink: 0;
+  }
+  .paper-card-row .mi svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .paper-card-row.is-bad .meta-txt {
+    color: #d4d4d4;
+  }
+  .paper-card-actions {
+    display: flex;
+    gap: 10px;
+  }
+  .paper-card-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 32px;
+    padding: 0 14px;
+    border-radius: 4px;
+    font-size: 13px;
+    line-height: 1;
+    font-weight: 500;
+  }
+  .paper-card-btn.is-ghost {
+    border: 1px solid #1476FF;
+    color: #fff;
+    background: transparent;
+  }
+  .paper-card-btn.is-solid {
+    border: 1px solid #1476FF;
+    color: #fff;
+    background: #1476FF;
+  }
+  .anno-scene {
+    margin: 0 0 24px;
+    max-width: 720px;
+  }
+  .anno-scene + .anno-scene {
+    margin-top: -8px;
+  }
+  .anno-scene-title {
+    margin: 0 0 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+  }
+  .anno-scene p {
+    margin: 0 0 8px;
+    font-size: var(--body-size);
+    line-height: var(--body-lh);
+    color: var(--text);
+  }
+  .anno-scene .anno-combo {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+  .anno-scene .anno-combo strong {
+    color: var(--text);
+    font-weight: 650;
+  }
+  .fn-elem table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .fn-elem th,
+  .fn-elem td {
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  .fn-elem th {
+    font-size: 12px;
+    font-weight: 650;
+    color: var(--muted);
+    background: #fafafa;
+  }
+  .fn-elem td:first-child {
+    font-weight: 600;
+    white-space: nowrap;
+    width: 6.5em;
+  }
+  .fn-elem .anno-dot {
+    display: inline-flex;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+  @media (max-width: 900px) {
+    .page-wrapper { flex-direction: column; }
+    .peer-sidebar {
+      position: static; width: 100%; height: auto;
+      border-right: none; border-bottom: 1px solid var(--line);
+    }
+    .detail-grid, .pattern-grid, .hub-grid { grid-template-columns: 1fr; }
+  }
+
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html">社区 <span>AI 亲和原则</span></a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="mintlify.html">友商对照</a>
+      <a href="reachability.html">社区诊断</a>
+      <a href="community-ui.html">组件亲和</a>
+      <a href="design-guide.html" class="active">设计指导</a>
+    </nav>
+  </div>
+</div>
+
+<div class="page-wrapper">
+<aside class="peer-sidebar" aria-label="设计指导导航">
+  <nav class="peer-nav">
+    <div class="peer-group-label">基础样式</div>
+    <ul>
+      <li><a href="design-guide-ui.html">UI 规范</a></li>
+      <li><a href="design-guide-icon.html" class="active">图标</a></li>
+      <li><a href="design-guide-card.html">卡片</a></li>
+      <li><a href="design-guide-banner.html">Banner</a></li>
+      <li><a href="design-guide-image.html">图片</a></li>
+    </ul>
+    <div class="peer-group-label">亲和分类</div>
+    <ul>
+      <li><a href="design-guide.html">导流入口</a></li>
+      <li><a href="design-guide-structure.html">结构指引</a></li>
+      <li><a href="design-guide-content.html">内容承载</a></li>
+      <li><a href="design-guide-visibility.html">显隐控制</a></li>
+      <li><a href="design-guide-status.html">状态标识</a></li>
+      <li><a href="design-guide-skip.html">可不做亲和</a></li>
+    </ul>
+    <div class="peer-group-label">延伸指导</div>
+    <ul>
+      <li><a href="design-guide-list-paging.html">列表如何翻页</a></li>
+      <li><a href="design-guide-page-partition.html">同页如何切主题</a></li>
+      <li><a href="design-guide-hub-nav.html">枢纽如何导流</a></li>
+      <li><a href="design-guide-doc-shell.html">手册如何分栏</a></li>
+      <li><a href="design-guide-main-path.html">主路径如何展开</a></li>
+      <li><a href="design-guide-filter-result.html">筛选后如何交结果</a></li>
+      <li><a href="design-guide-activity-timeline.html">活动规划如何枚举</a></li>
+      <li><a href="design-guide-status-mark.html">状态如何写清</a></li>
+    </ul>
+  </nav>
+</aside>
+<div class="peer-main">
+<div class="wrap">
+  <header>
+    <p class="eyebrow">基础样式</p>
+    <h1>图标</h1>
+    <p class="sub">图标只辅助识别；关键含义必须有字，不能只靠图形。</p>
+  </header>
+  <h2 class="block-title">原则概述</h2>
+  <p class="affinity-group-label">信息呈现</p>
+  <ul class="affinity-principles">
+    <li><strong>分类：</strong>信息型图标与装饰图标分开处理；装饰可忽略，信息不得仅以图形呈现。</li>
+    <li><strong>带字：</strong>图标旁须配文字说明，写清含义、状态与去向，避免机器和用户仅靠图形猜测。</li>
+    <li><strong>明示：</strong>关键说明须默认可见；悬停提示仅作辅助，不得作为唯一信息出处。</li>
+  </ul>
+  <p class="affinity-group-label">交互实现</p>
+  <ul class="affinity-principles">
+    <li><strong>真链：</strong>可点击的图标底层须为真实链接，禁止做成无链接的图标按钮。</li>
+  </ul>
+  <h2 class="block-title">图标分类</h2>
+  <div class="type-grid">
+    <div class="type-card">
+      <h3>功能图标</h3>
+      <p class="type-ex">触发操作的图标</p>
+      <div class="type-mini-grid">
+        <div class="type-mini">
+          <div class="type-mock" aria-label="功能图标小样 · 要做">
+            <span class="mi" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 4v10"/><path d="M8 10l4 4 4-4"/><path d="M5 18h14"/></svg>
+            </span>
+            <a class="ml" href="#mock-dl">下载驱动</a>
+          </div>
+        </div>
+        <div class="type-mini">
+          <div class="type-mock" aria-label="功能图标小样 · 可不做">
+            <span class="mi mi--16" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/></svg>
+            </span>
+            <a class="ml" href="#mock-like">点赞</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="type-card">
+      <h3>产品 / 业务图标</h3>
+      <p class="type-ex">标识产品或业务入口的图标</p>
+      <div class="type-mock type-mock--product" aria-label="产品图标小样">
+        <span class="mi" aria-hidden="true">
+          <svg width="30" height="20" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg>
+        </span>
+        <div>
+          <a class="ml" href="#mock-suite">MindSpore Transformers</a>
+          <div class="mp-meta">大模型套件 · 文档入口</div>
+        </div>
+      </div>
+    </div>
+    <div class="type-card">
+      <h3>状态图标</h3>
+      <p class="type-ex">表达成败 / 进度等状态的图标</p>
+      <div class="type-mock type-mock--status" aria-label="状态图标小样">
+        <div class="row"><span class="dot ok" aria-hidden="true">✓</span><span class="mst">支持</span></div>
+      </div>
+    </div>
+    <div class="type-card">
+      <h3>展示型图标</h3>
+      <p class="type-ex">标注信息的点缀图标</p>
+      <div class="type-mock" aria-label="展示型图标小样">
+        <span class="mi" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v5l3 2"/></svg>
+        </span>
+        <span class="ml">开始时间 14:00</span>
+      </div>
+    </div>
+  </div>
+  <h2 class="block-title">功能图标</h2>
+  <p class="type-lead">功能图标用于触发操作。是否做亲和，看点击后会发生什么：会跳转或获取资源则要做；只改变本页状态则不必做。</p>
+  <h3 class="fn-h3">要做亲和</h3>
+  <div class="fn-lead-block">
+    <p><strong>适用场景：</strong>点击图标会跳转或获取资源（如查看文档、驱动下载、进入专区）。</p>
+    <p><strong>原因：</strong>机器无法仅从图形推断「去哪、取什么」。</p>
+  </div>
+  <div class="fn-panel">
+    <div class="anno-stage" aria-label="功能图标小样 · 要做 · 元素标注">
+      <div class="anno-side anno-side--left" aria-hidden="true">
+        <span class="anno-mark">
+          <span class="anno-num">1</span>
+          <span class="anno-leader"></span>
+          <span class="anno-tip"></span>
+        </span>
+      </div>
+      <div class="type-mini">
+        <div class="type-mock">
+          <span class="mi" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 4v10"/><path d="M8 10l4 4 4-4"/><path d="M5 18h14"/></svg>
+          </span>
+          <a class="ml" href="#mock-dl-detail">下载驱动</a>
+        </div>
+      </div>
+      <div class="anno-side anno-side--right" aria-hidden="true">
+        <span class="anno-mark">
+          <span class="anno-num">2</span>
+          <span class="anno-leader"></span>
+          <span class="anno-tip"></span>
+        </span>
+      </div>
+    </div>
+  </div>
+  <p class="anno-legend-title">解构</p>
+  <ol class="anno-legend">
+    <li><span class="anno-dot">1</span><span><strong>图标图形：</strong>辅助识别。</span></li>
+    <li><span class="anno-dot">2</span><span><strong>可见文案：</strong>图标后写明动作与去向，<span class="anno-req">必要</span>。</span></li>
+    <li class="is-ghost"><span class="anno-dot anno-dot--ghost">3</span><span><strong>真链：</strong>可点击处须为真实链接 <code>a[href]</code>，<span class="anno-req">必要</span>。</span></li>
+  </ol>
+  <h3 class="fn-h3">不必做亲和</h3>
+  <div class="fn-lead-block">
+    <p><strong>适用场景：</strong>点击仅改变本页状态（如点赞、展开、设置）。</p>
+    <p><strong>原因：</strong>不进知识库当正文，标成交互控件即可。</p>
+  </div>
+  <div class="fn-panel">
+    <div class="anno-stage" aria-label="功能图标小样 · 不必做 · 元素标注">
+      <div class="anno-side anno-side--left" aria-hidden="true">
+        <span class="anno-mark">
+          <span class="anno-num">1</span>
+          <span class="anno-leader"></span>
+          <span class="anno-tip"></span>
+        </span>
+      </div>
+      <div class="anno-cards">
+        <div class="type-mini">
+          <div class="type-mock">
+            <span class="mi mi--16" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/></svg>
+            </span>
+          </div>
+        </div>
+        <div class="type-mini">
+          <div class="type-mock">
+            <span class="mi mi--16" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="anno-legend-title">解构</p>
+  <ol class="anno-legend">
+    <li><span class="anno-dot">1</span><span><strong>图标图形：</strong>辅助识别。</span></li>
+    <li><span class="anno-dot">2</span><span><strong>可见文案：</strong>有操作名更好，属体验而非入库义务，可选。</span></li>
+  </ol>
+  <h2 class="block-title">产品 / 业务图标</h2>
+  <p class="type-lead">产品 / 业务图标用于标识产品或业务入口。默认要做亲和：写出产品或业务名，可点则须为真链。</p>
+  <h3 class="fn-h3">亲和原则</h3>
+  <div class="fn-lead-block">
+    <p><strong>适用场景：</strong>产品卡、套件入口、业务专区等需被识别或进入的标识。</p>
+    <p><strong>原因：</strong>机器无法仅从图形推断产品名与去向。</p>
+  </div>
+  <div class="fn-panel">
+    <div class="anno-stage" aria-label="产品图标小样 · 要做 · 元素标注">
+      <div class="anno-side anno-side--left" aria-hidden="true">
+        <span class="anno-mark">
+          <span class="anno-num">1</span>
+          <span class="anno-leader"></span>
+          <span class="anno-tip"></span>
+        </span>
+      </div>
+      <div class="type-mini">
+        <div class="type-mock type-mock--product">
+          <span class="mi" aria-hidden="true">
+            <svg width="30" height="20" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg>
+          </span>
+          <div>
+            <a class="ml" href="#mock-suite-detail">MindSpore Transformers</a>
+            <div class="mp-meta">大模型套件 · 文档入口</div>
+          </div>
+        </div>
+      </div>
+      <div class="anno-side anno-side--right anno-side--stack" aria-hidden="true">
+        <span class="anno-mark">
+          <span class="anno-num">2</span>
+          <span class="anno-leader"></span>
+          <span class="anno-tip"></span>
+        </span>
+        <span class="anno-mark">
+          <span class="anno-num">3</span>
+          <span class="anno-leader"></span>
+          <span class="anno-tip"></span>
+        </span>
+      </div>
+    </div>
+  </div>
+  <p class="anno-legend-title">解构</p>
+  <ol class="anno-legend">
+    <li><span class="anno-dot">1</span><span><strong>图标图形：</strong>辅助识别。</span></li>
+    <li><span class="anno-dot">2</span><span><strong>标题文案：</strong>写明产品或业务名称，<span class="anno-req">必要</span>。</span></li>
+    <li><span class="anno-dot">3</span><span><strong>描述文案：</strong>补充品类或入口说明（如「大模型套件 · 文档入口」），可选。</span></li>
+    <li class="is-ghost"><span class="anno-dot anno-dot--ghost">4</span><span><strong>真链：</strong>作为入口时可点击处须为真实链接 <code>a[href]</code>，<span class="anno-req">必要</span>。</span></li>
+  </ol>
+
+  <h2 class="block-title">状态图标</h2>
+  <p class="type-lead">状态图标用于表达成败、进度等。默认要做亲和：状态含义须写成可见文字，不能只靠对号、色点或悬停。</p>
+  <h3 class="fn-h3">亲和原则</h3>
+  <div class="fn-lead-block">
+    <p><strong>适用场景：</strong>支持 / 不支持、成功 / 失败、进行中、等待中等状态标识。</p>
+    <p><strong>原因：</strong>机器无法仅从图形或颜色推断状态词。</p>
+  </div>
+  <div class="fn-panel">
+    <div class="anno-stage" aria-label="状态图标小样 · 要做 · 元素标注">
+      <div class="anno-side anno-side--left" aria-hidden="true">
+        <span class="anno-mark">
+          <span class="anno-num">1</span>
+          <span class="anno-leader"></span>
+          <span class="anno-tip"></span>
+        </span>
+      </div>
+      <div class="type-mini">
+        <div class="type-mock type-mock--status">
+          <div class="row"><span class="dot ok" aria-hidden="true">✓</span><span class="mst">支持</span></div>
+        </div>
+      </div>
+      <div class="anno-side anno-side--right" aria-hidden="true">
+        <span class="anno-mark">
+          <span class="anno-num">2</span>
+          <span class="anno-leader"></span>
+          <span class="anno-tip"></span>
+        </span>
+      </div>
+    </div>
+  </div>
+  <p class="anno-legend-title">解构</p>
+  <ol class="anno-legend">
+    <li><span class="anno-dot">1</span><span><strong>图标图形：</strong>辅助识别。</span></li>
+    <li><span class="anno-dot">2</span><span><strong>可见文案：</strong>写明状态含义，<span class="anno-req">必要</span>。</span></li>
+  </ol>
+  <h3 class="fn-h3">示例</h3>
+  <div class="fn-ex">
+    <span class="fn-ex-label">反面</span>
+    <div class="fn-ex-bar" aria-hidden="true"></div>
+    <div class="fn-ex-mock" aria-label="状态图标反面示例：仅对号或空单元格">
+      <table class="status-ex-table">
+        <thead>
+          <tr>
+            <th class="col-scene">场景</th>
+            <th class="col-model">模型</th>
+            <th class="col-hw">Atlas 800T 900 A2</th>
+            <th class="col-hw">Atlas 800T A3</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>预训练</td>
+            <td>DeepSeek V3</td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+          </tr>
+          <tr>
+            <td rowspan="2">SFT</td>
+            <td>DeepSeek V3</td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+          </tr>
+          <tr>
+            <td>DeepSeek-R1-Distill-Qwen</td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+          </tr>
+          <tr>
+            <td rowspan="4">推理</td>
+            <td>Qwen2.5-7B/32B</td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+          </tr>
+          <tr>
+            <td>DeepSeek-V3-0324 W4A16</td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+          </tr>
+          <tr>
+            <td>DeepSeek-R1 W4A16</td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+          </tr>
+          <tr>
+            <td>DeepSeek-Janus-Pro</td>
+            <td class="col-hw"></td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="fn-ex-title">问题</p>
+    <ul class="fn-ex-list">
+      <li><strong>缺文案：</strong>状态只有打勾 / 留空，无「支持 / 不支持」字样。</li>
+      <li><strong>有歧义：</strong>空单元格含义不明。</li>
+      <li><strong>禁默认：</strong>不可将空单元格直接视为不支持。</li>
+    </ul>
+  </div>
+  <div class="fn-ex">
+    <span class="fn-ex-label is-good">正面</span>
+    <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+    <div class="fn-ex-mock" aria-label="状态图标正面示例：支持与不支持均有可见文案">
+      <table class="status-ex-table">
+        <thead>
+          <tr>
+            <th class="col-scene">场景</th>
+            <th class="col-model">模型</th>
+            <th class="col-hw">Atlas 800T 900 A2</th>
+            <th class="col-hw">Atlas 800T A3</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>预训练</td>
+            <td>DeepSeek V3</td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+          </tr>
+          <tr>
+            <td rowspan="2">SFT</td>
+            <td>DeepSeek V3</td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+          </tr>
+          <tr>
+            <td>DeepSeek-R1-Distill-Qwen</td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+          </tr>
+          <tr>
+            <td rowspan="4">推理</td>
+            <td>Qwen2.5-7B/32B</td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+          </tr>
+          <tr>
+            <td>DeepSeek-V3-0324 W4A16</td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+          </tr>
+          <tr>
+            <td>DeepSeek-R1 W4A16</td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+          </tr>
+          <tr>
+            <td>DeepSeek-Janus-Pro</td>
+            <td class="col-hw"><span class="ck-no">不支持</span></td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="fn-ex-title">修改</p>
+    <ul class="fn-ex-list">
+      <li><strong>支持项：</strong>在打勾旁边加注「支持」文案。</li>
+      <li><strong>不支持项：</strong>须明确写出「不支持」，禁止以空单元格替代。</li>
+    </ul>
+  </div>
+
+  <h2 class="block-title">展示型图标</h2>
+  <p class="type-lead">展示型图标用于标注信息旁的点缀。图可忽略，字才是内容；语义不得只活在图形里。</p>
+  <h3 class="fn-h3">亲和原则</h3>
+  <div class="fn-lead-block">
+    <p><strong>适用场景：</strong>时间、地点、标签等旁的装饰图标（如时钟 + 时间、定位针 + 地点）。</p>
+    <p><strong>原因：</strong>机器会忽略图形；若文字未写清含义，信息无法入库。</p>
+  </div>
+  <div class="fn-panel">
+    <div class="anno-stage" aria-label="展示型图标小样 · 要做 · 元素标注">
+      <div class="anno-side anno-side--left" aria-hidden="true">
+        <span class="anno-mark">
+          <span class="anno-num">1</span>
+          <span class="anno-leader"></span>
+          <span class="anno-tip"></span>
+        </span>
+      </div>
+      <div class="type-mini">
+        <div class="type-mock">
+          <span class="mi" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v5l3 2"/></svg>
+          </span>
+          <span class="ml">开始时间 14:00</span>
+        </div>
+      </div>
+      <div class="anno-side anno-side--right" aria-hidden="true">
+        <span class="anno-mark">
+          <span class="anno-num">2</span>
+          <span class="anno-leader"></span>
+          <span class="anno-tip"></span>
+        </span>
+      </div>
+    </div>
+  </div>
+  <p class="anno-legend-title">解构</p>
+  <ol class="anno-legend">
+    <li><span class="anno-dot">1</span><span><strong>图标图形：</strong>点缀装饰，可忽略。</span></li>
+    <li><span class="anno-dot">2</span><span><strong>可见文案：</strong>写清信息本身（如「开始时间 14:00」），<span class="anno-req">必要</span>。</span></li>
+  </ol>
+  <h3 class="fn-h3">示例</h3>
+  <div class="fn-ex">
+    <span class="fn-ex-label">反面</span>
+    <div class="fn-ex-bar" aria-hidden="true"></div>
+    <div class="fn-ex-mock" aria-label="展示型图标反面示例：时钟旁只有日期">
+      <div class="paper-card">
+        <p class="paper-card-title">MWPO: Enhancing LLMs Performance through Multi-Weight Preference Strength and Length Optimization</p>
+        <p class="paper-card-desc">Direct Preference Optimization (DPO) have proposed offline alternatives to Reinforcement Learning from Human Feedback (RLHF). In DPO, each preference pair, which serves as the foundation for learning, is typically constructed by first</p>
+        <div class="paper-card-meta">
+          <div class="paper-card-row">
+            <span class="mi" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </span>
+            <span>Shiyue Xu, Fu Zhang, Jingwei Cheng, Linfeng Zhou</span>
+          </div>
+          <div class="paper-card-row is-bad">
+            <span class="mi" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v5l3 2"/></svg>
+            </span>
+            <span class="meta-txt">2025年7月</span>
+          </div>
+        </div>
+        <div class="paper-card-actions">
+          <span class="paper-card-btn is-ghost">查看代码</span>
+          <span class="paper-card-btn is-solid">查看论文</span>
+        </div>
+      </div>
+    </div>
+    <p class="fn-ex-title">问题</p>
+    <ul class="fn-ex-list">
+      <li><strong>缺文案：</strong>时钟旁只有「2025年7月」，未写明是何种时间。</li>
+      <li><strong>有歧义：</strong>可能是发布、更新、活动开始等，机器无法判定。</li>
+    </ul>
+  </div>
+  <div class="fn-ex">
+    <span class="fn-ex-label is-good">正面</span>
+    <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+    <div class="fn-ex-mock" aria-label="展示型图标正面示例：写清时间含义">
+      <div class="paper-card">
+        <p class="paper-card-title">MWPO: Enhancing LLMs Performance through Multi-Weight Preference Strength and Length Optimization</p>
+        <p class="paper-card-desc">Direct Preference Optimization (DPO) have proposed offline alternatives to Reinforcement Learning from Human Feedback (RLHF). In DPO, each preference pair, which serves as the foundation for learning, is typically constructed by first</p>
+        <div class="paper-card-meta">
+          <div class="paper-card-row">
+            <span class="mi" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </span>
+            <span>作者 Shiyue Xu, Fu Zhang, Jingwei Cheng, Linfeng Zhou</span>
+          </div>
+          <div class="paper-card-row">
+            <span class="mi" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v5l3 2"/></svg>
+            </span>
+            <span>发布时间 2025年7月</span>
+          </div>
+        </div>
+        <div class="paper-card-actions">
+          <span class="paper-card-btn is-ghost">查看代码</span>
+          <span class="paper-card-btn is-solid">查看论文</span>
+        </div>
+      </div>
+    </div>
+    <p class="fn-ex-title">修改</p>
+    <ul class="fn-ex-list">
+      <li><strong>时间项：</strong>写成「发布时间 2025年7月」，含义落在可见文案，不靠时钟图形猜测。</li>
+    </ul>
+  </div>
+
+
+</div>
+</div>
+</div>
+</body>
+</html>
