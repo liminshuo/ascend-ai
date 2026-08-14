@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>状态须写成词 · 设计指导 · 昇腾社区 AI 亲和原则</title>
+<title>状态文本化 · 设计指导 · 昇腾社区 AI 亲和原则</title>
 <style>
   :root {
     --bg: #F5F5F5;
@@ -62,7 +62,8 @@
   .peer-sidebar {
     width: clamp(200px, 12.9167vw, 248px); flex-shrink: 0;
     position: sticky; top: 56px; height: calc(100vh - 56px);
-    overflow-y: auto; padding: 16px 0 32px;
+    overflow-y: auto; overflow-anchor: none;
+    padding: 16px 0 32px;
     border-right: 1px solid var(--line); background: var(--panel);
   }
   .peer-nav ul { list-style: none; margin: 0; padding: 0; }
@@ -849,6 +850,11 @@
     font-size: 11px;
     line-height: 16px;
   }
+  .fn-ex-row .status-ex-table .ck-txt,
+  .fn-ex-row .status-ex-table .ck-no {
+    font-size: 12px;
+    line-height: 16px;
+  }
   .fn-ex-row .status-ex-table th,
   .fn-ex-row .status-ex-table td {
     padding: 8px 6px;
@@ -911,13 +917,14 @@
     table-layout: fixed;
     font-size: 13px;
     line-height: 20px;
-    color: #f5f5f5;
+    color: var(--text);
+    background: #fff;
   }
   .status-ex-table th,
   .status-ex-table td {
     padding: 12px 14px;
-    border-bottom: 1px solid #3f3f3f;
-    border-right: 1px solid #3f3f3f;
+    border-bottom: 1px solid var(--line);
+    border-right: 1px solid var(--line);
     vertical-align: middle;
     text-align: left;
     font-weight: 400;
@@ -931,9 +938,9 @@
   }
   .status-ex-table thead th {
     font-weight: 500;
-    color: #e8e8e8;
+    color: var(--text);
     border-bottom: 2px solid #1476FF;
-    background: #2c2c2c;
+    background: #fafafa;
   }
   .status-ex-table .col-scene { width: 16%; }
   .status-ex-table .col-model { width: 30%; }
@@ -946,22 +953,22 @@
     align-items: center;
     justify-content: center;
     gap: 6px;
-    color: #5b9dff;
+    color: #1476FF;
     font-size: 16px;
     line-height: 1;
     font-weight: 500;
   }
   .status-ex-table .ck-txt {
-    font-size: 13px;
-    line-height: 20px;
-    font-weight: 500;
-    color: #f5f5f5;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 400;
+    color: var(--text);
   }
   .status-ex-table .ck-no {
-    font-size: 13px;
-    line-height: 20px;
-    font-weight: 500;
-    color: #a3a3a3;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 400;
+    color: var(--muted);
   }
   .fn-ex-title {
     margin: 12px 0 0;
@@ -1717,10 +1724,22 @@
     flex-shrink: 0;
     width: 16px;
     height: 16px;
-    border-radius: 50%;
-    background: #d4d4d4;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #8c8c8c;
   }
-  .st-cap-mark.is-ok { background: #1476FF; }
+  .st-cap-mark.is-ok { color: #1476FF; }
+  .st-cap-mark.is-fail { color: #8c8c8c; }
+  .st-cap-mark.is-ok-green { color: #16a34a; }
+  .st-cap-mark.is-fail-red { color: #dc2626; }
+  .st-cap-mark svg { display: block; }
+  .st-word-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
   .st-word {
     flex-shrink: 0;
     font-weight: 650;
@@ -1740,7 +1759,7 @@
       <a href="mintlify.html">友商对照</a>
       <a href="reachability.html">社区诊断</a>
       <a href="community-ui.html">组件亲和</a>
-      <a href="design-guide.html" class="active">设计指导</a>
+      <a href="design-guide-image-text.html" class="active">设计指导</a>
     </nav>
   </div>
 </div>
@@ -1748,69 +1767,122 @@
 <div class="page-wrapper">
 <aside class="peer-sidebar" aria-label="设计指导导航">
   <nav class="peer-nav">
-    <div class="peer-group-label">设计模式</div>
+    <div class="peer-group-label">视觉层</div>
     <ul>
-      <li><a href="design-guide-image-text.html">图意文本替代</a></li>
-      <li><a href="design-guide-default-visible.html">默认态须可见</a></li>
-      <li><a href="design-guide-status-word.html" class="active">状态须写成词</a></li>
-      <li><a href="design-guide-click-dest.html">跳转写明去向</a></li>
-      <li><a href="design-guide-section-anchor.html">章节须可链</a></li>
-      <li><a href="design-guide-shell-list.html">壳下须有条目</a></li>
+      <li><a href="design-guide-image-text.html">图意文本化</a></li>
+      <li><a href="design-guide-style-semantic.html">颜色语义化</a></li>
+      <li><a href="design-guide-hierarchy.html">层级文本化</a></li>
+      <li><a href="design-guide-status-word.html" class="active">状态文本化</a></li>
+      <li><a href="design-guide-media.html">多媒体语义化</a></li>
+      <li><a href="design-guide-timestamp.html">版本时效声明化</a></li>
+      <li><a href="design-guide-gui-map.html">界面元素数值化</a></li>
+      <li><a href="design-guide-default-empty.html">占位与空态文本化</a></li>
     </ul>
-    <div class="peer-group-label">延伸指导</div>
+    <div class="peer-group-label">交互层</div>
     <ul>
-      <li><a href="design-guide-list-paging.html">列表如何翻页</a></li>
-      <li><a href="design-guide-page-partition.html">同页如何切主题</a></li>
+      <li><a href="design-guide-default-visible.html">悬停内容常驻化</a></li>
+      <li><a href="design-guide-click-prefab.html">点击内容预制化</a></li>
+      <li><a href="design-guide-placeholder.html">输入占位标签化</a></li>
+      <li><a href="design-guide-section-anchor.html">节级锚点可引用</a></li>
+      <li><a href="design-guide-click-dest.html">同文入口区分化</a></li>
+    </ul>
+    <div class="peer-group-label">框架层</div>
+    <ul>
+      <li><a href="design-guide-noise.html">噪音过滤</a></li>
+      <li><a href="design-guide-page-context.html">跨页路径语义化</a></li>
+      <li><a href="design-guide-carrier.html">信息载体选定原则</a></li>
     </ul>
   </nav>
 </aside>
 <div class="peer-main">
 <div class="wrap">
   <header>
-    <p class="eyebrow">设计模式</p>
-    <h1>状态须写成词</h1>
-    <p class="sub">级别、评分与能力状态用词交付；颜色、星星、图标只辅助。</p>
+    <p class="eyebrow">视觉层</p>
+    <h1>状态文本化</h1>
+    <p class="sub">状态值必须是词；图标不独自表示能力、结果或是否在运行。</p>
   </header>
 
   <h2 class="block-title">原则概述</h2>
   <p class="affinity-group-label">设计描述</p>
   <ul class="affinity-principles">
-    <li>级别、评分、能力状态须用可读的词交付，不能只靠色块、星星或对号。颜色与图形只辅助识别，不独自说明警告有多急、分数是多少、能力是否支持。</li>
+    <li>抓取后图形会丢失。能力状态、结果反馈、运行状态须写成词，不能只靠对号、叉号或播放图标。</li>
   </ul>
   <p class="affinity-group-label">UI 落地</p>
   <ul class="affinity-principles">
-    <li>警示须写「注意：」「警告：」等前缀；图标与底色只辅助。</li>
-    <li>评分写成可读句（如「4.6 分 · 128 人」），不能只画星星。</li>
-    <li>能力清单写成「支持 / 等待中 / 不支持」；对号与时钟可留，不代替字。</li>
+    <li>能力矩阵写成「支持 / 不支持」；对号可留，空单元格须写出「不支持」。</li>
+    <li>结果反馈写成「成功 / 失败」；对号与叉号可留，不代替字。</li>
+    <li>运行状态写成「运行中 / 已停止」；播放或停止图标可留，不代替字。</li>
   </ul>
   <p class="affinity-group-label">对 AI 亲和的好处</p>
   <ul class="affinity-principles">
-    <li>机器读到的是级别词、分数和能力状态，而不是红黄块、五角星或空对号。</li>
-    <li>警告级别、评分与是否支持不再只活在颜色或图标里，避免漏读或误读。</li>
+    <li>读到的是状态词，而不是图标本身。</li>
   </ul>
 
   <h2 class="block-title">场景示例</h2>
-  <h3 class="fn-h3">示例 1 · 警示须有级别词</h3>
-  <p class="type-lead">须写「注意：」「警告：」；不能只靠红 / 黄块。</p>
+  <h3 class="fn-h3">示例 1 · 能力状态须写成词</h3>
+  <p class="type-lead">写成「支持 / 不支持」；不要只打对号或留空。</p>
   <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
     <span class="fn-ex-label">反面</span>
     <div class="fn-ex-bar" aria-hidden="true"></div>
     </div>
-    <div class="fn-ex-mock" aria-label="警示反面：只有黄块，无级别词">
-      <div class="st-card">
-        <div class="st-note is-plain">
-          <span class="st-note-ico" aria-hidden="true"></span>
-          <p class="st-note-body">更换驱动前请备份配置，否则可能导致设备无法启动。</p>
-        </div>
-      </div>
+    <div class="fn-ex-mock" aria-label="反面：仅对号或空单元格">
+      <table class="status-ex-table">
+        <thead>
+          <tr>
+            <th class="col-scene">场景</th>
+            <th class="col-model">模型</th>
+            <th class="col-hw">Atlas 800T 900 A2</th>
+            <th class="col-hw">Atlas 800T A3</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>预训练</td>
+            <td>DeepSeek V3</td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+          </tr>
+          <tr>
+            <td rowspan="2">SFT</td>
+            <td>DeepSeek V3</td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+          </tr>
+          <tr>
+            <td>DeepSeek-R1-Distill-Qwen</td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+          </tr>
+          <tr>
+            <td rowspan="4">推理</td>
+            <td>Qwen2.5-7B/32B</td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+          </tr>
+          <tr>
+            <td>DeepSeek-V3-0324 W4A16</td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+          </tr>
+          <tr>
+            <td>DeepSeek-R1 W4A16</td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+          </tr>
+          <tr>
+            <td>DeepSeek-Janus-Pro</td>
+            <td class="col-hw"></td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
     <div class="fn-ex-foot">
     <p class="fn-ex-title">问题</p>
     <ul class="fn-ex-list">
-      <li><strong>缺级别词：</strong>只有色块与正文，读不出是注意还是警告。</li>
-      <li><strong>色当状态：</strong>机器无法从黄色推断严重程度。</li>
+      <li><strong>缺状态词：</strong>只有打勾或留空，读不出是支持还是不支持。</li>
     </ul>
     </div>
   </div>
@@ -1819,40 +1891,84 @@
     <span class="fn-ex-label is-good">正面</span>
     <div class="fn-ex-bar is-good" aria-hidden="true"></div>
     </div>
-    <div class="fn-ex-mock" aria-label="警示正面：写有注意前缀">
-      <div class="st-card">
-        <div class="st-note">
-          <span class="st-note-ico" aria-hidden="true"></span>
-          <p class="st-note-body"><span class="st-note-lvl">注意：</span>更换驱动前请备份配置，否则可能导致设备无法启动。</p>
-        </div>
-      </div>
+    <div class="fn-ex-mock" aria-label="正面：支持与不支持均有可见文案">
+      <table class="status-ex-table">
+        <thead>
+          <tr>
+            <th class="col-scene">场景</th>
+            <th class="col-model">模型</th>
+            <th class="col-hw">Atlas 800T 900 A2</th>
+            <th class="col-hw">Atlas 800T A3</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>预训练</td>
+            <td>DeepSeek V3</td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+          </tr>
+          <tr>
+            <td rowspan="2">SFT</td>
+            <td>DeepSeek V3</td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+          </tr>
+          <tr>
+            <td>DeepSeek-R1-Distill-Qwen</td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+          </tr>
+          <tr>
+            <td rowspan="4">推理</td>
+            <td>Qwen2.5-7B/32B</td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+          </tr>
+          <tr>
+            <td>DeepSeek-V3-0324 W4A16</td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+          </tr>
+          <tr>
+            <td>DeepSeek-R1 W4A16</td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+          </tr>
+          <tr>
+            <td>DeepSeek-Janus-Pro</td>
+            <td class="col-hw"><span class="ck-no">不支持</span></td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
     <div class="fn-ex-foot">
     <p class="fn-ex-title">修改</p>
     <ul class="fn-ex-list">
-      <li><strong>前缀项：</strong>写成「注意：」；色块可留，只辅助识别。</li>
+      <li><strong>状态项：</strong>对号旁写成「支持」；空单元格写成「不支持」。</li>
     </ul>
     </div>
   </div>
   </div>
-
-  <h3 class="fn-h3">示例 2 · 评分须有数字句</h3>
-  <p class="type-lead">写成「4.6 分 · 128 人」；不能只画星星。</p>
+  <h3 class="fn-h3">示例 2 · 结果反馈须写成词</h3>
+  <p class="type-lead">写成「成功 / 失败」；不要只打对号或叉号。</p>
   <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
     <span class="fn-ex-label">反面</span>
     <div class="fn-ex-bar" aria-hidden="true"></div>
     </div>
-    <div class="fn-ex-mock" aria-label="评分反面：只有星星">
+    <div class="fn-ex-mock" aria-label="反面：只有对号和叉号">
       <div class="st-card">
-        <div class="st-stars" aria-hidden="true">★★★★☆</div>
+        <div class="st-cap"><span class="st-cap-name">环境检查</span><span class="st-cap-mark is-ok-green" aria-hidden="true"><svg viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M6.2 11.5 2.8 8.1l1.2-1.2 2.2 2.2 5.8-5.8 1.2 1.2z"/></svg></span></div>
+        <div class="st-cap"><span class="st-cap-name">依赖安装</span><span class="st-cap-mark is-fail-red" aria-hidden="true"><svg viewBox="0 0 16 16" width="16" height="16"><path d="M4.2 4.2l7.6 7.6M11.8 4.2l-7.6 7.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span></div>
       </div>
     </div>
     <div class="fn-ex-foot">
     <p class="fn-ex-title">问题</p>
     <ul class="fn-ex-list">
-      <li><strong>缺数字句：</strong>只有星星，读不出分数与人数。</li>
+      <li><strong>缺状态词：</strong>只有对号或叉号，读不出是成功还是失败。</li>
     </ul>
     </div>
   </div>
@@ -1861,40 +1977,38 @@
     <span class="fn-ex-label is-good">正面</span>
     <div class="fn-ex-bar is-good" aria-hidden="true"></div>
     </div>
-    <div class="fn-ex-mock" aria-label="评分正面：星星旁有数字句">
+    <div class="fn-ex-mock" aria-label="正面：写成成功、失败">
       <div class="st-card">
-        <div class="st-stars" aria-hidden="true">★★★★☆</div>
-        <p class="st-rate">4.6 分 · 128 人</p>
+        <div class="st-cap"><span class="st-cap-name">环境检查</span><span class="st-word-row"><span class="st-cap-mark is-ok-green" aria-hidden="true"><svg viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M6.2 11.5 2.8 8.1l1.2-1.2 2.2 2.2 5.8-5.8 1.2 1.2z"/></svg></span><span class="st-word">成功</span></span></div>
+        <div class="st-cap"><span class="st-cap-name">依赖安装</span><span class="st-word-row"><span class="st-cap-mark is-fail-red" aria-hidden="true"><svg viewBox="0 0 16 16" width="16" height="16"><path d="M4.2 4.2l7.6 7.6M11.8 4.2l-7.6 7.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span><span class="st-word is-wait">失败</span></span></div>
       </div>
     </div>
     <div class="fn-ex-foot">
     <p class="fn-ex-title">修改</p>
     <ul class="fn-ex-list">
-      <li><strong>评句项：</strong>写成「4.6 分 · 128 人」；星星可留，只辅助识别。</li>
+      <li><strong>状态项：</strong>写成「成功 / 失败」；图标可留，只辅助。</li>
     </ul>
     </div>
   </div>
   </div>
-
-  <h3 class="fn-h3">示例 3 · 能力状态须写成词</h3>
-  <p class="type-lead">写成「支持 / 等待中」；不要只打对号或只放时钟。</p>
+  <h3 class="fn-h3">示例 3 · 运行状态须写成词</h3>
+  <p class="type-lead">写成「运行中 / 已停止」；不要只放播放或停止图标。</p>
   <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
     <span class="fn-ex-label">反面</span>
     <div class="fn-ex-bar" aria-hidden="true"></div>
     </div>
-    <div class="fn-ex-mock" aria-label="能力状态反面：只有对号和时钟">
+    <div class="fn-ex-mock" aria-label="反面：只有播放和停止图标">
       <div class="st-card">
-        <div class="st-cap"><span class="st-cap-name">FlashAttention 加速</span><span class="st-cap-mark is-ok" aria-hidden="true"></span></div>
-        <div class="st-cap"><span class="st-cap-name">长序列</span><span class="st-cap-mark" aria-hidden="true"></span></div>
-        <div class="st-cap"><span class="st-cap-name">DualPipe</span><span class="st-cap-mark" aria-hidden="true"></span></div>
+        <div class="st-cap"><span class="st-cap-name">设备管理服务</span><span class="st-cap-mark is-ok-green" aria-hidden="true"><svg viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M5 3.2v9.6l8.2-4.8z"/></svg></span></div>
+        <div class="st-cap"><span class="st-cap-name">日志采集</span><span class="st-cap-mark" aria-hidden="true"><svg viewBox="0 0 16 16" width="16" height="16"><rect x="4" y="4" width="8" height="8" rx="1" fill="currentColor"/></svg></span></div>
       </div>
     </div>
     <div class="fn-ex-foot">
     <p class="fn-ex-title">问题</p>
     <ul class="fn-ex-list">
-      <li><strong>缺状态词：</strong>只有对号或时钟，读不出是支持还是等待中。</li>
+      <li><strong>缺状态词：</strong>只有播放或停止图标，读不出是运行中还是已停止。</li>
     </ul>
     </div>
   </div>
@@ -1903,17 +2017,16 @@
     <span class="fn-ex-label is-good">正面</span>
     <div class="fn-ex-bar is-good" aria-hidden="true"></div>
     </div>
-    <div class="fn-ex-mock" aria-label="能力状态正面：写成支持、等待中">
+    <div class="fn-ex-mock" aria-label="正面：写成运行中、已停止">
       <div class="st-card">
-        <div class="st-cap"><span class="st-cap-name">FlashAttention 加速</span><span class="st-word">支持</span></div>
-        <div class="st-cap"><span class="st-cap-name">长序列</span><span class="st-word is-wait">等待中</span></div>
-        <div class="st-cap"><span class="st-cap-name">DualPipe</span><span class="st-word is-wait">等待中</span></div>
+        <div class="st-cap"><span class="st-cap-name">设备管理服务</span><span class="st-word-row"><span class="st-cap-mark is-ok-green" aria-hidden="true"><svg viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M5 3.2v9.6l8.2-4.8z"/></svg></span><span class="st-word">运行中</span></span></div>
+        <div class="st-cap"><span class="st-cap-name">日志采集</span><span class="st-word-row"><span class="st-cap-mark" aria-hidden="true"><svg viewBox="0 0 16 16" width="16" height="16"><rect x="4" y="4" width="8" height="8" rx="1" fill="currentColor"/></svg></span><span class="st-word is-wait">已停止</span></span></div>
       </div>
     </div>
     <div class="fn-ex-foot">
     <p class="fn-ex-title">修改</p>
     <ul class="fn-ex-list">
-      <li><strong>状态项：</strong>写成「支持 / 等待中」；对号与时钟可留，只辅助识别。</li>
+      <li><strong>状态项：</strong>写成「运行中 / 已停止」；图标可留，只辅助。</li>
     </ul>
     </div>
   </div>
@@ -1924,5 +2037,27 @@
 </div>
 </div>
 </div>
+<script>
+(function () {
+  var el = document.querySelector(".peer-sidebar");
+  if (!el) return;
+  var key = "peer-sidebar-scroll";
+  function restore() {
+    var y = sessionStorage.getItem(key);
+    if (y != null) el.scrollTop = Number(y);
+  }
+  restore();
+  requestAnimationFrame(restore);
+  window.addEventListener("load", restore);
+  el.addEventListener("scroll", function () {
+    sessionStorage.setItem(key, String(el.scrollTop));
+  }, { passive: true });
+  el.querySelectorAll("a").forEach(function (a) {
+    a.addEventListener("click", function () {
+      sessionStorage.setItem(key, String(el.scrollTop));
+    });
+  });
+})();
+</script>
 </body>
 </html>

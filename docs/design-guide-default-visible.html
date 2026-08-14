@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>默认态须可见 · 设计指导 · 昇腾社区 AI 亲和原则</title>
+<title>悬停内容常驻化 · 设计指导 · 昇腾社区 AI 亲和原则</title>
 <style>
   :root {
     --bg: #F5F5F5;
@@ -62,7 +62,8 @@
   .peer-sidebar {
     width: clamp(200px, 12.9167vw, 248px); flex-shrink: 0;
     position: sticky; top: 56px; height: calc(100vh - 56px);
-    overflow-y: auto; padding: 16px 0 32px;
+    overflow-y: auto; overflow-anchor: none;
+    padding: 16px 0 32px;
     border-right: 1px solid var(--line); background: var(--panel);
   }
   .peer-nav ul { list-style: none; margin: 0; padding: 0; }
@@ -821,6 +822,7 @@
   .fn-ex-row .fn-ex-mock {
     height: 100%;
     box-sizing: border-box;
+    overflow: visible;
   }
   .fn-ex-row .fn-ex-head {
     display: flex;
@@ -902,8 +904,8 @@
   .fn-ex-mock {
     border-radius: 8px;
     overflow: hidden;
-    background: #2c2c2c;
-    border: 1px solid #3a3a3a;
+    background: #f5f5f5;
+    border: 1px solid var(--line);
   }
   .status-ex-table {
     width: 100%;
@@ -1473,35 +1475,80 @@
 
   .vis-card {
     padding: 16px 18px 14px;
-    color: #f5f5f5;
+    color: var(--text);
   }
   .vis-kicker {
     margin: 0 0 10px;
     font-size: 12px;
     line-height: 18px;
-    color: #a3a3a3;
+    color: #8c8c8c;
   }
   .vis-term {
     display: inline;
-    border-bottom: 1px dashed #5b9dff;
-    color: #8eb8ff;
+    border-bottom: 1px dashed #1476FF;
+    color: #1476FF;
     font-weight: 650;
   }
-  .vis-hover-hint {
-    display: inline-block;
-    margin-left: 8px;
-    padding: 1px 6px;
+  .vis-tip {
+    position: relative;
+    cursor: default;
+  }
+  .vis-tip-bubble {
+    display: none;
+    position: absolute;
+    left: 0;
+    top: calc(100% + 8px);
+    z-index: 2;
+    width: max-content;
+    max-width: 260px;
+    padding: 8px 10px;
+    background: #fff;
+    border: 1px solid var(--line);
     border-radius: 4px;
-    font-size: 11px;
+    box-shadow: 0 4px 12px rgba(25, 25, 25, .08);
+    font-size: 12px;
+    font-weight: 400;
     line-height: 18px;
-    color: #a3a3a3;
-    background: #3a3a3a;
+    color: var(--text);
+    white-space: normal;
+  }
+  .vis-tip-bubble::before {
+    content: "";
+    position: absolute;
+    left: 12px;
+    top: -5px;
+    width: 8px;
+    height: 8px;
+    background: #fff;
+    border-left: 1px solid var(--line);
+    border-top: 1px solid var(--line);
+    transform: rotate(45deg);
+  }
+  .vis-tip:hover .vis-tip-bubble {
+    display: block;
+  }
+  .vis-tip-menu {
+    display: none;
+    padding: 6px 0;
+    min-width: 132px;
+  }
+  .vis-tip:hover .vis-tip-menu {
+    display: block;
+  }
+  .vis-tip-menu a {
+    display: block;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 18px;
+    color: #1476FF;
+    text-decoration: none;
   }
   .vis-def {
     margin: 10px 0 0;
     font-size: 13px;
     line-height: 20px;
-    color: #d4d4d4;
+    color: #595959;
   }
   .vis-acc {
     display: flex;
@@ -1602,7 +1649,7 @@
       <a href="mintlify.html">友商对照</a>
       <a href="reachability.html">社区诊断</a>
       <a href="community-ui.html">组件亲和</a>
-      <a href="design-guide.html" class="active">设计指导</a>
+      <a href="design-guide-image-text.html" class="active">设计指导</a>
     </nav>
   </div>
 </div>
@@ -1610,45 +1657,54 @@
 <div class="page-wrapper">
 <aside class="peer-sidebar" aria-label="设计指导导航">
   <nav class="peer-nav">
-    <div class="peer-group-label">设计模式</div>
+    <div class="peer-group-label">视觉层</div>
     <ul>
-      <li><a href="design-guide-image-text.html">图意文本替代</a></li>
-      <li><a href="design-guide-default-visible.html" class="active">默认态须可见</a></li>
-      <li><a href="design-guide-status-word.html">状态须写成词</a></li>
-      <li><a href="design-guide-click-dest.html">跳转写明去向</a></li>
-      <li><a href="design-guide-section-anchor.html">章节须可链</a></li>
-      <li><a href="design-guide-shell-list.html">壳下须有条目</a></li>
+      <li><a href="design-guide-image-text.html">图意文本化</a></li>
+      <li><a href="design-guide-style-semantic.html">颜色语义化</a></li>
+      <li><a href="design-guide-hierarchy.html">层级文本化</a></li>
+      <li><a href="design-guide-status-word.html">状态文本化</a></li>
+      <li><a href="design-guide-media.html">多媒体语义化</a></li>
+      <li><a href="design-guide-timestamp.html">版本时效声明化</a></li>
+      <li><a href="design-guide-gui-map.html">界面元素数值化</a></li>
+      <li><a href="design-guide-default-empty.html">占位与空态文本化</a></li>
     </ul>
-    <div class="peer-group-label">延伸指导</div>
+    <div class="peer-group-label">交互层</div>
     <ul>
-      <li><a href="design-guide-list-paging.html">列表如何翻页</a></li>
-      <li><a href="design-guide-page-partition.html">同页如何切主题</a></li>
+      <li><a href="design-guide-default-visible.html" class="active">悬停内容常驻化</a></li>
+      <li><a href="design-guide-click-prefab.html">点击内容预制化</a></li>
+      <li><a href="design-guide-placeholder.html">输入占位标签化</a></li>
+      <li><a href="design-guide-section-anchor.html">节级锚点可引用</a></li>
+      <li><a href="design-guide-click-dest.html">同文入口区分化</a></li>
+    </ul>
+    <div class="peer-group-label">框架层</div>
+    <ul>
+      <li><a href="design-guide-noise.html">噪音过滤</a></li>
+      <li><a href="design-guide-page-context.html">跨页路径语义化</a></li>
+      <li><a href="design-guide-carrier.html">信息载体选定原则</a></li>
     </ul>
   </nav>
 </aside>
 <div class="peer-main">
 <div class="wrap">
   <header>
-    <p class="eyebrow">设计模式</p>
-    <h1>默认态须可见</h1>
-    <p class="sub">核心内容须在默认态可见，不靠悬停、展开或滚动加载才出现。</p>
+    <p class="eyebrow">交互层</p>
+    <h1>悬停内容常驻化</h1>
+    <p class="sub">悬停不得作为不可替代内容的唯一出处；等价说明须写在正文。</p>
   </header>
 
   <h2 class="block-title">原则概述</h2>
   <p class="affinity-group-label">设计描述</p>
   <ul class="affinity-principles">
-    <li>核心内容不依赖任何交互动作才能展示。禁止把关键信息只放在「点击展开」「悬停提示」「无限滚动加载」后面。若必须折叠，须有「全部展开」，并保证初始渲染时这些内容已在页面中。</li>
+    <li>避免用悬停承载不可替代的内容。tooltip、悬停菜单里的说明与入口，须在静态文案或页面上有等价物。</li>
   </ul>
   <p class="affinity-group-label">UI 落地</p>
   <ul class="affinity-principles">
-    <li>标题、短述、步骤、定义写在默认稿面；气泡 / Hover 只作补充。</li>
-    <li>折叠、Tab、轮播：交展开态或全量帧；折起来时标题仍写清主题。必须折叠时提供「全部展开」；收起只是视觉，源码首包已有全文。</li>
-    <li>列表关键条目在首包可枚举；不要只靠无限滚动才把核心结果加载出来。深页用分页。</li>
+    <li>定义、补充说明直接写在正文或旁注；Hover 只作辅助。</li>
+    <li>悬停菜单中的操作入口，默认稿面也要能看见、能点。</li>
   </ul>
   <p class="affinity-group-label">对 AI 亲和的好处</p>
   <ul class="affinity-principles">
-    <li>机器读的是首包 HTML。没点、没悬停、没滚到底，也能抓到步骤、定义和默认结果。</li>
-    <li>折叠与分页不再变成空壳或只有当前帧；关键内容在初始渲染里已经存在。</li>
+    <li>不触发悬停也能抓到定义与入口，信息不只活在 Hover 里。</li>
   </ul>
 
   <h2 class="block-title">场景示例</h2>
@@ -1663,7 +1719,7 @@
     <div class="fn-ex-mock" aria-label="悬停反面：定义只在 Hover">
       <div class="vis-card">
         <p class="vis-kicker">安装说明</p>
-        <p style="margin:0;font-size:14px;line-height:22px;">请先完成 <span class="vis-term">CANN</span><span class="vis-hover-hint">悬停后可见定义</span> 再继续。</p>
+        <p style="margin:0;font-size:14px;line-height:22px;">请先完成 <span class="vis-term vis-tip">CANN<span class="vis-tip-bubble">昇腾异构计算架构，提供驱动、编译与运行时。</span></span> 再继续。</p>
       </div>
     </div>
     <div class="fn-ex-foot">
@@ -1682,7 +1738,7 @@
     <div class="fn-ex-mock" aria-label="悬停正面：正文已有定义">
       <div class="vis-card">
         <p class="vis-kicker">安装说明</p>
-        <p style="margin:0;font-size:14px;line-height:22px;">请先完成 <span class="vis-term">CANN</span> 再继续。</p>
+        <p style="margin:0;font-size:14px;line-height:22px;">请先完成 <span class="vis-term vis-tip">CANN<span class="vis-tip-bubble">昇腾异构计算架构，提供驱动、编译与运行时。</span></span> 再继续。</p>
         <p class="vis-def">CANN：昇腾异构计算架构，提供驱动、编译与运行时。气泡可再补充，正文须先有这一句。</p>
       </div>
     </div>
@@ -1694,35 +1750,26 @@
     </div>
   </div>
   </div>
-
-  <h3 class="fn-h3">示例 2 · 折叠须可全部展开</h3>
-  <p class="type-lead">若必须折叠，须有全部展开；收起只是视觉，首包已有全文。</p>
+  <h3 class="fn-h3">示例 2 · 悬停菜单里的入口须在稿面</h3>
+  <p class="type-lead">悬停才出现的下载、文档入口，默认页上也要能看见、能点。</p>
   <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
     <span class="fn-ex-label">反面</span>
     <div class="fn-ex-bar" aria-hidden="true"></div>
     </div>
-    <div class="fn-ex-mock" aria-label="折叠反面：仅标题，无全部展开">
+    <div class="fn-ex-mock" aria-label="反面：入口只在悬停菜单">
       <div class="vis-card">
-        <div class="vis-acc">
-          <div class="vis-acc-item">
-            <p class="vis-acc-title">步骤 1 安装驱动</p>
-          </div>
-          <div class="vis-acc-item">
-            <p class="vis-acc-title">步骤 2 配置环境变量</p>
-          </div>
-          <div class="vis-acc-item">
-            <p class="vis-acc-title">步骤 3 验证安装</p>
-          </div>
-        </div>
+        <p class="vis-kicker">相关资源</p>
+        <p style="margin:0;font-size:14px;line-height:22px;">
+          <span class="vis-term vis-tip">CANN 软件包<span class="vis-tip-bubble vis-tip-menu"><a href="#mock-dl">下载软件包</a><a href="#mock-guide">安装指南</a><a href="#mock-rel">发行说明</a></span></span>
+        </p>
       </div>
     </div>
     <div class="fn-ex-foot">
     <p class="fn-ex-title">问题</p>
     <ul class="fn-ex-list">
-      <li><strong>依赖点击：</strong>步骤正文默认收起，且没有全部展开。</li>
-      <li><strong>首包缺失：</strong>未点击则安装步骤不在页面里。</li>
+      <li><strong>入口只在 Hover：</strong>下载、指南、发行说明都不在默认稿面，未悬停就抓不到这三条链。</li>
     </ul>
     </div>
   </div>
@@ -1731,74 +1778,21 @@
     <span class="fn-ex-label is-good">正面</span>
     <div class="fn-ex-bar is-good" aria-hidden="true"></div>
     </div>
-    <div class="fn-ex-mock" aria-label="折叠正面：全部展开，正文已在稿面">
+    <div class="fn-ex-mock" aria-label="正面：入口写在稿面">
       <div class="vis-card">
-        <div class="vis-acc-bar"><span class="vis-acc-all">全部展开</span></div>
-        <div class="vis-acc">
-          <div class="vis-acc-item is-open">
-            <p class="vis-acc-title">步骤 1 安装驱动</p>
-            <p class="vis-acc-body">下载并安装配套驱动，完成后重启设备。</p>
-          </div>
-          <div class="vis-acc-item is-open">
-            <p class="vis-acc-title">步骤 2 配置环境变量</p>
-            <p class="vis-acc-body">将工具链路径写入 PATH，使编译命令可直接调用。</p>
-          </div>
-          <div class="vis-acc-item is-open">
-            <p class="vis-acc-title">步骤 3 验证安装</p>
-            <p class="vis-acc-body">执行版本查询，确认驱动与固件匹配。</p>
-          </div>
-        </div>
+        <p class="vis-kicker">相关资源</p>
+        <p style="margin:0 0 4px;font-size:14px;line-height:22px;font-weight:650;">CANN 软件包</p>
+        <p class="vis-def" style="margin:0;padding:6px 0 0 12px;border-left:2px solid #e5e5e5;display:flex;flex-direction:column;gap:8px;line-height:22px;">
+          <a href="#mock-dl" style="color:#1476FF;text-decoration:none;">下载软件包</a>
+          <a href="#mock-guide" style="color:#1476FF;text-decoration:none;">安装指南</a>
+          <a href="#mock-rel" style="color:#1476FF;text-decoration:none;">发行说明</a>
+        </p>
       </div>
     </div>
     <div class="fn-ex-foot">
     <p class="fn-ex-title">修改</p>
     <ul class="fn-ex-list">
-      <li><strong>展开项：</strong>提供「全部展开」；步骤正文初始渲染已在页面中。</li>
-    </ul>
-    </div>
-  </div>
-  </div>
-
-  <h3 class="fn-h3">示例 3 · 列表须在首包可见</h3>
-  <p class="type-lead">核心条目须在首包可枚举；不要滚才加载。深页用分页。</p>
-  <div class="fn-ex-row">
-  <div class="fn-ex">
-    <div class="fn-ex-head">
-    <span class="fn-ex-label">反面</span>
-    <div class="fn-ex-bar" aria-hidden="true"></div>
-    </div>
-    <div class="fn-ex-mock" aria-label="无限滚动反面：首包条目不足，靠滚动加载">
-      <div class="vis-card">
-        <div class="vis-feed-row">MindSpore Transformers<div class="vis-feed-meta">大模型套件</div></div>
-        <div class="vis-feed-row">CANN<div class="vis-feed-meta">异构计算架构</div></div>
-        <p class="vis-more">向下滚动加载更多</p>
-      </div>
-    </div>
-    <div class="fn-ex-foot">
-    <p class="fn-ex-title">问题</p>
-    <ul class="fn-ex-list">
-      <li><strong>依赖滚动：</strong>核心结果只在滚到底后才注入。</li>
-      <li><strong>首包缺失：</strong>未滚动则目录里列不全有哪些套件。</li>
-    </ul>
-    </div>
-  </div>
-  <div class="fn-ex">
-    <div class="fn-ex-head">
-    <span class="fn-ex-label is-good">正面</span>
-    <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-    </div>
-    <div class="fn-ex-mock" aria-label="列表正面：首包已有条目，深页分页">
-      <div class="vis-card">
-        <div class="vis-feed-row">MindSpore Transformers<div class="vis-feed-meta">大模型套件</div></div>
-        <div class="vis-feed-row">CANN<div class="vis-feed-meta">异构计算架构</div></div>
-        <div class="vis-feed-row">ATC 模型转换<div class="vis-feed-meta">工具</div></div>
-        <div class="vis-page"><span class="is-on">1</span><span>2</span><span>3</span></div>
-      </div>
-    </div>
-    <div class="fn-ex-foot">
-    <p class="fn-ex-title">修改</p>
-    <ul class="fn-ex-list">
-      <li><strong>首包项：</strong>默认可见若干可点条目；深页用分页，不靠无限滚动才加载核心结果。</li>
+      <li><strong>入口项：</strong>三条链写在正文，不靠悬停菜单才出现。</li>
     </ul>
     </div>
   </div>
@@ -1808,6 +1802,27 @@
 </div>
 </div>
 </div>
-</div>
+<script>
+(function () {
+  var el = document.querySelector(".peer-sidebar");
+  if (!el) return;
+  var key = "peer-sidebar-scroll";
+  function restore() {
+    var y = sessionStorage.getItem(key);
+    if (y != null) el.scrollTop = Number(y);
+  }
+  restore();
+  requestAnimationFrame(restore);
+  window.addEventListener("load", restore);
+  el.addEventListener("scroll", function () {
+    sessionStorage.setItem(key, String(el.scrollTop));
+  }, { passive: true });
+  el.querySelectorAll("a").forEach(function (a) {
+    a.addEventListener("click", function () {
+      sessionStorage.setItem(key, String(el.scrollTop));
+    });
+  });
+})();
+</script>
 </body>
 </html>
