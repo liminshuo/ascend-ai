@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>版式不替代语义 · 设计指导 · 昇腾社区 AI 亲和原则</title>
+<title>机器入口须可辨 · 设计指导 · 昇腾社区 AI 亲和原则</title>
 <style>
   :root {
     --bg: #F5F5F5;
@@ -848,14 +848,23 @@
     border-radius: 8px;
     overflow: hidden;
   }
-  .fn-ex-row .fn-ex-mock,
-  .fn-ex-row .fn-ex-mock:has(.info-card) {
+  .fn-ex-row .fn-ex-body:has(.vis-tip),
+  .fn-ex-row .fn-ex-body:has(.sig-hover) {
+    overflow: visible;
+  }
+  .fn-ex-row .fn-ex-mock {
     min-height: 0;
     height: 100%;
     box-sizing: border-box;
     border: none;
     border-radius: 0;
     align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-mock:has(.vis-tip),
+  .fn-ex-row .fn-ex-mock:has(.sig-hover) {
+    overflow: visible;
+    position: relative;
+    z-index: 3;
   }
   .fn-ex-row .fn-ex-foot {
     display: flex;
@@ -864,6 +873,8 @@
     padding: 12px 14px 14px;
     background: #fff;
     border-top: 1px solid var(--line);
+    position: relative;
+    z-index: 1;
   }
   .fn-ex-row .fn-ex-foot .fn-ex-list {
     margin: 0;
@@ -904,9 +915,12 @@
       grid-row: auto;
     }
     .fn-ex-row .fn-ex-body {
-      display: block;
+      display: flex;
+      flex-direction: column;
+      grid-row: auto;
     }
   }
+
   .fn-ex-label {
     display: inline-block;
     margin: 0 0 10px;
@@ -1190,20 +1204,13 @@
     height: 100%;
     padding: 12px;
     box-sizing: border-box;
-    background: #fff;
-    border-radius: 8px;
-  }
-  .fn-ex-mock:has(.info-card) {
-    background: #f5f5f5;
-    border: 1px solid var(--line);
-    padding: 16px;
   }
   .info-title {
     margin: 0;
     font-size: 12px;
     line-height: 20px;
     font-weight: 650;
-    color: var(--text);
+    color: #fff;
   }
   .info-card img {
     display: block;
@@ -1216,27 +1223,10 @@
     margin: 0;
     font-size: 13px;
     line-height: 20px;
-    color: var(--muted);
+    color: #d4d4d4;
   }
   .info-cap.is-bad {
-    color: var(--muted);
-  }
-  .info-map {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-  .info-map li {
-    margin: 0;
-    font-size: 12px;
-    line-height: 18px;
-    color: var(--text);
-  }
-  .info-map strong {
-    font-weight: 650;
+    color: #a3a3a3;
   }
   .anno-scene {
     margin: 0 0 24px;
@@ -1534,35 +1524,275 @@
 
   .vis-card {
     padding: 16px 18px 14px;
-    color: #f5f5f5;
+    color: var(--text);
   }
   .vis-kicker {
     margin: 0 0 10px;
     font-size: 12px;
     line-height: 18px;
-    color: #a3a3a3;
+    color: #8c8c8c;
   }
   .vis-term {
     display: inline;
-    border-bottom: 1px dashed #5b9dff;
-    color: #8eb8ff;
+    border-bottom: 1px dashed #1476FF;
+    color: #1476FF;
     font-weight: 650;
   }
-  .vis-hover-hint {
-    display: inline-block;
-    margin-left: 8px;
-    padding: 1px 6px;
+  .vis-tip {
+    position: relative;
+    cursor: default;
+  }
+  .vis-tip-bubble {
+    display: none;
+    position: absolute;
+    left: 0;
+    top: calc(100% + 8px);
+    z-index: 2;
+    width: max-content;
+    max-width: 260px;
+    padding: 8px 10px;
+    background: #fff;
+    border: 1px solid var(--line);
     border-radius: 4px;
-    font-size: 11px;
+    box-shadow: 0 4px 12px rgba(25, 25, 25, .08);
+    font-size: 12px;
+    font-weight: 400;
     line-height: 18px;
-    color: #a3a3a3;
-    background: #3a3a3a;
+    color: var(--text);
+    white-space: normal;
+  }
+  .fn-ex-row .vis-tip-bubble {
+    top: auto;
+    bottom: calc(100% + 8px);
+    z-index: 20;
+  }
+  .vis-tip-bubble::before {
+    content: "";
+    position: absolute;
+    left: 12px;
+    top: -5px;
+    width: 8px;
+    height: 8px;
+    background: #fff;
+    border-left: 1px solid var(--line);
+    border-top: 1px solid var(--line);
+    transform: rotate(45deg);
+  }
+  .fn-ex-row .vis-tip-bubble::before {
+    top: auto;
+    bottom: -5px;
+    border-left: none;
+    border-top: none;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .vis-tip:hover .vis-tip-bubble {
+    display: block;
+  }
+  .vis-tip-menu {
+    display: none;
+    padding: 6px 0;
+    min-width: 132px;
+  }
+  .vis-tip:hover .vis-tip-menu {
+    display: block;
+  }
+  .vis-tip-menu a {
+    display: block;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 18px;
+    color: #1476FF;
+    text-decoration: none;
   }
   .vis-def {
     margin: 10px 0 0;
     font-size: 13px;
     line-height: 20px;
-    color: #d4d4d4;
+    color: #595959;
+  }
+  .sig-card {
+    padding: 16px 18px 14px;
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+    color: var(--text);
+    height: 100%;
+    box-sizing: border-box;
+  }
+  .fn-ex-row .fn-ex-mock:has(.sig-card) {
+    padding: 12px;
+    box-sizing: border-box;
+    height: 100%;
+  }
+  .sig-card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    margin: 0 0 8px;
+  }
+  .sig-card-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+  }
+  .sig-icon {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    color: #5b6b7c;
+  }
+  .sig-icon svg {
+    display: block;
+    width: 36px;
+    height: 36px;
+  }
+  .sig-title {
+    margin: 0;
+    font-size: 18px;
+    line-height: 26px;
+    font-weight: 700;
+  }
+  .sig-tag {
+    flex-shrink: 0;
+    padding: 2px 10px;
+    border-radius: 999px;
+    background: #f3f4f6;
+    color: #6b7280;
+    font-size: 12px;
+    line-height: 20px;
+  }
+  .sig-desc {
+    margin: 0 0 14px;
+    font-size: 13px;
+    line-height: 20px;
+    color: #595959;
+  }
+  .sig-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px 12px;
+  }
+  .sig-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .sig-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 12px;
+    border: 1px solid #191919;
+    border-radius: 999px;
+    background: #fff;
+    font-size: 12px;
+    line-height: 20px;
+    color: #191919;
+    white-space: nowrap;
+    cursor: default;
+    user-select: none;
+    text-decoration: none;
+  }
+  a.sig-btn {
+    cursor: pointer;
+  }
+  .sig-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+    font-size: 12px;
+    line-height: 20px;
+    color: #595959;
+  }
+  .sig-sep {
+    width: 1px;
+    height: 14px;
+    background: #e5e5e5;
+  }
+  .sig-repo-inline {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+  .sig-repo-inline a {
+    color: #1476FF;
+    text-decoration: none;
+    font-size: 12px;
+    line-height: 20px;
+  }
+  .sig-hover {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    cursor: default;
+    user-select: none;
+  }
+  .sig-hover-menu {
+    display: none;
+    position: absolute;
+    left: 0;
+    top: calc(100% + 6px);
+    z-index: 20;
+    min-width: 148px;
+    padding: 6px 0;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    box-shadow: 0 8px 20px rgba(25, 25, 25, .1);
+  }
+  .sig-hover-menu.is-right {
+    left: auto;
+    right: 0;
+  }
+  .sig-hover:hover .sig-hover-menu {
+    display: block;
+  }
+  .sig-hover-menu a,
+  .sig-hover-menu span {
+    display: block;
+    padding: 6px 12px;
+    color: #191919;
+    text-decoration: none;
+    font-size: 12px;
+    line-height: 18px;
+  }
+  .sig-hover-menu a:hover {
+    background: #f5f5f5;
+  }
+  .sig-good-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .sig-good-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 6px 10px;
+    font-size: 12px;
+    line-height: 20px;
+  }
+  .sig-good-label {
+    flex-shrink: 0;
+    color: #8c8c8c;
+    min-width: 4.5em;
+  }
+  .sig-good-row a,
+  .sig-good-row .is-link {
+    color: #1476FF;
+    text-decoration: none;
   }
   .vis-acc {
     display: flex;
@@ -1651,178 +1881,361 @@
     font-weight: 650;
   }
 
-  .st-card {
-    padding: 16px 18px 14px;
-    color: var(--text);
+
+  .fn-ex-row .fn-ex-mock:has(.mie-face) {
+    background: #f5f5f5;
+    padding: 12px;
   }
-  .cr-deco {
-    display: block;
-    width: 100%;
-    height: 168px;
-    object-fit: cover;
-    object-position: center 40%;
+  .mie-face {
+    background: linear-gradient(120deg, #f7f9ff 0%, #eef2ff 45%, #f5f3ff 100%);
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 16px 16px 14px;
   }
-  .cr-deco-side {
-    width: 148px;
-    height: 96px;
-    object-fit: cover;
-    object-position: center 40%;
-    border-radius: 4px;
-    flex-shrink: 0;
-    background: #e8eef5;
-  }
-  .cr-burn {
-    position: relative;
-    margin: -16px -18px -14px;
-    border-radius: 0;
-    overflow: hidden;
-  }
-  .cr-burn-copy {
-    position: absolute;
-    left: 12px;
-    top: 12px;
-    margin: 0;
-    padding: 8px 10px;
-    background: #fff;
-    border-radius: 4px;
-    box-shadow: 0 1px 4px rgba(0,0,0,.12);
-    font-size: 13px;
-    line-height: 22px;
-    color: var(--text);
-  }
-  .st-note {
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-    padding: 10px 12px;
-    border-radius: 6px;
-    background: #fff7ed;
-    border-left: 3px solid #d97706;
-  }
-  .st-note.is-plain {
-    background: #fff7ed;
-  }
-  .st-note-ico {
-    flex-shrink: 0;
-    width: 18px;
-    height: 18px;
-    margin-top: 2px;
-    border-radius: 50%;
-    background: #d97706;
-  }
-  .st-note-body {
-    margin: 0;
-    font-size: 13px;
-    line-height: 20px;
-    color: var(--text);
-  }
-  .st-note-lvl {
-    font-weight: 650;
-    color: var(--text);
-  }
-  .st-steps {
+  .mie-face-brand {
     display: flex;
     align-items: center;
-    gap: 0;
+    gap: 8px;
+    margin: 0 0 8px;
   }
-  .st-dot {
+  .mie-face-mark {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: linear-gradient(145deg, #7c5cff, #5b8def);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.25);
+  }
+  .mie-face-name {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: #191919;
+  }
+  .mie-face-desc {
+    margin: 0 0 10px;
+    font-size: 12px;
+    line-height: 18px;
+    color: #595959;
+  }
+  .mie-face-ann {
+    margin: 0 0 12px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    background: rgba(20, 118, 255, 0.08);
+    font-size: 11px;
+    line-height: 16px;
+    color: #1d4ed8;
+  }
+  .mie-face-ctas {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+  .mie-face-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: #191919;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 650;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .mie-face-btn.is-ghost {
+    background: #fff;
+    color: #1476FF;
+    border: 1px solid #c9dcff;
+  }
+
+
+  .me-face {
+    margin: 12px;
+    padding: 14px 16px;
+    border-radius: 8px;
+    background: #fff;
+    border: 1px solid var(--line);
+  }
+  .me-face-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin: 0 0 12px;
+  }
+  .me-face-crumb {
+    margin: 0;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .me-face-ops {
+    display: flex;
+    gap: 6px;
+  }
+  .me-chip {
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid var(--line);
+    font-size: 11px;
+    color: var(--muted);
+    background: #fafafa;
+  }
+  .me-face-h {
+    margin: 0 0 6px;
+    font-size: 16px;
+    font-weight: 700;
+  }
+  .me-face-p {
+    margin: 0;
+    font-size: 12px;
+    line-height: 18px;
+    color: var(--muted);
+  }
+
+
+
+  /* 正反面 mock 内边距对齐 */
+  .fn-ex-row .fn-ex-mock.fn-ex-mock--banner {
+    background: #f5f5f5;
+    padding: 12px;
+    border: none;
+  }
+  .fn-ex-row .fn-ex-mock.fn-ex-mock--banner .info-card {
+    padding: 0;
+    gap: 0;
+    height: auto;
+    background: transparent;
+  }
+  .fn-ex-row .fn-ex-mock.fn-ex-mock--banner .info-card img {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    border-radius: 10px;
+    border: 1px solid #e8ecf1;
+  }
+
+  .fn-ex-row .fn-ex-mock:has(.ac-face) {
+    background: #f5f5f5;
+    padding: 12px;
+    overflow: visible;
+  }
+  .fn-ex-row .fn-ex-body:has(.ac-face) {
+    overflow: visible;
+  }
+  .ac-face {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 10px;
+    overflow: visible;
+    font-family: "PingFang SC", sans-serif;
+  }
+  .ac-face-crumb {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 6px;
+    align-items: center;
+    margin: 0;
+    padding: 10px 12px 0;
+    font-size: 10px;
+    line-height: 14px;
+    color: #8c8c8c;
+  }
+  .ac-face-crumb span.is-link { color: #1476FF; }
+  .ac-face-crumb .sep { color: #c0c0c0; }
+  .ac-face-banner {
+    position: relative;
+    margin: 8px 10px 10px;
+    padding: 12px 12px 10px;
+    border-radius: 8px;
+    background: linear-gradient(105deg, #eef4ff 0%, #f3f0ff 55%, #f7f9ff 100%);
+    border: 1px solid #e4eaf5;
+    overflow: visible;
+  }
+  .ac-face {
+    overflow: visible;
+  }
+  .ac-face-h {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: #191919;
+    letter-spacing: -0.01em;
+  }
+  .ac-face-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+  .ac-face-ico {
+    width: 22px;
+    height: 22px;
+    border-radius: 4px;
+    border: 1px solid #d9e2f0;
+    background: #fff;
+    color: #595959;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background: #e5e5e5;
-    color: #8c8c8c;
-    font-size: 12px;
+    font-size: 11px;
     line-height: 1;
+  }
+  .ac-face-ico svg {
+    display: block;
+    flex-shrink: 0;
+  }
+  .ac-face-link {
+    font-size: 11px;
     font-weight: 650;
-    flex-shrink: 0;
+    color: #1476FF;
+    text-decoration: none;
+    white-space: nowrap;
   }
-  .st-dot.is-done,
-  .st-dot.is-on {
-    background: #1476FF;
-    color: #fff;
+  .ac-face-link.is-muted {
+    color: #595959;
+    font-weight: 500;
   }
-  .st-line {
-    width: 28px;
-    height: 2px;
-    background: #e5e5e5;
-    flex-shrink: 0;
+  .ac-face-time {
+    margin-left: auto;
+    font-size: 10px;
+    color: #8c8c8c;
+    white-space: nowrap;
   }
-  .st-line.is-on {
-    background: #1476FF;
+  .ac-face-body {
+    padding: 0 12px 12px;
   }
-  .st-step-txt {
-    margin: 10px 0 0;
-    font-size: 13px;
-    line-height: 20px;
-    color: var(--text);
+  .ac-face-p {
+    margin: 0 0 6px;
+    font-size: 11px;
+    line-height: 17px;
+    color: #595959;
   }
-  .st-tag {
+
+
+  .ac-face-menu {
+    position: relative;
     display: inline-flex;
-    align-items: center;
-    height: 24px;
-    padding: 0 10px;
-    border-radius: 4px;
-    font-size: 12px;
-    line-height: 24px;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+  .ac-face-copy {
+    appearance: none;
+    margin: 0;
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid #d0d7e2;
     background: #fff;
-    color: var(--muted);
-  }
-  .st-tag.is-hot {
-    background: #ffedd5;
-    color: #c2410c;
-  }
-  .st-tag.is-eol {
-    background: #ffedd5;
-    color: #c2410c;
-  }
-  .st-tag.is-eol-ok {
-    background: #fff;
-    color: var(--text);
-    border: 1px solid #191919;
-  }
-  .st-tag.is-hot-ok {
-    background: #f5f5f5;
-    color: var(--muted);
-  }
-  .st-stars {
-    letter-spacing: 2px;
-    font-size: 16px;
-    color: #d97706;
-    line-height: 24px;
-  }
-  .st-rate {
-    margin: 8px 0 0;
-    font-size: 13px;
-    line-height: 20px;
-    color: var(--text);
-  }
-  .st-cap {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    font-size: 13px;
-    line-height: 24px;
-  }
-  .st-cap + .st-cap { margin-top: 4px; }
-  .st-cap-name { color: var(--text); }
-  .st-cap-mark {
-    flex-shrink: 0;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: #d4d4d4;
-  }
-  .st-cap-mark.is-ok { background: #1476FF; }
-  .st-word {
-    flex-shrink: 0;
+    font-size: 11px;
     font-weight: 650;
-    color: var(--text);
+    color: #191919;
+    cursor: default;
+    font-family: inherit;
   }
-  .st-word.is-wait { color: var(--muted); font-weight: 500; }
+  .ac-face-drop {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+    z-index: 5;
+    min-width: 168px;
+    padding: 4px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    background: #fff;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+  }
+  .ac-face-menu.is-open .ac-face-drop {
+    display: block;
+  }
+  .ac-face-drop a {
+    display: block;
+    padding: 7px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    line-height: 16px;
+    color: #191919;
+    text-decoration: none;
+  }
+  .ac-face-drop a:hover {
+    background: #f5f7fb;
+  }
+
+
+  .ac-face-title-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 0 0 12px;
+  }
+  .ac-face-title-row .ac-face-h {
+    margin: 0;
+    flex: 1;
+    min-width: 0;
+  }
+  .ac-face-title-row .ac-face-menu {
+    flex-shrink: 0;
+  }
+
+  /* 页脚 llms.txt 小样 */
+  .fn-ex-row .fn-ex-mock:has(.site-foot) {
+    background: #f5f5f5;
+    padding: 12px;
+  }
+  .site-foot {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 10px;
+    overflow: hidden;
+    font-family: "PingFang SC", sans-serif;
+  }
+  .site-foot-body {
+    padding: 16px 14px 20px;
+    min-height: 52px;
+    background: linear-gradient(180deg, #fafbfc 0%, #fff 100%);
+  }
+  .site-foot-body p {
+    margin: 0;
+    font-size: 11px;
+    line-height: 16px;
+    color: #bfbfbf;
+  }
+  .site-foot-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 12px;
+    padding: 10px 14px;
+    border-top: 1px solid #eef1f5;
+    background: #fafafa;
+  }
+  .site-foot-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .site-foot-links a {
+    font-size: 11px;
+    line-height: 16px;
+    color: #8c8c8c;
+    text-decoration: none;
+  }
+  .site-foot-links a.is-machine {
+    color: #595959;
+    font-variant-numeric: tabular-nums;
+  }
+  .site-foot-copy {
+    margin: 0;
+    font-size: 10px;
+    line-height: 14px;
+    color: #bfbfbf;
+  }
 
 </style>
 </head>
@@ -1844,87 +2257,64 @@
 <div class="page-wrapper">
 <aside class="peer-sidebar" aria-label="设计指导导航">
   <nav class="peer-nav">
-    <div class="peer-group-label">视觉层</div>
+    <div class="peer-group-label">写成字</div>
     <ul>
-      <li><a href="design-guide-image-text.html">图意文本化</a></li>
-      <li><a href="design-guide-icon-text.html">图标文本化</a></li>
-      <li><a href="design-guide-style-semantic.html">颜色语义化</a></li>
-      <li><a href="design-guide-hierarchy.html">层级文本化</a></li>
-      <li><a href="design-guide-status-word.html">状态文本化</a></li>
-      <li><a href="design-guide-media.html">多媒体语义化</a></li>
-      <li><a href="design-guide-code.html">代码块语义化</a></li>
-      <li><a href="design-guide-timestamp.html">版本时效声明化</a></li>
-      <li><a href="design-guide-gui-map.html">界面元素数值化</a></li>
-      <li><a href="design-guide-default-empty.html">占位与空态文本化</a></li>
+      <li><a href="design-guide-image-text.html">图意须有字</a></li>
+      <li><a href="design-guide-icon-text.html">图标须有名</a></li>
+      <li><a href="design-guide-style-semantic.html">颜色须写成词</a></li>
+      <li><a href="design-guide-hierarchy.html">层级须写成字</a></li>
+      <li><a href="design-guide-status-word.html">状态须写成词</a></li>
+      <li><a href="design-guide-media.html">音视频旁须有字</a></li>
+      <li><a href="design-guide-code.html">代码旁须有说明</a></li>
+      <li><a href="design-guide-timestamp.html">版本须写日期号</a></li>
+      <li><a href="design-guide-gui-map.html">控件须写数值</a></li>
+      <li><a href="design-guide-default-empty.html">空态须写成字</a></li>
+      <li><a href="design-guide-placeholder.html">占位须有标签</a></li>
     </ul>
-    <div class="peer-group-label">交互层</div>
+    <div class="peer-group-label">默认可达</div>
     <ul>
-      <li><a href="design-guide-default-visible.html">悬停内容常驻化</a></li>
-      <li><a href="design-guide-click-prefab.html">点击内容预制化</a></li>
-      <li><a href="design-guide-placeholder.html">输入占位标签化</a></li>
-      <li><a href="design-guide-section-anchor.html">节级锚点可引用</a></li>
-      <li><a href="design-guide-click-dest.html">同文入口区分化</a></li>
+      <li><a href="design-guide-default-visible.html">悬停须默认可跟</a></li>
+      <li><a href="design-guide-click-prefab.html">点击须首包已有</a></li>
+      <li><a href="design-guide-machine-entry.html" class="active">机器入口须可辨</a></li>
     </ul>
-    <div class="peer-group-label">框架层</div>
+    <div class="peer-group-label">路径可引</div>
     <ul>
-      <li><a href="design-guide-noise.html">噪音过滤</a></li>
-      <li><a href="design-guide-page-context.html">跨页路径语义化</a></li>
-      <li><a href="design-guide-layout.html" class="active">版式不替代语义</a></li>
+      <li><a href="design-guide-section-anchor.html">小节须有锚点</a></li>
+      <li><a href="design-guide-click-dest.html">同文入口须可辨</a></li>
+      <li><a href="design-guide-page-context.html">跨页须写路径名</a></li>
     </ul>
-    <div class="peer-group-label">延伸指导</div>
+    <div class="peer-group-label">主路径干净</div>
     <ul>
-      <li><a href="design-guide-activity-timeline.html">活动规划如何枚举</a></li>
-    </ul>
-</nav>
+      <li><a href="design-guide-noise.html">推荐勿挡主路径</a></li>
+    </ul></nav>
 </aside>
 <div class="peer-main">
 <div class="wrap">
   <header>
-    <p class="eyebrow">框架层</p>
-    <h1>版式不替代语义</h1>
-    <p class="sub">版式可自由排；这页要干什么、主次与数值须写成字，面积与位置只辅助人。</p>
+    <p class="eyebrow">默认可达</p>
+    <h1>机器入口须可辨</h1>
+    <p class="sub">站可提供 <code>llms.txt</code>；文档页头须有可辨的本页 Markdown 入口。对话可选，不必做成整页最抢眼的大模型主 CTA。</p>
   </header>
 
   <h2 class="block-title">原则概述</h2>
-  <p class="affinity-group-label">原则：语义写成字</p>
+  <p class="affinity-group-label">原则：机器入口须可辨可跟</p>
   <ul class="affinity-principles">
-    <li>左右分栏、卡片墙、Dashboard、大卡小卡均可；机器读不到「大 = 重要」「靠左 = 主路径」。</li>
-    <li>开场须用标题、一句话说明（及主按钮文案）交出去这页要干什么。主次、数值、行列对应仍须是文字；面积与位置只辅助人。</li>
+    <li><strong>站点级入口：</strong>根路径宜提供 <code>/llms.txt</code>，页脚可用小字链接指向它，便于人查与审计。此入口不替代顶栏对话或文档页头入口。</li>
+    <li><strong>文档级入口：</strong>文档页头须有「复制 / 打开本页 Markdown」等可辨识入口；与模型对话为可选项。此类入口不必做成压过主路径的大模型主 CTA。</li>
+    <li><strong>源码入口：</strong>仓库中的「获取源码」链接可保留，但文案须注明「本页 Markdown」，路径宜直取，不能单独作为文档页机器入口的替代。</li>
   </ul>
-  <p class="type-lead" style="margin: 12px 0 8px;">版式自由，语义不靠版式：</p>
-  <div class="type-grid type-grid--3" style="margin: 12px 0 16px;">
-    <div class="type-card">
-      <h3>版式</h3>
-      <p class="type-ex">分栏、卡片、Dashboard</p>
-      <div class="type-mini">
-        <p style="margin:0;font-size:13px;line-height:20px;"><strong>设计师有决定权。</strong>左右结构、大卡小卡都可以，不规定某一种排法。</p>
-      </div>
-    </div>
-    <div class="type-card">
-      <h3>语义</h3>
-      <p class="type-ex">开场目的、主次、数值</p>
-      <div class="type-mini">
-        <p style="margin:0;font-size:13px;line-height:20px;"><strong>仍用文字交。</strong>标题、一句话说明、指标名与数值须写在稿面上，不能只靠面积。</p>
-      </div>
-    </div>
-    <div class="type-card">
-      <h3>面积 / 位置</h3>
-      <p class="type-ex">大卡、置顶、左栏</p>
-      <div class="type-mini">
-        <p style="margin:0;font-size:13px;line-height:20px;"><strong>只辅助人。</strong>不独自表示「这是核心」；开场靠前是为了先被读到，仍要有字。</p>
-      </div>
-    </div>
-  </div>
   <p class="affinity-group-label">对 AI 的好处</p>
   <ul class="affinity-principles">
-    <li>版式怎么摆都能抓到开场目的与主次；不必猜哪张卡更大、哪一栏更重要。</li>
+    <li>可通过 <code>/llms.txt</code> 发现站点文档清单</li>
+    <li>可直接获取当前页的结构化 Markdown</li>
+    <li>有对话入口时可减少绕行 HTML 的解析成本</li>
   </ul>
 
   <h2 class="block-title">场景示例</h2>
-  <h3 class="fn-h3">示例 1 · 旅程对照须写出关系</h3>
+  <h3 class="fn-h3">示例 1 · 页脚可链 llms.txt</h3>
   <div class="fn-lead-block">
-    <p class="type-lead fn-lead"><strong>核心原则：</strong>旅程图可以有，图下不必再加列表或图注。阶段 × 路径 × 入口的对应须可抓：写入 alt，或写在同页其他正文（段落/表格）。行列对齐只辅助人。</p>
-    <p class="type-lead fn-lead"><strong>例外情况：</strong>同页正文已写出同一套对应时，图可只作示意；图内已有标题时不必再叠一层。</p>
+    <p class="type-lead fn-lead"><strong>核心原则：</strong>整站在根路径提供 <code>/llms.txt</code>；页脚可用小字链写出，方便人查与审计。顶栏「问 AI」、文档页头「复制页面」仍各管各的，不靠页脚顶替。</p>
+    <p class="type-lead fn-lead"><strong>例外情况：</strong>已有稳定 <code>/llms.txt</code> 且站内检索/文档能跟到时，页脚可不重复挂链。<code>robots.txt</code> 勿当页脚机器入口。</p>
   </div>
   <div class="fn-ex-row">
   <div class="fn-ex">
@@ -1933,15 +2323,24 @@
     <div class="fn-ex-bar" aria-hidden="true"></div>
     </div>
     <div class="fn-ex-body">
-    <div class="fn-ex-mock" aria-label="反面：有旅程图，对应不可抓">
-      <div class="info-card">
-        <img src="assets/design-guide/llm-training-journey.png?v=4" alt="">
+    <div class="fn-ex-mock" aria-label="反面：页脚只有法务链，无 llms.txt">
+      <div class="site-foot">
+        <div class="site-foot-body" aria-hidden="true">
+          <p>正文与主路径区域（略）</p>
+        </div>
+        <div class="site-foot-bar">
+          <ul class="site-foot-links">
+            <li><a href="#mock-about">关于我们</a></li>
+            <li><a href="#mock-legal">法律声明</a></li>
+            <li><a href="#mock-privacy">隐私政策</a></li>
+          </ul>
+          <p class="site-foot-copy">© 昇腾社区</p>
+        </div>
       </div>
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>缺文本替代：</strong>图下可以不加字，但 alt 为空、同页也无对应说明时，抓不到哪条路径在哪一阶段有哪些入口。 <a class="fn-h3-link" href="https://www.hiascend.com/cn/developer/training?tab=tab1" target="_blank" rel="noopener">查看示例来源</a></li>
-      <li><strong>有歧义：</strong>空单元格无法还原「此路径在此阶段无入口」。</li>
+      <li><strong>缺机器发现链：</strong>页脚仅有关于 / 法务类链接；站外与审计方不易从稿面跟到 <code>/llms.txt</code>（文件即使存在也不易被发现）。</li>
     </ul>
     </div>
     </div>
@@ -1952,27 +2351,108 @@
     <div class="fn-ex-bar is-good" aria-hidden="true"></div>
     </div>
     <div class="fn-ex-body">
-    <div class="fn-ex-mock" aria-label="正面：图下不改版式，对应写入 alt">
-      <div class="info-card">
-        <img src="assets/design-guide/llm-training-journey.png?v=4" alt="大语言模型训练用户旅程。学习了解：上手使用与适配开发均有软件介绍。模型迁移、性能调优：仅适配开发有入口；上手使用在这两阶段无入口。">
+    <div class="fn-ex-mock" aria-label="正面：页脚小字链 llms.txt">
+      <div class="site-foot">
+        <div class="site-foot-body" aria-hidden="true">
+          <p>正文与主路径区域（略）</p>
+        </div>
+        <div class="site-foot-bar">
+          <ul class="site-foot-links">
+            <li><a href="#mock-about">关于我们</a></li>
+            <li><a href="#mock-legal">法律声明</a></li>
+            <li><a href="#mock-privacy">隐私政策</a></li>
+            <li><a class="is-machine" href="/llms.txt">llms.txt</a></li>
+          </ul>
+          <p class="site-foot-copy">© 昇腾社区</p>
+        </div>
       </div>
     </div>
     <div class="fn-ex-foot">
-    <p class="fn-ex-group">必有项</p>
-    <ul class="fn-ex-list">
-      <li><strong>对应说明：</strong>写入 alt，或写在同页其他可抓正文；无入口也须写明。</li>
-    </ul>
     <p class="fn-ex-group">可选项</p>
     <ul class="fn-ex-list">
-      <li><strong>图下 UI：</strong>不必为亲和性在图下加列表或图注；版式可保持原样。</li>
+      <li><strong>页脚小字链：</strong>在法务区旁挂 <code>llms.txt</code>，指向站点根 <code>/llms.txt</code>；字号与次要链同级即可，勿做成主 CTA。</li>
     </ul>
     </div>
     </div>
   </div>
   </div>
 
-</div>
-</div>
+  <h3 class="fn-h3">示例 2 · 文档页头须有机器入口</h3>
+  <div class="fn-lead-block">
+    <p class="type-lead fn-lead"><strong>核心原则：</strong>文档页头（标题旁工具区）须有可辨的本页 Markdown 入口（复制或打开）；对话可选。仅分享 / 收藏不够；仅「获取源码」跳到仓库也不够。</p>
+    <p class="type-lead fn-lead"><strong>例外情况：</strong>整站 <code>llms.txt</code> + 稳定本页 <code>.md</code> 直链且页内能跟到时，文档页头可不重复堆按钮。巨型「AI」主按钮不必强加。</p>
+  </div>
+  <div class="fn-ex-row">
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label">反面</span>
+    <div class="fn-ex-bar" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock fn-ex-mock--banner" aria-label="反面：只有分享收藏与源码链">
+      <div class="info-card">
+        <img src="assets/design-guide/ascend-c-doc-header.png?v=2" alt="">
+      </div>
+    </div>
+    <div class="fn-ex-foot">
+    <ul class="fn-ex-list">
+      <li><strong>缺文本替代：</strong>页面有「分享 / 收藏」入口，但「获取 GitCode 源码」指向仓库中的 <code>.md</code> 文件，属于旁路跳转，文案未明确标注「本页 Markdown」，且无「复制本页」或「对话」入口。 <a class="fn-h3-link" href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/850/opdevg/Ascendcopdevg/atlas_ascendc_map_10_0002.html" target="_blank" rel="noopener">查看示例来源</a></li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label is-good">正面</span>
+    <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="正面：文档页头「复制页面」下拉汇总 Markdown 与对话">
+      <div class="ac-face">
+        <p class="ac-face-crumb" aria-hidden="true">
+          <span class="is-link">CANN</span><span class="sep">/</span>
+          <span class="is-link">Ascend C算子开发</span><span class="sep">/</span>
+          <span class="is-link">入门教程</span><span class="sep">/</span>
+          <span>什么是Ascend C</span>
+        </p>
+        <div class="ac-face-banner">
+          <div class="ac-face-title-row">
+            <p class="ac-face-h">什么是Ascend C</p>
+            <div class="ac-face-menu">
+              <button type="button" class="ac-face-copy" aria-expanded="false">复制页面 ▾</button>
+              <div class="ac-face-drop" role="menu">
+                <a href="#mock-copy-md">复制为 Markdown</a>
+                <a href="#mock-open-md">打开 Markdown</a>
+                <a href="#mock-chat">与模型对话</a>
+              </div>
+            </div>
+          </div>
+          <div class="ac-face-bar">
+            <span class="ac-face-ico" aria-hidden="true" title="分享"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 3v10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M8.5 6.5 12 3l3.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 12v6.5A2.5 2.5 0 0 0 7.5 21h9a2.5 2.5 0 0 0 2.5-2.5V12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+            <span class="ac-face-ico" aria-hidden="true" title="收藏">☆</span>
+            <a class="ac-face-link is-muted" href="#mock-gitcode">获取GitCode源码</a>
+            <span class="ac-face-time">更新时间：2026/05/19</span>
+          </div>
+        </div>
+        <div class="ac-face-body">
+          <p class="ac-face-p">Ascend C 是 CANN 针对算子开发场景推出的编程语言…（正文略）</p>
+        </div>
+      </div>
+    </div>
+    <div class="fn-ex-foot">
+    <p class="fn-ex-group">必有项</p>
+    <ul class="fn-ex-list">
+      <li><strong>本页 Markdown：</strong>须提供复制或打开当前页面 MD 的入口，且文案写清对应动作。仅提供仓库源码链不能替代。 <a class="fn-h3-link" href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/850/opdevg/Ascendcopdevg/atlas_ascendc_map_10_0002.html" target="_blank" rel="noopener">查看示例来源</a></li>
+    </ul>
+    <p class="fn-ex-group">可选项</p>
+    <ul class="fn-ex-list">
+      <li><strong>对话入口 / 下拉菜单：</strong>与模型对话等为可选功能；如用「Copy page」汇总多个动作，子项须写明具体操作。此类入口不必作为整页主 CTA。</li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  </div>
+
 </div>
 </div>
 </div>
@@ -1994,6 +2474,28 @@
   el.querySelectorAll("a").forEach(function (a) {
     a.addEventListener("click", function () {
       sessionStorage.setItem(key, String(el.scrollTop));
+    });
+  });
+})();
+</script>
+<script>
+/* ac-face-copy-toggle */
+(function () {
+  document.querySelectorAll(".ac-face-menu").forEach(function (menu) {
+    var btn = menu.querySelector(".ac-face-copy");
+    if (!btn) return;
+    btn.addEventListener("click", function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      var open = menu.classList.toggle("is-open");
+      btn.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+  });
+  document.addEventListener("click", function () {
+    document.querySelectorAll(".ac-face-menu.is-open").forEach(function (menu) {
+      menu.classList.remove("is-open");
+      var btn = menu.querySelector(".ac-face-copy");
+      if (btn) btn.setAttribute("aria-expanded", "false");
     });
   });
 })();
