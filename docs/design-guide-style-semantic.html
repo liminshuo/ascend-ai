@@ -116,7 +116,7 @@
     margin: 0 0 8px;
     font-size: 13px;
     font-weight: 700;
-    color: var(--muted);
+    color: var(--text);
     letter-spacing: 0.02em;
   }
   .affinity-principles + .affinity-group-label {
@@ -166,9 +166,20 @@
     color: var(--muted);
   }
   .fn-lead-block p:last-child { margin-bottom: 0; }
+  .fn-lead-block .fn-h3-link {
+    margin-left: 0;
+  }
   .fn-lead-block strong {
     color: var(--text);
     font-weight: 650;
+  }
+  .fn-lead-block .type-lead {
+    margin: 0 0 4px;
+    max-width: none;
+    width: 100%;
+  }
+  .fn-lead-block .type-lead:last-of-type {
+    margin-bottom: 8px;
   }
   .type-grid {
     display: grid;
@@ -469,7 +480,8 @@
     color: var(--text);
     letter-spacing: -0.01em;
   }
-  h3.fn-h3 .fn-h3-link {
+  h3.fn-h3 .fn-h3-link,
+  .fn-h3-link {
     margin-left: 12px;
     font-size: 14px;
     font-weight: 500;
@@ -477,7 +489,8 @@
     color: var(--link);
     text-decoration: none;
   }
-  h3.fn-h3 .fn-h3-link:hover {
+  h3.fn-h3 .fn-h3-link:hover,
+  .fn-h3-link:hover {
     text-decoration: underline;
   }
   .fn-panel {
@@ -828,23 +841,56 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
+    margin-bottom: 16px;
   }
   .fn-ex-row .fn-ex-head .fn-ex-label {
     margin: 0;
   }
   .fn-ex-row .fn-ex-head .fn-ex-bar {
+    display: block;
     margin: 0;
     width: 100%;
+    align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-body {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 2 / span 2;
+    min-height: 0;
+    background: #f5f5f5;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .fn-ex-row .fn-ex-mock {
+    min-height: 0;
+    height: 100%;
+    box-sizing: border-box;
+    border: none;
+    border-radius: 0;
     align-self: stretch;
   }
   .fn-ex-row .fn-ex-foot {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    padding: 12px 14px 14px;
+    background: #fff;
+    border-top: 1px solid var(--line);
   }
-  .fn-ex-row .fn-ex-foot .fn-ex-title,
   .fn-ex-row .fn-ex-foot .fn-ex-list {
     margin: 0;
+    gap: 4px;
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-group {
+    margin: 8px 0 0;
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 650;
+    color: var(--muted);
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-group:first-child {
+    margin-top: 0;
   }
   .fn-ex-row .status-ex-table {
     font-size: 11px;
@@ -868,6 +914,11 @@
     }
     .fn-ex-row .fn-ex {
       display: block;
+      grid-row: auto;
+    }
+    .fn-ex-row .fn-ex-body {
+      display: flex;
+      flex-direction: column;
       grid-row: auto;
     }
   }
@@ -1594,6 +1645,11 @@
   .st-card {
     padding: 16px 18px 14px;
     color: var(--text);
+    background: #fff;
+    border-radius: 8px;
+  }
+  .fn-ex-mock:has(.st-card) {
+    padding: 16px;
   }
   .st-note {
     display: flex;
@@ -1752,10 +1808,12 @@
     <div class="peer-group-label">视觉层</div>
     <ul>
       <li><a href="design-guide-image-text.html">图意文本化</a></li>
+      <li><a href="design-guide-icon-text.html">图标文本化</a></li>
       <li><a href="design-guide-style-semantic.html" class="active">颜色语义化</a></li>
       <li><a href="design-guide-hierarchy.html">层级文本化</a></li>
       <li><a href="design-guide-status-word.html">状态文本化</a></li>
       <li><a href="design-guide-media.html">多媒体语义化</a></li>
+      <li><a href="design-guide-code.html">代码块语义化</a></li>
       <li><a href="design-guide-timestamp.html">版本时效声明化</a></li>
       <li><a href="design-guide-gui-map.html">界面元素数值化</a></li>
       <li><a href="design-guide-default-empty.html">占位与空态文本化</a></li>
@@ -1771,8 +1829,7 @@
     <div class="peer-group-label">框架层</div>
     <ul>
       <li><a href="design-guide-noise.html">噪音过滤</a></li>
-      <li><a href="design-guide-page-context.html">跨页路径语义化</a></li>
-      <li><a href="design-guide-carrier.html">信息载体选定原则</a></li>
+      <li><a href="design-guide-page-context.html">跨页路径语义化</a></li>      <li><a href="design-guide-layout.html">版式不替代语义</a></li>
     </ul>
   </nav>
 </aside>
@@ -1785,30 +1842,27 @@
   </header>
 
   <h2 class="block-title">原则概述</h2>
-  <p class="affinity-group-label">设计描述</p>
+  <p class="affinity-group-label">原则：颜色不独自表意</p>
   <ul class="affinity-principles">
-    <li>抓取后颜色会丢失。状态、禁用、数据分类等含义，须写成文字，不能只靠色块或字色。</li>
+    <li>颜色用于辅助识别，状态、禁用、分类等含义须写成可读的词。颜色本身可保留，但不得作为信息传递的唯一载体。装饰性配色可例外。</li>
   </ul>
-  <p class="affinity-group-label">UI 落地</p>
+  <p class="affinity-group-label">对 AI 的好处</p>
   <ul class="affinity-principles">
-    <li>警示用「警告：」「注意：」「提示：」等前缀；红 / 黄 / 蓝只辅助。</li>
-    <li>禁用写成「已禁用」；灰色只辅助。</li>
-    <li>图表或列表分类须有文字图例，不要只靠色点。</li>
-  </ul>
-  <p class="affinity-group-label">对 AI 亲和的好处</p>
-  <ul class="affinity-principles">
-    <li>颜色丢失后仍能区分状态、是否禁用、数据属于哪一类。</li>
+    <li>状态词、禁用说明、分类名落在可抓取文字上，AI 无需从色块猜测含义；颜色丢失后仍能区分级别、是否可用、数据属于哪一类。</li>
   </ul>
 
   <h2 class="block-title">场景示例</h2>
   <h3 class="fn-h3">示例 1 · 警示色须有级别词</h3>
-  <p class="type-lead">红 / 黄 / 蓝块不能独自当警告、注意或提示。</p>
+  <div class="fn-lead-block">
+    <p class="type-lead fn-lead"><strong>核心原则：</strong>警示级别须写成「警告」「注意」「提示」等词，颜色只辅助。</p>
+  </div>
   <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
     <span class="fn-ex-label">反面</span>
     <div class="fn-ex-bar" aria-hidden="true"></div>
     </div>
+    <div class="fn-ex-body">
     <div class="fn-ex-mock" aria-label="反面：只有色块">
       <div class="st-card">
         <p style="margin:0 0 8px;padding:8px 10px;background:#fef2f2;border-left:3px solid #dc2626;font-size:13px;line-height:20px;">请勿在生产环境使用未验证驱动。</p>
@@ -1817,10 +1871,10 @@
       </div>
     </div>
     <div class="fn-ex-foot">
-    <p class="fn-ex-title">问题</p>
     <ul class="fn-ex-list">
-      <li><strong>色当语义：</strong>抓取后看不出是警告、注意还是提示。</li>
+      <li><strong>缺文本替代：</strong>抓取后看不出是警告、注意还是提示。</li>
     </ul>
+    </div>
     </div>
   </div>
   <div class="fn-ex">
@@ -1828,6 +1882,7 @@
     <span class="fn-ex-label is-good">正面</span>
     <div class="fn-ex-bar is-good" aria-hidden="true"></div>
     </div>
+    <div class="fn-ex-body">
     <div class="fn-ex-mock" aria-label="正面：写成级别词">
       <div class="st-card">
         <p style="margin:0 0 8px;padding:8px 10px;background:#fef2f2;border-left:3px solid #dc2626;font-size:13px;line-height:20px;"><strong>警告：</strong>请勿在生产环境使用未验证驱动。</p>
@@ -1836,29 +1891,32 @@
       </div>
     </div>
     <div class="fn-ex-foot">
-    <p class="fn-ex-title">修改</p>
     <ul class="fn-ex-list">
-      <li><strong>前缀项：</strong>写成「警告：」「注意：」「提示：」；颜色只辅助。</li>
+      <li><strong>级别：</strong>须写成「警告：」「注意：」「提示：」；颜色只辅助。</li>
     </ul>
+    </div>
     </div>
   </div>
   </div>
   <h3 class="fn-h3">示例 2 · 灰色须写成禁用</h3>
-  <p class="type-lead">灰字不能独自表示不可用。</p>
+  <div class="fn-lead-block">
+    <p class="type-lead fn-lead"><strong>核心原则：</strong>不可用须写成「已禁用」，灰色只辅助。</p>
+  </div>
   <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
     <span class="fn-ex-label">反面</span>
     <div class="fn-ex-bar" aria-hidden="true"></div>
     </div>
+    <div class="fn-ex-body">
     <div class="fn-ex-mock" aria-label="反面：只有灰字">
       <div class="st-card"><p style="margin:0 0 6px;font-size:13px;">下载离线包</p><p style="margin:0;font-size:13px;color:#8c8c8c;">下载源码包</p></div>
     </div>
     <div class="fn-ex-foot">
-    <p class="fn-ex-title">问题</p>
     <ul class="fn-ex-list">
-      <li><strong>色当禁用：</strong>抓取后两条一样，看不出源码包不可用。</li>
+      <li><strong>缺文本替代：</strong>抓取后两条一样，看不出源码包不可用。</li>
     </ul>
+    </div>
     </div>
   </div>
   <div class="fn-ex">
@@ -1866,25 +1924,29 @@
     <span class="fn-ex-label is-good">正面</span>
     <div class="fn-ex-bar is-good" aria-hidden="true"></div>
     </div>
+    <div class="fn-ex-body">
     <div class="fn-ex-mock" aria-label="正面：写成已禁用">
       <div class="st-card"><p style="margin:0 0 6px;font-size:13px;">下载离线包</p><p style="margin:0;font-size:13px;color:#8c8c8c;">下载源码包（已禁用）</p></div>
     </div>
     <div class="fn-ex-foot">
-    <p class="fn-ex-title">修改</p>
     <ul class="fn-ex-list">
-      <li><strong>禁用项：</strong>写成「已禁用」；灰色只辅助。</li>
+      <li><strong>禁用：</strong>须写成「已禁用」；灰色只辅助。</li>
     </ul>
+    </div>
     </div>
   </div>
   </div>
   <h3 class="fn-h3">示例 3 · 分类色须有文字标签</h3>
-  <p class="type-lead">饼图色块不能独自表示数据属于哪一类。</p>
+  <div class="fn-lead-block">
+    <p class="type-lead fn-lead"><strong>核心原则：</strong>分类须写成文字图例，色块只辅助。</p>
+  </div>
   <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
     <span class="fn-ex-label">反面</span>
     <div class="fn-ex-bar" aria-hidden="true"></div>
     </div>
+    <div class="fn-ex-body">
     <div class="fn-ex-mock" aria-label="反面：饼图只有色无图例词">
       <div class="st-card" style="display:flex;align-items:center;gap:16px;">
         <div style="width:72px;height:72px;border-radius:50%;flex-shrink:0;background:conic-gradient(#8BB5A6 0 54.2%, #6E9BC3 54.2% 84.7%, #D4B896 84.7% 100%);" aria-hidden="true"></div>
@@ -1896,10 +1958,10 @@
       </div>
     </div>
     <div class="fn-ex-foot">
-    <p class="fn-ex-title">问题</p>
     <ul class="fn-ex-list">
-      <li><strong>色当分类：</strong>抓取后只剩数字，读不出扇区是训练、推理还是微调。</li>
+      <li><strong>缺文本替代：</strong>抓取后只剩数字，读不出扇区是训练、推理还是微调。</li>
     </ul>
+    </div>
     </div>
   </div>
   <div class="fn-ex">
@@ -1907,6 +1969,7 @@
     <span class="fn-ex-label is-good">正面</span>
     <div class="fn-ex-bar is-good" aria-hidden="true"></div>
     </div>
+    <div class="fn-ex-body">
     <div class="fn-ex-mock" aria-label="正面：饼图配文字图例">
       <div class="st-card" style="display:flex;align-items:center;gap:16px;">
         <div style="width:72px;height:72px;border-radius:50%;flex-shrink:0;background:conic-gradient(#8BB5A6 0 54.2%, #6E9BC3 54.2% 84.7%, #D4B896 84.7% 100%);" aria-hidden="true"></div>
@@ -1918,16 +1981,14 @@
       </div>
     </div>
     <div class="fn-ex-foot">
-    <p class="fn-ex-title">修改</p>
     <ul class="fn-ex-list">
-      <li><strong>图例项：</strong>写成「训练」「推理」「微调」；饼图颜色只辅助。</li>
+      <li><strong>图例：</strong>须写成「训练」「推理」「微调」；饼图颜色只辅助。</li>
     </ul>
+    </div>
     </div>
   </div>
   </div>
 
-</div>
-</div>
 </div>
 </div>
 </div>

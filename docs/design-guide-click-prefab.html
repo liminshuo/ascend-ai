@@ -116,7 +116,7 @@
     margin: 0 0 8px;
     font-size: 13px;
     font-weight: 700;
-    color: var(--muted);
+    color: var(--text);
     letter-spacing: 0.02em;
   }
   .affinity-principles + .affinity-group-label {
@@ -469,7 +469,8 @@
     color: var(--text);
     letter-spacing: -0.01em;
   }
-  h3.fn-h3 .fn-h3-link {
+  h3.fn-h3 .fn-h3-link,
+  .fn-h3-link {
     margin-left: 12px;
     font-size: 14px;
     font-weight: 500;
@@ -477,7 +478,8 @@
     color: var(--link);
     text-decoration: none;
   }
-  h3.fn-h3 .fn-h3-link:hover {
+  h3.fn-h3 .fn-h3-link:hover,
+  .fn-h3-link:hover {
     text-decoration: underline;
   }
   .fn-panel {
@@ -806,7 +808,8 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto 1fr auto;
-    gap: 16px 16px;
+    column-gap: 16px;
+    row-gap: 0;
     align-items: stretch;
     max-width: none;
     margin: 0 0 20px;
@@ -819,39 +822,61 @@
     margin: 0;
     min-width: 0;
   }
-  .fn-ex-row .fn-ex-mock {
-    height: 100%;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-  }
-  .fn-ex-row .fn-ex-mock > .vis-card {
-    flex: 1;
-    min-height: 0;
-    width: 100%;
-  }
   .fn-ex-row .fn-ex-head {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
+    margin-bottom: 16px;
   }
   .fn-ex-row .fn-ex-head .fn-ex-label {
     margin: 0;
   }
   .fn-ex-row .fn-ex-head .fn-ex-bar {
+    display: block;
     margin: 0;
     width: 100%;
+    align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-body {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 2 / span 2;
+    min-height: 0;
+    background: #f5f5f5;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .fn-ex-row .fn-ex-mock {
+    min-height: 0;
+    height: 100%;
+    box-sizing: border-box;
+    border: none;
+    border-radius: 0;
     align-self: stretch;
   }
   .fn-ex-row .fn-ex-foot {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    padding: 12px 14px 14px;
+    background: #fff;
+    border-top: 1px solid var(--line);
   }
-  .fn-ex-row .fn-ex-foot .fn-ex-title,
   .fn-ex-row .fn-ex-foot .fn-ex-list {
     margin: 0;
+    gap: 4px;
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-group {
+    margin: 8px 0 0;
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 650;
+    color: var(--muted);
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-group:first-child {
+    margin-top: 0;
   }
   .fn-ex-row .status-ex-table {
     font-size: 11px;
@@ -877,7 +902,13 @@
       display: block;
       grid-row: auto;
     }
+    .fn-ex-row .fn-ex-body {
+      display: flex;
+      flex-direction: column;
+      grid-row: auto;
+    }
   }
+
   .fn-ex-label {
     display: inline-block;
     margin: 0 0 10px;
@@ -1529,7 +1560,7 @@
   .vis-acc-all {
     font-size: 12px;
     line-height: 20px;
-    color: #1476FF;
+    color: #595959;
     cursor: pointer;
     user-select: none;
   }
@@ -1625,6 +1656,80 @@
     background: #1476FF;
     border-color: #1476FF;
   }
+  .vis-toc {
+    font-size: 13px;
+    line-height: 20px;
+  }
+  .vis-toc-head {
+    margin: 0 0 10px;
+    font-size: 14px;
+    font-weight: 650;
+    line-height: 22px;
+  }
+  .vis-toc-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 10px;
+  }
+  .vis-toc-bar .vis-toc-head { margin: 0; }
+  .vis-toc-group {
+    border-bottom: 1px solid #e5e5e5;
+  }
+  .vis-toc-group:last-child { border-bottom: none; }
+  .vis-toc-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin: 0;
+    padding: 8px 0;
+    font-size: 13px;
+    line-height: 20px;
+    font-weight: 650;
+    color: var(--text);
+  }
+  .vis-toc-label::after {
+    content: "";
+    flex-shrink: 0;
+    width: 7px;
+    height: 7px;
+    margin: 0 2px 2px 0;
+    border-right: 1.5px solid #8c8c8c;
+    border-bottom: 1.5px solid #8c8c8c;
+    transform: rotate(45deg);
+  }
+  .vis-toc-group.is-open > .vis-toc-label {
+    color: var(--text);
+  }
+  .vis-toc-group.is-open > .vis-toc-label::after {
+    margin: 2px 2px 0 0;
+    border-color: #8c8c8c;
+    transform: rotate(-135deg);
+  }
+  .vis-toc-demo .vis-toc-label {
+    cursor: pointer;
+    user-select: none;
+  }
+  .vis-toc-kids {
+    display: none;
+    margin: 0 0 8px;
+    padding: 0 0 0 12px;
+    border-left: 2px solid #e5e5e5;
+  }
+  .vis-toc-group.is-open > .vis-toc-kids { display: block; }
+  .vis-toc-kids a,
+  .vis-toc-kids span {
+    display: block;
+    padding: 4px 0;
+    color: #595959;
+    text-decoration: none;
+  }
+  .vis-toc-kids .is-on {
+    color: var(--text);
+    font-weight: 650;
+  }
 </style>
 </head>
 
@@ -1648,10 +1753,12 @@
     <div class="peer-group-label">视觉层</div>
     <ul>
       <li><a href="design-guide-image-text.html">图意文本化</a></li>
+      <li><a href="design-guide-icon-text.html">图标文本化</a></li>
       <li><a href="design-guide-style-semantic.html">颜色语义化</a></li>
       <li><a href="design-guide-hierarchy.html">层级文本化</a></li>
       <li><a href="design-guide-status-word.html">状态文本化</a></li>
       <li><a href="design-guide-media.html">多媒体语义化</a></li>
+      <li><a href="design-guide-code.html">代码块语义化</a></li>
       <li><a href="design-guide-timestamp.html">版本时效声明化</a></li>
       <li><a href="design-guide-gui-map.html">界面元素数值化</a></li>
       <li><a href="design-guide-default-empty.html">占位与空态文本化</a></li>
@@ -1667,8 +1774,7 @@
     <div class="peer-group-label">框架层</div>
     <ul>
       <li><a href="design-guide-noise.html">噪音过滤</a></li>
-      <li><a href="design-guide-page-context.html">跨页路径语义化</a></li>
-      <li><a href="design-guide-carrier.html">信息载体选定原则</a></li>
+      <li><a href="design-guide-page-context.html">跨页路径语义化</a></li>      <li><a href="design-guide-layout.html">版式不替代语义</a></li>
     </ul>
   </nav>
 </aside>
@@ -1681,53 +1787,56 @@
   </header>
 
   <h2 class="block-title">原则概述</h2>
-  <p class="affinity-group-label">设计描述</p>
+  <p class="affinity-group-label">原则：交互只控制显隐</p>
   <ul class="affinity-principles">
-    <li>页面初始状态即包含完整内容，交互仅控制显隐。禁止把关键信息只放在「点击展开」「切换 Tab」「加载更多」后面才注入。</li>
+    <li>页面初始即包含完整内容。折叠、Tab、加载更多只控制显隐，禁止把步骤、定义或默认结果放到点击之后才注入。</li>
+    <li>若必须折叠（含侧栏目录），须提供「全部展开」；列表关键条目须在首包可枚举，深页用分页，不要靠无限滚注入。</li>
   </ul>
-  <p class="affinity-group-label">UI 落地</p>
-  <ul class="affinity-principles">
-    <li>折叠须提供「全部展开」；列表关键条目在首包可枚举，深页用分页。</li>
-    <li>Tab、轮播：稿面仍用页签即可。各面板正文由前端写入初始 DOM，切换只改显隐——设计侧看不出差别。</li>
-  </ul>
-  <p class="affinity-group-label">对 AI 亲和的好处</p>
+  <p class="affinity-group-label">对 AI 的好处</p>
   <ul class="affinity-principles">
     <li>不点击、不切换、不滚到底，也能抓到步骤、定义和默认结果。</li>
   </ul>
 
   <h2 class="block-title">场景示例</h2>
-  <h3 class="fn-h3">示例 1 · 折叠须可全部展开</h3>
-  <p class="type-lead">若必须折叠，须有全部展开；收起只是视觉，首包已有全文。</p>
+  <h3 class="fn-h3">示例 1 · 侧栏折叠须可全部展开</h3>
+  <div class="fn-lead-block">
+    <p class="type-lead fn-lead"><strong>核心原则：</strong>侧栏目录若折叠，须有全部展开；子项收起只是视觉，首包已有链接文案。</p>
+  </div>
   <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
     <span class="fn-ex-label">反面</span>
     <div class="fn-ex-bar" aria-hidden="true"></div>
     </div>
-    <div class="fn-ex-mock" aria-label="折叠反面：仅标题，无全部展开">
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="侧栏反面：仅一组展开，无全部展开">
       <div class="vis-card">
-        <p style="margin:0 0 8px;font-size:16px;font-weight:650;">CANN 安装</p>
-        <div class="vis-acc">
-          <div class="vis-acc-item">
-            <p class="vis-acc-title">步骤 1 安装驱动</p>
-            <p class="vis-acc-body">下载并安装配套驱动，完成后重启设备。</p>
+        <div class="vis-toc">
+          <p class="vis-toc-head">欢迎查看MindSpore Lite文档</p>
+          <div class="vis-toc-group is-open">
+            <p class="vis-toc-label">获取MindSpore Lite</p>
+            <div class="vis-toc-kids">
+              <span class="is-on">下载MindSpore Lite</span>
+              <span>端侧编译</span>
+            </div>
           </div>
-          <div class="vis-acc-item">
-            <p class="vis-acc-title">步骤 2 配置环境变量</p>
-            <p class="vis-acc-body">将工具链路径写入 PATH，使编译命令可直接调用。</p>
+          <div class="vis-toc-group">
+            <p class="vis-toc-label">快速入门</p>
           </div>
-          <div class="vis-acc-item">
-            <p class="vis-acc-title">步骤 3 验证安装</p>
-            <p class="vis-acc-body">执行版本查询，确认驱动与固件匹配。</p>
+          <div class="vis-toc-group">
+            <p class="vis-toc-label">模型转换</p>
+          </div>
+          <div class="vis-toc-group">
+            <p class="vis-toc-label">端侧推理</p>
           </div>
         </div>
       </div>
     </div>
     <div class="fn-ex-foot">
-    <p class="fn-ex-title">问题</p>
     <ul class="fn-ex-list">
-      <li><strong>依赖点击：</strong>步骤正文默认收起，且没有全部展开。</li>
+      <li><strong>缺文本替代：</strong>未展开分组看不到子链，且没有全部展开。 <a class="fn-h3-link" href="https://www.mindspore.cn/lite/docs/zh-CN/master/use/downloads.html" target="_blank" rel="noopener">查看示例来源</a></li>
     </ul>
+    </div>
     </div>
   </div>
   <div class="fn-ex">
@@ -1735,45 +1844,66 @@
     <span class="fn-ex-label is-good">正面</span>
     <div class="fn-ex-bar is-good" aria-hidden="true"></div>
     </div>
-    <div class="fn-ex-mock" aria-label="折叠正面：全部展开，正文已在稿面">
-      <div class="vis-card vis-acc-demo">
-        <div class="vis-acc-bar">
-          <p style="margin:0;font-size:16px;font-weight:650;">CANN 安装</p>
-          <span class="vis-acc-all">全部展开</span>
-        </div>
-        <div class="vis-acc">
-          <div class="vis-acc-item">
-            <p class="vis-acc-title">步骤 1 安装驱动</p>
-            <p class="vis-acc-body">下载并安装配套驱动，完成后重启设备。</p>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="侧栏正面：全部展开，子项已在稿面">
+      <div class="vis-card vis-toc-demo">
+        <div class="vis-toc">
+          <div class="vis-toc-bar">
+            <p class="vis-toc-head">欢迎查看MindSpore Lite文档</p>
+            <span class="vis-acc-all">全部展开</span>
           </div>
-          <div class="vis-acc-item">
-            <p class="vis-acc-title">步骤 2 配置环境变量</p>
-            <p class="vis-acc-body">将工具链路径写入 PATH，使编译命令可直接调用。</p>
+          <div class="vis-toc-group is-open">
+            <p class="vis-toc-label">获取MindSpore Lite</p>
+            <div class="vis-toc-kids">
+              <span class="is-on">下载MindSpore Lite</span>
+              <span>端侧编译</span>
+            </div>
           </div>
-          <div class="vis-acc-item">
-            <p class="vis-acc-title">步骤 3 验证安装</p>
-            <p class="vis-acc-body">执行版本查询，确认驱动与固件匹配。</p>
+          <div class="vis-toc-group is-open">
+            <p class="vis-toc-label">快速入门</p>
+            <div class="vis-toc-kids">
+              <span>快速入门概述</span>
+              <span>环境准备</span>
+            </div>
+          </div>
+          <div class="vis-toc-group is-open">
+            <p class="vis-toc-label">模型转换</p>
+            <div class="vis-toc-kids">
+              <span>转换概述</span>
+              <span>转换工具</span>
+            </div>
+          </div>
+          <div class="vis-toc-group is-open">
+            <p class="vis-toc-label">端侧推理</p>
+            <div class="vis-toc-kids">
+              <span>推理概述</span>
+              <span>Runtime</span>
+            </div>
           </div>
         </div>
       </div>
     </div>
     <div class="fn-ex-foot">
-    <p class="fn-ex-title">修改</p>
+    <p class="fn-ex-group">必有项</p>
     <ul class="fn-ex-list">
-      <li><strong>展开项：</strong>提供「全部展开」；步骤正文初始渲染已在页面中。</li>
+      <li><strong>全部展开：</strong>提供「全部展开」；各组子链初始渲染已在页面中。</li>
     </ul>
+    </div>
     </div>
   </div>
   </div>
 
   <h3 class="fn-h3">示例 2 · 列表须在首包可见</h3>
-  <p class="type-lead">核心条目须在首包可枚举；不要滚才加载。深页用分页。</p>
+  <div class="fn-lead-block">
+    <p class="type-lead fn-lead"><strong>核心原则：</strong>核心条目须在首包可枚举；不要滚才加载。深页用分页。</p>
+  </div>
   <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
     <span class="fn-ex-label">反面</span>
     <div class="fn-ex-bar" aria-hidden="true"></div>
     </div>
+    <div class="fn-ex-body">
     <div class="fn-ex-mock" aria-label="无限滚动反面：首包条目不足">
       <div class="vis-card">
         <div class="vis-feed-row">MindSpore Transformers<div class="vis-feed-meta">大模型套件</div></div>
@@ -1783,10 +1913,10 @@
       </div>
     </div>
     <div class="fn-ex-foot">
-    <p class="fn-ex-title">问题</p>
     <ul class="fn-ex-list">
-      <li><strong>依赖滚动：</strong>核心结果只在滚到底后才注入。</li>
+      <li><strong>缺文本替代：</strong>核心结果只在滚到底后才注入。</li>
     </ul>
+    </div>
     </div>
   </div>
   <div class="fn-ex">
@@ -1794,6 +1924,7 @@
     <span class="fn-ex-label is-good">正面</span>
     <div class="fn-ex-bar is-good" aria-hidden="true"></div>
     </div>
+    <div class="fn-ex-body">
     <div class="fn-ex-mock" aria-label="列表正面：首包已有条目，深页分页">
       <div class="vis-card">
         <div class="vis-feed-row">MindSpore Transformers<div class="vis-feed-meta">大模型套件</div></div>
@@ -1803,10 +1934,11 @@
       </div>
     </div>
     <div class="fn-ex-foot">
-    <p class="fn-ex-title">修改</p>
+    <p class="fn-ex-group">必有项</p>
     <ul class="fn-ex-list">
-      <li><strong>首包项：</strong>默认可见若干条目；深页用分页，不要靠无限滚注入。</li>
+      <li><strong>首包条目：</strong>默认可见若干条目；深页用分页，不要靠无限滚注入。</li>
     </ul>
+    </div>
     </div>
   </div>
   </div>
@@ -1841,27 +1973,23 @@
   function syncAll(card) {
     var btn = card.querySelector(".vis-acc-all");
     if (!btn) return;
-    var items = card.querySelectorAll(".vis-acc-item");
+    var items = card.querySelectorAll(".vis-toc-group");
     var allOpen = items.length && Array.prototype.every.call(items, function (it) {
       return it.classList.contains("is-open");
     });
     btn.textContent = allOpen ? "全部收起" : "全部展开";
   }
-  document.querySelectorAll(".vis-acc").forEach(function (acc) {
-    var card = acc.closest(".vis-card");
-    acc.querySelectorAll(".vis-acc-item").forEach(function (it) {
-      if (!it.querySelector(".vis-acc-body")) return;
-      var title = it.querySelector(".vis-acc-title");
-      if (!title) return;
-      title.addEventListener("click", function () {
+  document.querySelectorAll(".vis-toc-demo").forEach(function (card) {
+    var btn = card.querySelector(".vis-acc-all");
+    var items = card.querySelectorAll(".vis-toc-group");
+    items.forEach(function (it) {
+      var label = it.querySelector(".vis-toc-label");
+      if (!label) return;
+      label.addEventListener("click", function () {
         it.classList.toggle("is-open");
-        if (card) syncAll(card);
+        syncAll(card);
       });
     });
-  });
-  document.querySelectorAll(".vis-acc-demo").forEach(function (card) {
-    var btn = card.querySelector(".vis-acc-all");
-    var items = card.querySelectorAll(".vis-acc-item");
     if (!btn || !items.length) return;
     btn.addEventListener("click", function () {
       var open = btn.textContent.trim() === "全部展开";

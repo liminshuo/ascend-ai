@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>信息载体选定原则 · 设计指导 · 昇腾社区 AI 亲和原则</title>
+<title>代码块语义化 · 设计指导 · 昇腾社区 AI 亲和原则</title>
 <style>
   :root {
     --bg: #F5F5F5;
@@ -116,7 +116,7 @@
     margin: 0 0 8px;
     font-size: 13px;
     font-weight: 700;
-    color: var(--muted);
+    color: var(--text);
     letter-spacing: 0.02em;
   }
   .affinity-principles + .affinity-group-label {
@@ -469,7 +469,8 @@
     color: var(--text);
     letter-spacing: -0.01em;
   }
-  h3.fn-h3 .fn-h3-link {
+  h3.fn-h3 .fn-h3-link,
+  .fn-h3-link {
     margin-left: 12px;
     font-size: 14px;
     font-weight: 500;
@@ -477,7 +478,8 @@
     color: var(--link);
     text-decoration: none;
   }
-  h3.fn-h3 .fn-h3-link:hover {
+  h3.fn-h3 .fn-h3-link:hover,
+  .fn-h3-link:hover {
     text-decoration: underline;
   }
   .fn-panel {
@@ -806,7 +808,8 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto 1fr auto;
-    gap: 16px 16px;
+    column-gap: 16px;
+    row-gap: 0;
     align-items: stretch;
     max-width: none;
     margin: 0 0 20px;
@@ -819,32 +822,63 @@
     margin: 0;
     min-width: 0;
   }
-  .fn-ex-row .fn-ex-mock {
-    height: 100%;
-    box-sizing: border-box;
-  }
   .fn-ex-row .fn-ex-head {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
+    margin-bottom: 16px;
   }
   .fn-ex-row .fn-ex-head .fn-ex-label {
     margin: 0;
   }
   .fn-ex-row .fn-ex-head .fn-ex-bar {
+    display: block;
     margin: 0;
     width: 100%;
+    align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-body {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 2 / span 2;
+    min-height: 0;
+    background: #f5f5f5;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .fn-ex-row .fn-ex-mock,
+  .fn-ex-row .fn-ex-mock:has(.st-card),
+  .fn-ex-row .fn-ex-mock:has(.code-face) {
+    min-height: 0;
+    height: 100%;
+    box-sizing: border-box;
+    border: none;
+    border-radius: 0;
     align-self: stretch;
   }
   .fn-ex-row .fn-ex-foot {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    padding: 12px 14px 14px;
+    background: #fff;
+    border-top: 1px solid var(--line);
   }
-  .fn-ex-row .fn-ex-foot .fn-ex-title,
   .fn-ex-row .fn-ex-foot .fn-ex-list {
     margin: 0;
+    gap: 4px;
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-group {
+    margin: 8px 0 0;
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 650;
+    color: var(--muted);
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-group:first-child {
+    margin-top: 0;
   }
   .fn-ex-row .status-ex-table {
     font-size: 11px;
@@ -868,6 +902,11 @@
     }
     .fn-ex-row .fn-ex {
       display: block;
+      grid-row: auto;
+    }
+    .fn-ex-row .fn-ex-body {
+      display: flex;
+      flex-direction: column;
       grid-row: auto;
     }
   }
@@ -905,6 +944,36 @@
     overflow: hidden;
     background: #f5f5f5;
     border: 1px solid var(--line);
+  }
+  .code-face {
+    padding: 12px;
+    height: 100%;
+    box-sizing: border-box;
+  }
+  .code-face--stack {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .code-face-inner {
+    padding: 10px 12px;
+    background: #fff;
+    border-radius: 6px;
+  }
+  .code-face-lang {
+    margin: 0 0 8px;
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 650;
+    color: var(--text);
+  }
+  .code-face-pre {
+    margin: 0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px;
+    line-height: 20px;
+    color: var(--text);
+    white-space: pre-wrap;
   }
   .status-ex-table {
     width: 100%;
@@ -1595,41 +1664,6 @@
     padding: 16px 18px 14px;
     color: var(--text);
   }
-  .cr-deco {
-    display: block;
-    width: 100%;
-    height: 168px;
-    object-fit: cover;
-    object-position: center 40%;
-  }
-  .cr-deco-side {
-    width: 148px;
-    height: 96px;
-    object-fit: cover;
-    object-position: center 40%;
-    border-radius: 4px;
-    flex-shrink: 0;
-    background: #e8eef5;
-  }
-  .cr-burn {
-    position: relative;
-    margin: -16px -18px -14px;
-    border-radius: 0;
-    overflow: hidden;
-  }
-  .cr-burn-copy {
-    position: absolute;
-    left: 12px;
-    top: 12px;
-    margin: 0;
-    padding: 8px 10px;
-    background: #fff;
-    border-radius: 4px;
-    box-shadow: 0 1px 4px rgba(0,0,0,.12);
-    font-size: 13px;
-    line-height: 22px;
-    color: var(--text);
-  }
   .st-note {
     display: flex;
     gap: 10px;
@@ -1787,10 +1821,12 @@
     <div class="peer-group-label">视觉层</div>
     <ul>
       <li><a href="design-guide-image-text.html">图意文本化</a></li>
+      <li><a href="design-guide-icon-text.html">图标文本化</a></li>
       <li><a href="design-guide-style-semantic.html">颜色语义化</a></li>
       <li><a href="design-guide-hierarchy.html">层级文本化</a></li>
       <li><a href="design-guide-status-word.html">状态文本化</a></li>
       <li><a href="design-guide-media.html">多媒体语义化</a></li>
+      <li><a href="design-guide-code.html" class="active">代码块语义化</a></li>
       <li><a href="design-guide-timestamp.html">版本时效声明化</a></li>
       <li><a href="design-guide-gui-map.html">界面元素数值化</a></li>
       <li><a href="design-guide-default-empty.html">占位与空态文本化</a></li>
@@ -1806,61 +1842,188 @@
     <div class="peer-group-label">框架层</div>
     <ul>
       <li><a href="design-guide-noise.html">噪音过滤</a></li>
-      <li><a href="design-guide-page-context.html">跨页路径语义化</a></li>
-      <li><a href="design-guide-carrier.html" class="active">信息载体选定原则</a></li>
+      <li><a href="design-guide-page-context.html">跨页路径语义化</a></li>      <li><a href="design-guide-layout.html">版式不替代语义</a></li>
     </ul>
   </nav>
 </aside>
 <div class="peer-main">
 <div class="wrap">
   <header>
-    <p class="eyebrow">框架层</p>
-    <h1>信息载体选定原则</h1>
-    <p class="sub">先选定这块信息用什么交出去：知识用文字，图只辅助，装饰不当事。</p>
+    <p class="eyebrow">视觉层</p>
+    <h1>代码块语义化</h1>
+    <p class="sub">语言名和预期输出写成字；非必要不展示行号，输出不要截成图。</p>
   </header>
 
   <h2 class="block-title">原则概述</h2>
-  <p class="affinity-group-label">设计描述</p>
+  <p class="affinity-group-label">原则：语言与输出写成字</p>
   <ul class="affinity-principles">
-    <li>这是框架层的判定：画稿前先选定「这段信息用什么交出去」。同一段不要又指望图、又指望字——机器只会抓到文字。</li>
+    <li>块顶须标明语言（如「Bash」「Python」）；预期输出须以独立文字块呈现，禁止截图展示。</li>
+    <li>非必要不展示行号。若确需行号对照报错或逐行讲解，须确保行号不混入可复制、可抓取的命令文本中。</li>
   </ul>
-  <p class="type-lead" style="margin: 12px 0 8px;">三种载体，职责分开：</p>
-  <div class="type-grid type-grid--3" style="margin: 12px 0 16px;">
-    <div class="type-card">
-      <h3>知识</h3>
-      <p class="type-ex">步骤、规格、结论、去向</p>
-      <div class="type-mini">
-        <p style="margin:0;font-size:13px;line-height:20px;"><strong>主载体：文字。</strong>必须能单独成句或成表，不依赖图才能懂。</p>
-      </div>
-    </div>
-    <div class="type-card">
-      <h3>示意图</h3>
-      <p class="type-ex">架构、流程、对比</p>
-      <div class="type-mini">
-        <p style="margin:0;font-size:13px;line-height:20px;"><strong>辅载体：图 + 结论句。</strong>图给人看；结论仍写成字。图内标注怎么落字，见下层原则。</p>
-      </div>
-    </div>
-    <div class="type-card">
-      <h3>装饰</h3>
-      <p class="type-ex">氛围插画、品牌图</p>
-      <div class="type-mini">
-        <p style="margin:0;font-size:13px;line-height:20px;"><strong>不当事。</strong>可以有，但不承担步骤或规格，不当说明书。</p>
-      </div>
-    </div>
-  </div>
-  <p class="affinity-group-label">UI 落地</p>
+  <p class="affinity-group-label">对 AI 的好处</p>
   <ul class="affinity-principles">
-    <li><strong>知识：</strong>步骤用编号列表，规格用表或条目，结论写成一句完整的话。</li>
-    <li><strong>示意图：</strong>图旁写结论句。图内各框、箭头怎么写成字，交给 <a href="design-guide-image-text.html">图意文本化</a>；视频/音频里的讲解，交给 <a href="design-guide-media.html">多媒体语义化</a>。</li>
-    <li><strong>装饰：</strong>放在页眉或栏侧，不要叠步骤、不要替代规格。</li>
-  </ul>
-  <p class="affinity-group-label">对 AI 亲和的好处</p>
-  <ul class="affinity-principles">
-    <li>抓取只认被选定的文字载体；图可辅助人读，装饰可有可无，都不必猜「图里有没有规格」。</li>
+    <li>AI 读取到的是语言标签、命令原文和输出文本，无行号污染，也无需从截图中辨认结果。</li>
   </ul>
 
-</div>
-</div>
+  <h2 class="block-title">场景示例</h2>
+  <h3 class="fn-h3">示例 1 · 语言名须写成字</h3>
+  <div class="fn-lead-block">
+    <p class="type-lead fn-lead"><strong>核心原则：</strong>块顶须标明语言（如「Bash」「Python」）。</p>
+    <p class="type-lead fn-lead"><strong>例外情况：</strong>整页已统一声明所用语言时，可省略。</p>
+  </div>
+  <div class="fn-ex-row">
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label">反面</span>
+    <div class="fn-ex-bar" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="反面：无语言名">
+      <div class="code-face">
+        <div class="code-face-inner">
+          <p class="code-face-pre">npu-smi info
+ascend-dmi -a</p>
+        </div>
+      </div>
+    </div>
+    <div class="fn-ex-foot">
+    <ul class="fn-ex-list">
+      <li><strong>缺文本替代：</strong>块顶没有语言名，读不出是 Bash 还是 Python。</li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label is-good">正面</span>
+    <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="正面：写成 Bash">
+      <div class="code-face">
+        <div class="code-face-inner">
+          <p class="code-face-lang">Bash</p>
+          <p class="code-face-pre">npu-smi info
+ascend-dmi -a</p>
+        </div>
+      </div>
+    </div>
+    <div class="fn-ex-foot">
+    <p class="fn-ex-group">必有项</p>
+    <ul class="fn-ex-list">
+      <li><strong>语言名：</strong>须写成「Bash」等字。</li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  </div>
+  <h3 class="fn-h3">示例 2 · 预期输出须写成字</h3>
+  <div class="fn-lead-block">
+    <p class="type-lead fn-lead"><strong>核心原则：</strong>成功输出须以独立文字块呈现，禁止截图为图片。</p>
+    <p class="type-lead fn-lead"><strong>例外情况：</strong>命令无输出，或旁白已写明成功判据时，可不另附输出块。</p>
+  </div>
+  <div class="fn-ex-row">
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label">反面</span>
+    <div class="fn-ex-bar" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="反面：没有输出块">
+      <div class="code-face">
+        <div class="code-face-inner">
+          <p class="code-face-lang">Bash</p>
+          <p class="code-face-pre">npu-smi info</p>
+        </div>
+      </div>
+    </div>
+    <div class="fn-ex-foot">
+    <ul class="fn-ex-list">
+      <li><strong>缺文本替代：</strong>只有命令，没有写成字的输出块，读不出成功时设备状态是什么。</li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label is-good">正面</span>
+    <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="正面：预期输出写成独立代码块">
+      <div class="code-face code-face--stack">
+        <div class="code-face-inner">
+          <p class="code-face-lang">Bash</p>
+          <p class="code-face-pre">npu-smi info</p>
+        </div>
+        <div class="code-face-inner">
+          <p class="code-face-lang">Output</p>
+          <p class="code-face-pre">NPU 状态为 OK，设备列表可见。</p>
+        </div>
+      </div>
+    </div>
+    <div class="fn-ex-foot">
+    <p class="fn-ex-group">必有项</p>
+    <ul class="fn-ex-list">
+      <li><strong>预期输出：</strong>须写成可选中的字，说明成功长什么样。</li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  </div>
+  <h3 class="fn-h3">示例 3 · 非必要不展示行号</h3>
+  <div class="fn-lead-block">
+    <p class="type-lead fn-lead"><strong>核心原则：</strong>代码块非必要不展示行号；若展示，行号不得混入可复制或可抓取的命令文本中。</p>
+    <p class="type-lead fn-lead"><strong>例外情况：</strong>需对照报错行或逐行讲解时，可显示行号，但须与命令正文分离。</p>
+  </div>
+  <div class="fn-ex-row">
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label">反面</span>
+    <div class="fn-ex-bar" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="反面：行号写进命令">
+      <div class="code-face">
+        <div class="code-face-inner">
+          <p class="code-face-lang">Bash</p>
+          <p class="code-face-pre">1  npu-smi info
+2  ascend-dmi -a</p>
+        </div>
+      </div>
+    </div>
+    <div class="fn-ex-foot">
+    <ul class="fn-ex-list">
+      <li><strong>有歧义：</strong>命令可抓取，但行号混进正文，复制后会变成「1 npu-smi info」。</li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label is-good">正面</span>
+    <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="正面：命令不含行号">
+      <div class="code-face">
+        <div class="code-face-inner">
+          <p class="code-face-lang">Bash</p>
+          <p class="code-face-pre">npu-smi info
+ascend-dmi -a</p>
+        </div>
+      </div>
+    </div>
+    <div class="fn-ex-foot">
+    <p class="fn-ex-group">必有项</p>
+    <ul class="fn-ex-list">
+      <li><strong>命令正文：</strong>可复制内容不含行号。</li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  </div>
+
 </div>
 </div>
 </div>

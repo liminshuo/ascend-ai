@@ -116,7 +116,7 @@
     margin: 0 0 8px;
     font-size: 13px;
     font-weight: 700;
-    color: var(--muted);
+    color: var(--text);
     letter-spacing: 0.02em;
   }
   .affinity-principles + .affinity-group-label {
@@ -469,7 +469,8 @@
     color: var(--text);
     letter-spacing: -0.01em;
   }
-  h3.fn-h3 .fn-h3-link {
+  h3.fn-h3 .fn-h3-link,
+  .fn-h3-link {
     margin-left: 12px;
     font-size: 14px;
     font-weight: 500;
@@ -477,7 +478,8 @@
     color: var(--link);
     text-decoration: none;
   }
-  h3.fn-h3 .fn-h3-link:hover {
+  h3.fn-h3 .fn-h3-link:hover,
+  .fn-h3-link:hover {
     text-decoration: underline;
   }
   .fn-panel {
@@ -806,7 +808,8 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto 1fr auto;
-    gap: 16px 16px;
+    column-gap: 16px;
+    row-gap: 0;
     align-items: stretch;
     max-width: none;
     margin: 0 0 20px;
@@ -819,39 +822,63 @@
     margin: 0;
     min-width: 0;
   }
-  .fn-ex-row .fn-ex-mock {
-    height: 100%;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-  }
-  .fn-ex-row .fn-ex-mock > .st-card {
-    flex: 1;
-    min-height: 0;
-    width: 100%;
-  }
   .fn-ex-row .fn-ex-head {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
+    margin-bottom: 16px;
   }
   .fn-ex-row .fn-ex-head .fn-ex-label {
     margin: 0;
   }
   .fn-ex-row .fn-ex-head .fn-ex-bar {
+    display: block;
     margin: 0;
     width: 100%;
+    align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-body {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 2 / span 2;
+    min-height: 0;
+    background: #f5f5f5;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .fn-ex-row .fn-ex-mock,
+  .fn-ex-row .fn-ex-mock:has(.st-card),
+  .fn-ex-row .fn-ex-mock:has(.dl-face) {
+    min-height: 0;
+    height: 100%;
+    box-sizing: border-box;
+    border: none;
+    border-radius: 0;
     align-self: stretch;
   }
   .fn-ex-row .fn-ex-foot {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    padding: 12px 14px 14px;
+    background: #fff;
+    border-top: 1px solid var(--line);
   }
-  .fn-ex-row .fn-ex-foot .fn-ex-title,
   .fn-ex-row .fn-ex-foot .fn-ex-list {
     margin: 0;
+    gap: 4px;
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-group {
+    margin: 8px 0 0;
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 650;
+    color: var(--muted);
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-group:first-child {
+    margin-top: 0;
   }
   .fn-ex-row .status-ex-table {
     font-size: 11px;
@@ -875,6 +902,11 @@
     }
     .fn-ex-row .fn-ex {
       display: block;
+      grid-row: auto;
+    }
+    .fn-ex-row .fn-ex-body {
+      display: flex;
+      flex-direction: column;
       grid-row: auto;
     }
   }
@@ -912,6 +944,87 @@
     overflow: hidden;
     background: #f5f5f5;
     border: 1px solid var(--line);
+  }
+  .dl-face {
+    padding: 12px;
+    height: 100%;
+    box-sizing: border-box;
+  }
+  .dl-face-inner {
+    padding: 12px;
+    background: #fff;
+    border-radius: 6px;
+  }
+  .dl-title {
+    margin: 0 0 12px;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 650;
+    color: var(--text);
+  }
+  .dl-field {
+    margin: 0 0 4px;
+    font-size: 13px;
+    line-height: 20px;
+    color: var(--muted);
+  }
+  .dl-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0 0 10px;
+  }
+  .dl-chip {
+    padding: 4px 10px;
+    border: 1px solid #e5e5e5;
+    background: #fff;
+    color: #8c8c8c;
+    border-radius: 6px;
+    font-size: 12px;
+    line-height: 18px;
+  }
+  .dl-chip.is-on {
+    border-color: #93c5fd;
+    background: #eff6ff;
+    color: #1d4ed8;
+    font-weight: 650;
+  }
+  .dl-select {
+    margin: 0 0 12px;
+    padding: 6px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    font-size: 13px;
+    line-height: 20px;
+    color: var(--text);
+  }
+  .dl-select span {
+    color: #8c8c8c;
+    font-size: 10px;
+  }
+  .dl-link {
+    margin: 0;
+    font-size: 13px;
+    line-height: 20px;
+    color: #1476FF;
+  }
+  .dl-empty {
+    margin: 0;
+    padding: 10px 12px;
+    background: #f5f5f5;
+    border-radius: 4px;
+    font-size: 13px;
+    line-height: 20px;
+    color: var(--text);
+  }
+  .dl-empty.is-blank {
+    min-height: 40px;
+    box-sizing: border-box;
+    color: #8c8c8c;
   }
   .status-ex-table {
     width: 100%;
@@ -1763,10 +1876,12 @@
     <div class="peer-group-label">视觉层</div>
     <ul>
       <li><a href="design-guide-image-text.html">图意文本化</a></li>
+      <li><a href="design-guide-icon-text.html">图标文本化</a></li>
       <li><a href="design-guide-style-semantic.html">颜色语义化</a></li>
       <li><a href="design-guide-hierarchy.html">层级文本化</a></li>
       <li><a href="design-guide-status-word.html">状态文本化</a></li>
       <li><a href="design-guide-media.html">多媒体语义化</a></li>
+      <li><a href="design-guide-code.html">代码块语义化</a></li>
       <li><a href="design-guide-timestamp.html">版本时效声明化</a></li>
       <li><a href="design-guide-gui-map.html">界面元素数值化</a></li>
       <li><a href="design-guide-default-empty.html" class="active">占位与空态文本化</a></li>
@@ -1782,8 +1897,7 @@
     <div class="peer-group-label">框架层</div>
     <ul>
       <li><a href="design-guide-noise.html">噪音过滤</a></li>
-      <li><a href="design-guide-page-context.html">跨页路径语义化</a></li>
-      <li><a href="design-guide-carrier.html">信息载体选定原则</a></li>
+      <li><a href="design-guide-page-context.html">跨页路径语义化</a></li>      <li><a href="design-guide-layout.html">版式不替代语义</a></li>
     </ul>
   </nav>
 </aside>
@@ -1792,59 +1906,59 @@
   <header>
     <p class="eyebrow">视觉层</p>
     <h1>占位与空态文本化</h1>
-    <p class="sub">文档页上的缺省选项与空状态须写成字，不能只靠颜色。</p>
+    <p class="sub">文档页上的缺省选项与空状态须写成字。</p>
   </header>
 
   <h2 class="block-title">原则概述</h2>
-  <p class="affinity-group-label">设计描述</p>
+  <p class="affinity-group-label">原则：缺省与空态写成字</p>
   <ul class="affinity-principles">
-    <li>稿面上已经选中的缺省版本，须写成「默认」。颜色（灰或黑）都不能代替这两个字。这不是未选时的 Placeholder。空状态说明缺了什么。</li>
+    <li>已选中的缺省项须明确标注「默认」（如「默认 8.0.0」），此规则不适用于输入框的 Placeholder。空状态须说明缺失内容及后续操作，禁止仅以空白或「-」代替。</li>
   </ul>
-  <p class="affinity-group-label">UI 落地</p>
+  <p class="affinity-group-label">对 AI 的好处</p>
   <ul class="affinity-principles">
-    <li>版本等选项写成「默认 8.0.0」，不要只写版本号。</li>
-    <li>空状态说明缺什么、下一步做什么。</li>
-    <li>灰色、黑色只辅助，不独自表示「这是默认」。</li>
-  </ul>
-  <p class="affinity-group-label">对 AI 亲和的好处</p>
-  <ul class="affinity-principles">
-    <li>没有「默认」，抓取后只剩「8.0.0」，回答会把缺省项说成唯一版本或已选定版本。写成「默认 8.0.0」，才能说「页面缺省是 8.0.0，还可改选」。</li>
+    <li>「默认 8.0.0」可明确指示页面缺省值及可更改性；空态中的描述性文字可帮助 AI 区分「暂无匹配」与加载失败等不同状态，避免误判。</li>
   </ul>
 
   <h2 class="block-title">场景示例</h2>
-  <h3 class="fn-h3">示例 1 · 默认值须写成「默认」</h3>
-  <p class="type-lead">芯片、系统用选择块，选项都铺在稿面上；版本用下拉，打开页时只露出 8.0.0。下拉里这个号如果不写成「默认」，抓取后会被当成唯一版本或已选定版本。</p>
+  <h3 class="fn-h3">示例 1 · 缺省项须写成「默认」</h3>
+  <div class="fn-lead-block">
+    <p class="type-lead fn-lead"><strong>核心原则：</strong>已选中的缺省项须明确标注「默认」（如「默认 8.0.0」）。此规则不适用于输入框的 Placeholder。</p>
+    <p class="type-lead fn-lead"><strong>例外情况：</strong>全部选项已铺在稿面上时，可不标「默认」；若仍要标明哪项是缺省，同样加上「默认」。</p>
+  </div>
   <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
     <span class="fn-ex-label">反面</span>
     <div class="fn-ex-bar" aria-hidden="true"></div>
     </div>
-    <div class="fn-ex-mock" aria-label="反面：灰色即默认">
-      <div class="st-card">
-        <p style="margin:0 0 12px;font-size:14px;font-weight:650;">CANN 软件包下载</p>
-        <p style="margin:0 0 4px;font-size:13px;color:#8c8c8c;">芯片型号</p>
-        <p style="margin:0 0 10px;display:flex;flex-wrap:wrap;gap:6px;">
-          <span style="padding:4px 10px;border:1px solid #93c5fd;background:#eff6ff;color:#1d4ed8;border-radius:6px;font-size:12px;font-weight:650;">Atlas 800T A2</span>
-          <span style="padding:4px 10px;border:1px solid #e5e5e5;background:#fff;color:#8c8c8c;border-radius:6px;font-size:12px;">Atlas 200I</span>
-          <span style="padding:4px 10px;border:1px solid #e5e5e5;background:#fff;color:#8c8c8c;border-radius:6px;font-size:12px;">Atlas 300I</span>
-        </p>
-        <p style="margin:0 0 4px;font-size:13px;color:#8c8c8c;">操作系统</p>
-        <p style="margin:0 0 10px;display:flex;flex-wrap:wrap;gap:6px;">
-          <span style="padding:4px 10px;border:1px solid #93c5fd;background:#eff6ff;color:#1d4ed8;border-radius:6px;font-size:12px;font-weight:650;">openEuler</span>
-          <span style="padding:4px 10px;border:1px solid #e5e5e5;background:#fff;color:#8c8c8c;border-radius:6px;font-size:12px;">Ubuntu</span>
-          <span style="padding:4px 10px;border:1px solid #e5e5e5;background:#fff;color:#8c8c8c;border-radius:6px;font-size:12px;">CentOS</span>
-        </p>
-        <p style="margin:0 0 4px;font-size:13px;color:#8c8c8c;">软件版本</p>
-        <p style="margin:0 0 12px;padding:6px 10px;background:#fff;border:1px solid #e5e5e5;border-radius:4px;font-size:13px;display:flex;justify-content:space-between;align-items:center;">8.0.0<span style="color:#8c8c8c;font-size:10px;">▾</span></p>
-        <p style="margin:0;font-size:13px;color:#1476FF;">下载</p>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="反面：下拉只写 8.0.0">
+      <div class="dl-face">
+        <div class="dl-face-inner">
+          <p class="dl-title">CANN 软件包下载</p>
+          <p class="dl-field">芯片型号</p>
+          <p class="dl-chips">
+            <span class="dl-chip is-on">Atlas 800T A2</span>
+            <span class="dl-chip">Atlas 200I</span>
+            <span class="dl-chip">Atlas 300I</span>
+          </p>
+          <p class="dl-field">操作系统</p>
+          <p class="dl-chips">
+            <span class="dl-chip is-on">openEuler</span>
+            <span class="dl-chip">Ubuntu</span>
+            <span class="dl-chip">CentOS</span>
+          </p>
+          <p class="dl-field">软件版本</p>
+          <p class="dl-select">8.0.0<span>▾</span></p>
+          <p class="dl-link">下载</p>
+        </div>
       </div>
     </div>
     <div class="fn-ex-foot">
-    <p class="fn-ex-title">问题</p>
     <ul class="fn-ex-list">
-      <li><strong>未写默认：</strong>下拉只露出「8.0.0」，其它版本不在稿面上。入库后会说 CANN 就是 8.0.0，或已经选定 8.0.0。</li>
+      <li><strong>有歧义：</strong>下拉只露出「8.0.0」，读不出这是缺省还是唯一版本。</li>
     </ul>
+    </div>
     </div>
   </div>
   <div class="fn-ex">
@@ -1852,62 +1966,75 @@
     <span class="fn-ex-label is-good">正面</span>
     <div class="fn-ex-bar is-good" aria-hidden="true"></div>
     </div>
-    <div class="fn-ex-mock" aria-label="正面：标明默认">
-      <div class="st-card">
-        <p style="margin:0 0 12px;font-size:14px;font-weight:650;">CANN 软件包下载</p>
-        <p style="margin:0 0 4px;font-size:13px;color:#8c8c8c;">芯片型号</p>
-        <p style="margin:0 0 10px;display:flex;flex-wrap:wrap;gap:6px;">
-          <span style="padding:4px 10px;border:1px solid #93c5fd;background:#eff6ff;color:#1d4ed8;border-radius:6px;font-size:12px;font-weight:650;">Atlas 800T A2</span>
-          <span style="padding:4px 10px;border:1px solid #e5e5e5;background:#fff;color:#8c8c8c;border-radius:6px;font-size:12px;">Atlas 200I</span>
-          <span style="padding:4px 10px;border:1px solid #e5e5e5;background:#fff;color:#8c8c8c;border-radius:6px;font-size:12px;">Atlas 300I</span>
-        </p>
-        <p style="margin:0 0 4px;font-size:13px;color:#8c8c8c;">操作系统</p>
-        <p style="margin:0 0 10px;display:flex;flex-wrap:wrap;gap:6px;">
-          <span style="padding:4px 10px;border:1px solid #93c5fd;background:#eff6ff;color:#1d4ed8;border-radius:6px;font-size:12px;font-weight:650;">openEuler</span>
-          <span style="padding:4px 10px;border:1px solid #e5e5e5;background:#fff;color:#8c8c8c;border-radius:6px;font-size:12px;">Ubuntu</span>
-          <span style="padding:4px 10px;border:1px solid #e5e5e5;background:#fff;color:#8c8c8c;border-radius:6px;font-size:12px;">CentOS</span>
-        </p>
-        <p style="margin:0 0 4px;font-size:13px;color:#8c8c8c;">软件版本</p>
-        <p style="margin:0 0 12px;padding:6px 10px;background:#fff;border:1px solid #e5e5e5;border-radius:4px;font-size:13px;display:flex;justify-content:space-between;align-items:center;">默认 8.0.0<span style="color:#8c8c8c;font-size:10px;">▾</span></p>
-        <p style="margin:0;font-size:13px;color:#1476FF;">下载</p>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="正面：写成默认 8.0.0">
+      <div class="dl-face">
+        <div class="dl-face-inner">
+          <p class="dl-title">CANN 软件包下载</p>
+          <p class="dl-field">芯片型号</p>
+          <p class="dl-chips">
+            <span class="dl-chip is-on">Atlas 800T A2</span>
+            <span class="dl-chip">Atlas 200I</span>
+            <span class="dl-chip">Atlas 300I</span>
+          </p>
+          <p class="dl-field">操作系统</p>
+          <p class="dl-chips">
+            <span class="dl-chip is-on">openEuler</span>
+            <span class="dl-chip">Ubuntu</span>
+            <span class="dl-chip">CentOS</span>
+          </p>
+          <p class="dl-field">软件版本</p>
+          <p class="dl-select">默认 8.0.0<span>▾</span></p>
+          <p class="dl-link">下载</p>
+        </div>
       </div>
     </div>
     <div class="fn-ex-foot">
-    <p class="fn-ex-title">修改</p>
+    <p class="fn-ex-group">必有项</p>
     <ul class="fn-ex-list">
-      <li><strong>缺省项：</strong>选择块（如 openEuler / Ubuntu / CentOS）本身就能让机器看到有好几项。下拉只露出当前值，须写成「默认 8.0.0」，才能说页面缺省是 8.0.0，还可改选。选中的选择块若也要标明缺省，同样加上「默认」。</li>
+      <li><strong>缺省词：</strong>下拉当前值须写成「默认 8.0.0」。</li>
     </ul>
+    <p class="fn-ex-group">可选项</p>
+    <ul class="fn-ex-list">
+      <li><strong>选中色：</strong>可留，只辅助。</li>
+    </ul>
+    </div>
     </div>
   </div>
   </div>
   <h3 class="fn-h3">示例 2 · 空状态须写成字</h3>
-  <p class="type-lead">筛选无结果时，不要只留空白。</p>
+  <div class="fn-lead-block">
+    <p class="type-lead fn-lead"><strong>核心原则：</strong>空状态须说明缺失内容及后续操作，禁止仅以空白或「-」代替。</p>
+  </div>
   <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
     <span class="fn-ex-label">反面</span>
     <div class="fn-ex-bar" aria-hidden="true"></div>
     </div>
-    <div class="fn-ex-mock" aria-label="反面：空白结果区">
-      <div class="st-card">
-        <p style="margin:0 0 12px;font-size:14px;font-weight:650;">CANN 软件包下载</p>
-        <p style="margin:0 0 4px;font-size:13px;color:#8c8c8c;">芯片型号</p>
-        <p style="margin:0 0 10px;display:flex;flex-wrap:wrap;gap:6px;">
-          <span style="padding:4px 10px;border:1px solid #e5e5e5;background:#fff;color:#8c8c8c;border-radius:6px;font-size:12px;">Atlas 800T A2</span>
-          <span style="padding:4px 10px;border:1px solid #93c5fd;background:#eff6ff;color:#1d4ed8;border-radius:6px;font-size:12px;font-weight:650;">Atlas 200I</span>
-          <span style="padding:4px 10px;border:1px solid #e5e5e5;background:#fff;color:#8c8c8c;border-radius:6px;font-size:12px;">Atlas 300I</span>
-        </p>
-        <p style="margin:0 0 4px;font-size:13px;color:#8c8c8c;">软件版本</p>
-        <p style="margin:0 0 12px;padding:6px 10px;background:#fff;border:1px solid #e5e5e5;border-radius:4px;font-size:13px;display:flex;justify-content:space-between;align-items:center;">8.0.0<span style="color:#8c8c8c;font-size:10px;">▾</span></p>
-        <p style="margin:0 0 4px;font-size:13px;color:#8c8c8c;">筛选结果</p>
-        <p style="margin:0;height:40px;padding:10px 12px;box-sizing:border-box;background:#f5f5f5;border-radius:4px;font-size:13px;line-height:20px;color:#8c8c8c;">-</p>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="反面：结果区只有横杠">
+      <div class="dl-face">
+        <div class="dl-face-inner">
+          <p class="dl-title">CANN 软件包下载</p>
+          <p class="dl-field">芯片型号</p>
+          <p class="dl-chips">
+            <span class="dl-chip">Atlas 800T A2</span>
+            <span class="dl-chip is-on">Atlas 200I</span>
+            <span class="dl-chip">Atlas 300I</span>
+          </p>
+          <p class="dl-field">软件版本</p>
+          <p class="dl-select">8.0.0<span>▾</span></p>
+          <p class="dl-field">筛选结果</p>
+          <p class="dl-empty is-blank">-</p>
+        </div>
       </div>
     </div>
     <div class="fn-ex-foot">
-    <p class="fn-ex-title">问题</p>
     <ul class="fn-ex-list">
-      <li><strong>空当无字：</strong>抓取后看不出是没有匹配包，还是列表没加载出来。</li>
+      <li><strong>有歧义：</strong>只有「-」，读不出是没有匹配包，还是列表没加载出来。</li>
     </ul>
+    </div>
     </div>
   </div>
   <div class="fn-ex">
@@ -1915,32 +2042,35 @@
     <span class="fn-ex-label is-good">正面</span>
     <div class="fn-ex-bar is-good" aria-hidden="true"></div>
     </div>
-    <div class="fn-ex-mock" aria-label="正面：写出空状态">
-      <div class="st-card">
-        <p style="margin:0 0 12px;font-size:14px;font-weight:650;">CANN 软件包下载</p>
-        <p style="margin:0 0 4px;font-size:13px;color:#8c8c8c;">芯片型号</p>
-        <p style="margin:0 0 10px;display:flex;flex-wrap:wrap;gap:6px;">
-          <span style="padding:4px 10px;border:1px solid #e5e5e5;background:#fff;color:#8c8c8c;border-radius:6px;font-size:12px;">Atlas 800T A2</span>
-          <span style="padding:4px 10px;border:1px solid #93c5fd;background:#eff6ff;color:#1d4ed8;border-radius:6px;font-size:12px;font-weight:650;">Atlas 200I</span>
-          <span style="padding:4px 10px;border:1px solid #e5e5e5;background:#fff;color:#8c8c8c;border-radius:6px;font-size:12px;">Atlas 300I</span>
-        </p>
-        <p style="margin:0 0 4px;font-size:13px;color:#8c8c8c;">软件版本</p>
-        <p style="margin:0 0 12px;padding:6px 10px;background:#fff;border:1px solid #e5e5e5;border-radius:4px;font-size:13px;display:flex;justify-content:space-between;align-items:center;">8.0.0<span style="color:#8c8c8c;font-size:10px;">▾</span></p>
-        <p style="margin:0 0 4px;font-size:13px;color:#8c8c8c;">筛选结果</p>
-        <p style="margin:0;padding:10px 12px;background:#f5f5f5;border-radius:4px;font-size:13px;line-height:20px;">暂无匹配的软件包。请更换芯片型号或版本后再筛选。</p>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="正面：写出暂无匹配和下一步">
+      <div class="dl-face">
+        <div class="dl-face-inner">
+          <p class="dl-title">CANN 软件包下载</p>
+          <p class="dl-field">芯片型号</p>
+          <p class="dl-chips">
+            <span class="dl-chip">Atlas 800T A2</span>
+            <span class="dl-chip is-on">Atlas 200I</span>
+            <span class="dl-chip">Atlas 300I</span>
+          </p>
+          <p class="dl-field">软件版本</p>
+          <p class="dl-select">8.0.0<span>▾</span></p>
+          <p class="dl-field">筛选结果</p>
+          <p class="dl-empty">暂无匹配的软件包。请更换芯片型号或版本后再筛选。</p>
+        </div>
       </div>
     </div>
     <div class="fn-ex-foot">
-    <p class="fn-ex-title">修改</p>
+    <p class="fn-ex-group">必有项</p>
     <ul class="fn-ex-list">
-      <li><strong>空态项：</strong>写成「暂无匹配」和下一步；空白只辅助。</li>
+      <li><strong>缺了什么：</strong>须写成「暂无匹配」等。</li>
+      <li><strong>下一步：</strong>须写出可执行的改法。</li>
     </ul>
+    </div>
     </div>
   </div>
   </div>
 
-</div>
-</div>
 </div>
 </div>
 </div>

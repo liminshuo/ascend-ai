@@ -1,0 +1,2458 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>图标文本化 · 设计指导 · 昇腾社区 AI 亲和原则</title>
+<style>
+  :root {
+    --bg: #F5F5F5;
+    --panel: #ffffff;
+    --panel2: #FAFAFA;
+    --line: #e2e8f0;
+    --text: #191919;
+    --muted: #595959;
+    --accent: #1476FF;
+    --accent-soft: rgba(20, 118, 255, 0.1);
+    --link: #1476FF;
+    --content-max: 1200px;
+    --page-gutter: clamp(16px, 2.5vw, 24px);
+    --body-size: 14px;
+    --body-lh: 22px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-size: var(--body-size);
+    margin: 0;
+    font-family: "PingFang SC", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: var(--body-lh);
+  }
+  a { color: var(--link); }
+  .topbar {
+    position: sticky; top: 0; z-index: 50;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: var(--panel);
+    border-bottom: 1px solid var(--line);
+    overflow: hidden;
+  }
+  .topbar-inner {
+    width: 100%; max-width: none; margin: 0; padding: 0 24px;
+    height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
+  }
+  .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: var(--text); text-decoration: none; white-space: nowrap; margin-right: 40px;
+  }
+  .brand span { color: var(--accent); }
+  .site-nav { display: flex; align-items: center; gap: 4px; flex: 1; flex-wrap: wrap; }
+  .site-nav a {
+    text-decoration: none; color: var(--muted); font-size: 14px; font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .site-nav a:hover { color: var(--accent); background: #F5F5F5; text-decoration: none; }
+  .site-nav a.active { color: var(--accent); background: #F5F5F5; font-weight: 600; }
+  .page-wrapper {
+    display: flex; align-items: stretch; width: 100%;
+    min-height: calc(100vh - 56px); background: var(--bg);
+  }
+  .peer-sidebar {
+    width: clamp(200px, 12.9167vw, 248px); flex-shrink: 0;
+    position: sticky; top: 56px; height: calc(100vh - 56px);
+    overflow-y: auto; overflow-anchor: none;
+    padding: 16px 0 32px;
+    border-right: 1px solid var(--line); background: var(--panel);
+  }
+  .peer-nav ul { list-style: none; margin: 0; padding: 0; }
+  .peer-group-label {
+    font-size: 11px; font-weight: 700; letter-spacing: .04em; color: var(--muted);
+    padding: 12px 20px 4px; margin-top: 8px; border-top: 1px solid var(--line);
+  }
+  .peer-nav > .peer-group-label:first-child { margin-top: 0; border-top: none; padding-top: 10px; }
+  .peer-nav a {
+    display: block; padding: 8px 20px; font-size: 13px; line-height: 1.5;
+    text-decoration: none; color: var(--muted); border-left: 2px solid transparent;
+  }
+  .peer-nav a:hover { color: var(--text); background: #F5F5F5; }
+  .peer-nav a.active {
+    color: var(--accent); font-weight: 600; background: #EEF5FF; border-left-color: var(--accent);
+  }
+  .peer-main { flex: 1; min-width: 0; background: #fff; }
+  .peer-main > .wrap {
+    width: min(var(--content-max), calc(100% - 2 * var(--page-gutter)));
+    margin: 0 auto; padding: 32px 0 80px;
+  }
+  header { margin-bottom: 28px; }
+  h1 {
+    font-family: "PingFang SC", sans-serif;
+    font-size: clamp(28px, 4vw, 40px); font-weight: 600;
+    margin: 8px 0 12px; letter-spacing: -0.02em; line-height: 48px;
+  }
+  .sub { color: var(--muted); max-width: none; font-size: var(--body-size); margin: 0 0 24px; line-height: var(--body-lh); }
+  .eyebrow {
+    color: var(--accent); font-size: 12px; font-weight: 700;
+    letter-spacing: .06em; margin: 0 0 4px;
+  }
+  .core-line {
+    margin: 0 0 20px; font-size: 16px; font-weight: 600; color: var(--text);
+  }
+  h2.block-title {
+    margin: 40px 0 12px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #f0f0f0;
+    font-size: 24px;
+    line-height: 36px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--text);
+  }
+  h2.block-title:first-of-type {
+    margin-top: 0;
+  }
+  .affinity-group-label {
+    margin: 0 0 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 0.02em;
+  }
+  .affinity-principles + .affinity-group-label {
+    margin-top: 18px;
+  }
+  .affinity-principles {
+    margin: 0 0 8px;
+    padding: 0 0 0 1.25em;
+    list-style: disc;
+    max-width: none;
+    width: 100%;
+  }
+  .affinity-principles li {
+    margin: 0 0 4px;
+    font-size: var(--body-size);
+    line-height: var(--body-lh);
+    color: var(--text);
+  }
+  .affinity-principles li:last-child { margin-bottom: 0; }
+  .affinity-principles strong {
+    font-weight: 700;
+    color: var(--text);
+  }
+  .affinity-principles + .core-line {
+    margin-top: 24px;
+  }
+  .type-lead {
+    margin: 0 0 16px;
+    font-size: var(--body-size);
+    line-height: var(--body-lh);
+    color: var(--muted);
+    max-width: 720px;
+  }
+  .type-lead.fn-lead {
+    max-width: none;
+    width: 100%;
+  }
+  .fn-lead-block {
+    margin: 0 0 16px;
+    width: 100%;
+    max-width: none;
+  }
+  .fn-lead-block p {
+    margin: 0 0 6px;
+    font-size: var(--body-size);
+    line-height: var(--body-lh);
+    color: var(--muted);
+  }
+  .fn-lead-block p:last-child { margin-bottom: 0; }
+  .fn-lead-block .fn-h3-link {
+    margin-left: 0;
+  }
+  .fn-lead-block strong {
+    color: var(--text);
+    font-weight: 650;
+  }
+  .fn-lead-block .type-lead {
+    margin: 0 0 4px;
+    max-width: none;
+    width: 100%;
+  }
+  .fn-lead-block .type-lead:last-of-type {
+    margin-bottom: 8px;
+  }
+  .type-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin: 0 0 8px;
+  }
+  .type-card {
+    display: flex;
+    flex-direction: column;
+    background: #f5f5f5;
+    border: none;
+    border-radius: 12px;
+    padding: 16px 18px;
+  }
+  .type-card h3 {
+    margin: 0 0 6px;
+    font-size: 15px;
+    font-weight: 650;
+    color: var(--text);
+  }
+  .type-card .type-ex {
+    margin: 0 0 10px;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.45;
+  }
+  .type-card > .type-mini-grid,
+  .type-card > .type-mock,
+  .type-card > .type-mini {
+    flex: 1;
+    min-height: 0;
+  }
+  .type-card > .type-mini .type-mock {
+    flex: 1;
+    width: 100%;
+    justify-content: center;
+  }
+  .type-card > .type-mini .type-mock--product {
+    padding: 8px 4px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 8px;
+  }
+  .type-mini-grid {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    gap: 8px;
+  }
+  .type-mini {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: none;
+    border-radius: 8px;
+    background: #fff;
+    padding: 8px 10px;
+  }
+  .type-mini-tag {
+    display: inline-block;
+    margin: 0 0 8px;
+    padding: 0 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 20px;
+    letter-spacing: 0;
+    color: #595959;
+    background: #F5F5F5;
+    white-space: nowrap;
+    vertical-align: baseline;
+  }
+  .type-mini-tag.is-do {
+    color: var(--accent);
+    background: var(--accent-soft);
+  }
+  .type-mock {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: #fff;
+    border: none;
+  }
+  .type-mini .type-mock {
+    padding: 0;
+    border: none;
+    background: transparent;
+    border-radius: 0;
+    gap: 8px;
+    column-gap: 8px;
+  }
+  .type-mock .mi {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    min-height: 20px;
+    max-width: 20px;
+    max-height: 20px;
+    overflow: hidden;
+    background: transparent;
+    color: var(--text);
+    flex: 0 0 20px;
+  }
+  .type-mock .mi svg {
+    display: block;
+    width: 20px !important;
+    height: 20px !important;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .type-mock .mi.mi--16,
+  .type-mock .mi.mi--16 svg {
+    width: 16px !important;
+    height: 16px !important;
+    min-width: 16px;
+    min-height: 16px;
+    max-width: 16px;
+    max-height: 16px;
+    flex-basis: 16px;
+  }
+  .type-mock .ml,
+  .type-mock a.ml,
+  .type-mock .mst {
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 600;
+  }
+  .type-mock .ml {
+    color: var(--text);
+    text-decoration: none;
+  }
+  .type-mock a.ml {
+    color: var(--text);
+  }
+  .type-card .type-mock a.ml {
+    color: var(--text);
+  }
+  .type-mock .mst {
+    font-weight: 650;
+    color: #047857;
+  }
+  .type-mock--product .ml {
+    display: block;
+    font-size: 14px;
+    line-height: 22px;
+  }
+  .type-mock .mst.is-wait { color: #b45309; }
+  .type-mock--product {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 8px;
+    padding-top: 32px;
+    padding-bottom: 32px;
+  }
+  .type-mock--product .mi {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    min-height: 32px;
+    max-width: 32px;
+    max-height: 32px;
+    flex: 0 0 32px;
+    border-radius: 8px;
+    background: linear-gradient(145deg, #3b82f6, #1476FF);
+    color: #fff;
+    overflow: hidden;
+  }
+  .type-mock--product .mi svg {
+    width: 30px !important;
+    height: 20px !important;
+    stroke: #fff;
+  }
+  .type-mock--product .mp-meta {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .type-mock--status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .type-mock--status .row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 14px;
+    line-height: 22px;
+    color: var(--text);
+  }
+  .type-mock--status .dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .type-mock--status .dot.ok {
+    background: #ecfdf5;
+    color: #047857;
+  }
+  .type-mock--status .dot.wait {
+    background: #fff7ed;
+    color: #c2410c;
+  }
+  @media (max-width: 1100px) {
+    .type-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 640px) {
+    .type-grid { grid-template-columns: 1fr; }
+  }
+  .detail-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;
+  }
+  .detail-card {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px;
+  }
+  .detail-card h2 {
+    margin: 0 0 10px; font-size: 12px; font-weight: 700;
+    letter-spacing: .04em; color: var(--accent);
+  }
+  .detail-card ul { margin: 0; padding-left: 1.15em; }
+  .detail-card li { margin: 0.25em 0; }
+  .detail-card.muted-card { color: var(--muted); }
+  .rep-list { list-style: none; padding-left: 0; margin: 0; }
+  .rep-list li { margin: 0.25em 0; }
+  .comp-links { margin: 8px 0 0; font-size: 13px; color: var(--muted); }
+  .comp-links a { color: var(--link); }
+
+  .pattern {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 12px; padding: 22px 24px 20px; margin: 0;
+  }
+  .pattern .pattern-lead { margin: 0 0 16px; color: var(--muted); font-size: 15px; }
+  .pattern-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px; }
+  .pattern-cell h2, .pattern-cell h4 {
+    margin: 0 0 8px; font-size: 12px; font-weight: 700;
+    letter-spacing: .04em; color: var(--accent);
+  }
+  .pattern-cell ul { margin: 0; padding-left: 1.15em; color: var(--text); }
+  .pattern-cell li { margin: 0.2em 0; }
+  .pattern-cell .muted { color: var(--muted); }
+  .pattern-check {
+    margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line);
+  }
+  .pattern-check h2, .pattern-check h4 {
+    margin: 0 0 8px; font-size: 12px; font-weight: 700;
+    letter-spacing: .04em; color: var(--muted);
+  }
+  .pattern-check ul { margin: 0; padding-left: 1.15em; }
+  .pattern-check li { margin: 0.25em 0; }
+  .pattern-comps { margin: 12px 0 0; font-size: 13px; color: var(--muted); }
+  .pattern-comps a { color: var(--link); }
+
+  .hub-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+  }
+  .hub-card {
+    display: block; background: var(--panel); border: 1px solid var(--line);
+    border-radius: 12px; padding: 16px 18px; text-decoration: none; color: inherit;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .hub-card:hover {
+    border-color: #C9DCFF; box-shadow: 0 4px 16px rgba(20, 118, 255, 0.08);
+    text-decoration: none; color: inherit;
+  }
+  .hub-card .g-label {
+    font-size: 11px; font-weight: 700; letter-spacing: .06em; color: var(--accent); margin: 0 0 6px;
+  }
+  .hub-card h2 { margin: 0 0 6px; font-size: 16px; font-weight: 650; }
+  .hub-card p { margin: 0; color: var(--muted); font-size: 13px; }
+
+  h3.fn-h3 {
+    margin: 32px 0 8px;
+    padding-top: 0;
+    font-size: 18px;
+    line-height: 28px;
+    font-weight: 650;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+  h3.fn-h3 .fn-h3-link,
+  .fn-h3-link {
+    margin-left: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 22px;
+    color: var(--link);
+    text-decoration: none;
+  }
+  h3.fn-h3 .fn-h3-link:hover,
+  .fn-h3-link:hover {
+    text-decoration: underline;
+  }
+  h4.fn-h4 {
+    margin: 0 0 8px;
+    padding-top: 24px;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 650;
+    color: var(--text);
+  }
+  .fn-panel {
+    width: 100%;
+    max-width: none;
+    margin: 0 0 20px;
+    background: #f5f5f5;
+    border: none;
+    border-radius: 12px;
+    padding: 24px 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .fn-panel .anno-stage {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 0;
+    gap: 0;
+  }
+  .fn-panel .card-mini--marked {
+    position: relative;
+  }
+  .fn-panel .card-mini--marked > .anno-side--right {
+    position: absolute;
+    left: 100%;
+    top: 0;
+    bottom: 0;
+    margin-left: 2px;
+  }
+  .fn-panel .anno-callouts {
+    display: none;
+  }
+  .fn-panel .anno-side {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-shrink: 0;
+    pointer-events: none;
+  }
+  .fn-panel .anno-side--left {
+    margin-right: 2px;
+  }
+  .fn-panel .anno-side--right {
+    margin-left: 2px;
+  }
+  .fn-panel .anno-side--right .anno-mark {
+    flex-direction: row-reverse;
+  }
+  .fn-panel .anno-side--stack {
+    flex-direction: column;
+    justify-content: center;
+    gap: 22px;
+  }
+  .fn-panel .anno-side .anno-leader {
+    width: 12px;
+    height: 1px;
+  }
+  .fn-panel .type-mini {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-width: 200px;
+    padding: 16px 20px;
+  }
+  .fn-panel .type-mini .type-mock {
+    padding: 0;
+    border: none;
+    background: transparent;
+    gap: 8px;
+  }
+  .fn-panel .type-mini .type-mock--product {
+    padding: 8px 4px;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .fn-panel .type-mini .type-mock--product .news-face-btn {
+    align-self: center;
+    margin-top: 6px;
+  }
+  .fn-panel .type-mini.type-mini--illust {
+    padding: 0;
+    overflow: hidden;
+    align-items: stretch;
+  }
+  .fn-panel .type-mini .type-mock--illust {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    justify-content: flex-start;
+    text-align: left;
+    gap: 0;
+    width: 100%;
+  }
+  .fn-panel .type-mini.card-mini--pure {
+    padding: 8px 10px;
+  }
+  .fn-panel .type-mini.card-mini--pure .type-mock {
+    width: 100%;
+    padding: 0;
+    gap: 0;
+  }
+  .fn-panel .type-mini.card-mini--pure .card-pure {
+    height: 120px;
+    min-height: 120px;
+    text-decoration: none;
+    color: #fff;
+  }
+  .fn-panel .type-mini.card-mini--pure a.card-pure:visited {
+    color: #fff;
+  }
+  .fn-panel .type-mini.card-mini--partner {
+    padding: 0;
+    overflow: hidden;
+    max-width: 240px;
+  }
+  .partner-mini {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    background: #fff;
+    text-decoration: none;
+    color: inherit;
+  }
+  a.partner-mini:visited { color: inherit; }
+  .partner-mini-photo,
+  .partner-mini-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eef2f6;
+  }
+  .partner-mini-photo {
+    height: 88px;
+  }
+  .partner-mini-chassis {
+    width: 78%;
+    height: 38px;
+    border-radius: 3px;
+    background:
+      repeating-linear-gradient(90deg, #6b7785 0 8px, #5a6570 8px 10px),
+      #4b5563;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,.12);
+  }
+  .partner-mini-logo {
+    height: 48px;
+  }
+  .partner-mini-mark {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 16px;
+  }
+  .partner-mini-mark-ico {
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    background: #8c8c8c;
+    flex-shrink: 0;
+  }
+  .partner-mini-mark-word {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 3px;
+  }
+  .partner-mini-mark-word i {
+    display: block;
+    height: 3px;
+    border-radius: 1px;
+    background: #1f2937;
+    font-style: normal;
+  }
+  .partner-mini-mark-word i:first-child { width: 44px; }
+  .partner-mini-mark-word i:last-child { width: 28px; }
+  .partner-mini-copy {
+    padding: 8px 10px 10px;
+    text-align: left;
+    border-top: 1px solid #f0f0f0;
+  }
+  .partner-mini-copy .card-face-title {
+    display: block;
+  }
+  .fn-ex-mock--cards {
+    background: #f5f5f5;
+    border: none;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+  }
+  .fn-ex-mock--cards .partner-shot {
+    display: block;
+    width: 220px;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0,0,0,.06);
+  }
+  .fn-ex-mock--cards .partner-shot img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .fn-ex-mock--cards .partner-mini {
+    width: 220px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0,0,0,.06);
+  }
+  .anno-mark {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0;
+    pointer-events: none;
+  }
+  .anno-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #424242;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .anno-num--ghost {
+    background: transparent;
+    border: 1.5px solid #424242;
+    color: #424242;
+    box-sizing: border-box;
+  }
+  .anno-leader {
+    width: 12px;
+    height: 1px;
+    background: #424242;
+    flex-shrink: 0;
+  }
+  .anno-tip {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #424242;
+    flex-shrink: 0;
+  }
+  .anno-dot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #424242;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .anno-dot--ghost {
+    background: transparent;
+    border: 1.5px solid #424242;
+    color: #424242;
+    box-sizing: border-box;
+  }
+  .anno-legend li.is-ghost {
+    color: var(--text);
+  }
+  .anno-legend li.is-ghost strong {
+    color: var(--text);
+    font-weight: 650;
+  }
+  .anno-legend li.is-ghost .anno-req {
+    color: #b42318;
+  }
+  .anno-legend-title {
+    margin: 16px 0 8px;
+    font-size: var(--body-size);
+    line-height: var(--body-lh);
+    font-weight: 650;
+    color: var(--text);
+  }
+  .anno-legend {
+    list-style: none;
+    margin: 0 0 20px;
+    padding: 0;
+    display: grid;
+    gap: 6px;
+    width: fit-content;
+    max-width: 720px;
+  }
+  .anno-legend li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    line-height: 22px;
+    color: var(--text);
+  }
+  .anno-legend strong {
+    color: var(--text);
+    font-weight: 650;
+  }
+  .anno-req {
+    color: #b42318;
+    font-weight: 650;
+  }
+  .anno-opt {
+    color: var(--muted);
+  }
+  .fn-ex {
+    margin: 0 0 20px;
+    max-width: 720px;
+  }
+  .fn-ex-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr auto;
+    column-gap: 16px;
+    row-gap: 0;
+    align-items: stretch;
+    max-width: none;
+    margin: 0 0 20px;
+  }
+  .fn-ex-row .fn-ex {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 1 / span 3;
+    max-width: none;
+    margin: 0;
+    min-width: 0;
+  }
+  .fn-ex-row .fn-ex-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .fn-ex-row .fn-ex-head .fn-ex-label {
+    margin: 0;
+  }
+  .fn-ex-row .fn-ex-head .fn-ex-bar {
+    display: block;
+    margin: 0;
+    width: 100%;
+    align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-body {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 2 / span 2;
+    min-height: 0;
+    background: #f5f5f5;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .fn-ex-row .fn-ex-mock,
+  .fn-ex-row .fn-ex-mock:has(.paper-card),
+  .fn-ex-row .fn-ex-mock:has(.an-bar),
+  .fn-ex-row .fn-ex-mock:has(.rec-card),
+  .fn-ex-row .fn-ex-mock:has(.open-card),
+  .fn-ex-row .fn-ex-mock:has(.tip-bar),
+  .fn-ex-row .fn-ex-mock:has(.logo-wall) {
+    min-height: 0;
+    height: 100%;
+    box-sizing: border-box;
+    border: none;
+    border-radius: 0;
+    align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-foot {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px 14px 14px;
+    background: #fff;
+    border-top: 1px solid var(--line);
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-list {
+    margin: 0;
+    gap: 4px;
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-group {
+    margin: 8px 0 0;
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 650;
+    color: var(--muted);
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-group:first-child {
+    margin-top: 0;
+  }
+  .fn-ex-row .status-ex-table {
+    font-size: 11px;
+    line-height: 16px;
+  }
+  .fn-ex-row .status-ex-table th,
+  .fn-ex-row .status-ex-table td {
+    padding: 8px 6px;
+  }
+  .fn-ex-row .paper-card {
+    padding: 14px 14px 12px;
+  }
+  .fn-ex-row .paper-card-title {
+    font-size: 13px;
+    line-height: 20px;
+  }
+  @media (max-width: 900px) {
+    .fn-ex-row {
+      grid-template-columns: 1fr;
+      grid-template-rows: none;
+    }
+    .fn-ex-row .fn-ex {
+      display: block;
+      grid-row: auto;
+    }
+    .fn-ex-row .fn-ex-body {
+      display: flex;
+      flex-direction: column;
+      grid-row: auto;
+    }
+  }
+  .fn-ex-label {
+    display: inline-block;
+    margin: 0 0 10px;
+    padding: 0 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 20px;
+    color: #b42318;
+    background: #fef3f2;
+  }
+  .fn-ex-label.is-good {
+    color: #047857;
+    background: #ecfdf5;
+  }
+  .fn-ex-bar {
+    display: block;
+    width: 100%;
+    height: 3px;
+    margin: 0 0 16px;
+    background: #b42318;
+    border-radius: 2px;
+  }
+  .fn-ex-bar.is-good {
+    background: #047857;
+  }
+  .fn-ex-bar + .fn-ex-mock {
+    border-radius: 8px;
+  }
+  .fn-ex-mock {
+    border-radius: 8px;
+    overflow: hidden;
+    background: #2c2c2c;
+    border: 1px solid #3a3a3a;
+  }
+  .status-ex-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 13px;
+    line-height: 20px;
+    color: #f5f5f5;
+  }
+  .status-ex-table th,
+  .status-ex-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid #3f3f3f;
+    border-right: 1px solid #3f3f3f;
+    vertical-align: middle;
+    text-align: left;
+    font-weight: 400;
+  }
+  .status-ex-table th:last-child,
+  .status-ex-table td:last-child {
+    border-right: none;
+  }
+  .status-ex-table tr:last-child td {
+    border-bottom: none;
+  }
+  .status-ex-table thead th {
+    font-weight: 500;
+    color: #e8e8e8;
+    border-bottom: 2px solid #1476FF;
+    background: #2c2c2c;
+  }
+  .status-ex-table .col-scene { width: 16%; }
+  .status-ex-table .col-model { width: 30%; }
+  .status-ex-table .col-hw { width: 27%; text-align: center; }
+  .status-ex-table td.col-hw {
+    text-align: center;
+  }
+  .status-ex-table .ck {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    color: #5b9dff;
+    font-size: 16px;
+    line-height: 1;
+    font-weight: 500;
+  }
+  .status-ex-table .ck-txt {
+    font-size: 13px;
+    line-height: 20px;
+    font-weight: 500;
+    color: #f5f5f5;
+  }
+  .status-ex-table .ck-no {
+    font-size: 13px;
+    line-height: 20px;
+    font-weight: 500;
+    color: #a3a3a3;
+  }
+  .fn-ex-title {
+    margin: 12px 0 0;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 650;
+    color: var(--text);
+  }
+  .fn-ex-list {
+    margin: 8px 0 0;
+    padding: 0 0 0 1.25em;
+    list-style: disc;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .fn-ex-list li {
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+    line-height: 22px;
+    color: var(--text);
+  }
+  .fn-ex-list li + li {
+    margin-top: 0;
+  }
+  .fn-ex-list .fn-ex-list {
+    margin: 4px 0 0;
+    padding-left: 1.25em;
+    list-style: circle;
+    gap: 2px;
+  }
+  .fn-ex-list--tight {
+    gap: 4px;
+  }
+  .fn-ex-list strong {
+    font-weight: 650;
+    color: var(--text);
+  }
+  .fn-ex-note {
+    margin: 8px 0 0;
+    font-size: 14px;
+    line-height: 22px;
+    color: var(--text);
+  }
+  .fn-ex-note:first-of-type {
+    margin-top: 10px;
+  }
+  .fn-ex-note strong {
+    font-weight: 650;
+    color: var(--text);
+  }
+  .paper-card {
+    padding: 20px 22px 18px;
+    color: var(--text);
+    background: #fff;
+    border-radius: 8px;
+  }
+  .fn-ex-mock:has(.paper-card) {
+    background: #f5f5f5;
+    border: 1px solid var(--line);
+    padding: 16px;
+  }
+  .paper-card-title {
+    margin: 0 0 10px;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 650;
+    color: var(--text);
+  }
+  .paper-card-desc {
+    margin: 0 0 14px;
+    font-size: 13px;
+    line-height: 20px;
+    color: var(--muted);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .paper-card-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0 0 16px;
+  }
+  .paper-card-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    line-height: 20px;
+    color: var(--text);
+  }
+  .paper-card-row .mi {
+    display: inline-flex;
+    width: 16px;
+    height: 16px;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+  .paper-card-row .mi svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .paper-card-row.is-bad .meta-txt {
+    color: var(--muted);
+  }
+  .paper-card-actions {
+    display: flex;
+    gap: 10px;
+  }
+  .paper-card-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 32px;
+    padding: 0 14px;
+    border-radius: 4px;
+    font-size: 13px;
+    line-height: 1;
+    font-weight: 500;
+  }
+  .paper-card-btn.is-ghost {
+    border: 1px solid #1476FF;
+    color: #1476FF;
+    background: #fff;
+  }
+  .paper-card-btn.is-solid {
+    border: 1px solid #1476FF;
+    color: #fff;
+    background: #1476FF;
+  }
+  .an-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 40px;
+    padding: 8px 12px;
+    background: #fff;
+    border-radius: 8px;
+    font-size: 13px;
+    line-height: 20px;
+    color: var(--text);
+  }
+  .fn-ex-mock:has(.an-bar) {
+    background: #f5f5f5;
+    border: 1px solid var(--line);
+    padding: 16px;
+  }
+  .an-bar-ico {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    color: var(--text);
+  }
+  .an-bar-ico svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .an-bar-lab {
+    font-size: 13px;
+    font-weight: 650;
+    color: var(--text);
+  }
+  .an-bar-div {
+    width: 1px;
+    height: 16px;
+    background: #e5e5e5;
+    flex-shrink: 0;
+  }
+  .an-bar-tag {
+    flex-shrink: 0;
+    padding: 0 8px;
+    height: 22px;
+    line-height: 22px;
+    border-radius: 999px;
+    background: #f0f0f0;
+    color: #595959;
+    font-size: 12px;
+  }
+  .an-bar-ttl {
+    min-width: 0;
+    font-weight: 650;
+  }
+  .an-bar-date {
+    margin-left: auto;
+    flex-shrink: 0;
+    color: #8c8c8c;
+    font-size: 12px;
+  }
+  .tip-bar {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 10px 12px;
+    background: #f0f7ff;
+    border-radius: 4px;
+    border-left: 3px solid #1476FF;
+    font-size: 13px;
+    line-height: 20px;
+    color: var(--text);
+  }
+  .fn-ex-mock:has(.tip-bar) {
+    background: #f5f5f5;
+    border: 1px solid var(--line);
+    padding: 16px;
+  }
+  .tip-bar-ico {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    color: #1476FF;
+    margin-top: 1px;
+  }
+  .tip-bar-ico svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .tip-bar-lab {
+    font-size: 13px;
+    font-weight: 650;
+    color: var(--text);
+  }
+  .tip-bar-txt {
+    min-width: 0;
+  }
+  .tip-bar-txt .tip-bar-link {
+    color: #1476FF;
+  }
+  .tip-bar-ext {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-left: 2px;
+    vertical-align: -1px;
+    fill: none;
+    stroke: #1476FF;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .rec-card {
+    padding: 12px 14px 8px;
+    background: #fff;
+    border-radius: 8px;
+  }
+  .fn-ex-mock:has(.rec-card) {
+    background: #f5f5f5;
+    border: 1px solid var(--line);
+    padding: 16px;
+  }
+
+  .logo-wall {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    height: 100%;
+    padding: 12px;
+    box-sizing: border-box;
+    background: #f5f5f5;
+    border-radius: 8px;
+  }
+  .fn-ex-mock:has(.logo-wall) {
+    background: #f5f5f5;
+    border: 1px solid var(--line);
+    padding: 0;
+  }
+  .logo-wall-title {
+    margin: 0;
+    text-align: center;
+    font-size: 13px;
+    line-height: 20px;
+    font-weight: 650;
+    color: var(--text);
+  }
+  .logo-wall > img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+  }
+  .logo-wall-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .logo-wall-grid a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-height: 68px;
+    padding: 6px 4px;
+    background: #fff;
+    border-radius: 6px;
+    font-size: 11px;
+    line-height: 16px;
+    font-weight: 500;
+    color: var(--text);
+    text-align: center;
+    text-decoration: none;
+  }
+  .logo-wall-grid a:hover,
+  .logo-wall-grid a:visited {
+    color: var(--text);
+    text-decoration: none;
+  }
+  .logo-wall-grid img {
+    display: block;
+    width: 100%;
+    height: 40px;
+    max-width: 100%;
+    object-fit: contain;
+    border-radius: 0;
+  }
+  .logo-wall-grid a span {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .rec-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 8px;
+    font-size: 14px;
+    font-weight: 650;
+    color: var(--text);
+  }
+  .rec-head svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    flex-shrink: 0;
+  }
+  .rec-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 0;
+    border-top: 1px solid #f0f0f0;
+    font-size: 13px;
+    line-height: 20px;
+  }
+  .rec-tag {
+    flex-shrink: 0;
+    padding: 0 7px;
+    height: 20px;
+    line-height: 20px;
+    border-radius: 999px;
+    background: #8c8c8c;
+    color: #fff;
+    font-size: 11px;
+  }
+  .rec-ttl {
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--text);
+  }
+  .rec-meta {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+    color: #8c8c8c;
+    font-size: 12px;
+  }
+  .rec-meta svg {
+    width: 14px;
+    height: 14px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+  }
+  .open-card {
+    padding: 16px 16px 14px;
+    background: #fff;
+    border-radius: 8px;
+  }
+  .fn-ex-mock:has(.open-card) {
+    background: #f5f5f5;
+    border: 1px solid var(--line);
+    padding: 16px;
+  }
+  .open-card-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 12px;
+  }
+  .open-card-logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .open-card-logo img {
+    display: block;
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    object-position: center;
+  }
+  .open-card-head:has(.open-card-head-txt) .open-card-logo img {
+    width: 40px;
+    height: 40px;
+  }
+  .open-card-head-txt {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+  .open-card-type {
+    font-size: 11px;
+    line-height: 16px;
+    font-weight: 400;
+    color: var(--muted);
+  }
+  .open-card-ttl {
+    margin: 0;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 650;
+    color: var(--text);
+  }
+  .open-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 10px;
+  }
+  .open-card-tag {
+    padding: 0 8px;
+    height: 22px;
+    line-height: 22px;
+    border-radius: 4px;
+    background: #f0f0f0;
+    color: #595959;
+    font-size: 12px;
+  }
+  .open-card-desc {
+    margin: 0 0 12px;
+    font-size: 13px;
+    line-height: 20px;
+    color: var(--muted);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .open-card-stats {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 0 0 14px;
+    font-size: 13px;
+    line-height: 20px;
+    color: #8c8c8c;
+  }
+  .open-card-stat {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .open-card-stat svg {
+    width: 14px;
+    height: 14px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex-shrink: 0;
+  }
+  .open-card-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    line-height: 20px;
+    font-weight: 650;
+    color: #1476FF;
+  }
+  .open-card-link svg {
+    width: 12px;
+    height: 12px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .obj-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  .obj-banner {
+    position: relative;
+    height: 149px;
+    overflow: hidden;
+  }
+  .obj-banner img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 50%;
+  }
+  .obj-banner-copy {
+    position: absolute;
+    left: 4.5%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 48%;
+    padding: 0;
+    background: none;
+  }
+  .obj-banner-copy .obj-card-kicker {
+    margin: 0 0 4px;
+    font-size: 10px;
+    line-height: 14px;
+    font-weight: 500;
+    color: #595959;
+  }
+  .obj-banner-copy .obj-card-title {
+    margin: 0 0 4px;
+    font-size: 18px;
+    line-height: 24px;
+    font-weight: 700;
+    color: #1476FF;
+  }
+  .obj-banner-copy .obj-card-desc {
+    margin: 0;
+    font-size: 12px;
+    line-height: 18px;
+    color: #191919;
+  }
+  .obj-banner-copy .obj-card-cta {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 8px;
+    height: 22px;
+    padding: 0 10px;
+    border-radius: 999px;
+    background: #1476FF;
+    color: #fff;
+    font-size: 11px;
+    line-height: 22px;
+    font-weight: 500;
+  }
+  .info-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 100%;
+    padding: 12px;
+    box-sizing: border-box;
+    background: #fff;
+    border-radius: 8px;
+  }
+  .fn-ex-mock:has(.info-card) {
+    background: #f5f5f5;
+    border: 1px solid var(--line);
+    padding: 16px;
+  }
+  .info-title {
+    margin: 0;
+    font-size: 12px;
+    line-height: 20px;
+    font-weight: 650;
+    color: var(--text);
+  }
+  .info-card img {
+    display: block;
+    width: 100%;
+    height: auto;
+    background: #fff;
+    border-radius: 4px;
+  }
+  .info-cap {
+    margin: 0;
+    font-size: 13px;
+    line-height: 20px;
+    color: var(--muted);
+  }
+  .info-cap.is-bad {
+    color: var(--muted);
+  }
+  .anno-scene {
+    margin: 0 0 24px;
+    max-width: 720px;
+  }
+  .anno-scene + .anno-scene {
+    margin-top: -8px;
+  }
+  .anno-scene-title {
+    margin: 0 0 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+  }
+  .anno-scene p {
+    margin: 0 0 8px;
+    font-size: var(--body-size);
+    line-height: var(--body-lh);
+    color: var(--text);
+  }
+  .anno-scene .anno-combo {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+  .anno-scene .anno-combo strong {
+    color: var(--text);
+    font-weight: 650;
+  }
+  .fn-elem table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .fn-elem th,
+  .fn-elem td {
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  .fn-elem th {
+    font-size: 12px;
+    font-weight: 650;
+    color: var(--muted);
+    background: #fafafa;
+  }
+  .fn-elem td:first-child {
+    font-weight: 600;
+    white-space: nowrap;
+    width: 6.5em;
+  }
+  .fn-elem .anno-dot {
+    display: inline-flex;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+  @media (max-width: 900px) {
+    .page-wrapper { flex-direction: column; }
+    .peer-sidebar {
+      position: static; width: 100%; height: auto;
+      border-right: none; border-bottom: 1px solid var(--line);
+    }
+    .detail-grid, .pattern-grid, .hub-grid { grid-template-columns: 1fr; }
+  }
+
+
+  .card-illust-cover {
+    display: block;
+    width: 100%;
+    height: 72px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #bfdbfe, #60a5fa 55%, #1476FF);
+    flex-shrink: 0;
+  }
+  .type-card > .type-mini .type-mock--illust {
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    text-align: left;
+    gap: 0;
+  }
+  .type-mini--illust {
+    padding: 0;
+    overflow: hidden;
+  }
+  .card-illust-copy {
+    padding: 8px 10px 10px;
+    text-align: left;
+  }
+  .type-mini--illust .card-illust-cover {
+    width: 100%;
+    height: 88px;
+    border-radius: 8px 8px 0 0;
+  }
+  .card-pure {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 120px;
+    height: 120px;
+    border-radius: 6px;
+    background: linear-gradient(145deg, #3b82f6, #1476FF);
+  }
+  .type-card > .type-mini .card-pure {
+    height: 100%;
+    min-height: 120px;
+  }
+  .card-pure-logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.18);
+    color: #fff;
+  }
+  .card-pure-logo svg {
+    width: 28px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .card-face--center {
+    align-items: center;
+    text-align: center;
+  }
+  .card-face-ico {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background: linear-gradient(145deg, #3b82f6, #1476FF);
+    color: #fff;
+    margin-bottom: 2px;
+  }
+  .card-face-ico svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .card-face-title {
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 650;
+    color: var(--text);
+    text-decoration: none;
+  }
+  a.card-face-title { color: var(--text); }
+  .card-face-desc {
+    font-size: 12px;
+    line-height: 18px;
+    color: var(--muted);
+    margin: 0;
+  }
+  .fn-panel .type-mini.card-mini {
+    min-width: 240px;
+    max-width: 280px;
+    align-items: stretch;
+  }
+  .fn-panel .anno-side--stack { gap: 28px; }
+  .news-face {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    text-align: left;
+    width: 100%;
+  }
+  .news-face-title {
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 650;
+    color: var(--text);
+    text-decoration: none;
+  }
+  a.news-face-title { color: var(--text); }
+  .news-face-desc {
+    font-size: 12px;
+    line-height: 18px;
+    color: var(--muted);
+    margin: 0;
+  }
+  .news-face-btn,
+  a.news-face-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: flex-start;
+    height: 24px;
+    padding: 0 12px;
+    margin-top: 10px;
+    border-radius: 999px;
+    border: 1px solid #d9d9d9;
+    background: transparent;
+    color: var(--text);
+    font-size: 12px;
+    line-height: 20px;
+    font-weight: 500;
+    text-decoration: none;
+  }
+  a.news-face-btn:hover,
+  a.news-face-btn:visited {
+    color: var(--text);
+    text-decoration: none;
+  }
+  .news-face-meta {
+    font-size: 12px;
+    line-height: 18px;
+    color: #8c8c8c;
+  }
+  .type-grid--3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .type-card > .type-mini:has(.bn-face) {
+    padding: 0;
+    overflow: hidden;
+  }
+  .type-card > .type-mini .bn-face {
+    flex: 1;
+    min-height: 120px;
+    border-radius: 8px;
+  }
+  .bn-face {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    width: 100%;
+    min-height: 110px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #bfdbfe, #60a5fa 45%, #1476FF);
+    text-align: left;
+    box-sizing: border-box;
+  }
+  .bn-face--muted {
+    background: linear-gradient(145deg, #e2e8f0, #cbd5e1);
+    min-height: 110px;
+  }
+  .bn-title {
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 650;
+    color: #fff;
+    text-decoration: none;
+  }
+  a.bn-title,
+  a.bn-title:visited { color: #fff; }
+  .bn-desc {
+    margin: 2px 0 0;
+    font-size: 12px;
+    line-height: 18px;
+    color: rgba(255,255,255,.9);
+  }
+  .bn-face .news-face-btn {
+    margin-top: 8px;
+    background: #fff;
+    border-color: #fff;
+  }
+  .fn-panel .type-mini.card-mini--banner {
+    padding: 0;
+    overflow: hidden;
+    min-width: 320px;
+    max-width: 520px;
+    align-items: stretch;
+  }
+  .fn-ex-mock--banner {
+    background: #f5f5f5;
+    border: none;
+    padding: 16px;
+  }
+  .fn-ex-mock--banner img {
+    display: block;
+    width: 100%;
+    max-width: 640px;
+    height: auto;
+    margin: 0 auto;
+    border-radius: 8px;
+  }
+  @media (max-width: 900px) {
+    .type-grid--3 { grid-template-columns: 1fr; }
+  }
+
+</style>
+</head>
+
+<body>
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html">社区 <span>AI 亲和原则</span></a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="mintlify.html">友商对照</a>
+      <a href="reachability.html">社区诊断</a>
+      <a href="community-ui.html">组件亲和</a>
+      <a href="design-guide-image-text.html" class="active">设计指导</a>
+    </nav>
+  </div>
+</div>
+
+<div class="page-wrapper">
+<aside class="peer-sidebar" aria-label="设计指导导航">
+  <nav class="peer-nav">
+    <div class="peer-group-label">视觉层</div>
+    <ul>
+      <li><a href="design-guide-image-text.html">图意文本化</a></li>
+      <li><a href="design-guide-icon-text.html" class="active">图标文本化</a></li>
+      <li><a href="design-guide-style-semantic.html">颜色语义化</a></li>
+      <li><a href="design-guide-hierarchy.html">层级文本化</a></li>
+      <li><a href="design-guide-status-word.html">状态文本化</a></li>
+      <li><a href="design-guide-media.html">多媒体语义化</a></li>
+      <li><a href="design-guide-code.html">代码块语义化</a></li>
+      <li><a href="design-guide-timestamp.html">版本时效声明化</a></li>
+      <li><a href="design-guide-gui-map.html">界面元素数值化</a></li>
+      <li><a href="design-guide-default-empty.html">占位与空态文本化</a></li>
+    </ul>
+    <div class="peer-group-label">交互层</div>
+    <ul>
+      <li><a href="design-guide-default-visible.html">悬停内容常驻化</a></li>
+      <li><a href="design-guide-click-prefab.html">点击内容预制化</a></li>
+      <li><a href="design-guide-placeholder.html">输入占位标签化</a></li>
+      <li><a href="design-guide-section-anchor.html">节级锚点可引用</a></li>
+      <li><a href="design-guide-click-dest.html">同文入口区分化</a></li>
+    </ul>
+    <div class="peer-group-label">框架层</div>
+    <ul>
+      <li><a href="design-guide-noise.html">噪音过滤</a></li>
+      <li><a href="design-guide-page-context.html">跨页路径语义化</a></li>      <li><a href="design-guide-layout.html">版式不替代语义</a></li>
+    </ul>
+  </nav>
+</aside>
+<div class="peer-main">
+<div class="wrap">
+  <header>
+    <p class="eyebrow">视觉层</p>
+    <h1>图标文本化</h1>
+    <p class="sub">含义图标须写成名称；数字可用单位表意。</p>
+  </header>
+
+  <h2 class="block-title">原则概述</h2>
+  <p class="affinity-group-label">原则：图标不独自表意</p>
+  <ul class="affinity-principles">
+    <li>图标用于辅助识别，其承载的字段、类型或量纲信息须有对应文字交付。图标本身可保留，但不得作为信息传递的唯一载体。图标旁出现数字时，须附单位标明量纲；若已有名称，可仅补充单位。上下文已明确表达同一含义，或图标纯属装饰时，可不重复加注。（状态图标详见 <a href="design-guide-status-word.html">状态文本化</a>）</li>
+  </ul>
+  <p class="affinity-group-label">对 AI 的好处</p>
+  <ul class="affinity-principles">
+    <li>字段名、量纲单位落在可抓取文字上，AI 无需从图标猜测含义；数字配套单位后可直接入库，避免只读到图形或裸数。</li>
+  </ul>
+
+  <h2 class="block-title">场景示例</h2>
+  <h3 class="fn-h3">示例 1 · 公告图标须写成名称</h3>
+  <div class="fn-lead-block">
+    <p class="type-lead fn-lead"><strong>核心原则：</strong>类型图标须写成名称；日期须写明是何种时间。</p>
+  </div>
+  <div class="fn-ex-row">
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label">反面</span>
+    <div class="fn-ex-bar" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="反面：只有喇叭图标">
+      <div class="an-bar">
+        <span class="an-bar-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M3 10v4h4l6 5V5L7 10H3z"/><path d="M16.2 8.2a4.5 4.5 0 0 1 0 7.6"/></svg>
+        </span>
+        <span class="an-bar-div" aria-hidden="true"></span>
+        <span class="an-bar-tag">社区版</span>
+        <span class="an-bar-ttl">昇腾CANN 9.1.0版本发布</span>
+        <span class="an-bar-date">2026/07/31</span>
+      </div>
+    </div>
+    <div class="fn-ex-foot">
+    <ul class="fn-ex-list">
+      <li><strong>缺文本替代：</strong>只有喇叭，抓取后看不出这是公告条。 <a class="fn-h3-link" href="https://www.hiascend.com/developer" target="_blank" rel="noopener">查看示例来源</a></li>
+      <li><strong>有歧义：</strong>「2026/07/31」未写明是发布日还是其它日期。</li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label is-good">正面</span>
+    <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="正面：喇叭旁写公告">
+      <div class="an-bar">
+        <span class="an-bar-ico">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10v4h4l6 5V5L7 10H3z"/><path d="M16.2 8.2a4.5 4.5 0 0 1 0 7.6"/></svg>
+          <span class="an-bar-lab">公告</span>
+        </span>
+        <span class="an-bar-div" aria-hidden="true"></span>
+        <span class="an-bar-tag">社区版</span>
+        <span class="an-bar-ttl">昇腾CANN 9.1.0版本发布</span>
+        <span class="an-bar-date">2026/07/31 发布</span>
+      </div>
+    </div>
+    <div class="fn-ex-foot">
+    <ul class="fn-ex-list">
+      <li><strong>公告：</strong>须写成「公告」；喇叭可留，只辅助。</li>
+      <li><strong>日期：</strong>须写成「2026/07/31 发布」。</li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  </div>
+  <h3 class="fn-h3">示例 2 · 说明图标须写成名称</h3>
+  <div class="fn-lead-block">
+    <p class="type-lead fn-lead"><strong>核心原则：</strong>说明类图标须写成名称，不能只靠图形标明。</p>
+    <p class="type-lead fn-lead"><strong>例外情况：</strong>链接已有文档名时，外链箭头不必再写。</p>
+  </div>
+  <div class="fn-ex-row">
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label">反面</span>
+    <div class="fn-ex-bar" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="反面：只有灯泡图标">
+      <div class="tip-bar">
+        <span class="tip-bar-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 1 4 10c-.7.7-1 1.5-1 2.5V16H9v-.5c0-1-.3-1.8-1-2.5A6 6 0 0 1 12 3z"/></svg>
+        </span>
+        <span class="tip-bar-txt">如何选择多级API，可参考 <span class="tip-bar-link">Ascend C多级API选择指南</span><svg class="tip-bar-ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 5h5v5"/><path d="M10 14 19 5"/><path d="M19 13v6a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h6"/></svg>。</span>
+      </div>
+    </div>
+    <div class="fn-ex-foot">
+    <ul class="fn-ex-list">
+      <li><strong>缺文本替代：</strong>只有灯泡，抓取后看不出这是说明条。 <a class="fn-h3-link" href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/910/programug/Ascendcopdevg/docs/guide/%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B/Ascend-C%E6%A6%82%E8%BF%B0%E4%B8%8E%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%84.md" target="_blank" rel="noopener">查看示例来源</a></li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label is-good">正面</span>
+    <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="正面：灯泡旁写说明">
+      <div class="tip-bar">
+        <span class="tip-bar-ico">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 1 4 10c-.7.7-1 1.5-1 2.5V16H9v-.5c0-1-.3-1.8-1-2.5A6 6 0 0 1 12 3z"/></svg>
+          <span class="tip-bar-lab">说明</span>
+        </span>
+        <span class="tip-bar-txt">如何选择多级API，可参考 <span class="tip-bar-link">Ascend C多级API选择指南</span><svg class="tip-bar-ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 5h5v5"/><path d="M10 14 19 5"/><path d="M19 13v6a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h6"/></svg>。</span>
+      </div>
+    </div>
+    <div class="fn-ex-foot">
+    <ul class="fn-ex-list">
+      <li><strong>说明：</strong>须写成「说明」；灯泡可留，只辅助。</li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  </div>
+  <h3 class="fn-h3">示例 3 · 字段图标须写成名称</h3>
+  <div class="fn-lead-block">
+    <p class="type-lead fn-lead"><strong>核心原则：</strong>字段名须写在图标旁，不能只靠图形标明。</p>
+    <p class="type-lead fn-lead"><strong>例外情况：</strong>旁白已写出同一字段时，图标可只装饰。</p>
+  </div>
+  <div class="fn-ex-row">
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label">反面</span>
+    <div class="fn-ex-bar" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="含义图标反面示例：图标独自说明字段，日期未写明含义">
+      <div class="paper-card">
+        <p class="paper-card-title">MWPO: Enhancing LLMs Performance through Multi-Weight Preference Strength and Length Optimization</p>
+        <p class="paper-card-desc">Direct Preference Optimization (DPO) have proposed offline alternatives to Reinforcement Learning from Human Feedback (RLHF). In DPO, each preference pair, which serves as the foundation for learning, is typically constructed by first</p>
+        <div class="paper-card-meta">
+          <div class="paper-card-row">
+            <span class="mi" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </span>
+            <span>Shiyue Xu, Fu Zhang, Jingwei Cheng, Linfeng Zhou</span>
+          </div>
+          <div class="paper-card-row is-bad">
+            <span class="mi" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v5l3 2"/></svg>
+            </span>
+            <span class="meta-txt">2025年7月</span>
+          </div>
+        </div>
+        <div class="paper-card-actions">
+          <span class="paper-card-btn is-ghost">查看代码</span>
+          <span class="paper-card-btn is-solid">查看论文</span>
+        </div>
+      </div>
+    </div>
+    <div class="fn-ex-foot">
+    <ul class="fn-ex-list">
+      <li><strong>缺文本替代：</strong>时钟旁只有「2025年7月」，未写明是何种时间。 <a class="fn-h3-link" href="https://www.mindspore.cn/papers" target="_blank" rel="noopener">查看示例来源</a></li>
+      <li><strong>有歧义：</strong>可能是发布、更新、活动开始等，机器无法判定。</li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label is-good">正面</span>
+    <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="含义图标正面示例：字段含义写成文字">
+      <div class="paper-card">
+        <p class="paper-card-title">MWPO: Enhancing LLMs Performance through Multi-Weight Preference Strength and Length Optimization</p>
+        <p class="paper-card-desc">Direct Preference Optimization (DPO) have proposed offline alternatives to Reinforcement Learning from Human Feedback (RLHF). In DPO, each preference pair, which serves as the foundation for learning, is typically constructed by first</p>
+        <div class="paper-card-meta">
+          <div class="paper-card-row">
+            <span class="mi" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </span>
+            <span>作者 Shiyue Xu, Fu Zhang, Jingwei Cheng, Linfeng Zhou</span>
+          </div>
+          <div class="paper-card-row">
+            <span class="mi" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v5l3 2"/></svg>
+            </span>
+            <span>发布时间 2025年7月</span>
+          </div>
+        </div>
+        <div class="paper-card-actions">
+          <span class="paper-card-btn is-ghost">查看代码</span>
+          <span class="paper-card-btn is-solid">查看论文</span>
+        </div>
+      </div>
+    </div>
+    <div class="fn-ex-foot">
+    <ul class="fn-ex-list">
+      <li><strong>作者：</strong>须写成「作者」加人名。</li>
+      <li><strong>时间：</strong>须写成「发布时间」加日期。</li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  </div>
+  <h3 class="fn-h3">示例 4 · 类型与指标须写成文字</h3>
+  <div class="fn-lead-block">
+    <p class="type-lead fn-lead"><strong>核心原则：</strong>类型须写成名称；数字须带指标名或单位。</p>
+    <p class="type-lead fn-lead"><strong>例外情况：</strong>产品 Logo 只装饰时，不必再写。</p>
+  </div>
+  <div class="fn-ex-row">
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label">反面</span>
+    <div class="fn-ex-bar" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="反面：类型图标未写文字，指标只有数字">
+      <div class="open-card">
+        <div class="open-card-head">
+          <span class="open-card-logo" aria-hidden="true">
+            <img src="assets/design-guide/ascend-sipboost-logo.png?v=2" alt="">
+          </span>
+          <p class="open-card-ttl">AscendSiPBoost</p>
+        </div>
+        <div class="open-card-tags">
+          <span class="open-card-tag">信号处理</span>
+          <span class="open-card-tag">BLAS</span>
+          <span class="open-card-tag">Solver</span>
+          <span class="open-card-tag">FFT</span>
+        </div>
+        <p class="open-card-desc">面向AI模型场景和信号处理场景，提供FFT、BLAS、Solver等一系列信号处理领域相关的高性能算子</p>
+        <div class="open-card-stats">
+          <span class="open-card-stat"><svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 3 14.5 9.5 21.5 10 16 14.8 17.8 21.5 12 18 6.2 21.5 8 14.8 2.5 10 9.5 9.5"/></svg>228</span>
+          <span class="open-card-stat"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="12" cy="18" r="2"/><path d="M8 7v2a4 4 0 0 0 4 4h0a4 4 0 0 0 4-4V7"/><path d="M12 13v3"/></svg>61</span>
+          <span class="open-card-stat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>0</span>
+        </div>
+        <span class="open-card-link">获取源码<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 5h5v5"/><path d="M10 14 19 5"/><path d="M19 13v6a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h6"/></svg></span>
+      </div>
+    </div>
+    <div class="fn-ex-foot">
+    <ul class="fn-ex-list">
+      <li><strong>缺文本替代：</strong>标题旁只有图标，未写明是「图引擎」类型。收藏、分支、浏览旁只有数字。 <a class="fn-h3-link" href="https://www.hiascend.com/cann/open-map" target="_blank" rel="noopener">查看示例来源</a></li>
+      <li><strong>有歧义：</strong>「228」可能是收藏、下载或其它计数。</li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label is-good">正面</span>
+    <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="正面：类型与指标写成文字">
+      <div class="open-card">
+        <div class="open-card-head">
+          <span class="open-card-logo" aria-hidden="true">
+            <img src="assets/design-guide/ascend-sipboost-logo.png?v=2" alt="">
+          </span>
+          <div class="open-card-head-txt">
+            <p class="open-card-ttl">AscendSiPBoost</p>
+            <span class="open-card-type">图引擎</span>
+          </div>
+        </div>
+        <div class="open-card-tags">
+          <span class="open-card-tag">信号处理</span>
+          <span class="open-card-tag">BLAS</span>
+          <span class="open-card-tag">Solver</span>
+          <span class="open-card-tag">FFT</span>
+        </div>
+        <p class="open-card-desc">面向AI模型场景和信号处理场景，提供FFT、BLAS、Solver等一系列信号处理领域相关的高性能算子</p>
+        <div class="open-card-stats">
+          <span class="open-card-stat"><svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 3 14.5 9.5 21.5 10 16 14.8 17.8 21.5 12 18 6.2 21.5 8 14.8 2.5 10 9.5 9.5"/></svg>收藏 228</span>
+          <span class="open-card-stat"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="12" cy="18" r="2"/><path d="M8 7v2a4 4 0 0 0 4 4h0a4 4 0 0 0 4-4V7"/><path d="M12 13v3"/></svg>分支 61</span>
+          <span class="open-card-stat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>浏览 0</span>
+        </div>
+        <span class="open-card-link">获取源码<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 5h5v5"/><path d="M10 14 19 5"/><path d="M19 13v6a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h6"/></svg></span>
+      </div>
+    </div>
+    <div class="fn-ex-foot">
+    <p class="fn-ex-group">必有项</p>
+    <ul class="fn-ex-list">
+      <li><strong>类型：</strong>须写成「图引擎」；图标可留，只辅助。</li>
+      <li><strong>指标：</strong>须写成「收藏 228」「分支 61」「浏览 0」。</li>
+    </ul>
+    <p class="fn-ex-group">可选项</p>
+    <ul class="fn-ex-list">
+      <li><strong>Logo：</strong>产品标识只装饰时，不必再写成文字。</li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  </div>
+  <h3 class="fn-h3">示例 5 · 数量可用单位表意</h3>
+  <div class="fn-lead-block">
+    <p class="type-lead fn-lead"><strong>核心原则：</strong>数字须带单位标明量纲，不要只写数字。</p>
+    <p class="type-lead fn-lead"><strong>例外情况：</strong>标题已表意的装饰图标不必再写。</p>
+  </div>
+  <div class="fn-ex-row">
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label">反面</span>
+    <div class="fn-ex-bar" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="反面：人像加数字">
+      <div class="rec-card">
+        <p class="rec-head">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 3 14.5 9.5 21.5 10 16 14.8 17.8 21.5 12 18 6.2 21.5 8 14.8 2.5 10 9.5 9.5"/></svg>
+          精品推荐
+        </p>
+        <div class="rec-row">
+          <span class="rec-tag">课程</span>
+          <span class="rec-ttl">【新】【昇腾软件说】社区支持与活动专场</span>
+          <span class="rec-meta"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="3.5"/></svg>2</span>
+        </div>
+        <div class="rec-row">
+          <span class="rec-tag">课程</span>
+          <span class="rec-ttl">【新】【昇腾软件说】推理解决方案专场</span>
+          <span class="rec-meta"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="3.5"/></svg>5</span>
+        </div>
+        <div class="rec-row">
+          <span class="rec-tag">课程</span>
+          <span class="rec-ttl">【新】【昇腾软件说】昇腾算子编程专场</span>
+          <span class="rec-meta"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="3.5"/></svg>5</span>
+        </div>
+      </div>
+    </div>
+    <div class="fn-ex-foot">
+    <ul class="fn-ex-list">
+      <li><strong>缺文本替代：</strong>图标旁只有「2」，看不出量纲。 <a class="fn-h3-link" href="https://www.hiascend.com/developer" target="_blank" rel="noopener">查看示例来源</a></li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label is-good">正面</span>
+    <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="正面：写成几人">
+      <div class="rec-card">
+        <p class="rec-head">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 3 14.5 9.5 21.5 10 16 14.8 17.8 21.5 12 18 6.2 21.5 8 14.8 2.5 10 9.5 9.5"/></svg>
+          精品推荐
+        </p>
+        <div class="rec-row">
+          <span class="rec-tag">课程</span>
+          <span class="rec-ttl">【新】【昇腾软件说】社区支持与活动专场</span>
+          <span class="rec-meta"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="3.5"/></svg>2人</span>
+        </div>
+        <div class="rec-row">
+          <span class="rec-tag">课程</span>
+          <span class="rec-ttl">【新】【昇腾软件说】推理解决方案专场</span>
+          <span class="rec-meta"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="3.5"/></svg>5人</span>
+        </div>
+        <div class="rec-row">
+          <span class="rec-tag">课程</span>
+          <span class="rec-ttl">【新】【昇腾软件说】昇腾算子编程专场</span>
+          <span class="rec-meta"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="3.5"/></svg>5人</span>
+        </div>
+      </div>
+    </div>
+    <div class="fn-ex-foot">
+    <ul class="fn-ex-list">
+      <li><strong>单位：</strong>须写成「2人」。也可用名称（如「讲师 2」）。</li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  </div>
+  <h3 class="fn-h3">示例 6 · 品牌Logo须写入alt</h3>
+  <div class="fn-lead-block">
+    <p class="type-lead fn-lead"><strong>核心原则：</strong>项目名须可抓取。写进 alt，或写在 Logo 旁可见名称，两种都可以；同一处不必重复。</p>
+    <p class="type-lead fn-lead"><strong>例外情况：</strong>旁白已列出同一套名单时，Logo 可只装饰。</p>
+  </div>
+  <div class="fn-ex-row">
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label">反面</span>
+    <div class="fn-ex-bar" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="反面：友好社区 Logo 墙，名称烧进图片">
+      <div class="logo-wall">
+        <img src="assets/design-guide/cann-friendly-community.png" alt="">
+      </div>
+    </div>
+    <div class="fn-ex-foot">
+    <ul class="fn-ex-list">
+      <li><strong>缺文本替代：</strong>各 Logo 为图片且无 alt，字标只在像素里；其中一枚无字标。抓取后得不到社区名单，也无法跟链。 <a class="fn-h3-link" href="https://www.hiascend.com/cann" target="_blank" rel="noopener">查看示例来源</a></li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label is-good">正面</span>
+    <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="正面：各 Logo 下方写出项目名">
+      <div class="logo-wall">
+        <p class="logo-wall-title">友好社区</p>
+        <div class="logo-wall-grid">
+          <a href="https://github.com/volcengine/verl"><img src="assets/design-guide/cann-logo-verl.png" alt="verl"><span>verl</span></a>
+          <a href="https://github.com/vllm-project/vllm"><img src="assets/design-guide/cann-logo-vllm.png" alt="vLLM"><span>vLLM</span></a>
+          <a href="https://github.com/sgl-project/sglang"><img src="assets/design-guide/cann-logo-sgl.png" alt="SGL"><span>SGL</span></a>
+          <a href="https://www.hiascend.com/cann"><img src="assets/design-guide/cann-logo-xllm.png" alt="xLLM"><span>xLLM</span></a>
+          <a href="https://www.mindspore.cn"><img src="assets/design-guide/cann-logo-mindspore.png" alt="MindSpore"><span>MindSpore</span></a>
+          <a href="https://github.com/kvcache-ai/Mooncake"><img src="assets/design-guide/cann-logo-mooncake.png" alt="Mooncake"><span>Mooncake</span></a>
+          <a href="https://pytorch.org"><img src="assets/design-guide/cann-logo-pytorch.png" alt="PyTorch"><span>PyTorch</span></a>
+          <a href="https://www.hiascend.com/cann"><img src="assets/design-guide/cann-logo-unknown.png" alt="须写名称"><span>须写名称</span></a>
+          <a href="https://github.com/tile-ai/tilelang"><img src="assets/design-guide/cann-logo-tilelang.png" alt="TileLang"><span>TileLang</span></a>
+          <a href="https://www.tensorflow.org"><img src="assets/design-guide/cann-logo-tensorflow.png" alt="TensorFlow"><span>TensorFlow</span></a>
+        </div>
+      </div>
+    </div>
+    <div class="fn-ex-foot">
+    <p class="fn-ex-group">必有项</p>
+    <ul class="fn-ex-list">
+      <li><strong>项目名（两种均可）：</strong>
+        <ul class="fn-ex-list">
+          <li><strong>图像替代文本（不在UI层体现）：</strong>alt 写入项目名；无字标时同样须写。</li>
+          <li><strong>可见名称：</strong>写在 Logo 旁或下方。与 alt 二选一即可，不必两处都写。</li>
+        </ul>
+      </li>
+      <li><strong>链接入口：</strong>每项须可跟链。</li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  </div>
+
+</div>
+</div>
+</div>
+</div>
+<script>
+(function () {
+  var el = document.querySelector(".peer-sidebar");
+  if (!el) return;
+  var key = "peer-sidebar-scroll";
+  function restore() {
+    var y = sessionStorage.getItem(key);
+    if (y != null) el.scrollTop = Number(y);
+  }
+  restore();
+  requestAnimationFrame(restore);
+  window.addEventListener("load", restore);
+  el.addEventListener("scroll", function () {
+    sessionStorage.setItem(key, String(el.scrollTop));
+  }, { passive: true });
+  el.querySelectorAll("a").forEach(function (a) {
+    a.addEventListener("click", function () {
+      sessionStorage.setItem(key, String(el.scrollTop));
+    });
+  });
+})();
+</script>
+</body>
+</html>

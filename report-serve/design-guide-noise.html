@@ -116,7 +116,7 @@
     margin: 0 0 8px;
     font-size: 13px;
     font-weight: 700;
-    color: var(--muted);
+    color: var(--text);
     letter-spacing: 0.02em;
   }
   .affinity-principles + .affinity-group-label {
@@ -469,7 +469,8 @@
     color: var(--text);
     letter-spacing: -0.01em;
   }
-  h3.fn-h3 .fn-h3-link {
+  h3.fn-h3 .fn-h3-link,
+  .fn-h3-link {
     margin-left: 12px;
     font-size: 14px;
     font-weight: 500;
@@ -477,7 +478,8 @@
     color: var(--link);
     text-decoration: none;
   }
-  h3.fn-h3 .fn-h3-link:hover {
+  h3.fn-h3 .fn-h3-link:hover,
+  .fn-h3-link:hover {
     text-decoration: underline;
   }
   .fn-panel {
@@ -806,7 +808,8 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto 1fr auto;
-    gap: 16px 16px;
+    column-gap: 16px;
+    row-gap: 0;
     align-items: stretch;
     max-width: none;
     margin: 0 0 20px;
@@ -819,32 +822,61 @@
     margin: 0;
     min-width: 0;
   }
-  .fn-ex-row .fn-ex-mock {
-    height: 100%;
-    box-sizing: border-box;
-  }
   .fn-ex-row .fn-ex-head {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
+    margin-bottom: 16px;
   }
   .fn-ex-row .fn-ex-head .fn-ex-label {
     margin: 0;
   }
   .fn-ex-row .fn-ex-head .fn-ex-bar {
+    display: block;
     margin: 0;
     width: 100%;
+    align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-body {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 2 / span 2;
+    min-height: 0;
+    background: #f5f5f5;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .fn-ex-row .fn-ex-mock {
+    min-height: 0;
+    height: 100%;
+    box-sizing: border-box;
+    border: none;
+    border-radius: 0;
     align-self: stretch;
   }
   .fn-ex-row .fn-ex-foot {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    padding: 12px 14px 14px;
+    background: #fff;
+    border-top: 1px solid var(--line);
   }
-  .fn-ex-row .fn-ex-foot .fn-ex-title,
   .fn-ex-row .fn-ex-foot .fn-ex-list {
     margin: 0;
+    gap: 4px;
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-group {
+    margin: 8px 0 0;
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 650;
+    color: var(--muted);
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-group:first-child {
+    margin-top: 0;
   }
   .fn-ex-row .status-ex-table {
     font-size: 11px;
@@ -870,7 +902,13 @@
       display: block;
       grid-row: auto;
     }
+    .fn-ex-row .fn-ex-body {
+      display: flex;
+      flex-direction: column;
+      grid-row: auto;
+    }
   }
+
   .fn-ex-label {
     display: inline-block;
     margin: 0 0 10px;
@@ -1595,19 +1633,6 @@
     padding: 16px 18px 14px;
     color: var(--text);
   }
-  .ns-deco {
-    display: block;
-    width: 100%;
-    height: 72px;
-    object-fit: cover;
-    object-position: center 42%;
-    border-radius: 4px;
-    background: #e8eef5;
-  }
-  .ns-deco-head {
-    height: 56px;
-    margin: 0 0 10px;
-  }
   .st-note {
     display: flex;
     gap: 10px;
@@ -1765,10 +1790,12 @@
     <div class="peer-group-label">视觉层</div>
     <ul>
       <li><a href="design-guide-image-text.html">图意文本化</a></li>
+      <li><a href="design-guide-icon-text.html">图标文本化</a></li>
       <li><a href="design-guide-style-semantic.html">颜色语义化</a></li>
       <li><a href="design-guide-hierarchy.html">层级文本化</a></li>
       <li><a href="design-guide-status-word.html">状态文本化</a></li>
       <li><a href="design-guide-media.html">多媒体语义化</a></li>
+      <li><a href="design-guide-code.html">代码块语义化</a></li>
       <li><a href="design-guide-timestamp.html">版本时效声明化</a></li>
       <li><a href="design-guide-gui-map.html">界面元素数值化</a></li>
       <li><a href="design-guide-default-empty.html">占位与空态文本化</a></li>
@@ -1784,8 +1811,7 @@
     <div class="peer-group-label">框架层</div>
     <ul>
       <li><a href="design-guide-noise.html" class="active">噪音过滤</a></li>
-      <li><a href="design-guide-page-context.html">跨页路径语义化</a></li>
-      <li><a href="design-guide-carrier.html">信息载体选定原则</a></li>
+      <li><a href="design-guide-page-context.html">跨页路径语义化</a></li>      <li><a href="design-guide-layout.html">版式不替代语义</a></li>
     </ul>
   </nav>
 </aside>
@@ -1798,36 +1824,36 @@
   </header>
 
   <h2 class="block-title">原则概述</h2>
-  <p class="affinity-group-label">设计描述</p>
+  <p class="affinity-group-label">原则：推荐不穿插主路径</p>
   <ul class="affinity-principles">
     <li>相关文章、推荐阅读统一放在页面末尾，不插进安装步骤或主路径。</li>
+    <li>主路径连续成段；推荐区须能识别为推荐，不得被当成规格正文。</li>
   </ul>
-  <p class="affinity-group-label">UI 落地</p>
+  <p class="affinity-group-label">对 AI 的好处</p>
   <ul class="affinity-principles">
-    <li>「相关文章 / 推荐阅读」收到页末，不插在步骤中间。</li>
-  </ul>
-  <p class="affinity-group-label">对 AI 亲和的好处</p>
-  <ul class="affinity-principles">
-    <li>抓取时主路径连续，推荐不会被当成规格正文。</li>
+    <li>抓取时主路径连续，推荐不会被当成安装步骤或规格。</li>
   </ul>
 
   <h2 class="block-title">场景示例</h2>
   <h3 class="fn-h3">示例 1 · 推荐阅读收到页末</h3>
-  <p class="type-lead">不要把相关文章插在安装步骤中间。</p>
+  <div class="fn-lead-block">
+    <p class="type-lead fn-lead"><strong>核心原则：</strong>不要把相关文章插在安装步骤中间。</p>
+  </div>
   <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
     <span class="fn-ex-label">反面</span>
     <div class="fn-ex-bar" aria-hidden="true"></div>
     </div>
+    <div class="fn-ex-body">
     <div class="fn-ex-mock" aria-label="反面：步骤中插入推荐">
       <div class="st-card"><p style="margin:0 0 8px;font-size:13px;font-weight:650;">步骤 1 安装驱动</p><p style="margin:0 0 8px;font-size:12px;color:#1476FF;">推荐阅读 · 开发者故事</p><p style="margin:0;font-size:13px;font-weight:650;">步骤 2 配置环境</p></div>
     </div>
     <div class="fn-ex-foot">
-    <p class="fn-ex-title">问题</p>
     <ul class="fn-ex-list">
-      <li><strong>噪音穿插：</strong>主路径被推荐内容打断，易被当成安装步骤。</li>
+      <li><strong>有歧义：</strong>主路径被推荐内容打断，易被当成安装步骤。</li>
     </ul>
+    </div>
     </div>
   </div>
   <div class="fn-ex">
@@ -1835,56 +1861,16 @@
     <span class="fn-ex-label is-good">正面</span>
     <div class="fn-ex-bar is-good" aria-hidden="true"></div>
     </div>
+    <div class="fn-ex-body">
     <div class="fn-ex-mock" aria-label="正面：步骤连续，推荐在后">
       <div class="st-card"><p style="margin:0 0 8px;font-size:13px;font-weight:650;">步骤 1 安装驱动</p><p style="margin:0 0 12px;font-size:13px;font-weight:650;">步骤 2 配置环境</p><p style="margin:0;font-size:12px;color:#1476FF;">相关文章（页末）· 开发者故事</p></div>
     </div>
     <div class="fn-ex-foot">
-    <p class="fn-ex-title">修改</p>
+    <p class="fn-ex-group">必有项</p>
     <ul class="fn-ex-list">
-      <li><strong>收束项：</strong>步骤连续；推荐放到页末。</li>
+      <li><strong>推荐位置：</strong>步骤连续；推荐放到页末。</li>
     </ul>
     </div>
-  </div>
-  </div>
-  <h3 class="fn-h3">示例 2 · 装饰不侵入正文</h3>
-  <p class="type-lead">装饰图不要和步骤抢同一栏。</p>
-  <div class="fn-ex-row">
-  <div class="fn-ex">
-    <div class="fn-ex-head">
-    <span class="fn-ex-label">反面</span>
-    <div class="fn-ex-bar" aria-hidden="true"></div>
-    </div>
-    <div class="fn-ex-mock" aria-label="反面：装饰插在步骤中">
-      <div class="st-card">
-        <p style="margin:0 0 8px;font-size:13px;font-weight:650;">步骤 1 安装驱动</p>
-        <img class="ns-deco" src="assets/design-guide/kunpeng-activity-camp.png" alt="装饰插图">
-        <p style="margin:8px 0 0;font-size:13px;font-weight:650;">步骤 2 配置环境</p>
-      </div>
-    </div>
-    <div class="fn-ex-foot">
-    <p class="fn-ex-title">问题</p>
-    <ul class="fn-ex-list">
-      <li><strong>装饰穿插：</strong>装饰图插在步骤中间，主路径被切断。</li>
-    </ul>
-    </div>
-  </div>
-  <div class="fn-ex">
-    <div class="fn-ex-head">
-    <span class="fn-ex-label is-good">正面</span>
-    <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-    </div>
-    <div class="fn-ex-mock" aria-label="正面：步骤连续，装饰在页眉">
-      <div class="st-card">
-        <img class="ns-deco ns-deco-head" src="assets/design-guide/kunpeng-activity-camp.png" alt="页眉装饰">
-        <p style="margin:0 0 8px;font-size:13px;font-weight:650;">步骤 1 安装驱动</p>
-        <p style="margin:0;font-size:13px;font-weight:650;">步骤 2 配置环境</p>
-      </div>
-    </div>
-    <div class="fn-ex-foot">
-    <p class="fn-ex-title">修改</p>
-    <ul class="fn-ex-list">
-      <li><strong>收束项：</strong>正文连续；装饰离开主栏。</li>
-    </ul>
     </div>
   </div>
   </div>

@@ -116,7 +116,7 @@
     margin: 0 0 8px;
     font-size: 13px;
     font-weight: 700;
-    color: var(--muted);
+    color: var(--text);
     letter-spacing: 0.02em;
   }
   .affinity-principles + .affinity-group-label {
@@ -469,7 +469,8 @@
     color: var(--text);
     letter-spacing: -0.01em;
   }
-  h3.fn-h3 .fn-h3-link {
+  h3.fn-h3 .fn-h3-link,
+  .fn-h3-link {
     margin-left: 12px;
     font-size: 14px;
     font-weight: 500;
@@ -477,7 +478,8 @@
     color: var(--link);
     text-decoration: none;
   }
-  h3.fn-h3 .fn-h3-link:hover {
+  h3.fn-h3 .fn-h3-link:hover,
+  .fn-h3-link:hover {
     text-decoration: underline;
   }
   .fn-panel {
@@ -806,7 +808,8 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto 1fr auto;
-    gap: 16px 16px;
+    column-gap: 16px;
+    row-gap: 0;
     align-items: stretch;
     max-width: none;
     margin: 0 0 20px;
@@ -819,32 +822,63 @@
     margin: 0;
     min-width: 0;
   }
-  .fn-ex-row .fn-ex-mock {
-    height: 100%;
-    box-sizing: border-box;
-  }
   .fn-ex-row .fn-ex-head {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
+    margin-bottom: 16px;
   }
   .fn-ex-row .fn-ex-head .fn-ex-label {
     margin: 0;
   }
   .fn-ex-row .fn-ex-head .fn-ex-bar {
+    display: block;
     margin: 0;
     width: 100%;
+    align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-body {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 2 / span 2;
+    min-height: 0;
+    background: #f5f5f5;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .fn-ex-row .fn-ex-mock,
+  .fn-ex-row .fn-ex-mock:has(.st-card),
+  .fn-ex-row .fn-ex-mock:has(.ver-list) {
+    min-height: 0;
+    height: 100%;
+    box-sizing: border-box;
+    border: none;
+    border-radius: 0;
     align-self: stretch;
   }
   .fn-ex-row .fn-ex-foot {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    padding: 12px 14px 14px;
+    background: #fff;
+    border-top: 1px solid var(--line);
   }
-  .fn-ex-row .fn-ex-foot .fn-ex-title,
   .fn-ex-row .fn-ex-foot .fn-ex-list {
     margin: 0;
+    gap: 4px;
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-group {
+    margin: 8px 0 0;
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 650;
+    color: var(--muted);
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-group:first-child {
+    margin-top: 0;
   }
   .fn-ex-row .status-ex-table {
     font-size: 11px;
@@ -868,6 +902,11 @@
     }
     .fn-ex-row .fn-ex {
       display: block;
+      grid-row: auto;
+    }
+    .fn-ex-row .fn-ex-body {
+      display: flex;
+      flex-direction: column;
       grid-row: auto;
     }
   }
@@ -905,6 +944,38 @@
     overflow: hidden;
     background: #f5f5f5;
     border: 1px solid var(--line);
+  }
+  .ver-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    height: 100%;
+    padding: 12px;
+    box-sizing: border-box;
+  }
+  .ver-item {
+    padding: 10px 12px;
+    background: #fff;
+    border-radius: 6px;
+  }
+  .ver-item-title {
+    margin: 0;
+    font-size: 13px;
+    line-height: 20px;
+    font-weight: 650;
+    color: var(--text);
+  }
+  .ver-item-meta {
+    margin: 4px 0 0;
+    font-size: 12px;
+    line-height: 18px;
+    color: var(--text);
+  }
+  .ver-item-tag {
+    margin-left: 6px;
+    font-size: 12px;
+    font-weight: 650;
+    color: #c2410c;
   }
   .status-ex-table {
     width: 100%;
@@ -1752,10 +1823,12 @@
     <div class="peer-group-label">视觉层</div>
     <ul>
       <li><a href="design-guide-image-text.html">图意文本化</a></li>
+      <li><a href="design-guide-icon-text.html">图标文本化</a></li>
       <li><a href="design-guide-style-semantic.html">颜色语义化</a></li>
       <li><a href="design-guide-hierarchy.html">层级文本化</a></li>
       <li><a href="design-guide-status-word.html">状态文本化</a></li>
       <li><a href="design-guide-media.html">多媒体语义化</a></li>
+      <li><a href="design-guide-code.html">代码块语义化</a></li>
       <li><a href="design-guide-timestamp.html" class="active">版本时效声明化</a></li>
       <li><a href="design-guide-gui-map.html">界面元素数值化</a></li>
       <li><a href="design-guide-default-empty.html">占位与空态文本化</a></li>
@@ -1771,8 +1844,7 @@
     <div class="peer-group-label">框架层</div>
     <ul>
       <li><a href="design-guide-noise.html">噪音过滤</a></li>
-      <li><a href="design-guide-page-context.html">跨页路径语义化</a></li>
-      <li><a href="design-guide-carrier.html">信息载体选定原则</a></li>
+      <li><a href="design-guide-page-context.html">跨页路径语义化</a></li>      <li><a href="design-guide-layout.html">版式不替代语义</a></li>
     </ul>
   </nav>
 </aside>
@@ -1781,42 +1853,48 @@
   <header>
     <p class="eyebrow">视觉层</p>
     <h1>版本时效声明化</h1>
-    <p class="sub">新旧与演进关系须写成日期和版本号，不能只靠排序或色块暗示。</p>
+    <p class="sub">新旧与演进须写成日期和版本号；排序和色块只辅助。</p>
   </header>
 
   <h2 class="block-title">原则概述</h2>
-  <p class="affinity-group-label">设计描述</p>
+  <p class="affinity-group-label">原则：新旧写成日期和版本</p>
   <ul class="affinity-principles">
-    <li>根据日期判断新旧、根据版本号推断演进，须在稿面写成可读的时间与版本，置于条目或页头。</li>
+    <li>条目新旧、文档是否过期，须以可读的发布/更新日期和版本号（如 v8.0.0）明确标注于条目或页头。禁止仅靠列表顺序或「新」色标暗示时效性。角标可保留，但不得替代日期与版本文字。</li>
+    <li>演进关系（如取代、兼容、适用版本）须用文字写明，例如「已被 v8.0.0 取代」「兼容 8.0」。版本号本身不能替代关系描述。</li>
   </ul>
-  <p class="affinity-group-label">UI 落地</p>
+  <p class="affinity-group-label">对 AI 的好处</p>
   <ul class="affinity-principles">
-    <li>文档与条目写明发布 / 更新日期。</li>
-    <li>版本写成「v2.3.0」，演进关系用「取代 v2.2」「兼容 8.0」等词。</li>
-    <li>不要只靠列表顺序或「新」色标表示新旧。</li>
-  </ul>
-  <p class="affinity-group-label">对 AI 亲和的好处</p>
-  <ul class="affinity-principles">
-    <li>机器能比较新旧、对齐版本，而不靠位置猜测哪条更新。</li>
+    <li>AI 可直接读取日期、版本号及演进关系，进行新旧比较和适用性判断，无需从排序或色块中猜测哪条信息有效。</li>
   </ul>
 
   <h2 class="block-title">场景示例</h2>
   <h3 class="fn-h3">示例 1 · 日期与版本须写成字</h3>
-  <p class="type-lead">不要只标「新」或靠排在最前表示最新。</p>
+  <div class="fn-lead-block">
+    <p class="type-lead fn-lead"><strong>核心原则：</strong>写成发布/更新日期和版本号；「新」色标和排在最前只辅助，不代替字。</p>
+    <p class="type-lead fn-lead"><strong>例外情况：</strong>页头已写明仅展示当前版本时，列表内可不重复日期。</p>
+  </div>
   <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
     <span class="fn-ex-label">反面</span>
     <div class="fn-ex-bar" aria-hidden="true"></div>
     </div>
+    <div class="fn-ex-body">
     <div class="fn-ex-mock" aria-label="反面：只有新色标">
-      <div class="st-card"><p style="margin:0 0 6px;font-size:13px;">CANN 安装指南 <span style="color:#c2410c;font-size:12px;">新</span></p><p style="margin:0;font-size:13px;color:#8c8c8c;">CANN 安装指南（旧版）</p></div>
+      <div class="ver-list">
+        <div class="ver-item">
+          <p class="ver-item-title">CANN 安装指南 <span class="ver-item-tag">新</span></p>
+        </div>
+        <div class="ver-item">
+          <p class="ver-item-title">CANN 安装指南（旧版）</p>
+        </div>
+      </div>
     </div>
     <div class="fn-ex-foot">
-    <p class="fn-ex-title">问题</p>
     <ul class="fn-ex-list">
-      <li><strong>色当新旧：</strong>看不出哪天发布、哪个版本取代哪个。</li>
+      <li><strong>缺文本替代：</strong>只有「新」和「旧版」，读不出发布日期和版本号。</li>
     </ul>
+    </div>
     </div>
   </div>
   <div class="fn-ex">
@@ -1824,20 +1902,91 @@
     <span class="fn-ex-label is-good">正面</span>
     <div class="fn-ex-bar is-good" aria-hidden="true"></div>
     </div>
-    <div class="fn-ex-mock" aria-label="正面：日期 + 版本">
-      <div class="st-card"><p style="margin:0 0 6px;font-size:13px;">CANN 安装指南 · v8.0.0 · 2026-03-12</p><p style="margin:0;font-size:13px;color:#595959;">CANN 安装指南 · v7.0.0 · 2025-08-01（已被 v8.0.0 取代）</p></div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="正面：写成版本号和日期">
+      <div class="ver-list">
+        <div class="ver-item">
+          <p class="ver-item-title">CANN 安装指南</p>
+          <p class="ver-item-meta">v8.0.0 · 2026-03-12</p>
+        </div>
+        <div class="ver-item">
+          <p class="ver-item-title">CANN 安装指南</p>
+          <p class="ver-item-meta">v7.0.0 · 2025-08-01</p>
+        </div>
+      </div>
     </div>
     <div class="fn-ex-foot">
-    <p class="fn-ex-title">修改</p>
+    <p class="fn-ex-group">必有项</p>
     <ul class="fn-ex-list">
-      <li><strong>版本项：</strong>写出版本号、日期与取代关系。</li>
+      <li><strong>版本号：</strong>须写成如 v8.0.0。</li>
+      <li><strong>日期：</strong>须写成发布或更新日期。</li>
     </ul>
+    <p class="fn-ex-group">可选项</p>
+    <ul class="fn-ex-list">
+      <li><strong>「新」色标：</strong>可留，只辅助。</li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  </div>
+  <h3 class="fn-h3">示例 2 · 演进关系须写成词</h3>
+  <div class="fn-lead-block">
+    <p class="type-lead fn-lead"><strong>核心原则：</strong>取代、兼容、适用版本须写成词；版本号本身不能代替这句关系。</p>
+  </div>
+  <div class="fn-ex-row">
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label">反面</span>
+    <div class="fn-ex-bar" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="反面：有版本号但无取代关系">
+      <div class="ver-list">
+        <div class="ver-item">
+          <p class="ver-item-title">CANN 安装指南</p>
+          <p class="ver-item-meta">v8.0.0 · 2026-03-12</p>
+        </div>
+        <div class="ver-item">
+          <p class="ver-item-title">CANN 安装指南</p>
+          <p class="ver-item-meta">v7.0.0 · 2025-08-01</p>
+        </div>
+      </div>
+    </div>
+    <div class="fn-ex-foot">
+    <ul class="fn-ex-list">
+      <li><strong>有歧义：</strong>版本和日期可抓取，但读不出 v7.0.0 是否仍适用、是否已被取代。</li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label is-good">正面</span>
+    <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="正面：写成已被取代">
+      <div class="ver-list">
+        <div class="ver-item">
+          <p class="ver-item-title">CANN 安装指南</p>
+          <p class="ver-item-meta">v8.0.0 · 2026-03-12</p>
+        </div>
+        <div class="ver-item">
+          <p class="ver-item-title">CANN 安装指南</p>
+          <p class="ver-item-meta">v7.0.0 · 2025-08-01 · 已被 v8.0.0 取代</p>
+        </div>
+      </div>
+    </div>
+    <div class="fn-ex-foot">
+    <p class="fn-ex-group">必有项</p>
+    <ul class="fn-ex-list">
+      <li><strong>演进关系：</strong>须写成「已被 v8.0.0 取代」「兼容 8.0」等。</li>
+    </ul>
+    </div>
     </div>
   </div>
   </div>
 
-</div>
-</div>
 </div>
 </div>
 </div>

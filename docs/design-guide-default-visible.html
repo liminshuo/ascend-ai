@@ -116,7 +116,7 @@
     margin: 0 0 8px;
     font-size: 13px;
     font-weight: 700;
-    color: var(--muted);
+    color: var(--text);
     letter-spacing: 0.02em;
   }
   .affinity-principles + .affinity-group-label {
@@ -469,7 +469,8 @@
     color: var(--text);
     letter-spacing: -0.01em;
   }
-  h3.fn-h3 .fn-h3-link {
+  h3.fn-h3 .fn-h3-link,
+  .fn-h3-link {
     margin-left: 12px;
     font-size: 14px;
     font-weight: 500;
@@ -477,7 +478,8 @@
     color: var(--link);
     text-decoration: none;
   }
-  h3.fn-h3 .fn-h3-link:hover {
+  h3.fn-h3 .fn-h3-link:hover,
+  .fn-h3-link:hover {
     text-decoration: underline;
   }
   .fn-panel {
@@ -806,7 +808,8 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto 1fr auto;
-    gap: 16px 16px;
+    column-gap: 16px;
+    row-gap: 0;
     align-items: stretch;
     max-width: none;
     margin: 0 0 20px;
@@ -819,33 +822,73 @@
     margin: 0;
     min-width: 0;
   }
-  .fn-ex-row .fn-ex-mock {
-    height: 100%;
-    box-sizing: border-box;
-    overflow: visible;
-  }
   .fn-ex-row .fn-ex-head {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
+    margin-bottom: 16px;
   }
   .fn-ex-row .fn-ex-head .fn-ex-label {
     margin: 0;
   }
   .fn-ex-row .fn-ex-head .fn-ex-bar {
+    display: block;
     margin: 0;
     width: 100%;
     align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-body {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 2 / span 2;
+    min-height: 0;
+    background: #f5f5f5;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .fn-ex-row .fn-ex-body:has(.vis-tip),
+  .fn-ex-row .fn-ex-body:has(.sig-hover) {
+    overflow: visible;
+  }
+  .fn-ex-row .fn-ex-mock {
+    min-height: 0;
+    height: 100%;
+    box-sizing: border-box;
+    border: none;
+    border-radius: 0;
+    align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-mock:has(.vis-tip),
+  .fn-ex-row .fn-ex-mock:has(.sig-hover) {
+    overflow: visible;
+    position: relative;
+    z-index: 3;
   }
   .fn-ex-row .fn-ex-foot {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    padding: 12px 14px 14px;
+    background: #fff;
+    border-top: 1px solid var(--line);
+    position: relative;
+    z-index: 1;
   }
-  .fn-ex-row .fn-ex-foot .fn-ex-title,
   .fn-ex-row .fn-ex-foot .fn-ex-list {
     margin: 0;
+    gap: 4px;
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-group {
+    margin: 8px 0 0;
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 650;
+    color: var(--muted);
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-group:first-child {
+    margin-top: 0;
   }
   .fn-ex-row .status-ex-table {
     font-size: 11px;
@@ -871,7 +914,13 @@
       display: block;
       grid-row: auto;
     }
+    .fn-ex-row .fn-ex-body {
+      display: flex;
+      flex-direction: column;
+      grid-row: auto;
+    }
   }
+
   .fn-ex-label {
     display: inline-block;
     margin: 0 0 10px;
@@ -1512,6 +1561,11 @@
     color: var(--text);
     white-space: normal;
   }
+  .fn-ex-row .vis-tip-bubble {
+    top: auto;
+    bottom: calc(100% + 8px);
+    z-index: 20;
+  }
   .vis-tip-bubble::before {
     content: "";
     position: absolute;
@@ -1523,6 +1577,14 @@
     border-left: 1px solid var(--line);
     border-top: 1px solid var(--line);
     transform: rotate(45deg);
+  }
+  .fn-ex-row .vis-tip-bubble::before {
+    top: auto;
+    bottom: -5px;
+    border-left: none;
+    border-top: none;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
   }
   .vis-tip:hover .vis-tip-bubble {
     display: block;
@@ -1549,6 +1611,188 @@
     font-size: 13px;
     line-height: 20px;
     color: #595959;
+  }
+  .sig-card {
+    padding: 16px 18px 14px;
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+    color: var(--text);
+    height: 100%;
+    box-sizing: border-box;
+  }
+  .fn-ex-row .fn-ex-mock:has(.sig-card) {
+    padding: 12px;
+    box-sizing: border-box;
+    height: 100%;
+  }
+  .sig-card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    margin: 0 0 8px;
+  }
+  .sig-card-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+  }
+  .sig-icon {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    color: #5b6b7c;
+  }
+  .sig-icon svg {
+    display: block;
+    width: 36px;
+    height: 36px;
+  }
+  .sig-title {
+    margin: 0;
+    font-size: 18px;
+    line-height: 26px;
+    font-weight: 700;
+  }
+  .sig-tag {
+    flex-shrink: 0;
+    padding: 2px 10px;
+    border-radius: 999px;
+    background: #f3f4f6;
+    color: #6b7280;
+    font-size: 12px;
+    line-height: 20px;
+  }
+  .sig-desc {
+    margin: 0 0 14px;
+    font-size: 13px;
+    line-height: 20px;
+    color: #595959;
+  }
+  .sig-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px 12px;
+  }
+  .sig-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .sig-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 12px;
+    border: 1px solid #191919;
+    border-radius: 999px;
+    background: #fff;
+    font-size: 12px;
+    line-height: 20px;
+    color: #191919;
+    white-space: nowrap;
+    cursor: default;
+    user-select: none;
+    text-decoration: none;
+  }
+  a.sig-btn {
+    cursor: pointer;
+  }
+  .sig-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+    font-size: 12px;
+    line-height: 20px;
+    color: #595959;
+  }
+  .sig-sep {
+    width: 1px;
+    height: 14px;
+    background: #e5e5e5;
+  }
+  .sig-repo-inline {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+  .sig-repo-inline a {
+    color: #1476FF;
+    text-decoration: none;
+    font-size: 12px;
+    line-height: 20px;
+  }
+  .sig-hover {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    cursor: default;
+    user-select: none;
+  }
+  .sig-hover-menu {
+    display: none;
+    position: absolute;
+    left: 0;
+    top: calc(100% + 6px);
+    z-index: 20;
+    min-width: 148px;
+    padding: 6px 0;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    box-shadow: 0 8px 20px rgba(25, 25, 25, .1);
+  }
+  .sig-hover-menu.is-right {
+    left: auto;
+    right: 0;
+  }
+  .sig-hover:hover .sig-hover-menu {
+    display: block;
+  }
+  .sig-hover-menu a,
+  .sig-hover-menu span {
+    display: block;
+    padding: 6px 12px;
+    color: #191919;
+    text-decoration: none;
+    font-size: 12px;
+    line-height: 18px;
+  }
+  .sig-hover-menu a:hover {
+    background: #f5f5f5;
+  }
+  .sig-good-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .sig-good-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 6px 10px;
+    font-size: 12px;
+    line-height: 20px;
+  }
+  .sig-good-label {
+    flex-shrink: 0;
+    color: #8c8c8c;
+    min-width: 4.5em;
+  }
+  .sig-good-row a,
+  .sig-good-row .is-link {
+    color: #1476FF;
+    text-decoration: none;
   }
   .vis-acc {
     display: flex;
@@ -1660,10 +1904,12 @@
     <div class="peer-group-label">视觉层</div>
     <ul>
       <li><a href="design-guide-image-text.html">图意文本化</a></li>
+      <li><a href="design-guide-icon-text.html">图标文本化</a></li>
       <li><a href="design-guide-style-semantic.html">颜色语义化</a></li>
       <li><a href="design-guide-hierarchy.html">层级文本化</a></li>
       <li><a href="design-guide-status-word.html">状态文本化</a></li>
       <li><a href="design-guide-media.html">多媒体语义化</a></li>
+      <li><a href="design-guide-code.html">代码块语义化</a></li>
       <li><a href="design-guide-timestamp.html">版本时效声明化</a></li>
       <li><a href="design-guide-gui-map.html">界面元素数值化</a></li>
       <li><a href="design-guide-default-empty.html">占位与空态文本化</a></li>
@@ -1679,8 +1925,7 @@
     <div class="peer-group-label">框架层</div>
     <ul>
       <li><a href="design-guide-noise.html">噪音过滤</a></li>
-      <li><a href="design-guide-page-context.html">跨页路径语义化</a></li>
-      <li><a href="design-guide-carrier.html">信息载体选定原则</a></li>
+      <li><a href="design-guide-page-context.html">跨页路径语义化</a></li>      <li><a href="design-guide-layout.html">版式不替代语义</a></li>
     </ul>
   </nav>
 </aside>
@@ -1689,33 +1934,33 @@
   <header>
     <p class="eyebrow">交互层</p>
     <h1>悬停内容常驻化</h1>
-    <p class="sub">悬停不得作为不可替代内容的唯一出处；等价说明须写在正文。</p>
+    <p class="sub">悬停不得作为不可替代内容的唯一出处；须另有默认可读或可跟链路径。</p>
   </header>
 
   <h2 class="block-title">原则概述</h2>
-  <p class="affinity-group-label">设计描述</p>
+  <p class="affinity-group-label">原则：悬停不独自表意</p>
   <ul class="affinity-principles">
-    <li>避免用悬停承载不可替代的内容。tooltip、悬停菜单里的说明与入口，须在静态文案或页面上有等价物。</li>
+    <li>定义、说明等关键信息不得仅存在于悬停中；须在正文或旁注提供等价文字。悬停可作补充。</li>
+    <li>入口链接不得只靠悬停才可跟。不要求把顶栏 / 栏目导航下拉整棵树、或卡片上所有悬停项都铺进稿面。仅当该链是本页唯一出处、且属于任务入口（如下载仓、订阅）时，须在默认可见处写出。Maintainer 等人名归属可仍用悬停。</li>
   </ul>
-  <p class="affinity-group-label">UI 落地</p>
+  <p class="affinity-group-label">对 AI 的好处</p>
   <ul class="affinity-principles">
-    <li>定义、补充说明直接写在正文或旁注；Hover 只作辅助。</li>
-    <li>悬停菜单中的操作入口，默认稿面也要能看见、能点。</li>
-  </ul>
-  <p class="affinity-group-label">对 AI 亲和的好处</p>
-  <ul class="affinity-principles">
-    <li>不触发悬停也能抓到定义与入口，信息不只活在 Hover 里。</li>
+    <li>AI 无需模拟悬停即可抓取定义和入口；站点导航也不必为亲和性整页摊开。</li>
   </ul>
 
   <h2 class="block-title">场景示例</h2>
   <h3 class="fn-h3">示例 1 · 悬停提示须有正文</h3>
-  <p class="type-lead">定义不能只活在 Hover；旁注或正文须有一份。</p>
+  <div class="fn-lead-block">
+    <p class="type-lead fn-lead"><strong>核心原则：</strong>定义不得仅存在于悬停中；正文或旁注须提供等价说明。悬停可作补充。</p>
+    <p class="type-lead fn-lead"><strong>例外情况：</strong>正文或旁注已写出同一份定义时，悬停气泡可只作补充，不必再重复。</p>
+  </div>
   <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
     <span class="fn-ex-label">反面</span>
     <div class="fn-ex-bar" aria-hidden="true"></div>
     </div>
+    <div class="fn-ex-body">
     <div class="fn-ex-mock" aria-label="悬停反面：定义只在 Hover">
       <div class="vis-card">
         <p class="vis-kicker">安装说明</p>
@@ -1723,11 +1968,10 @@
       </div>
     </div>
     <div class="fn-ex-foot">
-    <p class="fn-ex-title">问题</p>
     <ul class="fn-ex-list">
-      <li><strong>依赖交互：</strong>定义只在悬停后出现，默认稿面没有。</li>
-      <li><strong>首包缺失：</strong>未悬停则源码抓不到 CANN 是什么。</li>
+      <li><strong>缺文本替代：</strong>定义只在悬停后出现；未悬停则抓不到 CANN 是什么。</li>
     </ul>
+    </div>
     </div>
   </div>
   <div class="fn-ex">
@@ -1735,6 +1979,7 @@
     <span class="fn-ex-label is-good">正面</span>
     <div class="fn-ex-bar is-good" aria-hidden="true"></div>
     </div>
+    <div class="fn-ex-body">
     <div class="fn-ex-mock" aria-label="悬停正面：正文已有定义">
       <div class="vis-card">
         <p class="vis-kicker">安装说明</p>
@@ -1743,34 +1988,70 @@
       </div>
     </div>
     <div class="fn-ex-foot">
-    <p class="fn-ex-title">修改</p>
+    <p class="fn-ex-group">必有项</p>
     <ul class="fn-ex-list">
-      <li><strong>正文项：</strong>定义写在词条下方或旁注；Hover 只作补充。</li>
+      <li><strong>定义：</strong>定义写在词条下方或旁注；Hover 只作补充。</li>
     </ul>
+    </div>
     </div>
   </div>
   </div>
-  <h3 class="fn-h3">示例 2 · 悬停菜单里的入口须在稿面</h3>
-  <p class="type-lead">悬停才出现的下载、文档入口，默认页上也要能看见、能点。</p>
+  <h3 class="fn-h3">示例 2 · 局部悬停入口须默认可达</h3>
+  <div class="fn-lead-block">
+    <p class="type-lead fn-lead"><strong>核心原则：</strong>卡片上任务入口（如仓库链、订阅/联系）若是本页唯一出处，须默认可见可跟；不必把所有悬停项都摊开。</p>
+    <p class="type-lead fn-lead"><strong>例外情况：</strong>顶栏导航下拉、以及 Maintainer 等人名归属，可仍用悬停；子链在默认 DOM / 落地页 / 页脚可跟到即可。</p>
+  </div>
   <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
     <span class="fn-ex-label">反面</span>
     <div class="fn-ex-bar" aria-hidden="true"></div>
     </div>
-    <div class="fn-ex-mock" aria-label="反面：入口只在悬停菜单">
-      <div class="vis-card">
-        <p class="vis-kicker">相关资源</p>
-        <p style="margin:0;font-size:14px;line-height:22px;">
-          <span class="vis-term vis-tip">CANN 软件包<span class="vis-tip-bubble vis-tip-menu"><a href="#mock-dl">下载软件包</a><a href="#mock-guide">安装指南</a><a href="#mock-rel">发行说明</a></span></span>
-        </p>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="反面：任务入口只在悬停菜单">
+      <div class="sig-card">
+        <div class="sig-card-top">
+          <div class="sig-card-brand">
+            <span class="sig-icon" aria-hidden="true"><svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18 4.2 29.8 11v14L18 31.8 6.2 25V11L18 4.2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="18" cy="18" r="3.2" stroke="currentColor" stroke-width="1.5"/><path d="M18 11.2v2.2M18 22.6v2.2M11.2 18h2.2M22.6 18h2.2M13.2 13.2l1.6 1.6M21.2 21.2l1.6 1.6M21.2 13.2l-1.6 1.6M14.8 21.2l-1.6 1.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+            <p class="sig-title">tools</p>
+          </div>
+          <span class="sig-tag">公共</span>
+        </div>
+        <p class="sig-desc">提供CANN平台的各种工具，如故障定位、模型压缩等。</p>
+        <div class="sig-foot">
+          <div class="sig-actions">
+            <span class="sig-btn">了解更多 ↗</span>
+            <span class="sig-btn sig-hover">订阅/联系 ▴
+              <span class="sig-hover-menu">
+                <a href="#mock-mail">订阅邮件 ↗</a>
+                <a href="#mock-contact">联系我们</a>
+              </span>
+            </span>
+          </div>
+          <div class="sig-meta">
+            <span class="sig-hover">📦 仓库 2 ▴
+              <span class="sig-hover-menu is-right">
+                <a href="#mock-amct">cann/amct</a>
+                <a href="#mock-oam">cann/oam-tools</a>
+              </span>
+            </span>
+            <span class="sig-sep" aria-hidden="true"></span>
+            <span class="sig-hover">👤 Maintainer 3 ▴
+              <span class="sig-hover-menu is-right">
+                <span>jinyingqi</span>
+                <span>yaoguangxiu</span>
+                <span>yuanjiang_</span>
+              </span>
+            </span>
+          </div>
+        </div>
       </div>
     </div>
     <div class="fn-ex-foot">
-    <p class="fn-ex-title">问题</p>
     <ul class="fn-ex-list">
-      <li><strong>入口只在 Hover：</strong>下载、指南、发行说明都不在默认稿面，未悬停就抓不到这三条链。</li>
+      <li><strong>缺文本替代：</strong>仓库、订阅/联系等任务入口只活在悬停里，未悬停就跟不到。 <a class="fn-h3-link" href="https://www.hiascend.com/cann/sig" target="_blank" rel="noopener">查看示例来源</a></li>
     </ul>
+    </div>
     </div>
   </div>
   <div class="fn-ex">
@@ -1778,22 +2059,40 @@
     <span class="fn-ex-label is-good">正面</span>
     <div class="fn-ex-bar is-good" aria-hidden="true"></div>
     </div>
-    <div class="fn-ex-mock" aria-label="正面：入口写在稿面">
-      <div class="vis-card">
-        <p class="vis-kicker">相关资源</p>
-        <p style="margin:0 0 4px;font-size:14px;line-height:22px;font-weight:650;">CANN 软件包</p>
-        <p class="vis-def" style="margin:0;padding:6px 0 0 12px;border-left:2px solid #e5e5e5;display:flex;flex-direction:column;gap:8px;line-height:22px;">
-          <a href="#mock-dl" style="color:#1476FF;text-decoration:none;">下载软件包</a>
-          <a href="#mock-guide" style="color:#1476FF;text-decoration:none;">安装指南</a>
-          <a href="#mock-rel" style="color:#1476FF;text-decoration:none;">发行说明</a>
-        </p>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="正面：任务入口写在稿面">
+      <div class="sig-card">
+        <div class="sig-card-top">
+          <div class="sig-card-brand">
+            <span class="sig-icon" aria-hidden="true"><svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18 4.2 29.8 11v14L18 31.8 6.2 25V11L18 4.2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="18" cy="18" r="3.2" stroke="currentColor" stroke-width="1.5"/><path d="M18 11.2v2.2M18 22.6v2.2M11.2 18h2.2M22.6 18h2.2M13.2 13.2l1.6 1.6M21.2 21.2l1.6 1.6M21.2 13.2l-1.6 1.6M14.8 21.2l-1.6 1.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+            <p class="sig-title">tools</p>
+          </div>
+          <span class="sig-tag">公共</span>
+        </div>
+        <p class="sig-desc">提供CANN平台的各种工具，如故障定位、模型压缩等。</p>
+        <div class="sig-foot">
+          <div class="sig-actions">
+            <a class="sig-btn" href="#mock-more">tools SIG 详情 ↗</a>
+            <a class="sig-btn" href="#mock-mail">订阅邮件 ↗</a>
+            <a class="sig-btn" href="#mock-contact">联系我们</a>
+          </div>
+          <div class="sig-meta">
+            <span class="sig-repo-inline">
+              <a href="#mock-amct">cann/amct</a>
+              <a href="#mock-oam">cann/oam-tools</a>
+            </span>
+            <span class="sig-sep" aria-hidden="true"></span>
+            <span>👤 Maintainer 3</span>
+          </div>
+        </div>
       </div>
     </div>
     <div class="fn-ex-foot">
-    <p class="fn-ex-title">修改</p>
+    <p class="fn-ex-group">必有项</p>
     <ul class="fn-ex-list">
-      <li><strong>入口项：</strong>三条链写在正文，不靠悬停菜单才出现。</li>
+      <li><strong>链接入口：</strong>默认写出仓库链与订阅/联系；Maintainer 人名可仍悬停，不必摊开。</li>
     </ul>
+    </div>
     </div>
   </div>
   </div>
