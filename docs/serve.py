@@ -9,10 +9,20 @@ from pathlib import Path
 
 
 class NoCacheHandler(SimpleHTTPRequestHandler):
+    extensions_map = {
+        **getattr(SimpleHTTPRequestHandler, "extensions_map", {}),
+        ".md": "text/markdown; charset=utf-8",
+        ".markdown": "text/markdown; charset=utf-8",
+    }
+
     def end_headers(self) -> None:
         self.send_header("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
         self.send_header("Pragma", "no-cache")
         self.send_header("Expires", "0")
+        # Browsers often download unknown types; force inline for markdown.
+        path = self.path.split("?", 1)[0].lower()
+        if path.endswith(".md") or path.endswith(".markdown"):
+            self.send_header("Content-Disposition", "inline")
         super().end_headers()
 
 
