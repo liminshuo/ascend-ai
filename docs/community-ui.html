@@ -26,14 +26,14 @@
   .topbar {
     position: sticky;
     top: 0;
-    z-index: 50;
+    z-index: 200;
     height: 56px;
     min-height: 56px;
     max-height: 56px;
     box-sizing: border-box;
     background: var(--panel);
     border-bottom: 1px solid var(--line);
-    overflow: hidden;
+    overflow: visible;
   }
   .topbar-inner {
     width: 100%;
@@ -345,6 +345,104 @@
     color: var(--muted);
     font-weight: 500;
   }
+
+  /* 设计专项下拉 */
+  .nav-dd {
+    position: relative;
+    z-index: 210;
+    display: inline-flex;
+    align-items: center;
+  }
+  .nav-dd-trigger {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    font: inherit;
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 6px;
+    white-space: nowrap;
+    transition: background .15s, color .15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .nav-dd-trigger::after {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg);
+    opacity: .65;
+    margin-top: -3px;
+    flex-shrink: 0;
+  }
+  .nav-dd-trigger:hover,
+  .nav-dd:hover .nav-dd-trigger,
+  .nav-dd:focus-within .nav-dd-trigger {
+    color: var(--accent);
+    background: #F5F5F5;
+  }
+  .nav-dd-trigger.is-active {
+    color: var(--accent);
+    background: #F5F5F5;
+    font-weight: 600;
+  }
+  .nav-dd::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    height: 10px;
+  }
+  .nav-dd-panel {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    min-width: 148px;
+    padding: 6px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(25, 25, 25, 0.08);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: opacity .15s, transform .15s, visibility .15s;
+    z-index: 210;
+  }
+  .nav-dd:hover .nav-dd-panel,
+  .nav-dd:focus-within .nav-dd-panel {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  .nav-dd-panel a {
+    display: block;
+    padding: 8px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  .nav-dd-panel a:hover {
+    color: var(--accent);
+    background: #F5F5F5;
+  }
+  .nav-dd-panel a.is-active {
+    color: var(--accent);
+    background: #EEF5FF;
+    font-weight: 600;
+  }
+
 </style>
 </head>
 <body>
@@ -355,8 +453,9 @@
       <a href="index.html">首页</a>
       <a href="mintlify.html">友商对照</a>
       <a href="reachability.html">社区诊断</a>
+      <a href="principles-affinity-full.html">亲和原则</a>
       <a href="community-ui.html" class="active">组件亲和</a>
-      <a href="design-guide-image-text.html">设计指导</a>
+      <a href="design-guide-image-text.html">设计模式</a>
     </nav>
   </div>
 </div>
@@ -447,7 +546,7 @@
         <tr><th class="col-num">#</th><th class="col-name">组件</th><th class="col-aff">是否需要做亲和</th><th class="col-detail">亲和分析</th></tr>
       </thead>
       <tbody>
-        <tr data-aff="需要"><td class="col-num">28a</td><td class="col-name">图标</td><td class="col-aff"><span class="aff aff-need">需要</span><span class="aff-reason">信息型图标旁须有字；装饰图标可剥离。详见<a href="design-guide-icon.html">设计指导</a></span></td><td class="col-detail"><a href="design-guide-icon.html">查看详情</a></td></tr>
+        <tr data-aff="需要"><td class="col-num">28a</td><td class="col-name">图标</td><td class="col-aff"><span class="aff aff-need">需要</span><span class="aff-reason">信息型图标旁须有字；装饰图标可剥离。详见<a href="design-guide-icon.html">设计模式</a></span></td><td class="col-detail"><a href="design-guide-icon.html">查看详情</a></td></tr>
         <tr data-aff="视情况"><td class="col-num">28</td><td class="col-name">OTag 标签</td><td class="col-aff"><span class="aff aff-maybe">视情况</span><span class="aff-reason">版本 / 状态语义标签须进 HTML 文本并有定义依据；营销装饰标签剥离</span></td><td class="col-detail"><a href="principles-otag.html">查看详情</a></td></tr>
               <tr data-aff="不需要"><td class="col-num">29</td><td class="col-name">ODivider 分割线</td><td class="col-aff"><span class="aff aff-no">不需要</span><span class="aff-reason">视觉分隔，md 用 --- 即可</span></td><td class="col-detail"><a href="problems-odivider.html">查看详情</a></td></tr>
         <tr data-aff="不需要"><td class="col-num">30</td><td class="col-name">OBadge 徽标</td><td class="col-aff"><span class="aff aff-no">不需要</span><span class="aff-reason">未读角标对知识抓取无价值</span></td><td class="col-detail"><a href="problems-obadge.html">查看详情</a></td></tr>
@@ -462,10 +561,10 @@
         <tr><th class="col-num">#</th><th class="col-name">组件</th><th class="col-aff">是否需要做亲和</th><th class="col-detail">亲和分析</th></tr>
       </thead>
       <tbody>
-        <tr data-aff="视情况"><td class="col-num">31a</td><td class="col-name">Banner</td><td class="col-aff"><span class="aff aff-maybe">视情况</span><span class="aff-reason">入口与活动 Banner 须有独立文案层；运营口号帧可剥离。详见<a href="design-guide-banner.html">设计指导</a></span></td><td class="col-detail"><a href="design-guide-banner.html">查看详情</a></td></tr>
+        <tr data-aff="视情况"><td class="col-num">31a</td><td class="col-name">Banner</td><td class="col-aff"><span class="aff aff-maybe">视情况</span><span class="aff-reason">入口与活动 Banner 须有独立文案层；运营口号帧可剥离。详见<a href="design-guide-banner.html">设计模式</a></span></td><td class="col-detail"><a href="design-guide-banner.html">查看详情</a></td></tr>
         <tr data-aff="视情况"><td class="col-num">31</td><td class="col-name">OCarousel 幻灯片</td><td class="col-aff"><span class="aff aff-maybe">视情况</span><span class="aff-reason">白名单产品 / 文档入口帧须标题+摘要+链接；运营 / 活动口号帧默认剥离。详见<a href="principles-ocarousel.html">亲和原则</a></span></td><td class="col-detail"><a href="principles-ocarousel.html">查看详情</a></td></tr>
         <tr data-aff="视情况"><td class="col-num">32</td><td class="col-name">ODialog 对话框</td><td class="col-aff"><span class="aff aff-maybe">视情况</span><span class="aff-reason">含安装步骤等关键说明须正文双写或弹层进首包；纯确认框剥离</span></td><td class="col-detail"><a href="principles-odialog.html">查看详情</a></td></tr>
-        <tr data-aff="需要"><td class="col-num">33</td><td class="col-name">OCard 卡片</td><td class="col-aff"><span class="aff aff-need">需要</span><span class="aff-reason">标题、摘要、链接写入 HTML；图需 alt / 图注；禁空壳卡后注入</span></td><td class="col-detail"><a href="principles-ocard.html">查看详情</a> · <a href="design-guide-card.html">设计指导</a></td></tr>
+        <tr data-aff="需要"><td class="col-num">33</td><td class="col-name">OCard 卡片</td><td class="col-aff"><span class="aff aff-need">需要</span><span class="aff-reason">标题、摘要、链接写入 HTML；图需 alt / 图注；禁空壳卡后注入</span></td><td class="col-detail"><a href="principles-ocard.html">查看详情</a> · <a href="design-guide-card.html">设计模式</a></td></tr>
         <tr data-aff="需要"><td class="col-num">34</td><td class="col-name">Odate-table 数据表格</td><td class="col-aff"><span class="aff aff-need">需要</span><span class="aff-reason">用真实 table / 单元格文本，勿截图表；表头语义清晰</span></td><td class="col-detail"><a href="principles-odatetable.html">查看详情</a></td></tr>
       </tbody>
     </table>
@@ -500,7 +599,7 @@
         <tr data-aff="需要"><td class="col-num">C3</td><td class="col-name">表格语义</td><td class="col-aff"><span class="aff aff-need">需要</span><span class="aff-reason">caption / th 语义化；接口列表勿拆成伪数据行。组件表见 Odate-table。详见<a href="principles-table.html">亲和原则</a></span></td><td class="col-detail"><a href="principles-table.html">查看详情</a></td></tr>
         <tr data-aff="需要"><td class="col-num">C4</td><td class="col-name">代码块</td><td class="col-aff"><span class="aff aff-need">需要</span><span class="aff-reason">语言与场景标注；行号与源码分离；实体还原。详见<a href="principles-code.html">亲和原则</a></span></td><td class="col-detail"><a href="principles-code.html">查看详情</a></td></tr>
         <tr data-aff="需要"><td class="col-num">C5</td><td class="col-name">警示 Note</td><td class="col-aff"><span class="aff aff-need">需要</span><span class="aff-reason">注意/警告级别须文字前缀，勿只靠图标色。详见<a href="principles-note.html">亲和原则</a></span></td><td class="col-detail"><a href="principles-note.html">查看详情</a></td></tr>
-        <tr data-aff="需要"><td class="col-num">C6</td><td class="col-name">折叠面板</td><td class="col-aff"><span class="aff aff-need">需要</span><span class="aff-reason">面板正文首包全量可读；与内容型 Tab 同属隐藏语义。详见<a href="principles-collapse.html">亲和原则</a></span></td><td class="col-detail"><a href="principles-collapse.html">查看详情</a></td></tr>
+        <tr data-aff="需要"><td class="col-num">C6</td><td class="col-name">折叠面板</td><td class="col-aff"><span class="aff aff-need">需要</span><span class="aff-reason">面板正文首包全量可读；默认展开。详见<a href="principles-collapse.html">亲和原则</a></span></td><td class="col-detail"><a href="principles-collapse.html">查看详情</a></td></tr>
       </tbody>
     </table>
   </section>

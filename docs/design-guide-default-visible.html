@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>悬停不承载关键内容 · 设计指导 · 昇腾社区 AI 亲和原则</title>
+<title>悬停不承载关键内容 · 设计模式 · 昇腾社区 AI 亲和原则</title>
 <style>
   :root {
     --bg: #F5F5F5;
@@ -31,12 +31,12 @@
   }
   a { color: var(--link); }
   .topbar {
-    position: sticky; top: 0; z-index: 50;
+    position: sticky; top: 0; z-index: 200;
     height: 56px; min-height: 56px; max-height: 56px;
     box-sizing: border-box;
     background: var(--panel);
     border-bottom: 1px solid var(--line);
-    overflow: hidden;
+    overflow: visible;
   }
   .topbar-inner {
     width: 100%; max-width: none; margin: 0; padding: 0 24px;
@@ -71,7 +71,7 @@
     font-size: 11px; font-weight: 700; letter-spacing: .04em; color: var(--muted);
     padding: 12px 20px 4px; margin-top: 8px; border-top: 1px solid var(--line);
   }
-  .peer-nav > .peer-group-label:first-child { margin-top: 0; border-top: none; padding-top: 10px; }
+  .peer-nav > .peer-group-label:first-child { margin-top: 0; border-top: none; padding-top: 0; }
   .peer-nav a {
     display: block; padding: 8px 20px; font-size: 13px; line-height: 1.5;
     text-decoration: none; color: var(--muted); border-left: 2px solid transparent;
@@ -110,7 +110,7 @@
     color: var(--text);
   }
   h2.block-title:first-of-type {
-    margin-top: 40px;
+    margin-top: 48px;
   }
   .affinity-group-label {
     margin: 0 0 8px;
@@ -461,13 +461,27 @@
   .hub-card p { margin: 0; color: var(--muted); font-size: 13px; }
 
   h3.fn-h3 {
-    margin: 32px 0 8px;
-    padding-top: 0;
+    margin: 0;
+    padding-top: 24px;
+    padding-bottom: 24px;
     font-size: 18px;
     line-height: 28px;
     font-weight: 650;
     color: var(--text);
     letter-spacing: -0.01em;
+  }
+  h4.fn-h4 {
+    margin: 24px 0 0;
+    padding-top: 0;
+    padding-bottom: 16px;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 650;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+  h3.fn-h3 + h4.fn-h4 {
+    margin-top: 12px;
   }
   h3.fn-h3 .fn-h3-link,
   .fn-h3-link {
@@ -1881,6 +1895,144 @@
     font-weight: 650;
   }
 
+
+  h3.fn-h3 + .affinity-group-label {
+    margin-top: 8px;
+  }
+  .scene-def-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--body-size);
+    line-height: var(--body-lh);
+    margin: 0 0 8px;
+    table-layout: fixed;
+  }
+  .scene-def-table th,
+  .scene-def-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: middle;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 400;
+  }
+  .scene-def-table tbody td {
+    height: 64px;
+  }
+  .scene-def-table th {
+    font-size: 12px;
+    font-weight: 650;
+    color: var(--muted);
+    background: #fafafa;
+  }
+  .scene-def-table .col-type { width: 18%; }
+  .scene-def-table .col-desc { width: 55%; }
+  .scene-def-table .col-place { width: 27%; }
+  .scene-def-table col.col-type { width: 18%; }
+  .scene-def-table col.col-desc { width: 55%; }
+  .scene-def-table col.col-place { width: 27%; }
+  .scene-def-table + h2.block-title {
+    margin-top: 40px;
+  }
+
+  /* 设计专项下拉 */
+  .nav-dd {
+    position: relative;
+    z-index: 210;
+    display: inline-flex;
+    align-items: center;
+  }
+  .nav-dd-trigger {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    font: inherit;
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 6px;
+    white-space: nowrap;
+    transition: background .15s, color .15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .nav-dd-trigger::after {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg);
+    opacity: .65;
+    margin-top: -3px;
+    flex-shrink: 0;
+  }
+  .nav-dd-trigger:hover,
+  .nav-dd:hover .nav-dd-trigger,
+  .nav-dd:focus-within .nav-dd-trigger {
+    color: var(--accent);
+    background: #F5F5F5;
+  }
+  .nav-dd-trigger.is-active {
+    color: var(--accent);
+    background: #F5F5F5;
+    font-weight: 600;
+  }
+  .nav-dd::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    height: 10px;
+  }
+  .nav-dd-panel {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    min-width: 148px;
+    padding: 6px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(25, 25, 25, 0.08);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: opacity .15s, transform .15s, visibility .15s;
+    z-index: 210;
+  }
+  .nav-dd:hover .nav-dd-panel,
+  .nav-dd:focus-within .nav-dd-panel {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  .nav-dd-panel a {
+    display: block;
+    padding: 8px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  .nav-dd-panel a:hover {
+    color: var(--accent);
+    background: #F5F5F5;
+  }
+  .nav-dd-panel a.is-active {
+    color: var(--accent);
+    background: #EEF5FF;
+    font-weight: 600;
+  }
+
 </style>
 </head>
 
@@ -1892,14 +2044,15 @@
       <a href="index.html">首页</a>
       <a href="mintlify.html">友商对照</a>
       <a href="reachability.html">社区诊断</a>
+      <a href="principles-affinity-full.html">亲和原则</a>
       <a href="community-ui.html">组件亲和</a>
-      <a href="design-guide-image-text.html" class="active">设计指导</a>
+      <a href="design-guide-image-text.html" class="active">设计模式</a>
     </nav>
   </div>
 </div>
 
 <div class="page-wrapper">
-<aside class="peer-sidebar" aria-label="设计指导导航">
+<aside class="peer-sidebar" aria-label="设计模式导航">
   <nav class="peer-nav">
     <div class="peer-group-label">入口可识别性</div>
     <ul>
@@ -1941,25 +2094,63 @@
     <h1>悬停不承载关键内容</h1>
   </header>
 
-  <h2 class="block-title">原则概述</h2>
-  <p class="affinity-group-label">原则：悬停不独自表意</p>
-  <ul class="affinity-principles">
-    <li><strong>唯一出处禁忌：</strong>定义、说明等关键信息不得只存在于悬停气泡；首包 DOM 须有等价文字（正文、旁注、首次出现处或链到已有定义页）。</li>
-    <li><strong>Hover 可保留：</strong>稿面已有同一含义时，气泡只作补充，不必每个词条下复读；交互只控制显隐，勿悬停后才注入定义。</li>
-    <li><strong>范围克制：</strong>不要求把顶栏下拉、卡片上全部悬停项摊进稿面；本页若根本不解释该词，就不要把定义只藏进 Hover。</li>
-  </ul>
-  <p class="affinity-group-label">对 AI 的好处</p>
-  <ul class="affinity-principles">
-    <li>无需模拟悬停即可抓取定义与说明</li>
-    <li>术语含义可跟到正文出处，降低气泡偶发漏抓</li>
-  </ul>
+  <h2 class="block-title">Pattern说明</h2>
+  <h3 class="fn-h3">场景定义</h3>
+  <table class="scene-def-table">
+    <colgroup>
+      <col class="col-type" />
+      <col class="col-desc" />
+      <col class="col-place" />
+    </colgroup>
+    <thead>
+      <tr>
+        <th class="col-type">类型</th>
+        <th class="col-desc">说明</th>
+        <th class="col-place">常见落点</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="col-type">悬停定义</td>
+        <td class="col-desc">定义、说明不得只写在悬停 tip；首包须有等价文字（正文、旁注或链到定义页）。</td>
+        <td class="col-place">术语词条、安装说明</td>
+      </tr>
+      <tr>
+        <td class="col-type">悬停状态</td>
+        <td class="col-desc">状态或关键说明不得仅存于悬停；稿面须有默认可读文字。</td>
+        <td class="col-place">状态图标 tip、控件说明</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 class="fn-h3">AI 亲和设计原则</h3>
+  <table class="scene-def-table">
+    <colgroup>
+      <col class="col-type" />
+      <col class="col-desc" />
+      <col class="col-place" />
+    </colgroup>
+    <thead>
+      <tr>
+        <th class="col-type">设计原则</th>
+        <th class="col-desc">说明</th>
+        <th class="col-place"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="col-type">悬停不独自表意</td>
+        <td class="col-desc" colspan="2">关键信息不得只存在于悬停气泡；首包 DOM 须有等价文字。交互只控制显隐，勿悬停后才注入定义。</td>
+      </tr>
+      <tr>
+        <td class="col-type">Hover 可作补充</td>
+        <td class="col-desc" colspan="2">稿面已有同一含义时，气泡只作补充，不必每个词条下复读。本页若不解释该词，就不要把定义只藏进 Hover。</td>
+      </tr>
+    </tbody>
+  </table>
 
-  <h2 class="block-title">场景示例</h2>
-  <h3 class="fn-h3">示例 1 · 悬停提示须有正文</h3>
-  <div class="fn-lead-block">
-    <p class="type-lead fn-lead"><strong>核心原则：</strong>定义不得仅存在于悬停中；正文或旁注须提供等价说明。悬停可作补充。</p>
-    <p class="type-lead fn-lead"><strong>例外情况：</strong>正文或旁注已写出同一份定义时，悬停气泡可只作补充，不必再重复。</p>
-  </div>
+  <h2 class="block-title">设计示例</h2>
+  <h3 class="fn-h3">悬停定义</h3>
+  <h4 class="fn-h4">示例 1 · 悬停提示须有正文等价说明</h4>
   <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
@@ -1975,7 +2166,7 @@
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>缺文本替代：</strong>定义只在悬停后出现；未悬停则抓不到 CANN 是什么。</li>
+      <li><strong>常见疏漏：</strong>定义只在悬停后出现，机器未悬停则抓不到 CANN 含义。</li>
     </ul>
     </div>
     </div>
@@ -1994,9 +2185,9 @@
       </div>
     </div>
     <div class="fn-ex-foot">
-    <p class="fn-ex-group">必有项</p>
     <ul class="fn-ex-list">
-      <li><strong>定义：</strong>定义写在词条下方或旁注；Hover 只作补充。</li>
+      <li><strong>正确做法：</strong>定义写在词条下方或旁注；Hover 只作补充。</li>
+      <li><strong>可免场景：</strong>正文或旁注已写出同一份定义时，悬停气泡可只作补充，不必再重复。</li>
     </ul>
     </div>
     </div>

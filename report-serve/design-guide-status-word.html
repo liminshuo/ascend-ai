@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>状态完整标注 · 设计指导 · 昇腾社区 AI 亲和原则</title>
+<title>状态完整标注 · 设计模式 · 昇腾社区 AI 亲和原则</title>
 <style>
   :root {
     --bg: #F5F5F5;
@@ -31,12 +31,12 @@
   }
   a { color: var(--link); }
   .topbar {
-    position: sticky; top: 0; z-index: 50;
+    position: sticky; top: 0; z-index: 200;
     height: 56px; min-height: 56px; max-height: 56px;
     box-sizing: border-box;
     background: var(--panel);
     border-bottom: 1px solid var(--line);
-    overflow: hidden;
+    overflow: visible;
   }
   .topbar-inner {
     width: 100%; max-width: none; margin: 0; padding: 0 24px;
@@ -71,7 +71,7 @@
     font-size: 11px; font-weight: 700; letter-spacing: .04em; color: var(--muted);
     padding: 12px 20px 4px; margin-top: 8px; border-top: 1px solid var(--line);
   }
-  .peer-nav > .peer-group-label:first-child { margin-top: 0; border-top: none; padding-top: 10px; }
+  .peer-nav > .peer-group-label:first-child { margin-top: 0; border-top: none; padding-top: 0; }
   .peer-nav a {
     display: block; padding: 8px 20px; font-size: 13px; line-height: 1.5;
     text-decoration: none; color: var(--muted); border-left: 2px solid transparent;
@@ -110,7 +110,7 @@
     color: var(--text);
   }
   h2.block-title:first-of-type {
-    margin-top: 40px;
+    margin-top: 48px;
   }
   .affinity-group-label {
     margin: 0 0 8px;
@@ -472,13 +472,27 @@
   .hub-card p { margin: 0; color: var(--muted); font-size: 13px; }
 
   h3.fn-h3 {
-    margin: 32px 0 8px;
-    padding-top: 0;
+    margin: 0;
+    padding-top: 24px;
+    padding-bottom: 24px;
     font-size: 18px;
     line-height: 28px;
     font-weight: 650;
     color: var(--text);
     letter-spacing: -0.01em;
+  }
+  h4.fn-h4 {
+    margin: 24px 0 0;
+    padding-top: 0;
+    padding-bottom: 16px;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 650;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+  h3.fn-h3 + h4.fn-h4 {
+    margin-top: 12px;
   }
   h3.fn-h3 .fn-h3-link,
   .fn-h3-link {
@@ -868,6 +882,14 @@
     border: none;
     border-radius: 0;
     align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-mock:has(.st-card) {
+    display: flex;
+    flex-direction: column;
+  }
+  .fn-ex-row .fn-ex-mock:has(.st-card) .st-card {
+    flex: 1;
+    box-sizing: border-box;
   }
   .fn-ex-row .fn-ex-foot {
     display: flex;
@@ -1800,6 +1822,145 @@
   }
   .st-word.is-wait { color: var(--muted); font-weight: 500; }
 
+
+  h3.fn-h3 + .affinity-group-label {
+    margin-top: 8px;
+  }
+
+  .scene-def-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--body-size);
+    line-height: var(--body-lh);
+    margin: 0 0 8px;
+    table-layout: fixed;
+  }
+  .scene-def-table th,
+  .scene-def-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: middle;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 400;
+  }
+  .scene-def-table tbody td {
+    height: 64px;
+  }
+  .scene-def-table th {
+    font-size: 12px;
+    font-weight: 650;
+    color: var(--muted);
+    background: #fafafa;
+  }
+  .scene-def-table .col-type { width: 18%; }
+  .scene-def-table .col-desc { width: 55%; }
+  .scene-def-table .col-place { width: 27%; }
+  .scene-def-table col.col-type { width: 18%; }
+  .scene-def-table col.col-desc { width: 55%; }
+  .scene-def-table col.col-place { width: 27%; }
+  .scene-def-table + h2.block-title {
+    margin-top: 40px;
+  }
+
+  /* 设计专项下拉 */
+  .nav-dd {
+    position: relative;
+    z-index: 210;
+    display: inline-flex;
+    align-items: center;
+  }
+  .nav-dd-trigger {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    font: inherit;
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 6px;
+    white-space: nowrap;
+    transition: background .15s, color .15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .nav-dd-trigger::after {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg);
+    opacity: .65;
+    margin-top: -3px;
+    flex-shrink: 0;
+  }
+  .nav-dd-trigger:hover,
+  .nav-dd:hover .nav-dd-trigger,
+  .nav-dd:focus-within .nav-dd-trigger {
+    color: var(--accent);
+    background: #F5F5F5;
+  }
+  .nav-dd-trigger.is-active {
+    color: var(--accent);
+    background: #F5F5F5;
+    font-weight: 600;
+  }
+  .nav-dd::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    height: 10px;
+  }
+  .nav-dd-panel {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    min-width: 148px;
+    padding: 6px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(25, 25, 25, 0.08);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: opacity .15s, transform .15s, visibility .15s;
+    z-index: 210;
+  }
+  .nav-dd:hover .nav-dd-panel,
+  .nav-dd:focus-within .nav-dd-panel {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  .nav-dd-panel a {
+    display: block;
+    padding: 8px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  .nav-dd-panel a:hover {
+    color: var(--accent);
+    background: #F5F5F5;
+  }
+  .nav-dd-panel a.is-active {
+    color: var(--accent);
+    background: #EEF5FF;
+    font-weight: 600;
+  }
+
 </style>
 </head>
 
@@ -1811,14 +1972,15 @@
       <a href="index.html">首页</a>
       <a href="mintlify.html">友商对照</a>
       <a href="reachability.html">社区诊断</a>
+      <a href="principles-affinity-full.html">亲和原则</a>
       <a href="community-ui.html">组件亲和</a>
-      <a href="design-guide-image-text.html" class="active">设计指导</a>
+      <a href="design-guide-image-text.html" class="active">设计模式</a>
     </nav>
   </div>
 </div>
 
 <div class="page-wrapper">
-<aside class="peer-sidebar" aria-label="设计指导导航">
+<aside class="peer-sidebar" aria-label="设计模式导航">
   <nav class="peer-nav">
     <div class="peer-group-label">入口可识别性</div>
     <ul>
@@ -1860,23 +2022,64 @@
     <h1>状态完整标注</h1>
   </header>
 
-  <h2 class="block-title">原则概述</h2>
-  <p class="affinity-group-label">原则：状态不靠图形</p>
-  <ul class="affinity-principles">
-    <li>能力与运行状态须写成可读词语（如「支持 / 不支持」「运行中 / 已停止」）。图标可保留，但不得作为唯一载体。空单元格若表示「不支持」，须显式写出该词。</li>
-    <li>成功、失败、加载等任务回执，须写明对象、原因和下一步，不得仅以状态词带过。能力与运行状态的写法不适用于回执场景。</li>
-  </ul>
-  <p class="affinity-group-label">对 AI 的好处</p>
-  <ul class="affinity-principles">
-    <li>机器读到的是状态词和完整回执，而非对号或图标；失败后该做什么也不必猜测。</li>
-  </ul>
+  <h2 class="block-title">Pattern说明</h2>
+  <h3 class="fn-h3">场景定义</h3>
+  <table class="scene-def-table">
+    <colgroup>
+      <col class="col-type" />
+      <col class="col-desc" />
+      <col class="col-place" />
+    </colgroup>
+    <thead>
+      <tr>
+        <th class="col-type">类型</th>
+        <th class="col-desc">说明</th>
+        <th class="col-place">常见落点</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="col-type">能力状态</td>
+        <td class="col-desc">能力须写成「支持」「不支持」；空单元格若表示不支持，须显式写出该词。</td>
+        <td class="col-place">兼容性表、能力矩阵</td>
+      </tr>
+      <tr>
+        <td class="col-type">运行态</td>
+        <td class="col-desc">服务或进程状态须写成「运行中」「已停止」等词，禁止仅以图标表达。</td>
+        <td class="col-place">服务列表、进程面板</td>
+      </tr>
+      <tr>
+        <td class="col-type">任务回执</td>
+        <td class="col-desc">成功、失败、加载等回执须写明对象、原因与下一步，禁止仅以状态词带过。</td>
+        <td class="col-place">安装回执、任务结果</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 class="fn-h3">AI 亲和设计原则</h3>
+  <table class="scene-def-table">
+    <colgroup>
+      <col class="col-type" />
+      <col class="col-desc" />
+      <col class="col-place" />
+    </colgroup>
+    <thead>
+      <tr>
+        <th class="col-type">设计原则</th>
+        <th class="col-desc">说明</th>
+        <th class="col-place"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="col-type">状态不靠图形</td>
+        <td class="col-desc" colspan="2">能力与运行状态须配文字；图标可保留但不得作唯一载体。任务回执还须写清对象、原因与下一步。</td>
+      </tr>
+    </tbody>
+  </table>
 
-  <h2 class="block-title">场景示例</h2>
-  <h3 class="fn-h3">示例 1 · 能力状态须写成词</h3>
-  <div class="fn-lead-block">
-    <p class="type-lead fn-lead"><strong>核心原则：</strong>能力状态须写成「支持/不支持」。对号可保留，但不得作为唯一载体；空单元格若表示「不支持」，须显式写出该词。</p>
-    <p class="type-lead fn-lead"><strong>例外情况：</strong>旁白已声明整表均支持时，对号可只装饰。</p>
-  </div>
+  <h2 class="block-title">设计示例</h2>
+  <h3 class="fn-h3">能力状态</h3>
+  <h4 class="fn-h4">示例 1 · 用文字表达能力状态</h4>
   <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
@@ -1938,7 +2141,7 @@
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>缺文本替代：</strong>只有打勾或留空，读不出是支持还是不支持。 <a class="fn-h3-link" href="https://www.mindspore.cn/topics/deepseek" target="_blank" rel="noopener">查看示例来源</a></li>
+      <li><strong>常见疏漏：</strong>仅有对号或留空，未配“支持”“不支持”文字，机器无法识别能力是否可用。 <a class="fn-h3-link" href="https://www.mindspore.cn/topics/deepseek" target="_blank" rel="noopener">查看示例来源</a></li>
     </ul>
     </div>
     </div>
@@ -2003,17 +2206,15 @@
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>状态：</strong>须写成「支持」「不支持」；对号可留，只辅助。</li>
+      <li><strong>正确做法：</strong>状态写成「支持」「不支持」；对号只辅助。</li>
     </ul>
     </div>
     </div>
   </div>
   </div>
-  <h3 class="fn-h3">示例 2 · 运行态须写成词</h3>
-  <div class="fn-lead-block">
-    <p class="type-lead fn-lead"><strong>核心原则：</strong>服务或进程状态写明「运行中/已停止」即可，无需完整句；播放/停止图标可保留，不代替文字。</p>
-    <p class="type-lead fn-lead"><strong>例外情况：</strong>旁白已写出同一状态时，图标可只装饰。</p>
-  </div>
+
+  <h3 class="fn-h3">运行态</h3>
+  <h4 class="fn-h4">示例 2 · 用文字表达运行态</h4>
   <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
@@ -2029,7 +2230,7 @@
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>缺文本替代：</strong>只有播放或停止图标，读不出是运行中还是已停止。</li>
+      <li><strong>常见疏漏：</strong>仅有播放或停止图标，未配“运行中”“已停止”文字，机器无法识别运行态。</li>
     </ul>
     </div>
     </div>
@@ -2048,16 +2249,15 @@
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>状态：</strong>须写成「运行中」「已停止」；图标可留，只辅助。</li>
+      <li><strong>正确做法：</strong>状态写成「运行中」「已停止」；图标只辅助。</li>
     </ul>
     </div>
     </div>
   </div>
   </div>
-  <h3 class="fn-h3">示例 3 · 结果与加载须写清对象和下一步</h3>
-  <div class="fn-lead-block">
-    <p class="type-lead fn-lead"><strong>核心原则：</strong>任务回执不能只写「成功/失败/加载中」。须写明对象、原因和下一步，区别于「运行中/已停止」等状态词。</p>
-  </div>
+
+  <h3 class="fn-h3">任务回执</h3>
+  <h4 class="fn-h4">示例 3 · 用完整句表达任务回执</h4>
   <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
@@ -2065,16 +2265,16 @@
     <div class="fn-ex-bar" aria-hidden="true"></div>
     </div>
     <div class="fn-ex-body">
-    <div class="fn-ex-mock" aria-label="反面：只有成功失败加载中，未写原因和下一步">
+    <div class="fn-ex-mock" aria-label="反面：只有成功失败加载图标，未写原因和下一步">
       <div class="st-card">
-        <div class="st-cap"><span class="st-cap-name">环境检查</span><span class="st-word">成功</span></div>
-        <div class="st-cap"><span class="st-cap-name">依赖安装</span><span class="st-word is-wait">失败</span></div>
-        <div class="st-cap"><span class="st-cap-name">软件包</span><span class="st-word is-wait">加载中</span></div>
+        <div class="st-cap"><span class="st-cap-name">环境检查</span><span class="st-cap-mark is-ok-green" aria-hidden="true"><svg viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M6.5 11.2 3.3 8l1.1-1.1 2.1 2.1 4.9-4.9L12.5 5.2z"/></svg></span></div>
+        <div class="st-cap"><span class="st-cap-name">依赖安装</span><span class="st-cap-mark is-fail-red" aria-hidden="true"><svg viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M4.2 4.2 5.3 3.1 8 5.8l2.7-2.7 1.1 1.1L9.1 6.9l2.7 2.7-1.1 1.1L8 8l-2.7 2.7-1.1-1.1L6.9 6.9z"/></svg></span></div>
+        <div class="st-cap"><span class="st-cap-name">软件包</span><span class="st-cap-mark" aria-hidden="true"><svg viewBox="0 0 16 16" width="16" height="16"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" d="M8 2.5a5.5 5.5 0 1 1-4.6 2.5"/><path fill="currentColor" d="M8 1.2 9.8 3.6 7.1 4z"/></svg></span></div>
       </div>
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>有歧义：</strong>「成功 / 失败 / 加载中」能抓到，但不知道对象与原因，也不知道失败后怎么办、正在加载什么。这与能力、运行状态词不同，单写结果词不够。</li>
+      <li><strong>常见疏漏：</strong>仅有成功、失败、加载图标，未写清对象、原因与下一步，机器无法识别回执含义与后续动作。</li>
     </ul>
     </div>
     </div>
@@ -2087,22 +2287,28 @@
     <div class="fn-ex-body">
     <div class="fn-ex-mock" aria-label="正面：完整句">
       <div class="st-card">
-        <p style="margin:0 0 8px;font-size:13px;line-height:20px;">环境检查成功：驱动版本与 CANN 8.0.0 匹配。</p>
-        <p style="margin:0 0 8px;font-size:13px;line-height:20px;">依赖安装失败：校验和不一致。请重新下载软件包后重试。</p>
-        <p style="margin:0;font-size:13px;line-height:20px;">正在拉取 CANN 8.0.0 软件包。</p>
+        <div class="st-cap" style="justify-content:flex-start;align-items:flex-start;">
+          <span class="st-cap-mark is-ok-green" aria-hidden="true"><svg viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M6.5 11.2 3.3 8l1.1-1.1 2.1 2.1 4.9-4.9L12.5 5.2z"/></svg></span>
+          <span style="font-size:13px;line-height:20px;">环境检查成功：驱动版本与 CANN 8.0.0 匹配。</span>
+        </div>
+        <div class="st-cap" style="justify-content:flex-start;align-items:flex-start;">
+          <span class="st-cap-mark is-fail-red" aria-hidden="true"><svg viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M4.2 4.2 5.3 3.1 8 5.8l2.7-2.7 1.1 1.1L9.1 6.9l2.7 2.7-1.1 1.1L8 8l-2.7 2.7-1.1-1.1L6.9 6.9z"/></svg></span>
+          <span style="font-size:13px;line-height:20px;">依赖安装失败：校验和不一致。请重新下载软件包后重试。</span>
+        </div>
+        <div class="st-cap" style="justify-content:flex-start;align-items:flex-start;">
+          <span class="st-cap-mark" aria-hidden="true"><svg viewBox="0 0 16 16" width="16" height="16"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" d="M8 2.5a5.5 5.5 0 1 1-4.6 2.5"/><path fill="currentColor" d="M8 1.2 9.8 3.6 7.1 4z"/></svg></span>
+          <span style="font-size:13px;line-height:20px;">正在拉取 CANN 8.0.0 软件包。</span>
+        </div>
       </div>
     </div>
     <div class="fn-ex-foot">
-    <p class="fn-ex-group">必有项</p>
     <ul class="fn-ex-list">
-      <li><strong>发生了什么：</strong>须写清对象与结果，不能只写「成功 / 失败 / 加载中」。</li>
-      <li><strong>怎么办：</strong>失败须写出下一步；加载须写出正在做什么。</li>
+      <li><strong>正确做法：</strong>回执写成完整句：写清对象与结果；失败附下一步，加载写明正在做什么。</li>
     </ul>
     </div>
     </div>
   </div>
   </div>
-
 
 </div>
 </div>

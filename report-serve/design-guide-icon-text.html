@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>图标语义锚定 · 设计指导 · 昇腾社区 AI 亲和原则</title>
+<title>图标语义锚定 · 设计模式 · 昇腾社区 AI 亲和原则</title>
 <style>
   :root {
     --bg: #F5F5F5;
@@ -31,12 +31,12 @@
   }
   a { color: var(--link); }
   .topbar {
-    position: sticky; top: 0; z-index: 50;
+    position: sticky; top: 0; z-index: 200;
     height: 56px; min-height: 56px; max-height: 56px;
     box-sizing: border-box;
     background: var(--panel);
     border-bottom: 1px solid var(--line);
-    overflow: hidden;
+    overflow: visible;
   }
   .topbar-inner {
     width: 100%; max-width: none; margin: 0; padding: 0 24px;
@@ -71,7 +71,7 @@
     font-size: 11px; font-weight: 700; letter-spacing: .04em; color: var(--muted);
     padding: 12px 20px 4px; margin-top: 8px; border-top: 1px solid var(--line);
   }
-  .peer-nav > .peer-group-label:first-child { margin-top: 0; border-top: none; padding-top: 10px; }
+  .peer-nav > .peer-group-label:first-child { margin-top: 0; border-top: none; padding-top: 0; }
   .peer-nav a {
     display: block; padding: 8px 20px; font-size: 13px; line-height: 1.5;
     text-decoration: none; color: var(--muted); border-left: 2px solid transparent;
@@ -110,7 +110,7 @@
     color: var(--text);
   }
   h2.block-title:first-of-type {
-    margin-top: 40px;
+    margin-top: 48px;
   }
   .affinity-group-label {
     margin: 0 0 8px;
@@ -472,8 +472,9 @@
   .hub-card p { margin: 0; color: var(--muted); font-size: 13px; }
 
   h3.fn-h3 {
-    margin: 32px 0 8px;
-    padding-top: 0;
+    margin: 0;
+    padding-top: 24px;
+    padding-bottom: 24px;
     font-size: 18px;
     line-height: 28px;
     font-weight: 650;
@@ -494,12 +495,17 @@
     text-decoration: underline;
   }
   h4.fn-h4 {
-    margin: 0 0 8px;
-    padding-top: 24px;
-    font-size: 14px;
-    line-height: 22px;
+    margin: 24px 0 0;
+    padding-top: 0;
+    padding-bottom: 16px;
+    font-size: 16px;
+    line-height: 24px;
     font-weight: 650;
     color: var(--text);
+    letter-spacing: -0.01em;
+  }
+  h3.fn-h3 + h4.fn-h4 {
+    margin-top: 12px;
   }
   .fn-panel {
     width: 100%;
@@ -1940,6 +1946,145 @@
     .type-grid--3 { grid-template-columns: 1fr; }
   }
 
+
+  h3.fn-h3 + .affinity-group-label {
+    margin-top: 8px;
+  }
+
+  .scene-def-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--body-size);
+    line-height: var(--body-lh);
+    margin: 0 0 8px;
+    table-layout: fixed;
+  }
+  .scene-def-table th,
+  .scene-def-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: middle;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 400;
+  }
+  .scene-def-table tbody td {
+    height: 64px;
+  }
+  .scene-def-table th {
+    font-size: 12px;
+    font-weight: 650;
+    color: var(--muted);
+    background: #fafafa;
+  }
+  .scene-def-table .col-type { width: 18%; }
+  .scene-def-table .col-desc { width: 55%; }
+  .scene-def-table .col-place { width: 27%; }
+  .scene-def-table col.col-type { width: 18%; }
+  .scene-def-table col.col-desc { width: 55%; }
+  .scene-def-table col.col-place { width: 27%; }
+  .scene-def-table + h2.block-title {
+    margin-top: 40px;
+  }
+
+  /* 设计专项下拉 */
+  .nav-dd {
+    position: relative;
+    z-index: 210;
+    display: inline-flex;
+    align-items: center;
+  }
+  .nav-dd-trigger {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    font: inherit;
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 6px;
+    white-space: nowrap;
+    transition: background .15s, color .15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .nav-dd-trigger::after {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg);
+    opacity: .65;
+    margin-top: -3px;
+    flex-shrink: 0;
+  }
+  .nav-dd-trigger:hover,
+  .nav-dd:hover .nav-dd-trigger,
+  .nav-dd:focus-within .nav-dd-trigger {
+    color: var(--accent);
+    background: #F5F5F5;
+  }
+  .nav-dd-trigger.is-active {
+    color: var(--accent);
+    background: #F5F5F5;
+    font-weight: 600;
+  }
+  .nav-dd::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    height: 10px;
+  }
+  .nav-dd-panel {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    min-width: 148px;
+    padding: 6px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(25, 25, 25, 0.08);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: opacity .15s, transform .15s, visibility .15s;
+    z-index: 210;
+  }
+  .nav-dd:hover .nav-dd-panel,
+  .nav-dd:focus-within .nav-dd-panel {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  .nav-dd-panel a {
+    display: block;
+    padding: 8px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  .nav-dd-panel a:hover {
+    color: var(--accent);
+    background: #F5F5F5;
+  }
+  .nav-dd-panel a.is-active {
+    color: var(--accent);
+    background: #EEF5FF;
+    font-weight: 600;
+  }
+
 </style>
 </head>
 
@@ -1951,14 +2096,15 @@
       <a href="index.html">首页</a>
       <a href="mintlify.html">友商对照</a>
       <a href="reachability.html">社区诊断</a>
+      <a href="principles-affinity-full.html">亲和原则</a>
       <a href="community-ui.html">组件亲和</a>
-      <a href="design-guide-image-text.html" class="active">设计指导</a>
+      <a href="design-guide-image-text.html" class="active">设计模式</a>
     </nav>
   </div>
 </div>
 
 <div class="page-wrapper">
-<aside class="peer-sidebar" aria-label="设计指导导航">
+<aside class="peer-sidebar" aria-label="设计模式导航">
   <nav class="peer-nav">
     <div class="peer-group-label">入口可识别性</div>
     <ul>
@@ -2000,21 +2146,72 @@
     <h1>图标语义锚定</h1>
   </header>
 
-  <h2 class="block-title">原则概述</h2>
-  <p class="affinity-group-label">原则：图标不独自表意</p>
-  <ul class="affinity-principles">
-    <li>图标用于辅助识别，其承载的字段、类型或量纲信息须有对应文字交付。图标本身可保留，但不得作为信息传递的唯一载体。图标旁出现数字时，须附单位标明量纲；若已有名称，可仅补充单位。上下文已明确表达同一含义，或图标纯属装饰时，可不重复加注。（状态图标详见 <a href="design-guide-status-word.html">状态完整标注</a>）</li>
-  </ul>
-  <p class="affinity-group-label">对 AI 的好处</p>
-  <ul class="affinity-principles">
-    <li>字段名、量纲单位落在可抓取文字上，AI 无需从图标猜测含义；数字配套单位后可直接入库，避免只读到图形或裸数。</li>
-  </ul>
+  <h2 class="block-title">Pattern说明</h2>
+  <h3 class="fn-h3">场景定义</h3>
+  <table class="scene-def-table">
+    <colgroup>
+      <col class="col-type" />
+      <col class="col-desc" />
+      <col class="col-place" />
+    </colgroup>
+    <thead>
+      <tr>
+        <th class="col-type">类型</th>
+        <th class="col-desc">说明</th>
+        <th class="col-place">常见落点</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="col-type" rowspan="2">提示图标</td>
+        <td class="col-desc">公告等提示图标须配文字名称；日期须标明是发布时间还是更新截止时间。</td>
+        <td class="col-place">公告提示</td>
+      </tr>
+      <tr>
+        <td class="col-desc">说明等提示图标须配文字名称，禁止仅以图形承载。</td>
+        <td class="col-place">说明提示</td>
+      </tr>
+      <tr>
+        <td class="col-type" rowspan="2">卡片信息图标</td>
+        <td class="col-desc">卡片内图标所表示的字段名与类型名须以文字标注，禁止仅以图形承载。</td>
+        <td class="col-place">卡片内「作者」「发布时间」等</td>
+      </tr>
+      <tr>
+        <td class="col-desc">卡片内数字须附带指标名或单位，禁止单独呈现。</td>
+        <td class="col-place">卡片内统计等</td>
+      </tr>
+      <tr>
+        <td class="col-type">品牌 Logo</td>
+        <td class="col-desc">LOGO 品牌须配文字：可在 Logo 旁显示名称，或写入源码 alt，二选一即可。</td>
+        <td class="col-place">Logo 墙、生态伙伴</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 class="fn-h3">AI 亲和设计原则</h3>
+  <table class="scene-def-table">
+    <colgroup>
+      <col class="col-type" />
+      <col class="col-desc" />
+      <col class="col-place" />
+    </colgroup>
+    <thead>
+      <tr>
+        <th class="col-type">设计原则</th>
+        <th class="col-desc">说明</th>
+        <th class="col-place"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="col-type">图标不独自表意</td>
+        <td class="col-desc" colspan="2">图标承载的字段、类型或量纲须配文字，图标可保留但不得作唯一载体；数字须附单位。</td>
+      </tr>
+    </tbody>
+  </table>
 
-  <h2 class="block-title">场景示例</h2>
-  <h3 class="fn-h3">示例 1 · 公告图标须写成名称</h3>
-  <div class="fn-lead-block">
-    <p class="type-lead fn-lead"><strong>核心原则：</strong>类型图标须写成名称；日期须写明是何种时间。</p>
-  </div>
+  <h2 class="block-title">设计示例</h2>
+  <h3 class="fn-h3">提示图标</h3>
+  <h4 class="fn-h4">示例 1 · 用文字表达公告图标</h4>
   <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
@@ -2035,8 +2232,7 @@
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>缺文本替代：</strong>只有喇叭，抓取后看不出这是公告条。 <a class="fn-h3-link" href="https://www.hiascend.com/developer" target="_blank" rel="noopener">查看示例来源</a></li>
-      <li><strong>有歧义：</strong>「2026/07/31」未写明是发布日还是其它日期。</li>
+      <li><strong>常见疏漏：</strong>仅有喇叭图标，未配“公告”文字；日期未标明是发布时间，机器无法识别内容类型与时间含义。 <a class="fn-h3-link" href="https://www.hiascend.com/developer" target="_blank" rel="noopener">查看示例来源</a></li>
     </ul>
     </div>
     </div>
@@ -2061,18 +2257,14 @@
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>公告：</strong>须写成「公告」；喇叭可留，只辅助。</li>
-      <li><strong>日期：</strong>须写成「2026/07/31 发布」。</li>
+      <li><strong>正确做法：</strong>图标旁标注「公告」；日期写为「2026/07/31 发布」。</li>
     </ul>
     </div>
     </div>
   </div>
   </div>
-  <h3 class="fn-h3">示例 2 · 说明图标须写成名称</h3>
-  <div class="fn-lead-block">
-    <p class="type-lead fn-lead"><strong>核心原则：</strong>说明类图标须写成名称，不能只靠图形标明。</p>
-    <p class="type-lead fn-lead"><strong>例外情况：</strong>链接已有文档名时，外链箭头不必再写。</p>
-  </div>
+
+  <h4 class="fn-h4">示例 2 · 用文字表达说明图标</h4>
   <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
@@ -2090,7 +2282,7 @@
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>缺文本替代：</strong>只有灯泡，抓取后看不出这是说明条。 <a class="fn-h3-link" href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/910/programug/Ascendcopdevg/docs/guide/%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B/Ascend-C%E6%A6%82%E8%BF%B0%E4%B8%8E%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%84.md" target="_blank" rel="noopener">查看示例来源</a></li>
+      <li><strong>常见疏漏：</strong>仅有灯泡图标，未配“说明”文字，机器无法识别该提示类型。 <a class="fn-h3-link" href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/910/programug/Ascendcopdevg/docs/guide/%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B/Ascend-C%E6%A6%82%E8%BF%B0%E4%B8%8E%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%84.md" target="_blank" rel="noopener">查看示例来源</a></li>
     </ul>
     </div>
     </div>
@@ -2112,17 +2304,15 @@
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>说明：</strong>须写成「说明」；灯泡可留，只辅助。</li>
+      <li><strong>正确做法：</strong>图标旁配「说明」文字，灯泡等图形仅作辅助识别。</li>
     </ul>
     </div>
     </div>
   </div>
   </div>
-  <h3 class="fn-h3">示例 3 · 字段图标须写成名称</h3>
-  <div class="fn-lead-block">
-    <p class="type-lead fn-lead"><strong>核心原则：</strong>字段名须写在图标旁，不能只靠图形标明。</p>
-    <p class="type-lead fn-lead"><strong>例外情况：</strong>旁白已写出同一字段时，图标可只装饰。</p>
-  </div>
+
+  <h3 class="fn-h3">卡片信息图标</h3>
+  <h4 class="fn-h4">示例 3 · 用文字表达字段图标</h4>
   <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
@@ -2156,8 +2346,7 @@
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>缺文本替代：</strong>时钟旁只有「2025年7月」，未写明是何种时间。 <a class="fn-h3-link" href="https://www.mindspore.cn/papers" target="_blank" rel="noopener">查看示例来源</a></li>
-      <li><strong>有歧义：</strong>可能是发布、更新、活动开始等，机器无法判定。</li>
+      <li><strong>常见疏漏：</strong>时钟图标旁仅有日期，未配“发布时间”等时间类型标注，机器无法识别该时间含义。 <a class="fn-h3-link" href="https://www.mindspore.cn/papers" target="_blank" rel="noopener">查看示例来源</a></li>
     </ul>
     </div>
     </div>
@@ -2194,18 +2383,15 @@
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>作者：</strong>须写成「作者」加人名。</li>
-      <li><strong>时间：</strong>须写成「发布时间」加日期。</li>
+      <li><strong>正确做法：</strong>图标旁标注「作者」「发布时间」等字段名；图形仅作辅助。</li>
+      <li><strong>可免场景：</strong>旁白已写清同一字段时，图标可只作装饰。</li>
     </ul>
     </div>
     </div>
   </div>
   </div>
-  <h3 class="fn-h3">示例 4 · 类型与指标须写成文字</h3>
-  <div class="fn-lead-block">
-    <p class="type-lead fn-lead"><strong>核心原则：</strong>类型须写成名称；数字须带指标名或单位。</p>
-    <p class="type-lead fn-lead"><strong>例外情况：</strong>产品 Logo 只装饰时，不必再写。</p>
-  </div>
+
+  <h4 class="fn-h4">示例 4 · 用文字表达类型与指标</h4>
   <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
@@ -2238,8 +2424,7 @@
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>缺文本替代：</strong>标题旁只有图标，未写明是「图引擎」类型。收藏、分支、浏览旁只有数字。 <a class="fn-h3-link" href="https://www.hiascend.com/cann/open-map" target="_blank" rel="noopener">查看示例来源</a></li>
-      <li><strong>有歧义：</strong>「228」可能是收藏、下载或其它计数。</li>
+      <li><strong>常见疏漏：</strong>类型仅靠图标无文字；收藏等指标旁只有数字，未配指标名，机器无法识别类型与指标含义。 <a class="fn-h3-link" href="https://www.hiascend.com/cann/open-map" target="_blank" rel="noopener">查看示例来源</a></li>
     </ul>
     </div>
     </div>
@@ -2277,24 +2462,16 @@
       </div>
     </div>
     <div class="fn-ex-foot">
-    <p class="fn-ex-group">必有项</p>
     <ul class="fn-ex-list">
-      <li><strong>类型：</strong>须写成「图引擎」；图标可留，只辅助。</li>
-      <li><strong>指标：</strong>须写成「收藏 228」「分支 61」「浏览 0」。</li>
-    </ul>
-    <p class="fn-ex-group">可选项</p>
-    <ul class="fn-ex-list">
-      <li><strong>Logo：</strong>产品标识只装饰时，不必再写成文字。</li>
+      <li><strong>正确做法：</strong>类型标注「图引擎」；指标写成「收藏 228」「分支 61」「浏览 0」。</li>
+      <li><strong>可免场景：</strong>产品 Logo 只作装饰时，不必再配文字。</li>
     </ul>
     </div>
     </div>
   </div>
   </div>
-  <h3 class="fn-h3">示例 5 · 数量可用单位表意</h3>
-  <div class="fn-lead-block">
-    <p class="type-lead fn-lead"><strong>核心原则：</strong>数字须带单位标明量纲，不要只写数字。</p>
-    <p class="type-lead fn-lead"><strong>例外情况：</strong>标题已表意的装饰图标不必再写。</p>
-  </div>
+
+  <h4 class="fn-h4">示例 5 · 用单位表达数量量纲</h4>
   <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
@@ -2327,7 +2504,7 @@
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>缺文本替代：</strong>图标旁只有「2」，看不出量纲。 <a class="fn-h3-link" href="https://www.hiascend.com/developer" target="_blank" rel="noopener">查看示例来源</a></li>
+      <li><strong>常见疏漏：</strong>图标旁只有数字，未附单位或指标名。机器无法识别量纲。 <a class="fn-h3-link" href="https://www.hiascend.com/developer" target="_blank" rel="noopener">查看示例来源</a></li>
     </ul>
     </div>
     </div>
@@ -2363,17 +2540,16 @@
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>单位：</strong>须写成「2人」。也可用名称（如「讲师 2」）。</li>
+      <li><strong>正确做法：</strong>数字附单位写成「2人」，或附名称写成「讲师 2」。</li>
+      <li><strong>可免场景：</strong>标题已表意的装饰图标，不必再配文字。</li>
     </ul>
     </div>
     </div>
   </div>
   </div>
-  <h3 class="fn-h3">示例 6 · 品牌Logo须写入alt</h3>
-  <div class="fn-lead-block">
-    <p class="type-lead fn-lead"><strong>核心原则：</strong>项目名须可抓取。写进 alt，或写在 Logo 旁可见名称，两种都可以；同一处不必重复。</p>
-    <p class="type-lead fn-lead"><strong>例外情况：</strong>旁白已列出同一套名单时，Logo 可只装饰。</p>
-  </div>
+
+  <h3 class="fn-h3">品牌 Logo</h3>
+  <h4 class="fn-h4">示例 6 · 用名称表达品牌 Logo</h4>
   <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
@@ -2388,7 +2564,7 @@
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>缺文本替代：</strong>各 Logo 为图片且无 alt，字标只在像素里；其中一枚无字标。抓取后得不到社区名单，也无法跟链。 <a class="fn-h3-link" href="https://www.hiascend.com/cann" target="_blank" rel="noopener">查看示例来源</a></li>
+      <li><strong>常见疏漏：</strong>Logo 无旁可见名称，也未写入 alt。机器无法识别品牌名单。 <a class="fn-h3-link" href="https://www.hiascend.com/cann" target="_blank" rel="noopener">查看示例来源</a></li>
     </ul>
     </div>
     </div>
@@ -2417,15 +2593,9 @@
       </div>
     </div>
     <div class="fn-ex-foot">
-    <p class="fn-ex-group">必有项</p>
     <ul class="fn-ex-list">
-      <li><strong>项目名（两种均可）：</strong>
-        <ul class="fn-ex-list">
-          <li><strong>图像替代文本（不在UI层体现）：</strong>alt 写入项目名；无字标时同样须写。</li>
-          <li><strong>可见名称：</strong>写在 Logo 旁或下方。与 alt 二选一即可，不必两处都写。</li>
-        </ul>
-      </li>
-      <li><strong>链接入口：</strong>每项须可跟链。</li>
+      <li><strong>正确做法：</strong>品牌名写在 Logo 旁，或写入源码 alt，二选一即可；每项须可跟链。</li>
+      <li><strong>可免场景：</strong>旁白已列出同一套名单时，Logo 可只作装饰。</li>
     </ul>
     </div>
     </div>

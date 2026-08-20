@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>章节锚点可引用 · 设计指导 · 昇腾社区 AI 亲和原则</title>
+<title>章节锚点可引用 · 设计模式 · 昇腾社区 AI 亲和原则</title>
 <style>
   :root {
     --bg: #F5F5F5;
@@ -31,12 +31,12 @@
   }
   a { color: var(--link); }
   .topbar {
-    position: sticky; top: 0; z-index: 50;
+    position: sticky; top: 0; z-index: 200;
     height: 56px; min-height: 56px; max-height: 56px;
     box-sizing: border-box;
     background: var(--panel);
     border-bottom: 1px solid var(--line);
-    overflow: hidden;
+    overflow: visible;
   }
   .topbar-inner {
     width: 100%; max-width: none; margin: 0; padding: 0 24px;
@@ -71,7 +71,7 @@
     font-size: 11px; font-weight: 700; letter-spacing: .04em; color: var(--muted);
     padding: 12px 20px 4px; margin-top: 8px; border-top: 1px solid var(--line);
   }
-  .peer-nav > .peer-group-label:first-child { margin-top: 0; border-top: none; padding-top: 10px; }
+  .peer-nav > .peer-group-label:first-child { margin-top: 0; border-top: none; padding-top: 0; }
   .peer-nav a {
     display: block; padding: 8px 20px; font-size: 13px; line-height: 1.5;
     text-decoration: none; color: var(--muted); border-left: 2px solid transparent;
@@ -110,7 +110,7 @@
     color: var(--text);
   }
   h2.block-title:first-of-type {
-    margin-top: 40px;
+    margin-top: 48px;
   }
   .affinity-group-label {
     margin: 0 0 8px;
@@ -461,13 +461,27 @@
   .hub-card p { margin: 0; color: var(--muted); font-size: 13px; }
 
   h3.fn-h3 {
-    margin: 32px 0 8px;
-    padding-top: 0;
+    margin: 0;
+    padding-top: 24px;
+    padding-bottom: 24px;
     font-size: 18px;
     line-height: 28px;
     font-weight: 650;
     color: var(--text);
     letter-spacing: -0.01em;
+  }
+  h4.fn-h4 {
+    margin: 24px 0 0;
+    padding-top: 0;
+    padding-bottom: 16px;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 650;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+  h3.fn-h3 + h4.fn-h4 {
+    margin-top: 12px;
   }
   h3.fn-h3 .fn-h3-link,
   .fn-h3-link {
@@ -1926,6 +1940,181 @@
   }
   .an-toc .is-vague { color: var(--muted); }
   .an-toc .is-link { color: #1476FF; }
+  .an-hash.is-dead { color: #a3a3a3; }
+  .an-h--with-toast {
+    position: relative;
+    display: inline-block;
+    max-width: 100%;
+  }
+  .an-toast {
+    position: absolute;
+    left: calc(100% + 8px);
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 500;
+    color: var(--text);
+    background: #fff;
+    border: 1px solid var(--line);
+    box-shadow: 0 6px 16px rgba(25, 25, 25, 0.1);
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  .an-toast::before {
+    content: "";
+    position: absolute;
+    left: -5px;
+    top: 50%;
+    transform: translateY(-50%) rotate(45deg);
+    width: 8px;
+    height: 8px;
+    background: #fff;
+    border-left: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+
+
+  h3.fn-h3 + .affinity-group-label {
+    margin-top: 8px;
+  }
+  .scene-def-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--body-size);
+    line-height: var(--body-lh);
+    margin: 0 0 8px;
+    table-layout: fixed;
+  }
+  .scene-def-table th,
+  .scene-def-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: middle;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 400;
+  }
+  .scene-def-table tbody td {
+    height: 64px;
+  }
+  .scene-def-table th {
+    font-size: 12px;
+    font-weight: 650;
+    color: var(--muted);
+    background: #fafafa;
+  }
+  .scene-def-table .col-type { width: 18%; }
+  .scene-def-table .col-desc { width: 55%; }
+  .scene-def-table .col-place { width: 27%; }
+  .scene-def-table col.col-type { width: 18%; }
+  .scene-def-table col.col-desc { width: 55%; }
+  .scene-def-table col.col-place { width: 27%; }
+  .scene-def-table + h2.block-title {
+    margin-top: 40px;
+  }
+
+  /* 设计专项下拉 */
+  .nav-dd {
+    position: relative;
+    z-index: 210;
+    display: inline-flex;
+    align-items: center;
+  }
+  .nav-dd-trigger {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    font: inherit;
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 6px;
+    white-space: nowrap;
+    transition: background .15s, color .15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .nav-dd-trigger::after {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg);
+    opacity: .65;
+    margin-top: -3px;
+    flex-shrink: 0;
+  }
+  .nav-dd-trigger:hover,
+  .nav-dd:hover .nav-dd-trigger,
+  .nav-dd:focus-within .nav-dd-trigger {
+    color: var(--accent);
+    background: #F5F5F5;
+  }
+  .nav-dd-trigger.is-active {
+    color: var(--accent);
+    background: #F5F5F5;
+    font-weight: 600;
+  }
+  .nav-dd::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    height: 10px;
+  }
+  .nav-dd-panel {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    min-width: 148px;
+    padding: 6px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(25, 25, 25, 0.08);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: opacity .15s, transform .15s, visibility .15s;
+    z-index: 210;
+  }
+  .nav-dd:hover .nav-dd-panel,
+  .nav-dd:focus-within .nav-dd-panel {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  .nav-dd-panel a {
+    display: block;
+    padding: 8px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  .nav-dd-panel a:hover {
+    color: var(--accent);
+    background: #F5F5F5;
+  }
+  .nav-dd-panel a.is-active {
+    color: var(--accent);
+    background: #EEF5FF;
+    font-weight: 600;
+  }
 
 </style>
 </head>
@@ -1938,14 +2127,15 @@
       <a href="index.html">首页</a>
       <a href="mintlify.html">友商对照</a>
       <a href="reachability.html">社区诊断</a>
+      <a href="principles-affinity-full.html">亲和原则</a>
       <a href="community-ui.html">组件亲和</a>
-      <a href="design-guide-image-text.html" class="active">设计指导</a>
+      <a href="design-guide-image-text.html" class="active">设计模式</a>
     </nav>
   </div>
 </div>
 
 <div class="page-wrapper">
-<aside class="peer-sidebar" aria-label="设计指导导航">
+<aside class="peer-sidebar" aria-label="设计模式导航">
   <nav class="peer-nav">
     <div class="peer-group-label">入口可识别性</div>
     <ul>
@@ -1987,22 +2177,67 @@
     <h1>章节锚点可引用</h1>
   </header>
 
-  <h2 class="block-title">原则概述</h2>
-  <p class="affinity-group-label">原则：每一节可单独引用</p>
-  <ul class="affinity-principles">
-    <li>每一节须有可引用的 URL。目录须指向该节，不要做成只有页内滚动、没有节级地址。</li>
-    <li>标题旁可标「#」，稿面要看得出这一段对应哪条 URL。</li>
-  </ul>
-  <p class="affinity-group-label">对 AI 的好处</p>
-  <ul class="affinity-principles">
-    <li>可以按节引用，而不是整篇糊成一个 URL。</li>
-  </ul>
+  <h2 class="block-title">Pattern说明</h2>
+  <h3 class="fn-h3">场景定义</h3>
+  <table class="scene-def-table">
+    <colgroup>
+      <col class="col-type" />
+      <col class="col-desc" />
+      <col class="col-place" />
+    </colgroup>
+    <thead>
+      <tr>
+        <th class="col-type">类型</th>
+        <th class="col-desc">说明</th>
+        <th class="col-place">常见落点</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="col-type">节级锚点</td>
+        <td class="col-desc">每一节须有可引用的独立 URL；目录须指向该节，禁止只有页内滚动、没有节级地址。</td>
+        <td class="col-place">文档正文、本篇目录</td>
+      </tr>
+      <tr>
+        <td class="col-type">锚点标识</td>
+        <td class="col-desc">标题旁可标「#」，稿面须看得出该段对应哪条 URL；点击「#」可一键复制含 hash 的完整 URL。</td>
+        <td class="col-place">章节标题旁</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 class="fn-h3">AI 亲和设计原则</h3>
+  <table class="scene-def-table">
+    <colgroup>
+      <col class="col-type" />
+      <col class="col-desc" />
+      <col class="col-place" />
+    </colgroup>
+    <thead>
+      <tr>
+        <th class="col-type">设计原则</th>
+        <th class="col-desc">说明</th>
+        <th class="col-place"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="col-type">每一节可单独引用</td>
+        <td class="col-desc" colspan="2">每一节须有可引用 URL；目录指向该节，不要做成只有页内滚动。</td>
+      </tr>
+      <tr>
+        <td class="col-type">锚点须可辨识</td>
+        <td class="col-desc" colspan="2">可锚点标题旁须标出「#」或等价标识，便于识别对应 URL；锚点不得仅存于悬停或需猜测的位置。</td>
+      </tr>
+      <tr>
+        <td class="col-type">锚点可复制</td>
+        <td class="col-desc" colspan="2">点击「#」或复制控件，须一键复制完整含 hash 的 URL，并给出成功反馈（如 toast「已复制链接」）。</td>
+      </tr>
+    </tbody>
+  </table>
 
-  <h2 class="block-title">场景示例</h2>
-  <h3 class="fn-h3">示例 1 · 每一节须有独立锚点</h3>
-  <div class="fn-lead-block">
-    <p class="type-lead fn-lead"><strong>核心原则：</strong>每一节对应一条 URL；不要只有滚动、没有节级地址。</p>
-  </div>
+  <h2 class="block-title">设计示例</h2>
+  <h3 class="fn-h3">节级锚点</h3>
+  <h4 class="fn-h4">示例 1 · 每一节须有独立锚点</h4>
   <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
@@ -2032,7 +2267,7 @@
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>缺文本替代：</strong>目录能滚到位置，但没有独立 URL，无法按节引用。</li>
+      <li><strong>常见疏漏：</strong>目录只能滚到位置，没有独立 URL，机器无法按节引用。</li>
     </ul>
     </div>
     </div>
@@ -2065,9 +2300,51 @@
       </div>
     </div>
     <div class="fn-ex-foot">
-    <p class="fn-ex-group">必有项</p>
     <ul class="fn-ex-list">
-      <li><strong>节级锚点：</strong>目录指向该节；标题旁「#」表示这一节可链。</li>
+      <li><strong>正确做法：</strong>目录指向该节；标题旁「#」表示这一节可链。</li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  </div>
+
+  <h3 class="fn-h3">锚点可复制</h3>
+  <h4 class="fn-h4">示例 2 · 点击「#」可复制锚点</h4>
+  <div class="fn-ex-row">
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label">反面</span>
+    <div class="fn-ex-bar" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="反面：井号不可点或仅悬停出现">
+      <div class="ck-card">
+        <p class="an-h">安装步骤<span class="an-hash is-dead">#</span></p>
+        <p class="an-p">「#」仅装饰 / 仅悬停出现，点击无响应。</p>
+      </div>
+    </div>
+    <div class="fn-ex-foot">
+    <ul class="fn-ex-list">
+      <li><strong>常见疏漏：</strong>看得见锚点标识，却无法一键拿到 URL。</li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label is-good">正面</span>
+    <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="正面：点击井号复制并 toast">
+      <div class="ck-card">
+        <p class="an-h an-h--with-toast">安装步骤<span class="an-hash">#</span><span class="an-toast" role="status">已复制链接</span></p>
+        <p class="an-p">点击「#」复制：…/install.html#install-steps</p>
+      </div>
+    </div>
+    <div class="fn-ex-foot">
+    <ul class="fn-ex-list">
+      <li><strong>正确做法：</strong>一键复制含 hash 的完整 URL，并给出成功反馈。</li>
     </ul>
     </div>
     </div>

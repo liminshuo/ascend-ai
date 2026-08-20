@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>图片信息转文字 · 设计指导 · 昇腾社区 AI 亲和原则</title>
+<title>图片信息转文字 · 设计模式 · 昇腾社区 AI 亲和原则</title>
 <style>
   :root {
     --bg: #F5F5F5;
@@ -31,12 +31,12 @@
   }
   a { color: var(--link); }
   .topbar {
-    position: sticky; top: 0; z-index: 50;
+    position: sticky; top: 0; z-index: 200;
     height: 56px; min-height: 56px; max-height: 56px;
     box-sizing: border-box;
     background: var(--panel);
     border-bottom: 1px solid var(--line);
-    overflow: hidden;
+    overflow: visible;
   }
   .topbar-inner {
     width: 100%; max-width: none; margin: 0; padding: 0 24px;
@@ -71,7 +71,7 @@
     font-size: 11px; font-weight: 700; letter-spacing: .04em; color: var(--muted);
     padding: 12px 20px 4px; margin-top: 8px; border-top: 1px solid var(--line);
   }
-  .peer-nav > .peer-group-label:first-child { margin-top: 0; border-top: none; padding-top: 10px; }
+  .peer-nav > .peer-group-label:first-child { margin-top: 0; border-top: none; padding-top: 0; }
   .peer-nav a {
     display: block; padding: 8px 20px; font-size: 13px; line-height: 1.5;
     text-decoration: none; color: var(--muted); border-left: 2px solid transparent;
@@ -110,7 +110,7 @@
     color: var(--text);
   }
   h2.block-title:first-of-type {
-    margin-top: 40px;
+    margin-top: 48px;
   }
   .affinity-group-label {
     margin: 0 0 8px;
@@ -472,13 +472,27 @@
   .hub-card p { margin: 0; color: var(--muted); font-size: 13px; }
 
   h3.fn-h3 {
-    margin: 32px 0 8px;
-    padding-top: 0;
+    margin: 0;
+    padding-top: 24px;
+    padding-bottom: 24px;
     font-size: 18px;
     line-height: 28px;
     font-weight: 650;
     color: var(--text);
     letter-spacing: -0.01em;
+  }
+  h4.fn-h4 {
+    margin: 24px 0 0;
+    padding-top: 0;
+    padding-bottom: 16px;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 650;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+  h3.fn-h3 + h4.fn-h4 {
+    margin-top: 12px;
   }
   h3.fn-h3 .fn-h3-link,
   .fn-h3-link {
@@ -1035,6 +1049,10 @@
   .fn-ex-list--tight {
     gap: 4px;
   }
+  .fn-ex-list .fn-ex-list {
+    margin-top: 4px;
+    margin-bottom: 0;
+  }
   .fn-ex-list strong {
     font-weight: 650;
     color: var(--text);
@@ -1315,8 +1333,119 @@
     line-height: 20px;
     color: var(--muted);
   }
+  .info-cap code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 12px;
+    color: var(--text);
+  }
   .info-cap.is-bad {
     color: var(--muted);
+  }
+  .shot-term {
+    margin: 0;
+    padding: 14px 16px;
+    border-radius: 8px;
+    background: #1e1e1e;
+    color: #e8e8e8;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 12px;
+    line-height: 20px;
+  }
+  .shot-term .shot-err { color: #f97171; }
+  .shot-term .shot-muted { color: #9ca3af; }
+  .shot-body {
+    margin: 0;
+    font-size: 13px;
+    line-height: 22px;
+    color: var(--text);
+  }
+  .shot-body p { margin: 0 0 6px; }
+  .shot-body p:last-child { margin-bottom: 0; }
+  .shot-body code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 12px;
+    background: #f5f5f5;
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+  .fn-ex-mock:has(.shot-term),
+  .fn-ex-mock:has(.shot-body),
+  .fn-ex-mock:has(.shot-fig) {
+    padding: 16px;
+  }
+  .shot-fig {
+    margin: 0;
+    overflow: hidden;
+    border-radius: 8px;
+    border: 1px solid #e8ecf1;
+    background: #f7f9fc;
+  }
+  .shot-fig img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .fn-ex-row .fn-ex-mock:has(.stack-shot) {
+    background: #f5f5f5;
+    padding: 12px;
+  }
+  .stack-shot {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #e8ecf1;
+    background: #fff;
+    padding: 10px;
+  }
+  .stack-shot-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin: 0 0 8px;
+    text-align: center;
+  }
+  .stack-shot-head .t {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 18px;
+    color: #191919;
+    letter-spacing: -0.01em;
+  }
+  .stack-shot-frame {
+    overflow: hidden;
+    border-radius: 8px;
+    border: 1px solid #eef1f5;
+    background: #f7f9fc;
+  }
+  .stack-shot-frame img {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin-top: 0;
+  }
+  .stack-shot-md {
+    position: static;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    min-width: 0;
+    height: 12px;
+    padding: 0 5px;
+    border: none;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #4da3ff 0%, #7b6cff 45%, #ff7a59 100%);
+    color: #fff;
+    font-size: 8px;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    line-height: 1;
+    text-decoration: none;
+    white-space: nowrap;
+    box-shadow: none;
   }
   .anno-scene {
     margin: 0 0 24px;
@@ -1612,6 +1741,146 @@
     .type-grid--3 { grid-template-columns: 1fr; }
   }
 
+
+  h3.fn-h3 + .affinity-group-label {
+    margin-top: 8px;
+  }
+  .scene-def-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--body-size);
+    line-height: var(--body-lh);
+    margin: 0 0 8px;
+    table-layout: fixed;
+  }
+  .scene-def-table th,
+  .scene-def-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: middle;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 400;
+  }
+  .scene-def-table tbody td {
+    height: 64px;
+  }
+  .scene-def-table th {
+    font-size: 12px;
+    font-weight: 650;
+    color: var(--muted);
+    background: #fafafa;
+  }
+  .scene-def-table .col-type { width: 18%; }
+  .scene-def-table .col-desc { width: 55%; }
+  .scene-def-table .col-place { width: 27%; }
+  .scene-def-table col.col-type { width: 18%; }
+  .scene-def-table col.col-desc { width: 55%; }
+  .scene-def-table col.col-place { width: 27%; }
+  .scene-def-table + h2.block-title {
+    margin-top: 40px;
+  }
+
+  /* 设计专项下拉 */
+  .nav-dd {
+    position: relative;
+    z-index: 210;
+    display: inline-flex;
+    align-items: center;
+  }
+  .nav-dd-trigger {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    font: inherit;
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 6px;
+    white-space: nowrap;
+    transition: background .15s, color .15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    gap: 0;
+  }
+  .nav-dd-trigger::after {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg);
+    opacity: .65;
+    margin-top: -3px;
+    margin-left: 4px;
+    flex-shrink: 0;
+  }
+  .nav-dd-trigger:hover,
+  .nav-dd:hover .nav-dd-trigger,
+  .nav-dd:focus-within .nav-dd-trigger {
+    color: var(--accent);
+    background: #F5F5F5;
+  }
+  .nav-dd-trigger.is-active {
+    color: var(--accent);
+    background: #F5F5F5;
+    font-weight: 600;
+  }
+  .nav-dd::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    height: 10px;
+  }
+  .nav-dd-panel {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    min-width: 148px;
+    padding: 6px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(25, 25, 25, 0.08);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: opacity .15s, transform .15s, visibility .15s;
+    z-index: 210;
+  }
+  .nav-dd:hover .nav-dd-panel,
+  .nav-dd:focus-within .nav-dd-panel {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  .nav-dd-panel a {
+    display: block;
+    padding: 8px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  .nav-dd-panel a:hover {
+    color: var(--accent);
+    background: #F5F5F5;
+  }
+  .nav-dd-panel a.is-active {
+    color: var(--accent);
+    background: #EEF5FF;
+    font-weight: 600;
+  }
+
 </style>
 </head>
 
@@ -1623,14 +1892,15 @@
       <a href="index.html">首页</a>
       <a href="mintlify.html">友商对照</a>
       <a href="reachability.html">社区诊断</a>
+      <a href="principles-affinity-full.html">亲和原则</a>
       <a href="community-ui.html">组件亲和</a>
-      <a href="design-guide-image-text.html" class="active">设计指导</a>
+      <a href="design-guide-image-text.html" class="active">设计模式</a>
     </nav>
   </div>
 </div>
 
 <div class="page-wrapper">
-<aside class="peer-sidebar" aria-label="设计指导导航">
+<aside class="peer-sidebar" aria-label="设计模式导航">
   <nav class="peer-nav">
     <div class="peer-group-label">入口可识别性</div>
     <ul>
@@ -1672,23 +1942,73 @@
     <h1>图片信息转文字</h1>
   </header>
 
-  <h2 class="block-title">原则概述</h2>
-  <p class="affinity-group-label">原则：信息不烧图</p>
-  <ul class="affinity-principles">
-    <li>图是背景，文字是信息主体。承载语义的关键信息（标题、状态、字段名、入口文案）须以 DOM 文本呈现，禁止仅烧入图片。装饰性图形可例外，纯氛围图且已有文字入口时可不做文本化。</li>
-    <li>图中层级关系、模块名、结论等结构性信息，须通过文字链接或图注交付；alt 可作为等价替代，但不替代图注的展示功能。图注应提炼图中结论，而非描述画面本身。</li>
-  </ul>
-  <p class="affinity-group-label">对 AI 的好处</p>
-  <ul class="affinity-principles">
-    <li>语义信息落在可抓取文字上，AI 无需从像素中猜测含义；关键字段和入口可直接跟链入库，避免整块内容不可解析或被误读。</li>
-  </ul>
+  <h2 class="block-title">Pattern说明</h2>
+  <h3 class="fn-h3">场景定义</h3>
+  <table class="scene-def-table">
+    <colgroup>
+      <col class="col-type" />
+      <col class="col-desc" />
+      <col class="col-place" />
+    </colgroup>
+    <thead>
+      <tr>
+        <th class="col-type">类型</th>
+        <th class="col-desc">说明</th>
+        <th class="col-place">常见落点</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="col-type">官网·展示图</td>
+        <td class="col-desc">关键文案（标题、入口、角标）须为独立文字层，禁止烧入图片。图仅作背景，信息须有可抓文字。</td>
+        <td class="col-place">活动 Banner、首页招揽</td>
+      </tr>
+      <tr>
+        <td class="col-type">官网·架构图</td>
+        <td class="col-desc">层名与产品关系须以文字链接或旁注徽标（Markdown 形式）交付，禁止仅以图片承载。</td>
+        <td class="col-place">平台栈、官网结构图</td>
+      </tr>
+      <tr>
+        <td class="col-type">文档·架构图</td>
+        <td class="col-desc">流程与调度结论须以图题和图注交付，禁止仅以图片标注承载。</td>
+        <td class="col-place">架构示意、调度图</td>
+      </tr>
+      <tr>
+        <td class="col-type">文档·截图</td>
+        <td class="col-desc">截图中原文与结论须以正文交付，截图仅作对照。</td>
+        <td class="col-place">训练日志、报错页</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 class="fn-h3">AI 亲和设计原则</h3>
+  <table class="scene-def-table">
+    <colgroup>
+      <col class="col-type" />
+      <col class="col-desc" />
+      <col class="col-place" />
+    </colgroup>
+    <thead>
+      <tr>
+        <th class="col-type">设计原则</th>
+        <th class="col-desc">说明</th>
+        <th class="col-place"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="col-type">信息不烧图</td>
+        <td class="col-desc" colspan="2">标题与入口文案须独立于图片，禁止烧入图中。</td>
+      </tr>
+      <tr>
+        <td class="col-type">图意成文</td>
+        <td class="col-desc" colspan="2">结构、结论与报错须以图注、旁注或正文交付，禁止仅靠读图。</td>
+      </tr>
+    </tbody>
+  </table>
 
-  <h2 class="block-title">场景示例</h2>
-  <h3 class="fn-h3">示例 1 · Banner信息须文本化</h3>
-  <div class="fn-lead-block">
-    <p class="type-lead fn-lead"><strong>核心原则：</strong>图是背景，文字是信息主体，文字不进图。</p>
-    <p class="type-lead fn-lead"><strong>例外情况：</strong>只作首页氛围图，且活动页或列表页已另有文字入口时，可不做文本替代。</p>
-  </div>
+  <h2 class="block-title">设计示例</h2>
+  <h3 class="fn-h3">官网·展示图</h3>
+  <h4 class="fn-h4">示例 1 · 用独立文案表达 Banner 信息</h4>
   <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
@@ -1705,7 +2025,7 @@
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>缺文本替代：</strong>标题、角标均烧入图片，源码中无可读文本，且无独立描述层。 <a class="fn-h3-link" href="https://www.hikunpeng.com/zh" target="_blank" rel="noopener">查看示例来源</a></li>
+      <li><strong>常见疏漏：</strong>标题与角标烧入海报，无独立文案层，机器无法识别 Banner 所传达的内容。 <a class="fn-h3-link" href="https://www.hikunpeng.com/zh" target="_blank" rel="noopener">查看示例来源</a></li>
     </ul>
     </div>
     </div>
@@ -1716,7 +2036,7 @@
     <div class="fn-ex-bar is-good" aria-hidden="true"></div>
     </div>
     <div class="fn-ex-body">
-    <div class="fn-ex-mock" aria-label="对象表达正面示例：文案叠在 Banner 上，写成 DOM">
+    <div class="fn-ex-mock" aria-label="对象表达正面示例：文案叠在 Banner 上">
       <div class="obj-card">
         <div class="obj-banner">
           <img src="assets/design-guide/kunpeng-hpc-challenge-bg.png?v=2" alt="">
@@ -1729,25 +2049,17 @@
       </div>
     </div>
     <div class="fn-ex-foot">
-    <p class="fn-ex-group">必有项</p>
     <ul class="fn-ex-list">
-      <li><strong>标题：</strong>须为叠于 Banner 上的 DOM 文案，禁止烧入图片。</li>
-      <li><strong>链接入口：</strong>按钮或链接均可，文案与跳转去向须在 DOM 中明确，禁止烧入图片。</li>
-    </ul>
-    <p class="fn-ex-group">可选项</p>
-    <ul class="fn-ex-list">
-      <li><strong>角标：</strong>纯装饰可烧图；若承载信息（如活动名称、状态标签），则须为 DOM 文本。</li>
-      <li><strong>描述：</strong>如有副文案，须为 DOM 文本，禁止烧入图片。</li>
+      <li><strong>正确做法：</strong>标题与报名入口叠于图上，但须为独立文案；角标若承载信息，也须独立成文。</li>
+      <li><strong>可免场景：</strong>1）图仅作氛围，不承载标题或入口信息时，可不加独立文案；2）标题与入口已在页内别处以文字形式存在，不单靠 Banner 承载时，图上可不叠加。</li>
     </ul>
     </div>
     </div>
   </div>
   </div>
-  <h3 class="fn-h3">示例 2 · 官网结构图须文本化</h3>
-  <div class="fn-lead-block">
-    <p class="type-lead fn-lead"><strong>核心原则：</strong>层名、产品名、入口须为可抓取的文字链接；层级关系写进 alt。</p>
-    <p class="type-lead fn-lead"><strong>例外情况：</strong>旁白已写出同一套结构，或图只装饰时，可不做文本替代。</p>
-  </div>
+
+  <h3 class="fn-h3">官网·架构图</h3>
+  <h4 class="fn-h4">示例 2 · 用平行 MD 表达结构关系</h4>
   <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
@@ -1755,14 +2067,19 @@
     <div class="fn-ex-bar" aria-hidden="true"></div>
     </div>
     <div class="fn-ex-body">
-    <div class="fn-ex-mock" aria-label="反面：只有一张结构图，没有可抓取的文字和链接">
-      <div class="info-card">
-        <img src="assets/design-guide/ascend-platform-stack-bare.png" alt="">
+    <div class="fn-ex-mock" aria-label="反面：只有架构图，无文字也无 MD 入口">
+      <div class="stack-shot">
+        <div class="stack-shot-head">
+          <p class="t">解决方案</p>
+        </div>
+        <div class="stack-shot-frame">
+          <img src="assets/design-guide/ascend-platform-stack-solutions.png" alt="">
+        </div>
       </div>
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>缺文本替代：</strong>仅有图片，无可抓取文字与链接。 <a class="fn-h3-link" href="https://www.hiascend.com/industries/internet" target="_blank" rel="noopener">查看反面来源</a></li>
+      <li><strong>常见疏漏：</strong>仅有架构图与标题，层名与产品关系未配独立文字，机器无法识别层级与依赖关系。 <a class="fn-h3-link" href="https://www.hiascend.com/industries/internet" target="_blank" rel="noopener">查看反面来源</a></li>
     </ul>
     </div>
     </div>
@@ -1773,24 +2090,29 @@
     <div class="fn-ex-bar is-good" aria-hidden="true"></div>
     </div>
     <div class="fn-ex-body">
-    <div class="fn-ex-mock" aria-label="正面：结构图有 alt 陈述层级关系">
-      <div class="info-card">
-        <img src="assets/design-guide/ascend-platform-stack-bare.png" alt="自上而下为行业应用、应用使能、AI框架、硬件使能（CANN）、昇腾系列硬件。应用使能含 ModelArts / HiAi Service、MindSDK、MindCluster / MindSpeed、MindEdge / MindIE；AI 框架含 MindSpore，并并列 PyTorch、飞桨、TensorFlow。MindStudio、CCAE 纵向贯穿各层。">
+    <div class="fn-ex-mock" aria-label="正面：标题旁 MD 徽标，关系写在平行 Markdown">
+      <div class="stack-shot">
+        <div class="stack-shot-head">
+          <p class="t">解决方案</p>
+          <a class="stack-shot-md" href="assets/design-guide/ascend-platform-stack.html" target="_blank" rel="noopener" title="打开平台架构 Markdown">MD</a>
+        </div>
+        <div class="stack-shot-frame">
+          <img src="assets/design-guide/ascend-platform-stack-solutions.png" alt="昇腾解决方案楼层：应用使能、AI 框架、硬件使能与昇腾系列硬件">
+        </div>
       </div>
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>文字链接：</strong>层名、产品名、入口须为可抓取的文字链接，而非图片热区。 <a class="fn-h3-link" href="https://www.hiascend.com/zh" target="_blank" rel="noopener">查看正面来源</a></li>
-      <li><strong>图像替代文本（不在UI层体现）：</strong>视觉可与反面同图；alt 须陈述层级关系，例如：「自上而下为行业应用、应用使能、AI框架、硬件使能（CANN）、昇腾系列硬件。应用使能含 ModelArts / HiAi Service、MindSDK、MindCluster / MindSpeed、MindEdge / MindIE；AI 框架含 MindSpore，并并列 PyTorch、飞桨、TensorFlow。MindStudio、CCAE 纵向贯穿各层。」</li>
+      <li><strong>正确做法：</strong>标题旁挂 MD 徽标，平行文档写清层级与产品关系（如 <a class="fn-h3-link" href="assets/design-guide/ascend-platform-stack.html" target="_blank" rel="noopener">ascend-platform-stack.md</a>）；本页图保留给人看。</li>
+      <li><strong>可免场景：</strong>产品名已是真链，且另有概述页说明关系时，可不挂 MD 徽标。</li>
     </ul>
     </div>
     </div>
   </div>
   </div>
-  <h3 class="fn-h3">示例 3 · 文档架构图须文本化</h3>
-  <div class="fn-lead-block">
-    <p class="type-lead fn-lead"><strong>核心原则：</strong>图名和图注写成独立文字，结论不要只烧进图。</p>
-  </div>
+
+  <h3 class="fn-h3">文档·架构图</h3>
+  <h4 class="fn-h4">示例 3 · 用图注表达图中结论</h4>
   <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
@@ -1805,9 +2127,8 @@
       </div>
     </div>
     <div class="fn-ex-foot">
-    <ul class="fn-ex-list fn-ex-list--tight">
-      <li><strong>缺文本替代：</strong>图下无图注，图中结论仅存于像素，不可抓取。</li>
-      <li><strong>有歧义：</strong>图内标注烧入图片，机器无法获取「Host 下发」与「分核」之间的关联关系。</li>
+    <ul class="fn-ex-list">
+      <li><strong>常见疏漏：</strong>仅有图题，调度结论未以图注交付。机器无法识别 Host / NPU 调度关系与结论。</li>
     </ul>
     </div>
     </div>
@@ -1826,14 +2147,52 @@
       </div>
     </div>
     <div class="fn-ex-foot">
-    <p class="fn-ex-group">必有项</p>
     <ul class="fn-ex-list">
-      <li><strong>图名：</strong>须以独立图题形式呈现，禁止仅以文件名代替。</li>
-      <li><strong>图注：</strong>须以图下文字形式交付图中结论，禁止仅烧入图片。</li>
+      <li><strong>正确做法：</strong>图题保留，图下以图注交付结论。</li>
     </ul>
-    <p class="fn-ex-group">可选项</p>
+    </div>
+    </div>
+  </div>
+  </div>
+
+  <h3 class="fn-h3">文档·截图</h3>
+  <h4 class="fn-h4">示例 4 · 用图注表达截图中的训练日志</h4>
+  <div class="fn-ex-row">
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label">反面</span>
+    <div class="fn-ex-bar" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="反面：训练关键与参数量只在截图里">
+      <div class="info-card">
+        <p class="info-title">图 1 启动预训练</p>
+        <img src="assets/design-guide/mindspeed-pretrain-term.png" alt="">
+      </div>
+    </div>
+    <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>alt：</strong>若图注已完整传达信息，alt 可与图注一致或简略概括。</li>
+      <li><strong>常见疏漏：</strong>参数量、迭代数、损失值等关键数据仅存于终端截图，图注未提取结论，机器无法判断预训练是否启动及关键指标表现。 <a class="fn-h3-link" href="https://www.hiascend.com/document/detail/zh/MindSpeed/latest/quickstart/docs/zh/pytorch/training/quick_start.md" target="_blank" rel="noopener">查看反面来源</a></li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label is-good">正面</span>
+    <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="正面：图注写清日志结论，截图仅作示意">
+      <div class="info-card">
+        <p class="info-title">图 1 启动预训练</p>
+        <img src="assets/design-guide/mindspeed-pretrain-term.png" alt="预训练终端日志示意：加载扩展模块后输出参数量与 iteration 指标">
+        <p class="info-cap">图注：预训练已启动；总参数量约 7.62B（Transformer 层约 6.53B）。日志自 <code>iteration 1/2000</code> 起持续输出，单卡吞吐约 25.1 TFLOP/s/GPU，首步 lm loss 约 12.15。</p>
+      </div>
+    </div>
+    <div class="fn-ex-foot">
+    <ul class="fn-ex-list">
+      <li><strong>正确做法：</strong>图题保留，截图中的终端结论须写进图注。</li>
     </ul>
     </div>
     </div>

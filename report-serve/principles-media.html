@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>音视频要点伴随 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid #e2e8f0;
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: 100%; max-width: none; margin: 0; padding: 0 24px;
+    height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: #191919; text-decoration: none; white-space: nowrap; margin-right: 40px;
+  }
+  .topbar .brand span { color: #1476FF; }
+  .topbar .site-nav { display: flex; align-items: center; gap: 4px; flex: 1; flex-wrap: wrap; }
+  .topbar .site-nav > a {
+    text-decoration: none; color: #595959; font-size: 14px; font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .topbar .site-nav > a:hover { color: #1476FF; background: #F5F5F5; text-decoration: none; }
+  .topbar .site-nav > a.active { color: #1476FF; background: #F5F5F5; font-weight: 600; }
+  .nav-dd { position: relative; z-index: 210; display: inline-flex; align-items: center; }
+  .nav-dd-trigger {
+    appearance: none; border: 0; background: transparent; cursor: pointer; font: inherit;
+    text-decoration: none; color: #595959; font-size: 14px; font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+    display: inline-flex; align-items: center; gap: 12px;
+  }
+  .nav-dd-trigger::after {
+    content: ""; width: 6px; height: 6px;
+    border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg); opacity: .65; margin-top: -3px; flex-shrink: 0;
+  }
+  .nav-dd-trigger:hover, .nav-dd:hover .nav-dd-trigger, .nav-dd:focus-within .nav-dd-trigger {
+    color: #1476FF; background: #F5F5F5;
+  }
+  .nav-dd::before { content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 10px; }
+  .nav-dd-panel {
+    position: absolute; top: calc(100% + 4px); left: 0; min-width: 148px; padding: 6px;
+    background: #fff; border: 1px solid #e2e8f0; border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(25, 25, 25, 0.08);
+    opacity: 0; visibility: hidden; transform: translateY(-4px);
+    transition: opacity .15s, transform .15s, visibility .15s; z-index: 210;
+  }
+  .nav-dd:hover .nav-dd-panel, .nav-dd:focus-within .nav-dd-panel {
+    opacity: 1; visibility: visible; transform: translateY(0);
+  }
+  .nav-dd-panel a {
+    display: block; padding: 8px 12px; border-radius: 6px; text-decoration: none;
+    color: #595959; font-size: 13px; font-weight: 500; line-height: 1.4;
+  }
+  .nav-dd-panel a:hover { color: #1476FF; background: #F5F5F5; }
+  /* GEO topbar = fixed，沿用 layout 的 page-wrapper padding-top */
+  body.inner-page .page-wrapper { min-height: 100vh; }
+
+h3.fn-h3 .fn-h3-link,
+  .fn-h3-link {
+    margin-left: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 22px;
+    color: #1476FF;
+    text-decoration: none;
+  }
+
+h3.fn-h3 .fn-h3-link:hover,
+  .fn-h3-link:hover {
+    text-decoration: underline;
+  }
+
+.fn-ex-mock--cards {
+    background: #f5f5f5;
+    border: none;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+  }
+
+.fn-ex-mock--cards .partner-shot {
+    display: block;
+    width: 220px;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0,0,0,.06);
+  }
+
+.fn-ex-mock--cards .partner-shot img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+.fn-ex-mock--cards .partner-mini {
+    width: 220px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0,0,0,.06);
+  }
+
+.fn-ex {
+    margin: 0 0 20px;
+    max-width: 720px;
+  }
+
+.fn-ex-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr auto;
+    column-gap: 16px;
+    row-gap: 0;
+    align-items: stretch;
+    max-width: none;
+    margin: 0 0 20px;
+  }
+
+.fn-ex-row .fn-ex {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 1 / span 3;
+    max-width: none;
+    margin: 0;
+    min-width: 0;
+  }
+
+.fn-ex-row .fn-ex-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+.fn-ex-row .fn-ex-head .fn-ex-label {
+    margin: 0;
+  }
+
+.fn-ex-row .fn-ex-head .fn-ex-bar {
+    display: block;
+    margin: 0;
+    width: 100%;
+    align-self: stretch;
+  }
+
+.fn-ex-row .fn-ex-body {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 2 / span 2;
+    min-height: 0;
+    background: #f5f5f5;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+.fn-ex-row .fn-ex-mock,
+  .fn-ex-row .fn-ex-mock:has(.st-card),
+  .fn-ex-row .fn-ex-mock:has(.case-video) {
+    min-height: 0;
+    height: 100%;
+    box-sizing: border-box;
+    border: none;
+    border-radius: 0;
+    align-self: stretch;
+  }
+
+.fn-ex-row .fn-ex-foot {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px 14px 14px;
+    background: #fff;
+    border-top: 1px solid #e2e8f0;
+  }
+
+.fn-ex-row .fn-ex-foot .fn-ex-list {
+    margin: 0;
+    gap: 4px;
+  }
+
+.fn-ex-row .fn-ex-foot .fn-ex-group {
+    margin: 8px 0 0;
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 650;
+    color: #595959;
+  }
+
+.fn-ex-row .fn-ex-foot .fn-ex-group:first-child {
+    margin-top: 0;
+  }
+
+.fn-ex-row .status-ex-table {
+    font-size: 11px;
+    line-height: 16px;
+  }
+
+.fn-ex-row .status-ex-table th,
+  .fn-ex-row .status-ex-table td {
+    padding: 8px 6px;
+  }
+
+.fn-ex-row .paper-card {
+    padding: 14px 14px 12px;
+  }
+
+.fn-ex-row .paper-card-title {
+    font-size: 13px;
+    line-height: 20px;
+  }
+
+@media (max-width: 900px) {
+    .fn-ex-row {
+      grid-template-columns: 1fr;
+      grid-template-rows: none;
+    }
+    .fn-ex-row .fn-ex {
+      display: block;
+      grid-row: auto;
+    }
+    .fn-ex-row .fn-ex-body {
+      display: flex;
+      flex-direction: column;
+      grid-row: auto;
+    }
+  }
+
+.fn-ex-label {
+    display: inline-block;
+    margin: 0 0 10px;
+    padding: 0 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 20px;
+    color: #b42318;
+    background: #fef3f2;
+  }
+
+.fn-ex-label.is-good {
+    color: #047857;
+    background: #ecfdf5;
+  }
+
+.fn-ex-bar {
+    display: block;
+    width: 100%;
+    height: 3px;
+    margin: 0 0 16px;
+    background: #b42318;
+    border-radius: 2px;
+  }
+
+.fn-ex-bar.is-good {
+    background: #047857;
+  }
+
+.fn-ex-bar + .fn-ex-mock {
+    border-radius: 8px;
+  }
+
+.fn-ex-mock {
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f5f5f5;
+    border: 1px solid #e2e8f0;
+  }
+
+.fn-ex-mock:has(.case-video),
+  .fn-ex-mock:has(.st-card) {
+    background: #f5f5f5;
+    border: 1px solid #e2e8f0;
+    padding: 0;
+  }
+
+.case-video {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 100%;
+    padding: 12px;
+    box-sizing: border-box;
+  }
+
+.case-video-player {
+    position: relative;
+    height: 132px;
+    border-radius: 6px;
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse at 50% 80%, #3d5a80 0%, transparent 55%),
+      linear-gradient(180deg, #0b1220 0%, #1a2740 55%, #0e1a2e 100%);
+  }
+
+.case-video-burn {
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    margin: 0;
+    text-align: center;
+    font-size: 18px;
+    line-height: 24px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: rgba(255,255,255,.42);
+    pointer-events: none;
+  }
+
+.case-video-play {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 36px;
+    height: 36px;
+    margin: -18px 0 0 -18px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.92);
+  }
+
+.case-video-play::after {
+    content: "";
+    position: absolute;
+    left: 14px;
+    top: 11px;
+    border-style: solid;
+    border-width: 7px 0 7px 12px;
+    border-color: transparent transparent transparent #191919;
+  }
+
+.case-video-copy {
+    padding: 10px 12px 12px;
+    background: #fff;
+    border-radius: 6px;
+  }
+
+.case-video-copy h4 {
+    margin: 0 0 6px;
+    font-size: 13px;
+    line-height: 20px;
+    font-weight: 650;
+    color: #191919;
+  }
+
+.case-video-copy p {
+    margin: 0;
+    font-size: 12px;
+    line-height: 18px;
+    color: #191919;
+  }
+
+.case-video-copy p + p {
+    margin-top: 6px;
+  }
+
+.audio-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    background: #fff;
+    border-radius: 6px;
+  }
+
+.audio-bar-play {
+    position: relative;
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #1476FF;
+  }
+
+.audio-bar-play::after {
+    content: "";
+    position: absolute;
+    left: 11px;
+    top: 8px;
+    border-style: solid;
+    border-width: 6px 0 6px 9px;
+    border-color: transparent transparent transparent #fff;
+  }
+
+.audio-bar-wave {
+    flex: 1;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+
+.audio-bar-wave i {
+    display: block;
+    width: 3px;
+    border-radius: 1px;
+    background: #bfbfbf;
+  }
+
+.audio-bar-time {
+    flex-shrink: 0;
+    font-size: 12px;
+    color: #8c8c8c;
+  }
+
+.st-card {
+    padding: 12px;
+    height: 100%;
+    box-sizing: border-box;
+  }
+
+.st-card .audio-bar + p,
+  .st-card .audio-bar + .case-video-copy {
+    margin-top: 10px;
+  }
+
+.fn-ex-title {
+    margin: 12px 0 0;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 650;
+    color: #191919;
+  }
+
+.fn-ex-list {
+    margin: 8px 0 0;
+    padding: 0 0 0 1.25em;
+    list-style: disc;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+.fn-ex-list li {
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+    line-height: 22px;
+    color: #191919;
+  }
+
+.fn-ex-list li + li {
+    margin-top: 0;
+  }
+
+.fn-ex-list--tight {
+    gap: 4px;
+  }
+
+.fn-ex-list strong {
+    font-weight: 650;
+    color: #191919;
+  }
+
+.fn-ex-note {
+    margin: 8px 0 0;
+    font-size: 14px;
+    line-height: 22px;
+    color: #191919;
+  }
+
+.fn-ex-note:first-of-type {
+    margin-top: 10px;
+  }
+
+.fn-ex-note strong {
+    font-weight: 650;
+    color: #191919;
+  }
+
+.fn-ex-mock--banner {
+    background: #f5f5f5;
+    border: none;
+    padding: 16px;
+  }
+
+.fn-ex-mock--banner img {
+    display: block;
+    width: 100%;
+    max-width: 640px;
+    height: auto;
+    margin: 0 auto;
+    border-radius: 8px;
+  }
+
+.st-card {
+    padding: 16px 18px 14px;
+    color: #191919;
+  }
+
+.scene-def-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    line-height: 22px;
+    margin: 0 0 8px;
+    table-layout: fixed;
+  }
+
+.scene-def-table th,
+  .scene-def-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid #e2e8f0;
+    vertical-align: middle;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 400;
+  }
+
+.scene-def-table tbody td {
+    height: 64px;
+  }
+
+.scene-def-table th {
+    font-size: 12px;
+    font-weight: 650;
+    color: #595959;
+    background: #fafafa;
+  }
+
+.scene-def-table .col-type { width: 18%; }
+
+.scene-def-table .col-desc { width: 55%; }
+
+.scene-def-table .col-place { width: 27%; }
+
+.scene-def-table col.col-type { width: 18%; }
+
+.scene-def-table col.col-desc { width: 55%; }
+
+.scene-def-table col.col-place { width: 27%; }
+
+.scene-def-table + h2.block-title {
+    margin-top: 40px;
+  }
+  .fn-ex-row { margin: 16px 0 0; }
+  .principle-example + .principle-example { margin-top: 28px; }
+  .scene-def-table { margin-bottom: 24px; }
+  .section .fn-ex-list { margin: 0; }
+  .section .fn-ex-list li { color: #191919; margin-bottom: 0; }
+
+</style>
+</head>
+<body class="inner-page" data-module="principles" data-page="media">
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html">社区 <span>AI 亲和原则</span></a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="mintlify.html">友商对照</a>
+      <a href="reachability.html">社区诊断</a>
+      <a href="principles-affinity-full.html" class="active">亲和原则</a>
+      <a href="community-ui.html">组件亲和</a>
+      <a href="design-guide-image-text.html">设计模式</a>
+    </nav>
+  </div>
+</div>
+
+<div class="page-wrapper">
+
+  <aside id="module-sidebar"></aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <h1>音视频要点伴随</h1>
+<p class="page-desc page-desc--split">
+        <span class="page-desc-line">音视频不独自表意：关键步骤、结论与参数须有可读取的文字要点，机器不必「听完/看完」才能答题。</span>
+        <span class="page-desc-line">可读 · 设计专项见 <a href="design-guide-media.html">音视频要点伴随</a>。</span>
+      </p>
+    </div>
+
+    <section class="section" id="objects">
+      <h2>对象</h2>
+<table class="scene-def-table">
+    <colgroup>
+      <col class="col-type" />
+      <col class="col-desc" />
+      <col class="col-place" />
+    </colgroup>
+    <thead>
+      <tr>
+        <th class="col-type">类型</th>
+        <th class="col-desc">说明</th>
+        <th class="col-place">常见落点</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="col-type">视频</td>
+        <td class="col-desc">讲解、步骤与结论须以播放器旁标题与要点/正文交付，禁止仅存于播放器或画面烧字。</td>
+        <td class="col-place">案例视频、教程片</td>
+      </tr>
+      <tr>
+        <td class="col-type">音频</td>
+        <td class="col-desc">讲解与结论须以音频条旁标题与要点/正文交付，禁止仅以波形或口播承载。</td>
+        <td class="col-place">答疑音频、播客片段</td>
+      </tr>
+    </tbody>
+  </table>
+    </section>
+
+    <section class="section" id="design-ui">
+      <h2>设计UI调整</h2>
+
+      <h3 id="design-suggestions">调整建议</h3>
+      <ul class="principle-suggestions">
+        <li><strong>媒体不独自表意</strong>：讲解、步骤与结论不得仅存于音视频；须配旁侧可抓取标题与要点。画面内嵌文字与口播内容均不视为文本替代。</li>
+        <li><strong>要点概括即可</strong>：旁侧文字概括关键步骤与结论即可，无需逐字转写口播。</li>
+      </ul>
+
+      <h3 id="design-example">调整示例</h3>
+      <div class="principle-example">
+        <h4>用旁侧文字表达视频要点</h4>
+<div class="fn-ex-row">
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label">反面</span>
+    <div class="fn-ex-bar" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="反面：只有播放器，标题烧进画面">
+      <div class="case-video">
+        <div class="case-video-player">
+          <p class="case-video-burn">龙岗智慧城市 2.0</p>
+          <span class="case-video-play" aria-hidden="true"></span>
+        </div>
+      </div>
+    </div>
+    <div class="fn-ex-foot">
+    <ul class="fn-ex-list">
+      <li><strong>常见疏漏：</strong>仅有播放器，标题烧进画面，机器无法不播放即抓取案例要点。 <a class="fn-h3-link" href="https://www.hiascend.com/industries/solutions/smart-city" target="_blank" rel="noopener">查看示例来源</a></li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label is-good">正面</span>
+    <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="正面：播放器旁有标题和要点正文">
+      <div class="case-video">
+        <div class="case-video-player">
+          <span class="case-video-play" aria-hidden="true"></span>
+        </div>
+        <div class="case-video-copy">
+          <h4>以智生慧、融慧赋能</h4>
+          <p>深圳龙岗以「数据 + 算力」打造智慧城市 2.0，赋能城管、消防、交通、工地、水务、市监 6 大领域、60+ 场景。</p>
+          <p>大运 AI 小镇以「数据 + 算力 + 平台」孵化企业，开发 20 多种 AI 算法。</p>
+        </div>
+      </div>
+    </div>
+    <div class="fn-ex-foot">
+    <ul class="fn-ex-list">
+      <li><strong>正确做法：</strong>播放器旁写标题与要点正文；画面烧字不算文本替代。</li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  </div>
+      </div>
+
+      <div class="principle-example">
+        <h4>用旁侧文字表达音频要点</h4>
+<div class="fn-ex-row">
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label">反面</span>
+    <div class="fn-ex-bar" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="反面：只有音频条">
+      <div class="st-card">
+        <div class="audio-bar">
+          <span class="audio-bar-play" aria-hidden="true"></span>
+          <span class="audio-bar-wave" aria-hidden="true">
+            <i style="height:8px"></i><i style="height:16px"></i><i style="height:12px"></i><i style="height:22px"></i><i style="height:10px"></i><i style="height:18px"></i><i style="height:14px"></i><i style="height:20px"></i><i style="height:9px"></i><i style="height:16px"></i><i style="height:11px"></i><i style="height:19px"></i><i style="height:7px;background:#d9d9d9"></i><i style="height:13px;background:#d9d9d9"></i><i style="height:8px;background:#d9d9d9"></i><i style="height:15px;background:#d9d9d9"></i>
+          </span>
+          <span class="audio-bar-time">8:15</span>
+        </div>
+      </div>
+    </div>
+    <div class="fn-ex-foot">
+    <ul class="fn-ex-list">
+      <li><strong>常见疏漏：</strong>仅有波形与时长，未配标题与要点，机器无法识别所讲内容。</li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label is-good">正面</span>
+    <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="正面：音频旁有标题和要点">
+      <div class="st-card">
+        <div class="audio-bar">
+          <span class="audio-bar-play" aria-hidden="true"></span>
+          <span class="audio-bar-wave" aria-hidden="true">
+            <i style="height:8px"></i><i style="height:16px"></i><i style="height:12px"></i><i style="height:22px"></i><i style="height:10px"></i><i style="height:18px"></i><i style="height:14px"></i><i style="height:20px"></i><i style="height:9px"></i><i style="height:16px"></i><i style="height:11px"></i><i style="height:19px"></i><i style="height:7px;background:#d9d9d9"></i><i style="height:13px;background:#d9d9d9"></i><i style="height:8px;background:#d9d9d9"></i><i style="height:15px;background:#d9d9d9"></i>
+          </span>
+          <span class="audio-bar-time">8:15</span>
+        </div>
+        <div class="case-video-copy">
+          <h4>CANN 安装答疑</h4>
+          <p>驱动版本须与 CANN 配套；配置 PATH 后用版本查询确认匹配。</p>
+        </div>
+      </div>
+    </div>
+    <div class="fn-ex-foot">
+    <ul class="fn-ex-list">
+      <li><strong>正确做法：</strong>音频条旁写标题与要点正文；波形只辅助。</li>
+      <li><strong>可免场景：</strong>装饰性背景音，且旁侧要点已覆盖同一内容时，音频可只装饰。</li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  </div>
+      </div>
+
+      <p class="principle-example-note" style="margin-top:12px;">设计专项完整说明见 <a href="design-guide-media.html">音视频要点伴随</a>。</p>
+    </section>
+
+<section class="section" id="content-adjust">
+      <h2>文档内容调整</h2>
+      <ul class="principle-suggestions">
+        <li>用条目概括操作步骤、命令与预期结果；要点与口播一致。</li>
+        <li>可链完整讲义 / Markdown，但页内须有足够摘要。</li>
+      </ul>
+    </section>
+
+<section class="section" id="frontend-adjust">
+      <h2>前端调整</h2>
+      <ul class="principle-suggestions">
+        <li>要点在首包 HTML；勿仅 XHR 加载字幕当唯一文本。</li>
+        <li>装饰性背景视频标记勿入库。</li>
+      </ul>
+</section>
+
+  </main>
+</div>
+
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js"></script>
+<script src="assets/js/module-sidebar.js"></script>
+</body>
+</html>

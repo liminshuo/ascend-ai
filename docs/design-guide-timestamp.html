@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>版本信息外显 · 设计指导 · 昇腾社区 AI 亲和原则</title>
+<title>版本信息外显 · 设计模式 · 昇腾社区 AI 亲和原则</title>
 <style>
   :root {
     --bg: #F5F5F5;
@@ -31,12 +31,12 @@
   }
   a { color: var(--link); }
   .topbar {
-    position: sticky; top: 0; z-index: 50;
+    position: sticky; top: 0; z-index: 200;
     height: 56px; min-height: 56px; max-height: 56px;
     box-sizing: border-box;
     background: var(--panel);
     border-bottom: 1px solid var(--line);
-    overflow: hidden;
+    overflow: visible;
   }
   .topbar-inner {
     width: 100%; max-width: none; margin: 0; padding: 0 24px;
@@ -71,7 +71,7 @@
     font-size: 11px; font-weight: 700; letter-spacing: .04em; color: var(--muted);
     padding: 12px 20px 4px; margin-top: 8px; border-top: 1px solid var(--line);
   }
-  .peer-nav > .peer-group-label:first-child { margin-top: 0; border-top: none; padding-top: 10px; }
+  .peer-nav > .peer-group-label:first-child { margin-top: 0; border-top: none; padding-top: 0; }
   .peer-nav a {
     display: block; padding: 8px 20px; font-size: 13px; line-height: 1.5;
     text-decoration: none; color: var(--muted); border-left: 2px solid transparent;
@@ -110,7 +110,7 @@
     color: var(--text);
   }
   h2.block-title:first-of-type {
-    margin-top: 40px;
+    margin-top: 48px;
   }
   .affinity-group-label {
     margin: 0 0 8px;
@@ -461,13 +461,27 @@
   .hub-card p { margin: 0; color: var(--muted); font-size: 13px; }
 
   h3.fn-h3 {
-    margin: 32px 0 8px;
-    padding-top: 0;
+    margin: 0;
+    padding-top: 24px;
+    padding-bottom: 24px;
     font-size: 18px;
     line-height: 28px;
     font-weight: 650;
     color: var(--text);
     letter-spacing: -0.01em;
+  }
+  h4.fn-h4 {
+    margin: 24px 0 0;
+    padding-top: 0;
+    padding-bottom: 16px;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 650;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+  h3.fn-h3 + h4.fn-h4 {
+    margin-top: 12px;
   }
   h3.fn-h3 .fn-h3-link,
   .fn-h3-link {
@@ -1800,6 +1814,144 @@
   }
   .st-word.is-wait { color: var(--muted); font-weight: 500; }
 
+
+  h3.fn-h3 + .affinity-group-label {
+    margin-top: 8px;
+  }
+  .scene-def-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--body-size);
+    line-height: var(--body-lh);
+    margin: 0 0 8px;
+    table-layout: fixed;
+  }
+  .scene-def-table th,
+  .scene-def-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: middle;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 400;
+  }
+  .scene-def-table tbody td {
+    height: 64px;
+  }
+  .scene-def-table th {
+    font-size: 12px;
+    font-weight: 650;
+    color: var(--muted);
+    background: #fafafa;
+  }
+  .scene-def-table .col-type { width: 18%; }
+  .scene-def-table .col-desc { width: 55%; }
+  .scene-def-table .col-place { width: 27%; }
+  .scene-def-table col.col-type { width: 18%; }
+  .scene-def-table col.col-desc { width: 55%; }
+  .scene-def-table col.col-place { width: 27%; }
+  .scene-def-table + h2.block-title {
+    margin-top: 40px;
+  }
+
+  /* 设计专项下拉 */
+  .nav-dd {
+    position: relative;
+    z-index: 210;
+    display: inline-flex;
+    align-items: center;
+  }
+  .nav-dd-trigger {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    font: inherit;
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 6px;
+    white-space: nowrap;
+    transition: background .15s, color .15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .nav-dd-trigger::after {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg);
+    opacity: .65;
+    margin-top: -3px;
+    flex-shrink: 0;
+  }
+  .nav-dd-trigger:hover,
+  .nav-dd:hover .nav-dd-trigger,
+  .nav-dd:focus-within .nav-dd-trigger {
+    color: var(--accent);
+    background: #F5F5F5;
+  }
+  .nav-dd-trigger.is-active {
+    color: var(--accent);
+    background: #F5F5F5;
+    font-weight: 600;
+  }
+  .nav-dd::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    height: 10px;
+  }
+  .nav-dd-panel {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    min-width: 148px;
+    padding: 6px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(25, 25, 25, 0.08);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: opacity .15s, transform .15s, visibility .15s;
+    z-index: 210;
+  }
+  .nav-dd:hover .nav-dd-panel,
+  .nav-dd:focus-within .nav-dd-panel {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  .nav-dd-panel a {
+    display: block;
+    padding: 8px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  .nav-dd-panel a:hover {
+    color: var(--accent);
+    background: #F5F5F5;
+  }
+  .nav-dd-panel a.is-active {
+    color: var(--accent);
+    background: #EEF5FF;
+    font-weight: 600;
+  }
+
 </style>
 </head>
 
@@ -1811,14 +1963,15 @@
       <a href="index.html">首页</a>
       <a href="mintlify.html">友商对照</a>
       <a href="reachability.html">社区诊断</a>
+      <a href="principles-affinity-full.html">亲和原则</a>
       <a href="community-ui.html">组件亲和</a>
-      <a href="design-guide-image-text.html" class="active">设计指导</a>
+      <a href="design-guide-image-text.html" class="active">设计模式</a>
     </nav>
   </div>
 </div>
 
 <div class="page-wrapper">
-<aside class="peer-sidebar" aria-label="设计指导导航">
+<aside class="peer-sidebar" aria-label="设计模式导航">
   <nav class="peer-nav">
     <div class="peer-group-label">入口可识别性</div>
     <ul>
@@ -1860,23 +2013,63 @@
     <h1>版本信息外显</h1>
   </header>
 
-  <h2 class="block-title">原则概述</h2>
-  <p class="affinity-group-label">原则：新旧写成日期和版本</p>
-  <ul class="affinity-principles">
-    <li>条目新旧、文档是否过期，须以可读的发布/更新日期和版本号（如 v8.0.0）明确标注于条目或页头。禁止仅靠列表顺序或「新」色标暗示时效性。角标可保留，但不得替代日期与版本文字。</li>
-    <li>演进关系（如取代、兼容、适用版本）须用文字写明，例如「已被 v8.0.0 取代」「兼容 8.0」。版本号本身不能替代关系描述。</li>
-  </ul>
-  <p class="affinity-group-label">对 AI 的好处</p>
-  <ul class="affinity-principles">
-    <li>AI 可直接读取日期、版本号及演进关系，进行新旧比较和适用性判断，无需从排序或色块中猜测哪条信息有效。</li>
-  </ul>
+  <h2 class="block-title">Pattern说明</h2>
+  <h3 class="fn-h3">场景定义</h3>
+  <table class="scene-def-table">
+    <colgroup>
+      <col class="col-type" />
+      <col class="col-desc" />
+      <col class="col-place" />
+    </colgroup>
+    <thead>
+      <tr>
+        <th class="col-type">类型</th>
+        <th class="col-desc">说明</th>
+        <th class="col-place">常见落点</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="col-type">日期与版本</td>
+        <td class="col-desc">更新日期与版本号（如 v8.0.0）须写成字；禁止仅靠列表顺序或「新」色标暗示时效。</td>
+        <td class="col-place">文档列表、页头元信息</td>
+      </tr>
+      <tr>
+        <td class="col-type">演进关系</td>
+        <td class="col-desc">取代、兼容、适用版本须用文字写明；版本号本身不能替代关系描述。</td>
+        <td class="col-place">版本对照、变更说明</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 class="fn-h3">AI 亲和设计原则</h3>
+  <table class="scene-def-table">
+    <colgroup>
+      <col class="col-type" />
+      <col class="col-desc" />
+      <col class="col-place" />
+    </colgroup>
+    <thead>
+      <tr>
+        <th class="col-type">设计原则</th>
+        <th class="col-desc">说明</th>
+        <th class="col-place"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="col-type">新旧写成日期和版本</td>
+        <td class="col-desc" colspan="2">条目须标注可读的更新日期与版本号。角标可保留，但不得替代日期与版本文字。</td>
+      </tr>
+      <tr>
+        <td class="col-type">演进关系写成词</td>
+        <td class="col-desc" colspan="2">取代、兼容、适用版本须写成「已被 v8.0.0 取代」「兼容 8.0」等；版本号不能代替关系句。</td>
+      </tr>
+    </tbody>
+  </table>
 
-  <h2 class="block-title">场景示例</h2>
-  <h3 class="fn-h3">示例 1 · 日期与版本须写成字</h3>
-  <div class="fn-lead-block">
-    <p class="type-lead fn-lead"><strong>核心原则：</strong>写成发布/更新日期和版本号；「新」色标和排在最前只辅助，不代替字。</p>
-    <p class="type-lead fn-lead"><strong>例外情况：</strong>页头已写明仅展示当前版本时，列表内可不重复日期。</p>
-  </div>
+  <h2 class="block-title">设计示例</h2>
+  <h3 class="fn-h3">日期与版本</h3>
+  <h4 class="fn-h4">示例 1 · 日期与版本须写成字</h4>
   <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
@@ -1896,7 +2089,7 @@
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>缺文本替代：</strong>只有「新」和「旧版」，读不出发布日期和版本号。</li>
+      <li><strong>常见疏漏：</strong>仅有「新」色标与「旧版」字样，机器无法识别更新日期与版本号。</li>
     </ul>
     </div>
     </div>
@@ -1911,32 +2104,26 @@
       <div class="ver-list">
         <div class="ver-item">
           <p class="ver-item-title">CANN 安装指南</p>
-          <p class="ver-item-meta">v8.0.0 · 2026-03-12</p>
+          <p class="ver-item-meta">v8.0.0 · 更新 2026-03-12</p>
         </div>
         <div class="ver-item">
           <p class="ver-item-title">CANN 安装指南</p>
-          <p class="ver-item-meta">v7.0.0 · 2025-08-01</p>
+          <p class="ver-item-meta">v7.0.0 · 更新 2025-08-01</p>
         </div>
       </div>
     </div>
     <div class="fn-ex-foot">
-    <p class="fn-ex-group">必有项</p>
     <ul class="fn-ex-list">
-      <li><strong>版本号：</strong>须写成如 v8.0.0。</li>
-      <li><strong>日期：</strong>须写成发布或更新日期。</li>
-    </ul>
-    <p class="fn-ex-group">可选项</p>
-    <ul class="fn-ex-list">
-      <li><strong>「新」色标：</strong>可留，只辅助。</li>
+      <li><strong>正确做法：</strong>写成版本号（如 v8.0.0）与更新日期；「新」色标可留，只辅助。</li>
+      <li><strong>可免场景：</strong>页头已写明仅展示当前版本时，列表内可不重复日期。</li>
     </ul>
     </div>
     </div>
   </div>
   </div>
-  <h3 class="fn-h3">示例 2 · 演进关系须写成词</h3>
-  <div class="fn-lead-block">
-    <p class="type-lead fn-lead"><strong>核心原则：</strong>取代、兼容、适用版本须写成词；版本号本身不能代替这句关系。</p>
-  </div>
+
+  <h3 class="fn-h3">演进关系</h3>
+  <h4 class="fn-h4">示例 2 · 演进关系须写成词</h4>
   <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
@@ -1948,17 +2135,17 @@
       <div class="ver-list">
         <div class="ver-item">
           <p class="ver-item-title">CANN 安装指南</p>
-          <p class="ver-item-meta">v8.0.0 · 2026-03-12</p>
+          <p class="ver-item-meta">v8.0.0 · 更新 2026-03-12</p>
         </div>
         <div class="ver-item">
           <p class="ver-item-title">CANN 安装指南</p>
-          <p class="ver-item-meta">v7.0.0 · 2025-08-01</p>
+          <p class="ver-item-meta">v7.0.0 · 更新 2025-08-01</p>
         </div>
       </div>
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>有歧义：</strong>版本和日期可抓取，但读不出 v7.0.0 是否仍适用、是否已被取代。</li>
+      <li><strong>常见疏漏：</strong>版本与日期可抓取，但未写演进关系，机器无法判断 v7.0.0 是否仍适用、是否已被取代。</li>
     </ul>
     </div>
     </div>
@@ -1973,18 +2160,17 @@
       <div class="ver-list">
         <div class="ver-item">
           <p class="ver-item-title">CANN 安装指南</p>
-          <p class="ver-item-meta">v8.0.0 · 2026-03-12</p>
+          <p class="ver-item-meta">v8.0.0 · 更新 2026-03-12</p>
         </div>
         <div class="ver-item">
           <p class="ver-item-title">CANN 安装指南</p>
-          <p class="ver-item-meta">v7.0.0 · 2025-08-01 · 已被 v8.0.0 取代</p>
+          <p class="ver-item-meta">v7.0.0 · 更新 2025-08-01 · 已被 v8.0.0 取代</p>
         </div>
       </div>
     </div>
     <div class="fn-ex-foot">
-    <p class="fn-ex-group">必有项</p>
     <ul class="fn-ex-list">
-      <li><strong>演进关系：</strong>须写成「已被 v8.0.0 取代」「兼容 8.0」等。</li>
+      <li><strong>正确做法：</strong>演进关系写成「已被 v8.0.0 取代」「兼容 8.0」等。</li>
     </ul>
     </div>
     </div>

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>元数据丰富化 · 亲和原则 · 社区AI亲和分析</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid #e2e8f0;
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: 100%; max-width: none; margin: 0; padding: 0 24px;
+    height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: #191919; text-decoration: none; white-space: nowrap; margin-right: 40px;
+  }
+  .topbar .brand span { color: #1476FF; }
+  .topbar .site-nav { display: flex; align-items: center; gap: 4px; flex: 1; flex-wrap: wrap; }
+  .topbar .site-nav > a {
+    text-decoration: none; color: #595959; font-size: 14px; font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .topbar .site-nav > a:hover { color: #1476FF; background: #F5F5F5; text-decoration: none; }
+  .topbar .site-nav > a.active { color: #1476FF; background: #F5F5F5; font-weight: 600; }
+  .nav-dd { position: relative; z-index: 210; display: inline-flex; align-items: center; }
+  .nav-dd-trigger {
+    appearance: none; border: 0; background: transparent; cursor: pointer; font: inherit;
+    text-decoration: none; color: #595959; font-size: 14px; font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+    display: inline-flex; align-items: center; gap: 12px;
+  }
+  .nav-dd-trigger::after {
+    content: ""; width: 6px; height: 6px;
+    border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg); opacity: .65; margin-top: -3px; flex-shrink: 0;
+  }
+  .nav-dd-trigger:hover, .nav-dd:hover .nav-dd-trigger, .nav-dd:focus-within .nav-dd-trigger {
+    color: #1476FF; background: #F5F5F5;
+  }
+  .nav-dd::before { content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 10px; }
+  .nav-dd-panel {
+    position: absolute; top: calc(100% + 4px); left: 0; min-width: 148px; padding: 6px;
+    background: #fff; border: 1px solid #e2e8f0; border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(25, 25, 25, 0.08);
+    opacity: 0; visibility: hidden; transform: translateY(-4px);
+    transition: opacity .15s, transform .15s, visibility .15s; z-index: 210;
+  }
+  .nav-dd:hover .nav-dd-panel, .nav-dd:focus-within .nav-dd-panel {
+    opacity: 1; visibility: visible; transform: translateY(0);
+  }
+  .nav-dd-panel a {
+    display: block; padding: 8px 12px; border-radius: 6px; text-decoration: none;
+    color: #595959; font-size: 13px; font-weight: 500; line-height: 1.4;
+  }
+  .nav-dd-panel a:hover { color: #1476FF; background: #F5F5F5; }
+  /* GEO topbar = fixed，沿用 layout 的 page-wrapper padding-top */
+  body.inner-page .page-wrapper { min-height: 100vh; }
+</style>
+</head>
+<body class="inner-page" data-module="principles" data-page="structure-metadata">
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html">社区 <span>AI 亲和原则</span></a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="mintlify.html">友商对照</a>
+      <a href="reachability.html">社区诊断</a>
+      <a href="principles-affinity-full.html" class="active">亲和原则</a>
+      <a href="community-ui.html">组件亲和</a>
+      <a href="design-guide-image-text.html">设计模式</a>
+    </nav>
+  </div>
+</div>
+
+<div class="page-wrapper">
+
+  <aside id="module-sidebar"></aside>
+
+  <main class="main-content">
+
+<div class="page-header">
+      <h1>元数据丰富化</h1>
+      <p class="page-desc page-desc--split">
+        <span class="page-desc-line">为每篇文档补全<strong>文档身份、版本、适用产品、更新时间、上下篇关系</strong>等元数据，并在页头展示摘要与面包屑，让机器可结构化检索、人可快速定位。</span>
+        <span class="page-desc-line">找的准 · 序号 4 · 对应 <a href="problems-structure-metadata.html">问题论证 · 页级元数据未结构化</a>。</span>
+      </p>
+    </div>
+
+    <section class="section" id="content-adjust">
+      <h2>文档内容调整</h2>
+
+      <h3 id="content-suggestions">调整建议</h3>
+      <ul class="principle-suggestions">
+        <li><strong>每个文档页面建议在 &lt;head&gt; 中包含丰富的结构化元数据，优先使用JSON-LD格式，至少嵌入</strong>：@type（TechArticle / HowTo / FAQPage）、headline、description（150–160字符）、inLanguage、datePublished、dateModified、keywords、author/publisher。</li>
+      </ul>
+
+      <h3 id="content-example">调整示例</h3>
+      <div class="principle-example">
+        <h4>1. Frontmatter 中补充完整元数据字段</h4>
+        <div class="compare-grid compare-grid--stack compare-grid--no-mid-divider">
+          <h4 class="compare-label compare-label--machine">Before · 仅标题与版本</h4>
+          <div class="compare-col machine">
+            <pre class="arch-diagram">---
+title: 算子开发入门
+version: "9.0.0"
+---</pre>
+          </div>
+          <h4 class="compare-label compare-label--human">After · 完整结构化元数据</h4>
+          <div class="compare-col human">
+            <pre class="arch-diagram">---
+title: 算子开发入门
+description: "面向已完成环境安装的开发者，介绍
+  Ascend C 算子开发基本流程与工程结构。（78字）"
+version: "9.0.0"
+date_published: "2026-01-01"
+date_modified: "2026-06-01"
+in_language: zh-CN
+keywords: [Ascend C, 算子开发, CANN, 入门]
+author: 昇腾文档团队
+schema_type: TechArticle
+---</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="frontend-adjust">
+      <h2>前端调整</h2>
+
+      <h3 id="frontend-suggestions">调整建议</h3>
+      <ul class="principle-suggestions">
+        <li><strong>JSON-LD 模板化输出</strong>：在页面模板中统一注入 JSON-LD，字段从 CMS 结构化数据中动态读取，覆盖所有文档页面，不依赖人工逐页添加。</li>
+        <li><strong>必填字段完整性校验</strong>：发布流程中检测 JSON-LD 是否包含所有必填字段（@type、headline、description、inLanguage、datePublished、dateModified、keywords、author/publisher），缺失字段则阻断发布。</li>
+        <li><strong>@type 按页面类型自动匹配</strong>：文档类型（HowTo、TechArticle、FAQPage 等）在 CMS 中作为页面属性维护，JSON-LD 的 @type 由系统根据页面类型自动填入，不依赖人工判断。</li>
+      </ul>
+
+      <h3 id="frontend-example">调整示例</h3>
+      <div class="principle-example">
+        <h4>1. JSON-LD 结构化元数据</h4>
+        <div class="compare-grid compare-grid--stack compare-grid--no-mid-divider">
+          <h4 class="compare-label compare-label--machine">Before · 无 JSON-LD</h4>
+          <div class="compare-col machine">
+            <pre class="arch-diagram">&lt;head&gt;
+  &lt;title&gt;算子开发入门&lt;/title&gt;
+&lt;/head&gt;</pre>
+          </div>
+          <h4 class="compare-label compare-label--human">After · 完整 JSON-LD</h4>
+          <div class="compare-col human">
+            <pre class="arch-diagram">&lt;script type="application/ld+json"&gt;
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "算子开发入门",
+  "description": "面向已完成环境安装的开发者介绍 Ascend C 算子开发基本流程（150字以内）",
+  "inLanguage": "zh-CN",
+  "datePublished": "2026-01-01",
+  "dateModified": "2026-06-01",
+  "version": "9.0.0"
+}
+&lt;/script&gt;</pre>
+          </div>
+        </div>
+      </div>
+      <div class="principle-example">
+        <h4>2. BreadcrumbList 面包屑导航 JSON-LD</h4>
+        <div class="compare-grid compare-grid--stack compare-grid--no-mid-divider">
+          <h4 class="compare-label compare-label--machine">Before · 仅视觉面包屑，无结构化数据</h4>
+          <div class="compare-col machine">
+            <pre class="arch-diagram">&lt;!-- 面包屑只在页面可见，无 JSON-LD --&gt;
+&lt;nav class="breadcrumb"&gt;
+  首页 &gt; 开发指南 &gt; 算子开发入门
+&lt;/nav&gt;
+&lt;!-- Agent 只能读到文字，无法推断层级关系
+     和每层的 URL --&gt;</pre>
+          </div>
+          <h4 class="compare-label compare-label--human">After · BreadcrumbList 结构化层级</h4>
+          <div class="compare-col human">
+            <pre class="arch-diagram">&lt;script type="application/ld+json"&gt;
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "首页",
+      "item": "https://…/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "开发指南",
+      "item": "https://…/dev-guide/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "算子开发入门",
+      "item": "https://…/900/operator_dev.html"
+    }
+  ]
+}
+&lt;/script&gt;</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main></div>
+
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js"></script>
+<script src="assets/js/module-sidebar.js"></script>
+</body>
+</html>

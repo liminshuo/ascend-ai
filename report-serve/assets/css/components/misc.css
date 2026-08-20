@@ -115,13 +115,31 @@
 /* ── Compare Block ── */
 .compare-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
   margin: 16px 0;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.compare-grid > * {
+  min-width: 0;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+}
+
+.compare-grid > * > .compare-col {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .compare-grid--stack {
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .compare-grid--stack .compare-label--human {
@@ -150,6 +168,22 @@
 
 .principle-example-note a {
   font-weight: 600;
+}
+
+/* 正反示例 mock 内的 h2/h3 仅作示意，不套用章节标题样式 */
+.section .fn-ex-mock h2,
+.section .fn-ex-mock h3,
+.section .principle-example .fn-ex-mock h2,
+.section .principle-example .fn-ex-mock h3 {
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-bottom: none;
+  height: auto;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  color: inherit;
 }
 
 .example-divider {
@@ -185,17 +219,26 @@
 
 .compare-col .arch-diagram {
   margin-top: 0;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: auto;
 }
 
 .compare-col .rf-muted {
   margin-top: 10px;
   margin-bottom: 0;
+  overflow-wrap: anywhere;
 }
 
 .compare-col {
   border-radius: var(--radius);
   padding: 18px 20px;
   font-size: 13.5px;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: auto;
 }
 
 .compare-col.human {

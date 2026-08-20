@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>蒙版不遮挡关键步骤 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid #e2e8f0;
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: 100%; max-width: none; margin: 0; padding: 0 24px;
+    height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: #191919; text-decoration: none; white-space: nowrap; margin-right: 40px;
+  }
+  .topbar .brand span { color: #1476FF; }
+  .topbar .site-nav { display: flex; align-items: center; gap: 4px; flex: 1; flex-wrap: wrap; }
+  .topbar .site-nav > a {
+    text-decoration: none; color: #595959; font-size: 14px; font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .topbar .site-nav > a:hover { color: #1476FF; background: #F5F5F5; text-decoration: none; }
+  .topbar .site-nav > a.active { color: #1476FF; background: #F5F5F5; font-weight: 600; }
+  .nav-dd { position: relative; z-index: 210; display: inline-flex; align-items: center; }
+  .nav-dd-trigger {
+    appearance: none; border: 0; background: transparent; cursor: pointer; font: inherit;
+    text-decoration: none; color: #595959; font-size: 14px; font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+    display: inline-flex; align-items: center; gap: 12px;
+  }
+  .nav-dd-trigger::after {
+    content: ""; width: 6px; height: 6px;
+    border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg); opacity: .65; margin-top: -3px; flex-shrink: 0;
+  }
+  .nav-dd-trigger:hover, .nav-dd:hover .nav-dd-trigger, .nav-dd:focus-within .nav-dd-trigger {
+    color: #1476FF; background: #F5F5F5;
+  }
+  .nav-dd::before { content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 10px; }
+  .nav-dd-panel {
+    position: absolute; top: calc(100% + 4px); left: 0; min-width: 148px; padding: 6px;
+    background: #fff; border: 1px solid #e2e8f0; border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(25, 25, 25, 0.08);
+    opacity: 0; visibility: hidden; transform: translateY(-4px);
+    transition: opacity .15s, transform .15s, visibility .15s; z-index: 210;
+  }
+  .nav-dd:hover .nav-dd-panel, .nav-dd:focus-within .nav-dd-panel {
+    opacity: 1; visibility: visible; transform: translateY(0);
+  }
+  .nav-dd-panel a {
+    display: block; padding: 8px 12px; border-radius: 6px; text-decoration: none;
+    color: #595959; font-size: 13px; font-weight: 500; line-height: 1.4;
+  }
+  .nav-dd-panel a:hover { color: #1476FF; background: #F5F5F5; }
+  body.inner-page .page-wrapper { min-height: 100vh; }
+
+@media (max-width: 1100px) {
+    .type-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+@media (max-width: 640px) {
+    .type-grid { grid-template-columns: 1fr; }
+  }
+
+h3.fn-h3 .fn-h3-link,
+  .fn-h3-link {
+    margin-left: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 22px;
+    color: #1476FF;
+    text-decoration: none;
+  }
+
+h3.fn-h3 .fn-h3-link:hover,
+  .fn-h3-link:hover {
+    text-decoration: underline;
+  }
+
+.fn-ex-mock--cards {
+    background: #f5f5f5;
+    border: none;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+  }
+
+.fn-ex-mock--cards .partner-shot {
+    display: block;
+    width: 220px;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0,0,0,.06);
+  }
+
+.fn-ex-mock--cards .partner-shot img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+.fn-ex-mock--cards .partner-mini {
+    width: 220px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0,0,0,.06);
+  }
+
+.fn-ex {
+    margin: 0 0 20px;
+    max-width: 720px;
+  }
+
+.fn-ex-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr auto;
+    column-gap: 16px;
+    row-gap: 0;
+    align-items: stretch;
+    max-width: none;
+    margin: 0 0 20px;
+  }
+
+.fn-ex-row .fn-ex {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 1 / span 3;
+    max-width: none;
+    margin: 0;
+    min-width: 0;
+  }
+
+.fn-ex-row .fn-ex-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+.fn-ex-row .fn-ex-head .fn-ex-label {
+    margin: 0;
+  }
+
+.fn-ex-row .fn-ex-head .fn-ex-bar {
+    display: block;
+    margin: 0;
+    width: 100%;
+    align-self: stretch;
+  }
+
+.fn-ex-row .fn-ex-body {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 2 / span 2;
+    min-height: 0;
+    background: #f5f5f5;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+.fn-ex-row .fn-ex-mock {
+    min-height: 0;
+    height: 100%;
+    box-sizing: border-box;
+    border: none;
+    border-radius: 0;
+    align-self: stretch;
+  }
+
+.fn-ex-row .fn-ex-foot {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px 14px 14px;
+    background: #fff;
+    border-top: 1px solid #e2e8f0;
+  }
+
+.fn-ex-row .fn-ex-foot .fn-ex-list {
+    margin: 0;
+    gap: 4px;
+  }
+
+.fn-ex-row .fn-ex-foot .fn-ex-group {
+    margin: 8px 0 0;
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 650;
+    color: #595959;
+  }
+
+.fn-ex-row .fn-ex-foot .fn-ex-group:first-child {
+    margin-top: 0;
+  }
+
+.fn-ex-row .status-ex-table {
+    font-size: 11px;
+    line-height: 16px;
+  }
+
+.fn-ex-row .status-ex-table th,
+  .fn-ex-row .status-ex-table td {
+    padding: 8px 6px;
+  }
+
+.fn-ex-row .paper-card {
+    padding: 14px 14px 12px;
+  }
+
+.fn-ex-row .paper-card-title {
+    font-size: 13px;
+    line-height: 20px;
+  }
+
+@media (max-width: 900px) {
+    .fn-ex-row {
+      grid-template-columns: 1fr;
+      grid-template-rows: none;
+    }
+    .fn-ex-row .fn-ex {
+      display: block;
+      grid-row: auto;
+    }
+    .fn-ex-row .fn-ex-body {
+      display: flex;
+      flex-direction: column;
+      grid-row: auto;
+    }
+  }
+
+.fn-ex-label {
+    display: inline-block;
+    margin: 0 0 10px;
+    padding: 0 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 20px;
+    color: #b42318;
+    background: #fef3f2;
+  }
+
+.fn-ex-label.is-good {
+    color: #047857;
+    background: #ecfdf5;
+  }
+
+.fn-ex-bar {
+    display: block;
+    width: 100%;
+    height: 3px;
+    margin: 0 0 16px;
+    background: #b42318;
+    border-radius: 2px;
+  }
+
+.fn-ex-bar.is-good {
+    background: #047857;
+  }
+
+.fn-ex-bar + .fn-ex-mock {
+    border-radius: 8px;
+  }
+
+.fn-ex-mock {
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f5f5f5;
+    border: 1px solid #e2e8f0;
+  }
+
+.fn-ex-title {
+    margin: 12px 0 0;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 650;
+    color: #191919;
+  }
+
+.fn-ex-list {
+    margin: 8px 0 0;
+    padding: 0 0 0 1.25em;
+    list-style: disc;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+.fn-ex-list li {
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+    line-height: 22px;
+    color: #191919;
+  }
+
+.fn-ex-list li + li {
+    margin-top: 0;
+  }
+
+.fn-ex-list--tight {
+    gap: 4px;
+  }
+
+.fn-ex-list strong {
+    font-weight: 650;
+    color: #191919;
+  }
+
+.fn-ex-note {
+    margin: 8px 0 0;
+    font-size: 14px;
+    line-height: 22px;
+    color: #191919;
+  }
+
+.fn-ex-note:first-of-type {
+    margin-top: 10px;
+  }
+
+.fn-ex-note strong {
+    font-weight: 650;
+    color: #191919;
+  }
+
+.info-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 100%;
+    padding: 12px;
+    box-sizing: border-box;
+  }
+
+.info-card img {
+    display: block;
+    width: 100%;
+    height: auto;
+    background: #fff;
+    border-radius: 4px;
+  }
+
+@media (max-width: 900px) {
+    .page-wrapper { flex-direction: column; }
+    .peer-sidebar {
+      position: static; width: 100%; height: auto;
+      border-right: none; border-bottom: 1px solid #e2e8f0;
+    }
+    .detail-grid, .pattern-grid, .hub-grid { grid-template-columns: 1fr; }
+  }
+
+.fn-ex-mock--banner {
+    background: #f5f5f5;
+    border: none;
+    padding: 16px;
+  }
+
+.fn-ex-mock--banner img {
+    display: block;
+    width: 100%;
+    max-width: 640px;
+    height: auto;
+    margin: 0 auto;
+    border-radius: 8px;
+  }
+
+@media (max-width: 900px) {
+    .type-grid--3 { grid-template-columns: 1fr; }
+  }
+
+.vis-page .is-on {
+    color: #fff;
+    font-weight: 650;
+    background: #1476FF;
+    border-color: #1476FF;
+  }
+
+.vis-toc-kids .is-on {
+    color: #191919;
+    font-weight: 650;
+  }
+
+.fn-ex-row .fn-ex-mock.fn-ex-mock--banner {
+    background: #f5f5f5;
+    padding: 12px;
+    border: none;
+  }
+
+.fn-ex-row .fn-ex-mock.fn-ex-mock--banner .info-card {
+    padding: 0;
+    gap: 0;
+    height: auto;
+    background: transparent;
+  }
+
+.fn-ex-row .fn-ex-mock.fn-ex-mock--banner .info-card img {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    border-radius: 10px;
+    border: 1px solid #e8ecf1;
+  }
+
+.fn-ex-row .fn-ex-mock:has(.cann-dl) {
+    background: #f5f5f5;
+    padding: 12px;
+  }
+
+.cann-dl {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 10px;
+    overflow: hidden;
+    font-family: "PingFang SC", sans-serif;
+    padding: 12px;
+  }
+
+.cann-dl-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 6px 8px;
+    margin: 0 0 10px;
+    font-size: 10px;
+    line-height: 14px;
+    color: #8c8c8c;
+  }
+
+.cann-dl-row strong {
+    color: #191919;
+    font-weight: 650;
+    min-width: 56px;
+    padding-top: 3px;
+  }
+
+.cann-dl-fields {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+  }
+
+.cann-dl-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    border: 1px solid #d9dde3;
+    background: #fff;
+    color: #595959;
+  }
+
+.cann-dl-chip.is-on {
+    border-color: #191919;
+    color: #191919;
+    background: #fff;
+    font-weight: 650;
+  }
+
+.cann-dl-chip .i {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1px solid #bfbfbf;
+    color: #8c8c8c;
+    font-size: 8px;
+    line-height: 10px;
+    text-align: center;
+  }
+
+.cann-dl-ver {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 4px;
+    border: 1px solid #d9dde3;
+    background: #fff;
+    color: #191919;
+    font-weight: 650;
+  }
+
+.cann-dl-ver .caret {
+    width: 8px;
+    height: 8px;
+    color: #8c8c8c;
+  }
+
+.cann-dl-meta {
+    width: 100%;
+    margin: 2px 0 0;
+    font-size: 10px;
+    line-height: 14px;
+    color: #8c8c8c;
+  }
+
+.cann-dl-help {
+    width: 100%;
+    margin: 2px 0 0;
+    font-size: 10px;
+    line-height: 14px;
+    color: #1476FF;
+  }
+
+.cann-dl-agree {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    margin: 10px 0 8px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    background: #f7f8fa;
+    font-size: 10px;
+    line-height: 15px;
+    color: #595959;
+  }
+
+.cann-dl-agree .box {
+    flex-shrink: 0;
+    width: 12px;
+    height: 12px;
+    margin-top: 1px;
+    border: 1px solid #1476FF;
+    border-radius: 2px;
+    background: #fff;
+    box-sizing: border-box;
+  }
+
+.cann-dl-agree a {
+    color: #1476FF;
+    text-decoration: none;
+  }
+
+.cann-dl-code {
+    margin: 0;
+    padding: 10px 12px;
+    border-radius: 6px;
+    background: #f5f7fb;
+    border: 1px solid #e8ecf1;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 10px;
+    line-height: 16px;
+    color: #191919;
+    white-space: pre-wrap;
+  }
+
+.scene-def-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    line-height: 22px;
+    margin: 0 0 8px;
+    table-layout: fixed;
+  }
+
+.scene-def-table th,
+  .scene-def-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid #e2e8f0;
+    vertical-align: middle;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 400;
+  }
+
+.scene-def-table tbody td {
+    height: 64px;
+  }
+
+.scene-def-table th {
+    font-size: 12px;
+    font-weight: 650;
+    color: #595959;
+    background: #fafafa;
+  }
+
+.scene-def-table .col-type { width: 18%; }
+
+.scene-def-table .col-desc { width: 55%; }
+
+.scene-def-table .col-place { width: 27%; }
+
+.scene-def-table col.col-type { width: 18%; }
+
+.scene-def-table col.col-desc { width: 55%; }
+
+.scene-def-table col.col-place { width: 27%; }
+
+.scene-def-table + h2.block-title {
+    margin-top: 40px;
+  }
+  .fn-ex-row { margin: 16px 0 0; }
+  .principle-example + .principle-example { margin-top: 28px; }
+  .scene-def-table { margin-bottom: 24px; }
+  .section .fn-ex-list { margin: 0; }
+  .section .fn-ex-list li { color: #191919; margin-bottom: 0; }
+
+</style>
+</head>
+<body class="inner-page" data-module="principles" data-page="mask-clear">
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html">社区 <span>AI 亲和原则</span></a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="mintlify.html">友商对照</a>
+      <a href="reachability.html">社区诊断</a>
+      <a href="principles-affinity-full.html" class="active">亲和原则</a>
+      <a href="community-ui.html">组件亲和</a>
+      <a href="design-guide-image-text.html">设计模式</a>
+    </nav>
+  </div>
+</div>
+
+<div class="page-wrapper">
+
+  <aside id="module-sidebar"></aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <h1>蒙版不遮挡关键步骤</h1>
+<p class="page-desc page-desc--split">
+        <span class="page-desc-line">安装命令、关键步骤等任务必需文本须首包默认可读；协议勾选可保留，不得用模糊蒙版挡住命令。</span>
+        <span class="page-desc-line">可读 · 设计专项见 <a href="design-guide-click-prefab.html">可点击预置内容</a>。</span>
+      </p>
+    </div>
+
+    <section class="section" id="objects">
+      <h2>对象</h2>
+<table class="scene-def-table"><colgroup>
+      <col class="col-type" />
+      <col class="col-desc" />
+      <col class="col-place" />
+    </colgroup><thead>
+      <tr>
+        <th class="col-type">类型</th>
+        <th class="col-desc">说明</th>
+        <th class="col-place">常见落点</th>
+      </tr>
+    </thead><tbody>
+<tr>
+        <td class="col-type">步骤蒙版</td>
+        <td class="col-desc">安装命令等关键步骤须默认可读；协议勾选可保留，禁止用模糊蒙版藏步骤。</td>
+        <td class="col-place">下载页、安装指引</td>
+      </tr>
+</tbody></table>
+    </section>
+
+    <section class="section" id="design-ui">
+      <h2>设计UI调整</h2>
+
+      <h3 id="design-suggestions">调整建议</h3>
+      <ul class="principle-suggestions">
+        <li><strong>关键内容默认可视</strong>：折叠、Tab、加载更多、协议勾选只控制显隐或确认，禁止把步骤、定义放到点击之后才注入。</li>
+        <li><strong>隐藏须可直达</strong>：必须折叠时提供「全部展开」；列表用分页代替无限滚；蒙版不得遮挡关键命令。</li>
+      </ul>
+
+      <h3 id="design-example">调整示例</h3>
+      <div class="principle-example">
+        <h4>关键步骤无蒙版遮挡</h4>
+<div class="fn-ex-row">
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label">反面</span>
+    <div class="fn-ex-bar" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock fn-ex-mock--banner" aria-label="反面：协议勾选蒙版模糊安装命令">
+      <div class="info-card">
+        <img src="assets/design-guide/cann-download-license-mask.png" alt="">
+      </div>
+    </div>
+    <div class="fn-ex-foot">
+    <ul class="fn-ex-list">
+      <li><strong>常见疏漏：</strong>未勾选协议前，安装命令被模糊蒙版挡住，机器无法读取关键步骤。 <a class="fn-h3-link" href="https://www.hiascend.com/cann/download?versionId=779&amp;ids=d806%2Ch0501%2Ch0601%2Ch0702" target="_blank" rel="noopener">查看示例来源</a></li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label is-good">正面</span>
+    <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="正面：协议可勾选，安装命令默认可读">
+      <div class="cann-dl">
+        <div class="cann-dl-row">
+          <strong>版本选择</strong>
+          <div class="cann-dl-fields">
+            <span class="cann-dl-ver">9.2.0-beta.1 <svg class="caret" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.25 6 7.75l3.5-3.5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <p class="cann-dl-meta">发布时间：2026/08/11</p>
+          </div>
+        </div>
+        <div class="cann-dl-row">
+          <strong>产品系列</strong>
+          <div class="cann-dl-fields">
+            <span class="cann-dl-chip is-on">950系列产品 <span class="i" aria-hidden="true">i</span></span>
+            <span class="cann-dl-chip">A3系列产品 <span class="i" aria-hidden="true">i</span></span>
+            <span class="cann-dl-chip">A2系列产品 <span class="i" aria-hidden="true">i</span></span>
+            <span class="cann-dl-chip">训练系列产品 <span class="i" aria-hidden="true">i</span></span>
+            <span class="cann-dl-chip">推理系列产品 <span class="i" aria-hidden="true">i</span></span>
+            <span class="cann-dl-chip">200I/500 A2推理产品 <span class="i" aria-hidden="true">i</span></span>
+            <p class="cann-dl-help">我不知道硬件信息 ▾</p>
+          </div>
+        </div>
+        <div class="cann-dl-row">
+          <strong>CPU架构</strong>
+          <div class="cann-dl-fields">
+            <span class="cann-dl-chip is-on">AArch64</span>
+            <span class="cann-dl-chip">X86_64</span>
+          </div>
+        </div>
+        <div class="cann-dl-row">
+          <strong>操作系统</strong>
+          <div class="cann-dl-fields">
+            <span class="cann-dl-chip is-on">openEuler</span>
+          </div>
+        </div>
+        <div class="cann-dl-row">
+          <strong>安装方式</strong>
+          <div class="cann-dl-fields">
+            <span class="cann-dl-chip is-on">在线安装 (Yum)</span>
+            <span class="cann-dl-chip">在线安装 (Conda)</span>
+            <span class="cann-dl-chip">离线安装 (Runfile)</span>
+          </div>
+        </div>
+        <div class="cann-dl-agree"><span class="box" aria-hidden="true"></span><span>下载并使用即表示同意遵守<a href="#mock-license">《CANN软件许可协议 2.0》</a>；安装指引默认可见。</span></div>
+        <pre class="cann-dl-code"># 配置 yum 源并安装（示意）
+sudo yum install cann-toolkit
+sudo yum install cann-kernels</pre>
+      </div>
+    </div>
+    <div class="fn-ex-foot">
+    <ul class="fn-ex-list">
+      <li><strong>正确做法：</strong>安装命令首包默认可读；协议勾选可保留，不得用蒙版挡住命令。</li>
+      <li><strong>可免场景：</strong>法务必须确认时，可保留勾选；命令文本仍须默认可读，或另有不依赖勾选的等价说明页。</li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  </div>
+      </div>
+
+      <p class="principle-example-note" style="margin-top:12px;">设计专项完整说明见 <a href="design-guide-click-prefab.html">隐藏内容可直达</a>。</p>
+    </section>
+
+<section class="section" id="content-adjust">
+      <h2>文档内容调整</h2>
+
+      <h3 id="content-suggestions">调整建议</h3>
+      <ul class="principle-suggestions">
+        <li><strong>步骤写在默认可读区</strong>：安装命令、关键步骤写入页面正文或默认可见代码块，不依赖「勾选后才展示」。</li>
+        <li><strong>协议与命令分离</strong>：许可协议文案可独立；命令区不得只在勾选后才出现。</li>
+      </ul>
+    </section>
+
+<section class="section" id="frontend-adjust">
+      <h2>前端调整</h2>
+
+      <h3 id="frontend-suggestions">调整建议</h3>
+      <ul class="principle-suggestions">
+        <li><strong>首包含命令文本</strong>：安装命令节点存在于首包 DOM；禁 JS / 未勾选时仍可抓取。</li>
+        <li><strong>蒙版不删节点</strong>：若保留视觉蒙版，不得从 DOM 移除或清空命令文本；优先不用蒙版挡命令。</li>
+      </ul>
+    </section>
+
+  </main>
+</div>
+
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js"></script>
+<script src="assets/js/module-sidebar.js"></script>
+</body>
+</html>

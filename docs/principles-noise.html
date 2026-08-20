@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>推荐内容置后 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid #e2e8f0;
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: 100%; max-width: none; margin: 0; padding: 0 24px;
+    height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: #191919; text-decoration: none; white-space: nowrap; margin-right: 40px;
+  }
+  .topbar .brand span { color: #1476FF; }
+  .topbar .site-nav { display: flex; align-items: center; gap: 4px; flex: 1; flex-wrap: wrap; }
+  .topbar .site-nav > a {
+    text-decoration: none; color: #595959; font-size: 14px; font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .topbar .site-nav > a:hover { color: #1476FF; background: #F5F5F5; text-decoration: none; }
+  .topbar .site-nav > a.active { color: #1476FF; background: #F5F5F5; font-weight: 600; }
+  .nav-dd { position: relative; z-index: 210; display: inline-flex; align-items: center; }
+  .nav-dd-trigger {
+    appearance: none; border: 0; background: transparent; cursor: pointer; font: inherit;
+    text-decoration: none; color: #595959; font-size: 14px; font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+    display: inline-flex; align-items: center; gap: 12px;
+  }
+  .nav-dd-trigger::after {
+    content: ""; width: 6px; height: 6px;
+    border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg); opacity: .65; margin-top: -3px; flex-shrink: 0;
+  }
+  .nav-dd-trigger:hover, .nav-dd:hover .nav-dd-trigger, .nav-dd:focus-within .nav-dd-trigger {
+    color: #1476FF; background: #F5F5F5;
+  }
+  .nav-dd::before { content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 10px; }
+  .nav-dd-panel {
+    position: absolute; top: calc(100% + 4px); left: 0; min-width: 148px; padding: 6px;
+    background: #fff; border: 1px solid #e2e8f0; border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(25, 25, 25, 0.08);
+    opacity: 0; visibility: hidden; transform: translateY(-4px);
+    transition: opacity .15s, transform .15s, visibility .15s; z-index: 210;
+  }
+  .nav-dd:hover .nav-dd-panel, .nav-dd:focus-within .nav-dd-panel {
+    opacity: 1; visibility: visible; transform: translateY(0);
+  }
+  .nav-dd-panel a {
+    display: block; padding: 8px 12px; border-radius: 6px; text-decoration: none;
+    color: #595959; font-size: 13px; font-weight: 500; line-height: 1.4;
+  }
+  .nav-dd-panel a:hover { color: #1476FF; background: #F5F5F5; }
+  /* GEO topbar = fixed，沿用 layout 的 page-wrapper padding-top */
+  body.inner-page .page-wrapper { min-height: 100vh; }
+
+h3.fn-h3 .fn-h3-link,
+  .fn-h3-link {
+    margin-left: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 22px;
+    color: #1476FF;
+    text-decoration: none;
+  }
+
+h3.fn-h3 .fn-h3-link:hover,
+  .fn-h3-link:hover {
+    text-decoration: underline;
+  }
+
+.fn-ex-mock--cards {
+    background: #f5f5f5;
+    border: none;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+  }
+
+.fn-ex-mock--cards .partner-shot {
+    display: block;
+    width: 220px;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0,0,0,.06);
+  }
+
+.fn-ex-mock--cards .partner-shot img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+.fn-ex-mock--cards .partner-mini {
+    width: 220px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0,0,0,.06);
+  }
+
+.fn-ex {
+    margin: 0 0 20px;
+    max-width: 720px;
+  }
+
+.fn-ex-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr auto;
+    column-gap: 16px;
+    row-gap: 0;
+    align-items: stretch;
+    max-width: none;
+    margin: 0 0 20px;
+  }
+
+.fn-ex-row .fn-ex {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 1 / span 3;
+    max-width: none;
+    margin: 0;
+    min-width: 0;
+  }
+
+.fn-ex-row .fn-ex-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+.fn-ex-row .fn-ex-head .fn-ex-label {
+    margin: 0;
+  }
+
+.fn-ex-row .fn-ex-head .fn-ex-bar {
+    display: block;
+    margin: 0;
+    width: 100%;
+    align-self: stretch;
+  }
+
+.fn-ex-row .fn-ex-body {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 2 / span 2;
+    min-height: 0;
+    background: #f5f5f5;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+.fn-ex-row .fn-ex-mock {
+    min-height: 0;
+    height: 100%;
+    box-sizing: border-box;
+    border: none;
+    border-radius: 0;
+    align-self: stretch;
+  }
+
+.fn-ex-row .fn-ex-foot {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px 14px 14px;
+    background: #fff;
+    border-top: 1px solid #e2e8f0;
+  }
+
+.fn-ex-row .fn-ex-foot .fn-ex-list {
+    margin: 0;
+    gap: 4px;
+  }
+
+.fn-ex-row .fn-ex-foot .fn-ex-group {
+    margin: 8px 0 0;
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 650;
+    color: #595959;
+  }
+
+.fn-ex-row .fn-ex-foot .fn-ex-group:first-child {
+    margin-top: 0;
+  }
+
+.fn-ex-row .status-ex-table {
+    font-size: 11px;
+    line-height: 16px;
+  }
+
+.fn-ex-row .status-ex-table th,
+  .fn-ex-row .status-ex-table td {
+    padding: 8px 6px;
+  }
+
+.fn-ex-row .paper-card {
+    padding: 14px 14px 12px;
+  }
+
+.fn-ex-row .paper-card-title {
+    font-size: 13px;
+    line-height: 20px;
+  }
+
+@media (max-width: 900px) {
+    .fn-ex-row {
+      grid-template-columns: 1fr;
+      grid-template-rows: none;
+    }
+    .fn-ex-row .fn-ex {
+      display: block;
+      grid-row: auto;
+    }
+    .fn-ex-row .fn-ex-body {
+      display: flex;
+      flex-direction: column;
+      grid-row: auto;
+    }
+  }
+
+.fn-ex-label {
+    display: inline-block;
+    margin: 0 0 10px;
+    padding: 0 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 20px;
+    color: #b42318;
+    background: #fef3f2;
+  }
+
+.fn-ex-label.is-good {
+    color: #047857;
+    background: #ecfdf5;
+  }
+
+.fn-ex-bar {
+    display: block;
+    width: 100%;
+    height: 3px;
+    margin: 0 0 16px;
+    background: #b42318;
+    border-radius: 2px;
+  }
+
+.fn-ex-bar.is-good {
+    background: #047857;
+  }
+
+.fn-ex-bar + .fn-ex-mock {
+    border-radius: 8px;
+  }
+
+.fn-ex-mock {
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f5f5f5;
+    border: 1px solid #e2e8f0;
+  }
+
+.fn-ex-title {
+    margin: 12px 0 0;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 650;
+    color: #191919;
+  }
+
+.fn-ex-list {
+    margin: 8px 0 0;
+    padding: 0 0 0 1.25em;
+    list-style: disc;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+.fn-ex-list li {
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+    line-height: 22px;
+    color: #191919;
+  }
+
+.fn-ex-list li + li {
+    margin-top: 0;
+  }
+
+.fn-ex-list--tight {
+    gap: 4px;
+  }
+
+.fn-ex-list strong {
+    font-weight: 650;
+    color: #191919;
+  }
+
+.fn-ex-note {
+    margin: 8px 0 0;
+    font-size: 14px;
+    line-height: 22px;
+    color: #191919;
+  }
+
+.fn-ex-note:first-of-type {
+    margin-top: 10px;
+  }
+
+.fn-ex-note strong {
+    font-weight: 650;
+    color: #191919;
+  }
+
+.fn-ex-mock--banner {
+    background: #f5f5f5;
+    border: none;
+    padding: 16px;
+  }
+
+.fn-ex-mock--banner img {
+    display: block;
+    width: 100%;
+    max-width: 640px;
+    height: auto;
+    margin: 0 auto;
+    border-radius: 8px;
+  }
+
+.st-card {
+    padding: 16px 18px 14px;
+    color: #191919;
+  }
+
+.scene-def-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    line-height: 22px;
+    margin: 0 0 8px;
+    table-layout: fixed;
+  }
+
+.scene-def-table th,
+  .scene-def-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid #e2e8f0;
+    vertical-align: middle;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 400;
+  }
+
+.scene-def-table tbody td {
+    height: 64px;
+  }
+
+.scene-def-table th {
+    font-size: 12px;
+    font-weight: 650;
+    color: #595959;
+    background: #fafafa;
+  }
+
+.scene-def-table .col-type { width: 18%; }
+
+.scene-def-table .col-desc { width: 55%; }
+
+.scene-def-table .col-place { width: 27%; }
+
+.scene-def-table col.col-type { width: 18%; }
+
+.scene-def-table col.col-desc { width: 55%; }
+
+.scene-def-table col.col-place { width: 27%; }
+
+.scene-def-table + h2.block-title {
+    margin-top: 40px;
+  }
+  .fn-ex-row { margin: 16px 0 0; }
+  .principle-example + .principle-example { margin-top: 28px; }
+  .scene-def-table { margin-bottom: 24px; }
+  .section .fn-ex-list { margin: 0; }
+  .section .fn-ex-list li { color: #191919; margin-bottom: 0; }
+
+</style>
+</head>
+<body class="inner-page" data-module="principles" data-page="noise">
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html">社区 <span>AI 亲和原则</span></a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="mintlify.html">友商对照</a>
+      <a href="reachability.html">社区诊断</a>
+      <a href="principles-affinity-full.html" class="active">亲和原则</a>
+      <a href="community-ui.html">组件亲和</a>
+      <a href="design-guide-image-text.html">设计模式</a>
+    </nav>
+  </div>
+</div>
+
+<div class="page-wrapper">
+
+  <aside id="module-sidebar"></aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <h1>推荐内容置后</h1>
+<p class="page-desc page-desc--split">
+        <span class="page-desc-line">主任务路径不被推荐、广告、相关阅读打断；次要内容后置并标识，保证任务流程连贯。</span>
+        <span class="page-desc-line">可理解 · 设计专项见 <a href="design-guide-noise.html">推荐内容置后</a>。</span>
+      </p>
+    </div>
+
+    <section class="section" id="objects">
+      <h2>对象</h2>
+<table class="scene-def-table">
+    <colgroup>
+      <col class="col-type" />
+      <col class="col-desc" />
+      <col class="col-place" />
+    </colgroup>
+    <thead>
+      <tr>
+        <th class="col-type">类型</th>
+        <th class="col-desc">说明</th>
+        <th class="col-place">常见落点</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="col-type">主路径穿插</td>
+        <td class="col-desc">相关文章、推荐阅读不得插进安装步骤或主路径中间。</td>
+        <td class="col-place">安装文档、教程正文</td>
+      </tr>
+      <tr>
+        <td class="col-type">推荐区标识</td>
+        <td class="col-desc">推荐应收至页末并标为推荐，不得被当成规格或步骤正文。</td>
+        <td class="col-place">页末相关阅读</td>
+      </tr>
+    </tbody>
+  </table>
+    </section>
+
+    <section class="section" id="design-ui">
+      <h2>设计UI调整</h2>
+
+      <h3 id="design-suggestions">调整建议</h3>
+      <ul class="principle-suggestions">
+        <li><strong>推荐不穿插主路径</strong>：相关文章、推荐阅读统一放在页面末尾，不插进安装步骤或主路径。</li>
+        <li><strong>推荐区须可识别</strong>：主路径连续成段；推荐区须能识别为推荐，不得被当成规格正文。</li>
+      </ul>
+
+      <h3 id="design-example">调整示例</h3>
+      <div class="principle-example">
+        <h4>推荐阅读收到页末</h4>
+<div class="fn-ex-row">
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label">反面</span>
+    <div class="fn-ex-bar" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="反面：步骤中插入推荐">
+      <div class="st-card"><p style="margin:0 0 8px;font-size:13px;font-weight:650;">步骤 1 安装驱动</p><p style="margin:0 0 8px;font-size:12px;color:#1476FF;">推荐阅读 · 开发者故事</p><p style="margin:0;font-size:13px;font-weight:650;">步骤 2 配置环境</p></div>
+    </div>
+    <div class="fn-ex-foot">
+    <ul class="fn-ex-list">
+      <li><strong>常见疏漏：</strong>主路径被推荐内容打断，机器易将推荐当成安装步骤。</li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label is-good">正面</span>
+    <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="正面：步骤连续，推荐在后">
+      <div class="st-card"><p style="margin:0 0 8px;font-size:13px;font-weight:650;">步骤 1 安装驱动</p><p style="margin:0 0 12px;font-size:13px;font-weight:650;">步骤 2 配置环境</p><p style="margin:0;font-size:12px;color:#1476FF;">相关文章（页末）· 开发者故事</p></div>
+    </div>
+    <div class="fn-ex-foot">
+    <ul class="fn-ex-list">
+      <li><strong>正确做法：</strong>步骤连续；推荐放到页末并标为推荐。</li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  </div>
+      </div>
+
+      <p class="principle-example-note" style="margin-top:12px;">设计专项完整说明见 <a href="design-guide-noise.html">推荐内容置后</a>。</p>
+    </section>
+
+<section class="section" id="content-adjust">
+      <h2>文档内容调整</h2>
+      <ul class="principle-suggestions">
+        <li>主路径步骤完整可跟；推荐链接触达自描述。</li>
+        <li>相关阅读勿伪装成下一步操作。</li>
+      </ul>
+    </section>
+
+<section class="section" id="frontend-adjust">
+      <h2>前端调整</h2>
+      <ul class="principle-suggestions">
+        <li><code>main</code> 内区分主路径与推荐区块；推荐可 <code>aside</code> / data-role。</li>
+        <li>切片优先主路径，降权推荐噪声。</li>
+      </ul>
+</section>
+
+  </main>
+</div>
+
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js"></script>
+<script src="assets/js/module-sidebar.js"></script>
+</body>
+</html>

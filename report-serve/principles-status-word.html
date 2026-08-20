@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>状态完整标注 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid #e2e8f0;
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: 100%; max-width: none; margin: 0; padding: 0 24px;
+    height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: #191919; text-decoration: none; white-space: nowrap; margin-right: 40px;
+  }
+  .topbar .brand span { color: #1476FF; }
+  .topbar .site-nav { display: flex; align-items: center; gap: 4px; flex: 1; flex-wrap: wrap; }
+  .topbar .site-nav > a {
+    text-decoration: none; color: #595959; font-size: 14px; font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .topbar .site-nav > a:hover { color: #1476FF; background: #F5F5F5; text-decoration: none; }
+  .topbar .site-nav > a.active { color: #1476FF; background: #F5F5F5; font-weight: 600; }
+  .nav-dd { position: relative; z-index: 210; display: inline-flex; align-items: center; }
+  .nav-dd-trigger {
+    appearance: none; border: 0; background: transparent; cursor: pointer; font: inherit;
+    text-decoration: none; color: #595959; font-size: 14px; font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+    display: inline-flex; align-items: center; gap: 12px;
+  }
+  .nav-dd-trigger::after {
+    content: ""; width: 6px; height: 6px;
+    border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg); opacity: .65; margin-top: -3px; flex-shrink: 0;
+  }
+  .nav-dd-trigger:hover, .nav-dd:hover .nav-dd-trigger, .nav-dd:focus-within .nav-dd-trigger {
+    color: #1476FF; background: #F5F5F5;
+  }
+  .nav-dd::before { content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 10px; }
+  .nav-dd-panel {
+    position: absolute; top: calc(100% + 4px); left: 0; min-width: 148px; padding: 6px;
+    background: #fff; border: 1px solid #e2e8f0; border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(25, 25, 25, 0.08);
+    opacity: 0; visibility: hidden; transform: translateY(-4px);
+    transition: opacity .15s, transform .15s, visibility .15s; z-index: 210;
+  }
+  .nav-dd:hover .nav-dd-panel, .nav-dd:focus-within .nav-dd-panel {
+    opacity: 1; visibility: visible; transform: translateY(0);
+  }
+  .nav-dd-panel a {
+    display: block; padding: 8px 12px; border-radius: 6px; text-decoration: none;
+    color: #595959; font-size: 13px; font-weight: 500; line-height: 1.4;
+  }
+  .nav-dd-panel a:hover { color: #1476FF; background: #F5F5F5; }
+  body.inner-page .page-wrapper { min-height: 100vh; }
+
+.fn-lead-block .fn-h3-link {
+    margin-left: 0;
+  }
+
+.type-mock .mst.is-wait { color: #b45309; }
+
+h3.fn-h3 .fn-h3-link,
+  .fn-h3-link {
+    margin-left: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 22px;
+    color: #1476FF;
+    text-decoration: none;
+  }
+
+h3.fn-h3 .fn-h3-link:hover,
+  .fn-h3-link:hover {
+    text-decoration: underline;
+  }
+
+.fn-ex-mock--cards {
+    background: #f5f5f5;
+    border: none;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+  }
+
+.fn-ex-mock--cards .partner-shot {
+    display: block;
+    width: 220px;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0,0,0,.06);
+  }
+
+.fn-ex-mock--cards .partner-shot img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+.fn-ex-mock--cards .partner-mini {
+    width: 220px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0,0,0,.06);
+  }
+
+.fn-ex {
+    margin: 0 0 20px;
+    max-width: 720px;
+  }
+
+.fn-ex-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr auto;
+    column-gap: 16px;
+    row-gap: 0;
+    align-items: stretch;
+    max-width: none;
+    margin: 0 0 20px;
+  }
+
+.fn-ex-row .fn-ex {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 1 / span 3;
+    max-width: none;
+    margin: 0;
+    min-width: 0;
+  }
+
+.fn-ex-row .fn-ex-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+.fn-ex-row .fn-ex-head .fn-ex-label {
+    margin: 0;
+  }
+
+.fn-ex-row .fn-ex-head .fn-ex-bar {
+    display: block;
+    margin: 0;
+    width: 100%;
+    align-self: stretch;
+  }
+
+.fn-ex-row .fn-ex-body {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 2 / span 2;
+    min-height: 0;
+    background: #f5f5f5;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+.fn-ex-row .fn-ex-mock,
+  .fn-ex-row .fn-ex-mock:has(.status-ex-table),
+  .fn-ex-row .fn-ex-mock:has(.st-card) {
+    min-height: 0;
+    height: 100%;
+    box-sizing: border-box;
+    border: none;
+    border-radius: 0;
+    align-self: stretch;
+  }
+
+.fn-ex-row .fn-ex-mock:has(.st-card) {
+    display: flex;
+    flex-direction: column;
+  }
+
+.fn-ex-row .fn-ex-mock:has(.st-card) .st-card {
+    flex: 1;
+    box-sizing: border-box;
+  }
+
+.fn-ex-row .fn-ex-foot {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px 14px 14px;
+    background: #fff;
+    border-top: 1px solid #e2e8f0;
+  }
+
+.fn-ex-row .fn-ex-foot .fn-ex-list {
+    margin: 0;
+    gap: 4px;
+  }
+
+.fn-ex-row .fn-ex-foot .fn-ex-group {
+    margin: 8px 0 0;
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 650;
+    color: #595959;
+  }
+
+.fn-ex-row .fn-ex-foot .fn-ex-group:first-child {
+    margin-top: 0;
+  }
+
+.fn-ex-row .status-ex-table {
+    font-size: 11px;
+    line-height: 16px;
+  }
+
+.fn-ex-row .status-ex-table .ck-txt,
+  .fn-ex-row .status-ex-table .ck-no {
+    font-size: 12px;
+    line-height: 16px;
+  }
+
+.fn-ex-row .status-ex-table th,
+  .fn-ex-row .status-ex-table td {
+    padding: 8px 6px;
+  }
+
+.fn-ex-row .paper-card {
+    padding: 14px 14px 12px;
+  }
+
+.fn-ex-row .paper-card-title {
+    font-size: 13px;
+    line-height: 20px;
+  }
+
+@media (max-width: 900px) {
+    .fn-ex-row {
+      grid-template-columns: 1fr;
+      grid-template-rows: none;
+    }
+    .fn-ex-row .fn-ex {
+      display: block;
+      grid-row: auto;
+    }
+    .fn-ex-row .fn-ex-body {
+      display: block;
+    }
+  }
+
+.fn-ex-label {
+    display: inline-block;
+    margin: 0 0 10px;
+    padding: 0 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 20px;
+    color: #b42318;
+    background: #fef3f2;
+  }
+
+.fn-ex-label.is-good {
+    color: #047857;
+    background: #ecfdf5;
+  }
+
+.fn-ex-bar {
+    display: block;
+    width: 100%;
+    height: 3px;
+    margin: 0 0 16px;
+    background: #b42318;
+    border-radius: 2px;
+  }
+
+.fn-ex-bar.is-good {
+    background: #047857;
+  }
+
+.fn-ex-bar + .fn-ex-mock {
+    border-radius: 8px;
+  }
+
+.fn-ex-mock {
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f5f5f5;
+    border: 1px solid #e2e8f0;
+  }
+
+.status-ex-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 13px;
+    line-height: 20px;
+    color: #191919;
+    background: #fff;
+  }
+
+.status-ex-table th,
+  .status-ex-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid #e2e8f0;
+    border-right: 1px solid #e2e8f0;
+    vertical-align: middle;
+    text-align: left;
+    font-weight: 400;
+  }
+
+.status-ex-table th:last-child,
+  .status-ex-table td:last-child {
+    border-right: none;
+  }
+
+.status-ex-table tr:last-child td {
+    border-bottom: none;
+  }
+
+.status-ex-table thead th {
+    font-weight: 500;
+    color: #191919;
+    border-bottom: 2px solid #1476FF;
+    background: #fafafa;
+  }
+
+.status-ex-table .col-scene { width: 16%; }
+
+.status-ex-table .col-model { width: 30%; }
+
+.status-ex-table .col-hw { width: 27%; text-align: center; }
+
+.status-ex-table td.col-hw {
+    text-align: center;
+  }
+
+.status-ex-table .ck {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    color: #1476FF;
+    font-size: 16px;
+    line-height: 1;
+    font-weight: 500;
+  }
+
+.status-ex-table .ck-txt {
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 400;
+    color: #191919;
+  }
+
+.status-ex-table .ck-no {
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 400;
+    color: #595959;
+  }
+
+.fn-ex-title {
+    margin: 12px 0 0;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 650;
+    color: #191919;
+  }
+
+.fn-ex-list {
+    margin: 8px 0 0;
+    padding: 0 0 0 1.25em;
+    list-style: disc;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+.fn-ex-list li {
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+    line-height: 22px;
+    color: #191919;
+  }
+
+.fn-ex-list li + li {
+    margin-top: 0;
+  }
+
+.fn-ex-list--tight {
+    gap: 4px;
+  }
+
+.fn-ex-list strong {
+    font-weight: 650;
+    color: #191919;
+  }
+
+.fn-ex-note {
+    margin: 8px 0 0;
+    font-size: 14px;
+    line-height: 22px;
+    color: #191919;
+  }
+
+.fn-ex-note:first-of-type {
+    margin-top: 10px;
+  }
+
+.fn-ex-note strong {
+    font-weight: 650;
+    color: #191919;
+  }
+
+.fn-ex-mock--banner {
+    background: #f5f5f5;
+    border: none;
+    padding: 16px;
+  }
+
+.fn-ex-mock--banner img {
+    display: block;
+    width: 100%;
+    max-width: 640px;
+    height: auto;
+    margin: 0 auto;
+    border-radius: 8px;
+  }
+
+.st-card {
+    padding: 16px 18px 14px;
+    color: #191919;
+    background: #fff;
+    border-radius: 8px;
+  }
+
+.fn-ex-mock:has(.st-card) {
+    padding: 16px;
+  }
+
+.st-cap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    line-height: 24px;
+  }
+
+.st-cap + .st-cap { margin-top: 4px; }
+
+.st-cap-name { color: #191919; }
+
+.st-cap-mark {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #8c8c8c;
+  }
+
+.st-cap-mark.is-ok { color: #1476FF; }
+
+.st-cap-mark.is-fail { color: #8c8c8c; }
+
+.st-cap-mark.is-ok-green { color: #16a34a; }
+
+.st-cap-mark.is-fail-red { color: #dc2626; }
+
+.st-cap-mark svg { display: block; }
+
+.st-word-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+.st-word {
+    flex-shrink: 0;
+    font-weight: 650;
+    color: #191919;
+  }
+
+.st-word.is-wait { color: #595959; font-weight: 500; }
+
+.scene-def-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    line-height: 22px;
+    margin: 0 0 8px;
+    table-layout: fixed;
+  }
+
+.scene-def-table th,
+  .scene-def-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid #e2e8f0;
+    vertical-align: middle;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 400;
+  }
+
+.scene-def-table tbody td {
+    height: 64px;
+  }
+
+.scene-def-table th {
+    font-size: 12px;
+    font-weight: 650;
+    color: #595959;
+    background: #fafafa;
+  }
+
+.scene-def-table .col-type { width: 18%; }
+
+.scene-def-table .col-desc { width: 55%; }
+
+.scene-def-table .col-place { width: 27%; }
+
+.scene-def-table col.col-type { width: 18%; }
+
+.scene-def-table col.col-desc { width: 55%; }
+
+.scene-def-table col.col-place { width: 27%; }
+
+.scene-def-table + h2.block-title {
+    margin-top: 40px;
+  }
+  .fn-ex-row { margin: 16px 0 0; }
+  .principle-example + .principle-example { margin-top: 28px; }
+  .scene-def-table { margin-bottom: 24px; }
+  .section .fn-ex-list { margin: 0; }
+  .section .fn-ex-list li { color: #191919; margin-bottom: 0; }
+
+</style>
+</head>
+<body class="inner-page" data-module="principles" data-page="status-word">
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html">社区 <span>AI 亲和原则</span></a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="mintlify.html">友商对照</a>
+      <a href="reachability.html">社区诊断</a>
+      <a href="principles-affinity-full.html" class="active">亲和原则</a>
+      <a href="community-ui.html">组件亲和</a>
+      <a href="design-guide-image-text.html">设计模式</a>
+    </nav>
+  </div>
+</div>
+
+<div class="page-wrapper">
+
+  <aside id="module-sidebar"></aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <h1>状态完整标注</h1>
+<p class="page-desc page-desc--split">
+        <span class="page-desc-line">能力、运行态与任务回执须写成完整状态词或完整句；禁止只靠对号、色点、图标或空单元格表达状态。表头、合并与 caption 等骨架见 <a href="principles-table.html">表格语义化</a>。</span>
+        <span class="page-desc-line">可理解 · 设计专项见 <a href="design-guide-status-word.html">状态完整标注</a>。</span>
+      </p>
+    </div>
+
+    <section class="section" id="objects">
+      <h2>对象</h2>
+<table class="scene-def-table">
+    <colgroup>
+      <col class="col-type" />
+      <col class="col-desc" />
+      <col class="col-place" />
+    </colgroup>
+    <thead>
+      <tr>
+        <th class="col-type">类型</th>
+        <th class="col-desc">说明</th>
+        <th class="col-place">常见落点</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="col-type">能力状态</td>
+        <td class="col-desc">能力须写成「支持」「不支持」；空单元格若表示不支持，须显式写出该词。</td>
+        <td class="col-place">兼容性表、能力矩阵</td>
+      </tr>
+      <tr>
+        <td class="col-type">运行态</td>
+        <td class="col-desc">服务或进程状态须写成「运行中」「已停止」等词，禁止仅以图标表达。</td>
+        <td class="col-place">服务列表、进程面板</td>
+      </tr>
+      <tr>
+        <td class="col-type">任务回执</td>
+        <td class="col-desc">成功、失败、加载等回执须写明对象、原因与下一步，禁止仅以状态词带过。</td>
+        <td class="col-place">安装回执、任务结果</td>
+      </tr>
+    </tbody>
+  </table>
+    </section>
+
+    <section class="section" id="design-ui">
+      <h2>设计UI调整</h2>
+
+      <h3 id="design-suggestions">调整建议</h3>
+      <ul class="principle-suggestions">
+        <li><strong>状态不靠图形</strong>：能力与运行状态须配文字；图标可保留但不得作唯一载体。任务回执还须写清对象、原因与下一步。</li>
+      </ul>
+
+      <h3 id="design-example">调整示例</h3>
+      <div class="principle-example">
+        <h4>用文字表达能力状态</h4>
+<div class="fn-ex-row">
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label">反面</span>
+    <div class="fn-ex-bar" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="反面：仅对号或空单元格">
+      <table class="status-ex-table">
+        <thead>
+          <tr>
+            <th class="col-scene">场景</th>
+            <th class="col-model">模型</th>
+            <th class="col-hw">Atlas 800T 900 A2</th>
+            <th class="col-hw">Atlas 800T A3</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>预训练</td>
+            <td>DeepSeek V3</td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+          </tr>
+          <tr>
+            <td rowspan="2">SFT</td>
+            <td>DeepSeek V3</td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+          </tr>
+          <tr>
+            <td>DeepSeek-R1-Distill-Qwen</td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+          </tr>
+          <tr>
+            <td rowspan="4">推理</td>
+            <td>Qwen2.5-7B/32B</td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+          </tr>
+          <tr>
+            <td>DeepSeek-V3-0324 W4A16</td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+          </tr>
+          <tr>
+            <td>DeepSeek-R1 W4A16</td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+          </tr>
+          <tr>
+            <td>DeepSeek-Janus-Pro</td>
+            <td class="col-hw"></td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="fn-ex-foot">
+    <ul class="fn-ex-list">
+      <li><strong>常见疏漏：</strong>仅有对号或留空，未配“支持”“不支持”文字，机器无法识别能力是否可用。 <a class="fn-h3-link" href="https://www.mindspore.cn/topics/deepseek" target="_blank" rel="noopener">查看示例来源</a></li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label is-good">正面</span>
+    <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="正面：支持与不支持均有可见文案">
+      <table class="status-ex-table">
+        <thead>
+          <tr>
+            <th class="col-scene">场景</th>
+            <th class="col-model">模型</th>
+            <th class="col-hw">Atlas 800T 900 A2</th>
+            <th class="col-hw">Atlas 800T A3</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>预训练</td>
+            <td>DeepSeek V3</td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+          </tr>
+          <tr>
+            <td rowspan="2">SFT</td>
+            <td>DeepSeek V3</td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+          </tr>
+          <tr>
+            <td>DeepSeek-R1-Distill-Qwen</td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+          </tr>
+          <tr>
+            <td rowspan="4">推理</td>
+            <td>Qwen2.5-7B/32B</td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+          </tr>
+          <tr>
+            <td>DeepSeek-V3-0324 W4A16</td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+          </tr>
+          <tr>
+            <td>DeepSeek-R1 W4A16</td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+          </tr>
+          <tr>
+            <td>DeepSeek-Janus-Pro</td>
+            <td class="col-hw"><span class="ck-no">不支持</span></td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="fn-ex-foot">
+    <ul class="fn-ex-list">
+      <li><strong>正确做法：</strong>状态写成「支持」「不支持」；对号只辅助。</li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  </div>
+      </div>
+
+      <div class="principle-example">
+        <h4>用文字表达运行态</h4>
+<div class="fn-ex-row">
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label">反面</span>
+    <div class="fn-ex-bar" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="反面：只有播放和停止图标">
+      <div class="st-card">
+        <div class="st-cap"><span class="st-cap-name">设备管理服务</span><span class="st-cap-mark is-ok-green" aria-hidden="true"><svg viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M5 3.2v9.6l8.2-4.8z"/></svg></span></div>
+        <div class="st-cap"><span class="st-cap-name">日志采集</span><span class="st-cap-mark" aria-hidden="true"><svg viewBox="0 0 16 16" width="16" height="16"><rect x="4" y="4" width="8" height="8" rx="1" fill="currentColor"/></svg></span></div>
+      </div>
+    </div>
+    <div class="fn-ex-foot">
+    <ul class="fn-ex-list">
+      <li><strong>常见疏漏：</strong>仅有播放或停止图标，未配“运行中”“已停止”文字，机器无法识别运行态。</li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label is-good">正面</span>
+    <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="正面：写成运行中、已停止">
+      <div class="st-card">
+        <div class="st-cap"><span class="st-cap-name">设备管理服务</span><span class="st-word-row"><span class="st-cap-mark is-ok-green" aria-hidden="true"><svg viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M5 3.2v9.6l8.2-4.8z"/></svg></span><span class="st-word">运行中</span></span></div>
+        <div class="st-cap"><span class="st-cap-name">日志采集</span><span class="st-word-row"><span class="st-cap-mark" aria-hidden="true"><svg viewBox="0 0 16 16" width="16" height="16"><rect x="4" y="4" width="8" height="8" rx="1" fill="currentColor"/></svg></span><span class="st-word is-wait">已停止</span></span></div>
+      </div>
+    </div>
+    <div class="fn-ex-foot">
+    <ul class="fn-ex-list">
+      <li><strong>正确做法：</strong>状态写成「运行中」「已停止」；图标只辅助。</li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  </div>
+      </div>
+
+      <div class="principle-example">
+        <h4>用完整句表达任务回执</h4>
+<div class="fn-ex-row">
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label">反面</span>
+    <div class="fn-ex-bar" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="反面：只有成功失败加载图标，未写原因和下一步">
+      <div class="st-card">
+        <div class="st-cap"><span class="st-cap-name">环境检查</span><span class="st-cap-mark is-ok-green" aria-hidden="true"><svg viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M6.5 11.2 3.3 8l1.1-1.1 2.1 2.1 4.9-4.9L12.5 5.2z"/></svg></span></div>
+        <div class="st-cap"><span class="st-cap-name">依赖安装</span><span class="st-cap-mark is-fail-red" aria-hidden="true"><svg viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M4.2 4.2 5.3 3.1 8 5.8l2.7-2.7 1.1 1.1L9.1 6.9l2.7 2.7-1.1 1.1L8 8l-2.7 2.7-1.1-1.1L6.9 6.9z"/></svg></span></div>
+        <div class="st-cap"><span class="st-cap-name">软件包</span><span class="st-cap-mark" aria-hidden="true"><svg viewBox="0 0 16 16" width="16" height="16"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" d="M8 2.5a5.5 5.5 0 1 1-4.6 2.5"/><path fill="currentColor" d="M8 1.2 9.8 3.6 7.1 4z"/></svg></span></div>
+      </div>
+    </div>
+    <div class="fn-ex-foot">
+    <ul class="fn-ex-list">
+      <li><strong>常见疏漏：</strong>仅有成功、失败、加载图标，未写清对象、原因与下一步，机器无法识别回执含义与后续动作。</li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label is-good">正面</span>
+    <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="正面：完整句">
+      <div class="st-card">
+        <div class="st-cap" style="justify-content:flex-start;">
+          <span class="st-cap-mark is-ok-green" aria-hidden="true"><svg viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M6.5 11.2 3.3 8l1.1-1.1 2.1 2.1 4.9-4.9L12.5 5.2z"/></svg></span>
+          <span style="font-size:13px;line-height:24px;">环境检查成功：驱动版本与 CANN 8.0.0 匹配。</span>
+        </div>
+        <div class="st-cap" style="justify-content:flex-start;">
+          <span class="st-cap-mark is-fail-red" aria-hidden="true"><svg viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M4.2 4.2 5.3 3.1 8 5.8l2.7-2.7 1.1 1.1L9.1 6.9l2.7 2.7-1.1 1.1L8 8l-2.7 2.7-1.1-1.1L6.9 6.9z"/></svg></span>
+          <span style="font-size:13px;line-height:24px;">依赖安装失败：校验和不一致。请重新下载软件包后重试。</span>
+        </div>
+        <div class="st-cap" style="justify-content:flex-start;">
+          <span class="st-cap-mark" aria-hidden="true"><svg viewBox="0 0 16 16" width="16" height="16"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" d="M8 2.5a5.5 5.5 0 1 1-4.6 2.5"/><path fill="currentColor" d="M8 1.2 9.8 3.6 7.1 4z"/></svg></span>
+          <span style="font-size:13px;line-height:24px;">正在拉取 CANN 8.0.0 软件包。</span>
+        </div>
+      </div>
+    </div>
+    <div class="fn-ex-foot">
+    <ul class="fn-ex-list">
+      <li><strong>正确做法：</strong>回执写成完整句：写清对象与结果；失败附下一步，加载写明正在做什么。</li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  </div>
+      </div>
+
+      <p class="principle-example-note" style="margin-top:12px;">设计专项完整说明见 <a href="design-guide-status-word.html">状态完整标注</a>。</p>
+    </section>
+
+<section class="section" id="content-adjust">
+      <h2>文档内容调整</h2>
+
+      <h3 id="content-suggestions">调整建议</h3>
+      <ul class="principle-suggestions">
+        <li><strong>状态词表统一</strong>：支持 / 不支持 / 待支持、运行中 / 已停止等用语全站一致。</li>
+        <li><strong>回执写完整句</strong>：失败写原因与下一步；加载写正在做什么。</li>
+      </ul>
+    </section>
+
+<section class="section" id="frontend-adjust">
+      <h2>前端调整</h2>
+
+      <h3 id="frontend-suggestions">调整建议</h3>
+      <ul class="principle-suggestions">
+        <li><strong>状态为文本节点</strong>：状态词写入 DOM；可加 <code>data-status</code>；勿只输出 ✓。</li>
+        <li><strong>抓取可读</strong>：表格输出「列名:状态词」；禁 JS 后状态词仍在。</li>
+      </ul>
+
+      <h3 id="frontend-example">调整示例</h3>
+      <div class="principle-example">
+        <h4>矩阵单元格</h4>
+        <div class="ui-demo ui-demo--plain" id="status-word-frontend">
+          <div class="compare-grid compare-grid--no-mid-divider">
+            <div>
+              <h4 class="compare-label compare-label--machine">Before</h4>
+              <div class="compare-col machine">
+                <pre class="arch-diagram">&lt;td&gt;&lt;span class="icon-ok"&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;</pre>
+                <p class="rf-muted">仅图标或空单元格，无状态词。</p>
+              </div>
+            </div>
+            <div>
+              <h4 class="compare-label compare-label--human">After</h4>
+              <div class="compare-col human">
+                <pre class="arch-diagram">&lt;td data-status="supported"&gt;支持&lt;/td&gt;
+&lt;td data-status="unsupported"&gt;不支持&lt;/td&gt;</pre>
+                <p class="rf-muted">文本节点可抓；图标可作装饰。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js"></script>
+<script src="assets/js/module-sidebar.js"></script>
+</body>
+</html>

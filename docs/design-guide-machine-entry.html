@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>AI入口可识别 · 设计指导 · 昇腾社区 AI 亲和原则</title>
+<title>AI入口可识别 · 设计模式 · 昇腾社区 AI 亲和原则</title>
 <style>
   :root {
     --bg: #F5F5F5;
@@ -31,12 +31,12 @@
   }
   a { color: var(--link); }
   .topbar {
-    position: sticky; top: 0; z-index: 50;
+    position: sticky; top: 0; z-index: 200;
     height: 56px; min-height: 56px; max-height: 56px;
     box-sizing: border-box;
     background: var(--panel);
     border-bottom: 1px solid var(--line);
-    overflow: hidden;
+    overflow: visible;
   }
   .topbar-inner {
     width: 100%; max-width: none; margin: 0; padding: 0 24px;
@@ -71,7 +71,7 @@
     font-size: 11px; font-weight: 700; letter-spacing: .04em; color: var(--muted);
     padding: 12px 20px 4px; margin-top: 8px; border-top: 1px solid var(--line);
   }
-  .peer-nav > .peer-group-label:first-child { margin-top: 0; border-top: none; padding-top: 10px; }
+  .peer-nav > .peer-group-label:first-child { margin-top: 0; border-top: none; padding-top: 0; }
   .peer-nav a {
     display: block; padding: 8px 20px; font-size: 13px; line-height: 1.5;
     text-decoration: none; color: var(--muted); border-left: 2px solid transparent;
@@ -110,7 +110,7 @@
     color: var(--text);
   }
   h2.block-title:first-of-type {
-    margin-top: 40px;
+    margin-top: 48px;
   }
   .affinity-group-label {
     margin: 0 0 8px;
@@ -124,11 +124,12 @@
   }
   .fn-ex-row + .affinity-group-label,
   .fn-lead-block + .affinity-group-label,
-  h2.block-title + .affinity-group-label {
+  h2.block-title + .affinity-group-label,
+  h3.fn-h3 + .affinity-group-label {
     margin-top: 28px;
   }
   .affinity-group-label + .fn-h3 {
-    margin-top: 10px;
+    margin-top: 0;
   }
   .affinity-principles {
     margin: 0 0 8px;
@@ -469,13 +470,27 @@
   .hub-card p { margin: 0; color: var(--muted); font-size: 13px; }
 
   h3.fn-h3 {
-    margin: 32px 0 8px;
-    padding-top: 0;
+    margin: 0;
+    padding-top: 24px;
+    padding-bottom: 24px;
     font-size: 18px;
     line-height: 28px;
     font-weight: 650;
     color: var(--text);
     letter-spacing: -0.01em;
+  }
+  h4.fn-h4 {
+    margin: 24px 0 0;
+    padding-top: 0;
+    padding-bottom: 16px;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 650;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+  h3.fn-h3 + h4.fn-h4 {
+    margin-top: 12px;
   }
   h3.fn-h3 .fn-h3-link,
   .fn-h3-link {
@@ -2023,18 +2038,26 @@
     border-radius: 10px;
     border: 1px solid #e8ecf1;
   }
+  .fn-ex-row .fn-ex-mock.fn-ex-mock--banner.fn-ex-mock--plain {
+    background: #fff;
+  }
+  .fn-ex-row .fn-ex-mock.fn-ex-mock--banner.fn-ex-mock--plain .info-card img {
+    border: none;
+    border-radius: 10px;
+  }
 
   .fn-ex-row .fn-ex-mock:has(.ac-face) {
     background: #f5f5f5;
     padding: 12px;
     overflow: visible;
+    border-radius: 8px;
   }
   .fn-ex-row .fn-ex-body:has(.ac-face) {
     overflow: visible;
   }
   .ac-face {
     background: #fff;
-    border: 1px solid #e8ecf1;
+    border: none;
     border-radius: 10px;
     overflow: visible;
     font-family: "PingFang SC", sans-serif;
@@ -2058,7 +2081,7 @@
     padding: 12px 12px 10px;
     border-radius: 8px;
     background: linear-gradient(105deg, #eef4ff 0%, #f3f0ff 55%, #f7f9ff 100%);
-    border: 1px solid #e4eaf5;
+    border: none;
     overflow: visible;
   }
   .ac-face {
@@ -2128,18 +2151,56 @@
     flex-direction: column;
     align-items: flex-end;
   }
+  .ac-face-split {
+    display: inline-flex;
+    align-items: stretch;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #fff;
+  }
+  .ac-face-copy-main {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin: 0;
+    padding: 5px 10px;
+    border: none;
+    background: #fff;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1;
+    color: #191919;
+    font-family: inherit;
+    white-space: nowrap;
+  }
+  .ac-face-copy-main svg {
+    display: block;
+    flex-shrink: 0;
+    color: #595959;
+  }
   .ac-face-copy {
     appearance: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     margin: 0;
-    padding: 4px 10px;
-    border-radius: 6px;
-    border: 1px solid #d0d7e2;
-    background: #fff;
-    font-size: 11px;
-    font-weight: 650;
-    color: #191919;
-    cursor: default;
+    padding: 0;
+    width: 28px;
+    border: none;
+    border-left: 1px solid #d9d9d9;
+    border-radius: 0;
+    background: #f5f5f5;
+    color: #595959;
+    cursor: pointer;
     font-family: inherit;
+  }
+  .ac-face-copy svg {
+    display: block;
+    transition: transform .15s ease;
+  }
+  .ac-face-menu.is-open .ac-face-copy svg {
+    transform: rotate(180deg);
   }
   .ac-face-drop {
     display: none;
@@ -2147,27 +2208,27 @@
     top: calc(100% + 4px);
     right: 0;
     z-index: 5;
-    min-width: 168px;
-    padding: 4px;
-    border-radius: 8px;
-    border: 1px solid #e2e8f0;
+    min-width: 140px;
+    padding: 4px 0;
+    border-radius: 4px;
+    border: 1px solid #e5e5e5;
     background: #fff;
-    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   }
   .ac-face-menu.is-open .ac-face-drop {
     display: block;
   }
   .ac-face-drop a {
     display: block;
-    padding: 7px 10px;
-    border-radius: 6px;
-    font-size: 11px;
-    line-height: 16px;
+    padding: 8px 14px;
+    border-radius: 0;
+    font-size: 12px;
+    line-height: 18px;
     color: #191919;
     text-decoration: none;
   }
   .ac-face-drop a:hover {
-    background: #f5f7fb;
+    background: #f5f5f5;
   }
 
 
@@ -2256,7 +2317,7 @@
     position: relative;
     border-radius: 10px;
     overflow: hidden;
-    border: 1px solid #e8ecf1;
+    border: none;
     background: #fff;
     padding: 10px 10px 10px;
   }
@@ -2295,36 +2356,42 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    min-width: 22px;
-    height: 16px;
-    padding: 0 6px;
+    min-width: 0;
+    height: 12px;
+    padding: 0 5px;
     border: none;
     border-radius: 999px;
     background: linear-gradient(135deg, #4da3ff 0%, #7b6cff 45%, #ff7a59 100%);
     color: #fff;
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
+    font-size: 8px;
+    font-weight: 400;
+    letter-spacing: 0.02em;
     line-height: 1;
     text-decoration: none;
     white-space: nowrap;
-    box-shadow: 0 1px 4px rgba(75, 108, 255, 0.22);
+    box-shadow: none;
   }
   .stack-shot-md .mark {
     display: none;
   }
 
   /* 产品规格楼层小样 */
-  .fn-ex-row .fn-ex-mock:has(.spec-shot) {
-    background: #f5f5f5;
+  .fn-ex-row .fn-ex-mock:has(.spec-shot),
+  .fn-ex-row .fn-ex-mock.fn-ex-mock--plain {
+    background: #fff;
     padding: 12px;
   }
+  .fn-ex-row .fn-ex-mock.fn-ex-mock--plain .info-card img {
+    border: none;
+    border-radius: 0;
+  }
   .spec-shot {
+    position: relative;
     border-radius: 10px;
     overflow: hidden;
-    border: 1px solid #e8ecf1;
+    border: none;
     background: #fff;
-    padding: 12px 12px 14px;
+    padding: 10px 10px 10px;
     font-family: "PingFang SC", sans-serif;
   }
   .spec-shot-head {
@@ -2333,7 +2400,7 @@
     align-items: center;
     justify-content: center;
     gap: 6px;
-    margin: 0 0 10px;
+    margin: 0 0 8px;
     text-align: center;
   }
   .spec-shot-head .t {
@@ -2406,7 +2473,7 @@
   .spec-shot-frame {
     overflow: hidden;
     border-radius: 8px;
-    border: 1px solid #eef1f5;
+    border: none;
     background: #fff;
   }
   .spec-shot-frame img {
@@ -2483,6 +2550,144 @@
     color: #8c8c8c;
   }
 
+
+  h3.fn-h3 + .affinity-group-label {
+    margin-top: 8px;
+  }
+  .scene-def-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--body-size);
+    line-height: var(--body-lh);
+    margin: 0 0 8px;
+    table-layout: fixed;
+  }
+  .scene-def-table th,
+  .scene-def-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: middle;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 400;
+  }
+  .scene-def-table tbody td {
+    height: 64px;
+  }
+  .scene-def-table th {
+    font-size: 12px;
+    font-weight: 650;
+    color: var(--muted);
+    background: #fafafa;
+  }
+  .scene-def-table .col-type { width: 18%; }
+  .scene-def-table .col-desc { width: 55%; }
+  .scene-def-table .col-place { width: 27%; }
+  .scene-def-table col.col-type { width: 18%; }
+  .scene-def-table col.col-desc { width: 55%; }
+  .scene-def-table col.col-place { width: 27%; }
+  .scene-def-table + h2.block-title {
+    margin-top: 40px;
+  }
+
+  /* 设计专项下拉 */
+  .nav-dd {
+    position: relative;
+    z-index: 210;
+    display: inline-flex;
+    align-items: center;
+  }
+  .nav-dd-trigger {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    font: inherit;
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 6px;
+    white-space: nowrap;
+    transition: background .15s, color .15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .nav-dd-trigger::after {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg);
+    opacity: .65;
+    margin-top: -3px;
+    flex-shrink: 0;
+  }
+  .nav-dd-trigger:hover,
+  .nav-dd:hover .nav-dd-trigger,
+  .nav-dd:focus-within .nav-dd-trigger {
+    color: var(--accent);
+    background: #F5F5F5;
+  }
+  .nav-dd-trigger.is-active {
+    color: var(--accent);
+    background: #F5F5F5;
+    font-weight: 600;
+  }
+  .nav-dd::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    height: 10px;
+  }
+  .nav-dd-panel {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    min-width: 148px;
+    padding: 6px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(25, 25, 25, 0.08);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: opacity .15s, transform .15s, visibility .15s;
+    z-index: 210;
+  }
+  .nav-dd:hover .nav-dd-panel,
+  .nav-dd:focus-within .nav-dd-panel {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  .nav-dd-panel a {
+    display: block;
+    padding: 8px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  .nav-dd-panel a:hover {
+    color: var(--accent);
+    background: #F5F5F5;
+  }
+  .nav-dd-panel a.is-active {
+    color: var(--accent);
+    background: #EEF5FF;
+    font-weight: 600;
+  }
+
 </style>
 </head>
 
@@ -2494,14 +2699,15 @@
       <a href="index.html">首页</a>
       <a href="mintlify.html">友商对照</a>
       <a href="reachability.html">社区诊断</a>
+      <a href="principles-affinity-full.html">亲和原则</a>
       <a href="community-ui.html">组件亲和</a>
-      <a href="design-guide-image-text.html" class="active">设计指导</a>
+      <a href="design-guide-image-text.html" class="active">设计模式</a>
     </nav>
   </div>
 </div>
 
 <div class="page-wrapper">
-<aside class="peer-sidebar" aria-label="设计指导导航">
+<aside class="peer-sidebar" aria-label="设计模式导航">
   <nav class="peer-nav">
     <div class="peer-group-label">入口可识别性</div>
     <ul>
@@ -2543,35 +2749,72 @@
     <h1>AI入口可识别</h1>
   </header>
 
-  <h2 class="block-title">原则概述</h2>
-  <p class="affinity-group-label">框架层</p>
-  <ul class="affinity-principles">
-    <li><code>/llms.txt</code> 宜在页脚用小字标出，便于查与审计。</li>
-  </ul>
-  <p class="affinity-group-label">页面层</p>
-  <ul class="affinity-principles">
-    <li>文档页头须有「复制 / 打开本页 Markdown」等可辨入口。</li>
-    <li>「获取源码」须注明「本页 Markdown」，路径宜直取，不能单独替代文档级入口。</li>
-  </ul>
-  <p class="affinity-group-label">楼层层（强视觉内容的平行入口）</p>
-  <ul class="affinity-principles">
-    <li><strong>架构图 / 平台栈：</strong>标题旁轻量 MD 徽标链到平行 MD，MD 中写层级关系；本页保留空间感与真链。</li>
-    <li><strong>规格表：</strong>若首包无完整 HTML 表，提供平行 MD 表。</li>
-  </ul>
-  <p class="affinity-group-label">对 AI 的好处</p>
-  <ul class="affinity-principles">
-    <li>通过 <code>/llms.txt</code> 发现站点文档清单</li>
-    <li>直接取当前页结构化 Markdown</li>
-    <li>规格参数按「参数名–数值」表对齐，不依赖首包缺失的 HTML 表</li>
-  </ul>
+  <h2 class="block-title">Pattern说明</h2>
+  <h3 class="fn-h3">场景定义</h3>
+  <table class="scene-def-table">
+    <colgroup>
+      <col class="col-type" />
+      <col class="col-desc" />
+      <col class="col-place" />
+    </colgroup>
+    <thead>
+      <tr>
+        <th class="col-type">类型</th>
+        <th class="col-desc">说明</th>
+        <th class="col-place">常见落点</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="col-type">站级入口</td>
+        <td class="col-desc">站级机器可读清单（如 <code>llms.txt</code>）须在页脚等次要区用可读文案标出，便于人与审计跟链。</td>
+        <td class="col-place">全站页脚</td>
+      </tr>
+      <tr>
+        <td class="col-type">页级MD入口</td>
+        <td class="col-desc">文档页头须有「复制 / 打开本页 Markdown」等可辨入口；仓库源码链不能单独替代。</td>
+        <td class="col-place">文档页头工具区</td>
+      </tr>
+      <tr>
+        <td class="col-type" rowspan="2">内容块MD入口</td>
+        <td class="col-desc">强视觉架构图旁挂 MD 徽标，平行 MD 写清层级与依赖；本页保留视觉与产品真链。</td>
+        <td class="col-place">平台栈、结构楼层</td>
+      </tr>
+      <tr>
+        <td class="col-desc">首包无完整 HTML 表时，须提供平行 MD「规格项 | 数值」表，标题旁挂 MD 徽标作入口。</td>
+        <td class="col-place">产品规格表</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 class="fn-h3">AI 亲和设计原则</h3>
+  <table class="scene-def-table">
+    <colgroup>
+      <col class="col-type" />
+      <col class="col-desc" />
+      <col class="col-place" />
+    </colgroup>
+    <thead>
+      <tr>
+        <th class="col-type">设计原则</th>
+        <th class="col-desc">说明</th>
+        <th class="col-place"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="col-type">入口须可发现</td>
+        <td class="col-desc" colspan="2">站级清单与页级 MD 须有可读文案入口，人和 Agent 都能从版面跟到；禁止只靠隐式约定。</td>
+      </tr>
+      <tr>
+        <td class="col-type">强视觉平行交付</td>
+        <td class="col-desc" colspan="2">架构关系与规格数值进平行 Markdown；徽标只作入口，不替代正文。无平行 MD 时不要空挂徽标。</td>
+      </tr>
+    </tbody>
+  </table>
 
-  <h2 class="block-title">场景示例</h2>
-  <p class="affinity-group-label">框架层</p>
-  <h3 class="fn-h3">示例 1 · 页脚标出站级机器入口</h3>
-  <div class="fn-lead-block">
-    <p class="type-lead fn-lead"><strong>核心原则：</strong>站级机器可读清单（如 <code>llms.txt</code>）若存在，应在页脚次要信息区用可读文案标出，让人和审计能从版面跟到。文档页头「复制页面」各管一层，页脚只做轻量指路，不抢主路径。</p>
-    <p class="type-lead fn-lead"><strong>例外情况：</strong>文档中心或关于页等已有同等清晰的站级入口时，页脚可不重复挂链。</p>
-  </div>
+  <h2 class="block-title">设计示例</h2>
+  <h3 class="fn-h3">站级入口</h3>
+  <h4 class="fn-h4">示例 1 · 页脚标出站级机器入口</h4>
   <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
@@ -2596,7 +2839,7 @@
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>版面缺入口：</strong>页脚只有关于 / 法务，看不见站级机器可读清单；清单即便存在，稿面也无法跟到。</li>
+      <li><strong>常见疏漏：</strong>页脚未标出 <code>llms.txt</code>，机器与审计无法从版面跟到站级清单。</li>
     </ul>
     </div>
     </div>
@@ -2624,21 +2867,17 @@
       </div>
     </div>
     <div class="fn-ex-foot">
-    <p class="fn-ex-group">可选项</p>
     <ul class="fn-ex-list">
-      <li><strong>页脚次要链：</strong>在法务旁用同级小字写出 <code>llms.txt</code>，标明站级机器可读清单；字重与色阶保持次要，勿做成主按钮或首屏主 CTA。</li>
+      <li><strong>正确做法：</strong>页脚次要区用小字标出 <code>llms.txt</code>，不抢主路径。</li>
+      <li><strong>可免场景：</strong>文档中心等已有同等清晰的站级入口时，页脚可不重复挂链。</li>
     </ul>
     </div>
     </div>
   </div>
   </div>
 
-  <p class="affinity-group-label">页面层</p>
-  <h3 class="fn-h3">示例 2 · 文档页头须有机器入口</h3>
-  <div class="fn-lead-block">
-    <p class="type-lead fn-lead"><strong>核心原则：</strong>文档页头（标题旁工具区）须有可辨的本页 Markdown 入口（复制或打开）；对话可选。仅分享 / 收藏不够；仅「获取源码」跳到仓库也不够。</p>
-    <p class="type-lead fn-lead"><strong>例外情况：</strong>整站 <code>llms.txt</code> + 稳定本页 <code>.md</code> 直链且页内能跟到时，文档页头可不重复堆按钮。巨型「AI」主按钮不必强加。</p>
-  </div>
+  <h3 class="fn-h3">页级MD入口</h3>
+  <h4 class="fn-h4">示例 2 · 文档页头提供本页 Markdown 入口</h4>
   <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
@@ -2646,14 +2885,14 @@
     <div class="fn-ex-bar" aria-hidden="true"></div>
     </div>
     <div class="fn-ex-body">
-    <div class="fn-ex-mock fn-ex-mock--banner" aria-label="反面：只有分享收藏与源码链">
+    <div class="fn-ex-mock fn-ex-mock--banner fn-ex-mock--plain" aria-label="反面：只有分享收藏与源码链">
       <div class="info-card">
         <img src="assets/design-guide/ascend-c-doc-header.png?v=2" alt="">
       </div>
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>缺文本替代：</strong>页面有「分享 / 收藏」入口，但「获取 GitCode 源码」指向仓库中的 <code>.md</code> 文件，属于旁路跳转，文案未明确标注「本页 Markdown」，且无「复制本页」或「对话」入口。 <a class="fn-h3-link" href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/850/opdevg/Ascendcopdevg/atlas_ascendc_map_10_0002.html" target="_blank" rel="noopener">查看示例来源</a></li>
+      <li><strong>常见疏漏：</strong>仅有分享 / 收藏与仓库源码链，未标明「本页 Markdown」，机器无法直取当前页结构化内容。 <a class="fn-h3-link" href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/850/opdevg/Ascendcopdevg/atlas_ascendc_map_10_0002.html" target="_blank" rel="noopener">查看示例来源</a></li>
     </ul>
     </div>
     </div>
@@ -2676,11 +2915,19 @@
           <div class="ac-face-title-row">
             <p class="ac-face-h">什么是Ascend C</p>
             <div class="ac-face-menu">
-              <button type="button" class="ac-face-copy" aria-expanded="false">复制页面 ▾</button>
+              <div class="ac-face-split">
+                <span class="ac-face-copy-main">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="8" y="8" width="11" height="11" rx="1.5" stroke="currentColor" stroke-width="1.6"/><path d="M6.5 15.5H5.5A1.5 1.5 0 0 1 4 14V5.5A1.5 1.5 0 0 1 5.5 4H14A1.5 1.5 0 0 1 15.5 5.5V6.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                  复制全文
+                </span>
+                <button type="button" class="ac-face-copy" aria-expanded="false" aria-label="更多复制选项">
+                  <svg width="10" height="10" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M2.5 4.25 6 7.75l3.5-3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+              </div>
               <div class="ac-face-drop" role="menu">
-                <a href="#mock-copy-md">复制为 Markdown</a>
-                <a href="#mock-open-md">打开 Markdown</a>
-                <a href="#mock-chat">与模型对话</a>
+                <a href="#mock-copy-md">复制markdown</a>
+                <a href="#mock-open-md">打开markdown</a>
+                <a href="#mock-chat">与DeepSeek 聊天</a>
               </div>
             </div>
           </div>
@@ -2697,25 +2944,17 @@
       </div>
     </div>
     <div class="fn-ex-foot">
-    <p class="fn-ex-group">必有项</p>
     <ul class="fn-ex-list">
-      <li><strong>本页 Markdown：</strong>须提供复制或打开当前页面 MD 的入口，且文案写清对应动作。仅提供仓库源码链不能替代。 <a class="fn-h3-link" href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/850/opdevg/Ascendcopdevg/atlas_ascendc_map_10_0002.html" target="_blank" rel="noopener">查看示例来源</a></li>
-    </ul>
-    <p class="fn-ex-group">可选项</p>
-    <ul class="fn-ex-list">
-      <li><strong>对话入口 / 下拉菜单：</strong>与模型对话等为可选功能；如用「Copy page」汇总多个动作，子项须写明具体操作。此类入口不必作为整页主 CTA。</li>
+      <li><strong>正确做法：</strong>页头提供复制或打开本页 Markdown 的入口，文案写清动作；仓库源码链不能单独替代。</li>
+      <li><strong>可免场景：</strong>整站 <code>llms.txt</code> + 稳定本页 <code>.md</code> 直链且页内能跟到时，可不重复堆按钮。</li>
     </ul>
     </div>
     </div>
   </div>
   </div>
 
-  <p class="affinity-group-label">楼层层</p>
-  <h3 class="fn-h3">示例 3 · 架构图用 MD 陈述关系</h3>
-  <div class="fn-lead-block">
-    <p class="type-lead fn-lead"><strong>核心原则：</strong>强视觉架构图 / 平台栈可不在本页展开关系长文（以免破坏空间感）；标题旁挂轻量 MD 徽标，平行 Markdown 里陈述层级关系（谁在上、谁依赖谁）并链到各产品。本页保留分层视觉与产品真链。</p>
-    <p class="type-lead fn-lead"><strong>例外情况：</strong>若产品名已是真链且另有概述页完整写清关系，图旁可不重复挂徽标；无平行 MD 时不要空挂。场景示例：首页结构楼层。</p>
-  </div>
+  <h3 class="fn-h3">内容块MD入口</h3>
+  <h4 class="fn-h4">示例 3 · 用平行 MD 陈述架构关系</h4>
   <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
@@ -2730,7 +2969,7 @@
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>关系未机读：</strong>本页为保视觉不写关系长文，又无平行 Markdown；机器只能看到分层标签，跟不稳「谁依赖谁」。 <a class="fn-h3-link" href="https://www.hiascend.com/zh" target="_blank" rel="noopener">查看示例来源</a></li>
+      <li><strong>常见疏漏：</strong>仅有架构视觉分层，无平行 Markdown，机器无法识别层级与依赖关系。 <a class="fn-h3-link" href="https://www.hiascend.com/zh" target="_blank" rel="noopener">查看示例来源</a></li>
     </ul>
     </div>
     </div>
@@ -2753,24 +2992,16 @@
       </div>
     </div>
     <div class="fn-ex-foot">
-    <p class="fn-ex-group">必有项</p>
     <ul class="fn-ex-list">
-      <li><strong>关系进 Markdown：</strong>平行 MD 须写清栈关系与产品链路；徽标只作入口，不替代 MD 正文。 <a class="fn-h3-link" href="assets/design-guide/ascend-platform-stack.html" target="_blank" rel="noopener">ascend-platform-stack.md</a></li>
-    </ul>
-    <p class="fn-ex-group">可选项</p>
-    <ul class="fn-ex-list">
-      <li><strong>图旁 MD 徽标：</strong>标题旁轻量 <code>MD</code> 徽标即可；勿在主视觉区加关系说明卡。</li>
+      <li><strong>正确做法：</strong>标题旁挂 MD 徽标，平行 MD 写清栈关系与产品链路；徽标只作入口。 <a class="fn-h3-link" href="assets/design-guide/ascend-platform-stack.html" target="_blank" rel="noopener">ascend-platform-stack.md</a></li>
+      <li><strong>可免场景：</strong>产品名已是真链，且另有概述页写清关系时，可不挂徽标。</li>
     </ul>
     </div>
     </div>
   </div>
   </div>
 
-  <h3 class="fn-h3">示例 4 · 规格表用 MD 并行</h3>
-  <div class="fn-lead-block">
-    <p class="type-lead fn-lead"><strong>核心原则：</strong>技术规格表若浏览器可见但首包无完整 HTML 表，宜提供平行 Markdown，用 Markdown 表写清「规格项 | 数值」；标题旁挂轻量 MD 徽标作入口。主 CTA（项目咨询 / 固件）不变。</p>
-    <p class="type-lead fn-lead"><strong>例外情况：</strong>首包已有完整可抓的 <code>table/th/td</code> 规格表时，徽标可省略；无平行 MD 源时不要空挂。场景示例：产品介绍页（如 Ascend 950PR）。</p>
-  </div>
+  <h4 class="fn-h4">示例 4 · 用平行 MD 交付规格表</h4>
   <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
@@ -2778,14 +3009,14 @@
     <div class="fn-ex-bar" aria-hidden="true"></div>
     </div>
     <div class="fn-ex-body">
-    <div class="fn-ex-mock fn-ex-mock--banner" aria-label="反面：浏览器可见规格表，首包无 table、无 MD 入口">
+    <div class="fn-ex-mock fn-ex-mock--banner fn-ex-mock--plain" aria-label="反面：浏览器可见规格表，首包无 table、无 MD 入口">
       <div class="info-card">
         <img src="assets/design-guide/ascend-950pr-spec-table.png" alt="Ascend 950PR 技术规格表截图：规格项与算力数值">
       </div>
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>规格未机读：</strong>浏览器能见「Ascend 950PR 技术规格」表，但首包 HTML 无完整 <code>table</code>、也无平行 Markdown；机器跟不稳规格项与数值。 <a class="fn-h3-link" href="https://www.hiascend.com/hardware/processor" target="_blank" rel="noopener">查看示例来源</a></li>
+      <li><strong>常见疏漏：</strong>规格表可见但首包无完整 <code>table</code>、也无平行 Markdown，机器无法对齐规格项与数值。 <a class="fn-h3-link" href="https://www.hiascend.com/hardware/processor" target="_blank" rel="noopener">查看示例来源</a></li>
     </ul>
     </div>
     </div>
@@ -2808,18 +3039,15 @@
       </div>
     </div>
     <div class="fn-ex-foot">
-    <p class="fn-ex-group">必有项</p>
     <ul class="fn-ex-list">
-      <li><strong>规格进 Markdown：</strong>平行 MD 须含「规格项 | 数值」表（含 Cube/Vector 与各精度算力）；徽标只作入口。 <a class="fn-h3-link" href="assets/design-guide/ascend-950pr-spec.html" target="_blank" rel="noopener">ascend-950pr-spec.md</a></li>
-    </ul>
-    <p class="fn-ex-group">可选项</p>
-    <ul class="fn-ex-list">
-      <li><strong>规格 MD 徽标：</strong>标题旁轻量 <code>MD</code> 徽标即可；视觉表可保留给人看，机器以 MD 为准。</li>
+      <li><strong>正确做法：</strong>平行 MD 含「规格项 | 数值」表；标题旁轻量 MD 徽标作入口。 <a class="fn-h3-link" href="assets/design-guide/ascend-950pr-spec.html" target="_blank" rel="noopener">ascend-950pr-spec.md</a></li>
+      <li><strong>可免场景：</strong>首包已有完整可抓的 HTML 规格表时，徽标可省略。</li>
     </ul>
     </div>
     </div>
   </div>
   </div>
+
 
 </div>
 </div>

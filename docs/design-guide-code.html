@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>代码语言外显 · 设计指导 · 昇腾社区 AI 亲和原则</title>
+<title>代码语言外显 · 设计模式 · 昇腾社区 AI 亲和原则</title>
 <style>
   :root {
     --bg: #F5F5F5;
@@ -31,12 +31,12 @@
   }
   a { color: var(--link); }
   .topbar {
-    position: sticky; top: 0; z-index: 50;
+    position: sticky; top: 0; z-index: 200;
     height: 56px; min-height: 56px; max-height: 56px;
     box-sizing: border-box;
     background: var(--panel);
     border-bottom: 1px solid var(--line);
-    overflow: hidden;
+    overflow: visible;
   }
   .topbar-inner {
     width: 100%; max-width: none; margin: 0; padding: 0 24px;
@@ -71,7 +71,7 @@
     font-size: 11px; font-weight: 700; letter-spacing: .04em; color: var(--muted);
     padding: 12px 20px 4px; margin-top: 8px; border-top: 1px solid var(--line);
   }
-  .peer-nav > .peer-group-label:first-child { margin-top: 0; border-top: none; padding-top: 10px; }
+  .peer-nav > .peer-group-label:first-child { margin-top: 0; border-top: none; padding-top: 0; }
   .peer-nav a {
     display: block; padding: 8px 20px; font-size: 13px; line-height: 1.5;
     text-decoration: none; color: var(--muted); border-left: 2px solid transparent;
@@ -110,7 +110,7 @@
     color: var(--text);
   }
   h2.block-title:first-of-type {
-    margin-top: 40px;
+    margin-top: 48px;
   }
   .affinity-group-label {
     margin: 0 0 8px;
@@ -461,13 +461,27 @@
   .hub-card p { margin: 0; color: var(--muted); font-size: 13px; }
 
   h3.fn-h3 {
-    margin: 32px 0 8px;
-    padding-top: 0;
+    margin: 0;
+    padding-top: 24px;
+    padding-bottom: 24px;
     font-size: 18px;
     line-height: 28px;
     font-weight: 650;
     color: var(--text);
     letter-spacing: -0.01em;
+  }
+  h4.fn-h4 {
+    margin: 24px 0 0;
+    padding-top: 0;
+    padding-bottom: 16px;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 650;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+  h3.fn-h3 + h4.fn-h4 {
+    margin-top: 12px;
   }
   h3.fn-h3 .fn-h3-link,
   .fn-h3-link {
@@ -1798,6 +1812,144 @@
   }
   .st-word.is-wait { color: var(--muted); font-weight: 500; }
 
+
+  h3.fn-h3 + .affinity-group-label {
+    margin-top: 8px;
+  }
+  .scene-def-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--body-size);
+    line-height: var(--body-lh);
+    margin: 0 0 8px;
+    table-layout: fixed;
+  }
+  .scene-def-table th,
+  .scene-def-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: middle;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 400;
+  }
+  .scene-def-table tbody td {
+    height: 64px;
+  }
+  .scene-def-table th {
+    font-size: 12px;
+    font-weight: 650;
+    color: var(--muted);
+    background: #fafafa;
+  }
+  .scene-def-table .col-type { width: 18%; }
+  .scene-def-table .col-desc { width: 55%; }
+  .scene-def-table .col-place { width: 27%; }
+  .scene-def-table col.col-type { width: 18%; }
+  .scene-def-table col.col-desc { width: 55%; }
+  .scene-def-table col.col-place { width: 27%; }
+  .scene-def-table + h2.block-title {
+    margin-top: 40px;
+  }
+
+  /* 设计专项下拉 */
+  .nav-dd {
+    position: relative;
+    z-index: 210;
+    display: inline-flex;
+    align-items: center;
+  }
+  .nav-dd-trigger {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    font: inherit;
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 6px;
+    white-space: nowrap;
+    transition: background .15s, color .15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .nav-dd-trigger::after {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg);
+    opacity: .65;
+    margin-top: -3px;
+    flex-shrink: 0;
+  }
+  .nav-dd-trigger:hover,
+  .nav-dd:hover .nav-dd-trigger,
+  .nav-dd:focus-within .nav-dd-trigger {
+    color: var(--accent);
+    background: #F5F5F5;
+  }
+  .nav-dd-trigger.is-active {
+    color: var(--accent);
+    background: #F5F5F5;
+    font-weight: 600;
+  }
+  .nav-dd::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    height: 10px;
+  }
+  .nav-dd-panel {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    min-width: 148px;
+    padding: 6px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(25, 25, 25, 0.08);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: opacity .15s, transform .15s, visibility .15s;
+    z-index: 210;
+  }
+  .nav-dd:hover .nav-dd-panel,
+  .nav-dd:focus-within .nav-dd-panel {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  .nav-dd-panel a {
+    display: block;
+    padding: 8px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  .nav-dd-panel a:hover {
+    color: var(--accent);
+    background: #F5F5F5;
+  }
+  .nav-dd-panel a.is-active {
+    color: var(--accent);
+    background: #EEF5FF;
+    font-weight: 600;
+  }
+
 </style>
 </head>
 
@@ -1809,14 +1961,15 @@
       <a href="index.html">首页</a>
       <a href="mintlify.html">友商对照</a>
       <a href="reachability.html">社区诊断</a>
+      <a href="principles-affinity-full.html">亲和原则</a>
       <a href="community-ui.html">组件亲和</a>
-      <a href="design-guide-image-text.html" class="active">设计指导</a>
+      <a href="design-guide-image-text.html" class="active">设计模式</a>
     </nav>
   </div>
 </div>
 
 <div class="page-wrapper">
-<aside class="peer-sidebar" aria-label="设计指导导航">
+<aside class="peer-sidebar" aria-label="设计模式导航">
   <nav class="peer-nav">
     <div class="peer-group-label">入口可识别性</div>
     <ul>
@@ -1858,23 +2011,68 @@
     <h1>代码语言外显</h1>
   </header>
 
-  <h2 class="block-title">原则概述</h2>
-  <p class="affinity-group-label">原则：语言与输出写成字</p>
-  <ul class="affinity-principles">
-    <li>块顶须标明语言（如「Bash」「Python」）；预期输出须以独立文字块呈现，禁止截图展示。</li>
-    <li>非必要不展示行号。若确需行号对照报错或逐行讲解，须确保行号不混入可复制、可抓取的命令文本中。</li>
-  </ul>
-  <p class="affinity-group-label">对 AI 的好处</p>
-  <ul class="affinity-principles">
-    <li>AI 读取到的是语言标签、命令原文和输出文本，无行号污染，也无需从截图中辨认结果。</li>
-  </ul>
+  <h2 class="block-title">Pattern说明</h2>
+  <h3 class="fn-h3">场景定义</h3>
+  <table class="scene-def-table">
+    <colgroup>
+      <col class="col-type" />
+      <col class="col-desc" />
+      <col class="col-place" />
+    </colgroup>
+    <thead>
+      <tr>
+        <th class="col-type">类型</th>
+        <th class="col-desc">说明</th>
+        <th class="col-place">常见落点</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="col-type">语言标注</td>
+        <td class="col-desc">代码块须标明语言（如「Bash」「Python」），禁止仅靠高亮推断。</td>
+        <td class="col-place">命令块、示例代码</td>
+      </tr>
+      <tr>
+        <td class="col-type">预期输出</td>
+        <td class="col-desc">成功输出须以独立文字块呈现，禁止截图展示。</td>
+        <td class="col-place">命令结果、运行回显</td>
+      </tr>
+      <tr>
+        <td class="col-type">代码行号</td>
+        <td class="col-desc">非必要不展示行号；若展示，须与可复制命令正文分离。</td>
+        <td class="col-place">报错对照、逐行讲解</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 class="fn-h3">AI 亲和设计原则</h3>
+  <table class="scene-def-table">
+    <colgroup>
+      <col class="col-type" />
+      <col class="col-desc" />
+      <col class="col-place" />
+    </colgroup>
+    <thead>
+      <tr>
+        <th class="col-type">设计原则</th>
+        <th class="col-desc">说明</th>
+        <th class="col-place"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="col-type">语言与输出成文</td>
+        <td class="col-desc" colspan="2">块顶须标明语言；预期输出须写成独立文字块，禁止以截图承载结果。</td>
+      </tr>
+      <tr>
+        <td class="col-type">行号不污染正文</td>
+        <td class="col-desc" colspan="2">非必要不展示行号；确需对照报错或逐行讲解时，行号不得混入可复制、可抓取的命令文本。</td>
+      </tr>
+    </tbody>
+  </table>
 
-  <h2 class="block-title">场景示例</h2>
-  <h3 class="fn-h3">示例 1 · 语言名须写成字</h3>
-  <div class="fn-lead-block">
-    <p class="type-lead fn-lead"><strong>核心原则：</strong>块顶须标明语言（如「Bash」「Python」）。</p>
-    <p class="type-lead fn-lead"><strong>例外情况：</strong>整页已统一声明所用语言时，可省略。</p>
-  </div>
+  <h2 class="block-title">设计示例</h2>
+  <h3 class="fn-h3">语言标注</h3>
+  <h4 class="fn-h4">示例 1 · 用文字标明代码语言</h4>
   <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
@@ -1892,7 +2090,7 @@ ascend-dmi -a</p>
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>缺文本替代：</strong>块顶没有语言名，读不出是 Bash 还是 Python。</li>
+      <li><strong>常见疏漏：</strong>块顶未标明语言，机器无法识别是 Bash 还是 Python。</li>
     </ul>
     </div>
     </div>
@@ -1913,19 +2111,17 @@ ascend-dmi -a</p>
       </div>
     </div>
     <div class="fn-ex-foot">
-    <p class="fn-ex-group">必有项</p>
     <ul class="fn-ex-list">
-      <li><strong>语言名：</strong>须写成「Bash」等字。</li>
+      <li><strong>正确做法：</strong>块顶写成「Bash」等语言名。</li>
+      <li><strong>可免场景：</strong>整页已统一声明所用语言时，可省略。</li>
     </ul>
     </div>
     </div>
   </div>
   </div>
-  <h3 class="fn-h3">示例 2 · 预期输出须写成字</h3>
-  <div class="fn-lead-block">
-    <p class="type-lead fn-lead"><strong>核心原则：</strong>成功输出须以独立文字块呈现，禁止截图为图片。</p>
-    <p class="type-lead fn-lead"><strong>例外情况：</strong>命令无输出，或旁白已写明成功判据时，可不另附输出块。</p>
-  </div>
+
+  <h3 class="fn-h3">预期输出</h3>
+  <h4 class="fn-h4">示例 2 · 用独立文字块呈现预期输出</h4>
   <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
@@ -1943,7 +2139,7 @@ ascend-dmi -a</p>
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>缺文本替代：</strong>只有命令，没有写成字的输出块，读不出成功时设备状态是什么。</li>
+      <li><strong>常见疏漏：</strong>仅有命令，未配输出文字块，机器无法识别成功时的设备状态。</li>
     </ul>
     </div>
     </div>
@@ -1967,19 +2163,17 @@ ascend-dmi -a</p>
       </div>
     </div>
     <div class="fn-ex-foot">
-    <p class="fn-ex-group">必有项</p>
     <ul class="fn-ex-list">
-      <li><strong>预期输出：</strong>须写成可选中的字，说明成功长什么样。</li>
+      <li><strong>正确做法：</strong>预期输出写成可选中的独立文字块，说明成功长什么样。</li>
+      <li><strong>可免场景：</strong>命令无输出，或正文已写明成功判据时，可不另附输出块。</li>
     </ul>
     </div>
     </div>
   </div>
   </div>
-  <h3 class="fn-h3">示例 3 · 非必要不展示行号</h3>
-  <div class="fn-lead-block">
-    <p class="type-lead fn-lead"><strong>核心原则：</strong>代码块非必要不展示行号；若展示，行号不得混入可复制或可抓取的命令文本中。</p>
-    <p class="type-lead fn-lead"><strong>例外情况：</strong>需对照报错行或逐行讲解时，可显示行号，但须与命令正文分离。</p>
-  </div>
+
+  <h3 class="fn-h3">代码行号</h3>
+  <h4 class="fn-h4">示例 3 · 行号不混入可复制正文</h4>
   <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
@@ -1998,7 +2192,7 @@ ascend-dmi -a</p>
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>有歧义：</strong>命令可抓取，但行号混进正文，复制后会变成「1 npu-smi info」。</li>
+      <li><strong>常见疏漏：</strong>行号混入命令正文，机器抓取或复制后会污染命令（如「1 npu-smi info」）。</li>
     </ul>
     </div>
     </div>
@@ -2019,9 +2213,9 @@ ascend-dmi -a</p>
       </div>
     </div>
     <div class="fn-ex-foot">
-    <p class="fn-ex-group">必有项</p>
     <ul class="fn-ex-list">
-      <li><strong>命令正文：</strong>可复制内容不含行号。</li>
+      <li><strong>正确做法：</strong>可复制内容不含行号。</li>
+      <li><strong>可免场景：</strong>需对照报错行或逐行讲解时，可显示行号，但须与命令正文分离。</li>
     </ul>
     </div>
     </div>

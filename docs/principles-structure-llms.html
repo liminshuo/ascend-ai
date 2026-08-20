@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>机器发现层部署 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid #e2e8f0;
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: 100%; max-width: none; margin: 0; padding: 0 24px;
+    height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: #191919; text-decoration: none; white-space: nowrap; margin-right: 40px;
+  }
+  .topbar .brand span { color: #1476FF; }
+  .topbar .site-nav { display: flex; align-items: center; gap: 4px; flex: 1; flex-wrap: wrap; }
+  .topbar .site-nav > a {
+    text-decoration: none; color: #595959; font-size: 14px; font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .topbar .site-nav > a:hover { color: #1476FF; background: #F5F5F5; text-decoration: none; }
+  .topbar .site-nav > a.active { color: #1476FF; background: #F5F5F5; font-weight: 600; }
+  .nav-dd { position: relative; z-index: 210; display: inline-flex; align-items: center; }
+  .nav-dd-trigger {
+    appearance: none; border: 0; background: transparent; cursor: pointer; font: inherit;
+    text-decoration: none; color: #595959; font-size: 14px; font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+    display: inline-flex; align-items: center; gap: 12px;
+  }
+  .nav-dd-trigger::after {
+    content: ""; width: 6px; height: 6px;
+    border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg); opacity: .65; margin-top: -3px; flex-shrink: 0;
+  }
+  .nav-dd-trigger:hover, .nav-dd:hover .nav-dd-trigger, .nav-dd:focus-within .nav-dd-trigger {
+    color: #1476FF; background: #F5F5F5;
+  }
+  .nav-dd::before { content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 10px; }
+  .nav-dd-panel {
+    position: absolute; top: calc(100% + 4px); left: 0; min-width: 148px; padding: 6px;
+    background: #fff; border: 1px solid #e2e8f0; border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(25, 25, 25, 0.08);
+    opacity: 0; visibility: hidden; transform: translateY(-4px);
+    transition: opacity .15s, transform .15s, visibility .15s; z-index: 210;
+  }
+  .nav-dd:hover .nav-dd-panel, .nav-dd:focus-within .nav-dd-panel {
+    opacity: 1; visibility: visible; transform: translateY(0);
+  }
+  .nav-dd-panel a {
+    display: block; padding: 8px 12px; border-radius: 6px; text-decoration: none;
+    color: #595959; font-size: 13px; font-weight: 500; line-height: 1.4;
+  }
+  .nav-dd-panel a:hover { color: #1476FF; background: #F5F5F5; }
+  /* GEO topbar = fixed，沿用 layout 的 page-wrapper padding-top */
+  body.inner-page .page-wrapper { min-height: 100vh; }
+
+  .fn-ex-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr auto;
+    column-gap: 16px;
+    row-gap: 0;
+    align-items: stretch;
+    margin: 16px 0 0;
+  }
+  .fn-ex-row .fn-ex {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 1 / span 3;
+    margin: 0;
+    min-width: 0;
+  }
+  .fn-ex-row .fn-ex-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .fn-ex-row .fn-ex-head .fn-ex-label { margin: 0; }
+  .fn-ex-row .fn-ex-head .fn-ex-bar {
+    display: block; margin: 0; width: 100%; align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-body {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 2 / span 2;
+    min-height: 0;
+    background: #f5f5f5;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .fn-ex-row .fn-ex-mock {
+    min-height: 0; height: 100%; box-sizing: border-box;
+    border: none; border-radius: 0; align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-mock:has(.site-foot) {
+    background: #f5f5f5;
+    padding: 12px;
+  }
+  .fn-ex-row .fn-ex-foot {
+    display: flex; flex-direction: column; gap: 8px;
+    padding: 12px 14px 14px; background: #fff;
+    border-top: 1px solid #e2e8f0;
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-list { margin: 0; gap: 4px; }
+  .fn-ex-label {
+    display: inline-block; padding: 0 8px; border-radius: 4px;
+    font-size: 12px; font-weight: 650; line-height: 20px;
+    color: #b42318; background: #fef3f2;
+  }
+  .fn-ex-label.is-good { color: #047857; background: #ecfdf5; }
+  .fn-ex-bar {
+    display: block; width: 100%; height: 3px;
+    background: #b42318; border-radius: 2px;
+  }
+  .fn-ex-bar.is-good { background: #047857; }
+  .fn-ex-list {
+    margin: 0; padding: 0 0 0 1.25em; list-style: disc;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .fn-ex-list li {
+    margin: 0; font-size: 14px; line-height: 22px; color: #191919;
+  }
+  .fn-ex-list strong { font-weight: 650; }
+  .site-foot {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 10px;
+    overflow: hidden;
+    font-family: "PingFang SC", sans-serif;
+  }
+  .site-foot-body {
+    padding: 16px 14px 20px;
+    min-height: 52px;
+    background: linear-gradient(180deg, #fafbfc 0%, #fff 100%);
+  }
+  .site-foot-body p {
+    margin: 0;
+    font-size: 11px;
+    line-height: 16px;
+    color: #bfbfbf;
+  }
+  .site-foot-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 12px;
+    padding: 10px 14px;
+    border-top: 1px solid #eef1f5;
+    background: #fafafa;
+  }
+  .site-foot-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .site-foot-links a {
+    font-size: 11px;
+    line-height: 16px;
+    color: #8c8c8c;
+    text-decoration: none;
+  }
+  .site-foot-links a.is-machine {
+    color: #595959;
+    font-variant-numeric: tabular-nums;
+  }
+  .site-foot-copy {
+    margin: 0;
+    font-size: 10px;
+    line-height: 14px;
+    color: #bfbfbf;
+  }
+  .principle-example + .principle-example { margin-top: 28px; }
+  @media (max-width: 900px) {
+    .fn-ex-row {
+      grid-template-columns: 1fr;
+      grid-template-rows: none;
+    }
+    .fn-ex-row .fn-ex { display: block; grid-row: auto; }
+    .fn-ex-row .fn-ex-body {
+      display: flex; flex-direction: column; grid-row: auto;
+    }
+  }
+</style>
+</head>
+<body class="inner-page" data-module="principles" data-page="structure-llms">
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html">社区 <span>AI 亲和原则</span></a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="mintlify.html">友商对照</a>
+      <a href="reachability.html">社区诊断</a>
+      <a href="principles-affinity-full.html" class="active">亲和原则</a>
+      <a href="community-ui.html">组件亲和</a>
+      <a href="design-guide-image-text.html">设计模式</a>
+    </nav>
+  </div>
+</div>
+
+<div class="page-wrapper">
+
+  <aside id="module-sidebar"></aside>
+
+  <main class="main-content">
+
+    <div class="page-header">
+      <h1>机器发现层部署</h1>
+      <p class="page-desc page-desc--split">
+        <span class="page-desc-line">在站点层部署机器发现层（<code>llms.txt</code>、<code>llms-full.txt</code>、<code>sitemap.xml</code>、<code>robots.txt</code>），声明<strong>机器应从哪条 URL 抓取、主推哪一版文档</strong>。同时在人类浏览页提供可见的「机器可读版本」入口，避免 Agent 与合规爬虫只能沿渲染页路径抓取。</span>
+        <span class="page-desc-line">找的到 · 序号 1 · 对应 <a href="problems-structure-llms.html">实测问题 · 机器发现层缺失</a> · 完整条目见 <a href="principles-affinity-full.html#principle-full-1">全量亲和原则 #1</a>。</span>
+      </p>
+    </div>
+
+    <section class="section" id="principles">
+      <h2>部署对象</h2>
+      <div class="affinity-table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th style="width:28%">对象</th>
+              <th>描述</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>robots.txt</code></td>
+              <td>站点爬取规则：声明哪些路径允许抓、哪些禁止抓，并指向 Sitemap。</td>
+            </tr>
+            <tr>
+              <td><code>sitemap.xml</code></td>
+              <td>站点 URL 清单：列出应被索引的页面及更新时间。</td>
+            </tr>
+            <tr>
+              <td><code>llms.txt</code></td>
+              <td>面向大模型的站点索引：按产品线/版本列出推荐抓取的文档入口。</td>
+            </tr>
+            <tr>
+              <td><code>llms-full.txt</code></td>
+              <td>面向大模型的全文包：将索引文档的 Markdown 正文聚合为单文件。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section" id="obj-robots">
+      <h2>部署 <code>robots.txt</code></h2>
+
+      <h3>前端调整·建议</h3>
+      <ul class="principle-suggestions">
+        <li><strong>按业务站点列出 Sitemap</strong>：用多条 <code>Sitemap:</code> 声明各产品线 / 文档子系统的 sitemap 或 index，而不是只挂一个笼统入口。</li>
+        <li><strong>授权智能爬虫通行</strong>：对 AI/LLM UA 显式 <code>Allow</code> 机器可读路径（<code>*.md</code>、<code>llms.txt</code>、<code>*.llms.txt</code>），并默认开放站点主体，避免「有 sitemap 却被 robots 封死」。</li>
+        <li><strong>声明可被 AI 使用</strong>：在默认策略中给出 <code>Content-Signal</code>（如允许检索 / 作为 AI 输入），降低合规爬虫对抓取意图的歧义。</li>
+        <li><strong>搜索引擎与 AI 分组</strong>：传统搜索 UA（Googlebot / Bingbot）与智能爬虫分块声明，便于后续差异化放行或限流。</li>
+        <li><strong>屏蔽噪声参数</strong>：<code>Disallow</code> 追踪与高亮类 query（<code>utm</code>、<code>ncid</code>、<code>nvid</code>、<code>highlight</code> 等），避免重复 URL 稀释索引。</li>
+      </ul>
+      <h3>前端调整·示例</h3>
+      <div class="principle-example">
+        <div class="ui-demo ui-demo--plain" id="llms-dev-robots">
+          <div class="compare-grid compare-grid--no-mid-divider">
+            <div>
+              <h4 class="compare-label compare-label--machine">Before · 封锁机器源</h4>
+              <div class="compare-col machine">
+              <p class="compare-sublabel">robots.txt</p>
+              <pre class="arch-diagram">User-agent: *
+Disallow: /doc_center/
+Disallow: /assets/
+
+Sitemap: https://www.hiascend.com/sitemap.xml</pre>
+              <p class="rf-muted">sitemap 声明有文档，robots 却封死 <code>/doc_center/</code>，爬虫拿到链接后直接被拦截。</p>
+            </div>
+            </div>
+            <div>
+              <h4 class="compare-label compare-label--human">After · 放行机器路径</h4>
+              <div class="compare-col human">
+              <p class="compare-sublabel">robots.txt</p>
+              <pre class="arch-diagram">User-agent: *
+Allow: /doc_center/source/
+Disallow: /assets/
+Disallow: /api/
+
+Sitemap: https://www.hiascend.com/sitemap.xml</pre>
+              <p class="rf-muted">机器源与 llms 入口可抓；噪声路径与追踪参数屏蔽。</p>
+            </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="obj-sitemap">
+      <h2>部署 <code>sitemap.xml</code></h2>
+
+      <h3>前端调整·建议</h3>
+      <ul class="principle-suggestions">
+        <li><strong>优先收录 source 路径</strong>：<code>/doc_center/source/</code> 下的机器源路径 priority 高于渲染页，<code>lastmod</code> 从文档 <code>dateModified</code> 自动同步。</li>
+      </ul>
+      <h3>前端调整·示例</h3>
+      <div class="principle-example">
+        <div class="ui-demo ui-demo--plain" id="llms-dev-sitemap">
+          <div class="compare-grid compare-grid--no-mid-divider">
+            <div>
+              <h4 class="compare-label compare-label--machine">Before · 只收录渲染页</h4>
+              <div class="compare-col machine">
+              <p class="compare-sublabel">sitemap.xml 片段</p>
+              <pre class="arch-diagram">&lt;url&gt;
+  &lt;loc&gt;https://…/document/detail/…/operator_dev.html&lt;/loc&gt;
+  &lt;priority&gt;0.5&lt;/priority&gt;
+&lt;/url&gt;</pre>
+              <p class="rf-muted">收录 ~224 KB 渲染壳层，导航栏等噪声稀释正文语义。</p>
+            </div>
+            </div>
+            <div>
+              <h4 class="compare-label compare-label--human">After · 优先 source 路径</h4>
+              <div class="compare-col human">
+              <p class="compare-sublabel">sitemap.xml 片段</p>
+              <pre class="arch-diagram">&lt;url&gt;
+  &lt;loc&gt;https://…/doc_center/source/…/operator_dev.md&lt;/loc&gt;
+  &lt;lastmod&gt;2026-06-01&lt;/lastmod&gt;
+  &lt;priority&gt;0.9&lt;/priority&gt;
+&lt;/url&gt;</pre>
+              <p class="rf-muted">机器源优先索引；<code>lastmod</code> 与文档 <code>dateModified</code> 自动同步。</p>
+            </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="obj-llms">
+      <h2>部署 <code>llms.txt</code></h2>
+
+      <h3>设计UI调整·建议</h3>
+      <ul class="principle-suggestions">
+        <li><strong>页脚标出站级机器入口</strong>：在页脚次要区用小字链标出 <code>llms.txt</code>，文案可读、可跟链；禁止只靠隐式约定或图标。</li>
+        <li><strong>不抢主路径</strong>：入口视觉权重与页脚其他次要链接一致，不突出也不隐藏；文档中心等已有同等清晰站级入口时可免重复挂链。</li>
+      </ul>
+      <h3>设计UI调整·示例</h3>
+      <div class="principle-example">
+        <h4>页脚标出站级机器入口</h4>
+        <div class="fn-ex-row" id="llms-design-footer">
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label">反面</span>
+              <div class="fn-ex-bar" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="反面：页脚只有法务链，无 llms.txt">
+                <div class="site-foot">
+                  <div class="site-foot-body" aria-hidden="true">
+                    <p>正文与主路径区域（略）</p>
+                  </div>
+                  <div class="site-foot-bar">
+                    <ul class="site-foot-links">
+                      <li><a href="#mock-about">关于我们</a></li>
+                      <li><a href="#mock-legal">法律声明</a></li>
+                      <li><a href="#mock-privacy">隐私政策</a></li>
+                    </ul>
+                    <p class="site-foot-copy">© 昇腾社区</p>
+                  </div>
+                </div>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>常见疏漏：</strong>页脚未标出 <code>llms.txt</code>，机器与审计无法从版面跟到站级清单。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label is-good">正面</span>
+              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="正面：页脚小字链 llms.txt">
+                <div class="site-foot">
+                  <div class="site-foot-body" aria-hidden="true">
+                    <p>正文与主路径区域（略）</p>
+                  </div>
+                  <div class="site-foot-bar">
+                    <ul class="site-foot-links">
+                      <li><a href="#mock-about">关于我们</a></li>
+                      <li><a href="#mock-legal">法律声明</a></li>
+                      <li><a href="#mock-privacy">隐私政策</a></li>
+                      <li><a class="is-machine" href="/llms.txt">llms.txt</a></li>
+                    </ul>
+                    <p class="site-foot-copy">© 昇腾社区</p>
+                  </div>
+                </div>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>正确做法：</strong>页脚次要区用小字标出 <code>llms.txt</code>，不抢主路径。</li>
+                  <li><strong>可免场景：</strong>文档中心等已有同等清晰的站级入口时，页脚可不重复挂链。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="principle-example-note" style="margin-top:12px;">设计专项完整示例见 <a href="design-guide-machine-entry.html">机器可读入口可发现</a>。</p>
+      </div>
+
+      <h3>前端调整·建议</h3>
+      <ul class="principle-suggestions">
+        <li><strong>部署 /llms.txt</strong>：按产品线-版本分组，构建管道从 CMS 文档元数据自动生成，文档发布时自动更新，不依赖人工维护。</li>
+        <li><strong>&lt;head&gt; 中注入机器发现标签</strong>：每个页面自动输出 <code>&lt;link rel="llms" href="/llms.txt"&gt;</code> 和 <code>&lt;link rel="alternate" type="text/markdown" href="对应 source 路径"&gt;</code>，由页面模板统一生成。</li>
+      </ul>
+      <h3>前端调整·示例</h3>
+      <div class="principle-example">
+        <h4>&lt;head&gt; 机器发现标签</h4>
+        <div class="ui-demo ui-demo--plain" id="llms-dev-head">
+          <div class="compare-grid compare-grid--no-mid-divider">
+            <div>
+              <h4 class="compare-label compare-label--machine">Before</h4>
+              <div class="compare-col machine">
+              <p class="compare-sublabel">HTML 源码</p>
+              <pre class="arch-diagram">&lt;head&gt;
+  &lt;title&gt;Ascend C 算子开发&lt;/title&gt;
+  &lt;link rel="canonical" href="/document/detail/.../operator_dev.html"&gt;
+&lt;/head&gt;</pre>
+              <p class="rf-muted">无 llms / alternate 声明，Agent 只能沿用人类渲染页 URL。</p>
+            </div>
+            </div>
+            <div>
+              <h4 class="compare-label compare-label--human">After</h4>
+              <div class="compare-col human">
+              <p class="compare-sublabel">HTML 源码</p>
+              <pre class="arch-diagram">&lt;head&gt;
+  &lt;title&gt;Ascend C 算子开发&lt;/title&gt;
+  &lt;link rel="llms" href="/llms.txt" type="text/markdown"&gt;
+  &lt;link rel="alternate" type="text/markdown"
+        href="/doc_center/source/…/operator_dev.md"&gt;
+  &lt;link rel="canonical" href="/doc_center/source/.../operator_dev.md"&gt;
+&lt;/head&gt;</pre>
+              <p class="rf-muted">页面级声明站点索引与本文机器源，模板统一输出。</p>
+            </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="obj-llms-full">
+      <h2>部署 <code>llms-full.txt</code></h2>
+
+      <h3>前端调整·建议</h3>
+      <ul class="principle-suggestions">
+        <li><strong>部署 /llms-full.txt</strong>：构建管道从 <code>/doc_center/source/</code> 自动聚合所有索引文档的 Markdown 全文为单文件，随文档发布自动重新生成。</li>
+      </ul>
+    </section>
+
+  </main></div>
+
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js"></script>
+<script src="assets/js/module-sidebar.js"></script>
+</body>
+</html>
