@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 亲和原则 · 亲和原则 · 社区AI亲和分析</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid #e2e8f0;
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: 100%; max-width: none; margin: 0; padding: 0 24px;
+    height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: #191919; text-decoration: none; white-space: nowrap; margin-right: 40px;
+  }
+  .topbar .brand span { color: #1476FF; }
+  .topbar .site-nav { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; flex-wrap: wrap; }
+  .topbar .site-nav > a {
+    text-decoration: none; color: #595959; font-size: 14px; font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .topbar .site-nav > a:hover { color: #1476FF; background: #F5F5F5; text-decoration: none; }
+  .topbar .site-nav > a.active { color: #1476FF; background: #F5F5F5; font-weight: 600; }
+  body.inner-page .page-wrapper { min-height: 100vh; }
+
+  /* H1 对齐设计模式页：无底部分割线；与首个 H2 间距同 block-title */
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 28px;
+  }
+  .page-header h1 {
+    font-family: "PingFang SC", sans-serif;
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 600;
+    line-height: 48px;
+    letter-spacing: -0.02em;
+    margin: 8px 0 0;
+    color: var(--color-text, #191919);
+  }
+
+  /* 正文上/左边距对齐设计模式 peer-main > .wrap（上 32px，1200 居中） */
+  body.inner-page[data-page="overview"]:has(#module-sidebar) .main-content {
+    padding-top: 32px;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  body.inner-page[data-page="overview"]:has(#module-sidebar) .main-content > .page-header,
+  body.inner-page[data-page="overview"]:has(#module-sidebar) .main-content > .section {
+    width: min(1200px, calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+
+  /* Why：与设计模式页 H1→首个 H2 间距一致（约 48px） */
+  #why.section > h2:first-of-type {
+    margin-top: 48px;
+  }
+  #why .ov-why-body {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--text, #191919);
+  }
+  #why .ov-why-body + .ov-why-body {
+    margin-top: 12px;
+  }
+
+  /* 五能力 · 大模型工作流 */
+  .ov-flow {
+    margin: 0 0 40px;
+  }
+  #llm-flow.section > h2:first-of-type {
+    margin-bottom: 32px;
+  }
+  .ov-flow-track {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 0 0 8px;
+    background: transparent;
+    border-radius: 0;
+    overflow: visible;
+  }
+  .ov-flow-stages,
+  .ov-flow-circles {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 176px 64px 208px 64px 176px 64px 176px 64px 176px;
+    align-items: center;
+    justify-content: center;
+    justify-items: center;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    column-gap: 0;
+    row-gap: 0;
+  }
+  .ov-flow-stages {
+    height: 24px;
+    min-height: 24px;
+  }
+  .ov-flow-stage-slot,
+  .ov-flow-stage-gap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 24px;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  .ov-flow-stage-slot {
+    flex: none;
+  }
+  .ov-flow-stage-gap {
+    position: relative;
+    flex: none;
+  }
+  .ov-flow-stage-gap::before {
+    content: "";
+    position: absolute;
+    left: 8px;
+    right: 12px;
+    top: 50%;
+    height: 0;
+    border-top: 1.5px dashed #B0B0B0;
+    transform: translateY(-50%);
+  }
+  .ov-flow-stage-gap::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 8px;
+    width: 0;
+    height: 0;
+    border-top: 3.5px solid transparent;
+    border-bottom: 3.5px solid transparent;
+    border-left: 5px solid #B0B0B0;
+    transform: translateY(-50%);
+  }
+  .ov-flow-stage {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 24px;
+    letter-spacing: 0.06em;
+    color: #1476FF;
+  }
+  .ov-flow-stage--focus {
+    font-size: 16px;
+    line-height: 24px;
+  }
+  .ov-flow-circles {
+    min-height: 240px;
+  }
+  .ov-flow-node {
+    position: relative;
+    z-index: 1;
+    width: 176px;
+    height: 176px;
+    justify-self: center;
+  }
+  .ov-flow-node--focus {
+    width: 208px;
+    height: 208px;
+  }
+  .ov-flow-rim {
+    position: absolute;
+    inset: -12px;
+    width: calc(100% + 24px);
+    height: calc(100% + 24px);
+    pointer-events: none;
+    z-index: 0;
+    overflow: visible;
+  }
+  .ov-flow-circle {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex: none;
+    border-radius: 50%;
+    background: #F7FAFE;
+    border: 1px solid rgba(20, 118, 255, 0.28);
+    box-shadow: 0 2px 10px rgba(20, 118, 255, 0.08);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 16px 14px;
+    box-sizing: border-box;
+    text-decoration: none;
+    color: #191919;
+    transition: box-shadow .15s, transform .15s;
+  }
+  a.ov-flow-circle:link,
+  a.ov-flow-circle:visited,
+  a.ov-flow-circle:hover,
+  a.ov-flow-circle:active {
+    color: #191919;
+    text-decoration: none;
+  }
+  .ov-flow-node--focus .ov-flow-circle {
+    padding: 20px 16px;
+    border-color: rgba(20, 118, 255, 0.45);
+    box-shadow: 0 4px 16px rgba(20, 118, 255, 0.14);
+  }
+  .ov-flow-node--focus .ov-flow-title {
+    font-size: 22px;
+    color: #191919;
+  }
+  a.ov-flow-circle:hover {
+    box-shadow: 0 4px 16px rgba(20, 118, 255, 0.12);
+    transform: translateY(-1px);
+  }
+  .ov-flow-title {
+    margin: 0 0 8px;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #191919;
+    letter-spacing: 0.02em;
+  }
+  .ov-flow-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 12px;
+    line-height: 1.5;
+    color: #595959;
+  }
+  .ov-flow-list li + li { margin-top: 2px; }
+  /* 圆间转折箭头：上下交替 */
+  .ov-flow-turn {
+    position: relative;
+    z-index: 2;
+    width: 64px;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    justify-self: center;
+    pointer-events: none;
+    margin: 0;
+  }
+  .ov-flow-turn svg {
+    width: 64px;
+    height: 120px;
+    overflow: visible;
+    display: block;
+  }
+  .ov-goals {
+    margin: 0 0 40px;
+  }
+  .ov-goal {
+    margin: 0 0 24px;
+    padding: 0;
+    border: 0;
+  }
+  .ov-goal:last-child { margin-bottom: 0; }
+  .ov-goals.section .ov-goal:first-child > h2.ov-goal-id {
+    margin-top: 0;
+  }
+  .ov-goal-id .ov-goal-g {
+    font-variant-numeric: tabular-nums;
+    margin-right: 2px;
+  }
+  .ov-goal-desc {
+    margin: 0 0 14px;
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--text, #191919);
+  }
+  .ov-goal-guide {
+    margin: 0 0 18px;
+  }
+  .ov-goal-row {
+    margin: 0 0 14px;
+    padding: 0;
+    border: 0;
+  }
+  .ov-goal-row:last-child { margin-bottom: 0; }
+  .ov-goals.section .ov-goal-row > h4.ov-goal-label,
+  .ov-goals.section .ov-subgoal > h4.ov-subgoal-how {
+    margin: 0 0 6px;
+    padding: 0;
+    border: 0;
+    font-size: var(--text-h4, 14px);
+    font-weight: 700;
+    line-height: 1.4;
+    color: var(--color-text, #191919);
+  }
+  .ov-goal-body {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--muted, #595959);
+  }
+  .ov-goal-body strong {
+    color: var(--text, #191919);
+    font-weight: 600;
+  }
+  .ov-subgoals {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .ov-subgoal {
+    margin: 0 0 20px;
+    padding: 0;
+    border: 0;
+  }
+  .ov-subgoal:last-child { margin-bottom: 0; }
+  .ov-subgoal-id {
+    margin: 0 0 8px;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.45;
+    color: var(--text, #191919);
+  }
+  .ov-subgoal-id .ov-goal-g {
+    font-variant-numeric: tabular-nums;
+    margin-right: 2px;
+    color: #595959;
+  }
+  .ov-subgoal-list {
+    margin: 0;
+    padding-left: 18px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--muted, #595959);
+  }
+  .ov-subgoal-list li { margin-bottom: 4px; }
+  .ov-subgoal-list li:last-child { margin-bottom: 0; }
+  .ov-subgoal-list strong {
+    color: var(--text, #191919);
+    font-weight: 600;
+  }
+  @media (max-width: 1280px) {
+    .ov-flow-track {
+      padding: 0;
+    }
+    .ov-flow-stages {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 8px 12px;
+      height: auto;
+      min-height: 24px;
+      max-height: none;
+    }
+    .ov-flow-stage-slot {
+      flex: 0 0 auto;
+      width: auto;
+      min-width: 64px;
+    }
+    .ov-flow-stage-gap { display: none; }
+    .ov-flow-circles {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 28px;
+      min-height: 0;
+    }
+    .ov-flow-turn { display: none; }
+    .ov-flow-rim { display: none; }
+    .ov-flow-node {
+      flex: 0 0 152px;
+      width: 152px;
+      height: 152px;
+    }
+    .ov-flow-node--focus {
+      flex-basis: 176px;
+      width: 176px;
+      height: 176px;
+    }
+    .ov-flow-title { font-size: 17px; }
+    .ov-flow-node--focus .ov-flow-title { font-size: 19px; }
+  }
+</style>
+</head>
+<body class="inner-page" data-module="principles" data-page="overview">
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html">社区 <span>AI 亲和原则</span></a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="mintlify.html">友商对照</a>
+      <a href="reachability.html">社区诊断</a>
+      <a href="principles-overview.html" class="active">亲和原则</a>
+      <a href="community-ui.html">组件亲和</a>
+      <a href="design-guide-image-text.html">设计模式</a>
+    </nav>
+  </div>
+</div>
+
+<div class="page-wrapper">
+
+  <aside id="module-sidebar"></aside>
+
+  <main class="main-content">
+
+    <div class="page-header">
+      <h1>AI 亲和原则</h1>
+    </div>
+
+    <section class="section" id="why" aria-labelledby="why-title">
+      <h2 id="why-title">为什么要做 AI 亲和原则</h2>
+      <p class="ov-why-body">当用户通过大模型检索产品与技术问题，答案往往依赖文档站、官网等公开内容能否被机器稳定发现、完整读取并正确理解。若入口不可达、正文抓不全，或版本与语义含混，模型更容易用训练记忆填补缺口，表现为幻觉、答非所问或过时指引，直接损害知识交付效率与产品体验。</p>
+      <p class="ov-why-body">AI 亲和原则据此将答问链路拆解为<strong>可达、可读、可理解、可操作、可验证</strong>五层能力目标，为设计、内容与前端提供统一对照标准，使同一套公开面既服务读者，也可被生成式检索与知识入库可靠消费。</p>
+    </section>
+
+    <section class="ov-flow section" id="llm-flow" aria-labelledby="llm-flow-title">
+      <h2 id="llm-flow-title">大模型查找知识的流程</h2>
+      <div class="ov-flow-track">
+        <div class="ov-flow-stages" aria-label="流程关键点">
+          <div class="ov-flow-stage-slot"><p class="ov-flow-stage">发现</p></div>
+          <span class="ov-flow-stage-gap" aria-hidden="true"></span>
+          <div class="ov-flow-stage-slot"><p class="ov-flow-stage ov-flow-stage--focus">抓取</p></div>
+          <span class="ov-flow-stage-gap" aria-hidden="true"></span>
+          <div class="ov-flow-stage-slot"><p class="ov-flow-stage">消歧</p></div>
+          <span class="ov-flow-stage-gap" aria-hidden="true"></span>
+          <div class="ov-flow-stage-slot"><p class="ov-flow-stage">执行</p></div>
+          <span class="ov-flow-stage-gap" aria-hidden="true"></span>
+          <div class="ov-flow-stage-slot"><p class="ov-flow-stage">核对</p></div>
+        </div>
+
+        <div class="ov-flow-circles" role="list">
+          <div class="ov-flow-node ov-flow-node--over" role="listitem">
+            <svg class="ov-flow-rim" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+              <path d="M12 50 A38 38 0 0 1 88 50" stroke="#1476FF" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="7 6"/>
+            </svg>
+            <a class="ov-flow-circle" href="#goal-reach">
+              <p class="ov-flow-title">可达</p>
+              <ul class="ov-flow-list">
+                <li>发现入口与索引通畅</li>
+                <li>站内位置可定位</li>
+                <li>双轨同源可消费</li>
+              </ul>
+            </a>
+          </div>
+          <span class="ov-flow-turn" aria-hidden="true">
+            <svg viewBox="0 0 64 120" fill="none">
+              <path d="M8 34 C28 34 34 78 40 88" stroke="#1476FF" stroke-width="3.5" stroke-linecap="round"/>
+              <path d="M32 82 L40 92 L48 80" fill="none" stroke="#1476FF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <div class="ov-flow-node ov-flow-node--under ov-flow-node--focus" role="listitem">
+            <svg class="ov-flow-rim" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+              <path d="M12 50 A38 38 0 0 0 88 50" stroke="#1476FF" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="7 6"/>
+            </svg>
+            <a class="ov-flow-circle" href="#goal-readable" aria-current="step">
+              <p class="ov-flow-title">可读</p>
+              <ul class="ov-flow-list">
+                <li>正文完整可得</li>
+                <li>图表代码可转写</li>
+                <li>隐藏块不漏抓</li>
+              </ul>
+            </a>
+          </div>
+          <span class="ov-flow-turn" aria-hidden="true">
+            <svg viewBox="0 0 64 120" fill="none">
+              <path d="M8 86 C28 86 34 42 40 32" stroke="#1476FF" stroke-width="3.5" stroke-linecap="round"/>
+              <path d="M32 38 L40 28 L48 40" fill="none" stroke="#1476FF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <div class="ov-flow-node ov-flow-node--over" role="listitem">
+            <svg class="ov-flow-rim" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+              <path d="M12 50 A38 38 0 0 1 88 50" stroke="#1476FF" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="7 6"/>
+            </svg>
+            <a class="ov-flow-circle" href="#goal-understand">
+              <p class="ov-flow-title">可理解</p>
+              <ul class="ov-flow-list">
+                <li>标题层级清晰</li>
+                <li>版本时效可区分</li>
+                <li>链接状态明确</li>
+              </ul>
+            </a>
+          </div>
+          <span class="ov-flow-turn" aria-hidden="true">
+            <svg viewBox="0 0 64 120" fill="none">
+              <path d="M8 34 C28 34 34 78 40 88" stroke="#1476FF" stroke-width="3.5" stroke-linecap="round"/>
+              <path d="M32 82 L40 92 L48 80" fill="none" stroke="#1476FF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <div class="ov-flow-node ov-flow-node--under" role="listitem">
+            <svg class="ov-flow-rim" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+              <path d="M12 50 A38 38 0 0 0 88 50" stroke="#1476FF" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="7 6"/>
+            </svg>
+            <a class="ov-flow-circle" href="#goal-operable">
+              <p class="ov-flow-title">可操作</p>
+              <ul class="ov-flow-list">
+                <li>示例路径可参照</li>
+                <li>提供在线尝试入口</li>
+                <li>步骤可按序执行</li>
+              </ul>
+            </a>
+          </div>
+          <span class="ov-flow-turn" aria-hidden="true">
+            <svg viewBox="0 0 64 120" fill="none">
+              <path d="M8 86 C28 86 34 42 40 32" stroke="#1476FF" stroke-width="3.5" stroke-linecap="round"/>
+              <path d="M32 38 L40 28 L48 40" fill="none" stroke="#1476FF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <div class="ov-flow-node ov-flow-node--over" role="listitem">
+            <svg class="ov-flow-rim" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+              <path d="M12 50 A38 38 0 0 1 88 50" stroke="#1476FF" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="7 6"/>
+              <path d="M82 42 L90 50 L82 58" fill="none" stroke="#1476FF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <a class="ov-flow-circle" href="#goal-verify">
+              <p class="ov-flow-title">可验证</p>
+              <ul class="ov-flow-list">
+                <li>提供验证区块</li>
+                <li>写明预期结果</li>
+                <li>空态异常可处理</li>
+              </ul>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ov-goals section" id="stage-goals" aria-label="各阶段目标">
+
+      <article class="ov-goal" id="goal-reach">
+        <h2 class="ov-goal-id"><span class="ov-goal-g">G1.</span> 确保文档与官网的关键入口可被机器发现并进入</h2>
+        <p class="ov-goal-desc">可达原则关注「找不找得到」。生成式检索与知识入库的前提，是公开面（文档站、官网知识页等）对爬虫与模型可见、可进入：有稳定入口、不被 robots 误挡。站内层级与章节位置也应可被定位（见 G1.2）。达不到本原则，后续可读、可理解均无从谈起。</p>
+        <div class="ov-goal-guide">
+          <div class="ov-goal-row">
+            <h4 class="ov-goal-label">答问阶段</h4>
+            <div class="ov-goal-body"><strong>发现候选页</strong>。用户提问后，模型需要检索并找到可引用的官方页面（文档或官网）。本原则决定这些页面能否被稳定发现并进入候选与引用池。</div>
+          </div>
+          <div class="ov-goal-row">
+            <h4 class="ov-goal-label">益处</h4>
+            <div class="ov-goal-body">官方事实页能进入候选与引用池，降低答非所问、只命中壳页或营销页；为后续抓取与消歧提供可靠入口。</div>
+          </div>
+          <div class="ov-goal-row">
+            <h4 class="ov-goal-label">注意事项</h4>
+            <div class="ov-goal-body">营销 / 活动页可不做完整亲和改造，但要在收录策略里划清范围；勿用不稳定短链或登录墙挡住官方事实页；已持有 URL 时入口仍须真实可进入；双轨必须同源，禁止给人一套、给机器另一套内容。</div>
+          </div>
+        </div>
+        <div class="ov-subgoals">
+          <div class="ov-subgoal" id="goal-reach-1">
+            <h3 class="ov-subgoal-id"><span class="ov-goal-g">G1.1</span> 发现入口与索引通畅</h3>
+            <h4 class="ov-subgoal-how">如何做</h4>
+            <ul class="ov-subgoal-list">
+              <li>部署并维护 <strong>llms.txt / sitemap</strong>，构建管道随发布更新。</li>
+              <li>robots 放行可索引与 source 路径；URL 稳定、可引用。</li>
+              <li>覆盖文档站与官网等需被引用的公开面。</li>
+            </ul>
+          </div>
+          <div class="ov-subgoal" id="goal-reach-2">
+            <h3 class="ov-subgoal-id"><span class="ov-goal-g">G1.2</span> 站内位置可定位</h3>
+            <h4 class="ov-subgoal-how">如何做</h4>
+            <ul class="ov-subgoal-list">
+              <li>提供面包屑，标明当前页在站点层级中的位置。</li>
+              <li>提供邻篇导航，便于沿手册结构继续发现。</li>
+              <li>章节使用稳定锚点，支持定位到具体小节。</li>
+            </ul>
+          </div>
+          <div class="ov-subgoal" id="goal-reach-3">
+            <h3 class="ov-subgoal-id"><span class="ov-goal-g">G1.3</span> 双轨同源可消费</h3>
+            <h4 class="ov-subgoal-how">如何做</h4>
+            <ul class="ov-subgoal-list">
+              <li>在 HTML 之外提供平行 MD / source 等结构化纯文本源。</li>
+              <li>机器源与人读页<strong>同源</strong>更新，非按 UA 动态换皮。</li>
+              <li>页面模板可声明机器源 / alternate 入口，便于发现。</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="ov-goal" id="goal-readable">
+        <h2 class="ov-goal-id"><span class="ov-goal-g">G2.</span> 确保机器可完整读取正文，并将非文本与隐藏态内容等价入库</h2>
+        <p class="ov-goal-desc">可读原则关注「读不读得到」。入口找到之后，正文、图意、表格、代码以及 Tab / 折叠等默认隐藏内容，必须以可抓取文本进入知识层。本阶段是 GEO 亲和改造的主战场：页面「看起来有内容」不等于机器「拿到了可引用的 chunk」。</p>
+        <div class="ov-goal-guide">
+          <div class="ov-goal-row">
+            <h4 class="ov-goal-label">答问阶段</h4>
+            <div class="ov-goal-body"><strong>打开页面、读取正文</strong>。模型选定 URL 后抓取页面内容。本原则决定抓到的是完整可引用文本，还是空壳、缺图意、缺 Tab / 折叠中的关键信息。</div>
+          </div>
+          <div class="ov-goal-row">
+            <h4 class="ov-goal-label">益处</h4>
+            <div class="ov-goal-body">回答能引用完整步骤与结论；减少空壳页、半页入库、只抓到激活 Tab 导致的空泛复述。</div>
+          </div>
+          <div class="ov-goal-row">
+            <h4 class="ov-goal-label">注意事项</h4>
+            <div class="ov-goal-body">装饰性图片可不强转写，但信息型图必须有字；勿把关键步骤只放在悬停 / 蒙版里；代码勿混入行号等噪声；「看起来全」不等于「DOM 里全」——以禁 JS 抓取为准。</div>
+          </div>
+        </div>
+        <div class="ov-subgoals">
+          <div class="ov-subgoal" id="goal-readable-1">
+            <h3 class="ov-subgoal-id"><span class="ov-goal-g">G2.1</span> 正文在 HTML 中完整可得</h3>
+            <h4 class="ov-subgoal-how">如何做</h4>
+            <ul class="ov-subgoal-list">
+              <li>正文 SSR / 首包输出完整，关键段落不依赖纯客户端渲染。</li>
+              <li>避免无限滚动、虚拟列表导致主体内容不在 DOM。</li>
+              <li>发布前可用禁 JS 抓取做完整性对照。</li>
+            </ul>
+          </div>
+          <div class="ov-subgoal" id="goal-readable-2">
+            <h3 class="ov-subgoal-id"><span class="ov-goal-g">G2.2</span> 图、表、代码文本化转写</h3>
+            <h4 class="ov-subgoal-how">如何做</h4>
+            <ul class="ov-subgoal-list">
+              <li>信息型图提供 alt / 图注或正文转写；结构图优先可机读源。</li>
+              <li>表格用语义化结构，结论可读、可切 chunk。</li>
+              <li>代码块保持干净可复制，避免行号等噪声入库。</li>
+            </ul>
+          </div>
+          <div class="ov-subgoal" id="goal-readable-3">
+            <h3 class="ov-subgoal-id"><span class="ov-goal-g">G2.3</span> 隐藏块不漏抓</h3>
+            <h4 class="ov-subgoal-how">如何做</h4>
+            <ul class="ov-subgoal-list">
+              <li>Tab、折叠等内容默认全量进入 DOM，或经 SSR 完整输出。</li>
+              <li>关键步骤不仅挂在悬停或蒙版交互上。</li>
+              <li>控件与状态配备可抓取的独立标签 / 文案。</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="ov-goal" id="goal-understand">
+        <h2 class="ov-goal-id"><span class="ov-goal-g">G3.</span> 确保机器可消歧文档结构、生命周期与语义指称</h2>
+        <p class="ov-goal-desc">可理解原则关注「读得对不对」。内容入库后仍可能切错章节、混用版本、误读状态与链接含义。本原则要求结构、时效与语义指称对机器同样明确，使召回与引用落在正确范围，而不是「有字但答偏」。</p>
+        <div class="ov-goal-guide">
+          <div class="ov-goal-row">
+            <h4 class="ov-goal-label">答问阶段</h4>
+            <div class="ov-goal-body"><strong>整理证据、判断是否够用</strong>。模型汇总已读内容，决定能否作答或需否继续检索。本原则影响版本是否选对、章节是否切准、状态与链接是否被误读。</div>
+          </div>
+          <div class="ov-goal-row">
+            <h4 class="ov-goal-label">益处</h4>
+            <div class="ov-goal-body">降低错误引用与过时答案；召回落在正确章节与版本，回答更可核对、可信。</div>
+          </div>
+          <div class="ov-goal-row">
+            <h4 class="ov-goal-label">注意事项</h4>
+            <div class="ov-goal-body">避免「最新版」等模糊措辞；弃用内容须显式标注，不能只靠视觉灰色；勿用连续空标签撑间距破坏结构感知；标题层级服务于篇章结构，不替代术语表类的词义定义。</div>
+          </div>
+        </div>
+        <div class="ov-subgoals">
+          <div class="ov-subgoal" id="goal-understand-1">
+            <h3 class="ov-subgoal-id"><span class="ov-goal-g">G3.1</span> 标题层级与主次清晰</h3>
+            <h4 class="ov-subgoal-how">如何做</h4>
+            <ul class="ov-subgoal-list">
+              <li>H1–H6 真实反映篇章结构，利于知识树与 chunk 边界。</li>
+              <li>推荐、相关阅读等噪声置后，不抢主文。</li>
+              <li>用语义结构 + CSS 控制间距，避免无语义空标签撑版。</li>
+            </ul>
+          </div>
+          <div class="ov-subgoal" id="goal-understand-2">
+            <h3 class="ov-subgoal-id"><span class="ov-goal-g">G3.2</span> 版本、时效、废弃可区分</h3>
+            <h4 class="ov-subgoal-how">如何做</h4>
+            <ul class="ov-subgoal-list">
+              <li>外显产品 / 文档版本号，避免「最新版」式模糊说法。</li>
+              <li>提供可机读的更新日期（如 <code>time datetime</code> / 元数据）。</li>
+              <li>弃用、失效内容显式标注，并给出替代入口。</li>
+            </ul>
+          </div>
+          <div class="ov-subgoal" id="goal-understand-3">
+            <h3 class="ov-subgoal-id"><span class="ov-goal-g">G3.3</span> 链接与状态语义明确</h3>
+            <h4 class="ov-subgoal-how">如何做</h4>
+            <ul class="ov-subgoal-list">
+              <li>链接锚文本写清指向（参考文档、下载、外链等）。</li>
+              <li>状态词完整可辨（进行中、已完结、可选 / 必选等）。</li>
+              <li>警示级别用语义化结构表达，不仅靠颜色区分。</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="ov-goal" id="goal-operable">
+        <h2 class="ov-goal-id"><span class="ov-goal-g">G4.</span> 确保操作类内容可被拆解执行，示例可落地到可运行路径</h2>
+        <p class="ov-goal-desc">可操作原则关注「能不能照着做」。面向安装、调用、配置等任务时，亲和文档应把步骤写成可执行单元，并尽可能提供可复制示例与在线尝试入口，使模型输出的操作指引可落地，而不是停留在抽象叙述。</p>
+        <div class="ov-goal-guide">
+          <div class="ov-goal-row">
+            <h4 class="ov-goal-label">答问阶段</h4>
+            <div class="ov-goal-body"><strong>组织可执行回答</strong>。证据足够后，模型给出步骤或示例。本原则决定回答能否落到可照做的路径。</div>
+          </div>
+          <div class="ov-goal-row">
+            <h4 class="ov-goal-label">益处</h4>
+            <div class="ov-goal-body">人机都能沿同一路径完成任务，缩短试错；减少「说了等于没说」的抽象指引。</div>
+          </div>
+          <div class="ov-goal-row">
+            <h4 class="ov-goal-label">注意事项</h4>
+            <div class="ov-goal-body">示例须与当前版本一致；Playground 为增强项，不能替代正文步骤；嵌入式沙箱需有 SSR / 静态降级，避免机器抓不到代码文本；不要求大模型自行进入沙箱完成验证。</div>
+          </div>
+        </div>
+        <div class="ov-subgoals">
+          <div class="ov-subgoal" id="goal-operable-1">
+            <h3 class="ov-subgoal-id"><span class="ov-goal-g">G4.1</span> 示例路径可参照</h3>
+            <h4 class="ov-subgoal-how">如何做</h4>
+            <ul class="ov-subgoal-list">
+              <li>给出可复制的标准示例（命令、请求、关键参数）。</li>
+              <li>示例与当前文档版本对齐，随发布更新。</li>
+              <li>说明适用场景与前置条件，避免误套。</li>
+            </ul>
+          </div>
+          <div class="ov-subgoal" id="goal-operable-2">
+            <h3 class="ov-subgoal-id"><span class="ov-goal-g">G4.2</span> 提供在线尝试入口</h3>
+            <h4 class="ov-subgoal-how">如何做</h4>
+            <ul class="ov-subgoal-list">
+              <li>在合适处提供 Playground / 在线尝试链接，文案明确。</li>
+              <li>尽量支持预填示例，减少空白环境。</li>
+              <li>概念说明页可不强制；操作类页面优先考虑。</li>
+            </ul>
+          </div>
+          <div class="ov-subgoal" id="goal-operable-3">
+            <h3 class="ov-subgoal-id"><span class="ov-goal-g">G4.3</span> 步骤可按序执行</h3>
+            <h4 class="ov-subgoal-how">如何做</h4>
+            <ul class="ov-subgoal-list">
+              <li>步骤写清对象与动作，拆成可按序执行的最小单元。</li>
+              <li>使用有序列表等结构化表达，避免散文式步骤。</li>
+              <li>必要时标明可选步骤与分支条件。</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="ov-goal" id="goal-verify">
+        <h2 class="ov-goal-id"><span class="ov-goal-g">G5.</span> 确保执行结果可对照核验，空态与异常具备可处理说明</h2>
+        <p class="ov-goal-desc">可验证原则关注「做完能不能核对」。任务型内容应给出预期结果、验证方式，以及空数据、失败时的处理说明，形成闭环。缺少本原则时，模型容易在结果不明或异常场景下臆造结论。</p>
+        <div class="ov-goal-guide">
+          <div class="ov-goal-row">
+            <h4 class="ov-goal-label">答问阶段</h4>
+            <div class="ov-goal-body"><strong>核对结果与收口作答</strong>。模型依据证据给出最终结论。本原则提供预期结果与异常说明，支撑可靠核对。</div>
+          </div>
+          <div class="ov-goal-row">
+            <h4 class="ov-goal-label">益处</h4>
+            <div class="ov-goal-body">人与模型都能核对「是否做对」；异常有官方说法，减少幻觉与无效重试。</div>
+          </div>
+          <div class="ov-goal-row">
+            <h4 class="ov-goal-label">注意事项</h4>
+            <div class="ov-goal-body">预期结果须可观察、可复现，避免主观形容词；空态文案不能只有图标无字；验证说明应贴近真实环境，勿写已失效的检查命令。</div>
+          </div>
+        </div>
+        <div class="ov-subgoals">
+          <div class="ov-subgoal" id="goal-verify-1">
+            <h3 class="ov-subgoal-id"><span class="ov-goal-g">G5.1</span> 提供验证区块或用例</h3>
+            <h4 class="ov-subgoal-how">如何做</h4>
+            <ul class="ov-subgoal-list">
+              <li>设置独立的验证 / 检查章节或用例。</li>
+              <li>给出可对照的输入与输出。</li>
+              <li>操作类、排障类页面优先配置。</li>
+            </ul>
+          </div>
+          <div class="ov-subgoal" id="goal-verify-2">
+            <h3 class="ov-subgoal-id"><span class="ov-goal-g">G5.2</span> 写明预期结果</h3>
+            <h4 class="ov-subgoal-how">如何做</h4>
+            <ul class="ov-subgoal-list">
+              <li>写明命令输出、界面变化、状态标志等可见判据。</li>
+              <li>判据可复现，避免「运行正常」等主观表述。</li>
+              <li>与步骤中的动作一一对应，便于核对。</li>
+            </ul>
+          </div>
+          <div class="ov-subgoal" id="goal-verify-3">
+            <h3 class="ov-subgoal-id"><span class="ov-goal-g">G5.3</span> 空态与异常可处理</h3>
+            <h4 class="ov-subgoal-how">如何做</h4>
+            <ul class="ov-subgoal-list">
+              <li>无数据、失败时写清含义与下一步。</li>
+              <li>空态使用可抓取文案，不只依赖图标。</li>
+              <li>常见异常给出官方处理路径，减少臆造。</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+    </section>
+
+  </main>
+</div>
+
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js"></script>
+<script src="assets/js/module-sidebar.js"></script>
+</body>
+</html>
