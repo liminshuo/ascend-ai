@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>安全警示语义化 · 亲和原则 · 社区AI亲和分析</title>
+  <title>安全警示可语义识别 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
   <link rel="stylesheet" href="assets/css/style.css">
 <style>
   .topbar {
@@ -63,8 +63,329 @@
     color: #595959; font-size: 13px; font-weight: 500; line-height: 1.4;
   }
   .nav-dd-panel a:hover { color: #1476FF; background: #F5F5F5; }
-  /* GEO topbar = fixed，沿用 layout 的 page-wrapper padding-top */
   body.inner-page .page-wrapper { min-height: 100vh; }
+
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 28px;
+  }
+  .page-header h1 {
+    font-family: "PingFang SC", sans-serif;
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 600;
+    line-height: 48px;
+    letter-spacing: -0.02em;
+    margin: 8px 0 0;
+    color: var(--color-text, #191919);
+  }
+  .page-header .page-desc {
+    margin: 32px 0 0;
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--text, #191919);
+  }
+  body.inner-page[data-page="note"]:has(#module-sidebar) .main-content {
+    padding-top: 32px;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  body.inner-page[data-page="note"]:has(#module-sidebar) .main-content > .page-header,
+  body.inner-page[data-page="note"]:has(#module-sidebar) .main-content > .section,
+  body.inner-page[data-page="note"]:has(#module-sidebar) .main-content > .surface-tabs {
+    width: min(1200px, calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page[data-page="note"] .main-content .section > h2 {
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    letter-spacing: -0.01em;
+    margin-top: 48px;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #f0f0f0;
+    color: var(--color-text, #191919);
+  }
+  body.inner-page[data-page="note"] .main-content .section h3 { height: auto; }
+  h3.fn-h3 {
+    margin: 0;
+    padding-top: 24px;
+    padding-bottom: 24px;
+    font-size: 18px;
+    line-height: 28px;
+    font-weight: 650;
+    color: var(--color-text, #191919);
+    letter-spacing: -0.01em;
+  }
+  body.inner-page[data-page="note"] .main-content .section h4 { height: auto; }
+  h4.fn-h4 {
+    margin: 24px 0 0;
+    padding-top: 0;
+    padding-bottom: 16px;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 650;
+    color: var(--color-text, #191919);
+    letter-spacing: -0.01em;
+  }
+  h3.fn-h3 + .principle-example > h4.fn-h4,
+  h3.fn-h3 + h4.fn-h4 { margin-top: 12px; }
+
+  #scenarios .scene-def-table td .badge { border: none; }
+  .scene-def-table td .badge-optional {
+    background: #f5f5f5;
+    color: #595959;
+  }
+
+  .scene-def-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    line-height: 22px;
+    margin: 0 0 24px;
+    table-layout: fixed;
+  }
+  .scene-def-table th,
+  .scene-def-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid #e2e8f0;
+    vertical-align: middle;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 400;
+  }
+  .scene-def-table tbody td {
+    height: auto;
+    min-height: 48px;
+  }
+  .scene-def-table th {
+    font-size: 12px;
+    font-weight: 650;
+    color: #595959;
+    background: #fafafa;
+    height: 40px;
+    box-sizing: border-box;
+  }
+  .scene-def-table .col-type { width: 18%; }
+  .scene-def-table .col-desc { width: 55%; }
+  .scene-def-table .col-place { width: 27%; }
+  #objects .scene-def-table .col-type { width: 18%; }
+  #objects .scene-def-table .col-desc { width: 52%; }
+  #objects .scene-def-table .col-place { width: 30%; }
+  #scenarios .scene-def-table .col-type { width: 18%; }
+  #scenarios .scene-def-table .col-place { width: 40%; }
+  #scenarios .scene-def-table .col-desc { width: 42%; }
+
+  .fn-ex-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr auto;
+    column-gap: 16px;
+    row-gap: 0;
+    align-items: stretch;
+    margin: 16px 0 0;
+  }
+  .fn-ex-row .fn-ex {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 1 / span 3;
+    margin: 0;
+    min-width: 0;
+  }
+  .fn-ex-row .fn-ex-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .fn-ex-row .fn-ex-head .fn-ex-label { margin: 0; }
+  .fn-ex-row .fn-ex-head .fn-ex-bar {
+    display: block; margin: 0; width: 100%; align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-body {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 2 / span 2;
+    min-height: 0;
+    background: #f5f5f5;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .fn-ex-row .fn-ex-mock {
+    min-height: 0; height: 100%; box-sizing: border-box;
+    border: none; border-radius: 0; align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-mock:has(.st-card) {
+    padding: 12px;
+    background: #f5f5f5;
+  }
+  .fn-ex-row .fn-ex-mock pre.st-code {
+    margin: 0;
+    padding: 14px 16px;
+    background: #1e1e1e;
+    border: 1px solid #111;
+    border-radius: 0;
+    font-size: 12px;
+    line-height: 18px;
+    color: #e8e8e8;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow: auto;
+    box-sizing: border-box;
+    min-height: 100%;
+  }
+  .fn-ex-row .fn-ex-foot {
+    display: flex; flex-direction: column; gap: 8px;
+    padding: 12px 14px 14px; background: #fff;
+    border-top: 1px solid #e2e8f0;
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-list { margin: 0; gap: 4px; }
+  .fn-ex-label {
+    display: inline-block; padding: 0 8px; border-radius: 4px;
+    font-size: 12px; font-weight: 650; line-height: 20px;
+    color: #b42318; background: #fef3f2;
+  }
+  .fn-ex-label.is-good { color: #047857; background: #ecfdf5; }
+  .fn-ex-bar {
+    display: block; width: 100%; height: 3px;
+    background: #b42318; border-radius: 2px;
+  }
+  .fn-ex-bar.is-good { background: #047857; }
+  .fn-ex-list {
+    margin: 0; padding: 0 0 0 1.25em; list-style: disc;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .fn-ex-list li {
+    margin: 0; font-size: 14px; line-height: 22px; color: #191919;
+  }
+  .fn-ex-list strong { font-weight: 650; }
+
+  .st-card {
+    padding: 14px 16px 12px;
+    color: #191919;
+    background: #fff;
+    border-radius: 8px;
+    height: 100%;
+    box-sizing: border-box;
+  }
+  .note-block {
+    margin: 0 0 8px;
+    padding: 8px 10px;
+    font-size: 12px;
+    line-height: 18px;
+    color: #191919;
+    border-radius: 4px;
+    border-left: 3px solid #94a3b8;
+    background: #f8fafc;
+  }
+  .note-block:last-child { margin-bottom: 0; }
+  .note-block.is-info {
+    border-left-color: #1476FF;
+    background: #eff6ff;
+  }
+  .note-block.is-warn {
+    border-left-color: #f59e0b;
+    background: #fffbeb;
+  }
+  .note-block.is-danger {
+    border-left-color: #dc2626;
+    background: #fef2f2;
+  }
+  .note-block .lbl {
+    font-weight: 650;
+  }
+  .note-ol {
+    margin: 0;
+    padding: 0 0 0 1.25em;
+    font-size: 12px;
+    line-height: 18px;
+    color: #191919;
+  }
+  .note-ol li + li { margin-top: 6px; }
+  .note-ol .note-block { margin-top: 6px; }
+
+  .principle-example + .principle-example { margin-top: 28px; }
+  .principle-example-note {
+    margin-top: 12px;
+    font-size: 14px;
+    line-height: 22px;
+    color: #595959;
+  }
+
+  #design-ui .principle-suggestions,
+  #content-adjust .principle-suggestions,
+  #frontend-adjust .principle-suggestions {
+    list-style: none;
+    margin: 0 0 32px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    counter-reset: sug;
+  }
+  #design-ui .principle-suggestions > li,
+  #content-adjust .principle-suggestions > li,
+  #frontend-adjust .principle-suggestions > li {
+    position: relative;
+    margin: 0;
+    padding: 0 0 0 36px;
+    color: #595959;
+    counter-increment: sug;
+  }
+  #design-ui .principle-suggestions > li::before,
+  #content-adjust .principle-suggestions > li::before,
+  #frontend-adjust .principle-suggestions > li::before {
+    content: counter(sug, decimal-leading-zero);
+    position: absolute;
+    left: 0;
+    top: 1px;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 22px;
+    letter-spacing: 0.02em;
+    color: #1476FF;
+  }
+  #design-ui .principle-suggestions > li .sug-title,
+  #content-adjust .principle-suggestions > li .sug-title,
+  #frontend-adjust .principle-suggestions > li .sug-title {
+    display: block;
+    margin: 0 0 6px;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 24px;
+    color: #191919;
+  }
+  #design-ui .principle-suggestions > li .sug-desc,
+  #content-adjust .principle-suggestions > li .sug-desc,
+  #frontend-adjust .principle-suggestions > li .sug-desc {
+    display: block;
+    margin: 0;
+    max-width: none;
+    width: 100%;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 24px;
+    color: #595959;
+  }
+
+  @media (max-width: 900px) {
+    .fn-ex-row {
+      grid-template-columns: 1fr;
+      grid-template-rows: none;
+    }
+    .fn-ex-row .fn-ex { display: block; grid-row: auto; }
+    .fn-ex-row .fn-ex-body {
+      display: flex; flex-direction: column; grid-row: auto;
+    }
+  }
 </style>
 </head>
 <body class="inner-page" data-module="principles" data-page="note">
@@ -88,65 +409,196 @@
   <aside id="module-sidebar"></aside>
 
   <main class="main-content">
-
-<div class="page-header">
-      <h1>安全警示语义化</h1>
+    <div class="page-header">
+      <h1>安全警示可语义识别</h1>
       <p class="page-desc page-desc--split">
-        <span class="page-desc-line">Note / 警告 / 危险等提示<strong>正文完整展开、用文字前缀标明类型</strong>，不靠折叠或图标承载语义。</span>
-        <span class="page-desc-line">读的懂 · 序号 10 · 对应 <a href="problems-content-note.html">问题论证 · 注意提示（Note）语义</a>。</span>
+        <span class="page-desc-line">为了帮助 Agent 识别注意 / 警告 / 危险的级别与正文，警示须完整展开并用文字前缀标明类型；禁止靠折叠、Tooltip 或仅图标承载语义。</span>
       </p>
     </div>
+
+    <section class="section" id="objects">
+      <h2>适用对象</h2>
+      <table class="scene-def-table">
+        <colgroup>
+          <col class="col-type" />
+          <col class="col-desc" />
+          <col class="col-place" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="col-type">名称</th>
+            <th class="col-desc">说明</th>
+            <th class="col-place">常见落点</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="col-type">警示正文</td>
+            <td class="col-desc">Note / 注意 / 警告 / 危险等内容须完整展开在页面上，禁止折叠或悬停才可见。</td>
+            <td class="col-place">安装步骤、操作须知</td>
+          </tr>
+          <tr>
+            <td class="col-type">类型前缀</td>
+            <td class="col-desc">须用「注意：」「警告：」「危险：」等文字标明级别；图标只辅助。</td>
+            <td class="col-place">警示块标题 / 行首</td>
+          </tr>
+          <tr>
+            <td class="col-type">步骤内嵌警示</td>
+            <td class="col-desc">嵌在步骤内的警示须保持 DOM 嵌套，便于判断属于第几步。</td>
+            <td class="col-place">编号步骤列表</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section" id="scenarios">
+      <h2>适用场景</h2>
+      <table class="scene-def-table">
+        <colgroup>
+          <col class="col-type" />
+          <col class="col-place" />
+          <col class="col-desc" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="col-type">优先级</th>
+            <th class="col-place">页面类型</th>
+            <th class="col-desc">说明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="col-type"><span class="badge badge-bad">必做</span></td>
+            <td class="col-place">安装 / 升级 / 排障教程正文</td>
+            <td class="col-desc">警示直接影响操作安全；须默认可读可抓。</td>
+          </tr>
+          <tr>
+            <td class="col-type"><span class="badge badge-should">建议做</span></td>
+            <td class="col-place">API 参考中的注意块、配置说明</td>
+            <td class="col-desc">级别前缀利于 Agent 区分提示与硬约束。</td>
+          </tr>
+          <tr>
+            <td class="col-type"><span class="badge badge-optional">可不做完整改造</span></td>
+            <td class="col-place">纯营销 Tip、无安全含义的装饰提示</td>
+            <td class="col-desc">非安全类提示可简化，但仍建议文字前缀。</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
 
     <section class="section" id="design-ui">
       <h2>设计UI调整</h2>
 
-      <h3 id="design-suggestions">调整建议</h3>
+      <h3 class="fn-h3" id="design-suggestions">调整建议</h3>
       <ul class="principle-suggestions">
-        <li><strong>警示块完整展示</strong>：所有 Note/注意/警告内容必须直接渲染在页面上，禁止折叠、tooltip、模态框等交互形式，设计稿不出现任何需要点击才能看到警示内容的方案。</li>
-        <li><strong>文字前缀必须可见</strong>：警示类型必须用文字（"注意："、"警告："、"危险："）标注，图标只能作为辅助装饰，不能作为唯一的类型标识。</li>
-        <li><strong>不同警示级别的视觉区分</strong>：Note、注意、警告、危险用不同颜色的容器组件区分，颜色语义全站统一（如黄色=注意、红色=危险），与失效状态、生命周期状态的色彩体系保持一致。</li>
+        <li>
+          <span class="sug-title">警示块完整展示</span>
+          <span class="sug-desc">Note / 注意 / 警告须直接渲染；禁止折叠、Tooltip、模态等需点击才见全文的方案。</span>
+        </li>
+        <li>
+          <span class="sug-title">文字前缀必须可见</span>
+          <span class="sug-desc">类型用「注意：」「警告：」「危险：」标注；图标只作装饰，不作唯一类型标识。</span>
+        </li>
+        <li>
+          <span class="sug-title">级别视觉可区分</span>
+          <span class="sug-desc">不同级别用统一色系容器区分，但语义仍以文字前缀为准，不靠颜色单独承载。</span>
+        </li>
       </ul>
 
-      <h3 id="design-example">调整示例</h3>
+      <h3 class="fn-h3" id="design-example">调整示例</h3>
       <div class="principle-example">
-        <h4>1. 警示级别视觉区分</h4>
-        <div class="compare-grid compare-grid--stack compare-grid--no-mid-divider">
-          <h4 class="compare-label compare-label--machine">Before · 所有警示同样式</h4>
-          <div class="compare-col machine">
-            <div class="render-frame"><div class="rf-note"><span>注意：</span>...</div><div class="rf-note"><span>警告：</span>...</div></div>
+        <h4 class="fn-h4">警示级别用前缀 + 色块区分</h4>
+        <div class="fn-ex-row" id="note-level">
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label">反面</span>
+              <div class="fn-ex-bar" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="反面：同样式或仅图标">
+                <div class="st-card">
+                  <p class="note-block">⚠ 安装后需设置环境变量。</p>
+                  <p class="note-block">⚠ 升级前请备份目录。</p>
+                </div>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>常见疏漏：</strong>仅图标或同样式，机器无法区分注意与警告级别。</li>
+                </ul>
+              </div>
+            </div>
           </div>
-          <h4 class="compare-label compare-label--human">After · 颜色区分级别</h4>
-          <div class="compare-col human">
-            <div class="render-frame"><div class="rf-note rf-note--info"><span class="rf-note-label">注意：</span>安装 CANN 后需设置环境变量。</div><div class="rf-note rf-note--good"><span class="rf-note-label">警告：</span>升级前请备份 /usr/local/Ascend。</div></div>
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label is-good">正面</span>
+              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="正面：前缀与级别色">
+                <div class="st-card">
+                  <p class="note-block is-info"><span class="lbl">注意：</span>安装 CANN 后需设置环境变量。</p>
+                  <p class="note-block is-warn"><span class="lbl">警告：</span>升级前请备份 /usr/local/Ascend。</p>
+                </div>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>正确做法：</strong>文字前缀标明级别；色块辅助，不替代文字。</li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+
       <div class="principle-example">
-        <h4>2. 步骤内嵌警示——保持嵌套层级，警示附属于所属步骤</h4>
-        <div class="compare-grid compare-grid--stack compare-grid--no-mid-divider">
-          <h4 class="compare-label compare-label--machine">Before · 警示脱离步骤，扁平放在列表外</h4>
-          <div class="compare-col machine">
-            <div class="render-frame">
-              <ol class="rf-ol">
-                <li>安装 CANN Toolkit。</li>
-                <li>配置环境变量。</li>
-                <li>运行验证脚本。</li>
-              </ol>
-              <div class="rf-note"><span class="rf-note-label">注意：</span>升级前请备份 /usr/local/Ascend。</div>
-              <p class="rf-muted">警示与步骤脱离，Agent 无法判断它属于第几步</p>
+        <h4 class="fn-h4">步骤内嵌警示保持归属</h4>
+        <div class="fn-ex-row" id="note-in-step">
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label">反面</span>
+              <div class="fn-ex-bar" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="反面：警示脱离步骤">
+                <div class="st-card">
+                  <ol class="note-ol">
+                    <li>安装 CANN Toolkit。</li>
+                    <li>配置环境变量。</li>
+                    <li>运行验证脚本。</li>
+                  </ol>
+                  <p class="note-block" style="margin-top:10px;"><span class="lbl">注意：</span>升级前请备份。</p>
+                </div>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>常见疏漏：</strong>警示扁平放在列表外，无法判断属于第几步。</li>
+                </ul>
+              </div>
             </div>
           </div>
-          <h4 class="compare-label compare-label--human">After · 警示嵌套在所属步骤内</h4>
-          <div class="compare-col human">
-            <div class="render-frame">
-              <ol class="rf-ol">
-                <li>安装 CANN Toolkit。</li>
-                <li>
-                  配置环境变量。
-                  <div class="rf-note rf-note--info" style="margin-top:6px"><span class="rf-note-label">注意：</span>安装后需执行 <code>source set_env.sh</code>，否则算子 API 不可用。</div>
-                </li>
-                <li>运行验证脚本。</li>
-              </ol>
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label is-good">正面</span>
+              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="正面：嵌套在步骤内">
+                <div class="st-card">
+                  <ol class="note-ol">
+                    <li>安装 CANN Toolkit。</li>
+                    <li>
+                      配置环境变量。
+                      <p class="note-block is-info"><span class="lbl">注意：</span>安装后需执行 <code>source set_env.sh</code>。</p>
+                    </li>
+                    <li>运行验证脚本。</li>
+                  </ol>
+                </div>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>正确做法：</strong>警示嵌在所属步骤内，归属关系可抓取。</li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
@@ -156,29 +608,63 @@
     <section class="section" id="content-adjust">
       <h2>文档内容调整</h2>
 
-      <h3 id="content-suggestions">调整建议</h3>
+      <h3 class="fn-h3" id="content-suggestions">调整建议</h3>
       <ul class="principle-suggestions">
-        <li><strong>完整可见</strong>：所有安全警示内容必须完全在页面上展示，禁止使用折叠块、点击展开、鼠标悬停Tooltip、模态框等需要用户交互才能看到完整内容的方式。 b.</li>
-        <li><strong>文字前缀</strong>：警示信息必须使用文字前缀明确表示其类型，如"注意"、"警告"、"危险"；禁止仅使用图标来传递类型信息。 c.</li>
-        <li><strong>结构化</strong>：建议为不同类型的安全警示定义固定的CSS类。</li>
+        <li>
+          <span class="sug-title">正文完整可见</span>
+          <span class="sug-desc">警示全文写在稿面；禁止折叠块、点击展开、Tooltip、模态等交互才可见的写法。</span>
+        </li>
+        <li>
+          <span class="sug-title">文字前缀标明类型</span>
+          <span class="sug-desc">使用「注意」「警告」「危险」等前缀；禁止仅用图标或颜色传递级别。</span>
+        </li>
       </ul>
 
-      <h3 id="content-example">调整示例</h3>
+      <h3 class="fn-h3" id="content-example">调整示例</h3>
       <div class="principle-example">
-        <h4>1. 完整警示正文 + 文字前缀</h4>
-        <div class="compare-grid compare-grid--stack compare-grid--no-mid-divider">
-          <h4 class="compare-label compare-label--machine">Before · 折叠 / 仅图标，无文字前缀</h4>
-          <div class="compare-col machine">
-            <pre class="arch-diagram">安装 CANN 后需进行环境配置。
-<!-- 警示内容被折叠或藏在 tooltip 中 --></pre>
-          </div>
-          <h4 class="compare-label compare-label--human">After · blockquote 展开 + 文字前缀</h4>
-          <div class="compare-col human">
-            <pre class="arch-diagram">安装 CANN 后需进行环境配置。
+        <h4 class="fn-h4">完整警示正文 + 文字前缀</h4>
+        <div class="fn-ex-row" id="note-content-md">
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label">反面</span>
+              <div class="fn-ex-bar" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="反面：折叠或无前缀">
+                <pre class="st-code">安装 CANN 后需进行环境配置。
 
-> **注意**：安装 CANN 后，需执行
+&lt;!-- 警示藏在折叠 / tooltip --&gt;
+
+← 正文不可见</pre>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>常见疏漏：</strong>警示未进稿面或无类型前缀，切片拿不到级别与全文。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label is-good">正面</span>
+              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="正面：展开 + 前缀">
+                <pre class="st-code">安装 CANN 后需进行环境配置。
+
+> **注意**：安装后需执行
 > `source ${INSTALL_DIR}/set_env.sh`
-> 设置环境变量，否则无法调用算子 API。</pre>
+> 设置环境变量，否则无法调用算子 API。
+
+← 级别 + 全文可抓</pre>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>正确做法：</strong>blockquote / admonition 展开写清前缀与正文。</li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -187,36 +673,73 @@
     <section class="section" id="frontend-adjust">
       <h2>前端调整</h2>
 
-      <h3 id="frontend-suggestions">调整建议</h3>
+      <h3 class="fn-h3" id="frontend-suggestions">调整建议</h3>
       <ul class="principle-suggestions">
-        <li><strong>data-admonition-type 属性标注</strong>：每个警示块容器加 data-admonition-type="note|warning|tip|danger"，大模型可直接识别警示级别，不依赖解析图标或颜色。</li>
-        <li><strong>文字前缀写入 DOM</strong>：警示类型文字（"注意："、"警告："）必须作为真实文本节点输出到 HTML，禁止通过 CSS 伪元素 ::before 或图片生成，确保爬虫和大模型能直接读取。</li>
-        <li><strong>嵌套层级保留</strong>：步骤列表 &lt;ol&gt;&lt;li&gt; 内嵌的警示块，DOM 结构中必须保持嵌套关系，禁止渲染时扁平化输出，确保大模型能识别"这条警告属于第几步"。</li>
+        <li>
+          <span class="sug-title">data-admonition-type 标注</span>
+          <span class="sug-desc">容器加 <code>data-admonition-type="note|warning|tip|danger"</code>，级别可直读，不依赖图标或颜色。</span>
+        </li>
+        <li>
+          <span class="sug-title">前缀写入 DOM 文本</span>
+          <span class="sug-desc">「注意：」「警告：」须为真实文本节点；禁止仅用 <code>::before</code> 或图片生成。</span>
+        </li>
+        <li>
+          <span class="sug-title">嵌套层级保留</span>
+          <span class="sug-desc">步骤 <code>ol &gt; li</code> 内嵌警示须保持嵌套，禁止渲染时扁平化到列表外。</span>
+        </li>
       </ul>
 
-      <h3 id="frontend-example">调整示例</h3>
+      <h3 class="fn-h3" id="frontend-example">调整示例</h3>
       <div class="principle-example">
-        <h4>1. data-admonition-type 标注</h4>
-        <div class="compare-grid compare-grid--stack compare-grid--no-mid-divider">
-          <h4 class="compare-label compare-label--machine">Before · 无语义属性</h4>
-          <div class="compare-col machine">
-            <pre class="arch-diagram">&lt;div class="note"&gt;
+        <h4 class="fn-h4">语义化警示标注</h4>
+        <div class="fn-ex-row" id="note-frontend">
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label">反面</span>
+              <div class="fn-ex-bar" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="反面：无语义属性">
+                <pre class="st-code">&lt;div class="note"&gt;
   ⚠ 升级前请备份…
-&lt;/div&gt;</pre>
+&lt;/div&gt;
+
+← 无类型 / 无文字前缀</pre>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>常见疏漏：</strong>仅图标装饰，级别与前缀不可机读。</li>
+                </ul>
+              </div>
+            </div>
           </div>
-          <h4 class="compare-label compare-label--human">After · 语义化警示标注</h4>
-          <div class="compare-col human">
-            <pre class="arch-diagram">&lt;div class="admonition"
-     data-admonition-type="warning"&gt;
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label is-good">正面</span>
+              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="正面：语义化标注">
+                <pre class="st-code">&lt;div class="admonition"
+  data-admonition-type="warning"&gt;
   &lt;span class="admonition-label"&gt;警告：&lt;/span&gt;
   升级前请备份 /usr/local/Ascend。
-&lt;/div&gt;</pre>
+&lt;/div&gt;
+
+← 类型 + 前缀可直读</pre>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>正确做法：</strong>data-* 标级别；前缀为文本节点；正文默认可抓。</li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </section>
-
-  </main></div>
+  </main>
+</div>
 
 <script src="assets/js/site-config.js"></script>
 <script src="assets/js/site-init.js"></script>

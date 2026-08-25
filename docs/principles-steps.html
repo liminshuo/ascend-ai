@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>步骤列表化 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
+  <title>步骤可按序列表执行 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
   <link rel="stylesheet" href="assets/css/style.css">
 <style>
   .topbar {
@@ -63,8 +63,357 @@
     color: #595959; font-size: 13px; font-weight: 500; line-height: 1.4;
   }
   .nav-dd-panel a:hover { color: #1476FF; background: #F5F5F5; }
-  /* GEO topbar = fixed，沿用 layout 的 page-wrapper padding-top */
   body.inner-page .page-wrapper { min-height: 100vh; }
+
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 28px;
+  }
+  .page-header h1 {
+    font-family: "PingFang SC", sans-serif;
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 600;
+    line-height: 48px;
+    letter-spacing: -0.02em;
+    margin: 8px 0 0;
+    color: var(--color-text, #191919);
+  }
+  .page-header .page-desc {
+    margin: 32px 0 0;
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--text, #191919);
+  }
+  body.inner-page[data-page="steps"]:has(#module-sidebar) .main-content {
+    padding-top: 32px;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  body.inner-page[data-page="steps"]:has(#module-sidebar) .main-content > .page-header,
+  body.inner-page[data-page="steps"]:has(#module-sidebar) .main-content > .section,
+  body.inner-page[data-page="steps"]:has(#module-sidebar) .main-content > .surface-tabs {
+    width: min(1200px, calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page[data-page="steps"] .main-content .section > h2 {
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    letter-spacing: -0.01em;
+    margin-top: 48px;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #f0f0f0;
+    color: var(--color-text, #191919);
+  }
+  body.inner-page[data-page="steps"] .main-content .section h3 { height: auto; }
+  h3.fn-h3 {
+    margin: 0;
+    padding-top: 24px;
+    padding-bottom: 24px;
+    font-size: 18px;
+    line-height: 28px;
+    font-weight: 650;
+    color: var(--color-text, #191919);
+    letter-spacing: -0.01em;
+  }
+  body.inner-page[data-page="steps"] .main-content .section h4 { height: auto; }
+  h4.fn-h4 {
+    margin: 24px 0 0;
+    padding-top: 0;
+    padding-bottom: 16px;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 650;
+    color: var(--color-text, #191919);
+    letter-spacing: -0.01em;
+  }
+  h3.fn-h3 + .principle-example > h4.fn-h4,
+  h3.fn-h3 + h4.fn-h4 { margin-top: 12px; }
+
+  #scenarios .scene-def-table td .badge { border: none; }
+  .scene-def-table td .badge-optional {
+    background: #f5f5f5;
+    color: #595959;
+  }
+
+  .scene-def-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    line-height: 22px;
+    margin: 0 0 24px;
+    table-layout: fixed;
+  }
+  .scene-def-table th,
+  .scene-def-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid #e2e8f0;
+    vertical-align: middle;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 400;
+  }
+  .scene-def-table tbody td {
+    height: auto;
+    min-height: 48px;
+  }
+  .scene-def-table th {
+    font-size: 12px;
+    font-weight: 650;
+    color: #595959;
+    background: #fafafa;
+    height: 40px;
+    box-sizing: border-box;
+  }
+  .scene-def-table .col-type { width: 18%; }
+  .scene-def-table .col-desc { width: 55%; }
+  .scene-def-table .col-place { width: 27%; }
+  #objects .scene-def-table .col-type { width: 18%; }
+  #objects .scene-def-table .col-desc { width: 52%; }
+  #objects .scene-def-table .col-place { width: 30%; }
+  #scenarios .scene-def-table .col-type { width: 18%; }
+  #scenarios .scene-def-table .col-place { width: 40%; }
+  #scenarios .scene-def-table .col-desc { width: 42%; }
+
+  .fn-ex-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr auto;
+    column-gap: 16px;
+    row-gap: 0;
+    align-items: stretch;
+    margin: 16px 0 0;
+  }
+  .fn-ex-row .fn-ex {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 1 / span 3;
+    margin: 0;
+    min-width: 0;
+  }
+  .fn-ex-row .fn-ex-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .fn-ex-row .fn-ex-head .fn-ex-label { margin: 0; }
+  .fn-ex-row .fn-ex-head .fn-ex-bar {
+    display: block; margin: 0; width: 100%; align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-body {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 2 / span 2;
+    min-height: 0;
+    background: #f5f5f5;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .fn-ex-row .fn-ex-mock {
+    min-height: 0; height: 100%; box-sizing: border-box;
+    border: none; border-radius: 0; align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-mock:has(.st-card) {
+    padding: 12px;
+    background: #f5f5f5;
+  }
+  .fn-ex-row .fn-ex-mock pre.st-code {
+    margin: 0;
+    padding: 14px 16px;
+    background: #1e1e1e;
+    border: 1px solid #111;
+    border-radius: 0;
+    font-size: 12px;
+    line-height: 18px;
+    color: #e8e8e8;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow: auto;
+    box-sizing: border-box;
+    min-height: 100%;
+  }
+  .fn-ex-row .fn-ex-foot {
+    display: flex; flex-direction: column; gap: 8px;
+    padding: 12px 14px 14px; background: #fff;
+    border-top: 1px solid #e2e8f0;
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-list { margin: 0; gap: 4px; }
+  .fn-ex-label {
+    display: inline-block; padding: 0 8px; border-radius: 4px;
+    font-size: 12px; font-weight: 650; line-height: 20px;
+    color: #b42318; background: #fef3f2;
+  }
+  .fn-ex-label.is-good { color: #047857; background: #ecfdf5; }
+  .fn-ex-bar {
+    display: block; width: 100%; height: 3px;
+    background: #b42318; border-radius: 2px;
+  }
+  .fn-ex-bar.is-good { background: #047857; }
+  .fn-ex-list {
+    margin: 0; padding: 0 0 0 1.25em; list-style: disc;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .fn-ex-list li {
+    margin: 0; font-size: 14px; line-height: 22px; color: #191919;
+  }
+  .fn-ex-list strong { font-weight: 650; }
+
+  .st-card {
+    padding: 14px 16px 12px;
+    color: #191919;
+    background: #fff;
+    border-radius: 8px;
+    height: 100%;
+    box-sizing: border-box;
+  }
+  .steps-prose {
+    margin: 0;
+    font-size: 12px;
+    line-height: 20px;
+    color: #191919;
+  }
+  .steps-prose + .steps-prose { margin-top: 8px; }
+  /* 有序列表视觉：数字圈 + 连线（仍是 <ol>，非流程状态条） */
+  .steps-ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: steps-n;
+    font-size: 12px;
+    line-height: 20px;
+    color: #191919;
+  }
+  .steps-ol > li {
+    position: relative;
+    margin: 0;
+    padding: 0 0 14px 32px;
+    color: #191919;
+    font-weight: 500;
+  }
+  .steps-ol > li:last-child { padding-bottom: 0; }
+  .steps-ol > li::before {
+    counter-increment: steps-n;
+    content: counter(steps-n);
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 1;
+    box-sizing: border-box;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #1476FF;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 20px;
+    text-align: center;
+  }
+  .steps-ol > li:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    left: 9px;
+    top: 22px;
+    bottom: 2px;
+    width: 2px;
+    background: #c9ddff;
+  }
+  .steps-ol .steps-code {
+    display: block;
+    margin-top: 6px;
+    padding: 6px 8px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 11px;
+    line-height: 16px;
+    color: #191919;
+    background: #f5f5f5;
+    border-radius: 4px;
+  }
+
+  .principle-example + .principle-example { margin-top: 28px; }
+  .principle-example-note {
+    margin-top: 12px;
+    font-size: 14px;
+    line-height: 22px;
+    color: #595959;
+  }
+
+  #design-ui .principle-suggestions,
+  #content-adjust .principle-suggestions,
+  #frontend-adjust .principle-suggestions {
+    list-style: none;
+    margin: 0 0 32px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    counter-reset: sug;
+  }
+  #design-ui .principle-suggestions > li,
+  #content-adjust .principle-suggestions > li,
+  #frontend-adjust .principle-suggestions > li {
+    position: relative;
+    margin: 0;
+    padding: 0 0 0 36px;
+    color: #595959;
+    counter-increment: sug;
+  }
+  #design-ui .principle-suggestions > li::before,
+  #content-adjust .principle-suggestions > li::before,
+  #frontend-adjust .principle-suggestions > li::before {
+    content: counter(sug, decimal-leading-zero);
+    position: absolute;
+    left: 0;
+    top: 1px;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 22px;
+    letter-spacing: 0.02em;
+    color: #1476FF;
+  }
+  #design-ui .principle-suggestions > li .sug-title,
+  #content-adjust .principle-suggestions > li .sug-title,
+  #frontend-adjust .principle-suggestions > li .sug-title {
+    display: block;
+    margin: 0 0 6px;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 24px;
+    color: #191919;
+  }
+  #design-ui .principle-suggestions > li .sug-desc,
+  #content-adjust .principle-suggestions > li .sug-desc,
+  #frontend-adjust .principle-suggestions > li .sug-desc {
+    display: block;
+    margin: 0;
+    max-width: none;
+    width: 100%;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 24px;
+    color: #595959;
+  }
+
+  @media (max-width: 900px) {
+    .fn-ex-row {
+      grid-template-columns: 1fr;
+      grid-template-rows: none;
+    }
+    .fn-ex-row .fn-ex { display: block; grid-row: auto; }
+    .fn-ex-row .fn-ex-body {
+      display: flex; flex-direction: column; grid-row: auto;
+    }
+  }
 </style>
 </head>
 <body class="inner-page" data-module="principles" data-page="steps">
@@ -87,23 +436,287 @@
 
   <aside id="module-sidebar"></aside>
 
-  
-  
   <main class="main-content">
-<div class="page-header">
-      <h1>步骤列表化</h1>
-      <p class="page-desc">E6 · E. 非文本元素语义转译 · 完整条目见 <a href="principles-affinity.html#principle-e6">亲和性原则汇总表</a>。</p>
+    <div class="page-header">
+      <h1>步骤可按序列表执行</h1>
+      <p class="page-desc page-desc--split">
+        <span class="page-desc-line">为了帮助 Agent 按序执行操作，有序步骤须用有序列表呈现，每项对应一个可执行动作，且对象指称须明确可消歧；禁止用散文、「步骤一：」段落、无序列表模拟顺序，或「它 / 上述」等模糊指代。</span>
+      </p>
     </div>
 
-    <section class="section" id="solution">
-      <h2 id="design">设计侧改造建议</h2>
-      <div class="surface-card principle-deliverable">1. 操作步骤使用有序列表（1. 2. 3.）视觉渲染，序号清晰</div>
+    <section class="section" id="objects">
+      <h2>适用对象</h2>
+      <table class="scene-def-table">
+        <colgroup>
+          <col class="col-type" />
+          <col class="col-desc" />
+          <col class="col-place" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="col-type">名称</th>
+            <th class="col-desc">说明</th>
+            <th class="col-place">常见落点</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="col-type">有序操作步骤</td>
+            <td class="col-desc">须用有序列表（1. 2. 3.）呈现；每项一个可执行动作，序号清晰可见。</td>
+            <td class="col-place">安装、配置、排障教程</td>
+          </tr>
+          <tr>
+            <td class="col-type">步骤内附件</td>
+            <td class="col-desc">代码块、表格与所属步骤 DOM 邻接，不跨块插入无关元素。</td>
+            <td class="col-place">步骤下的命令 / 表</td>
+          </tr>
+          <tr>
+            <td class="col-type">伪列表散文</td>
+            <td class="col-desc">禁止用「步骤一：」独立段落或无序列表假装有序；机器难还原顺序。</td>
+            <td class="col-place">散文体操作说明</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
 
-      <h2 id="content-side">内容侧改造建议</h2>
-      <div class="surface-card principle-deliverable">1. 操作步骤用 &lt;ol&gt;/&lt;ul&gt; 编写，禁止用&quot;步骤一：&quot;独立段落模拟列表<br>2. 每个步骤明确：操作对象 + 操作动作 + 预期结果<br>3. 代码/表格与所属步骤DOM邻接，不跨块插入无关元素</div>
+    <section class="section" id="scenarios">
+      <h2>适用场景</h2>
+      <table class="scene-def-table">
+        <colgroup>
+          <col class="col-type" />
+          <col class="col-place" />
+          <col class="col-desc" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="col-type">优先级</th>
+            <th class="col-place">页面类型</th>
+            <th class="col-desc">说明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="col-type"><span class="badge badge-bad">必做</span></td>
+            <td class="col-place">安装 / 升级 / 排障教程正文</td>
+            <td class="col-desc">Agent 最常按序执行；散文步骤易错序或漏步。</td>
+          </tr>
+          <tr>
+            <td class="col-type"><span class="badge badge-should">建议做</span></td>
+            <td class="col-place">快速入门、能力试用向导</td>
+            <td class="col-desc">短路径同样用有序列表，便于 checklist 化。</td>
+          </tr>
+          <tr>
+            <td class="col-type"><span class="badge badge-optional">可不做完整改造</span></td>
+            <td class="col-place">无先后约束的并列检查项</td>
+            <td class="col-desc">无序检查可用无序列表；勿伪装成步骤编号。</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
 
-      <h2 id="code-side">代码侧改造建议</h2>
-      <div class="surface-card principle-deliverable">1. 管道检测是否为模拟列表（如连续 &lt;p&gt; 以&quot;步骤&quot;开头），检出则告警<br>2. 切片时确保列表项完整性，不在列表中间断开</div>
+    <section class="section" id="design-ui">
+      <h2>设计UI调整</h2>
+
+      <h3 class="fn-h3" id="design-suggestions">调整建议</h3>
+      <ul class="principle-suggestions">
+        <li>
+          <span class="sug-title">步骤必须用有序列表呈现</span>
+          <span class="sug-desc">有序操作必须渲染为可见的 1. 2. 3. 列表，序号即执行顺序。严禁用「步骤一：」独立段落、散文堆叠或无序列表冒充有序步骤。</span>
+        </li>
+        <li>
+          <span class="sug-title">每项只写一个可执行动作</span>
+          <span class="sug-desc">列表每一项必须对应一个可独立执行的动作。严禁在同一项内串联多步（如「配置环境后再运行验证」）；多动作必须拆成多项。</span>
+        </li>
+      </ul>
+
+      <h3 class="fn-h3" id="design-example">调整示例</h3>
+      <div class="principle-example">
+        <h4 class="fn-h4">有序步骤用编号列表呈现</h4>
+        <div class="fn-ex-row" id="steps-visual-ol">
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label">反面</span>
+              <div class="fn-ex-bar" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="反面：散文模拟步骤">
+                <div class="st-card">
+                  <p class="steps-prose">步骤一：先安装 CANN Toolkit。</p>
+                  <p class="steps-prose">步骤二：然后配置环境变量，再运行验证脚本。</p>
+                </div>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>常见疏漏：</strong>散文 / 「步骤一」段落，机器难稳定抽出顺序与单项动作。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label is-good">正面</span>
+              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="正面：有序列表">
+                <div class="st-card">
+                  <ol class="steps-ol">
+                    <li>安装 CANN Toolkit。</li>
+                    <li>配置环境变量。</li>
+                    <li>运行验证脚本。</li>
+                  </ol>
+                </div>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>正确做法：</strong>有序列表渲染；一项一动作，序号即执行顺序。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="content-adjust">
+      <h2>文档内容调整</h2>
+
+      <h3 class="fn-h3" id="content-suggestions">调整建议</h3>
+      <ul class="principle-suggestions">
+        <li>
+          <span class="sug-title">稿面必须用真实有序列表</span>
+          <span class="sug-desc">有序操作必须用 Markdown <code>1. 2. 3.</code>（或等价有序列表）编写。严禁「步骤一：」独立段落或散文冒充顺序。</span>
+        </li>
+        <li>
+          <span class="sug-title">每步写清对象、动作与预期结果</span>
+          <span class="sug-desc">每项必须写明操作对象与动作；命令 / 表格必须落在所属步骤内并邻接。关键步须给出可核对的预期结果。严禁命令游离在步骤外。</span>
+        </li>
+        <li>
+          <span class="sug-title">禁止模糊指代</span>
+          <span class="sug-desc">步骤与邻接说明中，严禁用无法唯一确定对象的代词或短语（如「它」「这个」「上述」「前者」「类似地」）；必须写成明确名词或名词短语。</span>
+        </li>
+      </ul>
+
+      <h3 class="fn-h3" id="content-example">调整示例</h3>
+      <div class="principle-example">
+        <h4 class="fn-h4">有序列表自包含：命令与预期写在步内</h4>
+        <div class="fn-ex-row" id="steps-content-md">
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label">反面</span>
+              <div class="fn-ex-bar" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="反面：段落伪列表">
+                <pre class="st-code">步骤一：安装 Toolkit。
+
+步骤二：配置环境。
+
+source set_env.sh</pre>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>常见疏漏：</strong>「步骤一」伪列表；命令游离步骤外，切片难绑定「第几步执行哪条命令」。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label is-good">正面</span>
+              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="正面：有序列表邻接代码">
+                <pre class="st-code">1. 安装 CANN Toolkit。
+   预期：安装目录存在。
+2. 配置环境变量：
+   ```bash
+   source set_env.sh
+   ```
+   预期：无报错输出。
+3. 运行验证脚本。
+   预期：返回 success。</pre>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>正确做法：</strong>真实有序列表；一项一动作；命令与预期写在所属步内。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="frontend-adjust">
+      <h2>前端调整</h2>
+
+      <h3 class="fn-h3" id="frontend-suggestions">调整建议</h3>
+      <ul class="principle-suggestions">
+        <li>
+          <span class="sug-title">首包必须输出真实 ol / li</span>
+          <span class="sug-desc">有序步骤必须渲染为 <code>&lt;ol&gt;&lt;li&gt;</code>；步骤内代码 / 表格必须嵌套在对应 <code>li</code> 内。严禁用连续 <code>&lt;p&gt;</code> 或平铺 <code>&lt;pre&gt;</code> 冒充步骤结构。</span>
+        </li>
+        <li>
+          <span class="sug-title">伪列表必须检出告警</span>
+          <span class="sug-desc">管道必须检测以「步骤一 / 第一步」等开头的连续段落伪列表；检出则告警并阻断或标记不达标。</span>
+        </li>
+        <li>
+          <span class="sug-title">模糊指代宜告警</span>
+          <span class="sug-desc">发布检测可维护禁用词表（它、这个、上述、前者、类似地等），在步骤正文中定位告警，提示改为明确名词。</span>
+        </li>
+        <li>
+          <span class="sug-title">切片不得打断列表项</span>
+          <span class="sug-desc">切片必须以整段 <code>ol</code> 或整项 <code>li</code>（含内嵌代码）入库；严禁在列表项中间切断，导致命令与步骤脱节。</span>
+        </li>
+      </ul>
+
+      <h3 class="fn-h3" id="frontend-example">调整示例</h3>
+      <div class="principle-example">
+        <h4 class="fn-h4">真实 ol：代码嵌在所属 li 内</h4>
+        <div class="fn-ex-row" id="steps-frontend">
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label">反面</span>
+              <div class="fn-ex-bar" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="反面：扁平段落">
+                <pre class="st-code">&lt;p&gt;步骤一：配置环境。&lt;/p&gt;
+&lt;pre&gt;source set_env.sh&lt;/pre&gt;
+&lt;p&gt;步骤二：验证。&lt;/p&gt;</pre>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>常见疏漏：</strong>伪列表段落 + 代码平铺；非 <code>ol</code>，切片易切断顺序与归属。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label is-good">正面</span>
+              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="正面：ol 内嵌代码">
+                <pre class="st-code">&lt;ol&gt;
+  &lt;li&gt;配置环境变量：
+    &lt;pre&gt;source set_env.sh&lt;/pre&gt;
+  &lt;/li&gt;
+  &lt;li&gt;运行验证脚本。&lt;/li&gt;
+&lt;/ol&gt;</pre>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>正确做法：</strong>真实 <code>ol</code>；命令嵌在所属 <code>li</code>；切片保整项入库。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
   </main>
 </div>

@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>常见异常可说明处置 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid #e2e8f0;
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: 100%; max-width: none; margin: 0; padding: 0 24px;
+    height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: #191919; text-decoration: none; white-space: nowrap; margin-right: 40px;
+  }
+  .topbar .brand span { color: #1476FF; }
+  .topbar .site-nav { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; flex-wrap: wrap; }
+  .topbar .site-nav > a {
+    text-decoration: none; color: #595959; font-size: 14px; font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .topbar .site-nav > a:hover { color: #1476FF; background: #F5F5F5; text-decoration: none; }
+  .topbar .site-nav > a.active { color: #1476FF; background: #F5F5F5; font-weight: 600; }
+  .nav-dd { position: relative; z-index: 210; display: inline-flex; align-items: center; }
+  .nav-dd-trigger {
+    appearance: none; border: 0; background: transparent; cursor: pointer; font: inherit;
+    text-decoration: none; color: #595959; font-size: 14px; font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+    display: inline-flex; align-items: center; gap: 12px;
+  }
+  .nav-dd-trigger::after {
+    content: ""; width: 6px; height: 6px;
+    border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg); opacity: .65; margin-top: -3px; flex-shrink: 0;
+  }
+  .nav-dd-trigger:hover, .nav-dd:hover .nav-dd-trigger, .nav-dd:focus-within .nav-dd-trigger {
+    color: #1476FF; background: #F5F5F5;
+  }
+  .nav-dd::before { content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 10px; }
+  .nav-dd-panel {
+    position: absolute; top: calc(100% + 4px); left: 0; min-width: 148px; padding: 6px;
+    background: #fff; border: 1px solid #e2e8f0; border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(25, 25, 25, 0.08);
+    opacity: 0; visibility: hidden; transform: translateY(-4px);
+    transition: opacity .15s, transform .15s, visibility .15s; z-index: 210;
+  }
+  .nav-dd:hover .nav-dd-panel, .nav-dd:focus-within .nav-dd-panel {
+    opacity: 1; visibility: visible; transform: translateY(0);
+  }
+  .nav-dd-panel a {
+    display: block; padding: 8px 12px; border-radius: 6px; text-decoration: none;
+    color: #595959; font-size: 13px; font-weight: 500; line-height: 1.4;
+  }
+  .nav-dd-panel a:hover { color: #1476FF; background: #F5F5F5; }
+  body.inner-page .page-wrapper { min-height: 100vh; }
+
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 28px;
+  }
+  .page-header h1 {
+    font-family: "PingFang SC", sans-serif;
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 600;
+    line-height: 48px;
+    letter-spacing: -0.02em;
+    margin: 8px 0 0;
+    color: var(--color-text, #191919);
+  }
+  .page-header .page-desc {
+    margin: 32px 0 0;
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--text, #191919);
+  }
+  body.inner-page[data-page="exception"]:has(#module-sidebar) .main-content {
+    padding-top: 32px;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  body.inner-page[data-page="exception"]:has(#module-sidebar) .main-content > .page-header,
+  body.inner-page[data-page="exception"]:has(#module-sidebar) .main-content > .section,
+  body.inner-page[data-page="exception"]:has(#module-sidebar) .main-content > .surface-tabs {
+    width: min(1200px, calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page[data-page="exception"] .main-content .section > h2 {
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    letter-spacing: -0.01em;
+    margin-top: 48px;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #f0f0f0;
+    color: var(--color-text, #191919);
+  }
+  body.inner-page[data-page="exception"] .main-content .section h3 { height: auto; }
+  h3.fn-h3 {
+    margin: 0;
+    padding-top: 24px;
+    padding-bottom: 24px;
+    font-size: 18px;
+    line-height: 28px;
+    font-weight: 650;
+    color: var(--color-text, #191919);
+    letter-spacing: -0.01em;
+  }
+  body.inner-page[data-page="exception"] .main-content .section h4 { height: auto; }
+  h4.fn-h4 {
+    margin: 24px 0 0;
+    padding-top: 0;
+    padding-bottom: 16px;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 650;
+    color: var(--color-text, #191919);
+    letter-spacing: -0.01em;
+  }
+  h3.fn-h3 + .principle-example > h4.fn-h4,
+  h3.fn-h3 + h4.fn-h4 { margin-top: 12px; }
+
+  #scenarios .scene-def-table td .badge { border: none; }
+  .scene-def-table td .badge-optional {
+    background: #f5f5f5;
+    color: #595959;
+  }
+
+  .scene-def-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    line-height: 22px;
+    margin: 0 0 24px;
+    table-layout: fixed;
+  }
+  .scene-def-table th,
+  .scene-def-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid #e2e8f0;
+    vertical-align: middle;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 400;
+  }
+  .scene-def-table tbody td {
+    height: auto;
+    min-height: 48px;
+  }
+  .scene-def-table th {
+    font-size: 12px;
+    font-weight: 650;
+    color: #595959;
+    background: #fafafa;
+    height: 40px;
+    box-sizing: border-box;
+  }
+  .scene-def-table .col-type { width: 18%; }
+  .scene-def-table .col-desc { width: 55%; }
+  .scene-def-table .col-place { width: 27%; }
+  #objects .scene-def-table .col-type { width: 18%; }
+  #objects .scene-def-table .col-desc { width: 52%; }
+  #objects .scene-def-table .col-place { width: 30%; }
+  #scenarios .scene-def-table .col-type { width: 18%; }
+  #scenarios .scene-def-table .col-place { width: 40%; }
+  #scenarios .scene-def-table .col-desc { width: 42%; }
+
+  .fn-ex-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr auto;
+    column-gap: 16px;
+    row-gap: 0;
+    align-items: stretch;
+    margin: 16px 0 0;
+  }
+  .fn-ex-row .fn-ex {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 1 / span 3;
+    margin: 0;
+    min-width: 0;
+  }
+  .fn-ex-row .fn-ex-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .fn-ex-row .fn-ex-head .fn-ex-label { margin: 0; }
+  .fn-ex-row .fn-ex-head .fn-ex-bar {
+    display: block; margin: 0; width: 100%; align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-body {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 2 / span 2;
+    min-height: 0;
+    background: #f5f5f5;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .fn-ex-row .fn-ex-mock {
+    min-height: 0; height: 100%; box-sizing: border-box;
+    border: none; border-radius: 0; align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-mock:has(.st-card) {
+    padding: 12px;
+    background: #f5f5f5;
+  }
+  .fn-ex-row .fn-ex-mock pre.st-code {
+    margin: 0;
+    padding: 14px 16px;
+    background: #1e1e1e;
+    border: 1px solid #111;
+    border-radius: 0;
+    font-size: 12px;
+    line-height: 18px;
+    color: #e8e8e8;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow: auto;
+    box-sizing: border-box;
+    min-height: 100%;
+  }
+  .fn-ex-row .fn-ex-foot {
+    display: flex; flex-direction: column; gap: 8px;
+    padding: 12px 14px 14px; background: #fff;
+    border-top: 1px solid #e2e8f0;
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-list { margin: 0; gap: 4px; }
+  .fn-ex-label {
+    display: inline-block; padding: 0 8px; border-radius: 4px;
+    font-size: 12px; font-weight: 650; line-height: 20px;
+    color: #b42318; background: #fef3f2;
+  }
+  .fn-ex-label.is-good { color: #047857; background: #ecfdf5; }
+  .fn-ex-bar {
+    display: block; width: 100%; height: 3px;
+    background: #b42318; border-radius: 2px;
+  }
+  .fn-ex-bar.is-good { background: #047857; }
+  .fn-ex-list {
+    margin: 0; padding: 0 0 0 1.25em; list-style: disc;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .fn-ex-list li {
+    margin: 0; font-size: 14px; line-height: 22px; color: #191919;
+  }
+  .fn-ex-list strong { font-weight: 650; }
+
+  .st-card {
+    padding: 14px 16px 12px;
+    color: #191919;
+    background: #fff;
+    border-radius: 8px;
+    height: 100%;
+    box-sizing: border-box;
+  }
+  .ex-fail {
+    margin: 0;
+    padding: 12px 14px;
+    border-radius: 6px;
+    border: 1px solid #fecaca;
+    background: #fef2f2;
+  }
+  .ex-fail-title {
+    margin: 0 0 10px;
+    padding: 0 0 0 10px;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 20px;
+    color: #b42318;
+    border-left: 3px solid #dc2626;
+  }
+  .ex-fail-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .ex-fail-list li {
+    margin: 0;
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr);
+    gap: 8px;
+    font-size: 12px;
+    line-height: 18px;
+    color: #191919;
+  }
+  .ex-fail-list .k {
+    color: #b42318;
+    font-weight: 650;
+  }
+  .ex-icon-only {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    line-height: 20px;
+    color: #191919;
+  }
+  .ex-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #dc2626;
+    flex-shrink: 0;
+  }
+
+  .principle-example + .principle-example { margin-top: 28px; }
+  .principle-example-note {
+    margin-top: 12px;
+    font-size: 14px;
+    line-height: 22px;
+    color: #595959;
+  }
+
+  #design-ui .principle-suggestions,
+  #content-adjust .principle-suggestions,
+  #frontend-adjust .principle-suggestions {
+    list-style: none;
+    margin: 0 0 32px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    counter-reset: sug;
+  }
+  #design-ui .principle-suggestions > li,
+  #content-adjust .principle-suggestions > li,
+  #frontend-adjust .principle-suggestions > li {
+    position: relative;
+    margin: 0;
+    padding: 0 0 0 36px;
+    color: #595959;
+    counter-increment: sug;
+  }
+  #design-ui .principle-suggestions > li::before,
+  #content-adjust .principle-suggestions > li::before,
+  #frontend-adjust .principle-suggestions > li::before {
+    content: counter(sug, decimal-leading-zero);
+    position: absolute;
+    left: 0;
+    top: 1px;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 22px;
+    letter-spacing: 0.02em;
+    color: #1476FF;
+  }
+  #design-ui .principle-suggestions > li .sug-title,
+  #content-adjust .principle-suggestions > li .sug-title,
+  #frontend-adjust .principle-suggestions > li .sug-title {
+    display: block;
+    margin: 0 0 6px;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 24px;
+    color: #191919;
+  }
+  #design-ui .principle-suggestions > li .sug-desc,
+  #content-adjust .principle-suggestions > li .sug-desc,
+  #frontend-adjust .principle-suggestions > li .sug-desc {
+    display: block;
+    margin: 0;
+    max-width: none;
+    width: 100%;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 24px;
+    color: #595959;
+  }
+
+  @media (max-width: 900px) {
+    .fn-ex-row {
+      grid-template-columns: 1fr;
+      grid-template-rows: none;
+    }
+    .fn-ex-row .fn-ex { display: block; grid-row: auto; }
+    .fn-ex-row .fn-ex-body {
+      display: flex; flex-direction: column; grid-row: auto;
+    }
+  }
+</style>
+</head>
+<body class="inner-page" data-module="principles" data-page="exception">
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html">社区 <span>AI 亲和原则</span></a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="mintlify.html">友商对照</a>
+      <a href="reachability.html">社区诊断</a>
+      <a href="principles-overview.html" class="active">亲和原则</a>
+      <a href="community-ui.html">组件亲和</a>
+      <a href="design-guide-image-text.html">设计模式</a>
+    </nav>
+  </div>
+</div>
+
+<div class="page-wrapper">
+
+  <aside id="module-sidebar"></aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <h1>常见异常可说明处置</h1>
+      <p class="page-desc page-desc--split">
+        <span class="page-desc-line">为了帮助 Agent 在失败、报错与排障时不凭空臆造，须给出可抓取的含义说明与官方下一步；无结论时显式写「暂无官方处理说明」。空态默认见 <a href="principles-default-empty.html">缺省空态可文案处理</a>。</span>
+      </p>
+    </div>
+
+    <section class="section" id="objects">
+      <h2>适用对象</h2>
+      <table class="scene-def-table">
+        <colgroup>
+          <col class="col-type" />
+          <col class="col-desc" />
+          <col class="col-place" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="col-type">名称</th>
+            <th class="col-desc">说明</th>
+            <th class="col-place">常见落点</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="col-type">失败 / 报错态</td>
+            <td class="col-desc">错误与失败须有可见文案区，不单靠红色或图标表意。</td>
+            <td class="col-place">安装回执、任务结果、控制台</td>
+          </tr>
+          <tr>
+            <td class="col-type">错误码说明</td>
+            <td class="col-desc">错误码 / 报错原文旁附可引用的解释与处置步骤，与当前版本对齐。</td>
+            <td class="col-place">错误码表、排障手册</td>
+          </tr>
+          <tr>
+            <td class="col-type">官方下一步</td>
+            <td class="col-desc">「含义 → 原因 → 下一步」可扫读；无官方结论时显式声明，禁止暗示可猜。</td>
+            <td class="col-place">排障入口、异常条目</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section" id="scenarios">
+      <h2>适用场景</h2>
+      <table class="scene-def-table">
+        <colgroup>
+          <col class="col-type" />
+          <col class="col-place" />
+          <col class="col-desc" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="col-type">优先级</th>
+            <th class="col-place">页面类型</th>
+            <th class="col-desc">说明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="col-type"><span class="badge badge-bad">必做</span></td>
+            <td class="col-place">排障手册、错误码参考、安装失败回执</td>
+            <td class="col-desc">Agent 最易在结果不明时臆造；须官方含义与下一步。</td>
+          </tr>
+          <tr>
+            <td class="col-type"><span class="badge badge-should">建议做</span></td>
+            <td class="col-place">API 错误响应说明、任务失败态文案</td>
+            <td class="col-desc">错误旁附解释与处置；与版本对齐。</td>
+          </tr>
+          <tr>
+            <td class="col-type"><span class="badge badge-optional">可不做完整改造</span></td>
+            <td class="col-place">纯成功路径演示、无错误分支的概念页</td>
+            <td class="col-desc">可链到排障手册；出现失败态时仍须文案。</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section" id="design-ui">
+      <h2>设计UI调整</h2>
+
+      <h3 class="fn-h3" id="design-suggestions">调整建议</h3>
+      <ul class="principle-suggestions">
+        <li>
+          <span class="sug-title">失败态须有可见文案</span>
+          <span class="sug-desc">错误 / 失败态须有可见文案区，不单靠红色或图标表意。</span>
+        </li>
+        <li>
+          <span class="sug-title">含义 → 原因 → 下一步可扫读</span>
+          <span class="sug-desc">排障入口位置固定；层级结构清晰，便于人机扫读与抓取。</span>
+        </li>
+      </ul>
+
+      <h3 class="fn-h3" id="design-example">调整示例</h3>
+      <div class="principle-example">
+        <h4 class="fn-h4">失败态写出含义与下一步</h4>
+        <div class="fn-ex-row" id="ex-fail-copy">
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label">反面</span>
+              <div class="fn-ex-bar" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="反面：仅红色图标">
+                <div class="st-card">
+                  <div class="ex-icon-only">
+                    <span class="ex-dot" aria-hidden="true"></span>
+                    依赖安装
+                  </div>
+                </div>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>常见疏漏：</strong>仅色点 / 图标，机器无法识别失败含义与处置路径。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label is-good">正面</span>
+              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="正面：含义原因下一步">
+                <div class="st-card">
+                  <div class="ex-fail">
+                    <p class="ex-fail-title">依赖安装失败</p>
+                    <ul class="ex-fail-list">
+                      <li><span class="k">含义</span><span>软件包校验和不一致。</span></li>
+                      <li><span class="k">原因</span><span>下载不完整或镜像损坏。</span></li>
+                      <li><span class="k">下一步</span><span>重新下载软件包后重试安装。</span></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>正确做法：</strong>可见文案写清含义、原因与官方下一步。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="content-adjust">
+      <h2>文档内容调整</h2>
+
+      <h3 class="fn-h3" id="content-suggestions">调整建议</h3>
+      <ul class="principle-suggestions">
+        <li>
+          <span class="sug-title">给出官方处理路径</span>
+          <span class="sug-desc">常见异常写清含义与下一步；错误码旁附可引用解释与处置，与当前版本对齐。</span>
+        </li>
+        <li>
+          <span class="sug-title">无结论时显式声明</span>
+          <span class="sug-desc">若官方尚无结论，写明「暂无官方处理说明」，禁止暗示可猜或编造步骤。</span>
+        </li>
+      </ul>
+
+      <h3 class="fn-h3" id="content-example">调整示例</h3>
+      <div class="principle-example">
+        <h4 class="fn-h4">错误码旁附官方处置</h4>
+        <div class="fn-ex-row" id="ex-content-code">
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label">反面</span>
+              <div class="fn-ex-bar" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="反面：仅错误码">
+                <pre class="st-code">错误码：0xA0001
+
+← 无含义 / 无下一步</pre>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>常见疏漏：</strong>仅抛错误码，Agent 易凭空臆造处置。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label is-good">正面</span>
+              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="正面：官方路径">
+                <pre class="st-code">**错误码** `0xA0001`（CANN 8.0）
+
+**含义**：驱动与 CANN 版本不匹配。
+**原因**：驱动未升级到配套版本。
+**下一步**：按《驱动安装指南》
+安装配套驱动后重试。
+
+← 可引用处置</pre>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>正确做法：</strong>含义 / 原因 / 下一步可抓取；与版本对齐。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="frontend-adjust">
+      <h2>前端调整</h2>
+
+      <h3 class="fn-h3" id="frontend-suggestions">调整建议</h3>
+      <ul class="principle-suggestions">
+        <li>
+          <span class="sug-title">错误文案进入首包</span>
+          <span class="sug-desc">失败说明在 SSR / 首包输出，禁 JS 仍可读。</span>
+        </li>
+        <li>
+          <span class="sug-title">语义标注失败态</span>
+          <span class="sug-desc">可用 <code>data-result="failure"</code> 等标注，便于切片识别失败块。</span>
+        </li>
+      </ul>
+
+      <h3 class="fn-h3" id="frontend-example">调整示例</h3>
+      <div class="principle-example">
+        <h4 class="fn-h4">失败块可机读标注</h4>
+        <div class="fn-ex-row" id="ex-frontend">
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label">反面</span>
+              <div class="fn-ex-bar" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="反面：仅样式类">
+                <pre class="st-code">&lt;div class="alert-red"&gt;
+  &lt;i class="icon-x"&gt;&lt;/i&gt;
+&lt;/div&gt;
+
+← 无文案 / 无语义</pre>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>常见疏漏：</strong>仅样式表达失败，切片拿不到含义与下一步。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label is-good">正面</span>
+              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="正面：文案 + data">
+                <pre class="st-code">&lt;aside data-result="failure"
+  data-error-code="0xA0001"&gt;
+  &lt;p&gt;含义：驱动与 CANN 不匹配。&lt;/p&gt;
+  &lt;p&gt;下一步：安装配套驱动后重试。&lt;/p&gt;
+&lt;/aside&gt;
+
+← 可切失败 chunk</pre>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>正确做法：</strong>首包含文案；data-* 标失败与错误码。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js"></script>
+<script src="assets/js/module-sidebar.js"></script>
+</body>
+</html>

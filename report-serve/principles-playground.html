@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>可交互示例与 Playground · 亲和原则 · 昇腾社区 AI 亲和原则</title>
+  <title>在线尝试入口可继续执行 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
   <link rel="stylesheet" href="assets/css/style.css">
 <style>
   .topbar {
@@ -63,8 +63,342 @@
     color: #595959; font-size: 13px; font-weight: 500; line-height: 1.4;
   }
   .nav-dd-panel a:hover { color: #1476FF; background: #F5F5F5; }
-  /* GEO topbar = fixed，沿用 layout 的 page-wrapper padding-top */
   body.inner-page .page-wrapper { min-height: 100vh; }
+
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 28px;
+  }
+  .page-header h1 {
+    font-family: "PingFang SC", sans-serif;
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 600;
+    line-height: 48px;
+    letter-spacing: -0.02em;
+    margin: 8px 0 0;
+    color: var(--color-text, #191919);
+  }
+  .page-header .page-desc {
+    margin: 32px 0 0;
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--text, #191919);
+  }
+  body.inner-page[data-page="playground"]:has(#module-sidebar) .main-content {
+    padding-top: 32px;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  body.inner-page[data-page="playground"]:has(#module-sidebar) .main-content > .page-header,
+  body.inner-page[data-page="playground"]:has(#module-sidebar) .main-content > .section,
+  body.inner-page[data-page="playground"]:has(#module-sidebar) .main-content > .surface-tabs {
+    width: min(1200px, calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page[data-page="playground"] .main-content .section > h2 {
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    letter-spacing: -0.01em;
+    margin-top: 48px;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #f0f0f0;
+    color: var(--color-text, #191919);
+  }
+  body.inner-page[data-page="playground"] .main-content .section h3 { height: auto; }
+  h3.fn-h3 {
+    margin: 0;
+    padding-top: 24px;
+    padding-bottom: 24px;
+    font-size: 18px;
+    line-height: 28px;
+    font-weight: 650;
+    color: var(--color-text, #191919);
+    letter-spacing: -0.01em;
+  }
+  body.inner-page[data-page="playground"] .main-content .section h4 { height: auto; }
+  h4.fn-h4 {
+    margin: 24px 0 0;
+    padding-top: 0;
+    padding-bottom: 16px;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 650;
+    color: var(--color-text, #191919);
+    letter-spacing: -0.01em;
+  }
+  h3.fn-h3 + .principle-example > h4.fn-h4,
+  h3.fn-h3 + h4.fn-h4 { margin-top: 12px; }
+
+  #scenarios .scene-def-table td .badge { border: none; }
+  .scene-def-table td .badge-optional {
+    background: #f5f5f5;
+    color: #595959;
+  }
+
+  .scene-def-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    line-height: 22px;
+    margin: 0 0 24px;
+    table-layout: fixed;
+  }
+  .scene-def-table th,
+  .scene-def-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid #e2e8f0;
+    vertical-align: middle;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 400;
+  }
+  .scene-def-table tbody td {
+    height: auto;
+    min-height: 48px;
+  }
+  .scene-def-table th {
+    font-size: 12px;
+    font-weight: 650;
+    color: #595959;
+    background: #fafafa;
+    height: 40px;
+    box-sizing: border-box;
+  }
+  .scene-def-table .col-type { width: 18%; }
+  .scene-def-table .col-desc { width: 55%; }
+  .scene-def-table .col-place { width: 27%; }
+  #objects .scene-def-table .col-type { width: 18%; }
+  #objects .scene-def-table .col-desc { width: 52%; }
+  #objects .scene-def-table .col-place { width: 30%; }
+  #scenarios .scene-def-table .col-type { width: 18%; }
+  #scenarios .scene-def-table .col-place { width: 40%; }
+  #scenarios .scene-def-table .col-desc { width: 42%; }
+
+  .fn-ex-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr auto;
+    column-gap: 16px;
+    row-gap: 0;
+    align-items: stretch;
+    margin: 16px 0 0;
+  }
+  .fn-ex-row .fn-ex {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 1 / span 3;
+    margin: 0;
+    min-width: 0;
+  }
+  .fn-ex-row .fn-ex-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .fn-ex-row .fn-ex-head .fn-ex-label { margin: 0; }
+  .fn-ex-row .fn-ex-head .fn-ex-bar {
+    display: block; margin: 0; width: 100%; align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-body {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 2 / span 2;
+    min-height: 0;
+    background: #f5f5f5;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .fn-ex-row .fn-ex-mock {
+    min-height: 0; height: 100%; box-sizing: border-box;
+    border: none; border-radius: 0; align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-mock:has(.st-card) {
+    padding: 12px;
+    background: #f5f5f5;
+  }
+  .fn-ex-row .fn-ex-mock pre.st-code {
+    margin: 0;
+    padding: 14px 16px;
+    background: #1e1e1e;
+    border: 1px solid #111;
+    border-radius: 0;
+    font-size: 12px;
+    line-height: 18px;
+    color: #e8e8e8;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow: auto;
+    box-sizing: border-box;
+    min-height: 100%;
+  }
+  .fn-ex-row .fn-ex-foot {
+    display: flex; flex-direction: column; gap: 8px;
+    padding: 12px 14px 14px; background: #fff;
+    border-top: 1px solid #e2e8f0;
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-list { margin: 0; gap: 4px; }
+  .fn-ex-label {
+    display: inline-block; padding: 0 8px; border-radius: 4px;
+    font-size: 12px; font-weight: 650; line-height: 20px;
+    color: #b42318; background: #fef3f2;
+  }
+  .fn-ex-label.is-good { color: #047857; background: #ecfdf5; }
+  .fn-ex-bar {
+    display: block; width: 100%; height: 3px;
+    background: #b42318; border-radius: 2px;
+  }
+  .fn-ex-bar.is-good { background: #047857; }
+  .fn-ex-list {
+    margin: 0; padding: 0 0 0 1.25em; list-style: disc;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .fn-ex-list li {
+    margin: 0; font-size: 14px; line-height: 22px; color: #191919;
+  }
+  .fn-ex-list strong { font-weight: 650; }
+
+  .st-card {
+    padding: 14px 16px 12px;
+    color: #191919;
+    background: #fff;
+    border-radius: 8px;
+    height: 100%;
+    box-sizing: border-box;
+  }
+  .pg-block {
+    margin: 0;
+    padding: 10px 12px;
+    border-radius: 6px;
+    background: #f5f5f5;
+    border: 1px solid #e2e8f0;
+  }
+  .pg-block-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .pg-block-title {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 18px;
+    color: #191919;
+  }
+  .pg-btn {
+    display: inline-flex;
+    align-items: center;
+    height: 26px;
+    padding: 0 10px;
+    border-radius: 4px;
+    background: #1476FF;
+    color: #fff;
+    font-size: 11px;
+    line-height: 26px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .pg-code {
+    margin: 0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 11px;
+    line-height: 16px;
+    color: #191919;
+    white-space: pre-wrap;
+  }
+  .pg-note {
+    margin: 8px 0 0;
+    font-size: 11px;
+    line-height: 16px;
+    color: #595959;
+  }
+
+  .principle-example + .principle-example { margin-top: 28px; }
+  .principle-example-note {
+    margin-top: 12px;
+    font-size: 14px;
+    line-height: 22px;
+    color: #595959;
+  }
+
+  #design-ui .principle-suggestions,
+  #content-adjust .principle-suggestions,
+  #frontend-adjust .principle-suggestions {
+    list-style: none;
+    margin: 0 0 32px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    counter-reset: sug;
+  }
+  #design-ui .principle-suggestions > li,
+  #content-adjust .principle-suggestions > li,
+  #frontend-adjust .principle-suggestions > li {
+    position: relative;
+    margin: 0;
+    padding: 0 0 0 36px;
+    color: #595959;
+    counter-increment: sug;
+  }
+  #design-ui .principle-suggestions > li::before,
+  #content-adjust .principle-suggestions > li::before,
+  #frontend-adjust .principle-suggestions > li::before {
+    content: counter(sug, decimal-leading-zero);
+    position: absolute;
+    left: 0;
+    top: 1px;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 22px;
+    letter-spacing: 0.02em;
+    color: #1476FF;
+  }
+  #design-ui .principle-suggestions > li .sug-title,
+  #content-adjust .principle-suggestions > li .sug-title,
+  #frontend-adjust .principle-suggestions > li .sug-title {
+    display: block;
+    margin: 0 0 6px;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 24px;
+    color: #191919;
+  }
+  #design-ui .principle-suggestions > li .sug-desc,
+  #content-adjust .principle-suggestions > li .sug-desc,
+  #frontend-adjust .principle-suggestions > li .sug-desc {
+    display: block;
+    margin: 0;
+    max-width: none;
+    width: 100%;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 24px;
+    color: #595959;
+  }
+
+  @media (max-width: 900px) {
+    .fn-ex-row {
+      grid-template-columns: 1fr;
+      grid-template-rows: none;
+    }
+    .fn-ex-row .fn-ex { display: block; grid-row: auto; }
+    .fn-ex-row .fn-ex-body {
+      display: flex; flex-direction: column; grid-row: auto;
+    }
+  }
 </style>
 </head>
 <body class="inner-page" data-module="principles" data-page="playground">
@@ -87,36 +421,288 @@
 
   <aside id="module-sidebar"></aside>
 
-  
-  
   <main class="main-content">
     <div class="page-header">
-      <h1>可交互示例与 Playground</h1>
+      <h1>在线尝试入口可继续执行</h1>
       <p class="page-desc page-desc--split">
-        <span class="page-desc-line">可运行示例旁提供明确的「在线尝试 / 在 Playground 打开」入口，使 Agent 能选择控件并继续执行，而不是停在静态代码块。</span>
-        <span class="page-desc-line">可操作 · 对应全量表 <a href="principles-affinity-full.html#principle-full-28">相关条目</a>。</span>
+        <span class="page-desc-line">为了帮助 Agent 不止步于静态代码块，可运行示例旁须提供明确的「在线尝试 / 在 Playground 打开」入口，使控件可选、执行可继续。可照抄静态示例见 <a href="principles-example.html">示例路径可照抄参照</a>。</span>
       </p>
     </div>
-    <section class="section" id="design-ui">
-      <h2>设计 UI 调整</h2>
-      <ul class="principle-suggestions">
-        <li>代码示例旁固定「在线尝试」按钮文案与位置，全站一致。</li>
-        <li>嵌入式 Playground 须有尺寸与间距规范，不打断阅读流。</li>
-      </ul>
+
+    <section class="section" id="objects">
+      <h2>适用对象</h2>
+      <table class="scene-def-table">
+        <colgroup>
+          <col class="col-type" />
+          <col class="col-desc" />
+          <col class="col-place" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="col-type">名称</th>
+            <th class="col-desc">说明</th>
+            <th class="col-place">常见落点</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="col-type">在线尝试入口</td>
+            <td class="col-desc">代码示例旁固定「在线尝试」「在 Playground 打开」等文案与位置，全站一致。</td>
+            <td class="col-place">可运行代码块旁</td>
+          </tr>
+          <tr>
+            <td class="col-type">嵌入式 Playground</td>
+            <td class="col-desc">嵌入运行区须有尺寸与间距规范，不打断阅读流；无 JS 时降级为静态示例。</td>
+            <td class="col-place">教程内嵌运行区</td>
+          </tr>
+          <tr>
+            <td class="col-type">本地复现兜底</td>
+            <td class="col-desc">无法提供在线环境时，写明本地复现命令与验证方式，仍可继续执行。</td>
+            <td class="col-place">示例说明区</td>
+          </tr>
+        </tbody>
+      </table>
     </section>
+
+    <section class="section" id="scenarios">
+      <h2>适用场景</h2>
+      <table class="scene-def-table">
+        <colgroup>
+          <col class="col-type" />
+          <col class="col-place" />
+          <col class="col-desc" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="col-type">优先级</th>
+            <th class="col-place">页面类型</th>
+            <th class="col-desc">说明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="col-type"><span class="badge badge-bad">必做</span></td>
+            <td class="col-place">有官方 Playground / 在线 IDE 的 API、SDK 示例页</td>
+            <td class="col-desc">Agent 需可选入口继续跑；仅静态块会中断任务。</td>
+          </tr>
+          <tr>
+            <td class="col-type"><span class="badge badge-should">建议做</span></td>
+            <td class="col-place">快速入门、可运行样例教程</td>
+            <td class="col-desc">有条件时挂在线尝试；否则写清本地复现。</td>
+          </tr>
+          <tr>
+            <td class="col-type"><span class="badge badge-optional">可不做完整改造</span></td>
+            <td class="col-place">无运行环境的概念说明、纯配置片段</td>
+            <td class="col-desc">提供可照抄静态示例即可，不必强求 Playground。</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section" id="design-ui">
+      <h2>设计UI调整</h2>
+
+      <h3 class="fn-h3" id="design-suggestions">调整建议</h3>
+      <ul class="principle-suggestions">
+        <li>
+          <span class="sug-title">入口文案与位置固定</span>
+          <span class="sug-desc">代码示例旁固定「在线尝试」按钮文案与位置，全站一致，便于 Agent 识别控件。</span>
+        </li>
+        <li>
+          <span class="sug-title">嵌入区不打断阅读流</span>
+          <span class="sug-desc">嵌入式 Playground 须有尺寸与间距规范；静态代码正文始终可见，不被运行区遮挡。</span>
+        </li>
+      </ul>
+
+      <h3 class="fn-h3" id="design-example">调整示例</h3>
+      <div class="principle-example">
+        <h4 class="fn-h4">代码旁提供在线尝试入口</h4>
+        <div class="fn-ex-row" id="pg-try-btn">
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label">反面</span>
+              <div class="fn-ex-bar" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="反面：仅静态代码">
+                <div class="st-card">
+                  <div class="pg-block">
+                    <p class="pg-block-title">示例</p>
+                    <pre class="pg-code">print("hello ascend")</pre>
+                  </div>
+                </div>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>常见疏漏：</strong>只有静态块，Agent 无法选择继续执行的入口。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label is-good">正面</span>
+              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="正面：在线尝试按钮">
+                <div class="st-card">
+                  <div class="pg-block">
+                    <div class="pg-block-head">
+                      <p class="pg-block-title">可运行示例</p>
+                      <span class="pg-btn">在线尝试</span>
+                    </div>
+                    <pre class="pg-code">print("hello ascend")</pre>
+                  </div>
+                </div>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>正确做法：</strong>示例旁固定「在线尝试」文案；静态正文仍完整可见。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="section" id="content-adjust">
       <h2>文档内容调整</h2>
+
+      <h3 class="fn-h3" id="content-suggestions">调整建议</h3>
       <ul class="principle-suggestions">
-        <li>示例说明写清输入、动作与预期输出；与正文步骤一致。</li>
-        <li>无法提供在线环境时，写明本地复现命令与验证方式。</li>
+        <li>
+          <span class="sug-title">写清输入、动作与预期输出</span>
+          <span class="sug-desc">示例说明与正文步骤一致：输入什么、点哪里、预期看到什么。</span>
+        </li>
+        <li>
+          <span class="sug-title">无在线环境时写本地复现</span>
+          <span class="sug-desc">无法提供 Playground 时，写明本地复现命令与验证方式，避免任务中断。</span>
+        </li>
       </ul>
+
+      <h3 class="fn-h3" id="content-example">调整示例</h3>
+      <div class="principle-example">
+        <h4 class="fn-h4">稿面声明在线入口或本地兜底</h4>
+        <div class="fn-ex-row" id="pg-content-md">
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label">反面</span>
+              <div class="fn-ex-bar" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="反面：仅贴代码">
+                <pre class="st-code">```python
+print("hello ascend")
+```
+
+← 无尝试入口 /
+  无本地复现说明</pre>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>常见疏漏：</strong>只贴代码，未说明如何在线跑或本地验证。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label is-good">正面</span>
+              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="正面：入口 + 预期">
+                <pre class="st-code">**在线尝试**：打开 Playground
+（已预填下方示例）。
+
+```python
+print("hello ascend")
+```
+
+**预期输出**：`hello ascend`
+
+无在线环境时：本地执行
+`python hello.py`，同上输出。
+
+← 可继续执行</pre>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>正确做法：</strong>写清在线入口或本地命令，并给出预期输出。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
+
     <section class="section" id="frontend-adjust">
       <h2>前端调整</h2>
+
+      <h3 class="fn-h3" id="frontend-suggestions">调整建议</h3>
       <ul class="principle-suggestions">
-        <li>代码块组件可配置 Playground URL；跳转尽量预填示例代码。</li>
-        <li>嵌入组件 SSR 降级为静态代码，禁 JS 仍可读示例正文。</li>
+        <li>
+          <span class="sug-title">代码块可配 Playground URL</span>
+          <span class="sug-desc">组件可配置跳转 URL；尽量预填示例代码，落地即可跑。</span>
+        </li>
+        <li>
+          <span class="sug-title">嵌入组件 SSR 降级</span>
+          <span class="sug-desc">禁 JS 时降级为静态代码；首包仍保留完整示例正文与入口链接文案。</span>
+        </li>
       </ul>
+
+      <h3 class="fn-h3" id="frontend-example">调整示例</h3>
+      <div class="principle-example">
+        <h4 class="fn-h4">入口链接与静态正文同源输出</h4>
+        <div class="fn-ex-row" id="pg-frontend">
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label">反面</span>
+              <div class="fn-ex-bar" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="反面：仅 JS 挂载">
+                <pre class="st-code">&lt;div id="playground"
+  data-mount&gt;&lt;/div&gt;
+
+← 首包无代码 /
+  无入口文字</pre>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>常见疏漏：</strong>全靠 JS 挂载，切片与禁 JS 场景拿不到可执行路径。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label is-good">正面</span>
+              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="正面：链接 + 预填 + 降级">
+                <pre class="st-code">&lt;pre&gt;print("hello ascend")&lt;/pre&gt;
+&lt;a class="try-online"
+  href="https://…/playground?code=…"
+  data-role="playground-open"&gt;
+  在线尝试
+&lt;/a&gt;
+
+← 正文可抓；入口可选</pre>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>正确做法：</strong>静态正文 + 带文案的绝对 URL 入口；可预填代码。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
   </main>
 </div>

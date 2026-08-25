@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>失效/弃用状态显化 · 亲和原则 · 社区AI亲和分析</title>
+  <title>弃用状态可显化确认 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
   <link rel="stylesheet" href="assets/css/style.css">
 <style>
   .topbar {
@@ -63,8 +63,352 @@
     color: #595959; font-size: 13px; font-weight: 500; line-height: 1.4;
   }
   .nav-dd-panel a:hover { color: #1476FF; background: #F5F5F5; }
-  /* GEO topbar = fixed，沿用 layout 的 page-wrapper padding-top */
   body.inner-page .page-wrapper { min-height: 100vh; }
+
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 28px;
+  }
+  .page-header h1 {
+    font-family: "PingFang SC", sans-serif;
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 600;
+    line-height: 48px;
+    letter-spacing: -0.02em;
+    margin: 8px 0 0;
+    color: var(--color-text, #191919);
+  }
+  .page-header .page-desc {
+    margin: 32px 0 0;
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--text, #191919);
+  }
+  body.inner-page[data-page="a2"]:has(#module-sidebar) .main-content {
+    padding-top: 32px;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  body.inner-page[data-page="a2"]:has(#module-sidebar) .main-content > .page-header,
+  body.inner-page[data-page="a2"]:has(#module-sidebar) .main-content > .section,
+  body.inner-page[data-page="a2"]:has(#module-sidebar) .main-content > .surface-tabs {
+    width: min(1200px, calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page[data-page="a2"] .main-content .section > h2 {
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    letter-spacing: -0.01em;
+    margin-top: 48px;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #f0f0f0;
+    color: var(--color-text, #191919);
+  }
+  body.inner-page[data-page="a2"] .main-content .section h3 { height: auto; }
+  h3.fn-h3 {
+    margin: 0;
+    padding-top: 24px;
+    padding-bottom: 24px;
+    font-size: 18px;
+    line-height: 28px;
+    font-weight: 650;
+    color: var(--color-text, #191919);
+    letter-spacing: -0.01em;
+  }
+  body.inner-page[data-page="a2"] .main-content .section h4 { height: auto; }
+  h4.fn-h4 {
+    margin: 24px 0 0;
+    padding-top: 0;
+    padding-bottom: 16px;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 650;
+    color: var(--color-text, #191919);
+    letter-spacing: -0.01em;
+  }
+  h3.fn-h3 + .principle-example > h4.fn-h4,
+  h3.fn-h3 + h4.fn-h4 { margin-top: 12px; }
+
+  #scenarios .scene-def-table td .badge { border: none; }
+  .scene-def-table td .badge-optional {
+    background: #f5f5f5;
+    color: #595959;
+  }
+
+  .scene-def-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    line-height: 22px;
+    margin: 0 0 24px;
+    table-layout: fixed;
+  }
+  .scene-def-table th,
+  .scene-def-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid #e2e8f0;
+    vertical-align: middle;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 400;
+  }
+  .scene-def-table tbody td {
+    height: auto;
+    min-height: 48px;
+  }
+  .scene-def-table th {
+    font-size: 12px;
+    font-weight: 650;
+    color: #595959;
+    background: #fafafa;
+    height: 40px;
+    box-sizing: border-box;
+  }
+  .scene-def-table .col-type { width: 18%; }
+  .scene-def-table .col-desc { width: 55%; }
+  .scene-def-table .col-place { width: 27%; }
+  #objects .scene-def-table .col-type { width: 18%; }
+  #objects .scene-def-table .col-desc { width: 52%; }
+  #objects .scene-def-table .col-place { width: 30%; }
+  #scenarios .scene-def-table .col-type { width: 18%; }
+  #scenarios .scene-def-table .col-place { width: 40%; }
+  #scenarios .scene-def-table .col-desc { width: 42%; }
+
+  .fn-ex-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr auto;
+    column-gap: 16px;
+    row-gap: 0;
+    align-items: stretch;
+    margin: 16px 0 0;
+  }
+  .fn-ex-row .fn-ex {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 1 / span 3;
+    margin: 0;
+    min-width: 0;
+  }
+  .fn-ex-row .fn-ex-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .fn-ex-row .fn-ex-head .fn-ex-label { margin: 0; }
+  .fn-ex-row .fn-ex-head .fn-ex-bar {
+    display: block; margin: 0; width: 100%; align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-body {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 2 / span 2;
+    min-height: 0;
+    background: #f5f5f5;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .fn-ex-row .fn-ex-mock {
+    min-height: 0; height: 100%; box-sizing: border-box;
+    border: none; border-radius: 0; align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-mock:has(.st-card) {
+    padding: 12px;
+    background: #f5f5f5;
+  }
+  .fn-ex-row .fn-ex-mock pre.st-code {
+    margin: 0;
+    padding: 14px 16px;
+    background: #1e1e1e;
+    border: 1px solid #111;
+    border-radius: 0;
+    font-size: 12px;
+    line-height: 18px;
+    color: #e8e8e8;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow: auto;
+    box-sizing: border-box;
+    min-height: 100%;
+  }
+  .fn-ex-row .fn-ex-foot {
+    display: flex; flex-direction: column; gap: 8px;
+    padding: 12px 14px 14px; background: #fff;
+    border-top: 1px solid #e2e8f0;
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-list { margin: 0; gap: 4px; }
+  .fn-ex-label {
+    display: inline-block; padding: 0 8px; border-radius: 4px;
+    font-size: 12px; font-weight: 650; line-height: 20px;
+    color: #b42318; background: #fef3f2;
+  }
+  .fn-ex-label.is-good { color: #047857; background: #ecfdf5; }
+  .fn-ex-bar {
+    display: block; width: 100%; height: 3px;
+    background: #b42318; border-radius: 2px;
+  }
+  .fn-ex-bar.is-good { background: #047857; }
+  .fn-ex-list {
+    margin: 0; padding: 0 0 0 1.25em; list-style: disc;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .fn-ex-list li {
+    margin: 0; font-size: 14px; line-height: 22px; color: #191919;
+  }
+  .fn-ex-list strong { font-weight: 650; }
+
+  .st-card {
+    padding: 14px 16px 12px;
+    color: #191919;
+    background: #fff;
+    border-radius: 8px;
+    height: 100%;
+    box-sizing: border-box;
+  }
+  .dep-banner {
+    margin: 0 0 12px;
+    padding: 10px 12px;
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 650;
+    color: #92400e;
+    background: #fffbeb;
+    border: 1px solid #fcd34d;
+    border-radius: 6px;
+  }
+  .dep-banner a {
+    color: #1476FF;
+    text-decoration: none;
+  }
+  .dep-h1 {
+    margin: 0;
+    font-size: 15px;
+    line-height: 22px;
+    font-weight: 650;
+    color: #191919;
+  }
+  .dep-h3 {
+    margin: 0 0 8px;
+    font-size: 13px;
+    line-height: 20px;
+    font-weight: 650;
+    color: #191919;
+  }
+  .dep-badge {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 0 6px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 650;
+    line-height: 18px;
+    color: #92400e;
+    background: #fef3c7;
+    vertical-align: middle;
+  }
+  .dep-note {
+    margin: 0 0 8px;
+    padding: 8px 10px;
+    font-size: 12px;
+    line-height: 18px;
+    color: #92400e;
+    background: #fffbeb;
+    border-left: 3px solid #f59e0b;
+    border-radius: 0 4px 4px 0;
+  }
+  .dep-note a { color: #1476FF; text-decoration: none; }
+  .dep-body {
+    margin: 0;
+    font-size: 12px;
+    line-height: 18px;
+    color: #595959;
+  }
+
+  .principle-example + .principle-example { margin-top: 28px; }
+  .principle-example-note {
+    margin-top: 12px;
+    font-size: 14px;
+    line-height: 22px;
+    color: #595959;
+  }
+
+  #design-ui .principle-suggestions,
+  #content-adjust .principle-suggestions,
+  #frontend-adjust .principle-suggestions {
+    list-style: none;
+    margin: 0 0 32px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    counter-reset: sug;
+  }
+  #design-ui .principle-suggestions > li,
+  #content-adjust .principle-suggestions > li,
+  #frontend-adjust .principle-suggestions > li {
+    position: relative;
+    margin: 0;
+    padding: 0 0 0 36px;
+    color: #595959;
+    counter-increment: sug;
+  }
+  #design-ui .principle-suggestions > li::before,
+  #content-adjust .principle-suggestions > li::before,
+  #frontend-adjust .principle-suggestions > li::before {
+    content: counter(sug, decimal-leading-zero);
+    position: absolute;
+    left: 0;
+    top: 1px;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 22px;
+    letter-spacing: 0.02em;
+    color: #1476FF;
+  }
+  #design-ui .principle-suggestions > li .sug-title,
+  #content-adjust .principle-suggestions > li .sug-title,
+  #frontend-adjust .principle-suggestions > li .sug-title {
+    display: block;
+    margin: 0 0 6px;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 24px;
+    color: #191919;
+  }
+  #design-ui .principle-suggestions > li .sug-desc,
+  #content-adjust .principle-suggestions > li .sug-desc,
+  #frontend-adjust .principle-suggestions > li .sug-desc {
+    display: block;
+    margin: 0;
+    max-width: none;
+    width: 100%;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 24px;
+    color: #595959;
+  }
+
+  @media (max-width: 900px) {
+    .fn-ex-row {
+      grid-template-columns: 1fr;
+      grid-template-rows: none;
+    }
+    .fn-ex-row .fn-ex { display: block; grid-row: auto; }
+    .fn-ex-row .fn-ex-body {
+      display: flex; flex-direction: column; grid-row: auto;
+    }
+  }
 </style>
 </head>
 <body class="inner-page" data-module="principles" data-page="a2">
@@ -88,58 +432,183 @@
   <aside id="module-sidebar"></aside>
 
   <main class="main-content">
-
-<div class="page-header">
-      <h1>失效/弃用状态显化</h1>
+    <div class="page-header">
+      <h1>弃用状态可显化确认</h1>
       <p class="page-desc page-desc--split">
-        <span class="page-desc-line">旧版、下线或已归档文档须在页面与元数据中<strong>显式标注弃用状态</strong>，并链到替代文档——避免 Agent 与用户把历史版本当作当前主推内容引用。</span>
-        <span class="page-desc-line">找的准 · 序号 3 · 对应 <a href="problems-timeliness.html">问题论证 · 版本滞后</a>。</span>
+        <span class="page-desc-line">为了帮助 Agent 避免把历史版本当作现行事实引用，旧版、下线或已归档文档须在页面与元数据中显式标注弃用状态，并链到替代文档；接口级失效同理。</span>
       </p>
     </div>
+
+    <section class="section" id="objects">
+      <h2>适用对象</h2>
+      <table class="scene-def-table">
+        <colgroup>
+          <col class="col-type" />
+          <col class="col-desc" />
+          <col class="col-place" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="col-type">名称</th>
+            <th class="col-desc">说明</th>
+            <th class="col-place">常见落点</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="col-type">文档级弃用</td>
+            <td class="col-desc">整页旧版 / 归档文档须在 H1 上方显式标注弃用，并链到现行替代页。</td>
+            <td class="col-place">历史手册、旧版 API 全文</td>
+          </tr>
+          <tr>
+            <td class="col-type">接口 / 功能级弃用</td>
+            <td class="col-desc">已弃用 API、参数、配置须在最近标题下用警告块标明版本、范围与替代方案。</td>
+            <td class="col-place">API 参考、配置说明</td>
+          </tr>
+          <tr>
+            <td class="col-type">机器可读状态</td>
+            <td class="col-desc">status / deprecated-since / replacement-url 须可抓取，供切片降权与过滤。</td>
+            <td class="col-place">Frontmatter、meta、data-*</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section" id="scenarios">
+      <h2>适用场景</h2>
+      <table class="scene-def-table">
+        <colgroup>
+          <col class="col-type" />
+          <col class="col-place" />
+          <col class="col-desc" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="col-type">优先级</th>
+            <th class="col-place">页面类型</th>
+            <th class="col-desc">说明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="col-type"><span class="badge badge-bad">必做</span></td>
+            <td class="col-place">仍可索引的旧版手册、已弃用 API 页</td>
+            <td class="col-desc">最易被误引为现行事实；须显化并给替代链。</td>
+          </tr>
+          <tr>
+            <td class="col-type"><span class="badge badge-should">建议做</span></td>
+            <td class="col-place">部分接口已弃用的现行参考页</td>
+            <td class="col-desc">接口旁警告块标明 since / 替代，避免混用。</td>
+          </tr>
+          <tr>
+            <td class="col-type"><span class="badge badge-optional">可不做完整改造</span></td>
+            <td class="col-place">已从站外索引剔除、仅内网归档的只读副本</td>
+            <td class="col-desc">对外不可达时，元数据标注即可，不必强求页顶横幅。</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
 
     <section class="section" id="design-ui">
       <h2>设计UI调整</h2>
 
-      <h3 id="design-suggestions">调整建议</h3>
+      <h3 class="fn-h3" id="design-suggestions">调整建议</h3>
       <ul class="principle-suggestions">
-        <li><strong>警告块组件规范</strong>：功能/接口失效的警告块需要有统一的视觉样式（颜色、图标、边框），与普通提示框、信息框明确区分，视觉权重足够高，用户不会忽略。</li>
-        <li><strong>页顶文档失效提示框</strong>：位置固定在 H1 上方，样式与正文完全隔离（如全宽背景色条），包含失效说明文本和指向新文档的醒目链接，不能被页面其他内容淹没。</li>
+        <li>
+          <span class="sug-title">页顶弃用横幅固定可见</span>
+          <span class="sug-desc">位置固定在 H1 上方，样式与正文隔离；含失效说明与指向新文档的醒目链接。</span>
+        </li>
+        <li>
+          <span class="sug-title">接口级警告块可识别</span>
+          <span class="sug-desc">功能 / 接口失效警告块统一视觉权重，与普通提示区分；须含可抓取文字，不只靠色块。</span>
+        </li>
       </ul>
 
-      <h3 id="design-example">调整示例</h3>
+      <h3 class="fn-h3" id="design-example">调整示例</h3>
       <div class="principle-example">
-        <h4>1. 文档顶部失效横幅</h4>
-        <div class="compare-grid compare-grid--stack compare-grid--no-mid-divider">
-          <h4 class="compare-label compare-label--machine">Before · 无失效提示</h4>
-          <div class="compare-col machine">
-            <div class="render-frame">
-              <div class="rf-h1">旧版 API 说明</div>
-              <p class="rf-muted">用户无法判断文档是否已弃用</p>
+        <h4 class="fn-h4">文档顶部失效横幅</h4>
+        <div class="fn-ex-row" id="dep-banner">
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label">反面</span>
+              <div class="fn-ex-bar" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="反面：无失效提示">
+                <div class="st-card">
+                  <p class="dep-h1">旧版 API 说明</p>
+                  <p class="dep-body" style="margin-top:8px;">用户无法判断文档是否已弃用</p>
+                </div>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>常见疏漏：</strong>无弃用提示，Agent 易将历史版当作现行主推引用。</li>
+                </ul>
+              </div>
             </div>
           </div>
-          <h4 class="compare-label compare-label--human">After · 显著失效横幅</h4>
-          <div class="compare-col human">
-            <div class="render-frame"><div class="rf-banner">⚠ 本文档已废弃（CANN 8.0 起）· <a href="#">见 CANN 9.0 替代文档</a></div><div class="rf-h1">旧版 API 说明</div></div>
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label is-good">正面</span>
+              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="正面：显著失效横幅">
+                <div class="st-card">
+                  <p class="dep-banner">本文档已废弃（CANN 8.0 起）· <a href="#">见 CANN 9.0 替代文档</a></p>
+                  <p class="dep-h1">旧版 API 说明</p>
+                </div>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>正确做法：</strong>H1 上方固定横幅；写明弃用起点并链到替代页。</li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+
       <div class="principle-example">
-        <h4>2. 接口/函数级弃用警告块</h4>
-        <div class="compare-grid compare-grid--stack compare-grid--no-mid-divider">
-          <h4 class="compare-label compare-label--machine">Before · 仅正文描述，无弃用标注</h4>
-          <div class="compare-col machine">
-            <div class="render-frame">
-              <div class="rf-h3"><code>aclrtSetDevice()</code></div>
-              <p>设置运行设备，适用于单设备场景。</p>
-              <p class="rf-muted">旧接口，但无任何弃用提示；Agent 可能将其引用到新场景</p>
+        <h4 class="fn-h4">接口级弃用警告块</h4>
+        <div class="fn-ex-row" id="dep-api-warn">
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label">反面</span>
+              <div class="fn-ex-bar" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="反面：无弃用标注">
+                <div class="st-card">
+                  <p class="dep-h3"><code>aclrtSetDevice()</code></p>
+                  <p class="dep-body">设置运行设备，适用于单设备场景。</p>
+                </div>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>常见疏漏：</strong>仅正文描述，无弃用标注；易被引用到新场景。</li>
+                </ul>
+              </div>
             </div>
           </div>
-          <h4 class="compare-label compare-label--human">After · 接口旁内嵌弃用警告块</h4>
-          <div class="compare-col human">
-            <div class="render-frame">
-              <div class="rf-h3"><code>aclrtSetDevice()</code><span class="rf-badge rf-badge--warn">已弃用 · v9.0</span></div>
-              <div class="rf-note rf-note--warn"><span class="rf-note-label">弃用：</span>自 CANN 9.0 起，请改用 <a href="#">aclrtSetDeviceEx()</a>。旧接口仍可用但不再维护。</div>
-              <p>设置运行设备，适用于单设备场景。</p>
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label is-good">正面</span>
+              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="正面：内嵌弃用警告块">
+                <div class="st-card">
+                  <p class="dep-h3"><code>aclrtSetDevice()</code><span class="dep-badge">已弃用 · v9.0</span></p>
+                  <p class="dep-note">自 CANN 9.0 起，请改用 <a href="#">aclrtSetDeviceEx()</a>。旧接口仍可用但不再维护。</p>
+                  <p class="dep-body">设置运行设备，适用于单设备场景。</p>
+                </div>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>正确做法：</strong>标题旁徽章 + 警告块写清 since、替代链接与影响范围。</li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
@@ -149,41 +618,71 @@
     <section class="section" id="content-adjust">
       <h2>文档内容调整</h2>
 
-      <h3 id="content-suggestions">调整建议</h3>
+      <h3 class="fn-h3" id="content-suggestions">调整建议</h3>
       <ul class="principle-suggestions">
-        <li><strong>功能/接口失效</strong>：任何已弃用、将下线、或对特定环境无效的功能、API端点、配置参数，必须在描述它的最靠近的标题下方使用显著的警告块进行标记。该警告必须说明：弃用/失效的时间点（或版本）、影响范围、以及代替方案（链接到新文档）。 b.</li>
-        <li><strong>文档失效</strong>：对于已停止维护的文档版本或章节，必须在页面顶部（H1上方）展示一个清晰的提示框，说明"此文档适用于已停止维护的[产品名]vX.Y"，并提供一个指向最新版本推荐文档的醒目链接。</li>
+        <li>
+          <span class="sug-title">文档失效须页顶声明</span>
+          <span class="sug-desc">停止维护的版本 / 章节须说明「适用于已停止维护的 [产品] vX.Y」，并给出最新推荐文档链接。</span>
+        </li>
+        <li>
+          <span class="sug-title">接口失效写清三点</span>
+          <span class="sug-desc">警告块须写明：弃用时间点或版本、影响范围、代替方案（链到新文档）；禁止只写「不推荐」。</span>
+        </li>
       </ul>
 
-      <h3 id="content-example">调整示例</h3>
+      <h3 class="fn-h3" id="content-example">调整示例</h3>
       <div class="principle-example">
-        <h4>1. 失效状态与替代链接在文档中声明</h4>
-        <div class="compare-grid compare-grid--stack compare-grid--no-mid-divider">
-          <h4 class="compare-label compare-label--machine">Before · 无失效说明</h4>
-          <div class="compare-col machine">
-            <pre class="arch-diagram">---
+        <h4 class="fn-h4">失效状态与替代链接在稿面声明</h4>
+        <div class="fn-ex-row" id="dep-content-fm">
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label">反面</span>
+              <div class="fn-ex-bar" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="反面：无失效说明">
+                <pre class="st-code">---
 version: "8.0.0"
 ---
 
 # 旧版 API 说明
 
-本文描述 CANN 8.0 的算子接口…</pre>
+本文描述 CANN 8.0…
+
+← 无弃用 / 替代</pre>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>常见疏漏：</strong>仅有版本号，无生命周期与替代链，易被当现行引用。</li>
+                </ul>
+              </div>
+            </div>
           </div>
-          <h4 class="compare-label compare-label--human">After · 失效状态 + 替代方案</h4>
-          <div class="compare-col human">
-            <pre class="arch-diagram">---
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label is-good">正面</span>
+              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="正面：失效状态 + 替代方案">
+                <pre class="st-code">---
 version: "8.0.0"
 lifecycle_status: deprecated
 deprecated_since: "9.0.0"
-replaced_by: https://…/900/operator_dev.html
+replaced_by: https://…/900/
 ---
 
-> **警告**：本文档适用于已停止维护的 CANN 8.0，
-> 请参阅 [CANN 9.0 替代文档](https://…/900/)。
+> **警告**：适用于已停止维护的
+> CANN 8.0，见 [9.0 替代文档](…)。
 
-# 旧版 API 说明
-
-本文描述 CANN 8.0 的算子接口…</pre>
+# 旧版 API 说明</pre>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>正确做法：</strong>Frontmatter 声明状态与替代；正文警告与之同源。</li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -192,34 +691,74 @@ replaced_by: https://…/900/operator_dev.html
     <section class="section" id="frontend-adjust">
       <h2>前端调整</h2>
 
-      <h3 id="frontend-suggestions">调整建议</h3>
+      <h3 class="fn-h3" id="frontend-suggestions">调整建议</h3>
       <ul class="principle-suggestions">
-        <li><strong>失效状态元数据字段</strong>：CMS 中为每个页面和内容块增加结构化字段，包括 status（active / deprecated / sunset）、deprecated-since（版本或时间）、replacement-url（替代文档链接），与内容分离管理，不依赖人工在正文中手写。</li>
-        <li><strong>失效内容的机器可读标注</strong>：废弃警告块加 data-status="deprecated"、data-since="vX.Y"、data-replacement="url" 属性，大模型抓取时可直接识别该内容块的有效性，自动过滤或降权失效内容。</li>
-        <li><strong>页顶提示框自动渲染</strong>：当页面 status 字段为 deprecated 时，由模板自动在 H1 上方注入提示框，不依赖内容侧手动添加，避免遗漏。</li>
-        <li><strong>失效内容在大纲接口中标注</strong>：在大纲接口中为每个内容块带上 status 字段，供大模型在消费大纲时直接过滤失效章节，无需进入页面逐一判断。</li>
+        <li>
+          <span class="sug-title">CMS 结构化失效字段</span>
+          <span class="sug-desc">页面 / 块级增加 status（active / deprecated / sunset）、deprecated-since、replacement-url；与正文分离管理。</span>
+        </li>
+        <li>
+          <span class="sug-title">警告块机器可读标注</span>
+          <span class="sug-desc">废弃块加 <code>data-status</code>、<code>data-since</code>、<code>data-replacement</code>；meta 同步 lifecycle_status。</span>
+        </li>
+        <li>
+          <span class="sug-title">页顶横幅由模板注入</span>
+          <span class="sug-desc">status 为 deprecated 时，模板自动在 H1 上方注入提示框，不依赖内容侧手写，避免遗漏。</span>
+        </li>
       </ul>
 
-      <h3 id="frontend-example">调整示例</h3>
+      <h3 class="fn-h3" id="frontend-example">调整示例</h3>
       <div class="principle-example">
-        <h4>1. 机器可读的失效状态标注</h4>
-        <div class="compare-grid compare-grid--stack compare-grid--no-mid-divider">
-          <h4 class="compare-label compare-label--machine">Before · 无结构化状态</h4>
-          <div class="compare-col machine">
-            <pre class="arch-diagram">&lt;link rel="canonical" href="…"&gt;</pre>
+        <h4 class="fn-h4">机器可读的失效状态标注</h4>
+        <div class="fn-ex-row" id="dep-frontend">
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label">反面</span>
+              <div class="fn-ex-bar" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="反面：无结构化状态">
+                <pre class="st-code">&lt;link rel="canonical" href="…"&gt;
+&lt;h1&gt;旧版 API 说明&lt;/h1&gt;
+
+← 无 status / 替代</pre>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>常见疏漏：</strong>无结构化状态，切片无法降权或过滤失效页。</li>
+                </ul>
+              </div>
+            </div>
           </div>
-          <h4 class="compare-label compare-label--human">After · 完整失效元数据</h4>
-          <div class="compare-col human">
-            <pre class="arch-diagram">&lt;link rel="canonical" href="https://…/900/operator_dev.html"&gt;
-&lt;meta name="lifecycle_status" content="deprecated"&gt;
-&lt;div data-status="deprecated" data-since="8.0"
-     data-replacement="https://…/900/"&gt;…&lt;/div&gt;</pre>
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label is-good">正面</span>
+              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="正面：完整失效元数据">
+                <pre class="st-code">&lt;meta name="lifecycle_status"
+  content="deprecated"&gt;
+&lt;div data-status="deprecated"
+  data-since="8.0"
+  data-replacement="https://…/900/"&gt;
+  …
+&lt;/div&gt;
+
+← 可过滤 / 降权</pre>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>正确做法：</strong>meta + data-* 同源；大纲接口宜透传 status。</li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </section>
-
-  </main></div>
+  </main>
+</div>
 
 <script src="assets/js/site-config.js"></script>
 <script src="assets/js/site-init.js"></script>

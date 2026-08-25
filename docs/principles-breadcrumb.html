@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>面包屑 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
+  <title>面包屑路径可定位 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
   <link rel="stylesheet" href="assets/css/style.css">
 
 <style>
@@ -66,6 +66,132 @@
   .nav-dd-panel a:hover { color: #1476FF; background: #F5F5F5; }
   body.inner-page .page-wrapper { min-height: 100vh; }
 
+  /* 对齐 principles-overview / structure-llms：padding + 1200 居中 + H1–H4 */
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 28px;
+  }
+  .page-header h1 {
+    font-family: "PingFang SC", sans-serif;
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 600;
+    line-height: 48px;
+    letter-spacing: -0.02em;
+    margin: 8px 0 0;
+    color: var(--color-text, #191919);
+  }
+  .page-header .page-desc {
+    margin: 32px 0 0;
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--text, #191919);
+  }
+  body.inner-page[data-page="breadcrumb"]:has(#module-sidebar) .main-content {
+    padding-top: 32px;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  body.inner-page[data-page="breadcrumb"]:has(#module-sidebar) .main-content > .page-header,
+  body.inner-page[data-page="breadcrumb"]:has(#module-sidebar) .main-content > .section,
+  body.inner-page[data-page="breadcrumb"]:has(#module-sidebar) .main-content > .surface-tabs {
+    width: min(1200px, calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page[data-page="breadcrumb"] .main-content .section > h2 {
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    letter-spacing: -0.01em;
+    margin-top: 48px;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #f0f0f0;
+    color: var(--color-text, #191919);
+  }
+  body.inner-page[data-page="breadcrumb"] .main-content .section h3 {
+    height: auto;
+  }
+  /* H3 UI 规范（对齐设计模式页 fn-h3） */
+  h3.fn-h3 {
+    margin: 0;
+    padding-top: 24px;
+    padding-bottom: 24px;
+    font-size: 18px;
+    line-height: 28px;
+    font-weight: 650;
+    color: var(--color-text, #191919);
+    letter-spacing: -0.01em;
+  }
+  body.inner-page[data-page="breadcrumb"] .main-content .section h4 {
+    height: auto;
+  }
+  /* H4 UI 规范（对齐设计模式页 fn-h4） */
+  h4.fn-h4 {
+    margin: 24px 0 0;
+    padding-top: 0;
+    padding-bottom: 16px;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 650;
+    color: var(--color-text, #191919);
+    letter-spacing: -0.01em;
+  }
+  h3.fn-h3 + .principle-example > h4.fn-h4,
+  h3.fn-h3 + h4.fn-h4 {
+    margin-top: 12px;
+  }
+
+  #scenarios .scene-def-table td .badge {
+    border: none;
+  }
+  .scene-def-table td .badge-optional {
+    background: #f5f5f5;
+    color: #595959;
+  }
+
+  .scene-def-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    line-height: 22px;
+    margin: 0 0 24px;
+    table-layout: fixed;
+  }
+  .scene-def-table th,
+  .scene-def-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid #e2e8f0;
+    vertical-align: middle;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 400;
+  }
+  .scene-def-table tbody td {
+    height: 48px;
+  }
+  .scene-def-table th {
+    font-size: 12px;
+    font-weight: 650;
+    color: #595959;
+    background: #fafafa;
+    height: 40px;
+    box-sizing: border-box;
+  }
+  .scene-def-table .col-type { width: 18%; }
+  .scene-def-table .col-desc { width: 55%; }
+  .scene-def-table .col-place { width: 27%; }
+  #objects .scene-def-table .col-type { width: 18%; }
+  #objects .scene-def-table .col-desc { width: 82%; }
+  #scenarios .scene-def-table .col-type { width: 18%; }
+  #scenarios .scene-def-table .col-place { width: 40%; }
+  #scenarios .scene-def-table .col-desc { width: 42%; }
+
   .fn-ex-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -107,6 +233,21 @@
     min-height: 0; height: 100%; box-sizing: border-box;
     border: none; border-radius: 0; align-self: stretch;
   }
+  .fn-ex-row .fn-ex-mock pre.st-code {
+    margin: 0;
+    padding: 14px 16px;
+    background: #1e1e1e;
+    border: 1px solid #111;
+    border-radius: 0;
+    font-size: 12px;
+    line-height: 18px;
+    color: #e8e8e8;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow: auto;
+    box-sizing: border-box;
+    min-height: 100%;
+  }
   .fn-ex-row .fn-ex-foot {
     display: flex; flex-direction: column; gap: 8px;
     padding: 12px 14px 14px; background: #fff;
@@ -142,6 +283,73 @@
     line-height: 20px;
     color: #1476FF;
   }
+  .st-card .st-crumb-current {
+    color: #191919;
+    font-weight: 650;
+  }
+  .st-card .st-crumb-muted {
+    color: #8c8c8c;
+  }
+  .st-card .st-meta {
+    margin: 8px 0 0;
+    font-size: 12px;
+    line-height: 18px;
+    color: #595959;
+  }
+  .st-card .st-body-block {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid #e2e8f0;
+  }
+  .st-card .st-body-label {
+    margin: 0 0 6px;
+    font-size: 11px;
+    line-height: 16px;
+    font-weight: 650;
+    letter-spacing: 0.02em;
+    color: #8c8c8c;
+  }
+  .st-card .st-body-h1 {
+    margin: 0 0 8px;
+    font-size: 15px;
+    line-height: 22px;
+    font-weight: 700;
+    color: #191919;
+  }
+  .st-card .st-body-cond {
+    margin: 0;
+    font-size: 12px;
+    line-height: 18px;
+    color: #595959;
+  }
+  .st-card .st-body-cond strong {
+    font-weight: 650;
+    color: #191919;
+  }
+  .st-card .st-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .st-card .st-ver-btn {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin: 0;
+    padding: 2px 8px;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    background: #fff;
+    font-size: 12px;
+    line-height: 18px;
+    color: #8c8c8c;
+  }
+  .st-card .st-ver-btn svg {
+    display: block;
+    flex-shrink: 0;
+  }
   .st-card .st-title {
     margin: 0;
     font-size: 13px;
@@ -159,6 +367,64 @@
     color: #8c8c8c;
   }
   .principle-example + .principle-example { margin-top: 28px; }
+
+  /* 调整建议：标题 + 说明，无卡片边框 */
+  #design-ui .principle-suggestions,
+  #content-adjust .principle-suggestions,
+  #frontend-adjust .principle-suggestions {
+    list-style: none;
+    margin: 0 0 32px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    counter-reset: sug;
+  }
+  #design-ui .principle-suggestions > li,
+  #content-adjust .principle-suggestions > li,
+  #frontend-adjust .principle-suggestions > li {
+    position: relative;
+    margin: 0;
+    padding: 0 0 0 36px;
+    color: #595959;
+    counter-increment: sug;
+  }
+  #design-ui .principle-suggestions > li::before,
+  #content-adjust .principle-suggestions > li::before,
+  #frontend-adjust .principle-suggestions > li::before {
+    content: counter(sug, decimal-leading-zero);
+    position: absolute;
+    left: 0;
+    top: 1px;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 22px;
+    letter-spacing: 0.02em;
+    color: #1476FF;
+  }
+  #design-ui .principle-suggestions > li .sug-title,
+  #content-adjust .principle-suggestions > li .sug-title,
+  #frontend-adjust .principle-suggestions > li .sug-title {
+    display: block;
+    margin: 0 0 6px;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 24px;
+    color: #191919;
+  }
+  #design-ui .principle-suggestions > li .sug-desc,
+  #content-adjust .principle-suggestions > li .sug-desc,
+  #frontend-adjust .principle-suggestions > li .sug-desc {
+    display: block;
+    margin: 0;
+    max-width: none;
+    width: 100%;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 24px;
+    color: #595959;
+  }
+
   @media (max-width: 900px) {
     .fn-ex-row {
       grid-template-columns: 1fr;
@@ -195,45 +461,87 @@
   <main class="main-content">
 
     <div class="page-header">
-      <h1>面包屑</h1>
+      <h1>面包屑路径可定位</h1>
       <p class="page-desc page-desc--split">
-        <span class="page-desc-line">当前位置须写成真实层级路径；祖先可点，当前页纯文本；禁止只有篇名，帮助 Agent 判断是否在正确任务页。</span>
-        <span class="page-desc-line">可达 · 设计专项见 <a href="design-guide-page-context.html">页面位置与邻篇可识别</a>。</span>
+        <span class="page-desc-line">为了帮助 Agent 精准定位任务上下文并建立站内知识树坐标，面包屑必须展示真实的层级路径：祖先层级可点击，当前层级用纯文本。</span>
       </p>
     </div>
 
     <section class="section" id="objects">
-      <h2>对象</h2>
-      <div class="affinity-table-wrap">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th style="width:28%">对象</th>
-              <th>描述</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>面包屑</td>
-              <td>当前位置须写成真实层级路径；祖先可点，当前页纯文本；禁止只有篇名。常见落点：文档页头、栏目页。</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <h2>适用对象</h2>
+      <table class="scene-def-table">
+        <colgroup>
+          <col class="col-type" />
+          <col class="col-desc" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="col-type">名称</th>
+            <th class="col-desc">说明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="col-type">面包屑</td>
+            <td class="col-desc">当前页在站点中的层级路径导航。</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section" id="scenarios">
+      <h2>适用场景</h2>
+      <table class="scene-def-table">
+        <colgroup>
+          <col class="col-type" />
+          <col class="col-place" />
+          <col class="col-desc" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="col-type">优先级</th>
+            <th class="col-place">页面类型</th>
+            <th class="col-desc">说明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="col-type"><span class="badge badge-bad">必做</span></td>
+            <td class="col-place">文档站正文页、手册 / 教程栏目页</td>
+            <td class="col-desc">Agent 最常引用的事实页。</td>
+          </tr>
+          <tr>
+            <td class="col-type"><span class="badge badge-should">建议做</span></td>
+            <td class="col-place">官网产品 / 能力详情页</td>
+            <td class="col-desc">规格、能力说明等会进入引用池的页面。</td>
+          </tr>
+          <tr>
+            <td class="col-type"><span class="badge badge-optional">可不做完整改造</span></td>
+            <td class="col-place">纯营销落地页、活动页</td>
+            <td class="col-desc">须在收录策略中明确划界。</td>
+          </tr>
+        </tbody>
+      </table>
     </section>
 
     <section class="section" id="design-ui">
       <h2>设计UI调整</h2>
 
-      <h3 id="design-suggestions">调整建议</h3>
+      <h3 class="fn-h3" id="design-suggestions">调整建议</h3>
       <ul class="principle-suggestions">
-        <li><strong>位置写成路径</strong>：面包屑默认可见；真实层级、祖先可点、当前页纯文本；禁止只有篇名。</li>
-        <li><strong>手册与版本外显</strong>：所属产品线 / 手册名 / 版本出现在固定位置，不藏进图标。</li>
+        <li>
+          <span class="sug-title">路径默认可见</span>
+          <span class="sug-desc">面包屑必须呈现真实站点层级路径（含产品线 / 手册名 / 版本等上级层）；末级为当前篇名，采用不可点击的纯文本样式。</span>
+        </li>
+        <li>
+          <span class="sug-title">版本须写进路径</span>
+          <span class="sug-desc">版本号作为路径中的一级写出；页眉下拉可保留，但不得以只写「版本」的控件替代路径层，默认态须能读到具体版本。</span>
+        </li>
       </ul>
 
-      <h3 id="design-example">调整示例</h3>
+      <h3 class="fn-h3" id="design-example">调整示例</h3>
       <div class="principle-example">
-        <h4>面包屑须写出层级</h4>
+        <h4 class="fn-h4">面包屑须写出层级</h4>
         <div class="fn-ex-row" id="page-context-crumb">
           <div class="fn-ex">
             <div class="fn-ex-head">
@@ -246,7 +554,7 @@
               </div>
               <div class="fn-ex-foot">
                 <ul class="fn-ex-list">
-                  <li><strong>常见疏漏：</strong>仅有篇名，机器无法识别上一级与站点层级。</li>
+                  <li><strong>常见疏漏：</strong>只有篇名，看不出手册、版本等上级层。</li>
                 </ul>
               </div>
             </div>
@@ -259,13 +567,57 @@
             <div class="fn-ex-body">
               <div class="fn-ex-mock" aria-label="正面：面包屑">
                 <div class="st-card">
-                  <p class="st-crumb">昇腾社区 › 文档中心 › CANN</p>
-                  <p class="st-title">安装指南</p>
+                  <p class="st-crumb">文档中心 › CANN 8.0 › <span class="st-crumb-current">安装指南</span></p>
                 </div>
               </div>
               <div class="fn-ex-foot">
                 <ul class="fn-ex-list">
-                  <li><strong>正确做法：</strong>面包屑写出真实层级；当前篇名在末级。</li>
+                  <li><strong>正确做法：</strong>每一级（含手册与版本）写进路径，末级为当前篇。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="principle-example">
+        <h4 class="fn-h4">版本须写进路径，勿只放在下拉</h4>
+        <div class="fn-ex-row" id="page-context-manual">
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label">反面</span>
+              <div class="fn-ex-bar" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="反面：版本未写进路径且下拉未露出版本号">
+                <div class="st-card">
+                  <div class="st-toolbar">
+                    <p class="st-crumb" style="margin:0;">文档中心 › CANN › <span class="st-crumb-current">安装指南</span></p>
+                    <span class="st-ver-btn">版本 <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.25 6 7.75l3.5-3.5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                  </div>
+                </div>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>常见疏漏：</strong>路径缺版本级；页眉下拉只写「版本」，默认态读不到「CANN 8.0」。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label is-good">正面</span>
+              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="正面：版本写进路径">
+                <div class="st-card">
+                  <p class="st-crumb">文档中心 › CANN 8.0 › <span class="st-crumb-current">安装指南</span></p>
+                </div>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>正确做法：</strong>版本作为路径中的一级写出；下拉可保留，但不能替代路径层。</li>
                 </ul>
               </div>
             </div>
@@ -277,43 +629,130 @@
     <section class="section" id="content-adjust">
       <h2>文档内容调整</h2>
 
-      <h3 id="content-suggestions">调整建议</h3>
+      <h3 class="fn-h3" id="content-suggestions">调整建议</h3>
       <ul class="principle-suggestions">
-        <li><strong>手册名一致</strong>：版本与手册名与正文适用条件一致，并与面包屑路径用语对齐。</li>
+        <li>
+          <span class="sug-title">全链路同名</span>
+          <span class="sug-desc">面包屑层级名、侧栏手册树、页内 H1、正文适用条件以及 sitemap / MD 路径，必须保持全局统一的命名与版本号。严禁出现「看得见但对不上」的割裂感，或同一页面被识别为多个入口的歧义。</span>
+        </li>
+        <li>
+          <span class="sug-title">过渡期路径补位</span>
+          <span class="sug-desc">页面面包屑未达标前，须在 llms.txt 或平行 MD 源中显式写出祖先链作为补位；页面 HTML 达标后，以 HTML 为准，并及时移除冗余的重复维护。</span>
+        </li>
       </ul>
+
+      <h3 class="fn-h3" id="content-example">调整示例</h3>
+      <div class="principle-example">
+        <h4 class="fn-h4">路径用语须全链路对齐</h4>
+        <div class="fn-ex-row" id="page-context-naming">
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label">反面</span>
+              <div class="fn-ex-bar" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="反面：用语不一致">
+                <div class="st-card">
+                  <p class="st-crumb">文档中心 › 昇腾安装 › <span class="st-crumb-current">安装指南</span></p>
+                  <div class="st-body-block">
+                    <p class="st-body-h1">安装指南</p>
+                    <p class="st-body-cond"><strong>适用条件</strong> · CANN 8.0</p>
+                  </div>
+                </div>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>常见疏漏：</strong>面包屑写「昇腾安装」，正文适用条件写「CANN 8.0」，对不上。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label is-good">正面</span>
+              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="正面：用语对齐">
+                <div class="st-card">
+                  <p class="st-crumb">文档中心 › CANN 8.0 › <span class="st-crumb-current">安装指南</span></p>
+                  <div class="st-body-block">
+                    <p class="st-body-h1">安装指南</p>
+                    <p class="st-body-cond"><strong>适用条件</strong> · CANN 8.0</p>
+                  </div>
+                </div>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>正确做法：</strong>面包屑与正文适用条件使用同一手册名与版本号。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <section class="section" id="frontend-adjust">
       <h2>前端调整</h2>
 
-      <h3 id="frontend-suggestions">调整建议</h3>
+      <h3 class="fn-h3" id="frontend-suggestions">调整建议</h3>
       <ul class="principle-suggestions">
-        <li><strong>真实可跟链</strong>：面包屑祖先均为真实 <code>a[href]</code>；当前页可为纯文本。</li>
-        <li><strong>首包即含导航</strong>：禁只靠路由状态、无 URL 的「当前位置」点。</li>
-        <li><strong>结构化可选</strong>：结构化数据可含 <code>BreadcrumbList</code> / <code>isPartOf</code>。</li>
+        <li>
+          <span class="sug-title">真实可跟链</span>
+          <span class="sug-desc">每一级祖先须为带真实文档地址的 <code>a[href]</code> + 可见文案；当前页用纯文本，勿做成自链。href 须指向手册祖先页，不得链到 sitemap XML 等无关地址。</span>
+        </li>
+        <li>
+          <span class="sug-title">首包即含全量路径</span>
+          <span class="sug-desc">首包 HTML 输出与可见 UI 一致的完整祖先路径；中间级不得缺失，也不得只写在 <code>__NUXT_DATA__</code> 或前端脚本里、等 JS 跑完才补全。</span>
+        </li>
+        <li>
+          <span class="sug-title">结构化可选</span>
+          <span class="sug-desc">在可跟链与首包达标后，可再补 <code>BreadcrumbList</code> / <code>isPartOf</code> 等结构化数据；不得用 JSON-LD 代替首包路径。</span>
+        </li>
       </ul>
 
-      <h3 id="frontend-example">调整示例</h3>
+      <h3 class="fn-h3" id="frontend-example">调整示例</h3>
       <div class="principle-example">
-        <h4>面包屑链接</h4>
-        <div class="ui-demo ui-demo--plain" id="breadcrumb-frontend">
-          <div class="compare-grid compare-grid--no-mid-divider">
-            <div>
-              <h4 class="compare-label compare-label--machine">Before</h4>
-              <div class="compare-col machine">
-                <pre class="arch-diagram">&lt;span&gt;安装指南&lt;/span&gt;</pre>
-                <p class="rf-muted">无层级路径、无真实 href。</p>
+        <h4 class="fn-h4">首包须输出可跟链路径</h4>
+        <div class="fn-ex-row" id="breadcrumb-frontend">
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label">反面</span>
+              <div class="fn-ex-bar" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="反面：首包缺中间级">
+                <pre class="st-code">&lt;div class="o-breadcrumb server-breadcrumb"&gt;
+  &lt;a href="/sitemap/sitemapdoc1.xml"&gt;文档中心&lt;/a&gt;
+  &lt;a href="…/install.html"&gt;安装指南&lt;/a&gt;
+&lt;/div&gt;
+&lt;!-- 可见三级；中间祖先只在 __NUXT_DATA__ --&gt;</pre>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>常见疏漏：</strong>首包仅 2 链，中间级缺失；「文档中心」链到 sitemap；当前页自链。</li>
+                </ul>
               </div>
             </div>
-            <div>
-              <h4 class="compare-label compare-label--human">After</h4>
-              <div class="compare-col human">
-                <pre class="arch-diagram">&lt;nav aria-label="面包屑"&gt;
+          </div>
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label is-good">正面</span>
+              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="正面：首包全量可跟链">
+                <pre class="st-code">&lt;nav aria-label="面包屑" class="o-breadcrumb"&gt;
   &lt;a href="/docs"&gt;文档中心&lt;/a&gt; ›
-  &lt;a href="/docs/cann"&gt;CANN&lt;/a&gt; ›
-  &lt;span&gt;安装指南&lt;/span&gt;
+  &lt;a href="/docs/cann/8.0"&gt;CANN 8.0&lt;/a&gt; ›
+  &lt;span aria-current="page"&gt;安装指南&lt;/span&gt;
 &lt;/nav&gt;</pre>
-                <p class="rf-muted">首包即含可跟链路径。</p>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>正确做法：</strong>首包即含全量祖先可跟链；末级纯文本。静态抓取即可逐级回溯。</li>
+                </ul>
               </div>
             </div>
           </div>

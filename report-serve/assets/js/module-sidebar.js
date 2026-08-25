@@ -12,11 +12,7 @@
     principles: [
       {
         group: "可达", id: "page-discover", href: "principles-structure-llms.html", label: "页面可发现",
-        pageIds: ["page-discover", "structure-llms", "format"],
-        children: [
-          { id: "structure-llms", href: "principles-structure-llms.html", label: "机器发现层部署" },
-          { id: "format", href: "principles-format.html", label: "双轨交付" }
-        ]
+        pageIds: ["page-discover", "structure-llms"]
       },
       {
         group: null, id: "page-context", href: "principles-breadcrumb.html", label: "页面可访问",
@@ -27,18 +23,16 @@
         ]
       },
       {
-        group: null, id: "section-locate", href: "principles-section-anchor.html", label: "章节可访问",
-        pageIds: ["section-locate", "section-anchor"],
-        children: [
-          { id: "section-anchor", href: "principles-section-anchor.html", label: "章节锚点" }
-        ]
+        group: null, id: "section-anchor", href: "principles-section-anchor.html", label: "章节可访问",
+        pageIds: ["section-locate", "section-anchor"]
       },
       {
-        group: "可读", id: "page-readable", href: "principles-content-retrievable.html", label: "内容可获取",
-        pageIds: ["page-readable", "content-retrievable"],
-        children: [
-          { id: "content-retrievable", href: "principles-content-retrievable.html", label: "HTML可读" }
-        ]
+        group: null, id: "format", href: "principles-format.html", label: "双轨交付",
+        pageIds: ["format"]
+      },
+      {
+        group: "可读", id: "content-retrievable", href: "principles-content-retrievable.html", label: "页面 HTML 可读",
+        pageIds: ["page-readable", "content-retrievable"]
       },
       {
         group: null, id: "nontext", href: "principles-image.html", label: "非文本信息等价表达",
@@ -52,11 +46,20 @@
       },
       {
         group: null, id: "structured", href: "principles-table.html", label: "结构化可读",
-        pageIds: ["structured", "table", "code", "steps"],
+        pageIds: ["structured", "table", "code"],
         children: [
           { id: "table", href: "principles-table.html", label: "表格语义化" },
-          { id: "code", href: "principles-code.html", label: "代码块语义化" },
-          { id: "steps", href: "principles-steps.html", label: "步骤列表化" }
+          { id: "code", href: "principles-code.html", label: "代码块语义化" }
+        ]
+      },
+      {
+        group: null, id: "hidden", href: "principles-tab.html", label: "隐藏信息持续可获取",
+        pageIds: ["hidden", "tab", "collapse", "default-visible", "mask-clear"],
+        children: [
+          { id: "tab", href: "principles-tab.html", label: "Tab 面板可全量抓取" },
+          { id: "collapse", href: "principles-collapse.html", label: "折叠默认展开" },
+          { id: "default-visible", href: "principles-default-visible.html", label: "悬停不承载关键内容" },
+          { id: "mask-clear", href: "principles-mask-clear.html", label: "蒙版不遮挡关键步骤" }
         ]
       },
       {
@@ -65,16 +68,6 @@
         children: [
           { id: "control-label", href: "principles-control-label.html", label: "控件须配独立标签" },
           { id: "gui-map", href: "principles-gui-map.html", label: "控件数值转写" }
-        ]
-      },
-      {
-        group: null, id: "hidden", href: "principles-tab.html", label: "隐藏信息持续可获取",
-        pageIds: ["hidden", "tab", "collapse", "default-visible", "mask-clear"],
-        children: [
-          { id: "tab", href: "principles-tab.html", label: "Tab 全量展开" },
-          { id: "collapse", href: "principles-collapse.html", label: "折叠默认展开" },
-          { id: "default-visible", href: "principles-default-visible.html", label: "悬停不承载关键内容" },
-          { id: "mask-clear", href: "principles-mask-clear.html", label: "蒙版不遮挡关键步骤" }
         ]
       },
       {
@@ -105,24 +98,28 @@
         ]
       },
       {
-        group: "可操作", id: "executable", href: "principles-playground.html", label: "操作可执行",
-        pageIds: ["executable", "playground"],
+        group: "可操作", id: "executable", href: "principles-steps.html", label: "操作可执行",
+        pageIds: ["executable", "example", "playground", "steps"],
         children: [
+          { id: "steps", href: "principles-steps.html", label: "步骤列表化" },
+          { id: "example", href: "principles-example.html", label: "示例路径可参照" },
           { id: "playground", href: "principles-playground.html", label: "可交互示例" }
         ]
       },
       {
-        group: "可验证", id: "outcome", href: "principles-verify.html", label: "任务结果可确认",
-        pageIds: ["outcome", "verify"],
+        group: "可验证", id: "outcome", href: "principles-expected.html", label: "任务结果可确认",
+        pageIds: ["outcome", "verify", "expected"],
         children: [
+          { id: "expected", href: "principles-expected.html", label: "写明预期结果" },
           { id: "verify", href: "principles-verify.html", label: "验证区块" }
         ]
       },
       {
         group: null, id: "failure-handle", href: "principles-default-empty.html", label: "失败状态可处理",
-        pageIds: ["failure-handle", "default-empty"],
+        pageIds: ["failure-handle", "default-empty", "exception"],
         children: [
-          { id: "default-empty", href: "principles-default-empty.html", label: "缺省空态文案化" }
+          { id: "default-empty", href: "principles-default-empty.html", label: "缺省空态文案化" },
+          { id: "exception", href: "principles-exception.html", label: "常见异常说明" }
         ]
       }
     ]
@@ -235,9 +232,9 @@
     html += "<li class=\"nav-group-label nav-group-label--toggle\">";
     html += "<span class=\"nav-group-label-text\">亲和原则</span>";
     html += "<button type=\"button\" class=\"nav-expand-all\" aria-expanded=\"false\" aria-label=\"展开全部一级菜单\" title=\"展开/收起全部\">";
-    html += "<svg class=\"nav-expand-all-icon\" viewBox=\"0 0 1157 1024\" width=\"14\" height=\"14\" aria-hidden=\"true\" focusable=\"false\">";
-    html += "<path d=\"M1108.781176 97.882353H48.941176a48.941176 48.941176 0 1 1 0-97.882353h1059.84a48.941176 48.941176 0 1 1 0 97.882353zM625.317647 554.541176H48.941176a48.941176 48.941176 0 1 1 0-97.882352h576.376471a48.941176 48.941176 0 1 1 0 97.882352zM1108.781176 1024H48.941176a48.941176 48.941176 0 1 1 0-97.882353h1059.84a48.941176 48.941176 0 1 1 0 97.882353zM937.863529 628.48l-104.207058-196.367059c-18.672941-35.162353 6.851765-77.477647 46.607058-77.477647h208.338824c39.755294 0 65.204706 42.315294 46.607059 77.477647l-104.207059 196.367059c-19.802353 37.345882-73.411765 37.345882-93.214118 0z\" fill=\"currentColor\"/>";
-    html += "</svg></button>";
+    html += "<img class=\"nav-expand-all-icon nav-expand-all-icon--expand\" src=\"assets/icons/nav-expand-all.png\" width=\"14\" height=\"14\" alt=\"\" aria-hidden=\"true\">";
+    html += "<img class=\"nav-expand-all-icon nav-expand-all-icon--collapse\" src=\"assets/icons/nav-collapse-all.png\" width=\"14\" height=\"14\" alt=\"\" aria-hidden=\"true\">";
+    html += "</button>";
     html += "</li>";
     html += "<li><a href=\"principles-overview.html\"" + (page === "overview" ? " class=\"active\"" : "") + ">AI 亲和原则</a></li>";
     html += "<li><a href=\"principles-affinity-full.html\"" + (page === "affinity-full" ? " class=\"active\"" : "") + ">全量亲和原则</a></li>";

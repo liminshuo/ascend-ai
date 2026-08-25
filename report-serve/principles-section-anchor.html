@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>章节可访问 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
+  <title>章节锚点可引用 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
   <link rel="stylesheet" href="assets/css/style.css">
+
 <style>
   .topbar {
     position: fixed; top: 0; left: 0; right: 0; z-index: 200;
@@ -63,10 +64,132 @@
     color: #595959; font-size: 13px; font-weight: 500; line-height: 1.4;
   }
   .nav-dd-panel a:hover { color: #1476FF; background: #F5F5F5; }
-  /* GEO topbar = fixed，沿用 layout 的 page-wrapper padding-top */
   body.inner-page .page-wrapper { min-height: 100vh; }
 
-  /* 章节锚点小样（对齐设计模式 fn-ex-row） */
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 28px;
+  }
+  .page-header h1 {
+    font-family: "PingFang SC", sans-serif;
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 600;
+    line-height: 48px;
+    letter-spacing: -0.02em;
+    margin: 8px 0 0;
+    color: var(--color-text, #191919);
+  }
+  .page-header .page-desc {
+    margin: 32px 0 0;
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--text, #191919);
+  }
+  body.inner-page[data-page="section-anchor"]:has(#module-sidebar) .main-content {
+    padding-top: 32px;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  body.inner-page[data-page="section-anchor"]:has(#module-sidebar) .main-content > .page-header,
+  body.inner-page[data-page="section-anchor"]:has(#module-sidebar) .main-content > .section,
+  body.inner-page[data-page="section-anchor"]:has(#module-sidebar) .main-content > .surface-tabs {
+    width: min(1200px, calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page[data-page="section-anchor"] .main-content .section > h2 {
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    letter-spacing: -0.01em;
+    margin-top: 48px;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #f0f0f0;
+    color: var(--color-text, #191919);
+  }
+  body.inner-page[data-page="section-anchor"] .main-content .section h3 {
+    height: auto;
+  }
+  h3.fn-h3 {
+    margin: 0;
+    padding-top: 24px;
+    padding-bottom: 24px;
+    font-size: 18px;
+    line-height: 28px;
+    font-weight: 650;
+    color: var(--color-text, #191919);
+    letter-spacing: -0.01em;
+  }
+  body.inner-page[data-page="section-anchor"] .main-content .section h4 {
+    height: auto;
+  }
+  h4.fn-h4 {
+    margin: 24px 0 0;
+    padding-top: 0;
+    padding-bottom: 16px;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 650;
+    color: var(--color-text, #191919);
+    letter-spacing: -0.01em;
+  }
+  h3.fn-h3 + .principle-example > h4.fn-h4,
+  h3.fn-h3 + h4.fn-h4 {
+    margin-top: 12px;
+  }
+
+  #scenarios .scene-def-table td .badge {
+    border: none;
+  }
+  .scene-def-table td .badge-optional {
+    background: #f5f5f5;
+    color: #595959;
+  }
+
+  .scene-def-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    line-height: 22px;
+    margin: 0 0 24px;
+    table-layout: fixed;
+  }
+  .scene-def-table th,
+  .scene-def-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid #e2e8f0;
+    vertical-align: middle;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 400;
+  }
+  .scene-def-table tbody td {
+    height: auto;
+    min-height: 48px;
+  }
+  .scene-def-table th {
+    font-size: 12px;
+    font-weight: 650;
+    color: #595959;
+    background: #fafafa;
+    height: 40px;
+    box-sizing: border-box;
+  }
+  .scene-def-table .col-type { width: 18%; }
+  .scene-def-table .col-desc { width: 55%; }
+  .scene-def-table .col-place { width: 27%; }
+  #objects .scene-def-table .col-type { width: 18%; }
+  #objects .scene-def-table .col-desc { width: 82%; }
+  #scenarios .scene-def-table .col-type { width: 18%; }
+  #scenarios .scene-def-table .col-place { width: 40%; }
+  #scenarios .scene-def-table .col-desc { width: 42%; }
+
   .fn-ex-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -108,6 +231,21 @@
     min-height: 0; height: 100%; box-sizing: border-box;
     border: none; border-radius: 0; align-self: stretch;
   }
+  .fn-ex-row .fn-ex-mock pre.st-code {
+    margin: 0;
+    padding: 14px 16px;
+    background: #1e1e1e;
+    border: 1px solid #111;
+    border-radius: 0;
+    font-size: 12px;
+    line-height: 18px;
+    color: #e8e8e8;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow: auto;
+    box-sizing: border-box;
+    min-height: 100%;
+  }
   .fn-ex-row .fn-ex-foot {
     display: flex; flex-direction: column; gap: 8px;
     padding: 12px 14px 14px; background: #fff;
@@ -133,6 +271,7 @@
     margin: 0; font-size: 14px; line-height: 22px; color: #191919;
   }
   .fn-ex-list strong { font-weight: 650; }
+
   .ck-card { padding: 16px 18px 14px; color: #191919; }
   .an-doc { display: flex; gap: 16px; align-items: flex-start; }
   .an-body { flex: 1; min-width: 0; }
@@ -163,7 +302,7 @@
     margin: 0; padding: 0; list-style: none;
     font-size: 12px; line-height: 20px;
   }
-  .an-toc .is-vague { color: #595959; }
+  .an-toc .is-vague { color: #8c8c8c; }
   .an-toc .is-link { color: #1476FF; }
   .an-hash.is-dead { color: #a3a3a3; cursor: default; }
   .an-h--with-toast {
@@ -203,6 +342,70 @@
     border-bottom: 1px solid #e2e8f0;
   }
   .principle-example + .principle-example { margin-top: 28px; }
+
+  #design-ui .principle-suggestions,
+  #content-adjust .principle-suggestions,
+  #frontend-adjust .principle-suggestions {
+    list-style: none;
+    margin: 0 0 32px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    counter-reset: sug;
+  }
+  #design-ui .principle-suggestions > li,
+  #content-adjust .principle-suggestions > li,
+  #frontend-adjust .principle-suggestions > li {
+    position: relative;
+    margin: 0;
+    padding: 0 0 0 36px;
+    color: #595959;
+  }
+  #design-ui .principle-suggestions > li::before,
+  #content-adjust .principle-suggestions > li::before,
+  #frontend-adjust .principle-suggestions > li::before {
+    counter-increment: sug;
+    content: counter(sug);
+    position: absolute;
+    left: 0;
+    top: 2px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #eff6ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 22px;
+    letter-spacing: 0.02em;
+    color: #1476FF;
+  }
+  #design-ui .principle-suggestions > li .sug-title,
+  #content-adjust .principle-suggestions > li .sug-title,
+  #frontend-adjust .principle-suggestions > li .sug-title {
+    display: block;
+    margin: 0 0 6px;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 24px;
+    color: #191919;
+  }
+  #design-ui .principle-suggestions > li .sug-desc,
+  #content-adjust .principle-suggestions > li .sug-desc,
+  #frontend-adjust .principle-suggestions > li .sug-desc {
+    display: block;
+    margin: 0;
+    max-width: none;
+    width: 100%;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 24px;
+    color: #595959;
+  }
+
   @media (max-width: 900px) {
     .fn-ex-row {
       grid-template-columns: 1fr;
@@ -212,8 +415,10 @@
     .fn-ex-row .fn-ex-body {
       display: flex; flex-direction: column; grid-row: auto;
     }
+    .an-toast { display: none; }
   }
 </style>
+
 </head>
 <body class="inner-page" data-module="principles" data-page="section-anchor">
 
@@ -235,54 +440,93 @@
 
   <aside id="module-sidebar"></aside>
 
-  
   <main class="main-content">
+
     <div class="page-header">
-      <h1>章节可访问</h1>
+      <h1>章节锚点可引用</h1>
       <p class="page-desc page-desc--split">
-        <span class="page-desc-line">每一节须有可引用的独立 URL；目录指向该节，标题旁可辨识锚点，使 Agent 能定位到任务相关小节，而不是整页含糊引用或仅靠页内滚动。</span>
-        <span class="page-desc-line">可达 · 设计专项见 <a href="design-guide-section-anchor.html">章节锚点可引用</a>。</span>
+        <span class="page-desc-line">为了帮助 Agent 定位到任务相关小节而非整页含糊引用，每一节须有可引用的独立 URL；页内锚点导航指向该节，标题旁可辨识锚点。</span>
       </p>
     </div>
 
     <section class="section" id="objects">
-      <h2>对象</h2>
-      <div class="affinity-table-wrap">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th style="width:28%">对象</th>
-              <th>描述</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>节级锚点</td>
-              <td>每一节须有可引用的独立 URL；目录须指向该节，禁止只有页内滚动、没有节级地址。常见落点：文档正文、本篇目录。</td>
-            </tr>
-            <tr>
-              <td>锚点标识</td>
-              <td>标题旁可标「#」，稿面须看得出该段对应哪条 URL。常见落点：章节标题旁。</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <h2>适用对象</h2>
+      <table class="scene-def-table">
+        <colgroup>
+          <col class="col-type" />
+          <col class="col-desc" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="col-type">名称</th>
+            <th class="col-desc">说明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="col-type">节级锚点</td>
+            <td class="col-desc">正文每一节必须提供带有 hash（#）的可引用 URL；标题旁须有清晰可辨识的「#」入口。常规落点为 H2–H3 标题旁，确保 Agent 能精准定位到具体小节。</td>
+          </tr>
+          <tr>
+            <td class="col-type">页内锚点导航</td>
+            <td class="col-desc">页内锚点导航，条目必须指向对应的节级锚点（含 hash 的独立 URL）。常规置于正文侧栏或篇首。</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section" id="scenarios">
+      <h2>适用场景</h2>
+      <table class="scene-def-table">
+        <colgroup>
+          <col class="col-type" />
+          <col class="col-place" />
+          <col class="col-desc" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="col-type">优先级</th>
+            <th class="col-place">页面类型</th>
+            <th class="col-desc">说明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="col-type"><span class="badge badge-bad">必做</span></td>
+            <td class="col-place">多节手册 / 教程正文页</td>
+            <td class="col-desc">Agent 最常按节引用的事实页。</td>
+          </tr>
+          <tr>
+            <td class="col-type"><span class="badge badge-should">建议做</span></td>
+            <td class="col-place">官网能力详情、长 FAQ</td>
+            <td class="col-desc">有多节结构时，建议补节级锚点和页内锚点导航。</td>
+          </tr>
+        </tbody>
+      </table>
     </section>
 
     <section class="section" id="design-ui">
       <h2>设计UI调整</h2>
 
-      <h3 id="design-suggestions">调整建议</h3>
+      <h3 class="fn-h3" id="design-suggestions">调整建议</h3>
       <ul class="principle-suggestions">
-        <li><strong>锚点层级范围</strong>：正文 H2–H3 必须可设节级锚点；H4 及以下按需（长文细分步骤时开启）。篇名 H1 用页面 URL，不另做页内锚点。</li>
-        <li><strong>锚点须可辨识</strong>：可锚点标题旁须标出「#」或等价标识，便于识别对应 URL；锚点不得仅存于悬停或需猜测的位置。</li>
-        <li><strong>点击可复制锚点</strong>：点击「#」或复制控件，须一键复制完整含 hash 的 URL，并给出成功反馈（如 toast「已复制链接」）。</li>
-        <li><strong>目录须可点</strong>：目录须覆盖所有可锚点标题（至少 H2–H3），条目须为可跟链文字，不得做成纯文本列表。</li>
+        <li>
+          <span class="sug-title">锚点默认可见</span>
+          <span class="sug-desc">正文 H2–H3 必须可设节级锚点；标题旁「#」或等价标识默认露出，禁止仅悬停才出现。篇名 H1 用页面 URL，不另做页内锚点；H4 及以下按需开启。</span>
+        </li>
+        <li>
+          <span class="sug-title">点击可复制锚点</span>
+          <span class="sug-desc">点击「#」或复制控件，须一键复制含 hash 的完整 URL，并给出成功反馈（如 toast「已复制链接」）。</span>
+        </li>
+        <li>
+          <span class="sug-title">页内锚点导航须可点</span>
+          <span class="sug-desc">页内锚点导航须覆盖所有可锚点标题（至少 H2–H3），条目须为可跟链文字，不得做成纯文本列表。</span>
+        </li>
       </ul>
 
-      <h3 id="design-example">调整示例</h3>
+      <h3 class="fn-h3" id="design-example">调整示例</h3>
       <div class="principle-example">
-        <h4>1. 节级锚点与可点目录</h4>
+        <h4 class="fn-h4">节级锚点和页内锚点导航</h4>
         <div class="fn-ex-row" id="section-anchor-design">
           <div class="fn-ex">
             <div class="fn-ex-head">
@@ -301,7 +545,7 @@
                       <p class="an-p">按顺序执行安装命令…</p>
                     </div>
                     <div class="an-toc">
-                      <p class="an-toc-t">本篇目录</p>
+                      <p class="an-toc-t">页内锚点导航</p>
                       <ul>
                         <li class="is-vague">安装前提</li>
                         <li class="is-vague">安装步骤</li>
@@ -334,11 +578,10 @@
                       <p class="an-p">按顺序执行安装命令…</p>
                     </div>
                     <div class="an-toc">
-                      <p class="an-toc-t">本篇目录</p>
+                      <p class="an-toc-t">页内锚点导航</p>
                       <ul>
                         <li class="is-link">安装前提</li>
                         <li class="is-link">安装步骤</li>
-                        <li class="is-link">常见问题</li>
                       </ul>
                     </div>
                   </div>
@@ -355,7 +598,7 @@
       </div>
 
       <div class="principle-example">
-        <h4>2. 点击「#」可复制锚点</h4>
+        <h4 class="fn-h4">点击「#」可复制锚点</h4>
         <div class="fn-ex-row" id="section-anchor-copy">
           <div class="fn-ex">
             <div class="fn-ex-head">
@@ -402,44 +645,67 @@
     <section class="section" id="content-adjust">
       <h2>文档内容调整</h2>
 
-      <h3 id="content-suggestions">调整建议</h3>
+      <h3 class="fn-h3" id="content-suggestions">调整建议</h3>
       <ul class="principle-suggestions">
-        <li><strong>标题可独立理解</strong>：避免「如下」「续」「说明」等无主题标题。</li>
-        <li><strong>目录文案与标题一致</strong>：目录项字面等于对应节标题。</li>
-        <li><strong>跨页写清节名</strong>：引用写「篇名 · 章节名」，禁止「见上文」「点击这里」。</li>
+        <li>
+          <span class="sug-title">标题可独立理解</span>
+          <span class="sug-desc">节标题须能单独读懂主题，避免「如下」「续」「说明」等无主题标题；节名同时作为锚点文案来源。</span>
+        </li>
+        <li>
+          <span class="sug-title">目录文案与标题一致</span>
+          <span class="sug-desc">页内锚点导航项字面须等于对应节标题，禁止缩写或另起一套叫法。</span>
+        </li>
+        <li>
+          <span class="sug-title">跨页写清节名</span>
+          <span class="sug-desc">引用写成「篇名 · 章节名」，禁止「见上文」「点击这里」等无法落到具体节的泛词。</span>
+        </li>
       </ul>
 
-      <h3 id="content-example">调整示例</h3>
+      <h3 class="fn-h3" id="content-example">调整示例</h3>
       <div class="principle-example">
-        <h4>节标题与跨页引用</h4>
-        <div class="ui-demo ui-demo--plain" id="section-anchor-content">
-          <div class="compare-grid compare-grid--no-mid-divider">
-            <div>
-              <h4 class="compare-label compare-label--machine">Before · 无主题标题</h4>
-              <div class="compare-col machine">
-                <p class="compare-sublabel">Markdown / 正文</p>
-                <pre class="arch-diagram">## 如下
+        <h4 class="fn-h4">节标题须可独立引用</h4>
+        <div class="fn-ex-row" id="section-anchor-content">
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label">反面</span>
+              <div class="fn-ex-bar" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="反面：无主题标题">
+                <pre class="st-code">## 如下
 准备驱动与依赖…
 
 ## 续
 按顺序执行安装命令…
 
 参见上文。</pre>
-                <p class="rf-muted">标题不可独立理解；跨页引用无法落到具体节。</p>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>常见疏漏：</strong>标题不可独立理解；跨页引用无法落到具体节。</li>
+                </ul>
               </div>
             </div>
-            <div>
-              <h4 class="compare-label compare-label--human">After · 可引用节名</h4>
-              <div class="compare-col human">
-                <p class="compare-sublabel">Markdown / 正文</p>
-                <pre class="arch-diagram">## 安装前提
+          </div>
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label is-good">正面</span>
+              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="正面：可引用节名">
+                <pre class="st-code">## 安装前提
 准备驱动与依赖…
 
 ## 安装步骤
 按顺序执行安装命令…
 
 详见《安装指南》· 安装步骤。</pre>
-                <p class="rf-muted">节名可作锚点文案；跨页引用带篇名 · 章节名。</p>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>正确做法：</strong>节名可作锚点文案；跨页引用带「篇名 · 章节名」。</li>
+                </ul>
               </div>
             </div>
           </div>
@@ -450,41 +716,63 @@
     <section class="section" id="frontend-adjust">
       <h2>前端调整</h2>
 
-      <h3 id="frontend-suggestions">调整建议</h3>
+      <h3 class="fn-h3" id="frontend-suggestions">调整建议</h3>
       <ul class="principle-suggestions">
-        <li><strong>稳定 id 与目录一致</strong>：标题带稳定 <code>id</code>；目录用 <code>a[href="#id"]</code> 指向该节。</li>
-        <li><strong>首包即含锚点</strong>：禁依赖 JS 才注入 id / 目录链。</li>
-        <li><strong>slug 规则固定</strong>：id 按统一规则生成或 CMS 指定，不随渲染顺序漂移。</li>
-        <li><strong>复制锚点可得</strong>：标题旁「#」或复制链接输出含 hash 的完整 URL。</li>
+        <li>
+          <span class="sug-title">页内锚点导航须为真 hash 链</span>
+          <span class="sug-desc">每个 TOC 条目点击后须跳转到带 <code>#</code> 的独立地址（如 <code>…/page#section-2</code>），并使用 <code>a[href="#id"]</code>；严禁仅用 JS 实现「页面下移但地址栏 URL 不变」的假跳转——无独立地址则机器无法按节抓取与引用。</span>
+        </li>
+        <li>
+          <span class="sug-title">稳定 id 与首包一致</span>
+          <span class="sug-desc">标题带稳定 <code>id</code>，与目录 hash 一致；id 按统一 slug 规则生成或 CMS 指定，不随渲染顺序漂移。首包 HTML 即含标题 id 与目录链，禁止依赖 JS 才注入。</span>
+        </li>
+        <li>
+          <span class="sug-title">复制锚点可得</span>
+          <span class="sug-desc">标题旁「#」或复制链接须输出含 hash 的完整 URL，与首包 id 一致。</span>
+        </li>
       </ul>
 
-      <h3 id="frontend-example">调整示例</h3>
+      <h3 class="fn-h3" id="frontend-example">调整示例</h3>
       <div class="principle-example">
-        <h4>标题 id 与目录 href</h4>
-        <div class="ui-demo ui-demo--plain" id="section-anchor-frontend">
-          <div class="compare-grid compare-grid--no-mid-divider">
-            <div>
-              <h4 class="compare-label compare-label--machine">Before · 无节级地址</h4>
-              <div class="compare-col machine">
-                <p class="compare-sublabel">HTML 源码</p>
-                <pre class="arch-diagram">&lt;h2&gt;安装前提&lt;/h2&gt;
+        <h4 class="fn-h4">标题 id 与页内锚点导航须可跟链</h4>
+        <div class="fn-ex-row" id="section-anchor-frontend">
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label">反面</span>
+              <div class="fn-ex-bar" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="反面：无节级地址">
+                <pre class="st-code">&lt;h2&gt;安装前提&lt;/h2&gt;
 &lt;nav class="toc"&gt;
   &lt;span&gt;安装前提&lt;/span&gt;
   &lt;span&gt;安装步骤&lt;/span&gt;
 &lt;/nav&gt;</pre>
-                <p class="rf-muted">无 <code>id</code>、目录不可跟链；只能页内滚动。</p>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>常见疏漏：</strong>无 <code>id</code>、目录用 <code>span</code> 假跳转；地址栏不变，无法按节引用。</li>
+                </ul>
               </div>
             </div>
-            <div>
-              <h4 class="compare-label compare-label--human">After · 节级可引用</h4>
-              <div class="compare-col human">
-                <p class="compare-sublabel">HTML 源码</p>
-                <pre class="arch-diagram">&lt;h2 id="install-prereq"&gt;安装前提&lt;/h2&gt;
+          </div>
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label is-good">正面</span>
+              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="正面：节级可引用">
+                <pre class="st-code">&lt;h2 id="install-prereq"&gt;安装前提&lt;/h2&gt;
 &lt;nav class="toc"&gt;
   &lt;a href="#install-prereq"&gt;安装前提&lt;/a&gt;
   &lt;a href="#install-steps"&gt;安装步骤&lt;/a&gt;
 &lt;/nav&gt;</pre>
-                <p class="rf-muted">首包即含稳定 id；目录与正文 hash 一致。</p>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>正确做法：</strong>首包即含稳定 id；目录与正文 hash 一致。</li>
+                </ul>
               </div>
             </div>
           </div>

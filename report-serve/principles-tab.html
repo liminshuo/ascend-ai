@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tab 全量展开 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
+  <title>Tab 面板可全量抓取 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
   <link rel="stylesheet" href="assets/css/style.css">
 <style>
   .topbar {
@@ -64,6 +64,347 @@
   }
   .nav-dd-panel a:hover { color: #1476FF; background: #F5F5F5; }
   body.inner-page .page-wrapper { min-height: 100vh; }
+
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 28px;
+  }
+  .page-header h1 {
+    font-family: "PingFang SC", sans-serif;
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 600;
+    line-height: 48px;
+    letter-spacing: -0.02em;
+    margin: 8px 0 0;
+    color: var(--color-text, #191919);
+  }
+  .page-header .page-desc {
+    margin: 32px 0 0;
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--text, #191919);
+  }
+  body.inner-page[data-page="tab"]:has(#module-sidebar) .main-content {
+    padding-top: 32px;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  body.inner-page[data-page="tab"]:has(#module-sidebar) .main-content > .page-header,
+  body.inner-page[data-page="tab"]:has(#module-sidebar) .main-content > .section,
+  body.inner-page[data-page="tab"]:has(#module-sidebar) .main-content > .surface-tabs {
+    width: min(1200px, calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page[data-page="tab"] .main-content .section > h2 {
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    letter-spacing: -0.01em;
+    margin-top: 48px;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #f0f0f0;
+    color: var(--color-text, #191919);
+  }
+  body.inner-page[data-page="tab"] .main-content .section h3 { height: auto; }
+  h3.fn-h3 {
+    margin: 0;
+    padding-top: 24px;
+    padding-bottom: 24px;
+    font-size: 18px;
+    line-height: 28px;
+    font-weight: 650;
+    color: var(--color-text, #191919);
+    letter-spacing: -0.01em;
+  }
+  body.inner-page[data-page="tab"] .main-content .section h4 { height: auto; }
+  h4.fn-h4 {
+    margin: 24px 0 0;
+    padding-top: 0;
+    padding-bottom: 16px;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 650;
+    color: var(--color-text, #191919);
+    letter-spacing: -0.01em;
+  }
+  h3.fn-h3 + .principle-example > h4.fn-h4,
+  h3.fn-h3 + h4.fn-h4 { margin-top: 12px; }
+
+  #scenarios .scene-def-table td .badge { border: none; }
+  .scene-def-table td .badge-optional {
+    background: #f5f5f5;
+    color: #595959;
+  }
+
+  .scene-def-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    line-height: 22px;
+    margin: 0 0 24px;
+    table-layout: fixed;
+  }
+  .scene-def-table th,
+  .scene-def-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid #e2e8f0;
+    vertical-align: middle;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 400;
+  }
+  .scene-def-table tbody td {
+    height: auto;
+    min-height: 48px;
+  }
+  .scene-def-table th {
+    font-size: 12px;
+    font-weight: 650;
+    color: #595959;
+    background: #fafafa;
+    height: 40px;
+    box-sizing: border-box;
+  }
+  .scene-def-table .col-type { width: 18%; }
+  .scene-def-table .col-desc { width: 55%; }
+  .scene-def-table .col-place { width: 27%; }
+  #objects .scene-def-table .col-type,
+  #scenarios .scene-def-table .col-type { width: 22%; }
+  #objects .scene-def-table .col-desc { width: 78%; }
+  #scenarios .scene-def-table .col-place { width: 38%; }
+  #scenarios .scene-def-table .col-desc { width: 40%; }
+
+  .fn-ex-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr auto;
+    column-gap: 16px;
+    row-gap: 0;
+    align-items: stretch;
+    margin: 16px 0 0;
+  }
+  .fn-ex-row .fn-ex {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 1 / span 3;
+    margin: 0;
+    min-width: 0;
+  }
+  .fn-ex-row .fn-ex-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .fn-ex-row .fn-ex-head .fn-ex-label { margin: 0; }
+  .fn-ex-row .fn-ex-head .fn-ex-bar {
+    display: block; margin: 0; width: 100%; align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-body {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 2 / span 2;
+    min-height: 0;
+    background: #f5f5f5;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .fn-ex-row .fn-ex-mock {
+    min-height: 0; height: 100%; box-sizing: border-box;
+    border: none; border-radius: 0; align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-mock pre.st-code {
+    margin: 0;
+    padding: 14px 16px;
+    background: #1e1e1e;
+    border: 1px solid #111;
+    border-radius: 0;
+    font-size: 12px;
+    line-height: 18px;
+    color: #e8e8e8;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow: auto;
+    box-sizing: border-box;
+    min-height: 100%;
+  }
+  .fn-ex-row .fn-ex-foot {
+    display: flex; flex-direction: column; gap: 8px;
+    padding: 12px 14px 14px; background: #fff;
+    border-top: 1px solid #e2e8f0;
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-list { margin: 0; gap: 4px; }
+  .fn-ex-label {
+    display: inline-block; padding: 0 8px; border-radius: 4px;
+    font-size: 12px; font-weight: 650; line-height: 20px;
+    color: #b42318; background: #fef3f2;
+  }
+  .fn-ex-label.is-good { color: #047857; background: #ecfdf5; }
+  .fn-ex-bar {
+    display: block; width: 100%; height: 3px;
+    background: #b42318; border-radius: 2px;
+  }
+  .fn-ex-bar.is-good { background: #047857; }
+  .fn-ex-list {
+    margin: 0; padding: 0 0 0 1.25em; list-style: disc;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .fn-ex-list li {
+    margin: 0; font-size: 14px; line-height: 22px; color: #191919;
+  }
+  .fn-ex-list strong { font-weight: 650; }
+
+  .tab-face {
+    padding: 12px;
+    height: 100%;
+    box-sizing: border-box;
+  }
+  .tab-face-card {
+    background: #fff;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+  }
+  .tab-face-bar {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 10px 0;
+    border-bottom: 1px solid #e2e8f0;
+    flex-wrap: wrap;
+  }
+  .tab-face-item {
+    margin: 0;
+    padding: 6px 10px 8px;
+    font-size: 12px;
+    line-height: 18px;
+    color: #8c8c8c;
+    border-bottom: 2px solid transparent;
+  }
+  .tab-face-item.is-on {
+    color: #1476FF;
+    font-weight: 650;
+    border-bottom-color: #1476FF;
+  }
+  .tab-face-expand {
+    margin: 0 0 0 auto;
+    padding: 4px 0 8px;
+    font-size: 12px;
+    line-height: 18px;
+    color: #1476FF;
+    white-space: nowrap;
+  }
+  .tab-face-panel {
+    padding: 12px 12px 14px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px;
+    line-height: 18px;
+    color: #191919;
+  }
+  .tab-face-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 12px 12px;
+  }
+  .tab-face-block {
+    padding: 8px 10px;
+    background: #fafafa;
+    border-radius: 4px;
+    border: 1px solid #e2e8f0;
+  }
+  .tab-face-block-title {
+    margin: 0 0 4px;
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 650;
+    color: #191919;
+  }
+  .tab-face-block-body {
+    margin: 0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 11px;
+    line-height: 16px;
+    color: #595959;
+  }
+
+  .principle-example + .principle-example { margin-top: 28px; }
+
+  #design-ui .principle-suggestions,
+  #content-adjust .principle-suggestions,
+  #frontend-adjust .principle-suggestions {
+    list-style: none;
+    margin: 0 0 32px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    counter-reset: sug;
+  }
+  #design-ui .principle-suggestions > li,
+  #content-adjust .principle-suggestions > li,
+  #frontend-adjust .principle-suggestions > li {
+    position: relative;
+    margin: 0;
+    padding: 0 0 0 36px;
+    color: #595959;
+    counter-increment: sug;
+  }
+  #design-ui .principle-suggestions > li::before,
+  #content-adjust .principle-suggestions > li::before,
+  #frontend-adjust .principle-suggestions > li::before {
+    content: counter(sug, decimal-leading-zero);
+    position: absolute;
+    left: 0;
+    top: 1px;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 22px;
+    letter-spacing: 0.02em;
+    color: #1476FF;
+  }
+  #design-ui .principle-suggestions > li .sug-title,
+  #content-adjust .principle-suggestions > li .sug-title,
+  #frontend-adjust .principle-suggestions > li .sug-title {
+    display: block;
+    margin: 0 0 6px;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 24px;
+    color: #191919;
+  }
+  #design-ui .principle-suggestions > li .sug-desc,
+  #content-adjust .principle-suggestions > li .sug-desc,
+  #frontend-adjust .principle-suggestions > li .sug-desc {
+    display: block;
+    margin: 0;
+    max-width: none;
+    width: 100%;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 24px;
+    color: #595959;
+  }
+
+  @media (max-width: 900px) {
+    .fn-ex-row {
+      grid-template-columns: 1fr;
+      grid-template-rows: none;
+    }
+    .fn-ex-row .fn-ex { display: block; grid-row: auto; }
+    .fn-ex-row .fn-ex-body {
+      display: flex; flex-direction: column; grid-row: auto;
+    }
+  }
 </style>
 </head>
 <body class="inner-page" data-module="principles" data-page="tab">
@@ -88,45 +429,135 @@
 
   <main class="main-content">
     <div class="page-header">
-      <h1>Tab 全量展开</h1>
+      <h1>Tab 面板可全量抓取</h1>
       <p class="page-desc page-desc--split">
-        <span class="page-desc-line">若使用 Tab，须同时提供全量展开版本或首包输出全部面板，确保非激活面板正文也能被抓取。折叠见 <a href="principles-collapse.html">折叠默认展开</a>。</span>
-        <span class="page-desc-line">可读 · 对应 <a href="problems-content-collapse.html">问题论证 · 隐藏语义</a>（Tab）。</span>
+        <span class="page-desc-line">为了帮助 Agent 抓取非激活面板中的步骤与命令，若使用 Tab，须首包输出全部面板正文，或提供「展开全部」后改为垂直平铺 / 页内平铺备用布局（Tab 无法同时展开全部面板）。折叠见 <a href="principles-collapse.html">折叠正文默认可抓取</a>。</span>
       </p>
     </div>
+
+    <section class="section" id="objects">
+      <h2>适用对象</h2>
+      <table class="scene-def-table">
+        <colgroup>
+          <col class="col-type" />
+          <col class="col-desc" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="col-type">名称</th>
+            <th class="col-desc">说明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="col-type">Tab 面板</td>
+            <td class="col-desc">承载路径 / 版本 / 系统切换的正文面板；非激活内容必须全量输出至 DOM 或经 SSR 完整呈现。严禁仅渲染激活态，导致漏抓关键信息。</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section" id="scenarios">
+      <h2>适用场景</h2>
+      <table class="scene-def-table">
+        <colgroup>
+          <col class="col-type" />
+          <col class="col-place" />
+          <col class="col-desc" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="col-type">优先级</th>
+            <th class="col-place">页面类型</th>
+            <th class="col-desc">说明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="col-type"><span class="badge badge-bad">必做</span></td>
+            <td class="col-place">文档站安装 / 编译多路径页</td>
+            <td class="col-desc">路径 / 命令常分 Tab，必须全量输出至 DOM，严禁只渲染激活态。</td>
+          </tr>
+          <tr>
+            <td class="col-type"><span class="badge badge-should">建议做</span></td>
+            <td class="col-place">官网产品能力多 Tab 说明</td>
+            <td class="col-desc">规格 / 能力若需进引用池，各面板必须全量可抓取。</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
 
     <section class="section" id="design-ui">
       <h2>设计UI调整</h2>
 
-      <h3 id="design-suggestions">调整建议</h3>
+      <h3 class="fn-h3" id="design-suggestions">调整建议</h3>
       <ul class="principle-suggestions">
-        <li><strong>提供全量入口</strong>：须提供「展开全部」或页内各 Tab 垂直排列的备用布局，不能仅依赖点击切换。</li>
-        <li><strong>优先平铺</strong>：安装路径等关键内容优先用标题分节，少用仅交互可见的 Tab。</li>
+        <li>
+          <span class="sug-title">关键路径尽量不用 Tab</span>
+          <span class="sug-desc">安装 / 版本等多路径关键内容优先用标题分节平铺；少用 Tab 切换作为唯一呈现方式，避免非当前路径「点开才看见」。</span>
+        </li>
       </ul>
 
-      <h3 id="design-example">调整示例</h3>
+      <h3 class="fn-h3" id="design-example">调整示例</h3>
       <div class="principle-example">
-        <h4>1. Tab 提供「展开全部」备用布局</h4>
-        <div class="compare-grid compare-grid--stack compare-grid--no-mid-divider">
-          <h4 class="compare-label compare-label--machine">Before · 仅 Tab 切换</h4>
-          <div class="compare-col machine">
-            <div class="render-frame">
-              <div class="rf-tab-bar"><span class="rf-tab rf-tab--active">在线安装</span><span class="rf-tab">离线安装</span><span class="rf-tab">Docker</span></div>
-              <div class="rf-tab-panel">wget … &amp;&amp; ./toolkit.run --install</div>
-              <p class="rf-muted">非激活 Tab 不可见；Agent 只能抓到一个面板</p>
+        <h4 class="fn-h4">关键路径尽量不用 Tab 表达</h4>
+        <div class="fn-ex-row" id="tab-expand-all">
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label">反面</span>
+              <div class="fn-ex-bar" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="反面：仅 Tab 切换">
+                <div class="tab-face">
+                  <div class="tab-face-card">
+                    <div class="tab-face-bar">
+                      <span class="tab-face-item is-on">在线安装</span>
+                      <span class="tab-face-item">离线安装</span>
+                      <span class="tab-face-item">Docker</span>
+                    </div>
+                    <p class="tab-face-panel">wget … &amp;&amp; ./toolkit.run --install</p>
+                  </div>
+                </div>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>常见疏漏：</strong>非激活 Tab 不可见；Agent 只能抓到一个面板。</li>
+                </ul>
+              </div>
             </div>
           </div>
-          <h4 class="compare-label compare-label--human">After · 「展开全部」入口</h4>
-          <div class="compare-col human">
-            <div class="render-frame">
-              <div class="rf-tab-bar" style="display:flex;align-items:center;gap:8px">
-                <span class="rf-tab rf-tab--active">在线安装</span>
-                <span class="rf-tab">离线安装</span>
-                <span class="rf-tab">Docker</span>
-                <a href="#all-tabs" class="rf-link" style="margin-left:auto;font-size:12px">展开全部 ↓</a>
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label is-good">正面</span>
+              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="正面：展开后垂直平铺">
+                <div class="tab-face">
+                  <div class="tab-face-card">
+                    <div class="tab-face-stack">
+                      <div class="tab-face-block">
+                        <p class="tab-face-block-title">在线安装</p>
+                        <p class="tab-face-block-body">wget … &amp;&amp; ./toolkit.run --install</p>
+                      </div>
+                      <div class="tab-face-block">
+                        <p class="tab-face-block-title">离线安装</p>
+                        <p class="tab-face-block-body">./toolkit.run --install --offline</p>
+                      </div>
+                      <div class="tab-face-block">
+                        <p class="tab-face-block-title">Docker</p>
+                        <p class="tab-face-block-body">docker pull … &amp;&amp; docker run …</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div class="rf-tab-panel">wget … &amp;&amp; ./toolkit.run --install</div>
-              <p class="rf-muted" style="margin-top:16px">锚点跳转至页内垂直全量版本，各面板静态可见</p>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>正确做法：</strong>「展开全部」后改为垂直平铺，各路径静态可见；勿与横向 Tab 条并存。</li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
@@ -136,37 +567,69 @@
     <section class="section" id="content-adjust">
       <h2>文档内容调整</h2>
 
-      <h3 id="content-suggestions">调整建议</h3>
+      <h3 class="fn-h3" id="content-suggestions">调整建议</h3>
       <ul class="principle-suggestions">
-        <li><strong>Tab 全量可见</strong>：必须用 Tab 时，须提供无需点击即可访问全部面板内容的方法。</li>
-        <li><strong>可改用标题</strong>：多路径安装等可用 H2/H3 平铺，替代仅 Tab 切换。</li>
+        <li>
+          <span class="sug-title">稿面须能读到全路径</span>
+          <span class="sug-desc">必须用 Tab 时，平行 MD / 页内须有无需点击即可访问的全部面板文案。</span>
+        </li>
+        <li>
+          <span class="sug-title">可改用标题平铺</span>
+          <span class="sug-desc">多路径安装等优先用 H2 / H3 分节，替代仅靠 Tab 切换才见步骤。</span>
+        </li>
       </ul>
 
-      <h3 id="content-example">调整示例</h3>
+      <h3 class="fn-h3" id="content-example">调整示例</h3>
       <div class="principle-example">
-        <h4>1. 用标题平铺替代仅 Tab</h4>
-        <div class="compare-grid compare-grid--stack compare-grid--no-mid-divider">
-          <h4 class="compare-label compare-label--machine">Before · 仅一个面板可读</h4>
-          <div class="compare-col machine">
-            <pre class="arch-diagram"><!-- 在线安装 Tab（激活） -->
+        <h4 class="fn-h4">用标题平铺替代仅 Tab</h4>
+        <div class="fn-ex-row" id="tab-content-headings">
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label">反面</span>
+              <div class="fn-ex-bar" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="反面：仅一个面板可读">
+                <pre class="st-code">&lt;!-- 在线安装 Tab（激活） --&gt;
 在线安装步骤：wget … ./toolkit.run --install
 
-<!-- 离线安装 Tab（隐藏） --></pre>
+&lt;!-- 离线安装 Tab（隐藏） --&gt;
+
+← 非激活面板无正文</pre>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>常见疏漏：</strong>稿面只留激活路径，离线 / Docker 步骤丢失。</li>
+                </ul>
+              </div>
+            </div>
           </div>
-          <h4 class="compare-label compare-label--human">After · 平铺可读</h4>
-          <div class="compare-col human">
-            <pre class="arch-diagram">### 在线安装（x86_64 · CANN 9.0.0）
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label is-good">正面</span>
+              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="正面：平铺可读">
+                <pre class="st-code">### 在线安装（x86_64 · CANN 9.0.0）
 
 ```bash
-wget … ./Ascend-cann-toolkit_9.0.0_linux-x86_64.run
-./Ascend-cann-toolkit_9.0.0_linux-x86_64.run --install
+wget … ./Ascend-cann-toolkit_….run
+./Ascend-cann-toolkit_….run --install
 ```
 
 ### 离线安装（x86_64 · CANN 9.0.0）
 
 ```bash
-./Ascend-cann-toolkit_9.0.0_linux-x86_64.run --install --offline
+./Ascend-cann-toolkit_….run --install --offline
 ```</pre>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>正确做法：</strong>各路径用标题平铺，全文静态可读。</li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -175,32 +638,62 @@ wget … ./Ascend-cann-toolkit_9.0.0_linux-x86_64.run
     <section class="section" id="frontend-adjust">
       <h2>前端调整</h2>
 
-      <h3 id="frontend-suggestions">调整建议</h3>
+      <h3 class="fn-h3" id="frontend-suggestions">调整建议</h3>
       <ul class="principle-suggestions">
-        <li><strong>面板首包全量</strong>：所有 Tab 面板在 SSR 首屏 HTML 中完整输出，不依赖 JS 注入非激活面板。</li>
-        <li><strong>禁止 display:none 藏正文</strong>：非激活面板勿用 display:none / visibility:hidden 去掉可读节点。</li>
+        <li>
+          <span class="sug-title">面板首包全量输出</span>
+          <span class="sug-desc">各路径步骤与命令须随首包 HTML 完整输出，不点 Tab 也能被抓取；严禁依赖 JS 注入非激活面板，或把非当前 Tab 当作「点开才存在」的唯一出处。</span>
+        </li>
+        <li>
+          <span class="sug-title">禁止用 display:none 藏正文</span>
+          <span class="sug-desc">非激活面板勿用 <code>display:none</code> / <code>visibility:hidden</code> 去掉可读节点；可用视觉层叠且保留 DOM 文本。</span>
+        </li>
       </ul>
 
-      <h3 id="frontend-example">调整示例</h3>
+      <h3 class="fn-h3" id="frontend-example">调整示例</h3>
       <div class="principle-example">
-        <h4>面板全量输出</h4>
-        <div class="ui-demo ui-demo--plain">
-          <div class="compare-grid compare-grid--no-mid-divider">
-            <div>
-              <h4 class="compare-label compare-label--machine">Before</h4>
-              <div class="compare-col machine">
-                <pre class="arch-diagram">&lt;div class="tab-panel hidden"&gt;
+        <h4 class="fn-h4">首包须含全部面板文本</h4>
+        <div class="fn-ex-row" id="tab-frontend-ssr">
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label">反面</span>
+              <div class="fn-ex-bar" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="反面：隐藏非激活面板">
+                <pre class="st-code">&lt;div class="tab-panel"&gt;在线安装…&lt;/div&gt;
+&lt;div class="tab-panel hidden"&gt;
   离线安装步骤…
-&lt;/div&gt;</pre>
-                <p class="rf-muted">非激活面板从可读流中消失。</p>
+&lt;/div&gt;
+
+← hidden / display:none 从可读流消失</pre>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>常见疏漏：</strong>非激活面板从抓取流中消失。</li>
+                </ul>
               </div>
             </div>
-            <div>
-              <h4 class="compare-label compare-label--human">After</h4>
-              <div class="compare-col human">
-                <pre class="arch-diagram">&lt;div class="tab-panel"&gt;在线安装…&lt;/div&gt;
-&lt;div class="tab-panel"&gt;离线安装…&lt;/div&gt;</pre>
-                <p class="rf-muted">首包含全部面板文本。</p>
+          </div>
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label is-good">正面</span>
+              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="正面：首包含全部面板">
+                <pre class="st-code">&lt;div class="tab-panel" data-active="true"&gt;
+  在线安装…
+&lt;/div&gt;
+&lt;div class="tab-panel"&gt;离线安装…&lt;/div&gt;
+&lt;div class="tab-panel"&gt;Docker…&lt;/div&gt;
+
+← 首包含全部面板文本节点</pre>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>正确做法：</strong>首包输出全部面板；激活态只影响样式，不删节点。</li>
+                </ul>
               </div>
             </div>
           </div>

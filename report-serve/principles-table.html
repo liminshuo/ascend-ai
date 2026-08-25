@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>表格语义化 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
+  <title>表格语义可结构化 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
   <link rel="stylesheet" href="assets/css/style.css">
 <style>
   .topbar {
@@ -64,7 +64,320 @@
   }
   .nav-dd-panel a:hover { color: #1476FF; background: #F5F5F5; }
   body.inner-page .page-wrapper { min-height: 100vh; }
+
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 28px;
+  }
+  .page-header h1 {
+    font-family: "PingFang SC", sans-serif;
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 600;
+    line-height: 48px;
+    letter-spacing: -0.02em;
+    margin: 8px 0 0;
+    color: var(--color-text, #191919);
+  }
+  .page-header .page-desc {
+    margin: 32px 0 0;
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--text, #191919);
+  }
+  body.inner-page[data-page="table"]:has(#module-sidebar) .main-content {
+    padding-top: 32px;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  body.inner-page[data-page="table"]:has(#module-sidebar) .main-content > .page-header,
+  body.inner-page[data-page="table"]:has(#module-sidebar) .main-content > .section,
+  body.inner-page[data-page="table"]:has(#module-sidebar) .main-content > .surface-tabs {
+    width: min(1200px, calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page[data-page="table"] .main-content .section > h2 {
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    letter-spacing: -0.01em;
+    margin-top: 48px;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #f0f0f0;
+    color: var(--color-text, #191919);
+  }
+  body.inner-page[data-page="table"] .main-content .section h3 { height: auto; }
+  h3.fn-h3 {
+    margin: 0;
+    padding-top: 24px;
+    padding-bottom: 24px;
+    font-size: 18px;
+    line-height: 28px;
+    font-weight: 650;
+    color: var(--color-text, #191919);
+    letter-spacing: -0.01em;
+  }
+  body.inner-page[data-page="table"] .main-content .section h4 { height: auto; }
+  h4.fn-h4 {
+    margin: 24px 0 0;
+    padding-top: 0;
+    padding-bottom: 16px;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 650;
+    color: var(--color-text, #191919);
+    letter-spacing: -0.01em;
+  }
+  h3.fn-h3 + .principle-example > h4.fn-h4,
+  h3.fn-h3 + h4.fn-h4 { margin-top: 12px; }
+
+  #scenarios .scene-def-table td .badge { border: none; }
+  .scene-def-table td .badge-optional {
+    background: #f5f5f5;
+    color: #595959;
+  }
+
+  .scene-def-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    line-height: 22px;
+    margin: 0 0 24px;
+    table-layout: fixed;
+  }
+  .scene-def-table th,
+  .scene-def-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid #e2e8f0;
+    vertical-align: middle;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 400;
+  }
+  .scene-def-table tbody td {
+    height: auto;
+    min-height: 48px;
+  }
+  .scene-def-table th {
+    font-size: 12px;
+    font-weight: 650;
+    color: #595959;
+    background: #fafafa;
+    height: 40px;
+    box-sizing: border-box;
+  }
+  .scene-def-table .col-type { width: 18%; }
+  .scene-def-table .col-desc { width: 55%; }
+  .scene-def-table .col-place { width: 27%; }
+  #objects .scene-def-table .col-type { width: 18%; }
+  #objects .scene-def-table .col-desc { width: 52%; }
+  #objects .scene-def-table .col-place { width: 30%; }
+  #scenarios .scene-def-table .col-type { width: 18%; }
+  #scenarios .scene-def-table .col-place { width: 40%; }
+  #scenarios .scene-def-table .col-desc { width: 42%; }
+
+  .fn-ex-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr auto;
+    column-gap: 16px;
+    row-gap: 0;
+    align-items: stretch;
+    margin: 16px 0 0;
+  }
+  .fn-ex-row .fn-ex {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 1 / span 3;
+    margin: 0;
+    min-width: 0;
+  }
+  .fn-ex-row .fn-ex-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .fn-ex-row .fn-ex-head .fn-ex-label { margin: 0; }
+  .fn-ex-row .fn-ex-head .fn-ex-bar {
+    display: block; margin: 0; width: 100%; align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-body {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 2 / span 2;
+    min-height: 0;
+    background: #f5f5f5;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .fn-ex-row .fn-ex-mock {
+    min-height: 0; height: 100%; box-sizing: border-box;
+    border: none; border-radius: 0; align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-mock pre.st-code {
+    margin: 0;
+    padding: 14px 16px;
+    background: #1e1e1e;
+    border: 1px solid #111;
+    border-radius: 0;
+    font-size: 12px;
+    line-height: 18px;
+    color: #e8e8e8;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow: auto;
+    box-sizing: border-box;
+    min-height: 100%;
+  }
+  .fn-ex-row .fn-ex-foot {
+    display: flex; flex-direction: column; gap: 8px;
+    padding: 12px 14px 14px; background: #fff;
+    border-top: 1px solid #e2e8f0;
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-list { margin: 0; gap: 4px; }
+  .fn-ex-label {
+    display: inline-block; padding: 0 8px; border-radius: 4px;
+    font-size: 12px; font-weight: 650; line-height: 20px;
+    color: #b42318; background: #fef3f2;
+  }
+  .fn-ex-label.is-good { color: #047857; background: #ecfdf5; }
+  .fn-ex-bar {
+    display: block; width: 100%; height: 3px;
+    background: #b42318; border-radius: 2px;
+  }
+  .fn-ex-bar.is-good { background: #047857; }
+  .fn-ex-list {
+    margin: 0; padding: 0 0 0 1.25em; list-style: disc;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .fn-ex-list li {
+    margin: 0; font-size: 14px; line-height: 22px; color: #191919;
+  }
+  .fn-ex-list strong { font-weight: 650; }
+
+  .fn-ex-mock:has(.ex-table-wrap) {
+    padding: 12px;
+    background: #f5f5f5;
+  }
+  .ex-table-wrap {
+    background: #fff;
+    border-radius: 6px;
+    overflow: auto;
+    padding: 10px 12px 12px;
+  }
+  .ex-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 12px;
+    line-height: 18px;
+    color: #191919;
+  }
+  .ex-table caption {
+    caption-side: top;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 18px;
+    margin: 0 0 8px;
+    color: #191919;
+  }
+  .ex-table th,
+  .ex-table td {
+    padding: 6px 8px;
+    border: 1px solid #e2e8f0;
+    text-align: left;
+    font-weight: 400;
+    vertical-align: middle;
+  }
+  .ex-table th {
+    font-weight: 650;
+    background: #fafafa;
+  }
+  .ex-table .is-tint {
+    background: #f0f7ff;
+  }
+  .ex-table .is-empty {
+    color: #bfbfbf;
+  }
+
   .principle-example + .principle-example { margin-top: 28px; }
+
+  #design-ui .principle-suggestions,
+  #content-adjust .principle-suggestions,
+  #frontend-adjust .principle-suggestions {
+    list-style: none;
+    margin: 0 0 32px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    counter-reset: sug;
+  }
+  #design-ui .principle-suggestions > li,
+  #content-adjust .principle-suggestions > li,
+  #frontend-adjust .principle-suggestions > li {
+    position: relative;
+    margin: 0;
+    padding: 0 0 0 36px;
+    color: #595959;
+    counter-increment: sug;
+  }
+  #design-ui .principle-suggestions > li::before,
+  #content-adjust .principle-suggestions > li::before,
+  #frontend-adjust .principle-suggestions > li::before {
+    content: counter(sug, decimal-leading-zero);
+    position: absolute;
+    left: 0;
+    top: 1px;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 22px;
+    letter-spacing: 0.02em;
+    color: #1476FF;
+  }
+  #design-ui .principle-suggestions > li .sug-title,
+  #content-adjust .principle-suggestions > li .sug-title,
+  #frontend-adjust .principle-suggestions > li .sug-title {
+    display: block;
+    margin: 0 0 6px;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 24px;
+    color: #191919;
+  }
+  #design-ui .principle-suggestions > li .sug-desc,
+  #content-adjust .principle-suggestions > li .sug-desc,
+  #frontend-adjust .principle-suggestions > li .sug-desc {
+    display: block;
+    margin: 0;
+    max-width: none;
+    width: 100%;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 24px;
+    color: #595959;
+  }
+
+  @media (max-width: 900px) {
+    .fn-ex-row {
+      grid-template-columns: 1fr;
+      grid-template-rows: none;
+    }
+    .fn-ex-row .fn-ex { display: block; grid-row: auto; }
+    .fn-ex-row .fn-ex-body {
+      display: flex; flex-direction: column; grid-row: auto;
+    }
+  }
 </style>
 </head>
 <body class="inner-page" data-module="principles" data-page="table">
@@ -89,166 +402,359 @@
 
   <main class="main-content">
     <div class="page-header">
-      <h1>表格语义化</h1>
+      <h1>表格语义可结构化</h1>
       <p class="page-desc page-desc--split">
-        <span class="page-desc-line">用 <code>caption</code>、<code>th</code>、<code>scope</code> 与合法合并表达<strong>标题与行列归属</strong>；格内嵌套列表独立成结构。状态词写法见 <a href="principles-status-word.html">状态完整标注</a>。</span>
-        <span class="page-desc-line">可读 · 对应 <a href="problems-content-table.html">问题论证 · 表格的结构语义</a>。</span>
+        <span class="page-desc-line">为了帮助 Agent 切片后仍能还原「行名 × 列名」与表主题，表格须用 <code>caption</code>、<code>th</code> + <code>scope</code> 与合法合并表达标题与行列归属；格内嵌套列表独立成结构。状态词写法见 <a href="principles-status-word.html">状态词可完整识别</a>。</span>
       </p>
     </div>
 
     <section class="section" id="objects">
-      <h2>对象</h2>
-      <div class="affinity-table-wrap">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th style="width:28%">对象</th>
-              <th>描述</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>表头与标题</td>
-              <td>每表有描述性 <code>caption</code>；列/行名用 <code>th</code> + <code>scope</code>。常见落点：规格表、参数表。</td>
-            </tr>
-            <tr>
-              <td>合并与多级表头</td>
-              <td><code>colspan</code> / <code>rowspan</code> 后每格仍能还原「行名×列名」；禁止只靠底色或框线表达分组。常见落点：分组规格表、兼容矩阵。</td>
-            </tr>
-            <tr>
-              <td>嵌套内容</td>
-              <td>格内接口 / 要点列表用真实列表，不拆成伪数据行。常见落点：I/O 规格、能力说明格。</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <h2>适用对象</h2>
+      <table class="scene-def-table">
+        <colgroup>
+          <col class="col-type" />
+          <col class="col-desc" />
+          <col class="col-place" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="col-type">名称</th>
+            <th class="col-desc">说明</th>
+            <th class="col-place">常见落点</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="col-type">表头与标题</td>
+            <td class="col-desc">每表有描述性 <code>caption</code>；列 / 行名用 <code>th</code> + <code>scope</code>，禁止用样式伪表头。</td>
+            <td class="col-place">规格表、参数表</td>
+          </tr>
+          <tr>
+            <td class="col-type">合并与多级表头</td>
+            <td class="col-desc"><code>colspan</code> / <code>rowspan</code> 后每格仍能还原「行名 × 列名」；禁止只靠底色或框线表达分组。</td>
+            <td class="col-place">分组规格表、兼容矩阵</td>
+          </tr>
+          <tr>
+            <td class="col-type">嵌套内容</td>
+            <td class="col-desc">格内接口 / 要点列表用真实列表，不拆成伪数据行。</td>
+            <td class="col-place">I/O 规格、能力说明格</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section" id="scenarios">
+      <h2>适用场景</h2>
+      <table class="scene-def-table">
+        <colgroup>
+          <col class="col-type" />
+          <col class="col-place" />
+          <col class="col-desc" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="col-type">优先级</th>
+            <th class="col-place">页面类型</th>
+            <th class="col-desc">说明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="col-type"><span class="badge badge-bad">必做</span></td>
+            <td class="col-place">文档站规格表、参数表、兼容矩阵</td>
+            <td class="col-desc">Agent 最常引用的结构化事实页。</td>
+          </tr>
+          <tr>
+            <td class="col-type"><span class="badge badge-should">建议做</span></td>
+            <td class="col-place">官网产品对比 / 能力规格表</td>
+            <td class="col-desc">规格、能力说明会进入引用池的页面。</td>
+          </tr>
+          <tr>
+            <td class="col-type"><span class="badge badge-optional">可不做完整改造</span></td>
+            <td class="col-place">纯布局用表、无数据语义的两列排版</td>
+            <td class="col-desc">非数据表；勿强行 caption，收录策略中划界即可。</td>
+          </tr>
+        </tbody>
+      </table>
     </section>
 
     <section class="section" id="design-ui">
       <h2>设计UI调整</h2>
 
-      <h3 id="design-suggestions">调整建议</h3>
+      <h3 class="fn-h3" id="design-suggestions">调整建议</h3>
       <ul class="principle-suggestions">
-        <li><strong>表格标题文案交付</strong>：每表同步提供 caption，格式如「表1 Ascend C Add 算子设计规格」，禁「表格1」「数据表」。</li>
-        <li><strong>表头作用域标明</strong>：交付标注哪些是 th、哪些是 td，以及 scope 方向（col / row）。</li>
-        <li><strong>合并须可还原归属</strong>：合并单元格时标明跨行/跨列范围；分组不得只靠底色。若格内是状态词，写法遵循 <a href="principles-status-word.html">状态完整标注</a>。</li>
-        <li><strong>嵌套列表独立</strong>：接口列表区域标为独立列表，不拆成伪数据行。</li>
+        <li>
+          <span class="sug-title">每表须有描述性标题</span>
+          <span class="sug-desc">每张表必须提供能说明主题的描述性标题（如「表1 Ascend C Add 算子设计规格」）。严禁使用「表格1」「数据表」等无法辨识主题的模糊命名。</span>
+        </li>
+        <li>
+          <span class="sug-title">表头与数据区须语义化</span>
+          <span class="sug-desc">表格必须明确标清哪一行 / 列是表头、哪是数据格，以及表头管辖的是整列还是整行。严禁仅靠视觉加粗充当表头，否则机器无法识别语义表头。</span>
+        </li>
+        <li>
+          <span class="sug-title">合并归属须可还原</span>
+          <span class="sug-desc">合并单元格必须声明跨行 / 跨列（如 <code>rowspan</code> / <code>colspan</code>），确保合并后的内容归属关系可被还原。分组严禁仅靠颜色或底色区分，须提供结构化标识。</span>
+        </li>
+        <li>
+          <span class="sug-title">表内列表单独成块</span>
+          <span class="sug-desc">接口参数、要点等内容必须作为独立列表呈现；严禁拆成假表格行，也严禁与相邻字段揉进同一格写成一大段。</span>
+        </li>
       </ul>
 
-      <h3 id="design-example">调整示例</h3>
+      <h3 class="fn-h3" id="design-example">调整示例</h3>
       <div class="principle-example">
-        <h4>1. 表头与 caption</h4>
-        <div class="compare-grid compare-grid--stack compare-grid--no-mid-divider">
-          <h4 class="compare-label compare-label--machine">Before · 无标题，伪表头</h4>
-          <div class="compare-col machine">
-            <div class="render-frame">
-              <table class="rf-table">
-                <tr><td>name</td><td>shape</td><td>data type</td></tr>
-                <tr><td>x</td><td>(8,2048)</td><td>float16</td></tr>
-              </table>
-              <p class="rf-muted">首行是 td；无 caption，切片后难当列名。</p>
+        <h4 class="fn-h4">描述性标题与语义表头须齐全</h4>
+        <div class="fn-ex-row" id="table-caption-th">
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label">反面</span>
+              <div class="fn-ex-bar" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="反面：无标题，伪表头">
+                <div class="ex-table-wrap">
+                  <table class="ex-table">
+                    <tr>
+                      <td>name</td>
+                      <td>shape</td>
+                      <td>data type</td>
+                    </tr>
+                    <tr>
+                      <td>x</td>
+                      <td>(8,2048)</td>
+                      <td>float16</td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>常见疏漏：</strong>首行是 <code>td</code>；无 caption，切片后难当列名。</li>
+                </ul>
+              </div>
             </div>
           </div>
-          <h4 class="compare-label compare-label--human">After · caption + th + scope</h4>
-          <div class="compare-col human">
-            <div class="render-frame">
-              <table class="rf-table">
-                <caption>表1 Ascend C Add 算子设计规格</caption>
-                <tr>
-                  <th scope="col">name</th>
-                  <th scope="col">shape</th>
-                  <th scope="col">data type</th>
-                </tr>
-                <tr><td>x</td><td>(8,2048)</td><td>float16</td></tr>
-              </table>
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label is-good">正面</span>
+              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="正面：caption + th + scope">
+                <div class="ex-table-wrap">
+                  <table class="ex-table">
+                    <caption>表1 Ascend C Add 算子设计规格</caption>
+                    <tr>
+                      <th scope="col">name</th>
+                      <th scope="col">shape</th>
+                      <th scope="col">data type</th>
+                    </tr>
+                    <tr>
+                      <td>x</td>
+                      <td>(8,2048)</td>
+                      <td>float16</td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>正确做法：</strong>描述性 caption + 列名 <code>th</code> + <code>scope="col"</code>。</li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       <div class="principle-example">
-        <h4>2. 合并单元格后仍可还原行列归属</h4>
-        <div class="compare-grid compare-grid--stack compare-grid--no-mid-divider">
-          <h4 class="compare-label compare-label--machine">Before · 只靠底色分组，无 rowspan</h4>
-          <div class="compare-col machine">
-            <div class="render-frame">
-              <table class="rf-table">
-                <tr><th>场景</th><th>模型</th><th>A2</th><th>A3</th></tr>
-                <tr style="background:#f0f7ff;"><td>预训练</td><td>DeepSeek V3</td><td>支持</td><td>支持</td></tr>
-                <tr style="background:#f0f7ff;"><td></td><td>DeepSeek-Janus-Pro</td><td>不支持</td><td>支持</td></tr>
-                <tr><td>推理</td><td>Qwen2</td><td>支持</td><td>支持</td></tr>
-              </table>
-              <p class="rf-muted">空场景格 + 底色：机器难判定第二行仍属「预训练」。</p>
+        <h4 class="fn-h4">合并归属须可还原</h4>
+        <div class="fn-ex-row" id="table-rowspan">
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label">反面</span>
+              <div class="fn-ex-bar" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="反面：只靠底色分组，无 rowspan">
+                <div class="ex-table-wrap">
+                  <table class="ex-table">
+                    <tr>
+                      <th>场景</th>
+                      <th>模型</th>
+                      <th>A2</th>
+                      <th>A3</th>
+                    </tr>
+                    <tr class="is-tint">
+                      <td>预训练</td>
+                      <td>DeepSeek V3</td>
+                      <td>支持</td>
+                      <td>支持</td>
+                    </tr>
+                    <tr class="is-tint">
+                      <td class="is-empty">（空）</td>
+                      <td>DeepSeek-Janus-Pro</td>
+                      <td>不支持</td>
+                      <td>支持</td>
+                    </tr>
+                    <tr>
+                      <td>推理</td>
+                      <td>Qwen2</td>
+                      <td>支持</td>
+                      <td>支持</td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>常见疏漏：</strong>空场景格 + 底色；机器难判定第二行仍属「预训练」。</li>
+                </ul>
+              </div>
             </div>
           </div>
-          <h4 class="compare-label compare-label--human">After · rowspan 行头 + scope</h4>
-          <div class="compare-col human">
-            <div class="render-frame">
-              <table class="rf-table">
-                <caption>表2 场景 × 芯片能力矩阵</caption>
-                <thead>
-                  <tr>
-                    <th scope="col">场景</th>
-                    <th scope="col">模型</th>
-                    <th scope="col">A2</th>
-                    <th scope="col">A3</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <th scope="row" rowspan="2">预训练</th>
-                    <td>DeepSeek V3</td><td>支持</td><td>支持</td>
-                  </tr>
-                  <tr>
-                    <td>DeepSeek-Janus-Pro</td><td>不支持</td><td>支持</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">推理</th>
-                    <td>Qwen2</td><td>支持</td><td>支持</td>
-                  </tr>
-                </tbody>
-              </table>
-              <p class="rf-muted">每格可还原为「预训练 × Janus × A2」；状态词写法见状态完整标注。</p>
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label is-good">正面</span>
+              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="正面：rowspan 行头 + scope">
+                <div class="ex-table-wrap">
+                  <table class="ex-table">
+                    <caption>表2 场景 × 芯片能力矩阵</caption>
+                    <thead>
+                      <tr>
+                        <th scope="col">场景</th>
+                        <th scope="col">模型</th>
+                        <th scope="col">A2</th>
+                        <th scope="col">A3</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <th scope="row" rowspan="2">预训练</th>
+                        <td>DeepSeek V3</td>
+                        <td>支持</td>
+                        <td>支持</td>
+                      </tr>
+                      <tr>
+                        <td>DeepSeek-Janus-Pro</td>
+                        <td>不支持</td>
+                        <td>支持</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">推理</th>
+                        <td>Qwen2</td>
+                        <td>支持</td>
+                        <td>支持</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>正确做法：</strong>行头 <code>rowspan</code> + <code>scope</code>；每格可还原为「预训练 × Janus × A2」。</li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       <div class="principle-example">
-        <h4>3. I/O 分组用行头，不靠括号混排</h4>
-        <div class="compare-grid compare-grid--stack compare-grid--no-mid-divider">
-          <h4 class="compare-label compare-label--machine">Before · 输入输出混在同一列</h4>
-          <div class="compare-col machine">
-            <div class="render-frame">
-              <table class="rf-table">
-                <tr><th>参数</th><th>类型</th><th>说明</th></tr>
-                <tr><td>x（输入）</td><td>float16</td><td>shape (8,2048)</td></tr>
-                <tr><td>y（输入）</td><td>float16</td><td>shape (8,2048)</td></tr>
-                <tr><td>z（输出）</td><td>float16</td><td>shape (8,2048)</td></tr>
-              </table>
-              <p class="rf-muted">方向写在名称括号里，切片后难稳定分组。</p>
+        <h4 class="fn-h4">输入 / 输出用行头，不靠括号混排</h4>
+        <div class="fn-ex-row" id="table-io-scope">
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label">反面</span>
+              <div class="fn-ex-bar" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="反面：输入输出混在同一列">
+                <div class="ex-table-wrap">
+                  <table class="ex-table">
+                    <tr>
+                      <th>参数</th>
+                      <th>类型</th>
+                      <th>说明</th>
+                    </tr>
+                    <tr>
+                      <td>x（输入）</td>
+                      <td>float16</td>
+                      <td>shape (8,2048)</td>
+                    </tr>
+                    <tr>
+                      <td>y（输入）</td>
+                      <td>float16</td>
+                      <td>shape (8,2048)</td>
+                    </tr>
+                    <tr>
+                      <td>z（输出）</td>
+                      <td>float16</td>
+                      <td>shape (8,2048)</td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>常见疏漏：</strong>方向写在名称括号里，切片后难稳定分组。</li>
+                </ul>
+              </div>
             </div>
           </div>
-          <h4 class="compare-label compare-label--human">After · 方向为行头 th</h4>
-          <div class="compare-col human">
-            <div class="render-frame">
-              <table class="rf-table">
-                <caption>表3 Add 算子 I/O 规格</caption>
-                <thead>
-                  <tr>
-                    <th scope="col">方向</th>
-                    <th scope="col">name</th>
-                    <th scope="col">shape</th>
-                    <th scope="col">data type</th>
-                    <th scope="col">format</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr><th scope="row">输入</th><td>x</td><td>(8,2048)</td><td>float16</td><td>ND</td></tr>
-                  <tr><th scope="row">输入</th><td>y</td><td>(8,2048)</td><td>float16</td><td>ND</td></tr>
-                  <tr><th scope="row">输出</th><td>z</td><td>(8,2048)</td><td>float16</td><td>ND</td></tr>
-                </tbody>
-              </table>
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label is-good">正面</span>
+              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="正面：方向为行头 th">
+                <div class="ex-table-wrap">
+                  <table class="ex-table">
+                    <caption>表3 Add 算子 I/O 规格</caption>
+                    <thead>
+                      <tr>
+                        <th scope="col">方向</th>
+                        <th scope="col">name</th>
+                        <th scope="col">shape</th>
+                        <th scope="col">data type</th>
+                        <th scope="col">format</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <th scope="row">输入</th>
+                        <td>x</td>
+                        <td>(8,2048)</td>
+                        <td>float16</td>
+                        <td>ND</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">输入</th>
+                        <td>y</td>
+                        <td>(8,2048)</td>
+                        <td>float16</td>
+                        <td>ND</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">输出</th>
+                        <td>z</td>
+                        <td>(8,2048)</td>
+                        <td>float16</td>
+                        <td>ND</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>正确做法：</strong>方向独立为行头 <code>th</code>，字段名与类型分列可切片。</li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
@@ -258,46 +764,129 @@
     <section class="section" id="content-adjust">
       <h2>文档内容调整</h2>
 
-      <h3 id="content-suggestions">调整建议</h3>
+      <h3 class="fn-h3" id="content-suggestions">调整建议</h3>
       <ul class="principle-suggestions">
-        <li><strong>caption 与列名写全</strong>：稿面与 Markdown 表均有描述性标题；列名稳定、可当字段名。</li>
-        <li><strong>合并在文稿可还原</strong>：Markdown 无 rowspan 时，优先拆行写全场景名，或注明「以下两行同属预训练」；勿留空首列指望读者脑补。</li>
-        <li><strong>状态词另遵状态页</strong>：格内支持/不支持等词义见 <a href="principles-status-word.html">状态完整标注</a>，本页不重复符号替换细则。</li>
+        <li>
+          <span class="sug-title">caption 与列名写全</span>
+          <span class="sug-desc">稿面与 Markdown 表均有描述性标题；列名稳定、可当字段名，勿用「列1」「备注」等空泛词。</span>
+        </li>
+        <li>
+          <span class="sug-title">合并在文稿可还原</span>
+          <span class="sug-desc">Markdown 无 rowspan 时，优先拆行写全场景名，或注明「以下两行同属预训练」；勿留空首列指望读者脑补。</span>
+        </li>
+        <li>
+          <span class="sug-title">状态词另遵状态页</span>
+          <span class="sug-desc">格内「支持 / 不支持」等词义见 <a href="principles-status-word.html">状态词可完整识别</a>；本页只约束表骨架，不重复符号替换细则。</span>
+        </li>
       </ul>
+
+      <h3 class="fn-h3" id="content-example">调整示例</h3>
+      <div class="principle-example">
+        <h4 class="fn-h4">Markdown 合并须写全归属</h4>
+        <div class="fn-ex-row" id="table-content-md">
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label">反面</span>
+              <div class="fn-ex-bar" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="反面：空首列">
+                <pre class="st-code">| 场景 | 模型 | A2 |
+| --- | --- | --- |
+| 预训练 | DeepSeek V3 | 支持 |
+|  | Janus-Pro | 不支持 |
+
+← 空首列，归属靠脑补</pre>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>常见疏漏：</strong>空单元格入库后丢场景名，矩阵问答易串行。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label is-good">正面</span>
+              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="正面：每行写全场景">
+                <pre class="st-code">| 场景 | 模型 | A2 |
+| --- | --- | --- |
+| 预训练 | DeepSeek V3 | 支持 |
+| 预训练 | Janus-Pro | 不支持 |
+
+← 每行写全场景名</pre>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>正确做法：</strong>文稿层逐行写全；HTML 再用 rowspan 合并呈现。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <section class="section" id="frontend-adjust">
       <h2>前端调整</h2>
 
-      <h3 id="frontend-suggestions">调整建议</h3>
+      <h3 class="fn-h3" id="frontend-suggestions">调整建议</h3>
       <ul class="principle-suggestions">
-        <li><strong>完整语义结构</strong>：caption、thead/th+scope、tbody；禁止用样式 td 冒充表头。</li>
-        <li><strong>合并可切片</strong>：rowspan/colspan 后管道须能展开为「列名:值」且带上合并行头；空首列不得入库为独立行。</li>
-        <li><strong>嵌套列表同 chunk</strong>：格内 <code>ul</code> 与所属表绑定，不拆散。</li>
+        <li>
+          <span class="sug-title">输出完整语义结构</span>
+          <span class="sug-desc">首包 HTML 含 <code>caption</code>、<code>thead</code> / <code>th</code>+<code>scope</code>、<code>tbody</code>；禁止用样式 <code>td</code> 冒充表头。</span>
+        </li>
+        <li>
+          <span class="sug-title">合并须可切片展开</span>
+          <span class="sug-desc"><code>rowspan</code> / <code>colspan</code> 后管道须能展开为「列名:值」且带上合并行头；空首列不得入库为独立行。</span>
+        </li>
+        <li>
+          <span class="sug-title">嵌套列表同 chunk</span>
+          <span class="sug-desc">格内 <code>ul</code> 与所属表 / 单元格绑定切片，不拆散成游离列表块。</span>
+        </li>
       </ul>
 
-      <h3 id="frontend-example">调整示例</h3>
+      <h3 class="fn-h3" id="frontend-example">调整示例</h3>
       <div class="principle-example">
-        <h4>合并行头 HTML</h4>
-        <div class="ui-demo ui-demo--plain">
-          <div class="compare-grid compare-grid--no-mid-divider">
-            <div>
-              <h4 class="compare-label compare-label--machine">Before</h4>
-              <div class="compare-col machine">
-                <pre class="arch-diagram">&lt;tr&gt;&lt;td&gt;预训练&lt;/td&gt;&lt;td&gt;V3&lt;/td&gt;…&lt;/tr&gt;
+        <h4 class="fn-h4">合并行头须用 rowspan</h4>
+        <div class="fn-ex-row" id="table-frontend-rowspan">
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label">反面</span>
+              <div class="fn-ex-bar" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="反面：空单元格">
+                <pre class="st-code">&lt;tr&gt;&lt;td&gt;预训练&lt;/td&gt;&lt;td&gt;V3&lt;/td&gt;…&lt;/tr&gt;
 &lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;Janus&lt;/td&gt;…&lt;/tr&gt;</pre>
-                <p class="rf-muted">空单元格，归属靠视觉。</p>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>常见疏漏：</strong>空单元格、归属靠视觉；空 <code>td</code> 入库后场景名丢失。</li>
+                </ul>
               </div>
             </div>
-            <div>
-              <h4 class="compare-label compare-label--human">After</h4>
-              <div class="compare-col human">
-                <pre class="arch-diagram">&lt;tr&gt;
+          </div>
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label is-good">正面</span>
+              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="正面：rowspan 行头">
+                <pre class="st-code">&lt;tr&gt;
   &lt;th scope="row" rowspan="2"&gt;预训练&lt;/th&gt;
   &lt;td&gt;V3&lt;/td&gt;…
 &lt;/tr&gt;
 &lt;tr&gt;&lt;td&gt;Janus&lt;/td&gt;…&lt;/tr&gt;</pre>
-                <p class="rf-muted">行头合并，切片可还原场景。</p>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>正确做法：</strong>行头合并，切片可还原场景；行头 <code>th</code> + <code>rowspan</code>，管道展开时带回场景名。</li>
+                </ul>
               </div>
             </div>
           </div>

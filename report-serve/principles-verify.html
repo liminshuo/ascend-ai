@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>验证区块 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
+  <title>验证区块可独立执行 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
   <link rel="stylesheet" href="assets/css/style.css">
 <style>
   .topbar {
@@ -63,8 +63,354 @@
     color: #595959; font-size: 13px; font-weight: 500; line-height: 1.4;
   }
   .nav-dd-panel a:hover { color: #1476FF; background: #F5F5F5; }
-  /* GEO topbar = fixed，沿用 layout 的 page-wrapper padding-top */
   body.inner-page .page-wrapper { min-height: 100vh; }
+
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 28px;
+  }
+  .page-header h1 {
+    font-family: "PingFang SC", sans-serif;
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 600;
+    line-height: 48px;
+    letter-spacing: -0.02em;
+    margin: 8px 0 0;
+    color: var(--color-text, #191919);
+  }
+  .page-header .page-desc {
+    margin: 32px 0 0;
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--text, #191919);
+  }
+  body.inner-page[data-page="verify"]:has(#module-sidebar) .main-content {
+    padding-top: 32px;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  body.inner-page[data-page="verify"]:has(#module-sidebar) .main-content > .page-header,
+  body.inner-page[data-page="verify"]:has(#module-sidebar) .main-content > .section,
+  body.inner-page[data-page="verify"]:has(#module-sidebar) .main-content > .surface-tabs {
+    width: min(1200px, calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page[data-page="verify"] .main-content .section > h2 {
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    letter-spacing: -0.01em;
+    margin-top: 48px;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #f0f0f0;
+    color: var(--color-text, #191919);
+  }
+  body.inner-page[data-page="verify"] .main-content .section h3 { height: auto; }
+  h3.fn-h3 {
+    margin: 0;
+    padding-top: 24px;
+    padding-bottom: 24px;
+    font-size: 18px;
+    line-height: 28px;
+    font-weight: 650;
+    color: var(--color-text, #191919);
+    letter-spacing: -0.01em;
+  }
+  body.inner-page[data-page="verify"] .main-content .section h4 { height: auto; }
+  h4.fn-h4 {
+    margin: 24px 0 0;
+    padding-top: 0;
+    padding-bottom: 16px;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 650;
+    color: var(--color-text, #191919);
+    letter-spacing: -0.01em;
+  }
+  h3.fn-h3 + .principle-example > h4.fn-h4,
+  h3.fn-h3 + h4.fn-h4 { margin-top: 12px; }
+
+  #scenarios .scene-def-table td .badge { border: none; }
+  .scene-def-table td .badge-optional {
+    background: #f5f5f5;
+    color: #595959;
+  }
+
+  .scene-def-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    line-height: 22px;
+    margin: 0 0 24px;
+    table-layout: fixed;
+  }
+  .scene-def-table th,
+  .scene-def-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid #e2e8f0;
+    vertical-align: middle;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 400;
+  }
+  .scene-def-table tbody td {
+    height: auto;
+    min-height: 48px;
+  }
+  .scene-def-table th {
+    font-size: 12px;
+    font-weight: 650;
+    color: #595959;
+    background: #fafafa;
+    height: 40px;
+    box-sizing: border-box;
+  }
+  .scene-def-table .col-type { width: 18%; }
+  .scene-def-table .col-desc { width: 55%; }
+  .scene-def-table .col-place { width: 27%; }
+  #objects .scene-def-table .col-type { width: 18%; }
+  #objects .scene-def-table .col-desc { width: 52%; }
+  #objects .scene-def-table .col-place { width: 30%; }
+  #scenarios .scene-def-table .col-type { width: 18%; }
+  #scenarios .scene-def-table .col-place { width: 40%; }
+  #scenarios .scene-def-table .col-desc { width: 42%; }
+
+  .fn-ex-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr auto;
+    column-gap: 16px;
+    row-gap: 0;
+    align-items: stretch;
+    margin: 16px 0 0;
+  }
+  .fn-ex-row .fn-ex {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 1 / span 3;
+    margin: 0;
+    min-width: 0;
+  }
+  .fn-ex-row .fn-ex-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .fn-ex-row .fn-ex-head .fn-ex-label { margin: 0; }
+  .fn-ex-row .fn-ex-head .fn-ex-bar {
+    display: block; margin: 0; width: 100%; align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-body {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 2 / span 2;
+    min-height: 0;
+    background: #f5f5f5;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .fn-ex-row .fn-ex-mock {
+    min-height: 0; height: 100%; box-sizing: border-box;
+    border: none; border-radius: 0; align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-mock:has(.st-card) {
+    padding: 12px;
+    background: #f5f5f5;
+  }
+  .fn-ex-row .fn-ex-mock pre.st-code {
+    margin: 0;
+    padding: 14px 16px;
+    background: #1e1e1e;
+    border: 1px solid #111;
+    border-radius: 0;
+    font-size: 12px;
+    line-height: 18px;
+    color: #e8e8e8;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow: auto;
+    box-sizing: border-box;
+    min-height: 100%;
+  }
+  .fn-ex-row .fn-ex-foot {
+    display: flex; flex-direction: column; gap: 8px;
+    padding: 12px 14px 14px; background: #fff;
+    border-top: 1px solid #e2e8f0;
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-list { margin: 0; gap: 4px; }
+  .fn-ex-label {
+    display: inline-block; padding: 0 8px; border-radius: 4px;
+    font-size: 12px; font-weight: 650; line-height: 20px;
+    color: #b42318; background: #fef3f2;
+  }
+  .fn-ex-label.is-good { color: #047857; background: #ecfdf5; }
+  .fn-ex-bar {
+    display: block; width: 100%; height: 3px;
+    background: #b42318; border-radius: 2px;
+  }
+  .fn-ex-bar.is-good { background: #047857; }
+  .fn-ex-list {
+    margin: 0; padding: 0 0 0 1.25em; list-style: disc;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .fn-ex-list li {
+    margin: 0; font-size: 14px; line-height: 22px; color: #191919;
+  }
+  .fn-ex-list strong { font-weight: 650; }
+
+  .st-card {
+    padding: 14px 16px 12px;
+    color: #191919;
+    background: #fff;
+    border-radius: 8px;
+    height: 100%;
+    box-sizing: border-box;
+  }
+  .ex-doc-h {
+    margin: 0 0 8px;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 20px;
+    color: #191919;
+  }
+  .ex-doc-p {
+    margin: 0;
+    font-size: 12px;
+    line-height: 18px;
+    color: #595959;
+  }
+  .ex-verify {
+    margin: 0;
+    padding: 12px 14px;
+    border-radius: 6px;
+    border: 1px solid #bbf7d0;
+    background: #f0fdf4;
+  }
+  .ex-verify-title {
+    margin: 0 0 10px;
+    padding: 0 0 0 10px;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 20px;
+    color: #047857;
+    border-left: 3px solid #047857;
+  }
+  .ex-verify-code {
+    margin: 0 0 8px;
+    padding: 10px 12px;
+    background: #fff;
+    border-radius: 6px;
+    border: 1px solid #d1fae5;
+  }
+  .ex-verify-lang {
+    margin: 0 0 6px;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 18px;
+    color: #191919;
+  }
+  .ex-verify-pre {
+    margin: 0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px;
+    line-height: 18px;
+    color: #191919;
+  }
+  .ex-verify-expect {
+    margin: 0;
+    font-size: 12px;
+    line-height: 18px;
+    color: #191919;
+  }
+  .ex-verify-expect strong {
+    font-weight: 650;
+    color: #047857;
+  }
+
+  .principle-example + .principle-example { margin-top: 28px; }
+  .principle-example-note {
+    margin-top: 12px;
+    font-size: 14px;
+    line-height: 22px;
+    color: #595959;
+  }
+
+  #design-ui .principle-suggestions,
+  #content-adjust .principle-suggestions,
+  #frontend-adjust .principle-suggestions {
+    list-style: none;
+    margin: 0 0 32px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    counter-reset: sug;
+  }
+  #design-ui .principle-suggestions > li,
+  #content-adjust .principle-suggestions > li,
+  #frontend-adjust .principle-suggestions > li {
+    position: relative;
+    margin: 0;
+    padding: 0 0 0 36px;
+    color: #595959;
+    counter-increment: sug;
+  }
+  #design-ui .principle-suggestions > li::before,
+  #content-adjust .principle-suggestions > li::before,
+  #frontend-adjust .principle-suggestions > li::before {
+    content: counter(sug, decimal-leading-zero);
+    position: absolute;
+    left: 0;
+    top: 1px;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 22px;
+    letter-spacing: 0.02em;
+    color: #1476FF;
+  }
+  #design-ui .principle-suggestions > li .sug-title,
+  #content-adjust .principle-suggestions > li .sug-title,
+  #frontend-adjust .principle-suggestions > li .sug-title {
+    display: block;
+    margin: 0 0 6px;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 24px;
+    color: #191919;
+  }
+  #design-ui .principle-suggestions > li .sug-desc,
+  #content-adjust .principle-suggestions > li .sug-desc,
+  #frontend-adjust .principle-suggestions > li .sug-desc {
+    display: block;
+    margin: 0;
+    max-width: none;
+    width: 100%;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 24px;
+    color: #595959;
+  }
+
+  @media (max-width: 900px) {
+    .fn-ex-row {
+      grid-template-columns: 1fr;
+      grid-template-rows: none;
+    }
+    .fn-ex-row .fn-ex { display: block; grid-row: auto; }
+    .fn-ex-row .fn-ex-body {
+      display: flex; flex-direction: column; grid-row: auto;
+    }
+  }
 </style>
 </head>
 <body class="inner-page" data-module="principles" data-page="verify">
@@ -87,27 +433,296 @@
 
   <aside id="module-sidebar"></aside>
 
-  
-  
   <main class="main-content">
-<div class="page-header">
-      <h1>验证区块</h1>
-      <p class="page-desc">E7 · E. 非文本元素语义转译 · 完整条目见 <a href="principles-affinity.html#principle-e7">亲和性原则汇总表</a>。</p>
+    <div class="page-header">
+      <h1>验证区块可独立执行</h1>
+      <p class="page-desc page-desc--split">
+        <span class="page-desc-line">为了帮助 Agent 形成执行闭环，任务型内容须提供独立的验证 / 检查章节或用例，给出可对照的输入与输出；验证方法尽量使用命令或代码块，拒绝「观察结果是否正确」等模糊描述。判据写法见 <a href="principles-expected.html">预期结果可对照确认</a>。</span>
+      </p>
     </div>
 
-    <section class="section" id="solution">
-      <h2 id="design">设计侧改造建议</h2>
-      <div class="surface-card principle-deliverable">1. &quot;验证&quot;或&quot;预期结果&quot;作为固定H2/H3章节，视觉样式与普通正文区分</div>
+    <section class="section" id="objects">
+      <h2>适用对象</h2>
+      <table class="scene-def-table">
+        <colgroup>
+          <col class="col-type" />
+          <col class="col-desc" />
+          <col class="col-place" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="col-type">名称</th>
+            <th class="col-desc">说明</th>
+            <th class="col-place">常见落点</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="col-type">验证 / 检查章节</td>
+            <td class="col-desc">独立 H2/H3 或固定区块，视觉与普通正文区分，可被单独定位。</td>
+            <td class="col-place">安装指南末尾、配置完成后、排障收尾</td>
+          </tr>
+          <tr>
+            <td class="col-type">验收用例</td>
+            <td class="col-desc">给出可对照的输入与输出（或命令与样例回执），形成闭环入口。</td>
+            <td class="col-place">冒烟清单、Quickstart 验收、回归用例</td>
+          </tr>
+          <tr>
+            <td class="col-type">可执行验证方法</td>
+            <td class="col-desc">优先命令 / 代码块；禁止仅写「观察是否正确」等无法执行的描述。</td>
+            <td class="col-place">CLI 检查、API 探测、健康检查脚本</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
 
-      <h2 id="content-side">内容侧改造建议</h2>
-      <div class="surface-card principle-deliverable">1. 验证章节提供具体、可执行的验证方法 + 成功/失败判断标准<br>2. 验证方法使用命令或代码块，拒绝模糊描述（如&quot;观察结果是否正确&quot;）</div>
+    <section class="section" id="scenarios">
+      <h2>适用场景</h2>
+      <table class="scene-def-table">
+        <colgroup>
+          <col class="col-type" />
+          <col class="col-place" />
+          <col class="col-desc" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="col-type">优先级</th>
+            <th class="col-place">页面类型</th>
+            <th class="col-desc">说明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="col-type"><span class="badge badge-bad">必做</span></td>
+            <td class="col-place">操作类教程、安装部署、排障手册</td>
+            <td class="col-desc">缺独立验证入口时，Agent 无法闭环核对。</td>
+          </tr>
+          <tr>
+            <td class="col-type"><span class="badge badge-should">建议做</span></td>
+            <td class="col-place">API Quickstart、配置变更、能力开通页</td>
+            <td class="col-desc">配置独立「验证」节或用例，附输入 / 输出。</td>
+          </tr>
+          <tr>
+            <td class="col-type"><span class="badge badge-optional">可不做完整改造</span></td>
+            <td class="col-place">纯概念、架构说明、无执行路径的概览</td>
+            <td class="col-desc">可链到操作页的验证节；一旦有任务步骤仍须补入口。</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
 
-      <h2 id="code-side">代码侧改造建议</h2>
-      <div class="surface-card principle-deliverable">1. 验证步骤可结构化导出为 checklist 字段<br>2. 与步骤列表化联动，确保每个操作有对应验证</div>
+    <section class="section" id="design-ui">
+      <h2>设计UI调整</h2>
+
+      <h3 class="fn-h3" id="design-suggestions">调整建议</h3>
+      <ul class="principle-suggestions">
+        <li>
+          <span class="sug-title">「验证」作固定章节</span>
+          <span class="sug-desc">使用固定 H2/H3 标题（如「验证」「检查结果」），样式与普通正文区分，便于扫读定位。</span>
+        </li>
+        <li>
+          <span class="sug-title">输入与输出成对呈现</span>
+          <span class="sug-desc">验证块内命令 / 请求与样例回执相邻展示，形成可对照的视觉单元。</span>
+        </li>
+      </ul>
+
+      <h3 class="fn-h3" id="design-example">调整示例</h3>
+      <div class="principle-example">
+        <h4 class="fn-h4">独立验证区块，不埋在段落里</h4>
+        <div class="fn-ex-row" id="ex-verify-ui">
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label">反面</span>
+              <div class="fn-ex-bar" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="反面：埋在段落">
+                <div class="st-card">
+                  <p class="ex-doc-h">安装驱动</p>
+                  <p class="ex-doc-p">安装完成后请自行确认环境是否正常，再继续配置。</p>
+                </div>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>常见疏漏：</strong>无独立入口、无可执行方法，Agent 无处核对。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label is-good">正面</span>
+              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="正面：独立验证节">
+                <div class="st-card">
+                  <div class="ex-verify">
+                    <p class="ex-verify-title">验证</p>
+                    <div class="ex-verify-code">
+                      <p class="ex-verify-lang">Bash</p>
+                      <p class="ex-verify-pre">npu-smi info</p>
+                    </div>
+                    <p class="ex-verify-expect"><strong>预期：</strong>退出码 0，列表中至少 1 张 NPU。</p>
+                  </div>
+                </div>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>正确做法：</strong>独立标题 + 可执行命令 + 可对照预期。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="content-adjust">
+      <h2>文档内容调整</h2>
+
+      <h3 class="fn-h3" id="content-suggestions">调整建议</h3>
+      <ul class="principle-suggestions">
+        <li>
+          <span class="sug-title">提供可执行验证方法</span>
+          <span class="sug-desc">用命令或代码块写出检查步骤；附成功 / 失败判断标准，拒绝模糊「观察是否正确」。</span>
+        </li>
+        <li>
+          <span class="sug-title">输入与输出成对给出</span>
+          <span class="sug-desc">每个验证用例写清输入（命令 / 请求）与输出样例或关键判据，与步骤列表联动。</span>
+        </li>
+      </ul>
+
+      <h3 class="fn-h3" id="content-example">调整示例</h3>
+      <div class="principle-example">
+        <h4 class="fn-h4">验证节用命令而非模糊描述</h4>
+        <div class="fn-ex-row" id="ex-content-verify">
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label">反面</span>
+              <div class="fn-ex-bar" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="反面：模糊验证">
+                <pre class="st-code">## 后续
+
+请观察结果是否正确，
+确认无误后进入下一章。
+
+← 无法执行 / 无法核对</pre>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>常见疏漏：</strong>无验证入口、无可对照 I/O，闭环断裂。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label is-good">正面</span>
+              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="正面：验证用例">
+                <pre class="st-code">## 验证
+
+**输入**
+```bash
+curl -s localhost:8080/health
+```
+
+**输出（成功）**
+```json
+{"status":"ok"}
+```
+
+← 可对照闭环</pre>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>正确做法：</strong>独立验证节 + 命令 + 成功样例。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="frontend-adjust">
+      <h2>前端调整</h2>
+
+      <h3 class="fn-h3" id="frontend-suggestions">调整建议</h3>
+      <ul class="principle-suggestions">
+        <li>
+          <span class="sug-title">验证块进入首包</span>
+          <span class="sug-desc">验证章节在 SSR / 首包输出，禁 JS 仍可读；可结构化导出为 checklist 字段。</span>
+        </li>
+        <li>
+          <span class="sug-title">语义标注验证区</span>
+          <span class="sug-desc">可用 <code>data-verify</code> / <code>data-checklist</code> 等标注，并与步骤列表联动。</span>
+        </li>
+      </ul>
+
+      <h3 class="fn-h3" id="frontend-example">调整示例</h3>
+      <div class="principle-example">
+        <h4 class="fn-h4">验证区可机读标注</h4>
+        <div class="fn-ex-row" id="ex-frontend-verify">
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label">反面</span>
+              <div class="fn-ex-bar" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="反面：无语义">
+                <pre class="st-code">&lt;div class="note"&gt;
+  确认环境正常即可。
+&lt;/div&gt;
+
+← 无验证语义</pre>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>常见疏漏：</strong>切片无法识别验证入口与 checklist。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label is-good">正面</span>
+              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="正面：data-verify">
+                <pre class="st-code">&lt;section data-verify
+  data-checklist="health"&gt;
+  &lt;h2&gt;验证&lt;/h2&gt;
+  &lt;pre&gt;curl -s .../health&lt;/pre&gt;
+  &lt;p data-expected&gt;{"status":"ok"}&lt;/p&gt;
+&lt;/section&gt;
+
+← 可切验证 chunk</pre>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>正确做法：</strong>首包输出；data-* 标验证与预期联动。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
   </main>
 </div>
 
+<script>
+  if (location.hash === "#expected-result") {
+    location.replace("principles-expected.html");
+  }
+</script>
 <script src="assets/js/site-config.js"></script>
 <script src="assets/js/site-init.js"></script>
 <script src="assets/js/module-sidebar.js"></script>
