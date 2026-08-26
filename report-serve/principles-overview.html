@@ -463,9 +463,9 @@
             <a class="ov-flow-circle" href="#goal-reach">
               <p class="ov-flow-title">可达</p>
               <ul class="ov-flow-list">
-                <li>发现入口与索引通畅</li>
-                <li>站内位置可定位</li>
-                <li>双轨同源可消费</li>
+                <li>机器可发现</li>
+                <li>机器消费轨道</li>
+                <li>站内可定位</li>
               </ul>
             </a>
           </div>
@@ -573,7 +573,7 @@
               <ul class="ov-subgoal-list">
                 <li><strong>范围划定</strong>：营销/活动页可不做完整亲和改造，但须在收录策略中明确划清界限。</li>
                 <li><strong>入口真实</strong>：避免使用不稳定短链或登录墙阻挡官方事实页；即便已持有 URL，入口也必须真实可进入。</li>
-                <li><strong>双轨同源</strong>：严禁“双标”，杜绝给人看一套、给机器看另一套内容，必须保证完全同源同步。</li>
+                <li><strong>双轨同源</strong>：人读 HTML 与 MD / source 须同源同步，严禁按 UA 换皮；入口与平行源基建归在可达（见 G1.2 / G1.3）。</li>
               </ul>
             </div>
           </div>
@@ -586,12 +586,34 @@
             <h4 class="ov-subgoal-how">执行要点</h4>
             <ul class="ov-subgoal-list">
               <li>持续部署并维护 llms.txt / sitemap，建立随发布自动更新的构建管道。</li>
-              <li>配置 robots 放行可索引与 source 路径；确保 URL 永久稳定、可被引用。</li>
+              <li>配置 robots 放行可索引与 source / Markdown 路径；确保 URL 永久稳定、可被引用。</li>
               <li>全面覆盖文档站、官网及所有需要被引用的公开页面。</li>
             </ul>
           </div>
           <div class="ov-subgoal" id="goal-reach-2">
-            <h3 class="ov-subgoal-id"><span class="ov-goal-g">G1.2</span> 站内位置可定位</h3>
+            <h3 class="ov-subgoal-id"><span class="ov-goal-g">G1.2</span> 渲染页入口可辨识</h3>
+            <h4 class="ov-subgoal-how">核心目的</h4>
+            <p class="ov-subgoal-desc">解决“人读页上找不找得到机器入口”的问题。发现层部署之后，须在渲染页用可读文案标出站级 / 页级 / 内容块入口，禁止只靠图标或悬停。</p>
+            <h4 class="ov-subgoal-how">执行要点</h4>
+            <ul class="ov-subgoal-list">
+              <li>页脚等次要区标出站级清单（如 llms.txt）；文档页头提供「复制 / 打开 Markdown」等页级入口。</li>
+              <li>强视觉块可挂平行 MD 入口；文案自描述，与 source / llms 路径语义一致。</li>
+              <li>入口须首包直出、默认可跟链；细则见「AI入口可识别」原则页与设计专项。</li>
+            </ul>
+          </div>
+          <div class="ov-subgoal" id="goal-reach-3">
+            <h3 class="ov-subgoal-id"><span class="ov-goal-g">G1.3</span> 双轨同源可消费</h3>
+            <h4 class="ov-subgoal-how">核心目的</h4>
+            <p class="ov-subgoal-desc">打造机器消费轨道，解决“用什么方式最快、最好进”的问题。在 HTML 之外提供平行的 MD / source 源，声明 alternate，并保证与人读页同源更新，衔接到下一阶段的“可读”。</p>
+            <h4 class="ov-subgoal-how">执行要点</h4>
+            <ul class="ov-subgoal-list">
+              <li>在 HTML 之外提供平行的 MD / source 等结构化纯文本源，作为“快车道”。</li>
+              <li>机器源与人读页必须同源实时更新，严禁按 UA 动态换皮。</li>
+              <li>页面模板需明确声明机器源 / alternate；版面如何标出入口见 G1.2。</li>
+            </ul>
+          </div>
+          <div class="ov-subgoal" id="goal-reach-4">
+            <h3 class="ov-subgoal-id"><span class="ov-goal-g">G1.4</span> 站内位置可定位</h3>
             <h4 class="ov-subgoal-how">核心目的</h4>
             <p class="ov-subgoal-desc">建立精准定位机制，解决“机器找对地方没”的问题。通过建立知识树坐标，用面包屑标定层级、邻篇建立上下文、稳定锚点落到小节，使机器明确当前页面的准确位置。</p>
             <h4 class="ov-subgoal-how">执行要点</h4>
@@ -599,17 +621,6 @@
               <li>提供标准面包屑，标明当前页在站点层级中的精确位置。</li>
               <li>提供邻篇导航，便于模型沿手册结构进行上下文连贯的发现。</li>
               <li>为所有章节使用稳定锚点，支持模型精准定位到具体小节。</li>
-            </ul>
-          </div>
-          <div class="ov-subgoal" id="goal-reach-3">
-            <h3 class="ov-subgoal-id"><span class="ov-goal-g">G1.3</span> 双轨同源可消费</h3>
-            <h4 class="ov-subgoal-how">核心目的</h4>
-            <p class="ov-subgoal-desc">打造快捷接入通道，解决“用什么方式最快、最好进”的问题。在发现入口的瞬间，直接衔接到下一阶段的“可读”；在 HTML 之外提供平行的 MD / source 源，声明 alternate，并保证与人读页同源更新。</p>
-            <h4 class="ov-subgoal-how">执行要点</h4>
-            <ul class="ov-subgoal-list">
-              <li>在 HTML 之外提供平行的 MD / source 等结构化纯文本源，作为“快车道”。</li>
-              <li>机器源与人读页必须同源实时更新，严禁按 UA 动态换皮。</li>
-              <li>页面模板需明确声明机器源 / alternate 入口，便于发现与抓取。</li>
             </ul>
           </div>
         </div>

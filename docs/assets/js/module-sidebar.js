@@ -11,24 +11,28 @@
     ],
     principles: [
       {
-        group: "可达", id: "page-discover", href: "principles-structure-llms.html", label: "页面可发现",
-        pageIds: ["page-discover", "structure-llms"]
-      },
-      {
-        group: null, id: "page-context", href: "principles-breadcrumb.html", label: "页面可访问",
-        pageIds: ["page-context", "breadcrumb", "neighbor"],
+        group: "可达", id: "machine-discover", href: "principles-structure-llms.html", label: "机器可发现",
+        pageIds: ["machine-discover", "page-discover", "structure-llms", "machine-entry"],
         children: [
-          { id: "breadcrumb", href: "principles-breadcrumb.html", label: "面包屑" },
-          { id: "neighbor", href: "principles-neighbor.html", label: "邻篇导航" }
+          { id: "structure-llms", href: "principles-structure-llms.html", label: "发现层部署", pageIds: ["page-discover", "structure-llms"] },
+          { id: "machine-entry", href: "principles-machine-entry.html", label: "AI入口可识别" }
         ]
       },
       {
-        group: null, id: "section-anchor", href: "principles-section-anchor.html", label: "章节可访问",
-        pageIds: ["section-locate", "section-anchor"]
+        group: null, id: "machine-track", href: "principles-format.html", label: "机器消费轨道",
+        pageIds: ["machine-track", "format", "dual-track"],
+        children: [
+          { id: "format", href: "principles-format.html", label: "双轨交付", pageIds: ["format", "dual-track"] }
+        ]
       },
       {
-        group: null, id: "format", href: "principles-format.html", label: "双轨交付",
-        pageIds: ["format"]
+        group: null, id: "site-locate", href: "principles-breadcrumb.html", label: "站内可定位",
+        pageIds: ["site-locate", "page-context", "breadcrumb", "neighbor", "section-locate", "section-anchor"],
+        children: [
+          { id: "breadcrumb", href: "principles-breadcrumb.html", label: "面包屑" },
+          { id: "neighbor", href: "principles-neighbor.html", label: "邻篇导航" },
+          { id: "section-anchor", href: "principles-section-anchor.html", label: "章节可访问", pageIds: ["section-locate", "section-anchor"] }
+        ]
       },
       {
         group: "可读", id: "content-retrievable", href: "principles-content-retrievable.html", label: "页面 HTML 可读",
@@ -156,6 +160,7 @@
   }
 
   function childActive(child) {
+    if (child.pageIds && child.pageIds.indexOf(page) !== -1) return true;
     if (child.id === page) return true;
     var href = child.href || "";
     var hashIdx = href.indexOf("#");

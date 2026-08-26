@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>机器发现层可部署 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
+  <title>发现层部署 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
   <link rel="stylesheet" href="assets/css/style.css">
 <style>
   .topbar {
@@ -417,14 +417,14 @@
   <main class="main-content">
 
     <div class="page-header">
-      <h1>机器发现层可部署</h1>
+      <h1>发现层部署</h1>
       <p class="page-desc page-desc--split">
-        <span class="page-desc-line">为了帮助 Agent 与合规爬虫直达可抓取入口，须在站点层部署发现层（<code>robots.txt</code>、<code>sitemap.xml</code>、<code>llms.txt</code>、<code>llms-full.txt</code>），并声明抓取 URL 与主推版本；人类浏览页提供可见的站级机器入口。</span>
+        <span class="page-desc-line">站点层必须部署机器发现层标准四件套（<code>robots.txt</code>、<code>sitemap.xml</code>、<code>llms.txt</code>、<code>llms-full.txt</code>），放行可索引路径与机器源（source）路径，并显式声明抓取 URL 与主推版本，以确保机器能稳定发现并进入。</span>
       </p>
     </div>
 
     <section class="section" id="objects">
-      <h2>适用对象</h2>
+      <h2>部署对象</h2>
       <table class="scene-def-table">
         <colgroup>
           <col class="col-type" />
@@ -439,19 +439,19 @@
         <tbody>
           <tr>
             <td class="col-type"><code>robots.txt</code></td>
-            <td class="col-desc">站点爬取规则：声明允许 / 禁止路径，并指向 Sitemap；必须放行机器可读源（如 MD/source 路径），严禁误挡 Agent 与合规爬虫。</td>
+            <td class="col-desc"><strong>站点爬取规则：</strong><br>声明允许 / 禁止路径，并指向 Sitemap。必须放行可索引页与机器源（MD / source）路径；严禁误挡 Agent 与合规爬虫。</td>
           </tr>
           <tr>
             <td class="col-type"><code>sitemap.xml</code></td>
-            <td class="col-desc">站点 URL 清单：列出应被索引的页面及更新时间；优先收录机器源路径，确保 Agent 快速定位权威页面。</td>
+            <td class="col-desc"><strong>站点 URL 清单：</strong><br>列出应索引页面及更新时间。必须覆盖权威文档页，并优先收录机器源路径，便于 Agent 定位。</td>
           </tr>
           <tr>
             <td class="col-type"><code>llms.txt</code></td>
-            <td class="col-desc">面向大模型的站点索引：按产品线 / 版本列出推荐抓取入口，为 Agent 提供站内知识地图，减少盲目爬取。</td>
+            <td class="col-desc"><strong>面向大模型的站级索引：</strong><br>按产品线 / 版本列出推荐抓取入口。必须声明主推版本，且篇名与目标页 H1 / 侧栏用语保持一致。</td>
           </tr>
           <tr>
             <td class="col-type"><code>llms-full.txt</code></td>
-            <td class="col-desc">面向大模型的全文包：将索引文档的 Markdown 正文聚合为单文件，为 Agent 提供一次性读取的完整上下文，大幅提升抓取效率。</td>
+            <td class="col-desc"><strong>面向大模型的全文聚合包：</strong><br>将索引文档的 Markdown 正文聚合为单文件。必须随文档发布自动生成，并与 <code>llms.txt</code> 入口保持同源更新。</td>
           </tr>
         </tbody>
       </table>
@@ -475,17 +475,17 @@
         <tbody>
           <tr>
             <td class="col-type"><span class="badge badge-bad">必做</span></td>
-            <td class="col-place">文档站、手册 / 知识中心</td>
+            <td class="col-place"><strong>知识面：</strong>文档站 / 手册 / 知识中心</td>
             <td class="col-desc">必须部署全套四件套：<code>robots.txt</code> + <code>sitemap.xml</code> + <code>llms.txt</code> + <code>llms-full.txt</code>。这是 Agent 的「总入口」，缺一不可，严禁漏配。</td>
           </tr>
           <tr>
             <td class="col-type"><span class="badge badge-should">建议做</span></td>
-            <td class="col-place">官网产品 / 规格详情站</td>
+            <td class="col-place"><strong>产品面：</strong>官网产品 / 规格详情</td>
             <td class="col-desc">至少部署三件套：<code>robots.txt</code>（放行机器源）+ <code>sitemap.xml</code>（含 MD/source）+ <code>llms.txt</code>。当存在大量可入库正文时，须补齐 <code>llms-full.txt</code>。</td>
           </tr>
           <tr>
             <td class="col-type"><span class="badge badge-optional">可不做完整改造</span></td>
-            <td class="col-place">纯营销落地站、临时活动域</td>
+            <td class="col-place"><strong>营销面：</strong>落地页 / 临时活动域</td>
             <td class="col-desc">不必挂齐四件套，但必须在 <code>robots.txt</code> / 收录策略中明确划界。严禁假挂空的 <code>llms.txt</code> 或空清单误导 Agent。</td>
           </tr>
         </tbody>
