@@ -91,7 +91,7 @@
 
     <div class="page-header">
       <h1>全量亲和原则 34 项</h1>
-      <p class="page-desc">按「可达 / 可读 / 可理解 / 可操作 / 可验证」分组，为内容、设计、前端提供可执行对照。</p>
+      <p class="page-desc">按侧栏「可达 / 可读 / 可理解 / 可操作 / 可验证」分组，沿用全量表模板整合原有原则并补齐侧栏条目；覆盖文档内容、设计 UI、前端三个交付维度。</p>
     </div>
 
     <div class="affinity-full-toolbar">
@@ -102,11 +102,16 @@
           <option value="design">调整项：设计UI</option>
           <option value="dev">调整项：前端</option>
         </select>
+        <select id="affinity-source-filter" class="affinity-full-filter-select" aria-label="原则来源筛选">
+          <option value="all" selected>原则来源：全部</option>
+          <option value="diagnosis">原则来源：实测诊断</option>
+        </select>
         <span id="affinity-filter-count" class="affinity-filter-count">34 项</span>
       </div>
     </div>
 
     <section class="section" id="affinity-catalog">
+
       <h3 class="affinity-group-title">可达</h3>
       <div class="affinity-table-wrap">
       <table class="data-table data-table--affinity">
@@ -116,6 +121,7 @@
           <col class="col-content">
           <col class="col-design">
           <col class="col-code">
+          <col class="col-source">
           <col class="col-basis">
         </colgroup>
         <thead>
@@ -125,6 +131,7 @@
             <th>文档内容调整</th>
             <th>设计UI 调整</th>
             <th>前端调整</th>
+            <th>原则来源</th>
             <th>理论依据</th>
           </tr>
         </thead>
@@ -132,47 +139,51 @@
           <tr id="principle-full-1" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
             <td class="col-id">1</td>
             <td>页面可发现</td>
-            <td><strong>清单按产品线/版本分组</strong>：<br>llms.txt 按产品线、版本分节，并标明主推版本。<br><strong>入口名与正文一致</strong>：<br>机器入口文案与页内说明同义，避免另起叫法。</td>
-            <td><strong>页脚标出机器入口</strong>：<br>页脚提供可读的 llms.txt 文本链，可直接跟链。</td>
-            <td><strong>robots/sitemap 对齐机器源</strong>：<br>放行 .md 与 llms.txt；sitemap 优先机器源，排除营销噪声。</td>
+            <td><strong>清单按产品线</strong>：<br>/ 版本分组 llms.txt 必须按产品线、版本号结构化分节。<br><strong>显式写明主推版本 必须声明当前主推版本（如 # 主推版本</strong>：<br>CANN 8.0）；多版本并存时，严禁只罗列 URL 而不声明主推。<br><strong>入口名与正文同名</strong>：<br>llms.txt 中的篇名 / 手册名必须与目标页 H1、侧栏用语一致，严禁另起一套叫法导致「看得见但对不上」。</td>
+            <td><strong>&quot;机器可读版本&quot;入口</strong>：<br>增加固定入口，文案明确为&quot;机器可读版本（source HTML）&quot;或类似表述，禁止用泛化图标替代文字链接。<br><strong>入口样式规范</strong>：<br>该入口视觉权重与页脚其他导航链接一致，不突出也不隐藏，全站样式统一</td>
+            <td><strong>部署 /llms.txt</strong>：<br>按产品线-版本分组，构建管道从 CMS 文档元数据自动生成，文档发布时自动更新，不依赖人工维护。<br><strong>部署 /llms-full.txt</strong>：<br>构建管道从 /doc_center/source/ 自动聚合所有索引文档的 Markdown 全文为单文件，随文档发布自动重新生成。<br><strong>&lt;head&gt; 中注入机器发现标签</strong>：<br>每个页面自动输出 &lt;link rel=&quot;llms&quot; href=&quot;/llms.txt&quot;&gt; 和 &lt;link rel=&quot;alternate&quot; type=&quot;text/markdown&quot; href=&quot;对应source路径&quot;&gt;，由页面模板统一生成<br><strong>sitemap.xml 优先收录 source 路径</strong>：<br>/doc_center/source/ 下的机器源路径优先级（priority）高于渲染页，lastmod 字段从文档 dateModified 自动同步。<br><strong>robots.txt 配置</strong>：<br>放行 source/ 路径，禁止爬取 /assets/、/api/，文件末尾指向 sitemap.xml，引导爬虫走机器源路径。</td>
+            <td class="col-source"><a href="problems-structure-llms.html" class="badge badge-accent source-diagnosis-link">实测诊断</a><span class="badge badge-primary col-source-secondary">阳狮团队已识别</span></td>
             <td class="col-basis"><span class="copy-explain" tabindex="0" data-tip="Barnett et al. 2024 · FP1 Missing Content：文档未进入知识库（爬取入口缺失或被 robots 屏蔽）">Barnett FP1</span><br><span class="copy-explain" tabindex="0" data-tip="Aggarwal et al. 2024 · Generative Engine Optimization：优化内容结构与权威性信号，使其更易被生成式搜索引擎引用">GEO 2024</span></td>
           </tr>
           <tr id="principle-full-2" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
             <td class="col-id">2</td>
             <td>面包屑</td>
-            <td><strong>路径命名全站一致</strong>：<br>面包屑、侧栏、H1、适用条件中的产品线/版本名保持一致。</td>
-            <td><strong>路径默认可见</strong>：<br>展示真实站点层级；版本写入路径一级，末级为当前篇名（纯文本）。</td>
-            <td><strong>祖先为真链</strong>：<br>上级层用 a[href] 指向真实文档页；首包即输出完整路径。</td>
+            <td><strong>全链路同名</strong>：<br>面包屑层级名、侧栏手册树、页内 H1、正文适用条件以及 sitemap / MD 路径，必须保持全局统一的命名与版本号。严禁出现「看得见但对不上」的割裂感，或同一页面被识别为多个入口的歧义。<br><strong>过渡期路径补位</strong>：<br>页面面包屑未达标前，须在 llms.txt 或平行 MD 源中显式写出祖先链作为补位；页面 HTML 达标后，以 HTML 为准，并及时移除冗余的重复维护。</td>
+            <td><strong>路径默认可见</strong>：<br>面包屑必须呈现真实站点层级路径（含产品线 / 手册名 / 版本等上级层）；末级为当前篇名，采用不可点击的纯文本样式。<br><strong>版本须写进路径</strong>：<br>版本号作为路径中的一级写出；页眉下拉可保留，但不得以只写「版本」的控件替代路径层，默认态须能读到具体版本。</td>
+            <td><strong>真实可跟链</strong>：<br>每一级祖先须为带真实文档地址的 a[href] + 可见文案；当前页用纯文本，勿做成自链。href 须指向手册祖先页，不得链到 sitemap XML 等无关地址。<br><strong>首包即含全量路径</strong>：<br>首包 HTML 输出与可见 UI 一致的完整祖先路径；中间级不得缺失，也不得只写在 __NUXT_DATA__ 或前端脚本里、等 JS 跑完才补全。<br><strong>结构化可选</strong>：<br>在可跟链与首包达标后，可再补 BreadcrumbList / isPartOf 等结构化数据；不得用 JSON-LD 代替首包路径。</td>
+            <td class="col-source">—</td>
             <td class="col-basis">—</td>
           </tr>
           <tr id="principle-full-3" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
             <td class="col-id">3</td>
             <td>邻篇导航</td>
-            <td><strong>篇名与手册一致</strong>：<br>邻篇文案与目标页 H1、目录名一致；顺序与手册对齐。</td>
-            <td><strong>邻篇默认可见</strong>：<br>展示「上一篇/下一篇 + 真实篇名」，不用纯箭头或「返回/继续」。</td>
-            <td><strong>邻篇为真链</strong>：<br>用带真实 URL 的 a[href]，锚文本含篇名；首包即输出。</td>
+            <td><strong>篇名与正文一致</strong>：<br>邻篇文案必须与目标页 H1、侧栏目录用语完全一致；严禁另起一套叫法导致「看得见但对不上」或同一篇被识别成多个入口。<br><strong>顺序与手册对齐</strong>：<br>上一篇 / 下一篇的顺序必须与手册目录 / 教程序列严格对齐；严禁凭版式随意跳接无关页。</td>
+            <td><strong>邻篇默认可见</strong>：<br>上一篇 / 下一篇入口须默认可见，文案必须包含真实篇名；严禁仅写「上一页 / 下一页」或纯箭头。<br><strong>关系词写清</strong>：<br>须使用「上一篇 / 下一篇」等明确文档关系词，严禁使用「返回 / 继续」等无法判断邻接目标的泛词。</td>
+            <td><strong>真实可跟链</strong>：<br>邻篇必须使用带真实文档 URL 的 &lt;a href&gt; 标准链接，锚文本必须包含篇名；严禁仅用 button 或无地址的伪点击态冒充链接。<br><strong>首包即含邻篇</strong>：<br>首包 HTML 须直接输出上一篇 / 下一篇的可跟链；严禁仅依赖客户端路由或脚本注入后才出现。</td>
+            <td class="col-source">—</td>
             <td class="col-basis">—</td>
           </tr>
           <tr id="principle-full-4" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
             <td class="col-id">4</td>
             <td>章节可访问</td>
-            <td><strong>标题可独立理解</strong>：<br>节标题能单独读懂主题；目录文案与节标题字面一致。</td>
-            <td><strong>锚点标识默认可见</strong>：<br>H2–H3 旁「#」默认露出，可一键复制含 hash 的地址。</td>
-            <td><strong>TOC 为真 hash 链</strong>：<br>目录项用 a[href=&quot;#id&quot;]，跳转后地址栏出现独立 # 锚点。</td>
+            <td><strong>标题可独立理解</strong>：<br>节标题须能单独读懂主题，避免「如下」「续」「说明」等无主题标题；节名同时作为锚点文案来源。<br><strong>目录文案与标题一致</strong>：<br>页内锚点导航项字面须等于对应节标题，禁止缩写或另起一套叫法。<br><strong>跨页写清节名</strong>：<br>引用写成「篇名 · 章节名」，禁止「见上文」「点击这里」等无法落到具体节的泛词。</td>
+            <td><strong>锚点跳转的视觉反馈</strong>：<br>用户或大模型通过锚点链接跳转后，目标段落需要有高亮或滚动定位的视觉提示，让用户确认落点正确，避免跳转后找不到对应内容<br><strong>锚点链接入口</strong>：<br>每个标题或内容块旁提供可点击的锚点图标（如 # 符号），hover 时显示，方便用户复制引用链接</td>
+            <td><strong>锚点 ID 的稳定性保证</strong>：<br>锚点 ID 必须基于内容语义生成（如标题文本的 slug），而非基于渲染顺序或随机值。内容未变动时 ID 不变，避免大模型缓存的引用链接失效<br><strong>锚点 ID 覆盖粒度</strong>：<br>不能只有页面级 URL，H1-H5 标题、关键段落、列表块、表格、图片都需要有锚点 ID，保证大模型可以精确引用到内容块而非只能指向整页<br><strong>锚点在 SSR 首屏 HTML 直出</strong>：<br>id 属性必须在服务端渲染时写入 DOM，不能由客户端 JS 动态生成，否则爬虫拿不到锚点信息<br><strong>锚点与页面大纲接口联动</strong>：<br>“标题明确”原则已有大纲接口，此处需将锚点 ID 作为必要字段输出，供大模型直接获取可引用的精确地址。</td>
+            <td class="col-source">—</td>
             <td class="col-basis"><span class="copy-explain" tabindex="0" data-tip="Barnett et al. 2024 · FP3 Not in Context：文档被召回但未进入 LLM context 窗口（chunking/截断）">Barnett FP3</span></td>
           </tr>
           <tr id="principle-full-5" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
             <td class="col-id">5</td>
             <td>双轨交付</td>
-            <td><strong>同源同文</strong>：<br>Markdown 与 HTML 由同一来源导出，禁止给人/机器两套正文。</td>
-            <td><strong>页头提供 MD 入口</strong>：<br>「打开/复制 Markdown」文案写清动作；强视觉块可配平行 MD。</td>
-            <td><strong>机器源可直链</strong>：<br>.md 路径可访问、robots 放行，并进 llms.txt；构建校验两轨一致。</td>
+            <td><strong>同源同文</strong>：<br>Markdown / 纯净正文与 HTML 渲染页必须由同一来源导出；严禁给人看一套、给机器看另一套，或按 UA 动态换皮。<br><strong>入口文案写清动作</strong>：<br>入口须使用「复制 Markdown」「打开 Markdown」「机器可读版本」等可独立理解的短语；严禁只写「MD」「源码」等含糊缩写而无动作说明。</td>
+            <td><strong>文档页级</strong>：<br>Markdown 入口 文档页头必须提供可见的「打开 / 复制 Markdown」入口，文案须写清具体动作；严禁仅用仓库源码链替代。若整站 llms.txt 已收录稳定的本页 .md 直链，可免重复堆按钮。<br><strong>内容块平行</strong>：<br>MD 架构图、规格表等强视觉块必须配备平行 Markdown；标题旁轻量 MD 徽标仅作快捷入口，严禁替代正文。若首包已包含完整可抓取的语义化 HTML 表，徽标可省略。<br><strong>入口默认可见</strong>：<br>机器可读入口必须为可见文字或明确动作控件；严禁仅用无字图标暗示存在 Markdown 版本。</td>
+            <td><strong>Markdown 源文件对外可访问</strong>：<br>/doc_center/source/ 路径下的 Markdown 文件必须可直接访问和下载，不做鉴权拦截，配合 robots.txt 放行和 llms.txt 索引。<br><strong>两轨内容一致性校验</strong>：<br>构建流程中对比 Markdown 源文件与生成的 HTML 内容，检测是否存在渲染层单独修改导致的内容不一致，不一致则阻断发布。<br><strong>Markdown 文件元数据同步</strong>：<br>Markdown 文件头部的 frontmatter（版本号、日期、状态等）与 HTML 页面 &lt;head&gt; 中的 meta 和 JSON-LD 字段保持自动同步，由构建管道统一处理，不依赖人工双向维护。<br><strong>HTML源码优化</strong>：<br>不使用 .md 的渲染页面，采用 .html 渲染页面，需尽量在前端输出，不通过服务端动态渲染。</td>
+            <td class="col-source"><a href="problems-format.html" class="badge badge-accent source-diagnosis-link">实测诊断</a></td>
             <td class="col-basis"><span class="copy-explain" tabindex="0" data-tip="Barnett et al. 2024 · FP1 Missing Content：文档未进入知识库（爬取入口缺失或被 robots 屏蔽）">Barnett FP1</span></td>
           </tr>
         </tbody>
       </table>
       </div>
-
 
       <h3 class="affinity-group-title">可读</h3>
       <div class="affinity-table-wrap">
@@ -183,6 +194,7 @@
           <col class="col-content">
           <col class="col-design">
           <col class="col-code">
+          <col class="col-source">
           <col class="col-basis">
         </colgroup>
         <thead>
@@ -192,6 +204,7 @@
             <th>文档内容调整</th>
             <th>设计UI 调整</th>
             <th>前端调整</th>
+            <th>原则来源</th>
             <th>理论依据</th>
           </tr>
         </thead>
@@ -199,111 +212,123 @@
           <tr id="principle-full-6" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
             <td class="col-id">6</td>
             <td>页面 HTML 可读</td>
-            <td><strong>正文不依赖客户端渲染</strong>：<br>关键文字须在静态/SSR HTML 中可得，避免无限滚动、虚拟列表藏文。</td>
-            <td><strong>不用无限滚动藏正文</strong>：<br>文档页用分页或一次完整展示，不靠滚到底才加载关键段。</td>
-            <td><strong>首包 SSR 完整输出</strong>：<br>标题、正文、代码、表格进首包；禁文字懒加载与虚拟滚动。</td>
+            <td><strong>文档内容必须确保传统的搜索引擎爬虫和AI爬虫能够通过静态HTML或服务端渲染（SSR）的方式获取到完整的、不依赖客户端执行JavaScript的内容。具体禁止</strong>：<br>无限滚动、动态渲染（页面主要内容不能完全依赖JavaScript客户端渲染）、虚拟滚动、关键内容的懒加载。</td>
+            <td><strong>禁止设计无限滚动交互</strong>：<br>文档页面不使用无限滚动加载更多内容的设计模式，内容分页或一次性完整展示</td>
+            <td><strong>SSR 完整输出页面主体内容</strong>：<br>所有文档正文、标题、代码块、表格必须在服务端渲染到首屏 HTML，禁止依赖客户端 JS 渲染主体内容<br><strong>禁止关键内容懒加载</strong>：<br>图片懒加载可以保留，但文字内容（正文、步骤、警示块、验证区块）禁止懒加载，必须随页面 HTML 直接输出<br><strong>禁止虚拟滚动</strong>：<br>长列表、长表格禁止使用虚拟滚动组件，必须完整输出所有行的 DOM 节点。<br><strong>爬虫可达性验证</strong>：<br>在 CI/CD 流程中加入静态 HTML 完整性检测，禁用 JS 后抓取页面，对比关键内容节点是否完整存在，不完整则阻断发布</td>
+            <td class="col-source"><span class="badge badge-accent">实测诊断</span><span class="badge badge-primary col-source-secondary">阳狮团队已识别</span></td>
             <td class="col-basis"><span class="copy-explain" tabindex="0" data-tip="Barnett et al. 2024 · FP1 Missing Content：文档未进入知识库（爬取入口缺失或被 robots 屏蔽）">Barnett FP1</span></td>
           </tr>
           <tr id="principle-full-7" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
             <td class="col-id">7</td>
             <td>图片内容转译</td>
-            <td><strong>图意写进正文</strong>：<br>架构/流程/关键结论用文字复述；禁止只写「见上图」。</td>
-            <td><strong>图旁提供可读说明</strong>：<br>复杂图配文字转写或可替代文本，不单靠配图传达。</td>
-            <td><strong>img 有非空 alt</strong>：<br>关键图 alt 描述内容与功能；装饰图可用空 alt。</td>
+            <td><strong>对于包含可点击区域（ImageMap，既带有&lt;map&gt;和&lt;area&gt;标签的图片），图片下方必须提供给一个完整的、无序列表样式的链接清淡，清单中列出所有热区对应的跳转目标。每个清淡项必须包含</strong>：<br>热区所代表的描述性文字，以及完整的跳转URL。禁止在清单中使用“区域1”、“链接2”等无意义的描述。</td>
+            <td><strong>图表格式规范</strong>：<br>所有流程图、时序图、架构图，在交付给研发时优先提供 Mermaid 源码，而不是导出 PNG/JPG。如果 Mermaid 表达不了，提供 SVG 源文件。<br><strong>图片排版预留 figcaption 位</strong>：<br>每张图片下方在设计稿中预留 figcaption 注释区域，作为内容转写的展示位，纳入排版规范，不能设计成没有这个位置的图文布局。<br><strong>复制链接按钮设计</strong>：<br>在 figcaption 段落旁设计&quot;复制链接&quot;按钮，以及点击后的 toast 轻提示样式（文案如&quot;已复制链接&quot;，持续约 2 秒后消失）。这个按钮需要出现在每个 figcaption 区域。<br><strong>使用装饰性图片识别</strong>：<br>在设计交付标注中，明确标出哪些图片是装饰性的（图标、分割线等），告知研发这些元素标记 aria-hidden=&quot;true&quot; 或使用 CSS 背景图实现，不需要 alt 文字。<br><strong>设计交付时，针对每一个 &lt;area&gt; 热区，同步提供</strong>：<br>a.描述性文字：热区代表的阶段名、文档名或功能名，禁止用&quot;区域1&quot;&quot;链接2&quot;等无意义文字<br>b.alt 文案：填入 &lt;area alt&gt;，一句话描述该热区的跳转目标<br>c.title 文案：补充热区的上下文说明<br><strong>热区链接清单设计</strong>：<br>在图片下方的 figcaption 区域内，预留热区链接清单的展示位，样式为无序列表，每项包含描述性文字和跳转目标，与 figcaption 图意转写并排或紧随其后。</td>
+            <td><strong>HTML 结构实现</strong>：<br>每张图片用 &lt;figure&gt; + &lt;figcaption&gt; 包裹，&lt;img&gt; 上填写设计侧提供的 alt、title、data-llm-transcription 三个字段。每个 &lt;figure&gt; 需要有唯一 id 作为锚点。<br><strong>复制链接按钮功能</strong>：<br>figcaption 旁实现&quot;复制链接&quot;按钮，点击后将当前图片的锚点 URL 写入剪贴板，同时触发 toast 提示&quot;已复制链接&quot;，2秒后自动消失。每个 &lt;figure&gt; 需要有唯一的 id 作为锚点。<br><strong>Mermaid / SVG 渲染支持</strong>：<br>研发侧引入 Mermaid 渲染库，支持在文档内容中直接嵌入 Mermaid 代码块并渲染为可交互图表。SVG 图表直接内联到 HTML 中，而不是作为 &lt;img&gt; 引用，保证文本可提取。<br><strong>Chunk 切片管道</strong>：<br>在内容切片逻辑中，将每张图片的 alt + figcaption 文字 + 图片前后的正文段落拼接为一个连续文本块，作为该图片的语义 chunk 供向量化索引使用。装饰性图片（aria-hidden=&quot;true&quot; 或 role=&quot;presentation&quot;）跳过，不参与切片。<br><strong>装饰性图片标记</strong>：<br>纯装饰性元素（图标、分割线）改用 CSS background-image 实现；若必须使用 &lt;img&gt;，标记 alt=&quot;&quot; 加 role=&quot;presentation&quot; 或 aria-hidden=&quot;true&quot;，确保不被内容提取管道处理。<br><strong>&lt;area&gt; 标签补全</strong>：<br>每个 &lt;area&gt; 必须填写 alt 和 title，href 必须为绝对 URL，禁止使用相对路径。<br><strong>&lt;nav&gt; 文本链接清单实现</strong>：<br>在每个带有 &lt;map&gt; 的图片下方，用 &lt;nav&gt; 包裹一个无序列表，覆盖全部热区目标，&lt;a&gt; 标签内必须有描述性锚文本，href 为绝对 URL。与 figcaption 图意转写组合展示。<br><strong>绝对 URL 转换</strong>：<br>构建管道中自动将 &lt;area href&gt; 和 &lt;nav&gt; 内 &lt;a href&gt; 的相对路径转换为绝对 URL，确保机器可直接引用和跳转。<br><strong>Chunk 切片管道</strong>：<br>在上一轮切片逻辑基础上，针对热区图片额外提取 &lt;nav&gt; 内的链接清单文本，与 data-llm-transcription、figcaption、周围正文拼接为一个完整 chunk。</td>
+            <td class="col-source"><a href="problems-content-image.html" class="badge badge-accent source-diagnosis-link">实测诊断</a></td>
             <td class="col-basis"><span class="copy-explain" tabindex="0" data-tip="Barnett et al. 2024 · FP1 Missing Content / FP3 Not in Context：内容完全丢失，或被召回但不在 context 中">Barnett FP1/FP3</span><br><span class="copy-explain" tabindex="0" data-tip="WCAG 2.1 Web Content Accessibility Guidelines：无障碍标准，无障碍改造同步提升 AI 对页面语义的解析质量">WCAG 2.1</span></td>
           </tr>
           <tr id="principle-full-8" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
             <td class="col-id">8</td>
             <td>图标语义锚定</td>
-            <td><strong>图标含义写成词</strong>：<br>状态/操作图标旁写清对应文字，不靠图标单独表意。</td>
-            <td><strong>图标配可见文案</strong>：<br>关键控件、状态旁有文字标签，不单靠图形。</td>
-            <td><strong>文案进 DOM</strong>：<br>图标旁文字为真实文本节点，禁只靠 CSS/背景图表达语义。</td>
+            <td><strong>文案与图标语义一致</strong>：<br>文案含义须与图标一致（如「告警」不要配成功勾）；字段名、类型名写入正文，不依赖读者识图。<br><strong>列表勿只放图标列</strong>：<br>表格或列表中承载语义的列须有文字表头与单元格文案，禁止仅以图标列区分状态或类别。<br><strong>指标数字附名称</strong>：<br>统计数字须附指标名或单位（如「收藏 228」），禁止裸数字或仅靠图标暗示量纲。</td>
+            <td><strong>图标不独自表意</strong>：<br>图标承载的字段、类型或量纲须配可见文字；图标可保留但不得作唯一载体；数字须附单位或指标名。<br><strong>提示图标配名称</strong>：<br>公告、说明等提示图标旁须有可见文字名称；日期须标明发布时间或更新截止时间。<br><strong>品牌</strong>：<br>Logo 可识别 Logo 旁显示名称，或写入源码非空 alt，二选一；每项可跟链。旁白已列同一名单时，Logo 可只作装饰。</td>
+            <td><strong>信息图标可访问名称</strong>：<br>信息型图标提供可见旁路文本或 aria-label；装饰图标用 aria-hidden="true" 或空 alt。<br><strong>入库抽取旁路文字</strong>：<br>切片管道抽取图标旁文案 / aria-label，不依赖 icon font 字形或纯 SVG path；装饰项跳过向量化。<br><strong>Logo</strong>：<br>名称可检索 品牌 Logo 须非空 alt 或旁路可见名称；首包即含该文字，禁止仅客户端补全。</td>
+            <td class="col-source">—</td>
             <td class="col-basis">—</td>
           </tr>
           <tr id="principle-full-9" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
             <td class="col-id">9</td>
             <td>颜色语义转写</td>
-            <td><strong>颜色含义写成词</strong>：<br>警告/成功/失败等须有级别词，不靠色块单独区分。</td>
-            <td><strong>色块旁写级别</strong>：<br>警示、状态色旁标注「注意/警告/危险」等文字。</td>
-            <td><strong>级别词可抓取</strong>：<br>颜色语义对应的文字写入 DOM，禁仅靠 class 色值。</td>
+            <td><strong>级别前缀统一 正文统一使用「警告</strong>：<br>」「注意：」「提示：」等前缀写法，避免同义混用或只写颜色词。<br><strong>勿用「红</strong>：<br>/ 绿」指代 表格、图例与正文中的含义用词须写类别或状态名，禁止用「红色表示失败」等指代。</td>
+            <td><strong>颜色不独自表意</strong>：<br>状态、禁用、图例等含义须配可见文字；颜色可保留但不得作唯一载体。<br><strong>警示写级别词 告警条须写出「警告</strong>：<br>」「注意：」「提示：」等前缀，禁止只靠红 / 橙 / 蓝色块区分。<br><strong>图例写分类名</strong>：<br>图表图例须写分类文字（如「训练」「推理」），禁止仅有色点与数字。</td>
+            <td><strong>级别词写入 DOM 文本 「警告</strong>：<br>」等前缀须为真实文本节点；可加 data-admonition-type 等属性辅助，但不得替代可见文字。<br><strong>禁止 CSS 伪元素独占语义 勿用</strong>：<br>:before / ::after 单独生成唯一级别词或图例名；静态抓取读不到伪元素内容。<br><strong>首包即含语义词</strong>：<br>警示前缀、禁用文案、图例分类名须在首包 HTML 中；禁止仅客户端注入。</td>
+            <td class="col-source">—</td>
             <td class="col-basis">—</td>
           </tr>
           <tr id="principle-full-10" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
             <td class="col-id">10</td>
             <td>音视频要点伴随</td>
-            <td><strong>音视频要点成文</strong>：<br>关键步骤、结论写成可阅读摘要，不单靠播放才能获知。</td>
-            <td><strong>媒体旁附要点区</strong>：<br>音视频旁提供可扫读的要点/字幕摘要入口。</td>
-            <td><strong>摘要进首包</strong>：<br>要点文本 SSR 输出；媒体可懒加载，文字不可缺失。</td>
+            <td><strong>要点与口播一致</strong>：<br>用条目概括操作步骤、命令与预期结果；旁侧要点须与口播关键事实一致，勿另写一套营销摘要。<br><strong>页内须有足够摘要</strong>：<br>可链完整讲义 / Markdown，但页内须有足够步骤与结论摘要，禁止「详见视频」作为唯一出处。</td>
+            <td><strong>媒体不独自表意</strong>：<br>讲解、步骤与结论不得仅存于音视频；须配旁侧可抓取标题与要点。画面烧字与口播均不视为文本替代。<br><strong>要点概括即可</strong>：<br>旁侧文字概括关键步骤、参数与结论即可，无需逐字转写口播；布局上要点默认可见，勿藏进需点击才展开的唯一入口。</td>
+            <td><strong>要点在首包</strong>：<br>HTML 旁侧标题与要点须随首包输出；禁止仅靠 XHR / 点击后加载字幕或摘要作为唯一文本。<br><strong>字幕不作唯一替代</strong>：<br>可提供字幕轨，但关键步骤仍须以可见正文 / 要点块交付；勿假设爬虫会解析媒体轨。<br><strong>装饰媒体勿入库</strong>：<br>装饰性背景视频 / 氛围音标记跳过向量化；信息型媒体旁的要点块须参与切片。</td>
+            <td class="col-source">—</td>
             <td class="col-basis">—</td>
           </tr>
-          <tr id="principle-full-11" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
+                                                            <tr id="principle-full-11" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
             <td class="col-id">11</td>
             <td>表格语义化</td>
-            <td><strong>表有标题与清晰列名</strong>：<br>标题能说明主题；列名可当字段名，避免「列1/备注」。</td>
-            <td><strong>表头与合并可辨</strong>：<br>表头、合并归属在视觉与结构上可识别，不靠底色冒充表头。</td>
-            <td><strong>输出 caption/th/scope</strong>：<br>首包含语义表结构；rowspan/colspan 可被切片还原。</td>
+            <td><strong>符号替换</strong>：<br>表格单元格中禁止使用仅靠形状表达含义的符号，如✅、❌、-、N/A等，所有状态必须使用完整的文字表达，如 是/否、支持/不支持。<br><strong>结构化标题</strong>：<br>表格必须使用 &lt;caption&gt; 标签提供表格标题/摘要；列名称必须使用 &lt;th&gt; 标签。<br><strong>作用域</strong>：<br>&lt;th&gt; 标签应尽可能指定 scope=&quot;col&quot; 或 scope=&quot;row&quot;。</td>
+            <td><strong>符号替换规范</strong>：<br>建立表格内容写作规范，明确禁止使用仅靠形状表达含义的符号，所有状态必须用完整文字表达，纳入内容审核流程。<br><strong>表格标题文案交付</strong>：<br>每张表格交付时同步提供 &lt;caption&gt; 文案，格式为&quot;表N 描述性标题&quot;，如&quot;表1 Ascend C Add算子设计规格&quot;，禁止使用&quot;表格1&quot;&quot;数据表&quot;等无意义文字。<br><strong>复杂规格表（如含 I/O 子表、合并单元格、多级表头）在设计交付标注中明确</strong>：<br>a.哪些单元格是表头（需用 &lt;th&gt;），哪些是数据（用 &lt;td&gt;）<br>b.表头的作用域方向（scope=&quot;col&quot; 或 scope=&quot;row&quot;）<br>c.接口列表区域标注为独立列表结构，不拆成伪数据行</td>
+            <td><strong>表格完整语义结构实现</strong>：<br>所有表格使用完整语义结构，&lt;caption&gt; 写入表格标题，&lt;thead&gt; 包裹 &lt;th&gt;，&lt;th&gt; 指定 scope，&lt;tbody&gt; 包裹数据行。<br><strong>复杂规格表 I/O 子表实现</strong>：<br>I/O 子表的 name / shape / data type / format 列必须使用 &lt;th&gt; 表头，禁止用样式伪装成表头的 &lt;td&gt;。行级表头使用 scope=&quot;row&quot;。<br><strong>在已有切片逻辑基础上，针对表格追加</strong>：<br>a.&lt;caption&gt; 内容作为表格 chunk 的标题元数据，每行 chunk 均携带<br>b.&lt;th scope=&quot;col&quot;&gt; 内容作为列名前缀，拼接到每个数据单元格<br>c.&lt;th scope=&quot;row&quot;&gt; 内容作为行名前缀，拼接到该行所有数据单元格<br>d.接口列表（&lt;ul&gt;）与所属表格绑定为同一 chunk，不拆分<br>e.优先使用 Markdown 副本入库，HTML 表格作为降级来源</td>
+            <td class="col-source"><a href="problems-content-table.html" class="badge badge-accent source-diagnosis-link">实测诊断</a></td>
             <td class="col-basis"><span class="copy-explain" tabindex="0" data-tip="Barnett et al. 2024 · FP4 Not Extracted：内容在 context 中，但 LLM 因语义破坏无法正确提取">Barnett FP4</span></td>
           </tr>
-          <tr id="principle-full-12" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
+                                                  <tr id="principle-full-12" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
             <td class="col-id">12</td>
             <td>代码块语义化</td>
-            <td><strong>围栏标明语言与场景</strong>：<br>写清 bash/python 等；必要时注明文件名与用途。</td>
-            <td><strong>语言与输出成文</strong>：<br>块顶标明语言；预期输出用独立文字块，不用截图顶替。</td>
-            <td><strong>pre/code 语义结构</strong>：<br>用 pre&gt;code；行号与正文分离，复制/入库为纯净源码。</td>
+            <td><strong>代码示例清晰可运行</strong>：<br>代码示例格式清晰，提供完整可运行示例和预期输出。<br><strong>独立可运行</strong>：<br>代码示例应尽可能自包含，用户可以复制后直接运行<br><strong>语言标注</strong>：<br>每个代码块必须标注编程语言（如&#x27;&quot;python）<br><strong>注释清晰</strong>：<br>关键行应包含注释，解释其作用<br><strong>预期输出</strong>：<br>对于执行类代码，应在代码块后提供“预期输出”块<br><strong>格式分离</strong>：<br>代码行号应由前端CSS或代码高亮库生成，严禁在代码文本中手动写入行号<br><strong>区块语义</strong>：<br>代码块应使用&lt;pre&gt;&lt;code&gt;语义标签包裹<br><strong>元信息</strong>：<br>代码块上方（可选单推荐）显示该代码的文件名、适用语言和场景。</td>
+            <td><strong>设计代码块组件，包含以下固定区域，纳入设计系统组件库</strong>：<br>a.顶部元信息栏：显示文件名、语言类型、适用场景，如 hello_world.cu | C++ | 基础bb.编译场景<br>c.代码区：行号由 CSS 渲染，不出现在可选中的文本中<br>d.底部预期输出块：执行类代码必须配套，样式与代码块区分（如不同背景色）<br>右上角复制按钮<br><strong>预期输出块样式设计</strong>：<br>预期输出块与代码块视觉上明确区分，标题固定为&quot;预期输出&quot;，不使用&quot;输出结果&quot;&quot;运行结果&quot;等变体，纳入格式规范。<br><strong>内容交付时，每个代码块同步提供</strong>：<br>a.文件名（如有）<br>b.语言类型<br>c.适用场景描述（一句话）<br>d.预期输出内容</td>
+            <td><strong>&lt;pre&gt;&lt;code&gt; 语义结构实现</strong>：<br>所有代码块使用 &lt;pre&gt;&lt;code&gt; 包裹，&lt;code&gt; 上标注 language-xxx 类名，禁止使用 highlighttable 表格布局。<br><strong>行号 CSS 渲染，禁止写入文本节点</strong>：<br>行号通过 CSS counter 实现，不写入 &lt;code&gt; 文本内容，确保复制代码时不包含行号，切片管道拿到的是纯净代码文本<br><strong>HTML 实体解码</strong>：<br>切片管道入模前，将代码文本中的 HTML 实体还原为可读字符。<br><strong>弃用 highlighttable 布局</strong>：<br>将现有使用 highlighttable 表格承载代码的结构全部迁移为 &lt;pre&gt;&lt;code&gt; 结构。构建管道中加入检测，发现 highlighttable class 时阻断发布。<br><strong>在已有切片逻辑基础上，针对代码块追加</strong>：<br>a.提取 &lt;code class=&quot;language-xxx&quot;&gt; 的语言类型作为 chunk 元数据<br>b.提取 .code-meta 内的文件名和场景描述，拼接到代码 chunk 头部<br>c.代码文本入模前执行 HTML 实体解码<br>d.code-output 块与对应代码块绑定为同一 chunk，不拆分<br>e.行号（::before 伪元素内容）不参与文本提取</td>
+            <td class="col-source"><a href="problems-content-code.html" class="badge badge-accent source-diagnosis-link">实测诊断</a></td>
             <td class="col-basis"><span class="copy-explain" tabindex="0" data-tip="Barnett et al. 2024 · FP4 Not Extracted：内容在 context 中，但 LLM 因语义破坏无法正确提取">Barnett FP4</span></td>
           </tr>
           <tr id="principle-full-13" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
             <td class="col-id">13</td>
             <td>Tab 面板可全量抓取</td>
-            <td><strong>稿面写全各面板要点</strong>：<br>若用 Tab，各面板关键事实在稿面仍可完整读到。</td>
-            <td><strong>关键路径少用 Tab</strong>：<br>安装/排障等关键路径优先平铺；必须用 Tab 时仍保证可扫读。</td>
-            <td><strong>面板首包全量输出</strong>：<br>各面板内容进首包 DOM；禁 display:none 藏关键文。</td>
+            <td><strong>稿面须能读到全路径</strong>：<br>必须用 Tab 时，平行 MD / 页内须有无需点击即可访问的全部面板文案。<br><strong>可改用标题平铺</strong>：<br>多路径安装等优先用 H2 / H3 分节，替代仅靠 Tab 切换才见步骤。</td>
+            <td><strong>关键路径尽量不用</strong>：<br>Tab 安装 / 版本等多路径关键内容优先用标题分节平铺；少用 Tab 切换作为唯一呈现方式，避免非当前路径「点开才看见」。</td>
+            <td><strong>面板首包全量输出</strong>：<br>各路径步骤与命令须随首包 HTML 完整输出，不点 Tab 也能被抓取；严禁依赖 JS 注入非激活面板，或把非当前 Tab 当作「点开才存在」的唯一出处。<br><strong>禁止用 display</strong>：<br>none 藏正文 非激活面板勿用 display:none / visibility:hidden 去掉可读节点；可用视觉层叠且保留 DOM 文本。</td>
+            <td class="col-source">—</td>
             <td class="col-basis"><span class="copy-explain" tabindex="0" data-tip="Barnett et al. 2024 · FP1 Missing Content / FP3 Not in Context：内容完全丢失，或被召回但不在 context 中">Barnett FP1/FP3</span></td>
           </tr>
           <tr id="principle-full-14" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
             <td class="col-id">14</td>
             <td>折叠默认展开</td>
-            <td><strong>关键步骤不放折叠里</strong>：<br>关键说明默认可见；折叠标题须有语义文案。</td>
-            <td><strong>折叠默认展开</strong>：<br>关键折叠默认打开；标题写清主题，不单放图标。</td>
-            <td><strong>details 默认 open</strong>：<br>SSR 带 open；summary 含可读文本。</td>
+            <td><strong>关键步骤勿只放折叠内</strong>：<br>必须用折叠时默认展开；关键步骤与说明优先放在折叠外正文，折叠仅收纳补充材料。<br><strong>折叠标题须可读</strong>：<br>summary / 折叠标题须含语义文本（如「离线安装步骤」），禁止只放图标或空节点。</td>
+            <td><strong>关键内容默认可视</strong>：<br>折叠只控制显隐，禁止把步骤、定义放到点击之后才注入；关键步骤、警示、验证禁止默认收起。<br><strong>隐藏须可直达</strong>：<br>必须折叠时提供「全部展开」；列表用分页代替无限滚；蒙版不得遮挡关键命令。</td>
+            <td><strong>details</strong>：<br>默认带 open SSR 输出默认带 open；用户可手动收起，但初始 HTML 正文完整。<br><strong>summary</strong>：<br>含语义文本 标题须能独立描述折叠区主题；侧栏子链接文案须在首包 DOM 中，勿点击后才注入。</td>
+            <td class="col-source">—</td>
             <td class="col-basis"><span class="copy-explain" tabindex="0" data-tip="Barnett et al. 2024 · FP1 Missing Content / FP3 Not in Context：内容完全丢失，或被召回但不在 context 中">Barnett FP1/FP3</span></td>
           </tr>
           <tr id="principle-full-15" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
             <td class="col-id">15</td>
             <td>悬停不承载关键内容</td>
-            <td><strong>关键信息不只出现在悬停</strong>：<br>要点写入正文或默认可见表区。</td>
-            <td><strong>悬停仅作增强</strong>：<br>Tooltip/Popover 不承载唯一关键说明。</td>
-            <td><strong>默认可抓取</strong>：<br>关键文案在未悬停态的 DOM 中已存在。</td>
+            <td><strong>关键说明写入正文或旁注</strong>：<br>定义、状态与任务必需说明写在默认可读稿面；与气泡文案保持一份真相。<br><strong>禁止悬停作为唯一入口</strong>：<br>勿写「悬停查看详情」作为唯一出处；可链到定义页，但页内须有可抓摘要。</td>
+            <td><strong>悬停不独自表意</strong>：<br>关键信息不得只存在于悬停气泡；首包 DOM 须有等价文字。交互只控制显隐，勿悬停后才注入定义。<br><strong>Hover</strong>：<br>可作补充 稿面已有同一含义时，气泡只作补充，不必每个词条下复读。本页若不解释该词，就不要把定义只藏进 Hover。</td>
+            <td><strong>要求</strong>：<br>禁 JS 后关键句仍在 HTML 任务必需定义与状态须随首包输出；气泡内容若重要须双写到可见正文节点。<br><strong>勿靠 hover 才插入文本 禁止纯 CSS</strong>：<br>hover / JS 悬停后才把定义注入 DOM；交互只切换显隐。</td>
+            <td class="col-source">—</td>
             <td class="col-basis">—</td>
           </tr>
           <tr id="principle-full-16" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
             <td class="col-id">16</td>
             <td>蒙版不遮挡关键步骤</td>
-            <td><strong>步骤文案不被遮挡说明替代</strong>：<br>引导蒙版下的关键操作仍须有可复制正文。</td>
-            <td><strong>蒙版不挡关键区</strong>：<br>遮罩/引导层不覆盖唯一可读的步骤与命令。</td>
-            <td><strong>被挡内容仍在 DOM</strong>：<br>蒙版为视觉层；关键步骤文本仍可抓取。</td>
+            <td><strong>步骤写在默认可读区</strong>：<br>安装命令、关键步骤写入页面正文或默认可见代码块，不依赖「勾选后才展示」。<br><strong>协议与命令分离</strong>：<br>许可协议文案可独立；命令区不得只在勾选后才出现。平行 MD 亦须含同套命令。</td>
+            <td><strong>命令默认可视</strong>：<br>安装命令、关键步骤须在默认态可读；协议勾选只控制确认，禁止把步骤放到勾选之后才展示。<br><strong>蒙版不得挡命令</strong>：<br>禁止用模糊蒙版、半透明遮罩盖住命令区；法务必须确认时，勾选可保留，命令文本仍须默认可读。</td>
+            <td><strong>首包含命令文本</strong>：<br>安装命令节点存在于首包 DOM；禁 JS / 未勾选时仍可抓取。<br><strong>蒙版不删节点</strong>：<br>若保留视觉蒙版，不得从 DOM 移除或清空命令文本；优先不用蒙版挡命令。</td>
+            <td class="col-source">—</td>
             <td class="col-basis">—</td>
           </tr>
           <tr id="principle-full-17" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
             <td class="col-id">17</td>
             <td>控件须配独立标签</td>
-            <td><strong>说明与标签一致</strong>：<br>必填、格式约束写在标签或旁注，不与稿面用语冲突。</td>
-            <td><strong>标签不靠占位</strong>：<br>每个输入有可见 label；多框各有标签。</td>
-            <td><strong>label 完备且首包可见</strong>：<br>label[for] 或等价关联；标签与控件同在首包。</td>
+            <td><strong>说明与标签一致</strong>：<br>表单说明、必填与格式约束写在标签或旁注，与稿面 label 用语一致。<br><strong>禁止只写占位</strong>：<br>关键约束不得只出现在 placeholder；文档示例与截图也须展示独立标签。</td>
+            <td><strong>标签不靠占位</strong>：<br>每个输入须配可见 label；placeholder 不一定能被抓到，也不能作唯一字段说明。<br><strong>拆框各有标签</strong>：<br>字段拆成多框时，每框须有自己的标签；总标签不能替代各框标签。</td>
+            <td><strong>label</strong>：<br>完备 每个输入有 label[for] 或等价可见关联；aria-label 可补不可替可见标签。<br><strong>首包可见</strong>：<br>标签与控件同在首包 DOM；禁用态须有文字原因，勿只变灰。</td>
+            <td class="col-source">—</td>
             <td class="col-basis">—</td>
           </tr>
           <tr id="principle-full-18" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
             <td class="col-id">18</td>
             <td>控件数值转写</td>
-            <td><strong>界面数值写成可引用事实</strong>：<br>截图中的阈值、阈值在正文有文字对应。</td>
-            <td><strong>关键数值可见成文</strong>：<br>仪表盘/控件读数旁有文字，不单靠图形刻度。</td>
-            <td><strong>数值进文本节点</strong>：<br>关键读数为可抓取文本，禁只画在 canvas/图里。</td>
+            <td><strong>示例值写全</strong>：<br>文档中的示例值与单位写全；范围与默认值可查，勿只写「拖到合适位置」。<br><strong>截图配参数表</strong>：<br>截图演示须配同等文字参数表，勿只贴进度条 / 滑块图。</td>
+            <td><strong>数值须写成字</strong>：<br>当前值与单位须配文字（如「70%」「8 GB」「4.6 分」），禁止仅以进度条、滑块或星星作唯一载体；图形可保留，只作辅助。<br><strong>变更后文案同步</strong>：<br>用户拖动或步进后，可见数值与单位须即时更新，勿只改图形位置。</td>
+            <td><strong>值写入</strong>：<br>DOM 当前值写入可见文本或 aria-valuetext；变更后文本同步。<br><strong>抓取可读</strong>：<br>入库抽取可见数值，不依赖 canvas / 纯图形绘制。</td>
+            <td class="col-source">—</td>
             <td class="col-basis">—</td>
           </tr>
         </tbody>
       </table>
       </div>
-
 
       <h3 class="affinity-group-title">可理解</h3>
       <div class="affinity-table-wrap">
@@ -314,6 +339,7 @@
           <col class="col-content">
           <col class="col-design">
           <col class="col-code">
+          <col class="col-source">
           <col class="col-basis">
         </colgroup>
         <thead>
@@ -323,6 +349,7 @@
             <th>文档内容调整</th>
             <th>设计UI 调整</th>
             <th>前端调整</th>
+            <th>原则来源</th>
             <th>理论依据</th>
           </tr>
         </thead>
@@ -330,79 +357,87 @@
           <tr id="principle-full-19" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
             <td class="col-id">19</td>
             <td>标题按层级标注</td>
-            <td><strong>标题层级与大纲一致</strong>：<br>H1–H3 反映真实结构，禁止跳级或装饰性乱套标题。</td>
-            <td><strong>层级视觉与语义对齐</strong>：<br>字号样式对应真实标题级，不靠加粗冒充 H2。</td>
-            <td><strong>输出正确标题标签</strong>：<br>用 h1–h3，禁止用 div/p 样式冒充标题树。</td>
+            <td><strong>要求</strong>：<br>所有标题（H1-H5）必须使用描述性、面向用户具体操作型任务或概念的短语，而非泛泛而谈的、模糊的标题。标题应作为一个独立的语义单元，精确反映其下方内容的意图。禁止使用仅概括章节类型的通用标题（如“概述”、“介绍”、“详情”、“步骤1”）。标题的层级结构应能够反映内容的结构，显示父主题、子主题之间的关系。</td>
+            <td><strong>层级视觉差异化</strong>：<br>H1-H5 必须在字号、字重、颜色、间距上有明确的梯度区分。当前H4、H5 难以区分。</td>
+            <td><strong>严格的 HTML 语义标签使用</strong>：<br>强制 H1-H5 按层级顺序使用，不允许因为样式需求跳级（如页面没有 H2 直接用 H3），层级顺序由 linting 规则或 CMS 约束保证<br><strong>标题内容 SSR 首屏直出</strong>：<br>标题文本必须在首屏 HTML 中存在，否则爬虫根本拿不到标题，原则对大模型完全失效<br><strong>禁用词自动校验</strong>：<br>在发布流程中拦截通用标题，这是保证内容侧原则真正落地的工程兜底，否则完全依赖人工自觉<br><strong>页面大纲接口</strong>：<br>提供页面级的标题大纲数据接口，输出结构化的标题树（含层级、文本、锚点 ID），供大模型或搜索引擎直接消费，而不必自行解析 HTML 。</td>
+            <td class="col-source">—</td>
             <td class="col-basis"><span class="copy-explain" tabindex="0" data-tip="Barnett et al. 2024 · FP5 Wrong Format：答案内容正确但输出格式错误或结构混乱">Barnett FP5</span><br><span class="copy-explain" tabindex="0" data-tip="Aggarwal et al. 2024 · Generative Engine Optimization：优化内容结构与权威性信号，使其更易被生成式搜索引擎引用">GEO 2024</span></td>
           </tr>
           <tr id="principle-full-20" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
             <td class="col-id">20</td>
             <td>推荐内容置后</td>
-            <td><strong>主路径先于推荐</strong>：<br>正文先写完成任务所需步骤，推荐/相关阅读放后。</td>
-            <td><strong>推荐区视觉降权</strong>：<br>相关推荐不压过主路径标题与步骤。</td>
-            <td><strong>主文优先入库</strong>：<br>切片优先保留主路径；推荐模块可降权或后置。</td>
+            <td><strong>文档内容应遵循“最小信息原则”，只包含与核心技术主题直接相关的信息。严格剔除</strong>：<br>营销话术、冗余铺垫、无效装饰、隐喻和双关语、主观评价、与主题无关的内容。页面布局中噪音元素（导航栏、页脚、cookie横幅等）应通过HTML结构标签（如&lt;header&gt;、&lt;nav&gt;、&lt;footer&gt;、&lt;aside&gt;）与主内容区清晰分离。</td>
+            <td><strong>推荐不穿插主路径</strong>：<br>相关文章、推荐阅读统一放在页面末尾，不插进安装步骤或主路径。<br><strong>推荐区须可识别</strong>：<br>主路径连续成段；推荐区须能识别为推荐，不得被当成规格正文。</td>
+            <td><strong>Chunk 切片管道只提取 &lt;main&gt; 内容</strong>：<br>切片管道入口限定在 &lt;main&gt; 或 &lt;article&gt; 标签内，&lt;header&gt;、&lt;nav&gt;、&lt;aside&gt;、&lt;footer&gt; 以及标记了 aria-hidden=&quot;true&quot; 的元素，全部跳过，不参与向量化索引。<br><strong>噪音元素标记规范</strong>：<br>Cookie 横幅、浮层提示、营销 Banner 等动态注入的噪音元素，统一添加 aria-hidden=&quot;true&quot; 或自定义属性 data-noindex=&quot;true&quot;，切片管道据此过滤。</td>
+            <td class="col-source">—</td>
             <td class="col-basis"><span class="copy-explain" tabindex="0" data-tip="Barnett et al. 2024 · FP3 Not in Context：文档被召回但未进入 LLM context 窗口（chunking/截断）">Barnett FP3</span><br><span class="copy-explain" tabindex="0" data-tip="Liu et al. 2023 · Lost in the Middle：LLM 对 context 中段内容利用率显著低于首尾，内容位置直接影响答案质量">Liu 2023</span></td>
           </tr>
           <tr id="principle-full-21" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
             <td class="col-id">21</td>
             <td>版本号外显</td>
-            <td><strong>写清软件版本与状态</strong>：<br>页内声明产品名、版本号、生命周期状态（现行/维护/弃用）。</td>
-            <td><strong>版本信息默认可扫读</strong>：<br>页头或路径可见具体版本，不只写「版本」控件名。</td>
-            <td><strong>版本写入 meta/JSON-LD</strong>：<br>softwareVersion 等字段可机读；与页头展示同源。</td>
+            <td><strong>每个文档页面必须在其元数据区域以结构化（机器可优先读）和自然语言（人类可读）两种形式，明确声明</strong>：<br>产品/项目名称、文档对应的软件版本号（遵循SemVer）、该版本的发布日期、该版本的生命周期状态（如当前稳定版、维护中、已启用、EOS）、（可选）文档版本自身的版本号。所有版本差异必须使用表格进行条目化描述，禁止使用模糊散文。</td>
+            <td><strong>版本元数据展示，不使用JS动态渲染</strong>：<br>在页面固定位置（参考 NV 放顶部导航栏或 H1 下方）展示产品名、版本号、发布日期、生命周期状态，位置全站统一。<br><strong>生命周期状态标签</strong>：<br>稳定版、维护中、已弃用、EOS 用不同颜色的标签组件区分，与失效状态原则的警告色保持一致的色彩语义体系，不能各自定义颜色<br><strong>版本差异表格样式（可选）</strong>：<br>版本对比内容必须用表格呈现，表格列头（版本号、差异项、说明）样式清晰，设计上禁止用列表或段落替代表格来呈现版本差异</td>
+            <td><strong>CMS 中为每个页面增加强制填写的结构化字段</strong>：<br>product-name、software-version（SemVer 格式校验）、release-date、lifecycle-status，发布时校验必填，缺失则阻断。<br><strong>元数据机器可读输出</strong>：<br>版本信息同步写入页面 &lt;head&gt; 的 &lt;meta&gt; 标签和 JSON-LD，如 softwareVersion、datePublished、releaseNotes 字段，供大模型直接读取，不依赖解析页面正文<br><strong>SemVer 格式校验</strong>：<br>CMS 在版本号字段录入时强制校验 SemVer 格式（X.Y.Z），拒绝模糊写法如&quot;最新版&quot;、&quot;V2&quot<br><strong>版本元数据在大纲接口中透传</strong>：<br>页面大纲接口返回结果中包含版本元数据字段，大模型消费接口时可直接获取版本上下文，无需进入页面解析。</td>
+            <td class="col-source"><a href="problems-timeliness.html" class="badge badge-accent source-diagnosis-link">实测诊断</a></td>
             <td class="col-basis"><span class="copy-explain" tabindex="0" data-tip="Barnett et al. 2024 · FP6 Incorrect Specificity：召回了错误版本或版本粒度不匹配的文档">Barnett FP6</span></td>
           </tr>
           <tr id="principle-full-22" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
             <td class="col-id">22</td>
             <td>明确更新日期</td>
-            <td><strong>写明最近更新日期</strong>：<br>页面标注可核对的更新日期，避免「近期/最新」等模糊说法。</td>
-            <td><strong>日期展示可读</strong>：<br>更新日期以可见文字呈现，格式稳定。</td>
-            <td><strong>用 time + dateModified</strong>：<br>输出 time[datetime] 与 meta/JSON-LD 的 dateModified。</td>
+            <td><strong>要求</strong>：<br>每个文档页面必须在页面的显著位置（通常在标题下方或者页面底部）以明确的格式标注该页面内容的最后实质性修改日期。日期应遵循ISO 8601 格式（YYYY-MM-DD）以便于机器解析，同时也可以展示为人类友好的格式。仅标注“发布于”初始日期二不持续更新“最后修改”是不够的。</td>
+            <td><strong>要求</strong>：<br>日期写成字，不靠色标 页头与列表须展示可读更新日期；「新」角标可保留，但不得替代日期文字。<br><strong>日期与版本同排可辨</strong>：<br>若同时展示版本号，用分隔符同排（如 v8.0.0 · 更新 2026-03-12），避免只留版本、省略日期。</td>
+            <td><strong>使用语义化 &lt;time&gt; 标签</strong>：<br>日期必须用 &lt;time datetime=&quot;2026-05-27&quot;&gt; 输出，而非纯文本，大模型和搜索引擎可直接解析 datetime 属性拿到标准格式日期<br><strong>last-modified 写入 meta</strong>：<br>在 &lt;head&gt; 中输出 &lt;meta name=&quot;last-modified&quot; content=&quot;2026-05-27&quot;&gt;，以及 JSON-LD 中的 dateModified 字段，机器可读优先保证<br><strong>CMS 自动更新日期</strong>：<br>内容发生实质性修改并发布时，由系统自动更新 last-modified 字段，禁止人工维护，避免遗漏或造假<br><strong>区分&quot;发布日期&quot;与&quot;修改日期&quot;</strong>：<br>CMS 中两个字段分开存储，datePublished 和 dateModified 独立维护，接口和 meta 中都分别输出，不能合并成一个字段。</td>
+            <td class="col-source">—</td>
             <td class="col-basis"><span class="copy-explain" tabindex="0" data-tip="Barnett et al. 2024 · FP6 Incorrect Specificity：召回了错误版本或版本粒度不匹配的文档">Barnett FP6</span><br><span class="copy-explain" tabindex="0" data-tip="Schema.org 结构化数据标准：通过 JSON-LD / Microdata 为页面添加机器可读语义，提升 AI 和搜索引擎理解能力">Schema.org</span></td>
           </tr>
           <tr id="principle-full-23" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
             <td class="col-id">23</td>
             <td>失效/弃用状态显化</td>
-            <td><strong>弃用须指向替代</strong>：<br>写明已弃用/失效，并给出替代文档或版本。</td>
-            <td><strong>页顶弃用提示可见</strong>：<br>弃用页在标题区给出可见提示，不靠正文角落一句带过。</td>
-            <td><strong>状态结构化输出</strong>：<br>data-status 等字段可机读；大纲/接口可透传 status。</td>
+            <td><strong>任何已弃用、将下线、或对特定环境无效的功能、API端点、配置参数、必须在描述它的最靠近的标题下方使用显著的警告块进行标记。该警告必须说明</strong>：<br>弃用/失效的时间点（或版本）、影响范围、以及代替方案（链接到新文档）。<br>b.文档失效<br>对于已停止维护的文档版本或章节，必须在页面顶部（H1上方）展示一个清晰的提示框，说明“此文档适用于已停止维护的[产品名]vX.Y”，并提供一个指向最新版本推荐文档的醒目链接。</td>
+            <td><strong>警告块组件规范</strong>：<br>功能/接口失效的警告块需要有统一的视觉样式（颜色、图标、边框），与普通提示框、信息框明确区分，视觉权重足够高，用户不会忽略<br><strong>页顶文档失效提示框</strong>：<br>位置固定在 H1 上方，样式与正文完全隔离（如全宽背景色条），包含失效说明文本和指向新文档的醒目链接，不能被页面其他内容淹没。</td>
+            <td><strong>失效状态元数据字段</strong>：<br>CMS 中为每个页面和内容块增加结构化字段，包括 status（active / deprecated / sunset）、deprecated-since（版本或时间）、replacement-url（替代文档链接），与内容分离管理，不依赖人工在正文中手写<br><strong>失效内容的机器可读标注</strong>：<br>废弃警告块加 data-status=&quot;deprecated&quot;、data-since=&quot;vX.Y&quot;、data-replacement=&quot;url&quot; 属性，大模型抓取时可直接识别该内容块的有效性，自动过滤或降权失效内容<br><strong>页顶提示框自动渲染</strong>：<br>当页面 status 字段为 deprecated 时，由模板自动在 H1 上方注入提示框，不依赖内容侧手动添加，避免遗漏<br><strong>失效内容在大纲接口中标注</strong>：<br>上文已有页面大纲接口，此处需在接口中为每个内容块带上 status 字段，供大模型在消费大纲时直接过滤失效章节，无需进入页面逐一判断。</td>
+            <td class="col-source"><a href="problems-timeliness.html" class="badge badge-accent source-diagnosis-link">实测诊断</a></td>
             <td class="col-basis"><span class="copy-explain" tabindex="0" data-tip="Barnett et al. 2024 · FP6 Incorrect Specificity：召回了错误版本或版本粒度不匹配的文档">Barnett FP6</span></td>
           </tr>
           <tr id="principle-full-24" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
             <td class="col-id">24</td>
             <td>元数据丰富化</td>
-            <td><strong>关键元数据写全</strong>：<br>类型、版本、产品、更新日期等与页主题相关的字段齐全。</td>
-            <td><strong>元数据区可扫读</strong>：<br>页头/信息区能看到版本与更新等关键字段。</td>
-            <td><strong>meta 与 JSON-LD 同步</strong>：<br>head 元数据与正文展示同源生成，避免手工双轨。</td>
+            <td><strong>每个文档页面建议在&lt;head&gt;中包含丰富的结构化元数据，优先使用JSON-LD格式，至少嵌入</strong>：<br>、FAQPage)、headline、description(150-160字符) 、inLanguage、datePublished、dataModified、keywords、author/publisher。</td>
+            <td><strong>页头展示身份摘要</strong>：<br>标题下方固定展示摘要、适用产品 / 版本、更新日期；信息写成字，不靠悬停或图标暗示。<br><strong>面包屑真实可定位</strong>：<br>页头保留真实层级面包屑，与结构化 BreadcrumbList 同源。细则见 面包屑路径可定位。</td>
+            <td><strong>JSON-LD 模板化输出</strong>：<br>在页面模板中统一注入 JSON-LD，字段从 CMS 结构化数据中动态读取，覆盖所有文档页面，不依赖人工逐页添加。<br><strong>必填字段完整性校验</strong>：<br>发布流程中检测 JSON-LD 是否包含所有必填字段（@type、headline、description、inLanguage、datePublished、dateModified、keywords、author/publisher），缺失字段则阻断发布。<br><strong>type 按页面类型自动匹配</strong>：<br>文档类型（HowTo、TechArticle、FAQPage 等）在 CMS 中作为页面属性维护，JSON-LD 的 @type 由系统根据页面类型自动填入，不依赖人工判断</td>
+            <td class="col-source"><a href="problems-structure-metadata.html" class="badge badge-accent source-diagnosis-link">实测诊断</a></td>
             <td class="col-basis"><span class="copy-explain" tabindex="0" data-tip="Barnett et al. 2024 · FP6 Incorrect Specificity：召回了错误版本或版本粒度不匹配的文档">Barnett FP6</span><br><span class="copy-explain" tabindex="0" data-tip="Schema.org 结构化数据标准：通过 JSON-LD / Microdata 为页面添加机器可读语义，提升 AI 和搜索引擎理解能力">Schema.org</span><br><span class="copy-explain" tabindex="0" data-tip="Aggarwal et al. 2024 · Generative Engine Optimization：优化内容结构与权威性信号，使其更易被生成式搜索引擎引用">GEO 2024</span></td>
           </tr>
           <tr id="principle-full-25" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
             <td class="col-id">25</td>
             <td>状态完整标注</td>
-            <td><strong>状态写成完整词</strong>：<br>支持/不支持、运行中/已停止等写全；禁止 ✓、色点、空格表意。<br><strong>术语一词一意</strong>：<br>同一概念全文同一术语；首次出现给简明定义。</td>
-            <td><strong>状态不靠图形</strong>：<br>矩阵与列表用文字状态，不单靠对号或色点。</td>
-            <td><strong>状态为文本节点</strong>：<br>状态词进 DOM；表格可切成「列名:状态词」。</td>
-            <td class="col-basis">—</td>
+            <td><strong>保持术语一致性</strong>：<br>一词一意、全程统一术语、杜绝别称、口语、模糊描述。在整个文档级（或至少单个文档内）中，对于同一个技术概念、实体、操作或属性，必须且始终使用完全相同的术语。禁止为了“文风活泼”而使用同义词替换。每个术语在首次出现时必须提供清晰的定义、解释或tooltip，避免同意义词，并在其后全文中保持定义的一致性。术语应与代码中的命名保持对印关系。应建立并维护一个全局术语表（Glossary）。</td>
+            <td><strong>状态不靠图形</strong>：<br>能力与运行状态须配文字；图标可保留但不得作唯一载体。任务回执还须写清对象、原因与下一步。<br><strong>空单元格勿暗示不支持</strong>：<br>若空格表示不支持，须显式写出「不支持」；禁止靠留白让人或机器猜测。</td>
+            <td><strong>术语表数据化管理</strong>：<br>Glossary 作为独立的结构化数据源维护（而非普通文档页面），每个术语有唯一 ID、定义文本、关联代码命名、首次出现页面等字段<br><strong>术语自动识别与链接</strong>：<br>页面渲染时，自动检测正文中出现的术语表词条，首次出现时自动注入 tooltip 或链接到 Glossary 对应条目，不依赖内容侧手动标注<br><strong>术语一致性检测</strong>：<br>在发布流程中，对比同义词列表（如&quot;模型&quot;/&quot;model&quot;/&quot;大模型&quot;指同一概念），检测同一文档内是否存在同义混用，给出告警<br><strong>术语与代码命名对照字段</strong>：<br>Glossary 数据中为每个术语维护对应的代码命名字段，供内容侧和研发侧双向核对，确保文档术语与代码变量/函数名保持一致<br><strong>Glossary 数据接口</strong>：<br>术语表通过接口对外暴露，供大模型直接消费，获取术语的权威定义，而不是从各页面正文中自行推断术语含义。</td>
+            <td class="col-source">—</td>
+            <td class="col-basis"><span class="copy-explain" tabindex="0" data-tip="Barnett et al. 2024 · FP6 Incorrect Specificity / FP7 Incomplete Answer：版本/粒度不匹配，或答案不完整">Barnett FP6/FP7</span><br><span class="copy-explain" tabindex="0" data-tip="Aggarwal et al. 2024 · Generative Engine Optimization：优化内容结构与权威性信号，使其更易被生成式搜索引擎引用">GEO 2024</span></td>
           </tr>
           <tr id="principle-full-26" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
             <td class="col-id">26</td>
             <td>安全警示语义化</td>
-            <td><strong>警示写级别与后果</strong>：<br>注意/警告/危险写清级别、影响与处置，不靠叹号堆砌。</td>
-            <td><strong>级别可见可区分</strong>：<br>警示块有级别词，不只靠颜色条。</td>
-            <td><strong>警示块可识别</strong>：<br>用语义结构或 data-level；级别词可抓取。</td>
+            <td><strong>警示信息必须使用文字前缀明确表示其类型，如</strong>：<br>**注意**、**警告**、**危险**。禁止仅使用图标来传递类型信息<br>c.结构化<br>建议为不同类型的安全警示定义固定的CSS类。</td>
+            <td><strong>警示块完整展示</strong>：<br>所有 Note/注意/警告内容必须直接渲染在页面上，禁止折叠、tooltip、模态框等交互形式，设计稿不出现任何需要点击才能看到警示内容的方案。<br><strong>警示类型必须用文字（&quot;注意</strong>：<br>&quot;、&quot;警告：&quot;、&quot;危险：&quot;）标注，图标只能作为辅助装饰，不能作为唯一的类型标识。<br><strong>不同警示级别的视觉区分</strong>：<br>Note、注意、警告、危险用不同颜色的容器组件区分，颜色语义全站统一（如黄色=注意、红色=危险），与失效状态、生命周期状态的色彩体系保持一致</td>
+            <td><strong>data-admonition-type 属性标注</strong>：<br>每个警示块容器加 data-admonition-type=&quot;note|warning|tip|danger&quot;，大模型可直接识别警示级别，不依赖解析图标或颜色<br><strong>警示类型文字（&quot;注意</strong>：<br>&quot;、&quot;警告：&quot;）必须作为真实文本节点输出到 HTML，禁止通过 CSS 伪元素 ::before 或图片生成，确保爬虫和大模型能直接读取<br><strong>嵌套层级保留</strong>：<br>步骤列表 &lt;ol&gt;&lt;li&gt; 内嵌的警示块，DOM 结构中必须保持嵌套关系，禁止渲染时扁平化输出，确保大模型能识别&quot;这条警告属于第几步&quot</td>
+            <td class="col-source"><a href="problems-content-note.html" class="badge badge-accent source-diagnosis-link">实测诊断</a></td>
             <td class="col-basis"><span class="copy-explain" tabindex="0" data-tip="Barnett et al. 2024 · FP4 Not Extracted：内容在 context 中，但 LLM 因语义破坏无法正确提取">Barnett FP4</span><br><span class="copy-explain" tabindex="0" data-tip="WCAG 2.1 Web Content Accessibility Guidelines：无障碍标准，无障碍改造同步提升 AI 对页面语义的解析质量">WCAG 2.1</span></td>
           </tr>
-          <tr id="principle-full-27" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
+                                                  <tr id="principle-full-27" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
             <td class="col-id">27</td>
             <td>链接语义化</td>
-            <td><strong>锚文本说明去向</strong>：<br>链接写清目标文档/对象，禁止「点击这里」「详见文档」。</td>
-            <td><strong>链接文案可扫读</strong>：<br>列表与正文中的链接触达意图一目了然。</td>
-            <td><strong>真链 + 可读锚文本</strong>：<br>a[href] 指向真实文档；锚文本含实体名。</td>
+            <td><strong>描述性锚文本可索引</strong>：<br>内容引用超链接采用描述性、可见文字显性标注跳转目标，实现AI可访问性和搜索索引性。<br><strong>描述性锚文本</strong>：<br>超链接的可点击文本必须能够在不依赖上下文的情况下，独立描述链接的目标内容或操作。禁止使用“点击这里”、“更多”、“链接”作为锚文本。<br><strong>站外来源标注</strong>：<br>对于指向其他域名的链接，应在锚文本旁添加显式标识，如[外部]或图标+目标域名<br><strong>内联上下文</strong>：<br>链接应嵌入在具有上下文的句子中，而不是孤立地列出<br><strong>用途说明</strong>：<br>对于下载链接、API参考链接等，可在链接后附带括号说明文件类型、大小或用途。</td>
+            <td><strong>建立链接文案规范，纳入内容审核流程，同时覆盖正文链接和热区链接</strong>：<br>a.锚文本必须能独立描述跳转目标，脱离上下文也能理解<br>b.禁止使用&quot;点击这里&quot;&quot;更多&quot;&quot;链接&quot;&quot;查看详情&quot;作为锚文本<br>c.下载链接、API 链接在锚文本后附带括号说明文件类型、大小、用途<br>d.热区的 area alt / area title 文案同步提供，禁止使用&quot;区域1&quot;&quot;链接2&quot;等无意义文字</td>
+            <td><strong>描述性锚文本实现</strong>：<br>正文 &lt;a&gt; 标签内必须有描述性文字，href 为绝对 URL。下载链接和 API 链接在锚文本后附带 &lt;span&gt; 说明用途，不影响链接本身的语义.<br><strong>站外链接自动标识</strong>：<br>构建管道中检测 &lt;a href&gt; 是否跨域，跨域链接自动注入外部标识和 rel=&quot;noopener noreferrer&quot; 属性，同时添加 data-external=&quot;true&quot; 供切片管道识别.<br><strong>热区 &lt;area&gt; 标签补全</strong>：<br>每个 &lt;area&gt; 填写描述性 alt 和 title，href 为绝对 URL。<br><strong>在已有切片逻辑基础上，针对链接语义追加提取规则</strong>：<br>a.提取每个 &lt;a&gt; 的锚文本 + href，拼接为&quot;锚文本 → 绝对URL&quot;格式，纳入所在段落的 chunk;<br>b.站外链接（data-external=&quot;true&quot;）在 chunk 中标注来源域名;<br>c.热区链接从 figcaption 内的 &lt;a&gt; 提取，格式与正文链接一致;<br>d.裸 URL（无锚文本的 &lt;a&gt;）标记为低质量，降低索引权重。</td>
+            <td class="col-source"><a href="problems-content-link.html" class="badge badge-accent source-diagnosis-link">实测诊断</a></td>
             <td class="col-basis"><span class="copy-explain" tabindex="0" data-tip="Barnett et al. 2024 · FP3 Not in Context / FP4 Not Extracted：内容未进入召回窗口，或进入后无法提取">Barnett FP3/FP4</span></td>
           </tr>
         </tbody>
       </table>
       </div>
-
 
       <h3 class="affinity-group-title">可操作</h3>
       <div class="affinity-table-wrap">
@@ -413,6 +448,7 @@
           <col class="col-content">
           <col class="col-design">
           <col class="col-code">
+          <col class="col-source">
           <col class="col-basis">
         </colgroup>
         <thead>
@@ -422,6 +458,7 @@
             <th>文档内容调整</th>
             <th>设计UI 调整</th>
             <th>前端调整</th>
+            <th>原则来源</th>
             <th>理论依据</th>
           </tr>
         </thead>
@@ -429,31 +466,33 @@
           <tr id="principle-full-28" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
             <td class="col-id">28</td>
             <td>步骤列表化</td>
-            <td><strong>用真实有序列表</strong>：<br>写成 1.2.3.；每步一个动作，含对象与预期。<br><strong>禁止模糊指代</strong>：<br>不用「它/上述/前者」；写成明确名词。</td>
-            <td><strong>步骤呈编号列表</strong>：<br>有序操作用可见 1.2.3.；禁止散文冒充步骤。</td>
-            <td><strong>输出真实 ol/li</strong>：<br>步骤与内嵌代码在 li 内；切片不打断列表项。</td>
+            <td><strong>文档中禁止使用无法从当前句子或前一句中唯一确定对象的模糊代词或短语。明确禁止的词汇包括但不限于</strong>：<br>“它”、“这个”、“那个”、“这些”、“那些”、“上述”、“以下”、“前者”、“后者”、“类似地”、“相应地”。必须将这些模糊指代替换为明确地名词或名词短语。</td>
+            <td><strong>步骤必须用有序列表呈现</strong>：<br>有序操作必须渲染为可见的 1. 2. 3. 列表，序号即执行顺序。严禁用「步骤一：」独立段落、散文堆叠或无序列表冒充有序步骤。<br><strong>每项只写一个可执行动作</strong>：<br>列表每一项必须对应一个可独立执行的动作。严禁在同一项内串联多步（如「配置环境后再运行验证」）；多动作必须拆成多项。</td>
+            <td><strong>Lint 检测违规模式</strong>：<br>在发布流程中识别&quot;连续段落以数字+句号开头&quot;或&quot;无序列表内容语义为操作步骤&quot;的违规写法，给出告警<br><strong>JSON-LD 映射为 HowToStep</strong>：<br>有序列表在步骤模式下自动输出 HowToStep 结构化数据，每个 &lt;li&gt; 对应一个 step，供大模型精确识别操作顺序。<br><strong>禁用词自动检测</strong>：<br>在发布流程中，维护一份禁用词表（它、这个、那个、这些、那些、上述、以下、前者、后者、类似地、相应地），检测文档中出现的禁用词并定位到具体句子，给出告警提示内容侧替换。</td>
+            <td class="col-source">—</td>
             <td class="col-basis"><span class="copy-explain" tabindex="0" data-tip="Barnett et al. 2024 · FP4 Not Extracted：内容在 context 中，但 LLM 因语义破坏无法正确提取">Barnett FP4</span><br><span class="copy-explain" tabindex="0" data-tip="Schema.org 结构化数据标准：通过 JSON-LD / Microdata 为页面添加机器可读语义，提升 AI 和搜索引擎理解能力">Schema.org</span></td>
           </tr>
           <tr id="principle-full-29" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
             <td class="col-id">29</td>
             <td>示例路径可参照</td>
-            <td><strong>给出可照抄示例</strong>：<br>提供完整命令/请求底稿，并写清适用与前置。</td>
-            <td><strong>示例块可扫读</strong>：<br>独立示例区，适用/前置可见，与正文步骤区分。</td>
-            <td><strong>示例正文默认可抓</strong>：<br>首包含完整示例；版本切换同源更新。</td>
+            <td><strong>给出可复制标准示例</strong>：<br>提供命令、请求或关键参数的完整可复制示例，避免「按实际修改」却无底稿。<br><strong>版本对齐并写清前置</strong>：<br>示例与当前文档版本严格对齐，随发布更新；说明适用场景与前置条件。</td>
+            <td><strong>示例区块可扫读区分</strong>：<br>示例区块必须位置固定、样式可扫读；须与正文步骤、验证区块视觉区分。严禁命令仅混在散文中而无独立示例块。<br><strong>适用与前置须可见</strong>：<br>示例块必须写清适用场景与前置条件（可含预期结果）。严禁只写「按实际路径修改」却不给出默认可照抄底稿。</td>
+            <td><strong>示例正文默认可抓</strong>：<br>首包必须输出完整示例正文；禁 JS 时仍可抓取。严禁依赖弹层或客户端拉取后才展示可照抄内容。<br><strong>多版本同源更新</strong>：<br>多版本文档中示例随版本切换同源更新，避免串版命令。</td>
+            <td class="col-source">—</td>
             <td class="col-basis"><span class="copy-explain" tabindex="0" data-tip="Aggarwal et al. 2024 · Generative Engine Optimization：优化内容结构与权威性信号，使其更易被生成式搜索引擎引用">GEO 2024</span></td>
           </tr>
           <tr id="principle-full-30" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
             <td class="col-id">30</td>
             <td>可交互示例</td>
-            <td><strong>说明在线试用入口</strong>：<br>写清可试用的场景与预填示例（如有）。</td>
-            <td><strong>试用入口文案明确</strong>：<br>Playground/在线尝试按钮写清动作，位置可发现。</td>
-            <td><strong>入口为可跟链</strong>：<br>试用入口为真实链接或稳定地址；预填参数可机读。</td>
+            <td><strong>对于API文档、SDK文档或命令行工具文档，在线提供静态代码示例外，应尽可能提供指向在线可执行环节的链接或嵌入组件。这些环境包括</strong>：<br>SwaggerUI/Open API Explorer、CodePen/CodeSandbox、Replit、Jupyter Notebook、在线CLI模拟器。链接应明确标注为“在线尝试”、“在Playground中打开”。</td>
+            <td><strong>&quot;在线尝试&quot;入口组件</strong>：<br>在代码示例块旁提供固定样式的跳转按钮，文案统一为&quot;在线尝试&quot;或&quot;在 Playground 中打开&quot;，位置、样式全站一致，用户一眼能找到<br><strong>嵌入组件的尺寸规范</strong>：<br>如果是嵌入式 Playground（如 Swagger UI、Jupyter），需要规范其在页面中的宽高、与正文内容的间距，避免嵌入组件破坏页面阅读流。</td>
+            <td><strong>代码块组件集成跳转能力</strong>：<br>代码块组件支持配置 Playground 链接，渲染时自动在代码块右上角输出&quot;在线尝试&quot;按钮，不依赖内容侧手动插入链接。<br><strong>Playground 链接与代码内容联动</strong>：<br>跳转链接需携带代码示例内容作为参数（如 CodeSandbox/Replit 支持通过 URL 参数预填代码），确保用户打开 Playground 时直接看到对应示例，而非空白环境。<br><strong>嵌入组件 SSR 降级处理</strong>：<br>嵌入式 Playground 组件在 SSR 时输出静态代码块作为降级内容，确保爬虫和禁用 JS 的环境仍能获取代码文本，不因嵌入组件导致代码内容不可抓取。</td>
+            <td class="col-source">—</td>
             <td class="col-basis"><span class="copy-explain" tabindex="0" data-tip="Aggarwal et al. 2024 · Generative Engine Optimization：优化内容结构与权威性信号，使其更易被生成式搜索引擎引用">GEO 2024</span></td>
           </tr>
         </tbody>
       </table>
       </div>
-
 
       <h3 class="affinity-group-title">可验证</h3>
       <div class="affinity-table-wrap">
@@ -464,6 +503,7 @@
           <col class="col-content">
           <col class="col-design">
           <col class="col-code">
+          <col class="col-source">
           <col class="col-basis">
         </colgroup>
         <thead>
@@ -473,6 +513,7 @@
             <th>文档内容调整</th>
             <th>设计UI 调整</th>
             <th>前端调整</th>
+            <th>原则来源</th>
             <th>理论依据</th>
           </tr>
         </thead>
@@ -480,33 +521,37 @@
           <tr id="principle-full-31" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
             <td class="col-id">31</td>
             <td>写明预期结果</td>
-            <td><strong>写出可核对预期</strong>：<br>成功长什么样、失败如何判断，写成可对照标准。</td>
-            <td><strong>预期与操作相邻</strong>：<br>预期结果紧挨命令/步骤，便于扫读核对。</td>
-            <td><strong>预期进可抓文本</strong>：<br>预期结果为文字块，不靠截图或动效提示。</td>
+            <td><strong>要求</strong>：<br>写可见、可复现判据 命令输出、退出码、界面变化、状态标志等；严禁「成功」「正常」等主观词单独充当预期。<br><strong>与步骤一一对应</strong>：<br>关键动作后附预期；暂无判据时写「无法验证」，禁止留给模型臆造。</td>
+            <td><strong>预期结果可见可扫</strong>：<br>「预期结果」作为固定标签或小节标题，与步骤动作成对出现，不淹没在段落里。<br><strong>判据用可对照样式</strong>：<br>输出样例、状态徽章等用与正文区分的样式，便于人机一眼定位核对点。</td>
+            <td><strong>步骤完整性检测</strong>：<br>在发布流程中检测操作类文档的每个 &lt;ol&gt;&lt;li&gt; 步骤项，识别缺少&quot;操作对象&quot;、&quot;操作动作&quot;或&quot;预期结果&quot;三要素的步骤，给出告警提示内容侧补充。<br><strong>验证区块存在性校验</strong>：<br>与&quot;验证区块&quot;原则的 CMS 校验联动，操作类文档发布前强制检查是否包含验证章节，已在验证区块原则中实现，此处复用即可。</td>
+            <td class="col-source"><span class="badge badge-primary">行业标准</span></td>
             <td class="col-basis"><span class="copy-explain" tabindex="0" data-tip="Barnett et al. 2024 · FP7 Incomplete Answer：LLM 生成的答案仅部分正确或缺失关键信息">Barnett FP7</span><br><span class="copy-explain" tabindex="0" data-tip="Schema.org HowTo / HowToStep：规范步骤包含 name（动作）、text（详情）和 HowToTip（预期结果），是「操作对象 + 动作 + 预期结果」三要素的行业规范原型，Google 等引擎用于结构化摘要抽取">Schema.org HowTo</span></td>
           </tr>
           <tr id="principle-full-32" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
             <td class="col-id">32</td>
             <td>验证区块</td>
-            <td><strong>提供可执行验证方法</strong>：<br>写出检查命令与成功/失败判据，拒绝「自行确认」。</td>
-            <td><strong>「验证」作固定章节</strong>：<br>独立验证区，命令与样例回执成对呈现。</td>
-            <td><strong>验证节可定位可抓</strong>：<br>验证标题与命令进首包，结构稳定可切片。</td>
+            <td><strong>要求</strong>：<br>任何描述操作任务（教程、操作指南、配置步骤）的文档，在完成所有操作步骤后，必须显示包含一个名为“验证”或“预期结果”的章节。该章节应提供具体、可执行、可自动化的验证方法，以及明确的成功/失败判断标准。</td>
+            <td><strong>验证区块独立组件样式</strong>：<br>与前提条件、步骤等模式组件保持同一套视觉体系，但需有自己的标识（如绿色左侧边线或&quot;✓&quot;图标），让用户扫描页面时能快速定位验证区块。<br><strong>成功/失败状态的视觉区分</strong>：<br>验证区块内的成功判断标准和失败判断标准，用不同颜色或图标明确区分，不能混排在同一段落里。</td>
+            <td><strong>验证区块语义标注</strong>：<br>容器加 data-pattern=&quot;verification&quot; 属性，成功标准和失败标准分别加 data-result=&quot;success&quot; / data-result=&quot;failure&quot;，大模型可直接识别验证逻辑，无需推断<br><strong>CMS 强制验证区块</strong>：<br>当文档类型被标注为&quot;操作任务&quot;（教程、操作指南、配置步骤）时，发布前校验页面中是否存在验证区块，缺失则阻断发布<br><strong>验证方法的代码块支持</strong>：<br>验证区块内的命令或脚本必须用代码块组件输出，带语言标注和一键复制功能，支持可自动化执行的验证命令直接被工具链消费。</td>
+            <td class="col-source">—</td>
             <td class="col-basis"><span class="copy-explain" tabindex="0" data-tip="Barnett et al. 2024 · FP4 Not Extracted：内容在 context 中，但 LLM 因语义破坏无法正确提取">Barnett FP4</span></td>
           </tr>
           <tr id="principle-full-33" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
             <td class="col-id">33</td>
             <td>缺省空态文案化</td>
-            <td><strong>空态写原因与下一步</strong>：<br>无数据/未配置时说明含义与建议操作。</td>
-            <td><strong>空态有可见文案</strong>：<br>空列表/空页不只有插画或空白。</td>
-            <td><strong>空态文案在 DOM</strong>：<br>空态说明为文本节点，禁只换背景图。</td>
+            <td><strong>区分空因并给下一步</strong>：<br>区分「无数据」「无权限」「筛选过空」；给出可执行下一步；成功态与空态文案勿混用。<br><strong>默认值写成字</strong>：<br>稿面与表单说明中，推荐配置写成「默认 …」，禁止只写裸版本号暗示推荐。</td>
+            <td><strong>缺省可识别</strong>：<br>推荐值须标注「默认」，禁止只露选项值；机器须能识别推荐版本并回答默认配置。<br><strong>空态可行动</strong>：<br>空结果须写明缺失内容与可执行下一步，空白与「-」不得单独表意。</td>
+            <td><strong>空态节点首包输出</strong>：<br>空态文案在首包 / SSR 输出；原因可进 data-empty-reason；勿仅转圈无文案。<br><strong>默认项写入可见文本</strong>：<br>选中推荐项的可见文本含「默认」；可用 data-default="true" 辅助机读。</td>
+            <td class="col-source">—</td>
             <td class="col-basis">—</td>
           </tr>
           <tr id="principle-full-34" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
             <td class="col-id">34</td>
             <td>常见异常说明</td>
-            <td><strong>异常写含义与处置</strong>：<br>常见失败给出含义、原因、官方下一步；无结论则明示。</td>
-            <td><strong>失败态有可见文案</strong>：<br>错误区写清含义→原因→下一步，不单靠红色图标。</td>
-            <td><strong>错误文案可抓取</strong>：<br>失败说明进首包文本；可结构化标注错误码。</td>
+            <td><strong>给出官方处理路径</strong>：<br>常见异常写清含义与下一步；错误码旁附可引用解释与处置，与当前版本对齐。<br><strong>无结论时显式声明</strong>：<br>若官方尚无结论，写明「暂无官方处理说明」，禁止暗示可猜或编造步骤。</td>
+            <td><strong>失败态须有可见文案</strong>：<br>错误 / 失败态须有可见文案区，不单靠红色或图标表意。<br><strong>含义</strong>：<br>→ 原因 → 下一步可扫读 排障入口位置固定；层级结构清晰，便于人机扫读与抓取。</td>
+            <td><strong>错误文案进入首包</strong>：<br>失败说明在 SSR / 首包输出，禁 JS 仍可读。<br><strong>语义标注失败态</strong>：<br>可用 data-result="failure" 等标注，便于切片识别失败块。</td>
+            <td class="col-source">—</td>
             <td class="col-basis">—</td>
           </tr>
         </tbody>
@@ -515,11 +560,9 @@
 
     </section>
 
-  </main></div>
-
-<script src="assets/js/site-config.js"></script>
 <script src="assets/js/site-init.js"></script>
 <script src="assets/js/module-sidebar.js"></script>
 <script src="assets/js/affinity-full-filter.js"></script>
 </body>
+
 </html>
