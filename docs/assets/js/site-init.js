@@ -198,13 +198,35 @@
     }
   }
 
+  function injectDataNav() {
+    var path = (location.pathname || "").split("/").pop() || "";
+    document.querySelectorAll("nav.site-nav").forEach(function (nav) {
+      if (nav.querySelector('a[href="data-analysis.html"]')) {
+        if (path === "data-analysis.html") {
+          nav.querySelectorAll("a").forEach(function (x) { x.classList.remove("active"); });
+          nav.querySelector('a[href="data-analysis.html"]').classList.add("active");
+        }
+        return;
+      }
+      var a = document.createElement("a");
+      a.href = "data-analysis.html";
+      a.textContent = "数据分析";
+      if (path === "data-analysis.html") a.className = "active";
+      var design = nav.querySelector('a[href="design-guide-image-text.html"]');
+      if (design && design.nextSibling) nav.insertBefore(a, design.nextSibling);
+      else nav.appendChild(a);
+    });
+  }
+
   injectStyles();
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", function () {
+      injectDataNav();
       injectSelector();
       syncFromHash();
     });
   } else {
+    injectDataNav();
     injectSelector();
     syncFromHash();
   }

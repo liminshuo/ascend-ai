@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>设计背景 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid #e2e8f0;
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: 100%; max-width: var(--content-max-width, 1000px); margin: 0 auto; padding: 0 24px; box-sizing: border-box;
+    height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: #191919; text-decoration: none; white-space: nowrap; margin-right: 40px;
+  }
+  .topbar .brand span { color: #1476FF; }
+  .topbar .site-nav { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; flex-wrap: wrap; }
+  .topbar .site-nav > a {
+    text-decoration: none; color: #595959; font-size: 14px; font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .topbar .site-nav > a:hover { color: #1476FF; background: #F5F5F5; text-decoration: none; }
+  .topbar .site-nav > a.active { color: #1476FF; background: #F5F5F5; font-weight: 600; }
+  body.inner-page .page-wrapper { min-height: 100vh; }
+  .page-header h1 {
+    font-family: "PingFang SC", sans-serif;
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1-weight, 600);
+    line-height: var(--text-h1-lh);
+    letter-spacing: -0.02em;
+    margin: 8px 0 0;
+    color: var(--color-text, #191919);
+  }
+  .page-header .page-desc {
+    margin: 32px 0 0;
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--text, #191919);
+  }
+  body.inner-page[data-page="background"]:has(#module-sidebar) .main-content {
+    padding-top: 32px;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  body.inner-page[data-page="background"]:has(#module-sidebar) .main-content > .page-header,
+  body.inner-page[data-page="background"]:has(#module-sidebar) .main-content > .section {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page[data-page="background"] .main-content .section > h2 {
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    letter-spacing: -0.01em;
+    margin-top: 48px;
+    margin-bottom: 16px;
+    padding-bottom: var(--space-h2-rule, 16px);
+    border-bottom: 2px solid #f0f0f0;
+    color: var(--color-text, #191919);
+  }
+  body.inner-page[data-page="background"] .main-content > .section:first-of-type > h2 {
+    margin-top: 40px;
+  }
+  .bg-body {
+    margin: 0 0 12px;
+    font-size: 14px;
+    line-height: 22px;
+    color: var(--color-text, #191919);
+  }
+  .bg-body:last-child { margin-bottom: 0; }
+  .bg-list {
+    margin: 0 0 12px;
+    padding-left: 1.25em;
+    font-size: 14px;
+    line-height: 22px;
+    color: var(--color-text, #191919);
+  }
+  .bg-list li + li { margin-top: 6px; }
+  .scene-def-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    line-height: 22px;
+    margin: 0 0 8px;
+    table-layout: fixed;
+  }
+  .scene-def-table th,
+  .scene-def-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid #e2e8f0;
+    vertical-align: top;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 400;
+  }
+  .scene-def-table th {
+    font-size: 12px;
+    font-weight: 650;
+    color: #595959;
+    background: #fafafa;
+  }
+  .scene-def-table .col-type { width: 18%; font-weight: 650; }
+  .scene-def-table .col-desc { width: 42%; }
+  .scene-def-table .col-place { width: 40%; }
+  .scene-def-table td strong {
+    font-weight: 650;
+  }
+</style>
+</head>
+<body class="inner-page" data-module="principles" data-page="background">
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html">社区 <span>AI 亲和原则</span></a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="mintlify.html">友商对照</a>
+      <a href="reachability.html">社区诊断</a>
+      <a href="principles-overview.html" class="active">亲和原则</a>
+      <a href="community-ui.html">组件亲和</a>
+      <a href="design-guide-image-text.html">设计模式</a>
+      <a href="data-analysis.html">数据分析</a>
+    </nav>
+  </div>
+</div>
+
+<div class="page-wrapper">
+
+  <aside id="module-sidebar"></aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <h1>设计背景</h1>
+      <p class="page-desc page-desc--split">
+        <span class="page-desc-line">面向设计、文档内容与前端同事：先讲清现状与场景，再说为何要立原则、它与 GEO / RAG 的关系、能带来什么价值，以及如何复用到其他业务线。改造细则见 <a href="principles-overview.html">AI 亲和原则</a> 与 <a href="principles-affinity-full.html">全量亲和原则</a>。</span>
+      </p>
+    </div>
+
+    <section class="section" id="status">
+      <h2>1. 背景与现状</h2>
+      <p class="bg-body">越来越多的人获取产品与技术知识时，会先问大模型，而不是打开官网、在手册树里逐级点开。提问场景很具体：怎么装、版本差在哪、规格能不能用、报错怎么排。他们期望得到可执行的官方答案，而不是营销话术或过时片段。</p>
+      <p class="bg-body">大模型给出的答案，很大程度上取决于公开面上的文档站、手册与规格页能不能被机器<strong>稳定发现、完整读取、正确理解</strong>。若页面「人看着有内容」，但机器抓不到正文、进不了章节、分不清版本，模型就会用训练记忆补洞——表现为幻觉、答非所问、或把旧版当现行。</p>
+      <p class="bg-body">这不是个例风险，而是知识交付入口正在从「人浏览官网」切到「人问模型、模型读官网」时的结构性变化。官网与文档仍是权威来源，但消费路径变了：第一读者里多了一类「机器读者」。</p>
+    </section>
+
+    <section class="section" id="why">
+      <h2>2. 为什么要做 AI 亲和原则</h2>
+      <p class="bg-body">如果我们只按给人看的版式改文档，机器侧的断点会系统性漏掉：发现层未部署、入口只靠图标、正文依赖客户端渲染、图意无字、折叠默认不输出、版本与邻篇对不上号……任何一环失败，都会在答问链路里放大成错误指引。</p>
+      <p class="bg-body">因此需要一套<strong>跨角色共用的原则</strong>：把「机器能不能用这份文档」拆成可验收的目标，让设计、内容、前端在同一标准下分工改造，而不是各自凭经验补丁。</p>
+      <ul class="bg-list">
+        <li><strong>对设计：</strong>入口、信息层级、默认可读态要可被发现与跟链，而不仅是视觉好看。</li>
+        <li><strong>对内容：</strong>命名、版本、步骤、预期结果要可独立理解，机器和人读到的是同一套事实。</li>
+        <li><strong>对前端：</strong>首包可得、锚点稳定、发现层与平行源可部署，管道能自动校验，而不是上线后再人工补洞。</li>
+      </ul>
+      <p class="bg-body">AI 亲和原则据此将答问链路整理为<strong>可达 → 可读 → 可理解 → 可操作 → 可验证</strong>五层，并落到设计 UI / 文档内容 / 前端三交付面，作为统一对照标准。</p>
+    </section>
+
+    <section class="section" id="concepts">
+      <h2>3. 与 GEO、RAG 的关系</h2>
+      <p class="bg-body">讨论「文档适不适合被 AI 用」时，常会听到 GEO、RAG。它们和本原则不在同一层，需要先分清：</p>
+      <table class="scene-def-table">
+        <colgroup>
+          <col class="col-type" />
+          <col class="col-desc" />
+          <col class="col-place" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="col-type">名称</th>
+            <th class="col-desc">是什么</th>
+            <th class="col-place">关心什么</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="col-type">RAG</td>
+            <td class="col-desc"><strong>技术架构</strong>：先检索文档再生成回答。</td>
+            <td class="col-place">文档能否入库、切块、召回、进入模型上下文。</td>
+          </tr>
+          <tr>
+            <td class="col-type">GEO</td>
+            <td class="col-desc"><strong>优化目标</strong>：让内容更容易被生成式引擎选中并引用（类比 SEO）。</td>
+            <td class="col-place">权威页能否进候选池、是否值得被当成答案来源。</td>
+          </tr>
+          <tr>
+            <td class="col-type">AI 亲和原则</td>
+            <td class="col-desc"><strong>改造做法</strong>：文档与官网公开面如何改，机器才找得到、读得懂、用得上。</td>
+            <td class="col-place">设计 / 内容 / 前端各自交付什么、如何验收。</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="bg-body"><strong>一句话：</strong>RAG 是用法，GEO 是战场目标，AI 亲和原则是文档侧要满足的条件——同时服务「知识入库」与「生成式引用」，而不是其中某一项的别名。</p>
+    </section>
+
+    <section class="section" id="value">
+      <h2>4. 原则的价值</h2>
+      <p class="bg-body">把原则落地后，价值不在「多写几份规范」，而在答问质量与协作效率：</p>
+      <ul class="bg-list">
+        <li><strong>降低错误答案：</strong>官方事实页更稳定进入候选与引用，减少幻觉、过时版本与壳页被当成权威。</li>
+        <li><strong>缩短改造沟通：</strong>设计、内容、前端共用同一套「可达～可验证」语言，验收有条目可对，少靠口头经验。</li>
+        <li><strong>一次改造、双轨受益：</strong>人读体验与机器消费同源推进；发现层、平行 MD、正文可读性同步达标，避免给人一套、给机器另一套。</li>
+        <li><strong>可度量、可迭代：</strong>全量表与问题实测把原则拆成可勾选状态，便于排期、回归与跨站对照。</li>
+      </ul>
+    </section>
+
+    <section class="section" id="reuse">
+      <h2>5. 如何复用到其他业务</h2>
+      <p class="bg-body">五层目标（可达 / 可读 / 可理解 / 可操作 / 可验证）描述的是<strong>机器消费公开知识</strong>的共性能力，不绑定单一产品线。社区文档站可以落地，能源、云、终端、开发者门户等同样适用——换的是业务事实与页面载体，不变的是链路与验收逻辑。</p>
+      <p class="bg-body">跨业务复用时，建议保持框架，替换内容：</p>
+      <ul class="bg-list">
+        <li><strong>保留：</strong>五层目标、三交付面、发现层 / 双轨 / 入口可辨识等共性要求。</li>
+        <li><strong>替换：</strong>产品名、版本体系、规格字段、操作步骤与验证方式等业务事实。</li>
+        <li><strong>划界：</strong>营销活动页、登录墙、临时域名等，在收录策略里明确是否纳入完整改造。</li>
+        <li><strong>起步顺序：</strong>先定「应被引用的官方事实面」→ 跑通可达与可读 → 再补可理解 / 可操作 / 可验证。</li>
+      </ul>
+      <p class="bg-body">因此本原则既是当前社区文档与官网的改造标准，也可作为其他业务线做「AI 可读官方知识面」时的共用方法论：先对齐框架，再填入本域内容。</p>
+      <p class="bg-body"><strong>接下来读：</strong><a href="principles-overview.html">AI 亲和原则</a>（五层总览）→ <a href="principles-affinity-full.html">全量亲和原则</a>（条目清单）→ 侧栏原则细则与设计模式。</p>
+    </section>
+  </main>
+</div>
+
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js"></script>
+<script src="assets/js/module-sidebar.js"></script>
+</body>
+</html>

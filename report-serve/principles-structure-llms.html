@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>发现层部署 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
+  <title>机器可达：AI 亲和的起点 · 发现层部署 · 昇腾社区 AI 亲和原则</title>
   <link rel="stylesheet" href="assets/css/style.css">
 <style>
   .topbar {
@@ -15,7 +15,7 @@
     overflow: visible;
   }
   .topbar-inner {
-    width: 100%; max-width: none; margin: 0; padding: 0 24px;
+    width: 100%; max-width: var(--content-max-width, 1000px); margin: 0 auto; padding: 0 24px; box-sizing: border-box;
     height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
   }
   .topbar .brand {
@@ -68,13 +68,13 @@
   .page-header {
     border-bottom: none;
     padding-bottom: 0;
-    margin-bottom: 28px;
+    margin-bottom: 0;
   }
   .page-header h1 {
     font-family: "PingFang SC", sans-serif;
-    font-size: clamp(28px, 4vw, 40px);
-    font-weight: 600;
-    line-height: 48px;
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1-weight, 600);
+    line-height: var(--text-h1-lh);
     letter-spacing: -0.02em;
     margin: 8px 0 0;
     color: var(--color-text, #191919);
@@ -87,14 +87,15 @@
   }
   body.inner-page[data-page="structure-llms"]:has(#module-sidebar) .main-content {
     padding-top: 32px;
+    padding-bottom: 64px;
     padding-left: 0;
     padding-right: 0;
   }
   body.inner-page[data-page="structure-llms"]:has(#module-sidebar) .main-content > .page-header,
   body.inner-page[data-page="structure-llms"]:has(#module-sidebar) .main-content > .section,
   body.inner-page[data-page="structure-llms"]:has(#module-sidebar) .main-content > .surface-tabs {
-    width: min(1200px, calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
-    max-width: 1200px;
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
     margin-inline: auto;
     padding-left: 0;
     padding-right: 0;
@@ -105,20 +106,20 @@
     font-weight: 700;
     line-height: var(--text-h2-lh, 36px);
     letter-spacing: -0.01em;
-    margin-top: 48px;
-    margin-bottom: 16px;
-    padding-bottom: 16px;
+    margin-top: 64px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
     border-bottom: 2px solid #f0f0f0;
     color: var(--color-text, #191919);
   }
   body.inner-page[data-page="structure-llms"] .main-content .section h3 { height: auto; }
   h3.fn-h3 {
     margin: 0;
-    padding-top: 24px;
-    padding-bottom: 24px;
-    font-size: 18px;
-    line-height: 28px;
-    font-weight: 650;
+    padding-top: var(--space-h3-pad-y, 24px);
+    padding-bottom: var(--space-h3-pad-y, 24px);
+    font-size: var(--text-h3, 18px);
+    line-height: var(--text-h3-lh, 28px);
+    font-weight: var(--text-h3-weight, 650);
     color: var(--color-text, #191919);
     letter-spacing: -0.01em;
   }
@@ -126,15 +127,286 @@
   h4.fn-h4 {
     margin: 24px 0 0;
     padding-top: 0;
-    padding-bottom: 16px;
-    font-size: 16px;
-    line-height: 24px;
-    font-weight: 650;
+    padding-bottom: var(--space-h4-pad-b, 16px);
+    font-size: var(--text-h4, 16px);
+    line-height: var(--text-h4-lh, 24px);
+    font-weight: var(--text-h4-weight, 650);
     color: var(--color-text, #191919);
     letter-spacing: -0.01em;
   }
   h3.fn-h3 + .principle-example > h4.fn-h4,
   h3.fn-h3 + h4.fn-h4 { margin-top: 12px; }
+  #practices h3.fn-h3 { padding: 0 0 8px; }
+  #practices .file-lead {
+    margin: 0 0 16px;
+    font-size: 14px;
+    line-height: 22px;
+    color: #595959;
+  }
+  .practice-block {
+    margin: 0;
+    padding: 32px 0 8px;
+    border-top: 1px solid #f0f0f0;
+  }
+  .practice-block:first-of-type {
+    padding-top: 4px;
+    border-top: none;
+  }
+
+  body.inner-page[data-page="structure-llms"] .main-content > .section:first-of-type > h2 {
+    margin-top: 48px;
+  }
+  .bg-body {
+    margin: 0 0 12px;
+    font-size: 14px;
+    line-height: 22px;
+    color: var(--color-text, #191919);
+  }
+  .bg-body:last-child { margin-bottom: 0; }
+  .bg-list {
+    margin: 0 0 12px;
+    padding-left: 1.25em;
+    font-size: 14px;
+    line-height: 22px;
+    color: var(--color-text, #191919);
+  }
+  .bg-list li + li { margin-top: 6px; }
+  #principles .bg-list,
+  #practices .bg-list,
+  #benefits .bg-list {
+    list-style: disc;
+    padding-left: 1.25em;
+    margin: 0;
+  }
+  #principles .bg-list li + li,
+  #practices .bg-list li + li,
+  #benefits .bg-list li + li { margin-top: 16px; }
+  #principles .bg-list li strong,
+  #practices .bg-list li strong,
+  #benefits .bg-list li strong {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 650;
+    color: #191919;
+  }
+  #principles .bg-list li,
+  #practices .bg-list li,
+  #benefits .bg-list li {
+    color: #595959;
+  }
+  .file-sample {
+    margin: 0 0 20px;
+    padding: 0;
+    background: #1e1e1e;
+    border: 1px solid #111;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .file-sample figcaption {
+    margin: 0;
+    padding: 10px 14px;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 22px;
+    color: #a3a3a3;
+    border-bottom: 1px solid #333;
+  }
+  .file-sample figcaption code {
+    font-size: inherit;
+    color: #e8e8e8;
+    background: none;
+  }
+  .file-sample pre {
+    margin: 0;
+    padding: 12px 14px 14px;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: 12px;
+    line-height: 20px;
+    color: #e8e8e8;
+    background: transparent;
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .file-sample pre code {
+    display: block;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    color: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    font-family: inherit;
+    white-space: inherit;
+  }
+  .file-sample .cmt { color: #737373; }
+  .file-sample:has(+ .file-sample-note) { margin-bottom: 8px; }
+  .file-sample-note {
+    margin: 0 0 20px;
+    font-size: 13px;
+    line-height: 22px;
+    color: #8c8c8c;
+  }
+  h3.fn-h3 + .file-sample { margin-top: 0; }
+  .file-sample + .bg-list,
+  .file-sample-note + .bg-list { margin-top: 0; }
+  .af-figure {
+    margin: 8px 0 0;
+    padding: 0;
+    background: none;
+    border: none;
+    overflow-x: auto;
+    border-radius: 8px;
+  }
+
+  .aj {
+    width: 100%;
+    min-width: 880px;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+    font-size: 12px;
+    line-height: 22px;
+    color: #191919;
+  }
+  .aj caption {
+    caption-side: top;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 22px;
+    padding: 0 0 10px;
+    color: #191919;
+  }
+  .aj .aj-col-mute { width: 76px; }
+  .aj td.is-mute {
+    color: #8c8c8c;
+  }
+  .aj th,
+  .aj td {
+    border: 1px solid #e8eef5;
+    border-top: none;
+    border-left: none;
+    vertical-align: top;
+    padding: 12px 12px;
+    font-size: 12px;
+    line-height: 22px;
+  }
+  .aj thead tr:first-child > th {
+    border-top: 1px solid #e8eef5;
+  }
+  .aj .aj-corner,
+  .aj .aj-label {
+    width: 92px;
+    background: #f5f6f8;
+    color: #595959;
+    font-weight: 650;
+    vertical-align: middle;
+    text-align: left;
+    padding: 12px 12px;
+    border-left: 1px solid #e8eef5;
+  }
+  .aj thead th.aj-corner {
+    background: #f5f6f8;
+    color: #595959;
+    padding: 12px 12px;
+    border-top-left-radius: 8px;
+  }
+  .aj thead tr.aj-group > th:last-child {
+    border-top-right-radius: 8px;
+  }
+  .aj tbody tr:last-child .aj-label {
+    border-bottom-left-radius: 8px;
+  }
+  .aj tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 8px;
+  }
+  .aj thead th {
+    background: #f5f6f8;
+    font-weight: 650;
+    text-align: left;
+    padding: 12px 12px;
+    color: #191919;
+  }
+  .aj thead th.aj-group {
+    text-align: center;
+    vertical-align: middle;
+    font-weight: 650;
+    letter-spacing: 0;
+    background: #eceef1;
+    color: #191919;
+    padding: 10px 12px;
+  }
+  .aj thead th.aj-span {
+    vertical-align: middle;
+  }
+  .aj thead .aj-stage-name {
+    display: block;
+    font-weight: 650;
+    color: #191919;
+  }
+  .aj thead .aj-corner .aj-stage-name {
+    color: inherit;
+    margin-bottom: 2px;
+  }
+  .aj thead .aj-mute {
+    background: #f5f6f8;
+    color: #595959;
+  }
+  .aj thead .aj-mute .aj-stage-name { color: #595959; }
+  .aj thead .aj-pri,
+  .aj thead .aj-opt {
+    background: #f5f6f8;
+  }
+  .aj thead .aj-fb {
+    background: #f3f3f3;
+  }
+  .aj .aj-tag {
+    display: block;
+    width: fit-content;
+    margin: 0;
+    padding: 0 6px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 18px;
+    color: #1476FF;
+  }
+  .aj-tag--must { background: rgba(20, 118, 255, .18); }
+  .aj-tag--pri  { background: rgba(20, 118, 255, .12); }
+  .aj-tag--opt  { background: rgba(20, 118, 255, .08); }
+  .aj-tag--fb   { background: rgba(20, 118, 255, .04); color: #3d7fd4; }
+  .aj tbody td:not(.is-mute):not(.is-fb):not(.aj-label) {
+    background: #fff;
+  }
+  .aj td.is-fb { background: #fafafa; }
+  .aj td.is-mute { background: #f5f6f8 !important; color: #8c8c8c; }
+  .aj td .aj-subhead {
+    display: block;
+    font-weight: 650;
+    color: #191919;
+    margin: 0 0 6px;
+  }
+  .aj-stack + .aj-stack { margin-top: 12px; }
+  .aj .aj-file {
+    display: block;
+    margin: 0 0 6px;
+    font-family: var(--font-mono, "SF Mono", monospace);
+    font-weight: 650;
+    color: #1476FF;
+  }
+  .aj ul {
+    margin: 0;
+    padding-left: 1.1em;
+  }
+  .aj li {
+    color: inherit;
+    margin-bottom: 0;
+  }
+  .aj li + li { margin-top: 8px; }
+  .aj code {
+    font-size: inherit;
+    line-height: inherit;
+  }
 
   #scenarios .scene-def-table td .badge { border: none; }
   .scene-def-table td .badge-optional {
@@ -406,6 +678,7 @@
       <a href="principles-overview.html" class="active">亲和原则</a>
       <a href="community-ui.html">组件亲和</a>
       <a href="design-guide-image-text.html">设计模式</a>
+      <a href="data-analysis.html">数据分析</a>
     </nav>
   </div>
 </div>
@@ -417,440 +690,209 @@
   <main class="main-content">
 
     <div class="page-header">
-      <h1>发现层部署</h1>
+      <h1>机器可达：AI 亲和的起点</h1>
       <p class="page-desc page-desc--split">
-        <span class="page-desc-line">站点层必须部署机器发现层标准四件套（<code>robots.txt</code>、<code>sitemap.xml</code>、<code>llms.txt</code>、<code>llms-full.txt</code>），放行可索引路径与机器源（source）路径，并显式声明抓取 URL 与主推版本，以确保机器能稳定发现并进入。</span>
+        <span class="page-desc-line">机器可达是 AI 亲和体系的第一道关卡。本页聚焦发现层的四个基础配置文件，其分工逻辑为：<code>robots.txt</code> 作为准入前提，<code>llms.txt</code> 作为主要路径，<code>llms-full.txt</code> 作为导读配套，<code>sitemap.xml</code> 作为兜底清单。它们共同回答了「知识在哪里、先看哪篇、如何高效获取」的问题。</span>
       </p>
     </div>
 
-    <section class="section" id="objects">
-      <h2>部署对象</h2>
-      <table class="scene-def-table">
-        <colgroup>
-          <col class="col-type" />
-          <col class="col-desc" />
-        </colgroup>
-        <thead>
-          <tr>
-            <th class="col-type">名称</th>
-            <th class="col-desc">说明</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="col-type"><code>robots.txt</code></td>
-            <td class="col-desc"><strong>站点爬取规则：</strong><br>声明允许 / 禁止路径，并指向 Sitemap。必须放行可索引页与机器源（MD / source）路径；严禁误挡 Agent 与合规爬虫。</td>
-          </tr>
-          <tr>
-            <td class="col-type"><code>sitemap.xml</code></td>
-            <td class="col-desc"><strong>站点 URL 清单：</strong><br>列出应索引页面及更新时间。必须覆盖权威文档页，并优先收录机器源路径，便于 Agent 定位。</td>
-          </tr>
-          <tr>
-            <td class="col-type"><code>llms.txt</code></td>
-            <td class="col-desc"><strong>面向大模型的站级索引：</strong><br>按产品线 / 版本列出推荐抓取入口。必须声明主推版本，且篇名与目标页 H1 / 侧栏用语保持一致。</td>
-          </tr>
-          <tr>
-            <td class="col-type"><code>llms-full.txt</code></td>
-            <td class="col-desc"><strong>面向大模型的全文聚合包：</strong><br>将索引文档的 Markdown 正文聚合为单文件。必须随文档发布自动生成，并与 <code>llms.txt</code> 入口保持同源更新。</td>
-          </tr>
-        </tbody>
-      </table>
+    <section class="section" id="how-discover">
+      <h2>Agent 是如何发现内容的</h2>
+      <figure class="af-figure">
+        <table class="aj">
+          <caption>表1 发现层四个文件的职能与发现机制</caption>
+          <colgroup>
+            <col style="width:108px" />
+            <col class="aj-col-mute" style="width:92px" />
+            <col />
+            <col />
+            <col />
+            <col />
+            <col class="aj-col-mute" style="width:92px" />
+          </colgroup>
+          <thead>
+            <tr class="aj-group">
+              <th class="aj-corner" rowspan="2" scope="col"><span class="aj-stage-name">Agent</span>行为阶段</th>
+              <th class="aj-mute aj-span" rowspan="2" scope="col">
+                <span class="aj-stage-name">意图识别</span>
+              </th>
+              <th class="aj-group" colspan="4" scope="colgroup">信源检索 / 内容召回</th>
+              <th class="aj-mute aj-span" rowspan="2" scope="col">
+                <span class="aj-stage-name">内容理解</span>
+              </th>
+            </tr>
+            <tr class="aj-sub">
+              <th scope="col">
+                <span class="aj-stage-name">核对门禁</span>
+              </th>
+              <th class="aj-pri" scope="col">
+                <span class="aj-stage-name">查阅导读</span>
+              </th>
+              <th class="aj-opt" scope="col">
+                <span class="aj-stage-name">按需取文</span>
+              </th>
+              <th class="aj-fb" scope="col">
+                <span class="aj-stage-name">兜底清单</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th class="aj-label" scope="row">触点文件</th>
+              <td class="is-mute">—</td>
+              <td><span class="aj-file">robots.txt</span><span class="aj-tag aj-tag--must">必经准入文件</span></td>
+              <td class="is-pri"><span class="aj-file">llms.txt</span><span class="aj-tag aj-tag--pri">优先导读文件</span></td>
+              <td class="is-pri"><span class="aj-file">llms-full.txt</span><span class="aj-tag aj-tag--opt">导读配套正文包</span></td>
+              <td class="is-fb"><span class="aj-file">sitemap.xml</span><span class="aj-tag aj-tag--fb">无导读时兜底清单</span></td>
+              <td class="is-mute">—</td>
+            </tr>
+            <tr>
+              <th class="aj-label" scope="row">解决问题</th>
+              <td class="is-mute">锁定要找的官方事实。</td>
+              <td>划定知识面边界，放行该抓的，拦截不该抓的。</td>
+              <td class="is-pri">提供明确的抓取顺序，直接指向主推文档。</td>
+              <td class="is-pri">提供纯净正文的聚合文件，避免逐页渲染。</td>
+              <td class="is-fb">提供知识面公开 URL 清单，用于发现深层与新增页。</td>
+              <td class="is-mute">核对对象、版本与结论。</td>
+            </tr>
+            <tr>
+              <th class="aj-label" scope="row">发现机制</th>
+              <td class="is-mute">—</td>
+              <td>基于 RFC 9309 标准（1994 年共识，2022 年全面实行）。Agent 进站时请求固定路径 <code>/robots.txt</code>。</td>
+              <td class="is-pri">基于 2024 年社区惯例（非强制标准）。约定根路径 <code>/llms.txt</code>，可用页脚或 <code>rel="llms"</code> 辅助声明。</td>
+              <td class="is-pri">无独立标准，作为 <code>llms.txt</code> 的配套扩展。链接写于导读内，或沿用 <code>/llms-full.txt</code> 惯例。无导读则无法被单独发现。</td>
+              <td class="is-fb">基于 Google Sitemaps 协议（2005 年）。必须通过 <code>robots.txt</code> 中的 <code>Sitemap:</code> 字段声明地址。</td>
+              <td class="is-mute">—</td>
+            </tr>
+          </tbody>
+        </table>
+      </figure>
     </section>
 
-    <section class="section" id="scenarios">
-      <h2>适用场景</h2>
-      <table class="scene-def-table">
-        <colgroup>
-          <col class="col-type" />
-          <col class="col-place" />
-          <col class="col-desc" />
-        </colgroup>
-        <thead>
-          <tr>
-            <th class="col-type">优先级</th>
-            <th class="col-place">站点类型</th>
-            <th class="col-desc">要部署哪些</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="col-type"><span class="badge badge-bad">必做</span></td>
-            <td class="col-place"><strong>知识面：</strong>文档站 / 手册 / 知识中心</td>
-            <td class="col-desc">必须部署全套四件套：<code>robots.txt</code> + <code>sitemap.xml</code> + <code>llms.txt</code> + <code>llms-full.txt</code>。这是 Agent 的「总入口」，缺一不可，严禁漏配。</td>
-          </tr>
-          <tr>
-            <td class="col-type"><span class="badge badge-should">建议做</span></td>
-            <td class="col-place"><strong>产品面：</strong>官网产品 / 规格详情</td>
-            <td class="col-desc">至少部署三件套：<code>robots.txt</code>（放行机器源）+ <code>sitemap.xml</code>（含 MD/source）+ <code>llms.txt</code>。当存在大量可入库正文时，须补齐 <code>llms-full.txt</code>。</td>
-          </tr>
-          <tr>
-            <td class="col-type"><span class="badge badge-optional">可不做完整改造</span></td>
-            <td class="col-place"><strong>营销面：</strong>落地页 / 临时活动域</td>
-            <td class="col-desc">不必挂齐四件套，但必须在 <code>robots.txt</code> / 收录策略中明确划界。严禁假挂空的 <code>llms.txt</code> 或空清单误导 Agent。</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-
-    <section class="section" id="design-ui">
-      <h2>设计UI调整</h2>
-
-      <h3 class="fn-h3" id="design-suggestions">调整建议</h3>
-      <ul class="principle-suggestions">
-        <li>
-          <span class="sug-title">页脚标出站级机器入口</span>
-          <span class="sug-desc">在页脚次要区提供清晰可读的 <code>llms.txt</code> 文本链，确保可直接跟链。</span>
-        </li>
+    <section class="section" id="principles">
+      <h2>核心原则</h2>
+      <ul class="bg-list">
+        <li><strong>聚焦知识面</strong>本套机制服务于文档与官方事实，营销面内容不占用发现层入口。</li>
+        <li><strong>门禁作为准入前提</strong><code>robots.txt</code> 的配置定义了发现层的准入规则，是其他入口能够合法生效的前提条件。</li>
+        <li><strong>导读作为主要路径</strong>存在 <code>llms.txt</code> 时，以其作为判断相关性和优先级的主要依据；<code>sitemap.xml</code> 仅在导读缺失时承担回退功能，不承担替代导读的职责。</li>
+        <li><strong>全文包作为导读配套</strong><code>llms-full.txt</code> 是 <code>llms.txt</code> 的配套组件，其内容与导读同步更新，不脱离导读单独发挥作用。</li>
       </ul>
-
-      <h3 class="fn-h3" id="design-example">调整示例</h3>
-      <div class="principle-example">
-        <h4 class="fn-h4">页脚标出站级机器入口</h4>
-        <div class="fn-ex-row" id="llms-design-footer">
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label">反面</span>
-              <div class="fn-ex-bar" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="反面：页脚只有法务链，无 llms.txt">
-                <div class="site-foot">
-                  <div class="site-foot-body" aria-hidden="true">
-                    <p>正文与主路径区域（略）</p>
-                  </div>
-                  <div class="site-foot-bar">
-                    <ul class="site-foot-links">
-                      <li><a href="#mock-about">关于我们</a></li>
-                      <li><a href="#mock-legal">法律声明</a></li>
-                      <li><a href="#mock-privacy">隐私政策</a></li>
-                    </ul>
-                    <p class="site-foot-copy">© 昇腾社区</p>
-                  </div>
-                </div>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>常见疏漏：</strong>页脚未标出 <code>llms.txt</code>，机器与审计无法从版面跟到站级清单。</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label is-good">正面</span>
-              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="正面：页脚小字链 llms.txt">
-                <div class="site-foot">
-                  <div class="site-foot-body" aria-hidden="true">
-                    <p>正文与主路径区域（略）</p>
-                  </div>
-                  <div class="site-foot-bar">
-                    <ul class="site-foot-links">
-                      <li><a href="#mock-about">关于我们</a></li>
-                      <li><a href="#mock-legal">法律声明</a></li>
-                      <li><a href="#mock-privacy">隐私政策</a></li>
-                      <li><a class="is-machine" href="/llms.txt">llms.txt</a></li>
-                    </ul>
-                    <p class="site-foot-copy">© 昇腾社区</p>
-                  </div>
-                </div>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>正确做法：</strong>页脚次要区用小字标出 <code>llms.txt</code>，不抢主路径。</li>
-                  <li><strong>可免场景：</strong>文档中心等已有同等清晰的站级入口时，页脚可不重复挂链。</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </section>
 
-    <section class="section" id="content-adjust">
-      <h2>文档内容调整</h2>
+    <section class="section" id="practices">
+      <h2>典型做法</h2>
 
-      <h3 class="fn-h3" id="content-suggestions">调整建议</h3>
-      <ul class="principle-suggestions">
-        <li>
-          <span class="sug-title">清单按产品线 / 版本分组</span>
-          <span class="sug-desc"><code>llms.txt</code> 必须按产品线、版本号结构化分节。</span>
-        </li>
-        <li>
-          <span class="sug-title">显式写明主推版本</span>
-          <span class="sug-desc">必须声明当前主推版本（如 <code># 主推版本：CANN 8.0</code>）；多版本并存时，严禁只罗列 URL 而不声明主推。</span>
-        </li>
-        <li>
-          <span class="sug-title">入口名与正文同名</span>
-          <span class="sug-desc"><code>llms.txt</code> 中的篇名 / 手册名必须与目标页 H1、侧栏用语一致，严禁另起一套叫法导致「看得见但对不上」。</span>
-        </li>
-      </ul>
-
-      <h3 class="fn-h3" id="content-example">调整示例</h3>
-      <div class="principle-example">
-        <h4 class="fn-h4">llms.txt：分组清晰、主推明确、名称一致</h4>
-        <div class="fn-ex-row" id="llms-content-index">
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label">反面</span>
-              <div class="fn-ex-bar" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="反面：无分组堆砌">
-                <pre class="st-code"># Docs
-- https://…/a.html
-- https://…/b.html
-- 昇腾安装指南（旧称）</pre>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>要点疏漏：</strong>① 无产品线 / 版本分节　② 未声明主推版本　③ 篇名与目标页 H1 不一致。</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label is-good">正面</span>
-              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="正面：按产品线版本分组">
-                <pre class="st-code"># CANN 8.0
-- [安装指南](https://…/install.md)
-- [Ascend C 算子开发](https://…/ascend-c.md)
-
-# 主推版本：CANN 8.0</pre>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>要点：</strong>① 按产品线 / 版本分节　② 显式声明主推版本　③ 篇名与目标页 H1、侧栏同名。</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="frontend-adjust">
-      <h2>前端调整</h2>
-
-      <h3 class="fn-h3" id="frontend-suggestions">调整建议</h3>
-      <ul class="principle-suggestions">
-        <li>
-          <span class="sug-title">robots 放行机器路径并划界</span>
-          <span class="sug-desc">声明 <code>LLMs.txt</code> 与 <code>Sitemap</code>；放行机器源（<code>/*.md$</code>、<code>/llms.txt</code>）；屏蔽鉴权区、营销 / 活动域。</span>
-        </li>
-        <li>
-          <span class="sug-title">sitemap 优先机器源、排除噪声</span>
-          <span class="sug-desc"><code>loc</code> 优先机器源 / 平行 <code>.md</code> 与主推版本；排除活动页与营销页；<code>lastmod</code> 与文档同步。多张 sitemap 须按业务语义分面命名（参照 NVIDIA），禁止 <code>sitemapdoc1…N</code> 式序号堆砌。</span>
-        </li>
-        <li>
-          <span class="sug-title">页头声明 llms + alternate</span>
-          <span class="sug-desc">统一输出站级 <code>rel="llms"</code> 与页面 <code>rel="alternate"</code>（指向平行 MD）；构建管道自动更新。</span>
-        </li>
-      </ul>
-
-      <h3 class="fn-h3" id="frontend-example">调整示例</h3>
-      <div class="principle-example">
-        <h4 class="fn-h4">robots：声明 LLMs.txt、放行 .md</h4>
-        <div class="fn-ex-row" id="llms-frontend-robots">
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label">反面</span>
-              <div class="fn-ex-bar" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="反面：封锁机器源">
-                <pre class="st-code">User-agent: *
-Disallow: /doc_center/
-Disallow: /assets/
-
-Sitemap: https://www.hiascend.com/sitemap.xml</pre>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>要点疏漏：</strong>① 未声明 <code>LLMs.txt</code>　② 机器源 / <code>.md</code> 被封死　③ 仅一条总 sitemap。</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label is-good">正面</span>
-              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="正面：声明与放行">
-                <pre class="st-code">Sitemap: https://www.hiascend.com/sitemap.xml
-Sitemap: https://www.hiascend.com/doc_center/sitemap.xml
-LLMs.txt: https://www.hiascend.com/llms.txt
-
+      <div class="practice-block">
+      <h3 class="fn-h3" id="practice-robots">1. robots.txt：准入门禁</h3>
+      <p class="file-lead">进站时优先读取的准入文件，用于明确知识面的合法抓取范围。</p>
+      <figure class="file-sample">
+        <figcaption><code>robots.txt</code>（最小合格样本）</figcaption>
+        <pre><code class="language-robots"><span class="cmt"># 对全体爬虫生效；勿单独误挡主流 Agent</span>
 User-agent: *
-Allow: /doc_center/source/
-Allow: /*.md$
+
+<span class="cmt"># 放行知识面</span>
+Allow: /docs/
 Allow: /llms.txt
 Allow: /llms-full.txt
-Disallow: /assets/
-Disallow: /*?*utm_</pre>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>要点：</strong>① 声明 <code>LLMs.txt</code>　② 放行 source / <code>.md</code> / llms　③ 多条 <code>Sitemap</code>　④ 屏蔽噪声参数。</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
+
+<span class="cmt"># 拦截噪声面</span>
+Disallow: /admin/
+Disallow: /staging/
+Disallow: /api/debug/
+
+<span class="cmt"># 声明清单完整地址；此文件公开可见，敏感内容须靠登录鉴权</span>
+Sitemap: https://docs.example.com/sitemap.xml</code></pre>
+      </figure>
+      <ul class="bg-list">
+        <li><strong>放行知识面</strong>文档站、官网知识页、<code>/llms.txt</code> 及 <code>/llms-full.txt</code> 路径应保持可访问（不设 Disallow），避免误挡主流 Agent。</li>
+        <li><strong>拦截噪声面</strong>后台、测试环境、调试接口等非公开路径应明确设置 Disallow，避免占用抓取额度。</li>
+        <li><strong>声明清单地址</strong>应在文件末尾通过 <code>Sitemap:</code> 字段列出 <code>sitemap.xml</code> 的完整地址，为 Agent 提供后续入口。</li>
+      </ul>
       </div>
 
-      <div class="principle-example">
-        <h4 class="fn-h4">sitemap：loc 机器源优先，priority 更高</h4>
-        <div class="fn-ex-row" id="llms-frontend-sitemap">
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label">反面</span>
-              <div class="fn-ex-bar" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="反面：只收录渲染页">
-                <pre class="st-code">&lt;url&gt;
-  &lt;loc&gt;https://…/document/detail/…/operator_dev.html&lt;/loc&gt;
-  &lt;priority&gt;0.5&lt;/priority&gt;
-&lt;/url&gt;</pre>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>要点疏漏：</strong>① 仅渲染壳层　② 无 <code>lastmod</code>　③ <code>priority</code> 未区分机器源。</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label is-good">正面</span>
-              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="正面：优先 source">
-                <pre class="st-code">&lt;url&gt;
-  &lt;loc&gt;https://…/doc_center/source/…/operator_dev.md&lt;/loc&gt;
-  &lt;lastmod&gt;2026-06-01&lt;/lastmod&gt;
-  &lt;priority&gt;0.9&lt;/priority&gt;
-&lt;/url&gt;</pre>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>要点：</strong>① <code>loc</code> 指向机器源 / 平行 <code>.md</code>　② <code>lastmod</code> 与文档同步　③ <code>priority</code> 高于渲染页。</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div class="practice-block">
+      <h3 class="fn-h3" id="practice-llms">2. llms.txt：优先导读</h3>
+      <p class="file-lead">面向 Agent 的精选导读，仅收录主推知识面，而非全站清单；用于明确优先阅读顺序与主推版本。</p>
+      <figure class="file-sample">
+        <figcaption><code>llms.txt</code>（最小合格样本）</figcaption>
+        <pre><code class="language-markdown"># Product X 文档
+
+&gt; 主推版本：Product X 2.0。只收官方文档，不含活动页。
+
+## Product X 2.0（主推）
+
+- [安装指南](https://docs.example.com/docs/product-x/2.0/install)
+- [API 参考](https://docs.example.com/docs/product-x/2.0/api)
+- [核心概念](https://docs.example.com/docs/product-x/2.0/concepts)
+
+## Product X 1.5（维护）
+
+- [安装指南](https://docs.example.com/docs/product-x/1.5/install)</code></pre>
+      </figure>
+      <p class="file-sample-note">H1 为站点名；<code>&gt;</code> 写明主推版本；H2 按产品 / 版本分组；链接文案与目标页 H1 同名；安装、API、概念排在组内前部。</p>
+      <ul class="bg-list">
+        <li><strong>直接可达</strong>根路径 <code>/llms.txt</code> 应直接返回内容，不设置跳转或登录拦截。</li>
+        <li><strong>内容纯化</strong>面向文档与主推版本，活动落地页不收录其中。</li>
+        <li><strong>结构对应</strong>按产品 / 版本分组，篇名与目标页面 H1 保持一致。</li>
+        <li><strong>版本声明</strong>多版本并存时，显式标注主推版本，以防引用过期稿。</li>
+        <li><strong>优先级排序</strong>安装、API、概念等核心入口置于清单前部。</li>
+      </ul>
       </div>
 
-      <div class="principle-example">
-        <h4 class="fn-h4">sitemap：按业务语义分面命名</h4>
-        <div class="fn-ex-row" id="llms-frontend-sitemap-facets">
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label">反面</span>
-              <div class="fn-ex-bar" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="反面：序号堆砌">
-                <pre class="st-code">Sitemap: …/sitemap/sitemapdata1.xml
-Sitemap: …/sitemap/sitemapdata2.xml
-Sitemap: …/sitemap/sitemapdoc1.xml
-Sitemap: …/sitemap/sitemapdoc2.xml
-Sitemap: …/sitemap/sitemapdoc3.xml
-Sitemap: …/sitemap/sitemapdoc4.xml
-Sitemap: …/sitemap/sitemapdoc5.xml
-Sitemap: …/sitemap/sitemapdoc6.xml</pre>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>要点疏漏：</strong>仅按序号拆分，无业务语义；Agent / 运维无法按产品线定向抓取。</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label is-good">正面</span>
-              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="正面：业务语义分面">
-                <pre class="st-code">Sitemap: …/sitemap/doc-center.xml
-Sitemap: …/sitemap/cann.xml
-Sitemap: …/sitemap/mindie.xml
-Sitemap: …/sitemap/developer.xml
-Sitemap: …/sitemap/zh-CN.xml
-Sitemap: …/sitemap/en-GB.xml</pre>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>要点：</strong>按文档中心 / 产品线 / 语种等业务语义分面命名（对齐 NVIDIA 多 Sitemap 分面），禁止 <code>sitemapdoc1…N</code>。</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div class="practice-block">
+      <h3 class="fn-h3" id="practice-llms-full">3. llms-full.txt：配套正文包</h3>
+      <p class="file-lead">导读的配套正文包，由导读定向触发，支持一次性提取纯净正文。</p>
+      <figure class="file-sample">
+        <figcaption><code>llms-full.txt</code>（最小合格样本节选）</figcaption>
+        <pre><code class="language-markdown"># 安装指南
+
+本文说明如何安装 Product X 2.0。系统要求如下。……
+
+# API 参考
+
+本文说明 Product X 2.0 的接口约定。……</code></pre>
+      </figure>
+      <p class="file-sample-note">篇题与顺序须与 <code>llms.txt</code> 一致；只留正文，不含导航、页脚、侧栏；随文档发布自动生成，不手工维护、不单独挂空文件。</p>
+      <ul class="bg-list">
+        <li><strong>入口限制</strong>依赖 <code>llms.txt</code> 中的链接或同目录惯例进入，不脱离导读单独配置。</li>
+        <li><strong>构建同步</strong>随文档发布流程自动生成，避免手工维护导致过期。</li>
+        <li><strong>结构对齐</strong>包内篇目顺序与 <code>llms.txt</code> 保持一致。</li>
+        <li><strong>正文纯净</strong>剔除导航、页脚和侧栏，仅保留可引用正文；不发布空文件。</li>
+      </ul>
       </div>
 
-      <div class="principle-example">
-        <h4 class="fn-h4">页头：输出 llms 链、指向 MD 源</h4>
-        <div class="fn-ex-row" id="llms-frontend-head">
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label">反面</span>
-              <div class="fn-ex-bar" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="反面：无发现标签">
-                <pre class="st-code">&lt;head&gt;
-  &lt;title&gt;Ascend C 算子开发&lt;/title&gt;
-  &lt;link rel="canonical"
-        href="/document/detail/.../operator_dev.html"&gt;
-&lt;/head&gt;</pre>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>要点疏漏：</strong>① 无 <code>rel="llms"</code>　② 无 <code>alternate</code> 指向平行 MD　③ Agent 只能跟渲染页。</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label is-good">正面</span>
-              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="正面：llms + alternate">
-                <pre class="st-code">&lt;head&gt;
-  &lt;title&gt;Ascend C 算子开发&lt;/title&gt;
-  &lt;link rel="llms" href="/llms.txt"
-        type="text/markdown"&gt;
-  &lt;link rel="alternate"
-        type="text/markdown"
-        title="Ascend C 算子开发"
-        href="/doc_center/source/…/operator_dev.md"&gt;
-&lt;/head&gt;</pre>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>要点：</strong>① 站级 <code>rel="llms"</code>　② 本页 <code>alternate</code> 指向平行 MD　③ <code>title</code> 与 H1 同名。</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div class="practice-block">
+      <h3 class="fn-h3" id="practice-sitemap">4. sitemap.xml：无导读兜底</h3>
+      <p class="file-lead">公开知识页的 URL 清单，仅在没有导读时作为回退入口。</p>
+      <figure class="file-sample">
+        <figcaption><code>sitemap.xml</code>（最小合格样本）</figcaption>
+        <pre><code class="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"&gt;
+  <span class="cmt">&lt;!-- 只收知识面；路径含产品名、文档名、版本 --&gt;</span>
+  &lt;url&gt;&lt;loc&gt;https://docs.example.com/docs/product-x/2.0/install&lt;/loc&gt;&lt;/url&gt;
+  &lt;url&gt;&lt;loc&gt;https://docs.example.com/docs/product-x/2.0/api&lt;/loc&gt;&lt;/url&gt;
+  <span class="cmt">&lt;!-- 不收录 /admin、重复参数 URL、活动专题 --&gt;</span>
+&lt;/urlset&gt;</code></pre>
+      </figure>
+      <p class="file-sample-note">完整地址须写在 <code>robots.txt</code> 的 <code>Sitemap:</code> 行；有导读时本清单只作回退。</p>
+      <ul class="bg-list">
+        <li><strong>收录范围</strong>面向应被公开索引的知识面页面，后台或重复 URL 不收录其中。</li>
+        <li><strong>语义化 URL</strong>路径与文件名包含明确的业务语义（如产品名、版本号），避免无意义参数和会话 ID。</li>
+        <li><strong>地址声明</strong>在 <code>robots.txt</code> 中声明绝对地址。</li>
+        <li><strong>动态维护</strong>页面增删或迁移后同步更新。</li>
+        <li><strong>定性明确</strong>在存在导读时，作为回退方案，不承担主入口职责。</li>
+      </ul>
       </div>
+    </section>
+
+    <section class="section" id="benefits">
+      <h2>价值收益</h2>
+      <ul class="bg-list">
+        <li><strong>抓取资源更聚焦</strong>由于噪声页被隔离，抓取额度被有效集中，知识库的输入更干净，无效页面占用明显减少。</li>
+        <li><strong>检索命中更完整</strong>主推版本优先被捕获，深层或新增页面作为补充，实现从「高频核心」到「边缘细节」的全面覆盖。</li>
+        <li><strong>入库链路更高效</strong>免去逐页渲染壳层的开销，直接获取纯净正文，显著缩短了从抓取到进入知识库的耗时。</li>
+        <li><strong>回答出处更权威</strong>官方事实被优先沉淀为引用依据，有效规避了过期内容或营销页给用户带来误导，提升了 Agent 回答的整体可信度。</li>
+      </ul>
     </section>
 
   </main>

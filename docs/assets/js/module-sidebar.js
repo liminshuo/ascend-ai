@@ -12,10 +12,11 @@
     principles: [
       {
         group: "可达", id: "machine-discover", href: "principles-structure-llms.html", label: "机器可发现",
-        pageIds: ["machine-discover", "page-discover", "structure-llms", "machine-entry"],
+        pageIds: ["machine-discover", "page-discover", "structure-llms", "machine-entry", "answer-flow"],
         children: [
           { id: "structure-llms", href: "principles-structure-llms.html", label: "发现层部署", pageIds: ["page-discover", "structure-llms"] },
-          { id: "machine-entry", href: "principles-machine-entry.html", label: "AI入口可识别" }
+          { id: "machine-entry", href: "principles-machine-entry.html", label: "AI入口可识别" },
+          { id: "answer-flow", href: "principles-answer-flow.html", label: "答问检索链路" }
         ]
       },
       {
@@ -241,6 +242,7 @@
     html += "<img class=\"nav-expand-all-icon nav-expand-all-icon--collapse\" src=\"assets/icons/nav-collapse-all.png\" width=\"14\" height=\"14\" alt=\"\" aria-hidden=\"true\">";
     html += "</button>";
     html += "</li>";
+    html += "<li><a href=\"principles-background.html\"" + (page === "background" ? " class=\"active\"" : "") + ">设计背景</a></li>";
     html += "<li><a href=\"principles-overview.html\"" + (page === "overview" ? " class=\"active\"" : "") + ">AI 亲和原则</a></li>";
     html += "<li><a href=\"principles-affinity-full.html\"" + (page === "affinity-full" ? " class=\"active\"" : "") + ">全量亲和原则</a></li>";
     html += "</ul>";

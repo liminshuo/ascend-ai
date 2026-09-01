@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI入口可识别 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
+  <title>机器可读：内容消费入口显性化 · AI入口可识别 · 昇腾社区 AI 亲和原则</title>
   <link rel="stylesheet" href="assets/css/style.css">
 <style>
 
@@ -16,7 +16,7 @@
     overflow: visible;
   }
   .topbar-inner {
-    width: 100%; max-width: none; margin: 0; padding: 0 24px;
+    width: 100%; max-width: var(--content-max-width, 1000px); margin: 0 auto; padding: 0 24px; box-sizing: border-box;
     height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
   }
   .topbar .brand {
@@ -73,9 +73,9 @@
   }
   .page-header h1 {
     font-family: "PingFang SC", sans-serif;
-    font-size: clamp(28px, 4vw, 40px);
-    font-weight: 600;
-    line-height: 48px;
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1-weight, 600);
+    line-height: var(--text-h1-lh);
     letter-spacing: -0.02em;
     margin: 8px 0 0;
     color: var(--color-text, #191919);
@@ -94,8 +94,8 @@
   body.inner-page[data-page="machine-entry"]:has(#module-sidebar) .main-content > .page-header,
   body.inner-page[data-page="machine-entry"]:has(#module-sidebar) .main-content > .section,
   body.inner-page[data-page="machine-entry"]:has(#module-sidebar) .main-content > .surface-tabs {
-    width: min(1200px, calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
-    max-width: 1200px;
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
     margin-inline: auto;
     padding-left: 0;
     padding-right: 0;
@@ -108,7 +108,7 @@
     letter-spacing: -0.01em;
     margin-top: 48px;
     margin-bottom: 16px;
-    padding-bottom: 16px;
+    padding-bottom: var(--space-h2-rule, 16px);
     border-bottom: 2px solid #f0f0f0;
     color: var(--color-text, #191919);
   }
@@ -118,11 +118,11 @@
   body.inner-page[data-page="machine-entry"] .main-content .section h3 { height: auto; }
   h3.fn-h3 {
     margin: 0;
-    padding-top: 24px;
-    padding-bottom: 24px;
-    font-size: 18px;
-    line-height: 28px;
-    font-weight: 650;
+    padding-top: var(--space-h3-pad-y, 24px);
+    padding-bottom: var(--space-h3-pad-y, 24px);
+    font-size: var(--text-h3, 18px);
+    line-height: var(--text-h3-lh, 28px);
+    font-weight: var(--text-h3-weight, 650);
     color: var(--color-text, #191919);
     letter-spacing: -0.01em;
   }
@@ -130,15 +130,25 @@
   h4.fn-h4 {
     margin: 24px 0 0;
     padding-top: 0;
-    padding-bottom: 16px;
-    font-size: 16px;
-    line-height: 24px;
-    font-weight: 650;
+    padding-bottom: var(--space-h4-pad-b, 16px);
+    font-size: var(--text-h4, 16px);
+    line-height: var(--text-h4-lh, 24px);
+    font-weight: var(--text-h4-weight, 650);
     color: var(--color-text, #191919);
     letter-spacing: -0.01em;
   }
   h3.fn-h3 + .principle-example > h4.fn-h4,
   h3.fn-h3 + h4.fn-h4 { margin-top: 12px; }
+
+  .example-solve {
+    margin: 0 0 16px;
+    font-size: 14px;
+    line-height: 22px;
+    color: #191919;
+  }
+  .example-solve strong {
+    font-weight: 650;
+  }
 
   #scenarios .scene-def-table td .badge { border: none; }
   .scene-def-table td .badge-optional {
@@ -175,17 +185,230 @@
     height: 40px;
     box-sizing: border-box;
   }
+  .scene-def-table caption {
+    caption-side: top;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 22px;
+    padding: 0 0 10px;
+    color: #191919;
+  }
   .scene-def-table .col-type { width: 18%; }
   .scene-def-table .col-desc { width: 55%; }
   .scene-def-table .col-place { width: 27%; }
-  #objects .scene-def-table .col-type,
-  #scenarios .scene-def-table .col-type,
-  #scenes .scene-def-table .col-type { width: 22%; }
-  #objects .scene-def-table .col-desc,
-  #scenes .scene-def-table .col-desc { width: 55%; }
-  #scenes .scene-def-table .col-place { width: 23%; }
-  #scenarios .scene-def-table .col-place { width: 38%; }
-  #scenarios .scene-def-table .col-desc { width: 40%; }
+  #scenes .scene-def-table {
+    font-size: 13px;
+    line-height: 20px;
+  }
+  #scenes .scene-def-table th,
+  #scenes .scene-def-table td {
+    font-size: 13px;
+    line-height: 20px;
+    vertical-align: top;
+  }
+  #scenes .scene-def-table .col-type { width: 12%; }
+  #scenes .scene-def-table .col-human { width: 22%; }
+  #scenes .scene-def-table .col-agent { width: 22%; }
+  #scenes .scene-def-table .col-not { width: 24%; }
+  #scenes .scene-def-table .col-place { width: 20%; }
+  .af-figure + .af-figure {
+    margin-top: 32px;
+  }
+  .aj {
+    width: 100%;
+    min-width: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+    font-size: 12px;
+    line-height: 22px;
+    color: #191919;
+  }
+  .aj caption {
+    caption-side: top;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 22px;
+    padding: 0 0 10px;
+    color: #191919;
+  }
+  .aj .aj-col-mute { width: 92px; }
+  .aj td.is-mute {
+    color: #8c8c8c;
+  }
+  .aj th,
+  .aj td {
+    border: 1px solid #e8eef5;
+    border-top: none;
+    border-left: none;
+    vertical-align: top;
+    padding: 12px 12px;
+    font-size: 12px;
+    line-height: 22px;
+  }
+  .aj thead tr:first-child > th {
+    border-top: 1px solid #e8eef5;
+  }
+  .aj th:first-child,
+  .aj td:first-child {
+    border-left: 1px solid #e8eef5;
+  }
+  .aj .aj-corner,
+  .aj .aj-label {
+    width: 148px;
+    background: #f5f6f8;
+    color: #595959;
+    font-weight: 650;
+    vertical-align: middle;
+    text-align: left;
+    padding: 12px 12px;
+    border-left: 1px solid #e8eef5;
+  }
+  .aj thead th.aj-corner {
+    background: #f5f6f8;
+    color: #595959;
+    padding: 12px 12px;
+    border-top-left-radius: 8px;
+  }
+  .aj tbody tr:last-child .aj-label {
+    border-bottom-left-radius: 8px;
+  }
+  .aj thead tr:first-child > th:first-child {
+    border-top-left-radius: 8px;
+  }
+  .aj thead tr:first-child > th:last-child {
+    border-top-right-radius: 8px;
+  }
+  .aj tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 8px;
+  }
+  .aj thead th {
+    background: #f5f6f8;
+    font-weight: 650;
+    text-align: left;
+    padding: 12px 12px;
+    color: #191919;
+  }
+  .aj thead th.aj-group {
+    text-align: center;
+    vertical-align: middle;
+    font-weight: 650;
+    letter-spacing: 0;
+    background: #eceef1;
+    color: #191919;
+    padding: 10px 12px;
+  }
+  .aj thead th.aj-span {
+    vertical-align: middle;
+  }
+  .aj thead .aj-stage-name {
+    display: block;
+    font-weight: 650;
+    color: #191919;
+  }
+  .aj thead .aj-corner .aj-stage-name {
+    color: inherit;
+    margin-bottom: 2px;
+  }
+  .aj thead .aj-mute {
+    background: #f5f6f8;
+    color: #595959;
+  }
+  .aj thead .aj-mute .aj-stage-name { color: #595959; }
+  .aj thead .aj-pri,
+  .aj thead .aj-opt {
+    background: #f5f6f8;
+  }
+  .aj .aj-tag {
+    display: block;
+    width: fit-content;
+    margin: 0;
+    padding: 0 6px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 18px;
+    color: #1476FF;
+  }
+  .aj-tag--must { background: rgba(20, 118, 255, .18); }
+  .aj-tag--pri  { background: rgba(20, 118, 255, .12); }
+  .aj-tag--opt  { background: rgba(20, 118, 255, .08); }
+  .aj tbody td:not(.is-mute):not(.aj-label) {
+    background: #fff;
+  }
+  .aj td.is-mute { background: #f5f6f8 !important; color: #8c8c8c; }
+  .aj td.is-pri { background: #f7fbff; }
+  .aj .aj-file {
+    display: block;
+    margin: 0 0 6px;
+    font-family: var(--font-mono, "SF Mono", monospace);
+    font-weight: 650;
+    color: #1476FF;
+  }
+  .aj td .aj-subhead {
+    display: block;
+    font-weight: 650;
+    color: #191919;
+    margin: 0 0 4px;
+  }
+  .aj-stack + .aj-stack { margin-top: 10px; }
+  #mechanism .aj tbody td[rowspan] {
+    vertical-align: middle;
+  }
+  #mechanism .aj tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 0;
+  }
+  #mechanism .aj tbody tr:first-child > td:last-child {
+    border-bottom-right-radius: 8px;
+  }
+  #mechanism .aj thead th {
+    text-align: center;
+    vertical-align: middle;
+    height: auto;
+    min-height: 40px;
+    box-sizing: border-box;
+  }
+  #mechanism .aj thead th.aj-corner {
+    text-align: left;
+    white-space: nowrap;
+    height: 40px;
+  }
+  #mechanism .aj thead .aj-corner .aj-stage-name {
+    display: inline;
+    margin: 0;
+  }
+  #mechanism .aj tbody td,
+  #mechanism .aj tbody .aj-label {
+    vertical-align: middle;
+  }
+  #mechanism .aj .aj-file {
+    margin-bottom: 4px;
+  }
+  .bg-body {
+    margin: 0 0 16px;
+    font-size: 14px;
+    line-height: 22px;
+    color: var(--color-text, #191919);
+  }
+  .bg-list {
+    margin: 0;
+    padding-left: 1.25em;
+    font-size: 14px;
+    line-height: 22px;
+    list-style: disc;
+    color: #595959;
+  }
+  #problem .bg-list li + li,
+  #principles .bg-list li + li { margin-top: 16px; }
+  #problem .bg-list li strong,
+  #principles .bg-list li strong {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 650;
+    color: #191919;
+  }
 
   .fn-ex-row {
     display: grid;
@@ -326,6 +549,8 @@
   }
   .principle-example + .principle-example { margin-top: 28px; }
 
+  #principles .principle-suggestions,
+  #benefits .principle-suggestions,
   #design-ui .principle-suggestions,
   #content-adjust .principle-suggestions,
   #frontend-adjust .principle-suggestions {
@@ -337,6 +562,8 @@
     gap: 20px;
     counter-reset: sug;
   }
+  #principles .principle-suggestions > li,
+  #benefits .principle-suggestions > li,
   #design-ui .principle-suggestions > li,
   #content-adjust .principle-suggestions > li,
   #frontend-adjust .principle-suggestions > li {
@@ -345,6 +572,8 @@
     padding: 0 0 0 36px;
     color: #595959;
   }
+  #principles .principle-suggestions > li::before,
+  #benefits .principle-suggestions > li::before,
   #design-ui .principle-suggestions > li::before,
   #content-adjust .principle-suggestions > li::before,
   #frontend-adjust .principle-suggestions > li::before {
@@ -366,6 +595,8 @@
     letter-spacing: 0.02em;
     color: #1476FF;
   }
+  #principles .principle-suggestions > li .sug-title,
+  #benefits .principle-suggestions > li .sug-title,
   #design-ui .principle-suggestions > li .sug-title,
   #content-adjust .principle-suggestions > li .sug-title,
   #frontend-adjust .principle-suggestions > li .sug-title {
@@ -376,6 +607,8 @@
     line-height: 24px;
     color: #191919;
   }
+  #principles .principle-suggestions > li .sug-desc,
+  #benefits .principle-suggestions > li .sug-desc,
   #design-ui .principle-suggestions > li .sug-desc,
   #content-adjust .principle-suggestions > li .sug-desc,
   #frontend-adjust .principle-suggestions > li .sug-desc {
@@ -606,6 +839,7 @@
       <a href="principles-overview.html" class="active">亲和原则</a>
       <a href="community-ui.html">组件亲和</a>
       <a href="design-guide-image-text.html">设计模式</a>
+      <a href="data-analysis.html">数据分析</a>
     </nav>
   </div>
 </div>
@@ -618,49 +852,164 @@
   
   <main class="main-content">
     <div class="page-header">
-      <h1>AI入口可识别</h1>
+      <h1>机器可读：内容消费入口显性化</h1>
       <p class="page-desc page-desc--split">
-        <span class="page-desc-line">在<strong>渲染页</strong>上标出机器可读入口（站级 llms、页级 / 块级 Markdown 等），文案可发现、可命名；禁止只靠无字图标或悬停才出现。</span>
+        <span class="page-desc-line">「机器可读」是内容能被 Agent 直接消费；「入口显性化」是把消费路径做到渲染页上可见、可跟。本页围绕站级导读、本页 Markdown、块级平行源三类入口，说明人和 Agent 如何识别它们，以及设计、文档与前端如何落地。四个发现文件怎么写，见 <a href="principles-structure-llms.html">发现层部署</a>。</span>
       </p>
     </div>
 
+    <section class="section" id="mechanism">
+      <h2>发现机制</h2>
+      <p class="bg-body">与发现层「直打 <code>/llms.txt</code>」不同：这里 Agent 先落到一篇人读页。三路前两步和作答相同，差别在第 3、4 步：找哪类入口、读哪份源。三类入口如何识别见后面表2。</p>
+      <figure class="af-figure">
+        <table class="aj">
+          <caption>表1 从一篇 HTML 进入三类机器可读源</caption>
+          <colgroup>
+            <col style="width:120px" />
+            <col />
+            <col />
+            <col />
+            <col />
+            <col />
+          </colgroup>
+          <thead>
+            <tr>
+              <th class="aj-corner" scope="col">入口</th>
+              <th class="aj-mute" scope="col">1 意图识别</th>
+              <th scope="col">2 打开一篇 HTML</th>
+              <th class="aj-pri" scope="col">3 找到入口</th>
+              <th scope="col">4 读取</th>
+              <th class="aj-mute" scope="col">5 用正文作答</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th class="aj-label" scope="row">站级导读</th>
+              <td class="is-mute" rowspan="3">
+                <span class="aj-stack"><span class="aj-subhead">做什么</span>把问句收成要找哪类官方事实</span>
+                <span class="aj-stack"><span class="aj-subhead">解决问题</span>先对准官方事实，避免按关键词乱抓。</span>
+              </td>
+              <td rowspan="3">
+                <span class="aj-stack"><span class="aj-subhead">做什么</span>Fetch 检索命中的人读页</span>
+                <span class="aj-stack"><span class="aj-subhead">解决问题</span>落到可解析的一页，不停在搜索摘要。</span>
+              </td>
+              <td class="is-pri">
+                <span class="aj-stack"><span class="aj-subhead">做什么</span><span class="aj-file">页脚 llms.txt</span><span class="aj-tag aj-tag--pri">需要 HTML 上的入口</span></span>
+                <span class="aj-stack"><span class="aj-subhead">解决问题</span>从当前页声明导读地址，避免猜根路径或猜错文档子路径。</span>
+              </td>
+              <td>
+                <span class="aj-stack"><span class="aj-subhead">做什么</span>打开导读，按清单取相关篇</span>
+                <span class="aj-stack"><span class="aj-subhead">解决问题</span>按导读顺序取相关内容，不必盲爬全站。</span>
+              </td>
+              <td class="is-mute" rowspan="3">
+                <span class="aj-stack"><span class="aj-subhead">做什么</span>把召回正文对齐问句，给出可引用回答</span>
+                <span class="aj-stack"><span class="aj-subhead">解决问题</span>回答落在可核对出处上，不靠页面噪声或训练记忆补洞。</span>
+              </td>
+            </tr>
+            <tr>
+              <th class="aj-label" scope="row">本页 Markdown</th>
+              <td class="is-pri">
+                <span class="aj-stack"><span class="aj-subhead">做什么</span><span class="aj-file">打开 Markdown</span><span class="aj-tag aj-tag--pri">需要页头可见入口</span></span>
+                <span class="aj-stack"><span class="aj-subhead">解决问题</span>从当前页声明本页机器可读源；仓库源码链和 <code>rel="alternate"</code> 不能单独替代。</span>
+              </td>
+              <td>
+                <span class="aj-stack"><span class="aj-subhead">做什么</span>Fetch 当前页平行 <code>.md</code></span>
+                <span class="aj-stack"><span class="aj-subhead">解决问题</span>拿到纯净正文。复制到剪贴板帮不了抓取。</span>
+              </td>
+            </tr>
+            <tr>
+              <th class="aj-label" scope="row">块级平行 MD</th>
+              <td class="is-pri">
+                <span class="aj-stack"><span class="aj-subhead">做什么</span><span class="aj-file">标题旁 MD 链</span><span class="aj-tag aj-tag--pri">可见字 + <code>href</code> 指向 <code>.md</code></span></span>
+                <span class="aj-stack"><span class="aj-subhead">解决问题</span>章节 <code>#</code> 没有平行源地址。真链可用带字 MD 徽标；无字图标不够。</span>
+              </td>
+              <td>
+                <span class="aj-stack"><span class="aj-subhead">做什么</span>Fetch 该块平行 <code>.md</code></span>
+                <span class="aj-stack"><span class="aj-subhead">解决问题</span>架构关系或规格项 | 数值可被抓取，不再停在截图里。</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </figure>
+    </section>
+
+    <section class="section" id="problem">
+      <h2>解决什么问题</h2>
+      <p class="bg-body">发现层文件能告诉 Agent 知识在哪、先看哪篇。落到一篇渲染页时，消费路径却经常不在版面上：入口只在根路径、仓库或源码里，人和 Agent 都从当前页跟不进去。</p>
+      <ul class="bg-list">
+        <li>
+          <strong>站级入口缺席</strong>
+          已部署 <code>llms.txt</code>，页脚仍只有法务链。隐藏链、无字链对人无效，审计也无法从版面核对。
+        </li>
+        <li>
+          <strong>页级入口缺席</strong>
+          标题旁只有分享、收藏与仓库源码，没有「复制 / 打开本页 Markdown」，当前页平行源进不去。
+        </li>
+        <li>
+          <strong>块级入口缺席</strong>
+          架构图、规格表停在截图里。楼层旁的 <code>#</code> 锚点只服务人跳转，带不走层级关系或规格数值。
+        </li>
+      </ul>
+    </section>
+
     <section class="section" id="scenes">
-<h2>场景定义</h2>
-  <table class="scene-def-table">
-    <colgroup>
-      <col class="col-type" />
-      <col class="col-desc" />
-      <col class="col-place" />
-    </colgroup>
-    <thead>
-      <tr>
-        <th class="col-type">类型</th>
-        <th class="col-desc">说明</th>
-        <th class="col-place">常见落点</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td class="col-type">站级入口</td>
-        <td class="col-desc">站级机器可读清单（如 <code>llms.txt</code>）须在页脚等次要区用可读文案标出，便于人与审计跟链。</td>
-        <td class="col-place">全站页脚</td>
-      </tr>
-      <tr>
-        <td class="col-type">页级MD入口</td>
-        <td class="col-desc">文档页头须有「复制 / 打开本页 Markdown」等可辨入口；仓库源码链不能单独替代。</td>
-        <td class="col-place">文档页头工具区</td>
-      </tr>
-      <tr>
-        <td class="col-type" rowspan="2">内容块MD入口</td>
-        <td class="col-desc">强视觉架构图旁挂 MD 徽标，平行 MD 写清层级与依赖；本页保留视觉与产品真链。</td>
-        <td class="col-place">平台栈、结构楼层</td>
-      </tr>
-      <tr>
-        <td class="col-desc">首包无完整 HTML 表时，须提供平行 MD「规格项 | 数值」表，标题旁挂 MD 徽标作入口。</td>
-        <td class="col-place">产品规格表</td>
-      </tr>
-    </tbody>
-  </table>
+      <h2>三类入口如何被识别</h2>
+      <table class="scene-def-table">
+        <caption>表2 渲染页上的站级 / 页级 / 块级入口</caption>
+        <colgroup>
+          <col class="col-type" />
+          <col class="col-human" />
+          <col class="col-agent" />
+          <col class="col-not" />
+          <col class="col-place" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="col-type">粒度</th>
+            <th class="col-human">人看见</th>
+            <th class="col-agent">Agent 跟到</th>
+            <th class="col-not">不算入口</th>
+            <th class="col-place">常见落点</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="col-type">站级</td>
+            <td class="col-human">页脚等次要区的可读文案，如 <code>llms.txt</code></td>
+            <td class="col-agent">站级导读文件（如 <code>/llms.txt</code>）</td>
+            <td class="col-not">只部署文件、无字隐藏链、每页源码里才有的链</td>
+            <td class="col-place">全站页脚、固定次要位</td>
+          </tr>
+          <tr>
+            <td class="col-type">页级</td>
+            <td class="col-human">标题旁「复制 / 打开本页 Markdown」</td>
+            <td class="col-agent">当前页平行 Markdown</td>
+            <td class="col-not">仅仓库源码链、仅 <code>rel="alternate"</code></td>
+            <td class="col-place">文档页头工具区</td>
+          </tr>
+          <tr>
+            <td class="col-type">块级</td>
+            <td class="col-human">楼层标题旁的平行 MD 入口（可读文案或带说明的徽标）</td>
+            <td class="col-agent">该块的 Markdown：架构关系，或规格项 | 数值</td>
+            <td class="col-not">章节 <code>#</code> 锚点、只有截图没有平行源</td>
+            <td class="col-place">平台栈、产品规格表</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section" id="principles">
+      <h2>核心原则</h2>
+      <ul class="bg-list">
+        <li>
+          <strong>发现层写文件，本页标入口</strong>
+          根路径有 <code>llms.txt</code> 不等于渲染页可识别；页上有入口也不等于文件写对。两页各管一层。
+        </li>
+        <li>
+          <strong>入口在首包里，不用悬停注入</strong>
+          对人是默认可点的动作名；对 Agent 是已存在的 <code>href</code> 或带可见文本的控件。head 里的 alternate、无可见文案的隐藏链只能当辅助。
+        </li>
+      </ul>
     </section>
 
     <section class="section" id="design-ui">
@@ -669,18 +1018,23 @@
       <h3 class="fn-h3" id="design-suggestions">调整建议</h3>
       <ul class="principle-suggestions">
         <li>
-          <span class="sug-title">入口文案自描述</span>
-          <span class="sug-desc">站级 / 页级 / 内容块入口位置固定；使用「复制 Markdown」「打开机器可读版本」「llms.txt」等可独立理解的短语，禁止仅用泛化图标。</span>
+          <span class="sug-title">站级放次要区，不抢主路径</span>
+          <span class="sug-desc">页脚小字链即可，不要做成首页主 CTA 或 AI 角标体系。</span>
         </li>
         <li>
-          <span class="sug-title">下拉写出动作名</span>
-          <span class="sug-desc">若入口在菜单内，每一项须写出动作名；禁止悬停后才出现关键文案。</span>
+          <span class="sug-title">下拉里写出动作名</span>
+          <span class="sug-desc">菜单展开后每一项仍是可读短语（复制 Markdown、打开 Markdown）；禁止悬停才出文案、禁止只有图标。</span>
+        </li>
+        <li>
+          <span class="sug-title">块级入口跟在楼层标题旁</span>
+          <span class="sug-desc">轻量、与标题同一行；徽标须带可读名称或 <code>title</code>，指向该块平行源，而不是本页锚点。</span>
         </li>
       </ul>
 
       <h3 class="fn-h3" id="design-example">调整示例</h3>
       <div class="principle-example">
 <h4 class="fn-h4">示例 1 · 站级入口 · 页脚标出站级机器入口</h4>
+  <p class="example-solve">对应表1 站级行「3 找到入口」。<strong>这一步解决什么问题：</strong>Agent 已经打开这篇 HTML，下一步要沿导读找相关内容。没有页上可见链，流程在这里断掉。页脚标出 <code>llms.txt</code> 后，可以从当前页跟进导读。</p>
   <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
@@ -705,7 +1059,7 @@
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>常见疏漏：</strong>页脚未标出 <code>llms.txt</code>，机器与审计无法从版面跟到站级清单。</li>
+      <li><strong>常见疏漏：</strong>表1 站级行「3 找到入口」为空。页脚只有法务链，或仅有无可见文案的隐藏链，Agent 从这篇 HTML 跟不进导读。</li>
     </ul>
     </div>
     </div>
@@ -734,7 +1088,7 @@
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>正确做法：</strong>页脚次要区用小字标出 <code>llms.txt</code>，不抢主路径。</li>
+      <li><strong>正确做法：</strong>页脚次要区用小字标出 <code>llms.txt</code>，不抢主路径。表1 站级行「3 找到入口」成立，进入「4 读取」；人和 Agent 都能点开。</li>
       <li><strong>可免场景：</strong>文档中心等已有同等清晰的站级入口时，页脚可不重复挂链。</li>
     </ul>
     </div>
@@ -742,7 +1096,7 @@
   </div>
   </div>
 
-  <h4 class="fn-h4">示例 2 · 页级 MD 入口 · 文档页头提供本页 Markdown 入口</h4>
+  <h4 class="fn-h4">示例 2 · 页级入口 · 文档页头提供本页 Markdown</h4>
   <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
@@ -757,7 +1111,7 @@
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>常见疏漏：</strong>仅有分享 / 收藏与仓库源码链，未标明「本页 Markdown」，机器无法直取当前页结构化内容。 <a class="fn-h3-link" href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/850/opdevg/Ascendcopdevg/atlas_ascendc_map_10_0002.html" target="_blank" rel="noopener">查看示例来源</a></li>
+      <li><strong>常见疏漏：</strong>仅有分享 / 收藏与仓库源码链，未标明「本页 Markdown」，Agent 无法直取当前页结构化内容。 <a class="fn-h3-link" href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/850/opdevg/Ascendcopdevg/atlas_ascendc_map_10_0002.html" target="_blank" rel="noopener">查看示例来源</a></li>
     </ul>
     </div>
     </div>
@@ -818,7 +1172,7 @@
   </div>
   </div>
 
-  <h4 class="fn-h4">示例 3 · 内容块 MD 入口 · 用平行 MD 陈述架构关系</h4>
+  <h4 class="fn-h4">示例 3 · 块级入口 · 架构图旁挂平行 MD，不是锚点</h4>
   <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
@@ -833,7 +1187,7 @@
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>常见疏漏：</strong>仅有架构视觉分层，无平行 Markdown，机器无法识别层级与依赖关系。 <a class="fn-h3-link" href="https://www.hiascend.com/zh" target="_blank" rel="noopener">查看示例来源</a></li>
+      <li><strong>常见疏漏：</strong>仅有架构视觉分层，无平行 Markdown，或只有章节锚点，Agent 无法识别层级与依赖关系。 <a class="fn-h3-link" href="https://www.hiascend.com/zh" target="_blank" rel="noopener">查看示例来源</a></li>
     </ul>
     </div>
     </div>
@@ -857,7 +1211,7 @@
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>正确做法：</strong>标题旁挂 MD 徽标，平行 MD 写清栈关系与产品链路；徽标只作入口。 <a class="fn-h3-link" href="assets/design-guide/ascend-platform-stack.html" target="_blank" rel="noopener">ascend-platform-stack.md</a></li>
+      <li><strong>正确做法：</strong>楼层标题旁挂 MD 入口（可读文案或带 title 的徽标），平行 MD 写清栈关系；徽标只作入口，不能用 <code>#</code> 锚点代替。 <a class="fn-h3-link" href="assets/design-guide/ascend-platform-stack.html" target="_blank" rel="noopener">ascend-platform-stack.md</a></li>
       <li><strong>可免场景：</strong>产品名已是真链，且另有概述页写清关系时，可不挂徽标。</li>
     </ul>
     </div>
@@ -865,7 +1219,7 @@
   </div>
   </div>
 
-  <h4 class="fn-h4">示例 4 · 内容块 MD 入口 · 用平行 MD 交付规格表</h4>
+  <h4 class="fn-h4">示例 4 · 块级入口 · 规格表用平行 MD 交付</h4>
   <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
@@ -880,7 +1234,7 @@
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>常见疏漏：</strong>规格表可见但首包无完整 <code>table</code>、也无平行 Markdown，机器无法对齐规格项与数值。 <a class="fn-h3-link" href="https://www.hiascend.com/hardware/processor" target="_blank" rel="noopener">查看示例来源</a></li>
+      <li><strong>常见疏漏：</strong>规格表可见但首包无完整 <code>table</code>、也无平行 Markdown，Agent 无法对齐规格项与数值。 <a class="fn-h3-link" href="https://www.hiascend.com/hardware/processor" target="_blank" rel="noopener">查看示例来源</a></li>
     </ul>
     </div>
     </div>
@@ -921,7 +1275,7 @@
       <ul class="principle-suggestions">
         <li>
           <span class="sug-title">与发现路径同名</span>
-          <span class="sug-desc">入口文案须与 llms.txt / source 路径语义一致，避免「更多」「AI」等空泛词。</span>
+          <span class="sug-desc">入口文案须与 <code>llms.txt</code> / 本页 <code>.md</code> 路径语义一致，避免「更多」「AI」等空泛词。</span>
         </li>
         <li>
           <span class="sug-title">多模型写清动作</span>
@@ -937,11 +1291,11 @@
       <ul class="principle-suggestions">
         <li>
           <span class="sug-title">可抓链接或可见文本控件</span>
-          <span class="sug-desc">入口须为 <code>&lt;a href&gt;</code> 或带可见文本的 button；勿悬停才注入 DOM。</span>
+          <span class="sug-desc">入口须为 <code>&lt;a href&gt;</code> 或带可见文本的 button；勿悬停才注入 DOM，勿做无人可读的隐藏链。</span>
         </li>
         <li>
           <span class="sug-title">与 alternate 联动</span>
-          <span class="sug-desc">页头可输出 <code>link rel="alternate" type="text/markdown"</code>，与页级入口目标一致。</span>
+          <span class="sug-desc">页头可输出 <code>link rel="alternate" type="text/markdown"</code>，与页级入口目标一致，但不能代替标题旁的可见动作。</span>
         </li>
       </ul>
     </section>

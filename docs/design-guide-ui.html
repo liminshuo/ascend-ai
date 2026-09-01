@@ -6,6 +6,9 @@
 <title>UI 规范 · 设计模式 · 昇腾社区 AI 亲和原则</title>
 <style>
   :root {
+    --text-h1: clamp(28px, 4vw, 40px);
+    --text-h1-lh: 48px;
+    --text-h1-weight: 600;
     --bg: #F5F5F5;
     --panel: #ffffff;
     --panel2: #FAFAFA;
@@ -15,7 +18,7 @@
     --accent: #1476FF;
     --accent-soft: rgba(20, 118, 255, 0.1);
     --link: #1476FF;
-    --content-max: 1200px;
+    --content-max: 1000px;
     --page-gutter: clamp(16px, 2.5vw, 24px);
     --body-size: 14px;
     --body-lh: 22px;
@@ -39,7 +42,7 @@
     overflow: visible;
   }
   .topbar-inner {
-    width: 100%; max-width: none; margin: 0; padding: 0 24px;
+    width: 100%; max-width: var(--content-max-width, 1000px); margin: 0 auto; padding: 0 24px; box-sizing: border-box;
     height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
   }
   .brand {
@@ -88,8 +91,8 @@
   header { margin-bottom: 28px; }
   h1 {
     font-family: "PingFang SC", sans-serif;
-    font-size: clamp(28px, 4vw, 40px); font-weight: 600;
-    margin: 8px 0 12px; letter-spacing: -0.02em; line-height: 48px;
+    font-size: var(--text-h1); font-weight: var(--text-h1-weight, 600);
+    margin: 8px 0 12px; letter-spacing: -0.02em; line-height: var(--text-h1-lh);
   }
   .sub {
     color: var(--muted); max-width: none;
@@ -295,6 +298,7 @@
       <a href="principles-overview.html">亲和原则</a>
       <a href="community-ui.html">组件亲和</a>
       <a href="design-guide-image-text.html" class="active">设计模式</a>
+      <a href="data-analysis.html">数据分析</a>
     </nav>
   </div>
 </div>
@@ -343,21 +347,47 @@
   </header>
 
   <h2 class="block-title">正文排版</h2>
-  <p class="spec-lead">说明性正文、场景描述、原则条目，统一用下列字号与行高，避免页与页之间忽大忽小。</p>
+  <p class="spec-lead">说明性正文、场景描述、原则条目，统一用下列字号与行高；标题与原则页 <code>fn-h*</code> 同源 token，避免页与页之间忽大忽小。</p>
   <table class="token-table">
     <thead>
-      <tr><th>Token</th><th>值</th><th>用途</th></tr>
+      <tr><th>层级</th><th>Token</th><th>值</th><th>用途</th></tr>
     </thead>
     <tbody>
       <tr>
-        <td><code>--body-size</code></td>
-        <td><strong>14px</strong></td>
+        <td>H1</td>
+        <td><code>--text-h1</code> / <code>--text-h1-lh</code></td>
+        <td><strong>clamp(28–40px) / 48</strong></td>
+        <td>页标题（.page-header h1）</td>
+      </tr>
+      <tr>
+        <td>H2</td>
+        <td><code>--text-h2</code> / <code>--text-h2-lh</code></td>
+        <td><strong>24 / 36</strong> · 底线 pad <code>--space-h2-rule: 16px</code></td>
+        <td>区块标题（.section h2）</td>
+      </tr>
+      <tr>
+        <td>H3</td>
+        <td><code>--text-h3</code> / <code>--text-h3-lh</code></td>
+        <td><strong>18 / 28</strong> · 上下 pad <code>--space-h3-pad-y: 24px</code></td>
+        <td>.section h3 与 h3.fn-h3 同源</td>
+      </tr>
+      <tr>
+        <td>H4</td>
+        <td><code>--text-h4</code> / <code>--text-h4-lh</code></td>
+        <td><strong>16 / 24</strong> · 底 pad <code>--space-h4-pad-b: 16px</code></td>
+        <td>.section h4 与 h4.fn-h4 同源</td>
+      </tr>
+      <tr>
+        <td>正文</td>
+        <td><code>--text-body</code> / <code>--text-body-lh</code></td>
+        <td><strong>14 / 22</strong></td>
         <td>正文默认字号</td>
       </tr>
       <tr>
-        <td><code>--body-lh</code></td>
-        <td><strong>22px</strong></td>
-        <td>正文默认行高</td>
+        <td>辅助</td>
+        <td><code>--text-auxiliary</code></td>
+        <td><strong>12 / 20</strong></td>
+        <td>辅助说明</td>
       </tr>
     </tbody>
   </table>
@@ -366,8 +396,8 @@
     <p class="meta">font-size: 14px · line-height: 22px</p>
   </div>
   <ul class="affinity-principles">
-    <li><strong>统一：</strong>设计模式各页正文默认 <code>14px / 22px</code>，用 CSS 变量 <code>--body-size</code>、<code>--body-lh</code> 引用。</li>
-    <li><strong>例外：</strong>H1 / H2 / 标签 / 标注圆点等层级元素可另定尺寸，不占用正文规格。</li>
+    <li><strong>统一：</strong>全站标题与正文只引用 <code>tokens.css</code>；原则页勿再写死 18/16 字号。</li>
+    <li><strong>例外：</strong>组件 mock、侧栏、顶栏可用局部尺寸，不占用正文规格。</li>
   </ul>
 
   <footer>昇腾社区 AI 亲和原则 · 设计模式 · UI 规范</footer>

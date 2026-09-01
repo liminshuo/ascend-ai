@@ -1,0 +1,1826 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数据分析 · 昇腾社区 AI 亲和原则</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid #e2e8f0;
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: 100%; max-width: var(--content-max-width, 1000px); margin: 0 auto; padding: 0 24px; box-sizing: border-box;
+    height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: #191919; text-decoration: none; white-space: nowrap; margin-right: 40px;
+  }
+  .topbar .brand span { color: #1476FF; }
+  .topbar .site-nav { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; flex-wrap: wrap; }
+  .topbar .site-nav > a {
+    text-decoration: none; color: #595959; font-size: 14px; font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .topbar .site-nav > a:hover { color: #1476FF; background: #F5F5F5; text-decoration: none; }
+  .topbar .site-nav > a.active { color: #1476FF; background: #F5F5F5; font-weight: 600; }
+  body.inner-page .page-wrapper { min-height: 100vh; }
+  body.inner-page[data-page="data-analysis"] .main-content {
+    padding-top: 88px;
+    padding-bottom: 64px;
+  }
+  body.inner-page[data-page="data-analysis"]:not(:has(#module-sidebar)) .main-content > .page-header,
+  body.inner-page[data-page="data-analysis"]:not(:has(#module-sidebar)) .main-content > .section {
+    width: 1000px;
+    max-width: 1000px;
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  .page-header h1 {
+    font-family: "PingFang SC", sans-serif;
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1-weight, 600);
+    line-height: var(--text-h1-lh);
+    letter-spacing: -0.02em;
+    margin: 8px 0 0;
+    color: var(--color-text, #191919);
+  }
+  .page-header .page-desc {
+    margin: 32px 0 0;
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--text, #191919);
+  }
+  body.inner-page[data-page="data-analysis"] .main-content .section > h2 {
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    letter-spacing: -0.01em;
+    margin-top: 0;
+    margin-bottom: 16px;
+    padding-bottom: var(--space-h2-rule, 16px);
+    border-bottom: 2px solid #f0f0f0;
+    color: var(--color-text, #191919);
+  }
+  .rel-table {
+    width: 100%;
+    max-width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 13px;
+    line-height: 20px;
+    margin: 0;
+    color: #191919;
+  }
+  .rel-table caption {
+    caption-side: top;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 22px;
+    padding: 0 0 10px;
+    color: #191919;
+  }
+  .rel-table th,
+  .rel-table td {
+    text-align: left;
+    vertical-align: top;
+    padding: 10px 10px;
+    border-bottom: 1px solid #e2e8f0;
+    font-weight: 400;
+    overflow-wrap: break-word;
+  }
+  .rel-table th {
+    font-size: 12px;
+    font-weight: 650;
+    color: #595959;
+    background: #fafafa;
+  }
+  .rel-table .col-n { width: 36px; }
+  .rel-table .col-item { width: 118px; }
+  .rel-table .col-before { width: 154px; }
+  .rel-table .col-after { width: 130px; }
+  .rel-table .col-metric { width: 186px; }
+  .rel-table .col-base { width: 188px; }
+  .rel-table .col-value { width: 188px; }
+  .rel-table td.col-n { color: #8c8c8c; white-space: nowrap; overflow-wrap: normal; }
+  .rel-table td.col-base,
+  .rel-table td.col-value {
+    font-variant-numeric: tabular-nums;
+    font-weight: 650;
+    line-height: 20px;
+  }
+  .rel-table tr.row-sum td { background: #fafafa; }
+  .rel-table code {
+    font-size: 12px;
+    background: #f5f5f5;
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  .sample-link {
+    display: block;
+    margin-top: 8px;
+    padding: 0;
+    border: 0;
+    background: none;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 18px;
+    color: #1476FF;
+    cursor: pointer;
+  }
+  .sample-link:hover { text-decoration: underline; }
+  .probe-doc {
+    font-size: 13px;
+    line-height: 1.7;
+    color: #191919;
+  }
+  .probe-doc .probe-result {
+    margin: 0 0 16px;
+    font-weight: 650;
+  }
+  .probe-doc p { margin: 0 0 12px; }
+  .probe-doc ul,
+  .probe-doc ol {
+    margin: 0 0 16px;
+    padding-left: 20px;
+  }
+  .probe-doc li { margin: 0 0 6px; }
+  .probe-doc a { color: #1476FF; }
+  .probe-doc .probe-fail { color: #c62828; }
+  .probe-doc .probe-q {
+    margin: 0 0 10px;
+    padding: 10px 12px;
+    background: #f5f5f5;
+    border-radius: 6px;
+    font-weight: 400;
+  }
+  .probe-doc .probe-q:last-child { margin-bottom: 0; }
+  .orig-sample {
+    margin: 0;
+    padding: 16px 18px;
+    border: 1px solid #000;
+    background: #000;
+    overflow-x: auto;
+  }
+  .orig-sample code {
+    display: block;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 12px;
+    line-height: 1.7;
+    color: #f5f5f5;
+    white-space: pre;
+    background: none;
+    padding: 0;
+  }
+</style>
+</head>
+<body class="inner-page" data-page="data-analysis">
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html">社区 <span>AI 亲和原则</span></a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="mintlify.html">友商对照</a>
+      <a href="reachability.html">社区诊断</a>
+      <a href="principles-overview.html">亲和原则</a>
+      <a href="community-ui.html">组件亲和</a>
+      <a href="design-guide-image-text.html">设计模式</a>
+      <a href="data-analysis.html" class="active">数据分析</a>
+    </nav>
+  </div>
+</div>
+
+<div class="page-wrapper">
+  <main class="main-content">
+    <div class="page-header">
+      <h1>数据分析</h1>
+      <p class="page-desc page-desc--split">
+        <span class="page-desc-line">对照各版本上线前后的亲和改造效果。本表记录 2026 年 8 月上线项；基线为上线前 / 检测值，8月实测为现网值。</span>
+      </p>
+    </div>
+    <section class="section">
+      <h2>2026 年 8 月上线对照</h2>
+      <table class="rel-table">
+        <caption>表1 8 月上线项对照</caption>
+        <colgroup>
+          <col class="col-n" />
+          <col class="col-item" />
+          <col class="col-before" />
+          <col class="col-after" />
+          <col class="col-metric" />
+          <col class="col-base" />
+          <col class="col-value" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="col-n">序号</th>
+            <th class="col-item">上线项</th>
+            <th class="col-before">原始问题</th>
+            <th class="col-after">8月版本</th>
+            <th class="col-metric">对照指标</th>
+            <th class="col-base">基线</th>
+            <th class="col-value">8月实测</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="col-n">1</td>
+            <td class="col-item">优化 <code>robots.txt</code></td>
+            <td class="col-before">未声明 Sitemap 与导读地址；知识路径与噪声路径边界不清，进站即可能被挡。<button type="button" class="sample-link" data-drawer-open="robots-original">查看原始示例</button></td>
+            <td class="col-after">放行导读与知识面，拦截噪声面，并声明 <code>Sitemap</code> 完整地址。</td>
+            <td class="col-metric">文档可达率：固定 <code>/document</code> 样本中，robots 放行且页面可打开的占比。</td>
+            <td class="col-base">100%（27/27）<button type="button" class="sample-link" data-drawer-open="probe-r1-base">查看测试证明</button></td>
+            <td class="col-value">—</td>
+          </tr>
+          <tr>
+            <td class="col-n">2</td>
+            <td class="col-item">部署 <code>llms.txt</code></td>
+            <td class="col-before">根路径无 <code>llms.txt</code>，请求返回 404；Agent 只能猜路径或翻 sitemap。</td>
+            <td class="col-after">根路径提供精选导读，标明主推文档与阅读顺序。</td>
+            <td class="col-metric">导读链接可达率：<code>llms.txt</code> 内链接可打开的占比。细化：文件可访问率。</td>
+            <td class="col-base">文件 0%（404）<br>链接 —<button type="button" class="sample-link" data-drawer-open="probe-r2-base">查看基线证明</button></td>
+            <td class="col-value">文件 100%（1/1）<br>链接 93%（28/30，抽样）<button type="button" class="sample-link" data-drawer-open="probe-r2-aug">查看8月证明</button></td>
+          </tr>
+          <tr>
+            <td class="col-n">3</td>
+            <td class="col-item">部署 <code>llms-full.txt</code></td>
+            <td class="col-before">根路径无 <code>llms-full.txt</code>，请求返回 404；须逐页渲染才能取文。</td>
+            <td class="col-after">导读定向触发的纯净正文包，一次提取多篇。</td>
+            <td class="col-metric">正文完整率：<code>llms-full.txt</code> 条目中含正文（非仅 URL / 日期）的占比。细化：文件可访问率。</td>
+            <td class="col-base">文件 0%（404）<br>正文 —<button type="button" class="sample-link" data-drawer-open="probe-r3-base">查看基线证明</button></td>
+            <td class="col-value">文件 100%（1/1）<br>有描述 4%（12/293）<br>完整正文 0%（0/293）<button type="button" class="sample-link" data-drawer-open="probe-r3-aug">查看8月证明</button></td>
+          </tr>
+          <tr>
+            <td class="col-n">4</td>
+            <td class="col-item">调整 <code>sitemap.xml</code></td>
+            <td class="col-before">清单与知识面不对齐，噪声 URL 占用抓取。<button type="button" class="sample-link" data-drawer-open="sitemap-original">查看原始示例</button></td>
+            <td class="col-after">补充 <code>Content-Signal</code>。</td>
+            <td class="col-metric">Content-Signal 完整率：search、ai-input、ai-train 三项声明齐全的占比。</td>
+            <td class="col-base">0%（未声明）<button type="button" class="sample-link" data-drawer-open="probe-r4-base">查看基线证明</button></td>
+            <td class="col-value">100%（3/3）<button type="button" class="sample-link" data-drawer-open="probe-r4-aug">查看8月证明</button></td>
+          </tr>
+          <tr class="row-sum">
+            <td class="col-n">—</td>
+            <td class="col-item">场景：标准发现路径</td>
+            <td class="col-before">Agent 不允许猜 URL、不允许网页检索时，没有从 robots 到知识页的标准路径。</td>
+            <td class="col-after">固定走 robots.txt → LLM-Policy / Sitemap: → llms.txt（sitemap 兜底）→ 知识页；不得网页检索、不得猜 URL。</td>
+            <td class="col-metric">路径到达率：固定 <code>/document</code> 样本中，能经上述路径找到的占比。与第 1 行「文档可达率」（URL 已知）分开。</td>
+            <td class="col-base">0%（路径未声明）<button type="button" class="sample-link" data-drawer-open="probe-path-base">查看测试证明</button></td>
+            <td class="col-value">—</td>
+          </tr>
+          <tr class="row-sum">
+            <td class="col-n">—</td>
+            <td class="col-item">场景：检索信源</td>
+            <td class="col-before">固定问句检索中官方信源占比偏低；检测时 Claude 21%（4/19）、DeepSeek 33%（9/27），第三方教程与其他渠道占多数。</td>
+            <td class="col-after">四文件一并生效后，答问检索应以昇腾社区官方为主。</td>
+            <td class="col-metric">官方信源占比：固定问句下检索 URL 中昇腾社区官方的占比。</td>
+            <td class="col-base">Claude 21%（4/19）<br>DeepSeek 33%（9/27）<button type="button" class="sample-link" data-drawer-open="probe-src-base">查看测试证明</button></td>
+            <td class="col-value">—</td>
+          </tr>
+          <tr class="row-sum">
+            <td class="col-n">—</td>
+            <td class="col-item">场景：机器源作答</td>
+            <td class="col-before">无导读与正文包时，不打开 HTML 渲染页无法按官方步骤作答。</td>
+            <td class="col-after">只读 robots、<code>llms.txt</code>、<code>llms-full.txt</code>（sitemap 兜底），应能完成固定问句。</td>
+            <td class="col-metric">机器源作答成功率：禁止打开 HTML 时，答案与官方文档一致的占比。</td>
+            <td class="col-base">0%（无文件）<button type="button" class="sample-link" data-drawer-open="probe-agent-base">查看基线证明</button></td>
+            <td class="col-value">0%（0/3）<button type="button" class="sample-link" data-drawer-open="probe-agent-aug">查看8月证明</button></td>
+          </tr>
+          <tr class="row-sum">
+            <td class="col-n">—</td>
+            <td class="col-item">场景：主推篇引用</td>
+            <td class="col-before">即便命中官方，引用也常落到活动页或非导读篇。</td>
+            <td class="col-after">回答中的 citation 应落在 <code>llms.txt</code> 主推链接上。</td>
+            <td class="col-metric">主推篇引用占比：citation URL 出现在 <code>llms.txt</code> 中的占比。</td>
+            <td class="col-base">0%（无 llms.txt）<button type="button" class="sample-link" data-drawer-open="probe-cite-base">查看测试证明</button></td>
+            <td class="col-value">—</td>
+          </tr>
+          <tr>
+            <td class="col-n">5</td>
+            <td class="col-item">文档增加元数据字段</td>
+            <td class="col-before">页上难判身份、版本、适用产品与更新时间。</td>
+            <td class="col-after">补全身份、版本、适用产品、更新时间等字段，机器与可见文案同源。</td>
+            <td class="col-metric">元数据字段完整率：固定样本中身份、版本、适用产品、更新时间四项都有，且机器字段与可见文案同源的占比。</td>
+            <td class="col-base">0%（未结构化）<button type="button" class="sample-link" data-drawer-open="probe-meta-base">查看测试证明</button></td>
+            <td class="col-value">—</td>
+          </tr>
+          <tr class="row-sum">
+            <td class="col-n">—</td>
+            <td class="col-item">场景：版本识别</td>
+            <td class="col-before">固定问句下检索 / 引用常落到旧版或非主推版；检测时未见 CANN 9.0。</td>
+            <td class="col-after">元数据补全后，固定问句的检索 / 引用应落在主推版本。</td>
+            <td class="col-metric">版本识别准确率：固定问句下，检索 / 引用命中主推版本的占比。与第 5 行「字段完整率」（页上有没有字段）分开。</td>
+            <td class="col-base">Claude 0%（0/19）<br>DeepSeek 0%（0/27）<button type="button" class="sample-link" data-drawer-open="probe-ver-base">查看测试证明</button></td>
+            <td class="col-value">—</td>
+          </tr>
+          <tr class="row-sum">
+            <td class="col-n">—</td>
+            <td class="col-item">场景：适用产品识别</td>
+            <td class="col-before">问句带芯片 / 形态时，检索 / 引用易落到未声明该产品的页上。</td>
+            <td class="col-after">元数据补全后，固定问句的检索 / 引用应落在声明了对应适用产品的页上。</td>
+            <td class="col-metric">适用产品命中率：固定问句下，检索 / 引用页的适用产品与问句产品一致的占比。与第 5 行「字段完整率」、场景「版本识别」分开。</td>
+            <td class="col-base">0%（未声明）<button type="button" class="sample-link" data-drawer-open="probe-prod-base">查看基线证明</button></td>
+            <td class="col-value">0%（0/3）<button type="button" class="sample-link" data-drawer-open="probe-prod-aug">查看8月证明</button></td>
+          </tr>
+          <tr>
+            <td class="col-n">6</td>
+            <td class="col-item">代码语义</td>
+            <td class="col-before">代码块缺语言类型，运行结果未标明。</td>
+            <td class="col-after">标明语言类型，并给出 output / 预期结果。</td>
+            <td class="col-metric">代码块语义完整率：语言类型与 output 都标明才算完整。细化：语言标注率、output 标明率。</td>
+            <td class="col-base">完整率 0%（0/33）<br>语言标注率 64%（21/33）<br>output 标明率 15%（5/33）<button type="button" class="sample-link" data-drawer-open="probe-code-base">查看测试证明</button></td>
+            <td class="col-value">—</td>
+          </tr>
+          <tr class="row-sum">
+            <td class="col-n">—</td>
+            <td class="col-item">场景：代码可复现</td>
+            <td class="col-before">缺语言类型与成功判据时，答问给出的命令易抄错语言、无法对照是否跑通。</td>
+            <td class="col-after">标明语言与 output 后，固定安装 / 命令问句应给出与官方一致的命令，并能对照成功判据。</td>
+            <td class="col-metric">代码可复现成功率：语言正确、命令与官方一致、且能对照成功判据的占比。与第 6 行「语义完整率」（块上有没有字段）分开。</td>
+            <td class="col-base">0%（无成套标注）<button type="button" class="sample-link" data-drawer-open="probe-repro-base">查看基线证明</button></td>
+            <td class="col-value">0%（0/3）<button type="button" class="sample-link" data-drawer-open="probe-repro-aug">查看8月证明</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+</div>
+
+<template data-drawer-template="robots-original" data-drawer-title="原始示例 · robots.txt">
+  <pre class="orig-sample"><code>User-agent: *
+Content-Signal: ai-train=yes,search=yes,ai-input=yes
+Allow: /
+Disallow: /profile/
+Disallow: /doc_center/
+
+LLM-Policy: https://www.hiascend.com/llms.txt
+Sitemap: https://www.hiascend.com/sitemap.xml
+Sitemap: https://www.hiascend.com/cn/sitemap-zh-CN.xml
+Sitemap: https://www.hiascend.com/eng/sitemap-en-GB.xml
+Sitemap: https://www.hiascend.com/sitemap/sitemapdata1.xml
+Sitemap: https://www.hiascend.com/sitemap/sitemapdata2.xml
+Sitemap: https://www.hiascend.com/sitemap/sitemapdoc1.xml
+Sitemap: https://www.hiascend.com/sitemap/sitemapdoc2.xml
+Sitemap: https://www.hiascend.com/sitemap/sitemapdoc3.xml
+Sitemap: https://www.hiascend.com/sitemap/sitemapdoc4.xml
+Sitemap: https://www.hiascend.com/sitemap/sitemapdoc5.xml
+Sitemap: https://www.hiascend.com/sitemap/sitemapdoc6.xml</code></pre>
+</template>
+
+<template data-drawer-template="sitemap-original" data-drawer-title="原始示例 · sitemap.xml">
+  <pre class="orig-sample"><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/&lt;/loc&gt;
+    &lt;lastmod&gt;2026-01-29&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/activities&lt;/loc&gt;
+    &lt;lastmod&gt;2025-03-27&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/activities/WAIC2024&lt;/loc&gt;
+    &lt;lastmod&gt;2025-12-27&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/activities/ascend-developer-summit2024&lt;/loc&gt;
+    &lt;lastmod&gt;2025-09-25&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/activities/calendar&lt;/loc&gt;
+    &lt;lastmod&gt;2024-08-29&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/activities/cloud-resource-detail&lt;/loc&gt;
+    &lt;lastmod&gt;2024-09-26&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/activities/hc2024&lt;/loc&gt;
+    &lt;lastmod&gt;2025-09-25&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/activities/news&lt;/loc&gt;
+    &lt;lastmod&gt;2025-12-27&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/activity/scan-for-verification&lt;/loc&gt;
+    &lt;lastmod&gt;2026-04-27&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/app-offline-notice&lt;/loc&gt;
+    &lt;lastmod&gt;2026-04-10&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/ascend-2025KADC&lt;/loc&gt;
+    &lt;lastmod&gt;2025-07-31&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/ascend-2025KADC/CodeLabs&lt;/loc&gt;
+    &lt;lastmod&gt;2025-04-28&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/ascend-2025KADC/KADC-Online&lt;/loc&gt;
+    &lt;lastmod&gt;2025-07-31&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/ascend-2025KADC/Meetup&lt;/loc&gt;
+    &lt;lastmod&gt;2025-05-29&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/ascend-2025KADC/Parallel-session&lt;/loc&gt;
+    &lt;lastmod&gt;2025-05-13&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/ascend-2025KADC/ascend-Summit&lt;/loc&gt;
+    &lt;lastmod&gt;2025-05-13&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/ascend-2025KADC/kunpeng-Summit&lt;/loc&gt;
+    &lt;lastmod&gt;2025-05-13&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/ascend-2026KADC&lt;/loc&gt;
+    &lt;lastmod&gt;2026-05-25&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/ascend-2026KADC/OpenCourse&lt;/loc&gt;
+    &lt;lastmod&gt;2026-05-25&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/cann&lt;/loc&gt;
+    &lt;lastmod&gt;2026-02-26&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/cann/aal&lt;/loc&gt;
+    &lt;lastmod&gt;2026-01-15&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/cann/aol&lt;/loc&gt;
+    &lt;lastmod&gt;2026-01-15&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/cann/ascend-c&lt;/loc&gt;
+    &lt;lastmod&gt;2026-02-26&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/cann/bisheng&lt;/loc&gt;
+    &lt;lastmod&gt;2026-01-15&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/cann/charter&lt;/loc&gt;
+    &lt;lastmod&gt;2026-01-10&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/cann/charter/detail&lt;/loc&gt;
+    &lt;lastmod&gt;2026-01-10&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/cann/contrib-guide&lt;/loc&gt;
+    &lt;lastmod&gt;2026-01-15&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/cann/contribution-dashboard&lt;/loc&gt;
+    &lt;lastmod&gt;2026-04-27&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/cann/develop&lt;/loc&gt;
+    &lt;lastmod&gt;2026-01-15&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/cann/document&lt;/loc&gt;
+    &lt;lastmod&gt;2026-07-30&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/cann/download&lt;/loc&gt;
+    &lt;lastmod&gt;2026-05-15&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/cann/driver&lt;/loc&gt;
+    &lt;lastmod&gt;2026-01-15&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/cann/gov-arch&lt;/loc&gt;
+    &lt;lastmod&gt;2026-01-10&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/cann/graph-engine&lt;/loc&gt;
+    &lt;lastmod&gt;2026-01-15&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/cann/hccl&lt;/loc&gt;
+    &lt;lastmod&gt;2026-01-15&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/cann/learn&lt;/loc&gt;
+    &lt;lastmod&gt;2026-01-29&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/cann/meeting&lt;/loc&gt;
+    &lt;lastmod&gt;2026-01-10&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/cann/open-map&lt;/loc&gt;
+    &lt;lastmod&gt;2026-01-29&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/cann/runtime&lt;/loc&gt;
+    &lt;lastmod&gt;2026-01-15&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/cann/sig&lt;/loc&gt;
+    &lt;lastmod&gt;2026-01-15&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/dev/forum/member&lt;/loc&gt;
+    &lt;lastmod&gt;2026-03-26&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer&lt;/loc&gt;
+    &lt;lastmod&gt;2026-03-26&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer-program&lt;/loc&gt;
+    &lt;lastmod&gt;2026-04-29&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/AAIC2026&lt;/loc&gt;
+    &lt;lastmod&gt;2026-04-30&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/MVP&lt;/loc&gt;
+    &lt;lastmod&gt;2026-01-29&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/OutstandingDeveloper&lt;/loc&gt;
+    &lt;lastmod&gt;2024-12-26&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/School-Magnetic-Space&lt;/loc&gt;
+    &lt;lastmod&gt;2025-10-30&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/activities/Ascend-AI-Inspire-Day&lt;/loc&gt;
+    &lt;lastmod&gt;2024-12-26&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/activities/Live&lt;/loc&gt;
+    &lt;lastmod&gt;2025-09-25&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/activities/Live/appoint&lt;/loc&gt;
+    &lt;lastmod&gt;2025-07-31&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/activities/cann20251&lt;/loc&gt;
+    &lt;lastmod&gt;2025-09-25&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/activities/cann20252&lt;/loc&gt;
+    &lt;lastmod&gt;2026-01-29&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/activities/cann20252/learning-list&lt;/loc&gt;
+    &lt;lastmod&gt;2026-01-29&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/activities/cann20261&lt;/loc&gt;
+    &lt;lastmod&gt;2026-02-26&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/activities/cann20261/learning-list&lt;/loc&gt;
+    &lt;lastmod&gt;2026-02-26&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/ascendhub&lt;/loc&gt;
+    &lt;lastmod&gt;2025-06-26&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/ask&lt;/loc&gt;
+    &lt;lastmod&gt;2025-07-10&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/blog&lt;/loc&gt;
+    &lt;lastmod&gt;2026-03-26&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/cann20241&lt;/loc&gt;
+    &lt;lastmod&gt;2025-07-31&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/cann20242&lt;/loc&gt;
+    &lt;lastmod&gt;2025-09-25&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/deepseek&lt;/loc&gt;
+    &lt;lastmod&gt;2025-03-04&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/devboard&lt;/loc&gt;
+    &lt;lastmod&gt;2026-01-29&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/devboard/spec&lt;/loc&gt;
+    &lt;lastmod&gt;2025-09-25&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/download&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/group&lt;/loc&gt;
+    &lt;lastmod&gt;2025-05-13&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/honorary-consultant&lt;/loc&gt;
+    &lt;lastmod&gt;2024-12-26&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/inference&lt;/loc&gt;
+    &lt;lastmod&gt;2026-05-15&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/learn&lt;/loc&gt;
+    &lt;lastmod&gt;2025-04-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/legal/authentification&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/legal/service&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/models&lt;/loc&gt;
+    &lt;lastmod&gt;2026-01-29&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/models/search&lt;/loc&gt;
+    &lt;lastmod&gt;2026-01-29&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/models/searchresults&lt;/loc&gt;
+    &lt;lastmod&gt;2026-01-29&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/models?tab=infer&lt;/loc&gt;
+    &lt;lastmod&gt;2026-03-01&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/native-development&lt;/loc&gt;
+    &lt;lastmod&gt;2025-03-27&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/opensource&lt;/loc&gt;
+    &lt;lastmod&gt;2024-09-05&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/operator&lt;/loc&gt;
+    &lt;lastmod&gt;2026-05-15&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/ops&lt;/loc&gt;
+    &lt;lastmod&gt;2025-10-30&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/recommendation&lt;/loc&gt;
+    &lt;lastmod&gt;2026-05-15&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/rewards&lt;/loc&gt;
+    &lt;lastmod&gt;2025-08-28&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/rewards/history&lt;/loc&gt;
+    &lt;lastmod&gt;2025-08-28&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/software/ai-frameworks/pytorch&lt;/loc&gt;
+    &lt;lastmod&gt;2026-01-29&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/software/ai-frameworks/pytorch/document&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/software/ai-frameworks/pytorch/download&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/software/ai-frameworks/pytorch/learn&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/software/ai-frameworks/tensorflow&lt;/loc&gt;
+    &lt;lastmod&gt;2025-11-27&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/software/mindcluster&lt;/loc&gt;
+    &lt;lastmod&gt;2026-03-26&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/software/mindcluster/document&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/software/mindcluster/download&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/software/mindcluster/learn&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/software/mindcluster/stack&lt;/loc&gt;
+    &lt;lastmod&gt;2026-03-26&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/software/mindedge&lt;/loc&gt;
+    &lt;lastmod&gt;2026-03-26&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/software/mindedge/document&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/software/mindedge/download&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/software/mindedge/feature&lt;/loc&gt;
+    &lt;lastmod&gt;2026-04-03&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/software/mindedge/learn&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/software/mindedge/stack&lt;/loc&gt;
+    &lt;lastmod&gt;2026-03-26&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/software/mindie&lt;/loc&gt;
+    &lt;lastmod&gt;2025-09-25&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/software/mindie/document&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/software/mindie/download&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/software/mindie/learn&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/software/mindie/model&lt;/loc&gt;
+    &lt;lastmod&gt;2025-06-26&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/software/mindie/stack-detail&lt;/loc&gt;
+    &lt;lastmod&gt;2025-09-25&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/software/mindsdk&lt;/loc&gt;
+    &lt;lastmod&gt;2025-11-27&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/software/mindsdk/document&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/software/mindsdk/download&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/software/mindsdk/feature&lt;/loc&gt;
+    &lt;lastmod&gt;2025-12-27&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/software/mindsdk/learn&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/software/mindsdk/stack&lt;/loc&gt;
+    &lt;lastmod&gt;2025-05-27&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/software/mindspeed&lt;/loc&gt;
+    &lt;lastmod&gt;2026-01-29&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/software/mindspeed/content&lt;/loc&gt;
+    &lt;lastmod&gt;2025-09-25&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/software/mindspeed/document&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/software/mindspeed/download&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/software/mindspeed/learn&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/software/mindstudio&lt;/loc&gt;
+    &lt;lastmod&gt;2026-02-26&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/software/mindstudio/Case&lt;/loc&gt;
+    &lt;lastmod&gt;2026-02-26&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/software/mindstudio/document&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/software/mindstudio/download&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/software/mindstudio/learn&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/software/mindstudio/stack&lt;/loc&gt;
+    &lt;lastmod&gt;2026-02-26&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/software/mindx&lt;/loc&gt;
+    &lt;lastmod&gt;2026-01-29&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/submit-ideas&lt;/loc&gt;
+    &lt;lastmod&gt;2026-03-31&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/techArticles&lt;/loc&gt;
+    &lt;lastmod&gt;2025-03-27&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/developer/training&lt;/loc&gt;
+    &lt;lastmod&gt;2026-05-15&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/document&lt;/loc&gt;
+    &lt;lastmod&gt;2026-03-26&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/document/caselibrary&lt;/loc&gt;
+    &lt;lastmod&gt;2025-08-28&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/ecosystem&lt;/loc&gt;
+    &lt;lastmod&gt;2026-07-30&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/ecosystem/all-wisdom&lt;/loc&gt;
+    &lt;lastmod&gt;2025-09-25&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/ecosystem/all-wisdom/award&lt;/loc&gt;
+    &lt;lastmod&gt;2025-03-27&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/ecosystem/all-wisdom/partner-rec&lt;/loc&gt;
+    &lt;lastmod&gt;2025-08-28&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/ecosystem/ascend_sci-res-innov_program&lt;/loc&gt;
+    &lt;lastmod&gt;2026-03-26&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/ecosystem/ascendpartner/qualified-servers-catalog&lt;/loc&gt;
+    &lt;lastmod&gt;2026-03-26&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/ecosystem/certificate-query&lt;/loc&gt;
+    &lt;lastmod&gt;2026-03-26&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/ecosystem/hae&lt;/loc&gt;
+    &lt;lastmod&gt;2026-01-29&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/ecosystem/industry&lt;/loc&gt;
+    &lt;lastmod&gt;2026-01-29&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/ecosystem/my-team&lt;/loc&gt;
+    &lt;lastmod&gt;2025-06-26&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/ecosystem/partner-program&lt;/loc&gt;
+    &lt;lastmod&gt;2026-07-30&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/ecosystem/team-managemen&lt;/loc&gt;
+    &lt;lastmod&gt;2026-02-26&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/edu/career-certification&lt;/loc&gt;
+    &lt;lastmod&gt;2025-12-27&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/edu/certification&lt;/loc&gt;
+    &lt;lastmod&gt;2025-12-27&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/edu/certification/getLevelEquityNum&lt;/loc&gt;
+    &lt;lastmod&gt;2025-03-27&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/edu/certification/list&lt;/loc&gt;
+    &lt;lastmod&gt;2025-01-23&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/edu/certification/payment-fail&lt;/loc&gt;
+    &lt;lastmod&gt;2025-01-23&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/edu/certification/query&lt;/loc&gt;
+    &lt;lastmod&gt;2025-06-26&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/edu/courses&lt;/loc&gt;
+    &lt;lastmod&gt;2026-03-26&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/edu/developer-certification&lt;/loc&gt;
+    &lt;lastmod&gt;2026-01-29&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/edu/experiment&lt;/loc&gt;
+    &lt;lastmod&gt;2026-03-26&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/edu/growth&lt;/loc&gt;
+    &lt;lastmod&gt;2025-07-31&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/edu/growth/ai-system&lt;/loc&gt;
+    &lt;lastmod&gt;2025-10-30&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/edu/growth/list&lt;/loc&gt;
+    &lt;lastmod&gt;2025-06-26&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/edu/growth/lm-development&lt;/loc&gt;
+    &lt;lastmod&gt;2025-10-30&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/en/cann&lt;/loc&gt;
+    &lt;lastmod&gt;2026-01-29&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/en/cann/download&lt;/loc&gt;
+    &lt;lastmod&gt;2026-05-28&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/en/developer/ascendhub&lt;/loc&gt;
+    &lt;lastmod&gt;2026-06-29&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/en/developer/download&lt;/loc&gt;
+    &lt;lastmod&gt;2026-05-28&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/en/developer/inference&lt;/loc&gt;
+    &lt;lastmod&gt;2026-05-28&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/en/developer/operator&lt;/loc&gt;
+    &lt;lastmod&gt;2026-03-31&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/en/developer/software/ai-frameworks/pytorch&lt;/loc&gt;
+    &lt;lastmod&gt;2025-12-27&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/en/developer/software/ai-frameworks/tensorflow&lt;/loc&gt;
+    &lt;lastmod&gt;2025-12-27&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/en/developer/software/mindcluster&lt;/loc&gt;
+    &lt;lastmod&gt;2026-04-03&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/en/developer/software/mindedge&lt;/loc&gt;
+    &lt;lastmod&gt;2026-05-28&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/en/developer/software/mindedge/feature&lt;/loc&gt;
+    &lt;lastmod&gt;2026-04-03&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/en/developer/software/mindedge/stack&lt;/loc&gt;
+    &lt;lastmod&gt;2026-04-03&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/en/developer/software/mindie&lt;/loc&gt;
+    &lt;lastmod&gt;2026-01-29&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/en/developer/software/mindie/model&lt;/loc&gt;
+    &lt;lastmod&gt;2025-12-27&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/en/developer/software/mindie/stack-detail&lt;/loc&gt;
+    &lt;lastmod&gt;2026-01-29&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/en/developer/software/mindsdk&lt;/loc&gt;
+    &lt;lastmod&gt;2026-01-29&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/en/developer/software/mindspeed&lt;/loc&gt;
+    &lt;lastmod&gt;2026-01-29&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/en/developer/software/mindspeed/content&lt;/loc&gt;
+    &lt;lastmod&gt;2025-12-27&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/en/developer/software/mindstudio&lt;/loc&gt;
+    &lt;lastmod&gt;2026-02-26&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/en/developer/software/mindx&lt;/loc&gt;
+    &lt;lastmod&gt;2026-04-03&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/en/developer/techArticles&lt;/loc&gt;
+    &lt;lastmod&gt;2026-05-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/en/developer/training&lt;/loc&gt;
+    &lt;lastmod&gt;2026-05-28&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/en/document&lt;/loc&gt;
+    &lt;lastmod&gt;2026-04-26&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/en/edu/courses&lt;/loc&gt;
+    &lt;lastmod&gt;2026-05-28&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/en/edu/growth&lt;/loc&gt;
+    &lt;lastmod&gt;2026-05-28&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/feedback/add&lt;/loc&gt;
+    &lt;lastmod&gt;2026-03-26&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/forum/tags&lt;/loc&gt;
+    &lt;lastmod&gt;2025-08-28&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/forum/tags/tag&lt;/loc&gt;
+    &lt;lastmod&gt;2025-08-28&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/hardware/accelerator-card&lt;/loc&gt;
+    &lt;lastmod&gt;2026-07-29&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/hardware/accelerator-module-A2&lt;/loc&gt;
+    &lt;lastmod&gt;2025-12-27&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/hardware/ai-server&lt;/loc&gt;
+    &lt;lastmod&gt;2026-07-29&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/hardware/cluster&lt;/loc&gt;
+    &lt;lastmod&gt;2026-07-29&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/hardware/compatibility&lt;/loc&gt;
+    &lt;lastmod&gt;2026-05-23&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/hardware/firmware-drivers&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/incentive/award&lt;/loc&gt;
+    &lt;lastmod&gt;2026-06-29&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/industries/ai-computing-center&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/industries/education&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/industries/electricity&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/industries/fintech&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/industries/healthcare&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/industries/internet&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/industries/manufacturing&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/industries/smartcity&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/industries/solutions/large-model&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/industries/solutions/smart-city&lt;/loc&gt;
+    &lt;lastmod&gt;2026-03-26&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/industries/telecom&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/industries/transportation&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/legal/agreement&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/legal/ascendhub-download&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/legal/cannua-download&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/legal/cookies&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/legal/excite-plan&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/legal/facial-recognition&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/legal/kadcPrivacy&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/legal/law&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/legal/logoffAgreement&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/legal/modelzoo_models_license&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/legal/personal-information&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/legal/privacy&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/legal/questionnaire&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/legal/re/mindstudio/protocol&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/legal/re/protocol&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/legal/sdk&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/legal/share-information&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/legal/softlicense&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/legal/software/mindstudio/protocol&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/legal/software/protocol&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/legal/thirdAccount&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/legal/user&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/link&lt;/loc&gt;
+    &lt;lastmod&gt;2026-03-26&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/marketplace&lt;/loc&gt;
+    &lt;lastmod&gt;2024-12-26&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/marketplace/case-studies&lt;/loc&gt;
+    &lt;lastmod&gt;2025-05-28&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/marketplace/cases&lt;/loc&gt;
+    &lt;lastmod&gt;2026-01-29&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/marketplace/industry&lt;/loc&gt;
+    &lt;lastmod&gt;2026-01-29&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/marketplace/native-large-model&lt;/loc&gt;
+    &lt;lastmod&gt;2024-12-26&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/marketplace/partner&lt;/loc&gt;
+    &lt;lastmod&gt;2026-01-29&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/marketplace/product&lt;/loc&gt;
+    &lt;lastmod&gt;2026-01-29&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/marketplace/solution&lt;/loc&gt;
+    &lt;lastmod&gt;2026-01-29&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/poweredbyascend&lt;/loc&gt;
+    &lt;lastmod&gt;2026-07-30&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/poweredbyascend/hardware/anqing&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/poweredbyascend/hardware/baixin&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/poweredbyascend/hardware/baode&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/poweredbyascend/hardware/blgx&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/poweredbyascend/hardware/cjCalculation&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/poweredbyascend/hardware/decheng&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/poweredbyascend/hardware/gdwz&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/poweredbyascend/hardware/hh&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/poweredbyascend/hardware/hkzy&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/poweredbyascend/hardware/hqzh&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/poweredbyascend/hardware/huaqiang&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/poweredbyascend/hardware/jiechuang&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/poweredbyascend/hardware/kesi&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/poweredbyascend/hardware/kunlun&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/poweredbyascend/hardware/kzzk&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/poweredbyascend/hardware/pinli&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/poweredbyascend/hardware/qakj&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/poweredbyascend/hardware/qhtf&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/poweredbyascend/hardware/qingwen&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/poweredbyascend/hardware/rklc&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/poweredbyascend/hardware/rthh&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/poweredbyascend/hardware/ruantong&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/poweredbyascend/hardware/saidi&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/poweredbyascend/hardware/sibeida&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/poweredbyascend/hardware/siteng&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/poweredbyascend/hardware/szkt&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/poweredbyascend/hardware/xhs&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/poweredbyascend/hardware/xjkp&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/poweredbyascend/hardware/xunlong&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/poweredbyascend/hardware/yanhua&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/poweredbyascend/hardware/yiran&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/poweredbyascend/hardware/ymkj&lt;/loc&gt;
+    &lt;lastmod&gt;2026-08-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/productbulletins&lt;/loc&gt;
+    &lt;lastmod&gt;2025-04-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/rankings&lt;/loc&gt;
+    &lt;lastmod&gt;2026-04-29&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/rankings_history&lt;/loc&gt;
+    &lt;lastmod&gt;2026-05-28&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/report&lt;/loc&gt;
+    &lt;lastmod&gt;2025-12-04&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/software/cann/detide&lt;/loc&gt;
+    &lt;lastmod&gt;2025-09-25&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/software/cann/molecule&lt;/loc&gt;
+    &lt;lastmod&gt;2025-09-25&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/software/cann/vsr&lt;/loc&gt;
+    &lt;lastmod&gt;2025-09-25&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/software/ccae&lt;/loc&gt;
+    &lt;lastmod&gt;2026-01-29&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/software/mindie/modellist/show&lt;/loc&gt;
+    &lt;lastmod&gt;2025-09-25&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/software/mindstudio/protocol&lt;/loc&gt;
+    &lt;lastmod&gt;2025-06-26&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/software/mindx/charter&lt;/loc&gt;
+    &lt;lastmod&gt;2025-12-27&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/software/mindx/charter/detail&lt;/loc&gt;
+    &lt;lastmod&gt;2025-12-27&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/software/mindx/contrib-guide&lt;/loc&gt;
+    &lt;lastmod&gt;2026-04-29&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/software/mindx/gov-arch&lt;/loc&gt;
+    &lt;lastmod&gt;2025-12-27&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/software/mindx/open-map&lt;/loc&gt;
+    &lt;lastmod&gt;2025-12-27&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/software/mindx/sigs&lt;/loc&gt;
+    &lt;lastmod&gt;2026-02-26&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/software/modelzoo&lt;/loc&gt;
+    &lt;lastmod&gt;2026-01-29&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/software/modelzoo/big-models&lt;/loc&gt;
+    &lt;lastmod&gt;2025-04-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/software/modelzoo/datasets&lt;/loc&gt;
+    &lt;lastmod&gt;2025-04-24&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/software/modelzoo/models&lt;/loc&gt;
+    &lt;lastmod&gt;2025-01-23&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/software/modelzoo/modelshow&lt;/loc&gt;
+    &lt;lastmod&gt;2025-07-10&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/software/modelzoo/tools&lt;/loc&gt;
+    &lt;lastmod&gt;2025-01-23&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/software/protocol&lt;/loc&gt;
+    &lt;lastmod&gt;2025-06-26&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/solutions/Foundation-Model&lt;/loc&gt;
+    &lt;lastmod&gt;2026-01-29&lt;/lastmod&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://www.hiascend.com/support&lt;/loc&gt;
+    &lt;lastmod&gt;2026-02-11&lt;/lastmod&gt;
+  &lt;/url&gt;
+&lt;/urlset&gt;</code></pre>
+</template>
+
+<template data-drawer-template="probe-r1-base" data-drawer-title="测试证明 · 文档可达率（基线）">
+  <div class="probe-doc">
+    <p class="probe-result">结果：100%（27/27）</p>
+    <h3>口径</h3>
+    <p>只计 <code>/document</code>。<code>/doc_center/</code> 为内容源路径，现网 Disallow，不计入。成功 = robots 放行，且 HTTP 可打开（200）。</p>
+    <h3>样本构成</h3>
+    <p>固定已知文档页 + <code>sitemapdoc1.xml</code> 每隔 500 条抽 1 条，去掉 <code>/doc_center/</code> 后共 27 条，全部 200。</p>
+    <h3>已归档的已知页</h3>
+    <ol>
+      <li><a href="https://www.hiascend.com/document" target="_blank" rel="noopener">/document</a></li>
+      <li><a href="https://www.hiascend.com/document/caselibrary" target="_blank" rel="noopener">/document/caselibrary</a></li>
+      <li><a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/850/opdevg/Ascendcopdevg/atlas_ascendc_map_10_0002.html" target="_blank" rel="noopener">Ascend C · CANN 8.5.0</a></li>
+      <li><a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/900/programug/Ascendcopdevg/atlas_ascendc_map_10_0002.html" target="_blank" rel="noopener">什么是 Ascend C · CANN 9.0</a></li>
+      <li><a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/900/programug/Ascendcopdevg/atlas_ascendc_map_10_0003.html" target="_blank" rel="noopener">环境准备 · CANN 9.0</a></li>
+      <li><a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/900/programug/Ascendcopdevg/atlas_ascendc_map_10_0005.html" target="_blank" rel="noopener">HelloWorld · CANN 9.0</a></li>
+      <li><a href="https://www.hiascend.com/document/detail/zh/AscendFAQ/overview/index.html" target="_blank" rel="noopener">AscendFAQ 总览</a></li>
+      <li><a href="https://www.hiascend.com/document/detail/zh/AscendFAQ/ProduTech/productform/hardwaredesc_0001.html" target="_blank" rel="noopener">产品形态说明</a></li>
+      <li><a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/latest/compiler/BishengCompiler/atlas_bisheng_10_0002.html" target="_blank" rel="noopener">毕昇编译器</a></li>
+      <li><a href="https://www.hiascend.com/document/detail/zh/MindSpeed/latest/quickstart/docs/zh/pytorch/training/quick_start.md" target="_blank" rel="noopener">MindSpeed 快速开始</a></li>
+      <li><a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/latest/softwareinst/instg/instg_0072.html" target="_blank" rel="noopener">安装故障处理</a></li>
+      <li><a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/latest/API/runtimeapi/aclpythondevg_01_1118.html" target="_blank" rel="noopener">Runtime API</a></li>
+    </ol>
+    <p>未列入的条目来自 sitemap 等距抽样，当时全部 200；完整 27 条 URL 未另存仓库。</p>
+    <h3>对照（不计入指标）</h3>
+    <ul>
+      <li><code>/doc_center/</code> → 404</li>
+      <li><code>/doc_center/source/</code> → 403</li>
+    </ul>
+  </div>
+</template>
+
+<template data-drawer-template="probe-r2-base" data-drawer-title="测试证明 · llms.txt（基线）">
+  <div class="probe-doc">
+    <p class="probe-result">结果：文件 0%（404）；链接 —</p>
+    <h3>口径</h3>
+    <p>文件可访问率：请求 <code>https://www.hiascend.com/llms.txt</code> 是否 200 且为纯文本。上线前根路径无此文件。</p>
+    <p>链接可达率在无文件时无法抽样，故为 —。</p>
+  </div>
+</template>
+
+<template data-drawer-template="probe-r2-aug" data-drawer-title="测试证明 · llms.txt（8月）">
+  <div class="probe-doc">
+    <p class="probe-result">结果：文件 100%（1/1）；链接 93%（28/30，抽样）</p>
+    <h3>文件</h3>
+    <p><a href="https://www.hiascend.com/llms.txt" target="_blank" rel="noopener">https://www.hiascend.com/llms.txt</a> 返回 200，约 20KB 纯文本。robots 中 <code>LLM-Policy:</code> 指向该地址。</p>
+    <h3>链接抽样</h3>
+    <p>文件内约 165 条 Markdown 链接、161 条去重 URL。随机抽 30 条做 GET。</p>
+    <p>28 条可打开；2 条 404：</p>
+    <ul>
+      <li class="probe-fail"><a href="https://www.hiascend.com/hardware/Intelligent-edge-A2" target="_blank" rel="noopener">智能边缘A2</a> → 404</li>
+      <li class="probe-fail"><a href="https://www.hiascend.com/hardware/developer-kit-a2" target="_blank" rel="noopener">开发者套件A2</a> → 404</li>
+    </ul>
+  </div>
+</template>
+
+<template data-drawer-template="probe-r3-base" data-drawer-title="测试证明 · llms-full.txt（基线）">
+  <div class="probe-doc">
+    <p class="probe-result">结果：文件 0%（404）；正文 —</p>
+    <h3>口径</h3>
+    <p>上线前根路径无 <code>llms-full.txt</code>，请求 404。无文件则无法统计正文完整率。</p>
+  </div>
+</template>
+
+<template data-drawer-template="probe-r3-aug" data-drawer-title="测试证明 · llms-full.txt（8月）">
+  <div class="probe-doc">
+    <p class="probe-result">结果：文件 100%（1/1）；有描述 4%（12/293）；完整正文 0%（0/293）</p>
+    <h3>文件</h3>
+    <p><a href="https://www.hiascend.com/llms-full.txt" target="_blank" rel="noopener">https://www.hiascend.com/llms-full.txt</a> 返回 200，约 36KB。</p>
+    <h3>条目形态</h3>
+    <p>共 293 张卡片（URL + lastmod）。绝大多数没有文章正文。</p>
+    <ul>
+      <li>带短描述：12 / 293（4%）</li>
+      <li>含完整正文（可按官方步骤作答的段落，而非仅 URL / 日期）：0 / 293</li>
+    </ul>
+    <p>因此「纯净正文包」文件在，内容仍是目录，不是正文。</p>
+  </div>
+</template>
+
+<template data-drawer-template="probe-r4-base" data-drawer-title="测试证明 · Content-Signal（基线）">
+  <div class="probe-doc">
+    <p class="probe-result">结果：0%（未声明）</p>
+    <p>上线前 <code>robots.txt</code> / <code>sitemap.xml</code> 未声明 search、ai-input、ai-train 三项 Content-Signal。分母按三项计，分子为 0。</p>
+  </div>
+</template>
+
+<template data-drawer-template="probe-r4-aug" data-drawer-title="测试证明 · Content-Signal（8月）">
+  <div class="probe-doc">
+    <p class="probe-result">结果：100%（3/3）</p>
+    <p>现网 <a href="https://www.hiascend.com/robots.txt" target="_blank" rel="noopener">robots.txt</a> 首部声明：</p>
+    <pre class="orig-sample"><code>Content-Signal: ai-train=yes,search=yes,ai-input=yes</code></pre>
+    <p>search、ai-input、ai-train 三项齐全。完整 robots 见「查看原始示例」。</p>
+  </div>
+</template>
+
+<template data-drawer-template="probe-path-base" data-drawer-title="测试证明 · 标准发现路径（基线）">
+  <div class="probe-doc">
+    <p class="probe-result">结果：0%（路径未声明）</p>
+    <h3>口径</h3>
+    <p>不准网页检索、不准猜 URL。只允许：<code>/robots.txt</code> → <code>LLM-Policy:</code> / <code>Sitemap:</code> → <code>llms.txt</code>（sitemap 兜底）→ 列出的 <code>/document</code>。</p>
+    <p>上线前无 LLM-Policy、无 llms.txt，该路径不存在，到达率为 0。8 月按同一组 <code>/document</code> 样本走路径的到达率尚未测。本条不模拟答问问句。</p>
+  </div>
+</template>
+
+<template data-drawer-template="probe-src-base" data-drawer-title="测试证明 · 检索信源（基线）">
+  <div class="probe-doc">
+    <p class="probe-result">结果：Claude 21%（4/19）；DeepSeek 33%（9/27）</p>
+    <h3>口径</h3>
+    <p>固定问句下，检索结果 URL 中昇腾社区官方（hiascend.com）的占比。千问该次无链接，未计入。</p>
+    <h3>检测问句</h3>
+    <p>Claude / DeepSeek 的 4/19、9/27 来自检测截图点数，当时问句原文未进仓库。</p>
+    <h3>模拟问句（与机器源作答同一组，供对照复测）</h3>
+    <p class="probe-q">CANN 如何安装？请给出官方步骤。</p>
+    <p class="probe-q">什么是 Ascend C？请按官方文档说明。</p>
+    <p class="probe-q">当前主推的 CANN 版本是什么？请给出官方出处。</p>
+    <h3>计数</h3>
+    <ul>
+      <li>Claude：19 条检索 URL，4 条官方</li>
+      <li>DeepSeek：27 条检索 URL，9 条官方</li>
+    </ul>
+    <p>来源为检测阶段抓取大模型截图点数。URL 清单未导出仓库，故抽屉只保留计数，不补造链接。</p>
+  </div>
+</template>
+
+<template data-drawer-template="probe-agent-base" data-drawer-title="测试证明 · 机器源作答（基线）">
+  <div class="probe-doc">
+    <p class="probe-result">结果：0%（无文件）</p>
+    <p>约束：只读 robots、<code>llms.txt</code>、<code>llms-full.txt</code>（sitemap 兜底），禁止打开 HTML。上线前两文件 404，无法作答。</p>
+    <h3>模拟问句</h3>
+    <p class="probe-q">CANN 如何安装？请给出官方步骤。</p>
+    <p class="probe-q">什么是 Ascend C？请按官方文档说明。</p>
+    <p class="probe-q">当前主推的 CANN 版本是什么？请给出官方出处。</p>
+  </div>
+</template>
+
+<template data-drawer-template="probe-agent-aug" data-drawer-title="测试证明 · 机器源作答（8月）">
+  <div class="probe-doc">
+    <p class="probe-result">结果：0%（0/3）</p>
+    <h3>约束</h3>
+    <p>只读现网 robots、<a href="https://www.hiascend.com/llms.txt" target="_blank" rel="noopener">llms.txt</a>、<a href="https://www.hiascend.com/llms-full.txt" target="_blank" rel="noopener">llms-full.txt</a>，不打开 HTML 渲染页。</p>
+    <h3>模拟问句</h3>
+    <p class="probe-q">CANN 如何安装？请给出官方步骤。</p>
+    <p class="probe-q">什么是 Ascend C？请按官方文档说明。</p>
+    <p class="probe-q">当前主推的 CANN 版本是什么？请给出官方出处。</p>
+    <h3>判定</h3>
+    <ol>
+      <li>问句 1 → 失败。llms-full 无安装步骤。</li>
+      <li>问句 2 → 失败。无 Ascend C 正文，仅有 URL / 日期卡片。</li>
+      <li>问句 3 → 失败。文件中无版本号可引用。</li>
+    </ol>
+  </div>
+</template>
+
+<template data-drawer-template="probe-cite-base" data-drawer-title="测试证明 · 主推篇引用（基线）">
+  <div class="probe-doc">
+    <p class="probe-result">结果：0%（无 llms.txt）</p>
+    <p>指标：回答中的 citation URL 出现在 <code>llms.txt</code> 中的占比。上线前无导读文件，分子分母均无法成立，记 0。8 月需同一问句的 citation 日志，当时未导出。</p>
+    <h3>模拟问句（与机器源作答同一组）</h3>
+    <p class="probe-q">CANN 如何安装？请给出官方步骤。</p>
+    <p class="probe-q">什么是 Ascend C？请按官方文档说明。</p>
+    <p class="probe-q">当前主推的 CANN 版本是什么？请给出官方出处。</p>
+  </div>
+</template>
+
+<template data-drawer-template="probe-meta-base" data-drawer-title="测试证明 · 元数据字段完整率（基线）">
+  <div class="probe-doc">
+    <p class="probe-result">结果：0%（未结构化）</p>
+    <p>成功条件：身份、版本、适用产品、更新时间四项都有，且机器字段与可见文案同源（meta / JSON-LD 与页头一致）。</p>
+    <p>上线前文档页无这套结构化字段。8 月按固定样本的齐全率尚未另测；金标页抽查见「适用产品识别」8 月证明。</p>
+  </div>
+</template>
+
+<template data-drawer-template="probe-ver-base" data-drawer-title="测试证明 · 版本识别（基线）">
+  <div class="probe-doc">
+    <p class="probe-result">结果：Claude 0%（0/19）；DeepSeek 0%（0/27）</p>
+    <p>与「检索信源」同一批抓取。主推版本按 CANN 9.0 计。19 / 27 条检索 URL 中均未见 CANN 9.0 文档。官方命中不等于主推版本命中。</p>
+    <h3>检测问句</h3>
+    <p>截图点数用的问句原文未进仓库。</p>
+    <h3>模拟问句（与机器源作答同一组，供对照复测）</h3>
+    <p class="probe-q">CANN 如何安装？请给出官方步骤。</p>
+    <p class="probe-q">什么是 Ascend C？请按官方文档说明。</p>
+    <p class="probe-q">当前主推的 CANN 版本是什么？请给出官方出处。</p>
+  </div>
+</template>
+
+<template data-drawer-template="probe-prod-base" data-drawer-title="测试证明 · 适用产品识别（基线）">
+  <div class="probe-doc">
+    <p class="probe-result">结果：0%（未声明）</p>
+    <p>页上无「适用产品」字段（可见文案 / meta / JSON-LD）时，问句产品无法与页声明对齐，记 0。</p>
+    <h3>模拟问句</h3>
+    <p class="probe-q">我在 Atlas 800I A2 上如何安装 CANN？请给出官方文档步骤，并说明该页是否声明适用于 Atlas 800I A2。</p>
+    <p class="probe-q">在 Ascend 910B 上写 Ascend C HelloWorld，应该看哪篇官方文档？该页是否声明适用于 Ascend 910B？</p>
+    <p class="probe-q">昇腾有哪些产品形态？官方说明页是否用「适用产品」字段标明对应硬件？</p>
+  </div>
+</template>
+
+<template data-drawer-template="probe-prod-aug" data-drawer-title="测试证明 · 适用产品识别（8月）">
+  <div class="probe-doc">
+    <p class="probe-result">结果：0%（0/3）</p>
+    <h3>口径</h3>
+    <p>三道带产品的固定问句，看金标官方页是否声明对应适用产品（字段名「适用产品」或 product-name / JSON-LD）。站点头里的 Atlas 800 / 300I 导航不计。</p>
+    <h3>模拟问句</h3>
+    <p class="probe-q">我在 Atlas 800I A2 上如何安装 CANN？请给出官方文档步骤，并说明该页是否声明适用于 Atlas 800I A2。</p>
+    <p class="probe-q">在 Ascend 910B 上写 Ascend C HelloWorld，应该看哪篇官方文档？该页是否声明适用于 Ascend 910B？</p>
+    <p class="probe-q">昇腾有哪些产品形态？官方说明页是否用「适用产品」字段标明对应硬件？</p>
+    <h3>判定</h3>
+    <ol>
+      <li>问句 1 → <a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/latest/softwareinst/instg/instg_0001.html" target="_blank" rel="noopener">instg_0001</a>：无适用产品字段、无 JSON-LD。失败。</li>
+      <li>问句 2 → <a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/900/programug/Ascendcopdevg/atlas_ascendc_map_10_0005.html" target="_blank" rel="noopener">HelloWorld</a>：无适用产品字段，正文无 910B。失败。</li>
+      <li>问句 3 → <a href="https://www.hiascend.com/document/detail/zh/AscendFAQ/ProduTech/productform/hardwaredesc_0001.html" target="_blank" rel="noopener">hardwaredesc_0001</a>：无适用产品字段。失败。</li>
+    </ol>
+    <p><code>llms.txt</code> / <code>llms-full.txt</code> 中「适用产品」「910B」「800I」出现次数均为 0。</p>
+  </div>
+</template>
+
+<template data-drawer-template="probe-code-base" data-drawer-title="测试证明 · 代码块语义完整率（基线）">
+  <div class="probe-doc">
+    <p class="probe-result">结果：完整率 0%（0/33）；语言标注率 64%（21/33）；output 标明率 15%（5/33）</p>
+    <h3>口径</h3>
+    <p>一个代码块同时有语言类型（<code>language-xxx</code> 或非空 <code>codetype</code>）和紧邻的「运行结果 / 预期结果」才算完整。33 块是页内抽样，不是问句分母。</p>
+    <h3>对照问句（页级探针，不计入 0/33）</h3>
+    <p class="probe-q">我在看 HelloWorld（CANN 9.0.0），<code>hello_world.asc</code> 核函数开头几行是什么样的？复制出来能直接编译吗？下面的 bisheng 和 CMake 命令分别是做什么的？</p>
+    <p class="probe-q">我在看环境准备（CANN 9.0.0），安装完 CANN 之后环境变量要怎么配？</p>
+    <p class="probe-q">CANN 如何安装？请给出官方命令，并说明怎样判断安装成功。</p>
+    <h3>样本</h3>
+    <p>16 篇官方文档（已知页 + sitemapdoc1 等距抽样）。8 篇有代码，共 33 块。</p>
+    <ul>
+      <li>有语言标记：21 / 33（多为 <code>codetype="Cpp"</code> 或 Bash，不是 <code>language-xxx</code>）</li>
+      <li>附近有运行结果类文案：5 / 33</li>
+      <li>两项都有：0 / 33</li>
+    </ul>
+    <h3>已知抽样页</h3>
+    <ol>
+      <li><a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/900/programug/Ascendcopdevg/atlas_ascendc_map_10_0005.html" target="_blank" rel="noopener">HelloWorld</a></li>
+      <li><a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/850/opdevg/Ascendcopdevg/atlas_ascendc_map_10_0002.html" target="_blank" rel="noopener">Ascend C 8.5.0</a></li>
+      <li><a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/900/programug/Ascendcopdevg/atlas_ascendc_map_10_0002.html" target="_blank" rel="noopener">什么是 Ascend C 9.0</a></li>
+      <li><a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/900/programug/Ascendcopdevg/atlas_ascendc_map_10_0003.html" target="_blank" rel="noopener">环境准备</a></li>
+      <li><a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/900/programug/Ascendcopdevg/atlas_ascendc_map_10_0006.html" target="_blank" rel="noopener">Add 自定义算子</a></li>
+      <li><a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/latest/compiler/BishengCompiler/atlas_bisheng_10_0002.html" target="_blank" rel="noopener">毕昇编译器</a></li>
+      <li><a href="https://www.hiascend.com/document/detail/zh/MindSpeed/latest/quickstart/docs/zh/pytorch/training/quick_start.md" target="_blank" rel="noopener">MindSpeed</a></li>
+      <li><a href="https://www.hiascend.com/document/detail/zh/AscendFAQ/overview/index.html" target="_blank" rel="noopener">AscendFAQ</a></li>
+      <li><a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/latest/softwareinst/instg/instg_0072.html" target="_blank" rel="noopener">安装故障处理</a></li>
+      <li><a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/latest/API/runtimeapi/aclpythondevg_01_1118.html" target="_blank" rel="noopener">Runtime API</a></li>
+    </ol>
+  </div>
+</template>
+
+<template data-drawer-template="probe-repro-base" data-drawer-title="测试证明 · 代码可复现（基线）">
+  <div class="probe-doc">
+    <p class="probe-result">结果：0%（无成套标注）</p>
+    <p>可复现要求语言正确、命令与官方一致、并能对照成功判据。基线阶段代码块完整率为 0%（0/33），三项不能同时满足，场景成功率记 0。</p>
+    <h3>模拟问句</h3>
+    <p class="probe-q">我在看 HelloWorld（CANN 9.0.0），<code>hello_world.asc</code> 核函数开头几行是什么样的？复制出来能直接编译吗？下面的 bisheng 和 CMake 命令分别是做什么的？</p>
+    <p class="probe-q">我在看环境准备（CANN 9.0.0），安装完 CANN 之后环境变量要怎么配？文档有没有标明命令语言和成功输出？</p>
+    <p class="probe-q">CANN 如何安装？请给出官方命令，并说明怎样判断安装成功。</p>
+  </div>
+</template>
+
+<template data-drawer-template="probe-repro-aug" data-drawer-title="测试证明 · 代码可复现（8月）">
+  <div class="probe-doc">
+    <p class="probe-result">结果：0%（0/3）</p>
+    <h3>口径</h3>
+    <p>固定安装 / 命令问句。三项都过才算成功：语言正确、复制命令与官方一致（行号不得混入源码）、能对照成功判据。</p>
+    <h3>模拟问句</h3>
+    <p class="probe-q">我在看 HelloWorld（CANN 9.0.0），<code>hello_world.asc</code> 核函数开头几行是什么样的？复制出来能直接编译吗？下面的 bisheng 和 CMake 命令分别是做什么的？</p>
+    <p class="probe-q">我在看环境准备（CANN 9.0.0），安装完 CANN 之后环境变量要怎么配？文档有没有标明命令语言和成功输出？</p>
+    <p class="probe-q">CANN 如何安装？请给出官方命令，并说明怎样判断安装成功。</p>
+    <h3>判定</h3>
+    <ol>
+      <li>问句 1 → <a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/900/programug/Ascendcopdevg/atlas_ascendc_map_10_0005.html" target="_blank" rel="noopener">HelloWorld</a>。有 <code>codetype="Cpp"</code> 与 bisheng 命令，但行号写入源码，复制不能编译；无 <code>language-xxx</code>。失败。</li>
+      <li>问句 2 → <a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/900/programug/Ascendcopdevg/atlas_ascendc_map_10_0003.html" target="_blank" rel="noopener">环境准备</a>。有 <code>pre.screen</code> 命令，无语言标注。失败。</li>
+      <li>问句 3 → 机器源 <code>llms-full.txt</code> 无 <code>install.sh</code> / 「运行结果」；HTML 安装路径同样不成套。失败。</li>
+    </ol>
+  </div>
+</template>
+
+<div id="answer-drawer" class="answer-drawer" aria-hidden="true">
+  <div class="answer-drawer-overlay" data-drawer-close></div>
+  <aside class="answer-drawer-panel" role="dialog" aria-modal="true" aria-labelledby="answer-drawer-title">
+    <div class="answer-drawer-header">
+      <h2 id="answer-drawer-title">原始示例</h2>
+      <button type="button" class="answer-drawer-close" data-drawer-close aria-label="关闭">×</button>
+    </div>
+    <div class="answer-drawer-body"></div>
+  </aside>
+</div>
+
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js"></script>
+<script src="assets/js/answer-drawer.js"></script>
+</body>
+</html>

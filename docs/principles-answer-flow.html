@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>答问检索链路 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid #e2e8f0;
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: 100%; max-width: var(--content-max-width, 1000px); margin: 0 auto; padding: 0 24px; box-sizing: border-box;
+    height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: #191919; text-decoration: none; white-space: nowrap; margin-right: 40px;
+  }
+  .topbar .brand span { color: #1476FF; }
+  .topbar .site-nav { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; flex-wrap: wrap; }
+  .topbar .site-nav > a {
+    text-decoration: none; color: #595959; font-size: 14px; font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .topbar .site-nav > a:hover { color: #1476FF; background: #F5F5F5; text-decoration: none; }
+  .topbar .site-nav > a.active { color: #1476FF; background: #F5F5F5; font-weight: 600; }
+  body.inner-page .page-wrapper { min-height: 100vh; }
+  .page-header h1 {
+    font-family: "PingFang SC", sans-serif;
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1-weight, 600);
+    line-height: var(--text-h1-lh);
+    letter-spacing: -0.02em;
+    margin: 8px 0 0;
+    color: var(--color-text, #191919);
+  }
+  .page-header .page-desc {
+    margin: 32px 0 0;
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--text, #191919);
+  }
+  body.inner-page[data-page="answer-flow"]:has(#module-sidebar) .main-content {
+    padding-top: 32px;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  body.inner-page[data-page="answer-flow"]:has(#module-sidebar) .main-content > .page-header,
+  body.inner-page[data-page="answer-flow"]:has(#module-sidebar) .main-content > .section {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page[data-page="answer-flow"] .main-content .section > h2 {
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    letter-spacing: -0.01em;
+    margin-top: 48px;
+    margin-bottom: 16px;
+    padding-bottom: var(--space-h2-rule, 16px);
+    border-bottom: 2px solid #f0f0f0;
+    color: var(--color-text, #191919);
+  }
+  body.inner-page[data-page="answer-flow"] .main-content > .section:first-of-type > h2 {
+    margin-top: 40px;
+  }
+  .af-lead {
+    margin: 0 0 20px;
+    font-size: 14px;
+    line-height: 22px;
+    color: #595959;
+  }
+  .af-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px 24px;
+    margin: 0 0 20px;
+    padding: 12px 16px;
+    background: #fafafa;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 13px;
+    line-height: 20px;
+    color: #595959;
+  }
+  .af-legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .af-swatch {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+  .af-swatch--mute {
+    background: #f0f0f0;
+    border: 1px solid #d9d9d9;
+  }
+  .af-swatch--focus {
+    background: #f0f7ff;
+    border: 2px solid #1476FF;
+  }
+  .af-figure {
+    margin: 0;
+    padding: 16px;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+  }
+  .af-figure img {
+    display: block;
+    width: 100%;
+    max-width: 820px;
+    height: auto;
+    margin: 0 auto;
+  }
+  .af-figure figcaption {
+    margin-top: 12px;
+    font-size: 13px;
+    line-height: 20px;
+    color: #8c8c8c;
+    text-align: center;
+  }
+  .af-map {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    line-height: 22px;
+    margin: 0;
+    table-layout: fixed;
+  }
+  .af-map th,
+  .af-map td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid #e2e8f0;
+    vertical-align: top;
+    font-weight: 400;
+  }
+  .af-map th {
+    font-size: 12px;
+    font-weight: 650;
+    color: #595959;
+    background: #fafafa;
+  }
+  .af-map .col-step { width: 22%; font-weight: 650; }
+  .af-map .col-files { width: 34%; }
+  .af-map .col-desc { width: 44%; }
+  .af-map code {
+    font-size: 12px;
+    background: #f5f5f5;
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+</style>
+</head>
+<body class="inner-page" data-module="principles" data-page="answer-flow">
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html">社区 <span>AI 亲和原则</span></a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="mintlify.html">友商对照</a>
+      <a href="reachability.html">社区诊断</a>
+      <a href="principles-overview.html" class="active">亲和原则</a>
+      <a href="community-ui.html">组件亲和</a>
+      <a href="design-guide-image-text.html">设计模式</a>
+      <a href="data-analysis.html">数据分析</a>
+    </nav>
+  </div>
+</div>
+
+<div class="page-wrapper">
+
+  <aside id="module-sidebar"></aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <h1>答问检索链路</h1>
+      <p class="page-desc page-desc--split">
+        <span class="page-desc-line">先用旅程图把全链路<strong>拉平</strong>为 L1 阶段 × L2 智能体动作 × L3 触点；再用流程图展开决策与回环。蓝框仍对应<strong>发现与抓取</strong>、<strong>证据是否充分</strong>。</span>
+      </p>
+    </div>
+
+    <section class="section" id="journey">
+      <h2>答问旅程图（L1 / L2 / L3）</h2>
+      <p class="af-lead">横轴为 L1 阶段（对齐五层亲和原则）；纵轴为 L2 智能体动作与 L3 官网/文档触点。改造落点看 L3。</p>
+      <div class="af-legend" aria-label="旅程图图例">
+        <span><i class="af-swatch af-swatch--mute" aria-hidden="true"></i>L1 灰区：意图路由 / 终答核对（站侧触点少或偏交付）</span>
+        <span><i class="af-swatch af-swatch--focus" aria-hidden="true"></i>L1 蓝区：发现·可达 / 抓取·可读（机器发现层主战场）</span>
+      </div>
+      <figure class="af-figure">
+        <img
+          src="assets/diagrams/answer-journey-l123.png"
+          alt="大模型答问旅程：L1 五阶段（意图与路由、发现·可达、抓取·可读、消歧·可理解、作答与核对）；每列含 L2 智能体动作与 L3 触点"
+          width="1536"
+          height="1024"
+          loading="eager"
+          decoding="async"
+        >
+        <figcaption>L2 写智能体做什么；L3 写站侧可改什么。四件套主要落在「发现·可达」与「抓取·可读」。</figcaption>
+      </figure>
+    </section>
+
+    <section class="section" id="flow">
+      <h2>全链路流程图</h2>
+      <div class="af-legend" aria-label="图例">
+        <span><i class="af-swatch af-swatch--mute" aria-hidden="true"></i>灰区：弱化（意图 / 直答 / 终答）</span>
+        <span><i class="af-swatch af-swatch--focus" aria-hidden="true"></i>蓝框：展开（发现抓取 / 证据充分）</span>
+      </div>
+      <figure class="af-figure">
+        <img
+          src="assets/diagrams/answer-retrieval-flow.png"
+          alt="大模型答问全链路：上游意图弱化；展开 web_search 与 web_fetch（含 sitemap、llms、robots、llms-full）；展开证据是否充分；下游终答弱化"
+          width="820"
+          height="1093"
+          loading="eager"
+          decoding="async"
+        >
+        <figcaption>虚线「已知 URL 可直接抓取」表示跳过 web_search，仍进入 web_fetch；证据不足时可换词回环检索。</figcaption>
+      </figure>
+    </section>
+
+    <section class="section" id="files-map">
+      <h2>四件套与展开环节对照</h2>
+      <p class="af-lead">四件套主要服务蓝框「外部发现与抓取」；「证据是否充分」还依赖页内版本、语义与步骤等后续原则。</p>
+      <table class="af-map">
+        <colgroup>
+          <col class="col-step" />
+          <col class="col-files" />
+          <col class="col-desc" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="col-step">图中环节</th>
+            <th class="col-files">主要对应文件</th>
+            <th class="col-desc">说明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="col-step">web_search</td>
+            <td class="col-files"><code>sitemap.xml</code>、<code>llms.txt</code></td>
+            <td class="col-desc">发现官方候选 URL / 站级入口地图，提升官方可发现性。</td>
+          </tr>
+          <tr>
+            <td class="col-step">web_fetch</td>
+            <td class="col-files"><code>robots.txt</code>、<code>llms-full.txt</code>、平行 MD</td>
+            <td class="col-desc">放行与抓取；一次取全文或抓平行源，影响可抓取性与正文详尽度。</td>
+          </tr>
+          <tr>
+            <td class="col-step">证据是否充分</td>
+            <td class="col-files">不单靠四件套</td>
+            <td class="col-desc">还看版本清晰、可信度等；四件套保证官方源能进证据池。</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="af-lead" style="margin-top:16px">细则见 <a href="principles-structure-llms.html">发现层部署</a>；渲染页入口见 <a href="principles-machine-entry.html">AI入口可识别</a>；平行源见 <a href="principles-format.html">双轨交付</a>。</p>
+    </section>
+  </main>
+</div>
+
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js"></script>
+<script src="assets/js/module-sidebar.js"></script>
+</body>
+</html>
