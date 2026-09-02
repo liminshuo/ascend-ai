@@ -11,12 +11,16 @@
     ],
     principles: [
       {
-        group: "可达", id: "machine-discover", href: "principles-structure-llms.html", label: "机器可发现",
-        pageIds: ["machine-discover", "page-discover", "structure-llms", "machine-entry", "answer-flow"],
+        group: "可达", id: "structure-llms", href: "principles-structure-llms.html", label: "发现层部署",
+        pageIds: ["structure-llms", "page-discover", "machine-discover"]
+      },
+      {
+        group: null, id: "machine-entry", href: "principles-machine-entry.html", label: "Agent 入口显化",
+        pageIds: ["machine-entry", "page-md", "block-md"],
         children: [
-          { id: "structure-llms", href: "principles-structure-llms.html", label: "发现层部署", pageIds: ["page-discover", "structure-llms"] },
-          { id: "machine-entry", href: "principles-machine-entry.html", label: "AI入口可识别" },
-          { id: "answer-flow", href: "principles-answer-flow.html", label: "答问检索链路" }
+          { id: "machine-entry", href: "principles-machine-entry.html", label: "站级导读" },
+          { id: "page-md", href: "principles-page-md.html", label: "页级 Markdown" },
+          { id: "block-md", href: "principles-block-md.html", label: "块级 Markdown" }
         ]
       },
       {

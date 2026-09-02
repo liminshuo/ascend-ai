@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>块级 Markdown · Agent 入口显化 · 昇腾社区 AI 亲和原则</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid #e2e8f0;
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: 100%; max-width: none; margin: 0; padding: 0 24px; box-sizing: border-box;
+    height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: #191919; text-decoration: none; white-space: nowrap; margin-right: 40px;
+  }
+  .topbar .brand span { color: #1476FF; }
+  .topbar .site-nav { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; flex-wrap: wrap; }
+  .topbar .site-nav > a {
+    text-decoration: none; color: #595959; font-size: 14px; font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .topbar .site-nav > a:hover { color: #1476FF; background: #F5F5F5; text-decoration: none; }
+  .topbar .site-nav > a.active { color: #1476FF; background: #F5F5F5; font-weight: 600; }
+  .nav-dd { position: relative; z-index: 210; display: inline-flex; align-items: center; }
+  .nav-dd-trigger {
+    appearance: none; border: 0; background: transparent; cursor: pointer; font: inherit;
+    text-decoration: none; color: #595959; font-size: 14px; font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+    display: inline-flex; align-items: center; gap: 12px;
+  }
+  .nav-dd-trigger::after {
+    content: ""; width: 6px; height: 6px;
+    border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg); opacity: .65; margin-top: -3px; flex-shrink: 0;
+  }
+  .nav-dd-trigger:hover, .nav-dd:hover .nav-dd-trigger, .nav-dd:focus-within .nav-dd-trigger {
+    color: #1476FF; background: #F5F5F5;
+  }
+  .nav-dd::before { content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 10px; }
+  .nav-dd-panel {
+    position: absolute; top: calc(100% + 4px); left: 0; min-width: 148px; padding: 6px;
+    background: #fff; border: 1px solid #e2e8f0; border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(25, 25, 25, 0.08);
+    opacity: 0; visibility: hidden; transform: translateY(-4px);
+    transition: opacity .15s, transform .15s, visibility .15s; z-index: 210;
+  }
+  .nav-dd:hover .nav-dd-panel, .nav-dd:focus-within .nav-dd-panel {
+    opacity: 1; visibility: visible; transform: translateY(0);
+  }
+  .nav-dd-panel a {
+    display: block; padding: 8px 12px; border-radius: 6px; text-decoration: none;
+    color: #595959; font-size: 13px; font-weight: 500; line-height: 1.4;
+  }
+  .nav-dd-panel a:hover { color: #1476FF; background: #F5F5F5; }
+  body.inner-page .page-wrapper { min-height: 100vh; }
+
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 28px;
+  }
+  .page-header h1 {
+    font-family: "PingFang SC", sans-serif;
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1-weight, 600);
+    line-height: var(--text-h1-lh);
+    letter-spacing: -0.02em;
+    margin: 8px 0 0;
+    color: var(--color-text, #191919);
+  }
+  .page-header .page-desc {
+    margin: 32px 0 0;
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--text, #191919);
+  }
+  body.inner-page.agent-entry-page:has(#module-sidebar) .main-content {
+    padding-top: 32px;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  body.inner-page.agent-entry-page:has(#module-sidebar) .main-content > .page-header,
+  body.inner-page.agent-entry-page:has(#module-sidebar) .main-content > .section,
+  body.inner-page.agent-entry-page:has(#module-sidebar) .main-content > .surface-tabs {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page.agent-entry-page .main-content .section > h2 {
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    letter-spacing: -0.01em;
+    margin-top: 48px;
+    margin-bottom: 16px;
+    padding-bottom: var(--space-h2-rule, 16px);
+    border-bottom: 2px solid #f0f0f0;
+    color: var(--color-text, #191919);
+  }
+  body.inner-page.agent-entry-page .main-content > .section:first-of-type > h2 {
+    margin-top: 40px;
+  }
+  body.inner-page.agent-entry-page .main-content .section h3 { height: auto; }
+  h3.fn-h3 {
+    margin: 0;
+    padding-top: var(--space-h3-pad-y, 24px);
+    padding-bottom: var(--space-h3-pad-y, 24px);
+    font-size: var(--text-h3, 18px);
+    line-height: var(--text-h3-lh, 28px);
+    font-weight: var(--text-h3-weight, 650);
+    color: var(--color-text, #191919);
+    letter-spacing: -0.01em;
+  }
+  body.inner-page.agent-entry-page .main-content .section h4 { height: auto; }
+  h4.fn-h4 {
+    margin: 24px 0 0;
+    padding-top: 0;
+    padding-bottom: var(--space-h4-pad-b, 16px);
+    font-size: var(--text-h4, 14px);
+    line-height: var(--text-h4-lh, 22px);
+    font-weight: var(--text-h4-weight, 650);
+    color: var(--color-text, #191919);
+    letter-spacing: -0.01em;
+  }
+  h3.fn-h3 + .principle-example > h4.fn-h4,
+  h3.fn-h3 + h4.fn-h4,
+  .principle-suggestions + .principle-example > h4.fn-h4 { margin-top: 12px; }
+  #mechanism h4.fn-h4 + p.bg-body,
+  #mechanism h4.fn-h4 + p.aj-takeaway {
+    margin-top: 0;
+  }
+
+  .example-solve {
+    margin: 0 0 16px;
+    font-size: 14px;
+    line-height: 22px;
+    color: #191919;
+  }
+  .example-solve strong {
+    font-weight: 650;
+  }
+
+  .af-figure + .af-figure {
+    margin-top: 32px;
+  }
+  .aj {
+    width: 100%;
+    min-width: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+    font-size: 12px;
+    line-height: 22px;
+    color: #191919;
+  }
+  .aj caption {
+    caption-side: top;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 22px;
+    padding: 0 0 10px;
+    color: #191919;
+  }
+  .aj caption .aj-cap-note {
+    font-weight: 500;
+    color: #8c8c8c;
+  }
+  .aj caption .aj-tag {
+    display: inline-flex;
+    vertical-align: middle;
+    margin: 0 0 0 8px;
+  }
+  .aj-tag--mute {
+    background: #f0f0f0;
+    color: #8c8c8c;
+  }
+  .af-figure + .bg-body { margin-top: 32px; }
+  .aj-takeaway {
+    margin: 10px 0 0;
+    font-size: 13px;
+    line-height: 22px;
+    color: #595959;
+  }
+  .aj-takeaway strong {
+    font-weight: 650;
+    color: #191919;
+  }
+  .doc-lead {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 10px;
+    padding: 14px;
+    font-family: "PingFang SC", sans-serif;
+  }
+  .doc-lead .t {
+    margin: 0 0 10px;
+    font-size: 15px;
+    font-weight: 650;
+    line-height: 22px;
+    color: #191919;
+  }
+  .doc-lead .lead {
+    margin: 0 0 10px;
+    font-size: 11px;
+    line-height: 18px;
+    color: #191919;
+  }
+  .doc-lead .lead a {
+    color: #1476FF;
+    font-weight: 650;
+    text-decoration: none;
+    word-break: break-all;
+  }
+  .doc-lead .lead.is-missing { color: #bfbfbf; }
+  .doc-lead .p {
+    margin: 0;
+    font-size: 11px;
+    line-height: 17px;
+    color: #8c8c8c;
+  }
+  .aj .aj-col-mute { width: 92px; }
+  .aj td.is-mute {
+    color: #8c8c8c;
+  }
+  .aj th,
+  .aj td {
+    border: 1px solid #e8eef5;
+    border-top: none;
+    border-left: none;
+    vertical-align: top;
+    padding: 12px 12px;
+    font-size: 12px;
+    line-height: 22px;
+  }
+  .aj thead tr:first-child > th {
+    border-top: 1px solid #e8eef5;
+  }
+  .aj th:first-child,
+  .aj td:first-child {
+    border-left: 1px solid #e8eef5;
+  }
+  .aj .aj-corner,
+  .aj .aj-label {
+    width: 148px;
+    background: #f5f6f8;
+    color: #595959;
+    font-weight: 650;
+    vertical-align: middle;
+    text-align: left;
+    padding: 12px 12px;
+    border-left: 1px solid #e8eef5;
+  }
+  .aj thead th.aj-corner {
+    background: #f5f6f8;
+    color: #595959;
+    padding: 12px 12px;
+    border-top-left-radius: 8px;
+  }
+  .aj tbody tr:last-child .aj-label {
+    border-bottom-left-radius: 8px;
+  }
+  .aj thead tr:first-child > th:first-child {
+    border-top-left-radius: 8px;
+  }
+  .aj thead tr:first-child > th:last-child {
+    border-top-right-radius: 8px;
+  }
+  .aj tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 8px;
+  }
+  .aj thead th {
+    background: #f5f6f8;
+    font-weight: 650;
+    text-align: left;
+    padding: 12px 12px;
+    color: #191919;
+  }
+  .aj thead th.aj-group {
+    text-align: center;
+    vertical-align: middle;
+    font-weight: 650;
+    letter-spacing: 0;
+    background: #eceef1;
+    color: #191919;
+    padding: 10px 12px;
+  }
+  .aj thead th.aj-span {
+    vertical-align: middle;
+  }
+  .aj thead .aj-stage-name {
+    display: block;
+    font-weight: 650;
+    color: #191919;
+  }
+  .aj thead .aj-corner .aj-stage-name {
+    color: inherit;
+    margin-bottom: 2px;
+  }
+  .aj thead .aj-mute {
+    background: #f5f6f8;
+    color: #595959;
+  }
+  .aj thead .aj-mute .aj-stage-name { color: #595959; }
+  .aj thead .aj-pri,
+  .aj thead .aj-opt {
+    background: #f5f6f8;
+  }
+  .aj .aj-tag {
+    display: block;
+    width: fit-content;
+    margin: 0;
+    padding: 0 6px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 18px;
+    color: #1476FF;
+  }
+  .aj-tag--must { background: rgba(20, 118, 255, .18); }
+  .aj-tag--pri  { background: rgba(20, 118, 255, .12); }
+  .aj-tag--opt  { background: rgba(20, 118, 255, .08); }
+  .aj tbody td:not(.is-mute):not(.aj-label) {
+    background: #fff;
+  }
+  .aj td.is-mute { background: #f5f6f8 !important; color: #8c8c8c; }
+  .aj td.is-pri { background: #f7fbff; }
+  .aj .aj-file {
+    display: block;
+    margin: 0 0 6px;
+    font-family: var(--font-mono, "SF Mono", monospace);
+    font-weight: 650;
+    color: #1476FF;
+  }
+  .aj td .aj-subhead {
+    display: block;
+    font-weight: 650;
+    color: #191919;
+    margin: 0 0 4px;
+  }
+  .aj-stack + .aj-stack { margin-top: 10px; }
+  #mechanism .aj tbody td[rowspan] {
+    vertical-align: middle;
+  }
+  #mechanism .aj thead th {
+    text-align: left;
+    vertical-align: bottom;
+    height: auto;
+    min-height: 0;
+    box-sizing: border-box;
+    padding: 10px 12px;
+  }
+  #mechanism .aj thead th.aj-corner {
+    text-align: left;
+    white-space: normal;
+    height: auto;
+    line-height: 18px;
+  }
+  #mechanism .aj thead .aj-corner .aj-stage-name,
+  #mechanism .aj thead .aj-who {
+    display: block;
+    margin: 0 0 2px;
+    font-size: 11px;
+    font-weight: 650;
+    color: #8c8c8c;
+  }
+  #mechanism .aj tbody td,
+  #mechanism .aj tbody .aj-label {
+    vertical-align: top;
+  }
+  #mechanism .aj .aj-file {
+    margin-bottom: 6px;
+    font-family: inherit;
+  }
+  #mechanism .aj .aj-tag {
+    margin-bottom: 0;
+  }
+  #mechanism .aj td .aj-tag + .aj-tag {
+    margin-top: 6px;
+  }
+  #mechanism .aj .aj-hint {
+    display: block;
+    margin-top: 6px;
+    color: #8c8c8c;
+    font-weight: 400;
+  }
+  #mechanism .aj col.aj-rowhead {
+    width: 88px;
+  }
+  .bg-body {
+    margin: 0 0 16px;
+    font-size: 14px;
+    line-height: 22px;
+    color: var(--color-text, #191919);
+  }
+  #mechanism > p.bg-body {
+    margin-bottom: 8px;
+  }
+  #mechanism > p.bg-body:last-of-type {
+    margin-bottom: 16px;
+  }
+  #mechanism > p.bg-body > strong {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 650;
+  }
+  #mechanism > h2 + h3.fn-h3 {
+    padding-top: 8px;
+  }
+  #mechanism .af-figure + h2 {
+    margin-top: 48px;
+  }
+  #mechanism .af-figure + h3.fn-h3 {
+    padding-top: 24px;
+  }
+  .bg-list {
+    margin: 0;
+    padding-left: 1.25em;
+    font-size: 14px;
+    line-height: 22px;
+    list-style: disc;
+    color: #595959;
+  }
+  #principles .bg-list li + li { margin-top: 16px; }
+  #principles .bg-list li strong {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 650;
+    color: #191919;
+  }
+
+  .fn-ex-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr auto;
+    column-gap: 16px;
+    row-gap: 0;
+    align-items: stretch;
+    margin: 16px 0 0;
+  }
+  .fn-ex-row .fn-ex {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 1 / span 3;
+    margin: 0;
+    min-width: 0;
+  }
+  .fn-ex-row .fn-ex-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .fn-ex-row .fn-ex-head .fn-ex-label { margin: 0; }
+  .fn-ex-row .fn-ex-head .fn-ex-bar {
+    display: block; margin: 0; width: 100%; align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-body {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 2 / span 2;
+    min-height: 0;
+    background: #f5f5f5;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .fn-ex-row .fn-ex-mock {
+    min-height: 0; height: 100%; box-sizing: border-box;
+    border: none; border-radius: 0; align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-mock:has(.site-foot),
+  .fn-ex-row .fn-ex-mock:has(.doc-lead) {
+    background: #f5f5f5;
+    padding: 12px;
+  }
+  .fn-ex-row .fn-ex-mock pre.st-code {
+    margin: 0;
+    padding: 14px 16px;
+    background: #1e1e1e;
+    border: 1px solid #111;
+    border-radius: 0;
+    font-size: 12px;
+    line-height: 18px;
+    color: #e8e8e8;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow: auto;
+    box-sizing: border-box;
+    min-height: 100%;
+  }
+  .fn-ex-row .fn-ex-foot {
+    display: flex; flex-direction: column; gap: 8px;
+    padding: 12px 14px 14px; background: #fff;
+    border-top: 1px solid #e2e8f0;
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-list { margin: 0; gap: 4px; }
+  .fn-ex-label {
+    display: inline-block; padding: 0 8px; border-radius: 4px;
+    font-size: 12px; font-weight: 650; line-height: 20px;
+    color: #b42318; background: #fef3f2;
+  }
+  .fn-ex-label.is-good { color: #047857; background: #ecfdf5; }
+  .fn-ex-bar {
+    display: block; width: 100%; height: 3px;
+    background: #b42318; border-radius: 2px;
+  }
+  .fn-ex-bar.is-good { background: #047857; }
+  .fn-ex-list {
+    margin: 0; padding: 0 0 0 1.25em; list-style: disc;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .fn-ex-list li {
+    margin: 0; font-size: 14px; line-height: 22px; color: #191919;
+  }
+  .fn-ex-list strong { font-weight: 650; }
+  .site-foot {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 10px;
+    overflow: hidden;
+    font-family: "PingFang SC", sans-serif;
+  }
+  .site-foot-body {
+    padding: 16px 14px 20px;
+    min-height: 52px;
+    background: linear-gradient(180deg, #fafbfc 0%, #fff 100%);
+  }
+  .site-foot-body p {
+    margin: 0;
+    font-size: 11px;
+    line-height: 16px;
+    color: #bfbfbf;
+  }
+  .site-foot-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 12px;
+    padding: 10px 14px;
+    border-top: 1px solid #eef1f5;
+    background: #fafafa;
+  }
+  .site-foot-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .site-foot-links a {
+    font-size: 11px;
+    line-height: 16px;
+    color: #8c8c8c;
+    text-decoration: none;
+  }
+  .site-foot-links a.is-machine {
+    color: #595959;
+    font-variant-numeric: tabular-nums;
+  }
+  .site-foot-copy {
+    margin: 0;
+    font-size: 10px;
+    line-height: 14px;
+    color: #bfbfbf;
+  }
+  .principle-example + .principle-example { margin-top: 28px; }
+
+  #principles .principle-suggestions,
+  #benefits .principle-suggestions,
+  #design-ui .principle-suggestions,
+  #content-adjust .principle-suggestions,
+  #frontend-adjust .principle-suggestions {
+    list-style: none;
+    margin: 0 0 32px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    counter-reset: sug;
+  }
+  #principles .principle-suggestions > li,
+  #benefits .principle-suggestions > li,
+  #design-ui .principle-suggestions > li,
+  #content-adjust .principle-suggestions > li,
+  #frontend-adjust .principle-suggestions > li {
+    position: relative;
+    margin: 0;
+    padding: 0 0 0 36px;
+    color: #595959;
+  }
+  #principles .principle-suggestions > li::before,
+  #benefits .principle-suggestions > li::before,
+  #design-ui .principle-suggestions > li::before,
+  #content-adjust .principle-suggestions > li::before,
+  #frontend-adjust .principle-suggestions > li::before {
+    counter-increment: sug;
+    content: counter(sug);
+    position: absolute;
+    left: 0;
+    top: 2px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #eff6ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 22px;
+    letter-spacing: 0.02em;
+    color: #1476FF;
+  }
+  #principles .principle-suggestions > li .sug-title,
+  #benefits .principle-suggestions > li .sug-title,
+  #design-ui .principle-suggestions > li .sug-title,
+  #content-adjust .principle-suggestions > li .sug-title,
+  #frontend-adjust .principle-suggestions > li .sug-title {
+    display: block;
+    margin: 0 0 6px;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 24px;
+    color: #191919;
+  }
+  #principles .principle-suggestions > li .sug-desc,
+  #benefits .principle-suggestions > li .sug-desc,
+  #design-ui .principle-suggestions > li .sug-desc,
+  #content-adjust .principle-suggestions > li .sug-desc,
+  #frontend-adjust .principle-suggestions > li .sug-desc {
+    display: block;
+    margin: 0;
+    max-width: none;
+    width: 100%;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 24px;
+    color: #595959;
+  }
+
+  @media (max-width: 900px) {
+    .fn-ex-row {
+      grid-template-columns: 1fr;
+      grid-template-rows: none;
+    }
+    .fn-ex-row .fn-ex { display: block; grid-row: auto; }
+    .fn-ex-row .fn-ex-body {
+      display: flex; flex-direction: column; grid-row: auto;
+    }
+  }
+
+/* mocks from format/guide */
+
+  .info-card {
+    display: flex; flex-direction: column; gap: 10px;
+    height: 100%; padding: 12px; box-sizing: border-box;
+  }
+
+  .info-card img {
+    display: block; width: 100%; height: auto;
+    background: #fff; border-radius: 4px;
+  }
+
+  .fn-ex-row .fn-ex-mock.fn-ex-mock--banner {
+    background: #f5f5f5; padding: 12px; border: none;
+  }
+
+  .fn-ex-row .fn-ex-mock.fn-ex-mock--banner .info-card {
+    padding: 0; gap: 0; height: auto; background: transparent;
+  }
+
+  .fn-ex-row .fn-ex-mock.fn-ex-mock--banner .info-card img {
+    width: 100%; max-width: none; margin: 0;
+    border-radius: 10px; border: 1px solid #e8ecf1;
+  }
+
+  .fn-ex-row .fn-ex-mock.fn-ex-mock--banner.fn-ex-mock--plain { background: #fff; }
+
+  .fn-ex-row .fn-ex-mock.fn-ex-mock--banner.fn-ex-mock--plain .info-card img {
+    border: none; border-radius: 10px;
+  }
+
+  #format-spec-md .fn-ex-mock.fn-ex-mock--banner.fn-ex-mock--plain {
+    background: #f4f5f7;
+  }
+
+  .fn-ex-row .fn-ex-mock:has(.ac-face) {
+    background: #f5f5f5; padding: 12px; overflow: visible; border-radius: 8px;
+  }
+
+  .fn-ex-row .fn-ex-body:has(.ac-face) { overflow: visible; }
+
+  .ac-face {
+    background: #fff; border: none; border-radius: 10px;
+    overflow: visible; font-family: "PingFang SC", sans-serif;
+  }
+
+  .ac-face-crumb {
+    display: flex; flex-wrap: wrap; gap: 4px 6px; align-items: center;
+    margin: 0; padding: 10px 12px 0; font-size: 10px; line-height: 14px; color: #8c8c8c;
+  }
+
+  .ac-face-crumb span.is-link { color: #1476FF; }
+
+  .ac-face-crumb .sep { color: #c0c0c0; }
+
+  .ac-face-banner {
+    position: relative; margin: 8px 10px 10px; padding: 12px 12px 10px;
+    border-radius: 8px;
+    background: linear-gradient(105deg, #eef4ff 0%, #f3f0ff 55%, #f7f9ff 100%);
+    border: none; overflow: visible;
+  }
+
+  .ac-face-h {
+    margin: 0; font-size: 18px; font-weight: 700; color: #191919; letter-spacing: -0.01em;
+  }
+
+  .ac-face-bar {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+  }
+
+  .ac-face-ico {
+    width: 22px; height: 22px; border-radius: 4px; border: 1px solid #d9e2f0;
+    background: #fff; color: #595959; display: inline-flex; align-items: center;
+    justify-content: center; font-size: 11px; line-height: 1;
+  }
+
+  .ac-face-ico svg { display: block; flex-shrink: 0; }
+
+  .ac-face-link {
+    font-size: 11px; font-weight: 650; color: #1476FF; text-decoration: none; white-space: nowrap;
+  }
+
+  .ac-face-link.is-muted { color: #595959; font-weight: 500; }
+
+  .ac-face-time { margin-left: auto; font-size: 10px; color: #8c8c8c; white-space: nowrap; }
+
+  .ac-face-body { padding: 0 12px 12px; }
+
+  .ac-face-p { margin: 0 0 6px; font-size: 11px; line-height: 17px; color: #595959; }
+
+  .ac-face-menu {
+    position: relative; display: inline-flex; flex-direction: column; align-items: flex-end;
+  }
+
+  .ac-face-split {
+    display: inline-flex; align-items: stretch; border: 1px solid #d9d9d9;
+    border-radius: 4px; overflow: hidden; background: #fff;
+  }
+
+  .ac-face-copy-main {
+    display: inline-flex; align-items: center; gap: 5px; margin: 0; padding: 5px 10px;
+    border: none; background: #fff; font-size: 12px; font-weight: 400; line-height: 1;
+    color: #191919; font-family: inherit; white-space: nowrap;
+  }
+
+  .ac-face-copy-main svg { display: block; flex-shrink: 0; color: #595959; }
+
+  .ac-face-copy {
+    appearance: none; display: inline-flex; align-items: center; justify-content: center;
+    margin: 0; padding: 0; width: 28px; border: none; border-left: 1px solid #d9d9d9;
+    border-radius: 0; background: #f5f5f5; color: #595959; cursor: pointer; font-family: inherit;
+  }
+
+  .ac-face-copy svg { display: block; transition: transform .15s ease; }
+
+  .ac-face-menu.is-open .ac-face-copy svg { transform: rotate(180deg); }
+
+  .ac-face-drop {
+    display: none; position: absolute; top: calc(100% + 4px); right: 0; z-index: 5;
+    min-width: 140px; padding: 4px 0; border-radius: 4px; border: 1px solid #e5e5e5;
+    background: #fff; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  .ac-face-menu.is-open .ac-face-drop { display: block; }
+
+  .ac-face-drop a {
+    display: block; padding: 8px 14px; color: #191919; font-size: 12px;
+    text-decoration: none; line-height: 1.4;
+  }
+
+  .ac-face-drop a:hover { background: #f5f5f5; color: #1476FF; }
+
+  .ac-face-title-row {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 10px; margin-bottom: 10px;
+  }
+
+  .ac-face-title-row .ac-face-h { flex: 1; min-width: 0; }
+
+  .ac-face-title-row .ac-face-menu { flex-shrink: 0; }
+  .ac-face-tools {
+    display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+  }
+  .ac-face-llms {
+    font-size: 12px; font-weight: 650; color: #1476FF;
+    text-decoration: none; white-space: nowrap;
+  }
+
+  .fn-ex-row .fn-ex-mock:has(.stack-shot) { background: #f5f5f5; padding: 12px; }
+
+  .stack-shot {
+    position: relative; border-radius: 10px; overflow: hidden;
+    border: none; background: #fff; padding: 10px;
+  }
+
+  .stack-shot-head {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+    gap: 6px; margin: 0 0 8px; text-align: center;
+  }
+
+  .stack-shot-head .t {
+    margin: 0; font-size: 24px; font-weight: 700; line-height: 32px;
+    color: #191919; letter-spacing: -0.01em; text-align: center;
+  }
+
+  .stack-shot-frame {
+    overflow: hidden; border-radius: 8px; border: 1px solid #eef1f5; background: #f7f9fc;
+  }
+
+  .stack-shot-frame img { display: block; width: 100%; height: auto; margin-top: -7.5%; }
+
+  .stack-shot-md {
+    position: static; display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0; min-width: 0; height: 12px; padding: 0 5px; border: none;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #4da3ff 0%, #7b6cff 45%, #ff7a59 100%);
+    color: #fff; font-size: 8px; font-weight: 400; letter-spacing: 0.02em; line-height: 1;
+    text-decoration: none; white-space: nowrap;
+  }
+
+  .fn-ex-row .fn-ex-mock.fn-ex-mock--plain { background: #fff; padding: 12px; overflow: hidden; }
+
+  .fn-ex-row .fn-ex-mock:has(.spec-shot-head) { background: #f4f5f7; padding: 12px; overflow: hidden; }
+
+  .fn-ex-row .fn-ex-mock.fn-ex-mock--plain .info-card img { border: none; border-radius: 0; }
+
+  .spec-shot-head {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+    gap: 6px; margin: 0 0 8px; text-align: center;
+  }
+
+  .spec-shot-head .t {
+    margin: 0; font-size: 24px; font-weight: 700; line-height: 32px;
+    color: #191919; letter-spacing: -0.01em; text-align: center;
+  }
+
+  .fn-ex-mock > .spec-shot-img {
+    display: block; width: 100%; height: auto;
+    border-radius: 8px;
+  }
+
+  #mechanism > p.bg-body + h4.fn-h4 { margin-top: 16px; }
+  #core-principles .bg-list li + li,
+  #practices .bg-list li + li,
+  #benefits .bg-list li + li { margin-top: 16px; }
+  #core-principles .bg-list li strong,
+  #practices .bg-list li strong,
+  #benefits .bg-list li strong {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 650;
+    color: #191919;
+  }
+  #core-principles .bg-list,
+  #practices .bg-list,
+  #benefits .bg-list { margin: 0; }
+  #practices > h2 + h3.fn-h3 { padding-top: 16px; }
+  #practices .practice-shot + h4.fn-h4,
+  #practices .practice-shot + .practice-shot,
+  #practices .file-sample + h4.fn-h4 { margin-top: 24px; }
+  #practices .bg-list + h3.fn-h3 { padding-top: 16px; }
+  #practices h4.fn-h4 + .file-sample { margin-top: 0; }
+  .practice-shot {
+    margin: 0 0 8px;
+    padding: 0;
+    background: none;
+    border: none;
+  }
+  .practice-shot > figcaption {
+    margin: 0;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 22px;
+    padding: 0 0 10px;
+    color: #191919;
+  }
+  .practice-shot .practice-sample { margin: 0; }
+  .practice-sample {
+    margin: 0 0 8px;
+    padding: 16px;
+    background: #f5f5f5;
+    border: 1px solid #e8ecf1;
+    border-radius: 8px;
+  }
+  .file-sample {
+    margin: 0 0 20px;
+    padding: 0;
+    background: #1e1e1e;
+    border: 1px solid #111;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .file-sample figcaption {
+    margin: 0;
+    padding: 10px 14px;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 22px;
+    color: #a3a3a3;
+    border-bottom: 1px solid #333;
+  }
+  .file-sample figcaption code {
+    font-size: inherit;
+    color: #e8e8e8;
+    background: none;
+  }
+  .file-sample pre {
+    margin: 0;
+    padding: 12px 14px 14px;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: 12px;
+    line-height: 20px;
+    color: #e8e8e8;
+    background: transparent;
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .file-sample pre code {
+    display: block;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    color: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    font-family: inherit;
+    white-space: inherit;
+  }
+  .ac-face-llms {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    text-decoration: none;
+    background: none;
+    line-height: 0;
+    flex-shrink: 0;
+  }
+  .ac-face-llms .sg-bee,
+  .sg-bee {
+    display: block;
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+  }
+  .stack-shot-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 0 0 8px;
+    text-align: center;
+  }
+  .stack-shot-head .t {
+    flex: 0 1 auto;
+    min-width: 0;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 32px;
+    text-align: center;
+  }
+  .spec-shot-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 0 0 8px;
+    text-align: center;
+  }
+  .spec-shot-head .t {
+    flex: 0 1 auto;
+    min-width: 0;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 32px;
+    text-align: center;
+  }
+  .spec-shot {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    border: none;
+    background: #f5f5f5;
+    padding: 10px;
+  }
+  .spec-shot-frame {
+    overflow: hidden;
+    border-radius: 8px;
+    border: 1px solid #eef1f5;
+    background: #f7f9fc;
+  }
+  .spec-shot-frame img { display: block; width: 100%; height: auto; }
+</style>
+</head>
+<body class="inner-page agent-entry-page" data-module="principles" data-page="block-md">
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html">社区 <span>AI 亲和原则</span></a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="mintlify.html">友商对照</a>
+      <a href="reachability.html">社区诊断</a>
+      <a href="principles-overview.html" class="active">亲和原则</a>
+      <a href="community-ui.html">组件亲和</a>
+      <a href="design-guide-image-text.html">设计模式</a>
+      <a href="data-analysis.html">数据分析</a>
+    </nav>
+  </div>
+</div>
+
+<div class="page-wrapper">
+
+  <aside id="module-sidebar"></aside>
+
+  
+  
+  <main class="main-content">
+    <div class="page-header">
+      <h1>块级 Markdown</h1>
+      <p class="page-desc page-desc--split">
+        <span class="page-desc-line">当用户只要某一层架构或某一张规格表时，这些关系与表值往往锁在图或复杂排版里。从渲染页拿内容，容易只看到截图、丢失结构。</span>
+        <span class="page-desc-line">Agent 处理这一页时——不管是 Cursor 这类工具的单次调用，还是企业内部 RAG 的批量摄取——整页 Markdown 太粗，解析渲染 HTML 同样难切到这一块。</span>
+      </p>
+    </div>
+
+    <section class="section" id="mechanism">
+      <h2 id="mech-access">Agent 是如何取到块级 Markdown 的</h2>
+      <p class="bg-body">Agent 取某一层或某一张表的纯净正文有三个层级，按理想尝试顺序排列：</p>
+      <h4 class="fn-h4" id="mech-block-md">通用发现层（主路径）</h4>
+      <p class="bg-body">按行业通用约定，直接探测根目录或文档站子路径下的 <code>llms.txt</code>，从中 Fetch 该块地址。这是跨站点通用的社区惯例，优先级最高。</p>
+      <h4 class="fn-h4" id="mech-block-private">站点私有发现层（需声明）</h4>
+      <p class="bg-body">按站点私有约定的块级稳定 URL 取稿（如将 <code>page.html#architecture</code> 改写为 <code>page-block.md</code>）。前提：此规则属于私有约定，Agent 没有凭空尝试的理由，必须已在 <code>llms.txt</code> 或站点公开规范中明确声明后才会生效。若无公开声明，此路径置信度降级，不能作为确定主路径。</p>
+      <h4 class="fn-h4" id="mech-block-not">内容层（兜底入口）</h4>
+      <p class="bg-body">已抓到这篇 HTML 时，直接跟从楼层标题旁「打开块 Markdown」的真链取稿。落点在楼层标题同一行，写在 <code>main</code> 里。</p>
+      <p class="bg-body">这一层是唯一不依赖任何前置声明的确定路径：无需探测 <code>llms.txt</code>，无需知道站点私有改写规则，只要这篇 HTML 落到了 Agent 手里，真链就一定在。</p>
+      <figure class="af-figure">
+        <table class="aj">
+          <caption>表1 块级「打开块 Markdown」兜底入口的对接流程</caption>
+          <colgroup>
+            <col class="aj-rowhead" />
+            <col />
+            <col />
+            <col />
+          </colgroup>
+          <thead>
+            <tr>
+              <th class="aj-corner" scope="col">行为阶段</th>
+              <th scope="col"><span class="aj-who">Agent</span><span class="aj-stage-name">已入库渲染页</span></th>
+              <th class="aj-pri" scope="col"><span class="aj-who">Agent</span><span class="aj-stage-name">解析楼层打开链</span></th>
+              <th scope="col"><span class="aj-who">Agent</span><span class="aj-stage-name">Fetch 该块平行稿</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th class="aj-label" scope="row">触点</th>
+              <td>一篇人读页的 HTML；抽取范围限定在 <code>main</code> 内</td>
+              <td class="is-pri"><span class="aj-file">楼层标题同一行视觉可见的「打开块 Markdown」真链</span></td>
+              <td>该块平行 <code>.md</code> 及对应锚点</td>
+            </tr>
+            <tr>
+              <th class="aj-label" scope="row">解决问题</th>
+              <td>整页稿太粗，关系或规格锁在图里，难切块</td>
+              <td class="is-pri">确保视觉和代码可及；页级 <code>.md</code> 和无字图标不能替代；无需猜块级私有路径</td>
+              <td>Fetch 真链指向的该块平行稿</td>
+            </tr>
+            <tr>
+              <th class="aj-label" scope="row">如何到达</th>
+              <td>检索命中或外部链接引入，已落到该页</td>
+              <td class="is-pri">楼层标题旁写出「打开块 Markdown」并指向该块约定路径</td>
+              <td>不要把页级整页 <code>.md</code> 或 CSS 背景图标当成已取到该块</td>
+            </tr>
+          </tbody>
+        </table>
+      </figure>
+    </section>
+
+    <section class="section" id="core-principles">
+      <h2>核心原则</h2>
+      <ul class="bg-list">
+        <li><strong>优先级与确定性是两回事</strong>跨站通用的 <code>llms.txt</code> 是理想主路径（优先级最高）；站点私有块级 URL 规则仅在公开声明后才具备高置信度。但只有「打开块 Markdown」内容层是唯一确定成立的路径：它不依赖任何前置声明，只要拿到 HTML 就能发现，绝不能用整页 Markdown（见<a href="principles-page-md.html">页级 Markdown</a>）代替这一块。</li>
+        <li><strong>打开是真链</strong>「打开块 Markdown」必须画在楼层标题旁，且是 <code>main</code> 里的真实 <code>&lt;a&gt;</code>。<code>#</code> 锚点、无字图标、页级入口和仓库源码链都不能单独替代这条真链。</li>
+      </ul>
+    </section>
+
+    <section class="section" id="practices">
+      <h2>典型做法</h2>
+
+      <h3 class="fn-h3">视觉上 · 楼层标题旁落点</h3>
+      <figure class="practice-shot">
+        <figcaption>图1 架构楼层标题旁「打开块 Markdown」落点</figcaption>
+        <div class="practice-sample">
+          <div class="stack-shot">
+            <div class="stack-shot-head">
+              <p class="t">昇腾AI基础软硬件平台，构筑智能世界的基石</p>
+              <a class="ac-face-llms" href="assets/design-guide/ascend-platform-stack.md" aria-label="打开块 Markdown" title="打开块 Markdown">
+                <img class="sg-bee" src="assets/design-guide/site-guide-robot.png" alt="" width="20" height="20">
+              </a>
+            </div>
+            <div class="stack-shot-frame">
+              <img src="assets/design-guide/ascend-platform-stack.png" alt="昇腾 AI 基础软硬件平台结构楼层">
+            </div>
+          </div>
+        </div>
+      </figure>
+      <figure class="practice-shot">
+        <figcaption>图2 规格表标题旁「打开块 Markdown」落点</figcaption>
+        <div class="practice-sample">
+          <div class="spec-shot">
+            <div class="spec-shot-head">
+              <p class="t">Ascend 950PR 技术规格</p>
+              <a class="ac-face-llms" href="assets/design-guide/ascend-950pr-spec.md" aria-label="打开块 Markdown" title="打开块 Markdown">
+                <img class="sg-bee" src="assets/design-guide/site-guide-robot.png" alt="" width="20" height="20">
+              </a>
+            </div>
+            <div class="spec-shot-frame">
+              <img src="assets/design-guide/ascend-950pr-spec-table-body.png" alt="Ascend 950PR 技术规格表；完整参数表平行交付于 Markdown">
+            </div>
+          </div>
+        </div>
+      </figure>
+      <h4 class="fn-h4">执行要点</h4>
+      <ul class="bg-list">
+        <li><strong>跟标题走</strong>「打开块 Markdown」必须与该楼层标题（如 <code>&lt;h2&gt;</code> 或 <code>&lt;h3&gt;</code>）同一行、垂直居中。如图1、图2：链在标题右侧。</li>
+        <li><strong>主次视觉</strong>图标与站级导读、页级 Markdown 的入口样式保持统一，呈现为包含标准链接配色、下划线或明确图标形态的常规可交互组件，一眼即可识别为可点击项。</li>
+      </ul>
+      <h3 class="fn-h3">源码上 · 真链包裹</h3>
+      <h4 class="fn-h4">最小合格示例</h4>
+      <figure class="file-sample">
+        <figcaption>源码结构</figcaption>
+        <pre><code class="language-html">&lt;main&gt;
+  &lt;section id="ascend-platform"&gt;
+    &lt;h2&gt;昇腾AI基础软硬件平台
+      &lt;a href="https://docs.example.com/docs/platform-stack.md#ascend-platform"&gt;打开块 Markdown&lt;/a&gt;
+    &lt;/h2&gt;
+    …该层图或表…
+  &lt;/section&gt;
+&lt;/main&gt;</code></pre>
+      </figure>
+      <h4 class="fn-h4">执行要点</h4>
+      <ul class="bg-list">
+        <li><strong>指向约定路径</strong><code>href</code> 必须指向该块平行 <code>.md</code> 的绝对地址及精确锚点（如 <code>…/platform-stack.md#ascend-platform</code>），不能只写指向整页的 <code>#</code> 锚点。</li>
+        <li><strong>名称写在链上</strong>有文字位就写成「打开块 Markdown」或「打开 Markdown」。只用图标时，在 <code>&lt;a&gt;</code> 上写 <code>aria-label="打开块 Markdown"</code>（可兼 <code>title</code>），<code>img</code> 的 <code>alt</code> 留空。避免「更多」「MD」「AI」冒充打开。</li>
+        <li><strong>保持首包真实</strong>机器不点这条链，可跟的是源码里的真 <code>href</code>。必须落在首包 <code>main</code> 已有的 <code>&lt;a&gt;</code> 内，不要用 CSS <code>background-image</code> 画图标，不要悬停才插入 DOM。</li>
+      </ul>
+    </section>
+
+    <section class="section" id="benefits">
+      <h2>价值收益</h2>
+      <ul class="bg-list">
+        <li><strong>人能打开该块干净稿</strong>楼层标题旁可见「打开块 Markdown」，点开即是这一层或这一张表的平行 <code>.md</code>，不必在整页长文里翻找。</li>
+        <li><strong>未改写块级 URL 也能接住</strong>入库主路径仍是约定块级地址或 <code>llms.txt</code>。已经抓到 HTML、不会猜块路径时，<code>main</code> 里的真链仍能跟到该块 <code>.md</code>，保证跨层、跨表问答不断裂。这层兜底无需 Agent 认识任何私有规则，是稳定生效的物理锚点。</li>
+      </ul>
+    </section>
+
+  </main>
+</div>
+
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js"></script>
+<script src="assets/js/module-sidebar.js"></script>
+</body>
+</html>

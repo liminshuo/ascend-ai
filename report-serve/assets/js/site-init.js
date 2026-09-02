@@ -136,6 +136,7 @@
   }
 
   function injectSelector() {
+    if (document.body.hasAttribute("data-no-surface-tabs")) return;
     if (document.getElementById("surface-tabs")) return;
 
     var surfaces = availableSurfaces();
@@ -151,7 +152,7 @@
     wrap.className = "surface-tabs";
     wrap.id = "surface-tabs";
     wrap.innerHTML =
-      '<h2 class="surface-tabs-label" id="surface-tabs-label">交付面调整</h2>' +
+      '<h2 class="surface-tabs-label" id="surface-tabs-label">典型做法</h2>' +
       '<div class="surface-tabs-nav" role="tablist" aria-labelledby="surface-tabs-label">' +
       surfaces.map(function (s) {
         return (

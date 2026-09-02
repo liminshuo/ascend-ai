@@ -15,7 +15,7 @@
     overflow: visible;
   }
   .topbar-inner {
-    width: 100%; max-width: var(--content-max-width, 1000px); margin: 0 auto; padding: 0 24px; box-sizing: border-box;
+    width: 100%; max-width: none; margin: 0; padding: 0 24px; box-sizing: border-box;
     height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
   }
   .topbar .brand {
@@ -128,8 +128,8 @@
     margin: 24px 0 0;
     padding-top: 0;
     padding-bottom: var(--space-h4-pad-b, 16px);
-    font-size: var(--text-h4, 16px);
-    line-height: var(--text-h4-lh, 24px);
+    font-size: var(--text-h4, 14px);
+    line-height: var(--text-h4-lh, 22px);
     font-weight: var(--text-h4-weight, 650);
     color: var(--color-text, #191919);
     letter-spacing: -0.01em;
@@ -142,6 +142,16 @@
     font-size: 14px;
     line-height: 22px;
     color: #595959;
+  }
+  #practices .practice-block h4.fn-h4 {
+    margin: 24px 0 0;
+  }
+  #practices .practice-block .file-lead + h4.fn-h4 {
+    margin-top: 16px;
+  }
+  #practices .file-sample:has(+ h4.fn-h4),
+  #practices .file-sample-note:has(+ h4.fn-h4) {
+    margin-bottom: 4px;
   }
   .practice-block {
     margin: 0;
@@ -692,7 +702,7 @@
     <div class="page-header">
       <h1>机器可达：AI 亲和的起点</h1>
       <p class="page-desc page-desc--split">
-        <span class="page-desc-line">机器可达是 AI 亲和体系的第一道关卡。本页聚焦发现层的四个基础配置文件，其分工逻辑为：<code>robots.txt</code> 作为准入前提，<code>llms.txt</code> 作为主要路径，<code>llms-full.txt</code> 作为导读配套，<code>sitemap.xml</code> 作为兜底清单。它们共同回答了「知识在哪里、先看哪篇、如何高效获取」的问题。</span>
+        <span class="page-desc-line">机器可达是 AI 亲和体系的起点。本页聚焦发现层的四个基础配置文件，其分工逻辑为：<code>robots.txt</code> 作为准入前提，<code>llms.txt</code> 作为主要路径，<code>llms-full.txt</code> 作为导读配套，<code>sitemap.xml</code> 作为兜底清单。它们共同回答了「知识在哪里、先看哪篇、如何高效获取」的问题。</span>
       </p>
     </div>
 
@@ -785,8 +795,11 @@
       <div class="practice-block">
       <h3 class="fn-h3" id="practice-robots">1. robots.txt：准入门禁</h3>
       <p class="file-lead">进站时优先读取的准入文件，用于明确知识面的合法抓取范围。</p>
+      <h4 class="fn-h4">约定路径</h4>
+      <p class="file-lead"><code>https://{域名}/robots.txt</code>（协议规定的强制路径，不可更改）</p>
+      <h4 class="fn-h4">最小合格示例</h4>
       <figure class="file-sample">
-        <figcaption><code>robots.txt</code>（最小合格样本）</figcaption>
+        <figcaption><code>robots.txt</code></figcaption>
         <pre><code class="language-robots"><span class="cmt"># 对全体爬虫生效；勿单独误挡主流 Agent</span>
 User-agent: *
 
@@ -801,20 +814,28 @@ Disallow: /staging/
 Disallow: /api/debug/
 
 <span class="cmt"># 声明清单完整地址；此文件公开可见，敏感内容须靠登录鉴权</span>
-Sitemap: https://docs.example.com/sitemap.xml</code></pre>
+Sitemap: https://docs.example.com/sitemap.xml
+
+<span class="cmt"># 进阶（非标准）：部分厂商额外声明 LLMs.txt 字段指向导读地址</span>
+<span class="cmt"># LLMs.txt: https://docs.example.com/llms.txt</span></code></pre>
       </figure>
+      <h4 class="fn-h4">执行要点</h4>
       <ul class="bg-list">
         <li><strong>放行知识面</strong>文档站、官网知识页、<code>/llms.txt</code> 及 <code>/llms-full.txt</code> 路径应保持可访问（不设 Disallow），避免误挡主流 Agent。</li>
         <li><strong>拦截噪声面</strong>后台、测试环境、调试接口等非公开路径应明确设置 Disallow，避免占用抓取额度。</li>
         <li><strong>声明清单地址</strong>应在文件末尾通过 <code>Sitemap:</code> 字段列出 <code>sitemap.xml</code> 的完整地址，为 Agent 提供后续入口。</li>
+        <li><strong>进阶声明（非标准）</strong>部分厂商会在 <code>robots.txt</code> 中额外声明 <code>LLMs.txt:</code> 字段指向导读地址，仿照 <code>Sitemap:</code> 的写法；非官方规范，可作为路径不确定时的补充信号。</li>
       </ul>
       </div>
 
       <div class="practice-block">
       <h3 class="fn-h3" id="practice-llms">2. llms.txt：优先导读</h3>
       <p class="file-lead">面向 Agent 的精选导读，仅收录主推知识面，而非全站清单；用于明确优先阅读顺序与主推版本。</p>
+      <h4 class="fn-h4">约定路径</h4>
+      <p class="file-lead"><code>https://{域名}/llms.txt</code>（默认根目录；若文档站部署在子路径下，如 <code>example.com/docs</code>，则为 <code>example.com/docs/llms.txt</code>）</p>
+      <h4 class="fn-h4">最小合格示例</h4>
       <figure class="file-sample">
-        <figcaption><code>llms.txt</code>（最小合格样本）</figcaption>
+        <figcaption><code>llms.txt</code></figcaption>
         <pre><code class="language-markdown"># Product X 文档
 
 &gt; 主推版本：Product X 2.0。只收官方文档，不含活动页。
@@ -829,7 +850,8 @@ Sitemap: https://docs.example.com/sitemap.xml</code></pre>
 
 - [安装指南](https://docs.example.com/docs/product-x/1.5/install)</code></pre>
       </figure>
-      <p class="file-sample-note">H1 为站点名；<code>&gt;</code> 写明主推版本；H2 按产品 / 版本分组；链接文案与目标页 H1 同名；安装、API、概念排在组内前部。</p>
+      <p class="file-sample-note">说明：H1 为站点名；<code>&gt;</code> 写明主推版本；H2 按产品 / 版本分组；链接文案与目标页 H1 同名；安装、API、概念排在组内前部。</p>
+      <h4 class="fn-h4">执行要点</h4>
       <ul class="bg-list">
         <li><strong>直接可达</strong>根路径 <code>/llms.txt</code> 应直接返回内容，不设置跳转或登录拦截。</li>
         <li><strong>内容纯化</strong>面向文档与主推版本，活动落地页不收录其中。</li>
@@ -842,8 +864,11 @@ Sitemap: https://docs.example.com/sitemap.xml</code></pre>
       <div class="practice-block">
       <h3 class="fn-h3" id="practice-llms-full">3. llms-full.txt：配套正文包</h3>
       <p class="file-lead">导读的配套正文包，由导读定向触发，支持一次性提取纯净正文。</p>
+      <h4 class="fn-h4">约定路径</h4>
+      <p class="file-lead"><code>https://{域名}/llms-full.txt</code>（与 <code>llms.txt</code> 同目录，惯例路径）</p>
+      <h4 class="fn-h4">最小合格示例</h4>
       <figure class="file-sample">
-        <figcaption><code>llms-full.txt</code>（最小合格样本节选）</figcaption>
+        <figcaption><code>llms-full.txt</code>（节选）</figcaption>
         <pre><code class="language-markdown"># 安装指南
 
 本文说明如何安装 Product X 2.0。系统要求如下。……
@@ -852,7 +877,8 @@ Sitemap: https://docs.example.com/sitemap.xml</code></pre>
 
 本文说明 Product X 2.0 的接口约定。……</code></pre>
       </figure>
-      <p class="file-sample-note">篇题与顺序须与 <code>llms.txt</code> 一致；只留正文，不含导航、页脚、侧栏；随文档发布自动生成，不手工维护、不单独挂空文件。</p>
+      <p class="file-sample-note">说明：篇题与顺序须与 <code>llms.txt</code> 一致；只留正文，不含导航、页脚、侧栏；随文档发布自动生成，不手工维护、不单独挂空文件。</p>
+      <h4 class="fn-h4">执行要点</h4>
       <ul class="bg-list">
         <li><strong>入口限制</strong>依赖 <code>llms.txt</code> 中的链接或同目录惯例进入，不脱离导读单独配置。</li>
         <li><strong>构建同步</strong>随文档发布流程自动生成，避免手工维护导致过期。</li>
@@ -864,8 +890,11 @@ Sitemap: https://docs.example.com/sitemap.xml</code></pre>
       <div class="practice-block">
       <h3 class="fn-h3" id="practice-sitemap">4. sitemap.xml：无导读兜底</h3>
       <p class="file-lead">公开知识页的 URL 清单，作为导读缺失时的兜底入口。</p>
+      <h4 class="fn-h4">约定路径</h4>
+      <p class="file-lead">必须在 <code>robots.txt</code> 中通过 <code>Sitemap:</code> 字段声明完整地址——这一点与前三个文件不同，不能默认按根路径直接访问。</p>
+      <h4 class="fn-h4">最小合格示例</h4>
       <figure class="file-sample">
-        <figcaption><code>sitemap.xml</code>（最小合格样本）</figcaption>
+        <figcaption><code>sitemap.xml</code></figcaption>
         <pre><code class="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"&gt;
   <span class="cmt">&lt;!-- 只收知识面；路径含产品名、文档名、版本 --&gt;</span>
@@ -874,7 +903,8 @@ Sitemap: https://docs.example.com/sitemap.xml</code></pre>
   <span class="cmt">&lt;!-- 不收录 /admin、重复参数 URL、活动专题 --&gt;</span>
 &lt;/urlset&gt;</code></pre>
       </figure>
-      <p class="file-sample-note">完整地址须写在 <code>robots.txt</code> 的 <code>Sitemap:</code> 行；有导读时本清单只作回退。</p>
+      <p class="file-sample-note">说明：完整地址须写在 <code>robots.txt</code> 的 <code>Sitemap:</code> 行；有导读时本清单只作回退。</p>
+      <h4 class="fn-h4">执行要点</h4>
       <ul class="bg-list">
         <li><strong>收录范围</strong>面向应被公开索引的知识面页面，后台或重复 URL 不收录其中。</li>
         <li><strong>语义化 URL</strong>路径与文件名包含明确的业务语义（如产品名、版本号），避免无意义参数和会话 ID。</li>
