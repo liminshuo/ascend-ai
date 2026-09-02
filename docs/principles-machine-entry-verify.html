@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>流程验证 · 发现层部署 · 昇腾社区 AI 亲和原则</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid #e2e8f0;
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: 100%; max-width: none; margin: 0; padding: 0 24px; box-sizing: border-box;
+    height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: #191919; text-decoration: none; white-space: nowrap; margin-right: 40px;
+  }
+  .topbar .brand span { color: #1476FF; }
+  .topbar .site-nav { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; flex-wrap: wrap; }
+  .topbar .site-nav > a {
+    text-decoration: none; color: #595959; font-size: 14px; font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .topbar .site-nav > a:hover { color: #1476FF; background: #F5F5F5; text-decoration: none; }
+  .topbar .site-nav > a.active { color: #1476FF; background: #F5F5F5; font-weight: 600; }
+  body.inner-page .page-wrapper { min-height: 100vh; }
+
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 28px;
+  }
+  .page-header h1 {
+    font-family: "PingFang SC", sans-serif;
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1-weight, 600);
+    line-height: var(--text-h1-lh);
+    letter-spacing: -0.02em;
+    margin: 8px 0 0;
+    color: var(--color-text, #191919);
+  }
+  .page-header .page-desc {
+    margin: 32px 0 0;
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--text, #191919);
+  }
+  body.inner-page.agent-entry-page:has(#module-sidebar) .main-content {
+    padding-top: 32px;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  body.inner-page.agent-entry-page:has(#module-sidebar) .main-content > .page-header,
+  body.inner-page.agent-entry-page:has(#module-sidebar) .main-content > .section{
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page.agent-entry-page .main-content .section > h2 {
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    letter-spacing: -0.01em;
+    margin-top: 48px;
+    margin-bottom: 16px;
+    padding-bottom: var(--space-h2-rule, 16px);
+    border-bottom: 2px solid #f0f0f0;
+    color: var(--color-text, #191919);
+  }
+  body.inner-page.agent-entry-page .main-content > .section:first-of-type > h2 {
+    margin-top: 40px;
+  }
+  #compare {
+    margin-top: 32px;
+  }
+  #compare .back-link {
+    margin-top: 24px;
+  }
+
+  .bg-body {
+    margin: 0 0 16px;
+    font-size: 14px;
+    line-height: 22px;
+    color: #595959;
+  }
+  .bg-body a {
+    color: #1476FF;
+    text-decoration: none;
+  }
+  .bg-body a:hover {
+    text-decoration: underline;
+  }
+  .bg-body code,
+  .aj code {
+    font-size: 12px;
+  }
+  .ask-quote {
+    margin: 0;
+    padding: 12px 16px;
+    background: #f5f6f8;
+    border-radius: 8px;
+    font-size: 14px;
+    line-height: 22px;
+    color: #191919;
+  }
+  .model-tabs {
+    margin-top: 24px;
+  }
+  .provenance {
+    margin: 0 0 20px;
+    padding: 10px 14px;
+    border-left: 3px solid #e2e8f0;
+    background: #fafafa;
+    font-size: 13px;
+    line-height: 21px;
+    color: #595959;
+  }
+  .provenance strong {
+    color: #191919;
+    font-weight: 650;
+  }
+  .model-tabs-nav {
+    display: flex;
+    gap: 4px;
+    border-bottom: 1px solid #e2e8f0;
+    margin-bottom: 24px;
+  }
+  .model-tabs-nav [role="tab"] {
+    appearance: none;
+    border: none;
+    background: transparent;
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 650;
+    line-height: 22px;
+    color: #8c8c8c;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+  }
+  .model-tabs-nav [role="tab"]:hover {
+    color: #191919;
+  }
+  .model-tabs-nav [role="tab"].is-active {
+    color: #1476FF;
+    border-bottom-color: #1476FF;
+  }
+  .model-tabs-panels [role="tabpanel"] {
+    display: none;
+  }
+  .model-tabs-panels [role="tabpanel"].is-active {
+    display: block;
+  }
+  #ask .model-tabs h3.fn-h3 {
+    margin: 0;
+    padding-top: 8px;
+    padding-bottom: 16px;
+    font-size: 18px;
+    line-height: 28px;
+    font-weight: 650;
+    color: #191919;
+  }
+  #ask .model-tabs h3.fn-h3:first-child {
+    padding-top: 0;
+  }
+  .meta-dl {
+    margin: 0 0 8px;
+    display: grid;
+    grid-template-columns: 88px 1fr;
+    gap: 8px 16px;
+    font-size: 14px;
+    line-height: 22px;
+  }
+  .meta-dl dt {
+    margin: 0;
+    color: #8c8c8c;
+    font-weight: 650;
+  }
+  .meta-dl dd {
+    margin: 0;
+    color: #191919;
+  }
+  .answer-steps {
+    margin: 0 0 24px;
+    padding-left: 1.5em;
+    font-size: 14px;
+    line-height: 22px;
+    color: #595959;
+  }
+  .answer-steps li + li {
+    margin-top: 10px;
+  }
+  .answer-steps strong {
+    color: #191919;
+    font-weight: 650;
+  }
+  .af-figure {
+    margin: 0;
+  }
+  .aj {
+    width: 100%;
+    min-width: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+    font-size: 12px;
+    line-height: 22px;
+    color: #191919;
+  }
+  .aj caption {
+    caption-side: top;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 22px;
+    padding: 0 0 10px;
+    color: #191919;
+  }
+  .aj th,
+  .aj td {
+    border: 1px solid #e8eef5;
+    border-top: none;
+    border-left: none;
+    vertical-align: top;
+    padding: 12px;
+    font-size: 12px;
+    line-height: 22px;
+    word-break: break-all;
+  }
+  .aj thead tr:first-child > th {
+    border-top: 1px solid #e8eef5;
+  }
+  .aj th:first-child,
+  .aj td:first-child {
+    border-left: 1px solid #e8eef5;
+  }
+  .aj thead th {
+    background: #f5f6f8;
+    font-weight: 650;
+    text-align: left;
+    color: #191919;
+  }
+  .aj thead tr:first-child > th:first-child {
+    border-top-left-radius: 8px;
+  }
+  .aj thead tr:first-child > th:last-child {
+    border-top-right-radius: 8px;
+  }
+  .aj tbody tr:last-child td:first-child {
+    border-bottom-left-radius: 8px;
+  }
+  .aj tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 8px;
+  }
+  .aj a {
+    color: #1476FF;
+    text-decoration: none;
+  }
+  .aj a:hover {
+    text-decoration: underline;
+  }
+  .aj col.col-step { width: 44px; }
+  .aj col.col-stage { width: 120px; }
+  .aj col.col-url { width: auto; }
+  .aj col.col-result { width: 28%; }
+  .back-link {
+    margin: 0;
+    font-size: 14px;
+    line-height: 22px;
+  }
+  .back-link a {
+    color: #1476FF;
+    text-decoration: none;
+    font-weight: 650;
+  }
+  .back-link a:hover {
+    text-decoration: underline;
+  }
+</style>
+</head>
+<body class="inner-page agent-entry-page" data-module="principles" data-page="machine-entry-verify" data-no-surface-tabs>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html">社区 <span>AI 亲和原则</span></a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="mintlify.html">友商对照</a>
+      <a href="reachability.html">社区诊断</a>
+      <a href="principles-overview.html" class="active">亲和原则</a>
+      <a href="community-ui.html">组件亲和</a>
+      <a href="design-guide-image-text.html">设计模式</a>
+      <a href="data-analysis.html">数据分析</a>
+    </nav>
+  </div>
+</div>
+
+<div class="page-wrapper">
+
+  <aside id="module-sidebar"></aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <h1>流程验证</h1>
+      <p class="page-desc">同一个提问，分别交给几个模型跑，如实记录每个模型实际请求了哪些 URL。这里不预设它们应该走哪条路径，只记录它们真正走了什么。独立复测后，四轮都不是从发现层起手。</p>
+    </div>
+
+    <section class="section" id="ask">
+      <h2>测试提问</h2>
+      <blockquote class="ask-quote">Ascend C 怎么入门？请只从 hiascend 官方文档找，并写下你每一步请求了哪个 URL</blockquote>
+
+      <div class="model-tabs">
+        <div class="model-tabs-nav" role="tablist" aria-label="测试模型">
+          <button type="button" role="tab" id="tab-grok" class="is-active" aria-selected="true" aria-controls="panel-grok" tabindex="0">Grok 4.6</button>
+          <button type="button" role="tab" id="tab-gpt" aria-selected="false" aria-controls="panel-gpt" tabindex="-1">GPT-5.6</button>
+          <button type="button" role="tab" id="tab-claude" aria-selected="false" aria-controls="panel-claude" tabindex="-1">Claude Opus 5</button>
+          <button type="button" role="tab" id="tab-sonnet" aria-selected="false" aria-controls="panel-sonnet" tabindex="-1">Claude Sonnet 5</button>
+        </div>
+        <div class="model-tabs-panels">
+          <div role="tabpanel" id="panel-grok" class="is-active" aria-labelledby="tab-grok">
+            <h3 class="fn-h3">测试模型</h3>
+            <dl class="meta-dl">
+              <dt>模型</dt>
+              <dd>Cursor Grok 4.6（无前文上下文的独立复测）</dd>
+              <dt>日期</dt>
+              <dd>2026-09-02</dd>
+              <dt>约束</dt>
+              <dd>只给原始提问，不提示任何发现路径或推荐起点；只使用 hiascend 官方资料</dd>
+            </dl>
+            <p class="provenance"><strong>记录来源：</strong>新开一个不带本页前文的 Grok 4.6 研究会话独立运行。下表按该轮自报的真实请求顺序完整转录，失败与重试均保留。前几步用了站外搜索引擎，检索器还额外拉了部分全文——这些不是对 hiascend 的主动 GET，表内单独标明。</p>
+            <h3 class="fn-h3">回答</h3>
+            <ol class="answer-steps">
+              <li><strong>定位：</strong>Ascend C 是 CANN 面向算子开发的编程语言，原生支持 C/C++；写好的算子经编译器和运行时调度，跑在昇腾 AI 处理器上。产品页把初学者路径写成：先完成矢量算子核函数，掌握基础 API 调用。</li>
+              <li><strong>准备环境：</strong>安装驱动固件和 CANN，装完以 CANN 运行用户执行 <code>source $INSTALL_DIR/set_env.sh</code>（商用包示例 <code>/usr/local/Ascend/cann</code>，社区版示例 <code>/usr/local/Ascend/ascend-toolkit</code>）。教程还要求 CMake ≥ 3.16。没有昇腾硬件时可先在 CPU 仿真里开发。</li>
+              <li><strong>跟 Add 样例走一遍：</strong>算子分析 → 写核函数（样例多为 <code>add_custom</code>）→ 先 CPU 模式验证，再 NPU 模式验证。矢量侧典型流程是 Global Memory → Local Memory（<code>DataCopy</code>）→ 计算（如 <code>Add</code>）→ 再搬回；任务间用 <code>EnQue</code> / <code>DeQue</code>，内存用 <code>AllocTensor</code> / <code>FreeTensor</code>。</li>
+              <li><strong>官方给出的下一步：</strong>产品页是代码样例 → 快速入门文档 → 入门课程，再进到工程化开发、编程模型、调试。技术文章指向《Ascend C 编程指南》。</li>
+            </ol>
+            <p class="bg-body">〔推断〕把 CANN 商用版 8.5.0 当成「当前该跟的文档线」，是因为搜索排序靠前，官方并未写成必须跟这个版本。产品页「快速入门文档」是否就是 <code>atlas_ascendc_map_10_0006.html</code>，也是据标题匹配的推断，产品页本身没给出该 URL。0002 / 0006 的部分句子来自搜索摘要，因文档站多次返回 SPA 空壳，完整 HTML 正文本次未拿到。</p>
+            <h3 class="fn-h3">逐步实际请求</h3>
+            <p class="bg-body">以下是独立复测自报的全部 13 次请求。失败、重试与站外搜索均单独保留。</p>
+            <figure class="af-figure">
+              <table class="aj">
+                <caption>表1 Grok 4.6 独立复测的真实请求轨迹</caption>
+                <colgroup>
+                  <col class="col-step" />
+                  <col class="col-stage" />
+                  <col class="col-url" />
+                  <col class="col-result" />
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th scope="col">步</th>
+                    <th scope="col">行为</th>
+                    <th scope="col">实际请求 URL</th>
+                    <th scope="col">结果</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td>站外搜索</td>
+                    <td>搜索 <code>Ascend C 入门 site:hiascend.com</code></td>
+                    <td>成功。检索器额外拉了全文 <a href="https://www.hiascend.com/developer/techArticles/20230830-1">…/techArticles/20230830-1</a></td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td>打开产品页</td>
+                    <td><a href="https://www.hiascend.com/cann/ascend-c">https://www.hiascend.com/cann/ascend-c</a></td>
+                    <td>成功。定义、关键特性、「快速上手 / 进阶 / 深度驾驭」</td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td>打开 8.5.0 定义页</td>
+                    <td><a href="https://www.hiascend.com/document/detail/zh/canncommercial/850/opdevg/Ascendcopdevg/atlas_ascendc_map_10_0002.html">…/canncommercial/850/…/atlas_ascendc_map_10_0002.html</a></td>
+                    <td>成功但正文几乎空，几乎只有标题「什么是Ascend C」</td>
+                  </tr>
+                  <tr>
+                    <td>4</td>
+                    <td>站外搜索</td>
+                    <td>搜索 <code>Ascend C 快速入门 site:hiascend.com/document</code></td>
+                    <td>成功。检索器额外拉了 8.0 / 8.2 / 社区 8.1 若干入门页全文</td>
+                  </tr>
+                  <tr>
+                    <td>5</td>
+                    <td>打开技术文章</td>
+                    <td><a href="https://www.hiascend.com/developer/techArticles/20230830-1">https://www.hiascend.com/developer/techArticles/20230830-1</a></td>
+                    <td>成功。编程范式、核函数、样例，文末指向《Ascend C 编程指南》</td>
+                  </tr>
+                  <tr>
+                    <td>6</td>
+                    <td>打开 Add 教程</td>
+                    <td><a href="https://www.hiascend.com/document/detail/zh/canncommercial/850/opdevg/Ascendcopdevg/atlas_ascendc_map_10_0006.html">…/atlas_ascendc_map_10_0006.html</a></td>
+                    <td>超时，无正文</td>
+                  </tr>
+                  <tr>
+                    <td>7</td>
+                    <td>站外搜索</td>
+                    <td>搜索 <code>入门教程 Ascend C 算子开发 CANN 8.5.0 site:hiascend.com/document/detail/zh/canncommercial/850</code></td>
+                    <td>成功。拿到 0003 环境准备、0006 Add 教程等摘要</td>
+                  </tr>
+                  <tr>
+                    <td>8</td>
+                    <td>重试 Add 教程</td>
+                    <td><a href="https://www.hiascend.com/document/detail/zh/canncommercial/850/opdevg/Ascendcopdevg/atlas_ascendc_map_10_0006.html">…/atlas_ascendc_map_10_0006.html</a></td>
+                    <td>再次超时</td>
+                  </tr>
+                  <tr>
+                    <td>9</td>
+                    <td>重试定义页</td>
+                    <td><a href="https://www.hiascend.com/document/detail/zh/canncommercial/850/opdevg/Ascendcopdevg/atlas_ascendc_map_10_0002.html">…/atlas_ascendc_map_10_0002.html</a></td>
+                    <td>成功但正文几乎空，仍几乎只有标题</td>
+                  </tr>
+                  <tr>
+                    <td>10</td>
+                    <td>打开环境准备</td>
+                    <td><a href="https://www.hiascend.com/document/detail/zh/canncommercial/850/opdevg/Ascendcopdevg/atlas_ascendc_map_10_0003.html">…/atlas_ascendc_map_10_0003.html</a></td>
+                    <td>成功但几乎无文档正文，仅站点壳</td>
+                  </tr>
+                  <tr>
+                    <td>11</td>
+                    <td>curl Add 教程（沙箱）</td>
+                    <td>同第 6 步 URL</td>
+                    <td>失败：<code>CONNECT tunnel 403</code></td>
+                  </tr>
+                  <tr>
+                    <td>12</td>
+                    <td>curl 定义页（沙箱，与第 11 步并行）</td>
+                    <td>同第 3 步 URL</td>
+                    <td>失败：同上</td>
+                  </tr>
+                  <tr>
+                    <td>13</td>
+                    <td>curl Add 教程（放开网络）</td>
+                    <td>同第 6 步 URL</td>
+                    <td>HTTP 200，约 310KB 前端 SPA 壳，没有「Add自定义算子开发」正文</td>
+                  </tr>
+                </tbody>
+              </table>
+            </figure>
+            <h3 class="fn-h3">本轮路径</h3>
+            <p class="bg-body">从站外搜索起手，再打开产品页和 8.5.0 文档站。文档站多次返回空壳或超时，于是反复搜索、重试、改用 curl。最终能完整读到的官方正文主要是产品页和一篇 2023 年技术文章；Add 教程和环境准备页都没有拿到可用正文，部分步骤只能靠搜索摘要补。</p>
+            <p class="bg-body"><strong>访问事实：</strong>本轮没有请求 <code>robots.txt</code>、<code>llms.txt</code>、<code>llms-full.txt</code> 或任何 sitemap。</p>
+          </div>
+          <div role="tabpanel" id="panel-gpt" aria-labelledby="tab-gpt" hidden>
+            <h3 class="fn-h3">测试模型</h3>
+            <dl class="meta-dl">
+              <dt>模型</dt>
+              <dd>GPT-5.6 Sol（无前文上下文的独立复测）</dd>
+              <dt>日期</dt>
+              <dd>2026-09-02</dd>
+              <dt>约束</dt>
+              <dd>只给原始提问，不提示任何发现路径或推荐起点；只使用 hiascend 官方资料</dd>
+            </dl>
+            <p class="provenance"><strong>记录来源：</strong>新开一个不带本页前文的 GPT-5.6 Sol 研究会话独立运行。下表按该轮自报的真实请求顺序完整转录，重复请求与失败请求均保留。</p>
+            <h3 class="fn-h3">回答</h3>
+            <ol class="answer-steps">
+              <li><strong>先理解定位：</strong>Ascend C 是 CANN 生态下面向昇腾 AI 处理器的算子开发语言，兼容 C/C++，提供语言扩展层 C API、基础 API、高阶 API 和算子模板库等层级。</li>
+              <li><strong>准备环境：</strong>安装昇腾驱动、固件和 CANN 软件包，并确认处理器型号及对应 NPU 架构版本。</li>
+              <li><strong>建立编程模型概念：</strong>了解 Host/Device 异构执行，以及 SIMD、SIMT 两种编程模型。</li>
+              <li><strong>跑通第一个算子：</strong>该轮选择官方 SIMD HelloWorld，完成 Device Kernel、Host 端 <code>&lt;&lt;&lt;...&gt;&gt;&gt;</code> 启动、Bisheng 编译和 NPU 运行。示例命令是 <code>bisheng hello_world.asc --npu-arch=dav-2201 -o demo</code> 和 <code>./demo</code>；<code>--npu-arch</code> 要换成实际硬件对应版本。</li>
+              <li><strong>再进入进阶：</strong>官方学习路径分为快速入门、进阶编程和高级编程三个阶段。〔推断〕把「概述 → 环境 → 编程模型 → SIMD HelloWorld → 进阶」排成线性顺序，是本模型的整理；官方同时提供 SIMD 和 SIMT 路径，并未规定所有人必须先学 SIMD。</li>
+            </ol>
+            <h3 class="fn-h3">逐步实际请求</h3>
+            <p class="bg-body">以下是独立复测自报的全部 17 次网络请求。同一 URL 的重试单独保留。</p>
+            <figure class="af-figure">
+              <table class="aj">
+                <caption>表2 GPT-5.6 Sol 独立复测的真实请求轨迹</caption>
+                <colgroup>
+                  <col class="col-step" />
+                  <col class="col-stage" />
+                  <col class="col-url" />
+                  <col class="col-result" />
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th scope="col">步</th>
+                    <th scope="col">行为</th>
+                    <th scope="col">实际请求 URL</th>
+                    <th scope="col">结果</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td>打开文档首页</td>
+                    <td><a href="https://www.hiascend.com/document">https://www.hiascend.com/document</a></td>
+                    <td>成功；页面正文信息很少</td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td>猜旧版简介页</td>
+                    <td><a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/800alpha003/devguide/opdevg/Ascendcopdevg/atlas_ascendc_10_0001.html">…/800alpha003/devguide/opdevg/Ascendcopdevg/atlas_ascendc_10_0001.html</a></td>
+                    <td>超时</td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td>改目录大小写</td>
+                    <td><a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/800alpha003/devguide/opdevg/ascendcopdevg/atlas_ascendc_10_0001.html">…/800alpha003/devguide/opdevg/ascendcopdevg/atlas_ascendc_10_0001.html</a></td>
+                    <td>成功；取得「Ascend C简介」页面标题</td>
+                  </tr>
+                  <tr>
+                    <td>4</td>
+                    <td>试相邻页</td>
+                    <td><a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/800alpha003/devguide/opdevg/ascendcopdevg/atlas_ascendc_10_0002.html">…/atlas_ascendc_10_0002.html</a></td>
+                    <td>超时</td>
+                  </tr>
+                  <tr>
+                    <td>5</td>
+                    <td>再试相邻页</td>
+                    <td><a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/800alpha003/devguide/opdevg/ascendcopdevg/atlas_ascendc_10_0003.html">…/atlas_ascendc_10_0003.html</a></td>
+                    <td>超时</td>
+                  </tr>
+                  <tr>
+                    <td>6</td>
+                    <td>站内搜索</td>
+                    <td><a href="https://www.hiascend.com/search?keyword=Ascend%20C">https://www.hiascend.com/search?keyword=Ascend%20C</a></td>
+                    <td>HTTP 404</td>
+                  </tr>
+                  <tr>
+                    <td>7</td>
+                    <td>重取简介页</td>
+                    <td><a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/800alpha003/devguide/opdevg/ascendcopdevg/atlas_ascendc_10_0001.html">…/atlas_ascendc_10_0001.html</a></td>
+                    <td>HTTP 403</td>
+                  </tr>
+                  <tr>
+                    <td>8</td>
+                    <td>换浏览器 UA 重取</td>
+                    <td><a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/800alpha003/devguide/opdevg/ascendcopdevg/atlas_ascendc_10_0001.html">…/atlas_ascendc_10_0001.html</a></td>
+                    <td>成功；取得完整 HTML，内含简介、优势、成长地图和 Markdown 替代链接</td>
+                  </tr>
+                  <tr>
+                    <td>9</td>
+                    <td>跟替代链接</td>
+                    <td><a href="https://www.hiascend.com/llms-content/document/detail/CANNCommunityEdition/CANNCommunityEdition_800alpha003_devguide_opdevg_ascendcopdevg_atlas_ascendc_10_0001_html.md">…/llms-content/…/atlas_ascendc_10_0001_html.md</a></td>
+                    <td>HTTP 404</td>
+                  </tr>
+                  <tr>
+                    <td>10</td>
+                    <td>重试替代链接</td>
+                    <td><a href="https://www.hiascend.com/llms-content/document/detail/CANNCommunityEdition/CANNCommunityEdition_800alpha003_devguide_opdevg_ascendcopdevg_atlas_ascendc_10_0001_html.md">…/llms-content/…/atlas_ascendc_10_0001_html.md</a></td>
+                    <td>再次 HTTP 404</td>
+                  </tr>
+                  <tr>
+                    <td>11</td>
+                    <td>打开旧版教程</td>
+                    <td><a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/800alpha003/devguide/opdevg/ascendcopdevg/atlas_ascendc_10_0004.html">…/atlas_ascendc_10_0004.html</a></td>
+                    <td>成功；取得旧版 HelloWorld 教程</td>
+                  </tr>
+                  <tr>
+                    <td>12</td>
+                    <td>换 CANN 9.1</td>
+                    <td><a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/910/devguide/opdevg/ascendcopdevg/atlas_ascendc_10_0001.html">…/CANNCommunityEdition/910/…/atlas_ascendc_10_0001.html</a></td>
+                    <td>TLS/SSL 连接错误</td>
+                  </tr>
+                  <tr>
+                    <td>13</td>
+                    <td>重试 CANN 9.1</td>
+                    <td><a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/910/devguide/opdevg/ascendcopdevg/atlas_ascendc_10_0001.html">…/CANNCommunityEdition/910/…/atlas_ascendc_10_0001.html</a></td>
+                    <td>成功；HTML 跳转页指向 CANN 9.1.X 新版概述</td>
+                  </tr>
+                  <tr>
+                    <td>14</td>
+                    <td>跟新版概述</td>
+                    <td><a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/910/programug/Ascendcopdevg/docs/guide/%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B/Ascend-C%E6%A6%82%E8%BF%B0%E4%B8%8E%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%84.md">…/入门教程/Ascend-C概述与学习路径.md</a></td>
+                    <td>成功；取得定义、API 层级、支持产品及三阶段学习路径</td>
+                  </tr>
+                  <tr>
+                    <td>15</td>
+                    <td>读环境准备</td>
+                    <td><a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/910/programug/Ascendcopdevg/docs/guide/%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B/%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87.md">…/入门教程/环境准备.md</a></td>
+                    <td>成功；取得驱动、固件和 CANN 软件包要求</td>
+                  </tr>
+                  <tr>
+                    <td>16</td>
+                    <td>进入 SIMD 入门</td>
+                    <td><a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/910/programug/Ascendcopdevg/docs/guide/%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B/%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/%E5%9F%BA%E4%BA%8ESIMD%E7%BC%96%E7%A8%8B/%E5%9F%BA%E4%BA%8ESIMD%E7%BC%96%E7%A8%8B.md">…/快速入门/基于SIMD编程/基于SIMD编程.md</a></td>
+                    <td>成功；跳转目标为同目录的 <code>HelloWorld.md</code></td>
+                  </tr>
+                  <tr>
+                    <td>17</td>
+                    <td>读 HelloWorld</td>
+                    <td><a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/910/programug/Ascendcopdevg/docs/guide/%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B/%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/%E5%9F%BA%E4%BA%8ESIMD%E7%BC%96%E7%A8%8B/HelloWorld.md">…/快速入门/基于SIMD编程/HelloWorld.md</a></td>
+                    <td>成功；取得 Device Kernel、Host 调用、Bisheng 编译和运行流程</td>
+                  </tr>
+                </tbody>
+              </table>
+            </figure>
+            <h3 class="fn-h3">本轮路径</h3>
+            <p class="bg-body">从文档首页直接进入，先在 CANN 8.0 alpha 旧版 URL 中猜相邻页、改大小写、尝试站内搜索和切换 User-Agent；读到旧版 HelloWorld 后，把版本换成 9.1，沿官方跳转进入 CANN 9.1.X 的 Markdown 概述、环境准备和 SIMD HelloWorld。路径很曲折，但最终拿到了最新版入门正文。</p>
+            <p class="bg-body"><strong>访问事实：</strong>本轮没有请求 <code>robots.txt</code>、<code>llms.txt</code>、<code>llms-full.txt</code> 或任何 sitemap。第 9、10 步请求了页面声明的 <code>/llms-content/…md</code> 地址，但两次都是 404；这不等于访问了 <code>llms.txt</code>。</p>
+          </div>
+          <div role="tabpanel" id="panel-claude" aria-labelledby="tab-claude" hidden>
+            <h3 class="fn-h3">测试模型</h3>
+            <dl class="meta-dl">
+              <dt>模型</dt>
+              <dd>Claude Opus 5（无前文上下文的独立复测）</dd>
+              <dt>日期</dt>
+              <dd>2026-09-02</dd>
+              <dt>约束</dt>
+              <dd>只给原始提问，不提示任何发现路径或推荐起点；只使用 hiascend 官方资料</dd>
+            </dl>
+            <p class="provenance"><strong>记录来源：</strong>新开一个不带本页前文的 Claude Opus 5 研究会话独立运行。下表按该轮自报的真实请求顺序完整转录，失败、超时与重试均保留。并行发出的请求按其自报批次标注。</p>
+            <h3 class="fn-h3">回答</h3>
+            <ol class="answer-steps">
+              <li><strong>先建立概念：</strong>Ascend C 是 CANN 面向算子开发的编程语言，原生支持 C/C++ 标准规范；提供语言扩展层 C API、基于 Tensor 的基础 API、高阶 API、算子模板库和 Python 前端 PyAsc。</li>
+              <li><strong>搞懂硬件抽象：</strong>CPU 是 host、NPU 是 device，经 PCIe 协同。核心是 AI Core，内含 Scalar / Vector / Cube 三个计算单元和 DMA 搬运单元；Global Memory 共享，Local Memory 带宽高但只有几百 KB 到 1MB。</li>
+              <li><strong>掌握流水编程范式：</strong>矢量编程固定为 CopyIn → Compute → CopyOut 三个任务，对应逻辑位置 VECIN / VECCALC / VECOUT，用 <code>EnQue</code> / <code>DeQue</code> 串起来，Pipe 统一管内存。多核走 SPMD，所有核跑同一份代码，靠内置变量 <code>block_idx</code> 偏移切分数据。</li>
+              <li><strong>记住四类 API 与核函数写法：</strong>计算类、数据搬运类（<code>DataCopy</code>）、内存管理类（<code>AllocTensor</code> / <code>FreeTensor</code>）、任务同步类（<code>EnQue</code> / <code>DeQue</code>）；核函数声明为 <code>extern "C" __global__ __aicore__</code>，用 <code>kernel_name&lt;&lt;&lt;blockDim, l2ctrl, stream&gt;&gt;&gt;</code> 调用，入门先把 <code>blockDim</code> 设为 1。</li>
+              <li><strong>动手：</strong>按《CANN 软件安装指南》装好环境，执行 <code>source ${install_path}/set_env.sh</code>；取官方 <code>quick-start</code> 样例骨架，写核函数和 host 侧 <code>main.cpp</code>；用孪生调试先在 CPU 侧以 <code>ICPU_RUN_KF</code> 宏配 GDB 单步，再到 NPU 侧验证；最后 <code>bash run.sh add_custom ascend910 AiCore cpu</code>，换 <code>npu</code> 再跑一遍，用 md5sum 比对结果。</li>
+              <li><strong>继续深入：</strong>CANN 文档聚合页（当前 9.2.0-beta.1，更新于 2026/08/12）「编程语言」栏下是《Ascend C 编程指南》，「API 参考」栏下是《Ascend C API》，「学习与教程」栏下有 CANN-learning-hub 和 CANN-samples。</li>
+            </ol>
+            <p class="bg-body">〔推断〕把上面六步串成一条连续路径，是该轮把主页的三段式学习路径与两篇技术文章合并后的编排，官方并没有把它们写成一条线。</p>
+            <p class="bg-body"><strong>该轮自述的局限：</strong>始终没有读到《Ascend C 编程指南》「快速入门」章节的正文，只拿到目录级的《什么是 Ascend C》。上面所有实操步骤都出自两篇发表于 2023/08/30 的官方技术文章，而 CANN 文档当前版本已是 9.2.0-beta.1（2026/08/12）；文中 <code>ascend910</code>、<code>leakyrelu_custom</code> 等具体细节是否仍与最新版本一致，未经验证。</p>
+            <h3 class="fn-h3">逐步实际请求</h3>
+            <p class="bg-body">以下是独立复测自报的全部 18 次网络请求。失败、超时与重试单独保留；对已下载文件做本地检索不计入。</p>
+            <figure class="af-figure">
+              <table class="aj">
+                <caption>表3 Claude Opus 5 独立复测的真实请求轨迹</caption>
+                <colgroup>
+                  <col class="col-step" />
+                  <col class="col-stage" />
+                  <col class="col-url" />
+                  <col class="col-result" />
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th scope="col">步</th>
+                    <th scope="col">行为</th>
+                    <th scope="col">实际请求 URL</th>
+                    <th scope="col">结果</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td>猜落地页</td>
+                    <td><a href="https://www.hiascend.com/ascend-c">https://www.hiascend.com/ascend-c</a></td>
+                    <td>200，但正文几乎为空，只拿到标题；页面为 JS 渲染</td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td>凭印象猜文档路径</td>
+                    <td><a href="https://www.hiascend.com/document/detail/zh/canncommercial/80RC1/devaids/opdevg/Ascendcopdevg/atlas_ascendc_10_0001.html">…/canncommercial/80RC1/devaids/opdevg/…/atlas_ascendc_10_0001.html</a></td>
+                    <td>超时，无内容</td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td>读 robots（与第 2 步并行）</td>
+                    <td><a href="https://www.hiascend.com/robots.txt">https://www.hiascend.com/robots.txt</a></td>
+                    <td>成功。拿到 <code>LLM-Policy: /llms.txt</code>、12 个 sitemap 地址，以及针对 AI agent 的 <code>Allow: /llms.txt$ /llms-full.txt$ /llms-content/</code></td>
+                  </tr>
+                  <tr>
+                    <td>4</td>
+                    <td>读 llms.txt</td>
+                    <td><a href="https://www.hiascend.com/llms.txt">https://www.hiascend.com/llms.txt</a></td>
+                    <td>成功。1306KB / 3361 行全站索引，含标题、描述与对应 <code>llms-content/*.md</code> 镜像路径</td>
+                  </tr>
+                  <tr>
+                    <td>5</td>
+                    <td>取主页镜像</td>
+                    <td><a href="https://www.hiascend.com/llms-content/cann/zh_cann_ascend-c.md">https://www.hiascend.com/llms-content/cann/zh_cann_ascend-c.md</a></td>
+                    <td>成功。关键特性、三段式学习路径、PyAsc、孪生调试</td>
+                  </tr>
+                  <tr>
+                    <td>6</td>
+                    <td>取人读 HTML（与第 5 步并行）</td>
+                    <td><a href="https://www.hiascend.com/document/detail/zh/canncommercial/900/programug/Ascendcopdevg/atlas_ascendc_map_10_0002.html">…/programug/Ascendcopdevg/atlas_ascendc_map_10_0002.html</a></td>
+                    <td>200 但正文为空，只有站点标题</td>
+                  </tr>
+                  <tr>
+                    <td>7</td>
+                    <td>改取同篇镜像</td>
+                    <td><a href="https://www.hiascend.com/llms-content/document/detail/canncommercial/canncommercial_900_programug_Ascendcopdevg_atlas_ascendc_map_10_0002_html.md">…/canncommercial_900_programug_…_map_10_0002_html.md</a></td>
+                    <td>成功。《什么是 Ascend C》全文：定义、API 分层、支持的处理器型号</td>
+                  </tr>
+                  <tr>
+                    <td>8</td>
+                    <td>取入门教程（与第 7 步并行）</td>
+                    <td><a href="https://www.hiascend.com/llms-content/developer/zh_developer_techArticles_20230830-1.md">…/zh_developer_techArticles_20230830-1.md</a></td>
+                    <td>成功。28.5KB《昇腾 Ascend C 编程入门教程（纯干货）》</td>
+                  </tr>
+                  <tr>
+                    <td>9</td>
+                    <td>猜「快速入门」章节文件名</td>
+                    <td><a href="https://www.hiascend.com/llms-content/document/detail/canncommercial/canncommercial_900_programug_Ascendcopdevg_atlas_ascendc_10_0001_html.md">…_atlas_ascendc_10_0001_html.md</a></td>
+                    <td>404</td>
+                  </tr>
+                  <tr>
+                    <td>10</td>
+                    <td>试 sitemap</td>
+                    <td><a href="https://www.hiascend.com/sitemap/sitemapdoc1.xml">https://www.hiascend.com/sitemap/sitemapdoc1.xml</a></td>
+                    <td>HTTP 500</td>
+                  </tr>
+                  <tr>
+                    <td>11</td>
+                    <td>试 sitemap</td>
+                    <td><a href="https://www.hiascend.com/sitemap/sitemapdoc2.xml">https://www.hiascend.com/sitemap/sitemapdoc2.xml</a></td>
+                    <td>HTTP 500</td>
+                  </tr>
+                  <tr>
+                    <td>12</td>
+                    <td>试 sitemap（与第 11 步并行）</td>
+                    <td><a href="https://www.hiascend.com/sitemap.xml">https://www.hiascend.com/sitemap.xml</a></td>
+                    <td>HTTP 500</td>
+                  </tr>
+                  <tr>
+                    <td>13</td>
+                    <td>取文档聚合页镜像</td>
+                    <td><a href="https://www.hiascend.com/llms-content/cann/zh_cann_document.md">https://www.hiascend.com/llms-content/cann/zh_cann_document.md</a></td>
+                    <td>成功。版本 9.2.0-beta.1 与全部栏目名，但链接地址被镜像剥掉，只剩「了解详情」</td>
+                  </tr>
+                  <tr>
+                    <td>14</td>
+                    <td>继续猜章节文件名</td>
+                    <td><a href="https://www.hiascend.com/llms-content/document/detail/canncommercial/canncommercial_900_programug_Ascendcopdevg_atlas_ascendc_10_0003_html.md">…_atlas_ascendc_10_0003_html.md</a></td>
+                    <td>404</td>
+                  </tr>
+                  <tr>
+                    <td>15</td>
+                    <td>继续猜（与第 14 步并行）</td>
+                    <td><a href="https://www.hiascend.com/llms-content/document/detail/canncommercial/canncommercial_900_programug_Ascendcopdevg_atlas_ascendc_10_0004_html.md">…_atlas_ascendc_10_0004_html.md</a></td>
+                    <td>404</td>
+                  </tr>
+                  <tr>
+                    <td>16</td>
+                    <td>试 llms-full.txt</td>
+                    <td><a href="https://www.hiascend.com/llms-full.txt">https://www.hiascend.com/llms-full.txt</a></td>
+                    <td>超时</td>
+                  </tr>
+                  <tr>
+                    <td>17</td>
+                    <td>重试 llms-full.txt</td>
+                    <td><a href="https://www.hiascend.com/llms-full.txt">https://www.hiascend.com/llms-full.txt</a></td>
+                    <td>再次超时</td>
+                  </tr>
+                  <tr>
+                    <td>18</td>
+                    <td>取保姆级教程</td>
+                    <td><a href="https://www.hiascend.com/llms-content/developer/zh_developer_techArticles_20230830-2.md">…/zh_developer_techArticles_20230830-2.md</a></td>
+                    <td>成功。20.1KB《我的第一份 Ascend C 代码》：环境准备、quick-start、CPU/NPU 双侧验证、<code>run.sh</code> 参数</td>
+                  </tr>
+                </tbody>
+              </table>
+            </figure>
+            <h3 class="fn-h3">本轮路径</h3>
+            <p class="bg-body">起手不是发现层，而是自己猜落地页 <code>/ascend-c</code>（JS 渲染，正文空）和一个凭印象拼的文档路径（超时）。之后才读 <code>robots.txt</code>，再顺 <code>LLM-Policy</code> 取 <code>llms.txt</code>，此后几乎全部内容都来自 <code>llms-content/</code> 镜像。18 次请求里 9 次失败：4 个猜错的镜像文件名 404、3 个 sitemap 全 500、<code>llms-full.txt</code> 两次超时。</p>
+            <p class="bg-body"><strong>本轮发现：</strong>同一篇《什么是 Ascend C》，人读 HTML 返回 200 但正文为空，<code>llms-content</code> 镜像有完整正文，两侧不等价。文档聚合页的镜像把链接地址剥掉了，只留「了解详情」字样，因此无法顺着栏目跳到《Ascend C 编程指南》——该轮转而去猜镜像文件名，四次全部 404。robots.txt 里列出的 sitemap 有三个实测返回 500。</p>
+          </div>
+          <div role="tabpanel" id="panel-sonnet" aria-labelledby="tab-sonnet" hidden>
+            <h3 class="fn-h3">测试模型</h3>
+            <dl class="meta-dl">
+              <dt>模型</dt>
+              <dd>Claude Sonnet 5（claude.ai 网页对话，非 Cursor 环境）</dd>
+              <dt>日期</dt>
+              <dd>2026-09-02</dd>
+              <dt>约束</dt>
+              <dd>同一提问；只允许使用 hiascend 官方文档；须记录每一步实际请求的 URL</dd>
+            </dl>
+            <p class="provenance"><strong>记录来源：</strong>claude.ai 网页对话，由使用者转贴。本页作者未复核这些 URL，其中 <code>/doc_center/source/</code> 系列在本项目环境中未做验证。</p>
+            <h3 class="fn-h3">回答</h3>
+            <p class="bg-body">本轮读到的是 CANN 社区版 8.5.0 的入门教程正文，给出的入门路径如下。</p>
+            <ol class="answer-steps">
+              <li><strong>环境准备：</strong>按《CANN 软件安装指南》安装驱动固件（仅昇腾设备需要）和 CANN 软件包，装完执行 <code>source ${install_path}/set_env.sh</code> 设置环境变量。非昇腾设备可以先用 CPU 仿真环境开发调试。cmake 需 3.16 及以上。</li>
+              <li><strong>HelloWorld（最小样例）：</strong>核函数里调用 <code>AscendC::printf</code> 打印信息，Host 侧走完初始化、设备设置、<code>&lt;&lt;&lt;&gt;&gt;&gt;</code> 发起计算、释放资源的完整流程。可用 <code>bisheng</code> 命令行或 CMake 两种方式编译，运行后能看到 8 个核并行打印。</li>
+              <li><strong>Add 自定义算子开发（正式入门主线）：</strong>先做算子分析，明确数学表达式与输入输出的 shape / dtype / format，确定核函数名和要用的接口（DataCopy、Add、AllocTensor / FreeTensor、EnQue / DeQue）；再做核函数开发，设计 TilingData 做多核切分，实现 KernelAdd 类的 Init 与 Process，走 CopyIn → Compute → CopyOut 三段流水；最后做运行验证，Host 侧用 acl 接口做设备初始化、内存分配和 Host↔Device 搬运，用 <code>&lt;&lt;&lt;&gt;&gt;&gt;</code> 调核函数并比对结果。编译同样是 CMake + <code>find_package(ASC)</code>。</li>
+              <li><strong>后续方向：</strong>不熟悉多核并行与流水编程，看「编程模型」章节 <code>atlas_ascendc_10_0012.html</code>；已跑通样例想深入，看「矢量编程」章节 <code>atlas_ascendc_10_0032.html</code>。这两条本轮未展开抓取。</li>
+            </ol>
+            <h3 class="fn-h3">逐步实际请求</h3>
+            <figure class="af-figure">
+              <table class="aj">
+                <caption>表4 Claude Sonnet 5 逐步请求的 URL</caption>
+                <colgroup>
+                  <col class="col-step" />
+                  <col class="col-stage" />
+                  <col class="col-url" />
+                  <col class="col-result" />
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th scope="col">步</th>
+                    <th scope="col">行为</th>
+                    <th scope="col">实际请求 URL</th>
+                    <th scope="col">结果</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td>直取专区页</td>
+                    <td><a href="https://www.hiascend.com/ascend-c">https://www.hiascend.com/ascend-c</a></td>
+                    <td>纯 JS 渲染（CSR），只抓到导航栏与页脚，正文没出来</td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td>转文档站渲染层</td>
+                    <td><a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/850alpha001/opdevg/Ascendcopdevg/atlas_ascendc_10_0001.html">…/document/detail/zh/CANNCommunityEdition/850alpha001/…/atlas_ascendc_10_0001.html</a></td>
+                    <td>「Ascend C 简介」页同样 CSR；「快速入门」等板块只是图片，无可解析文字链接</td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td>改走原始源路径</td>
+                    <td><a href="https://www.hiascend.com/doc_center/source/zh/CANNCommunityEdition/850/opdevg/Ascendcopdevg/atlas_ascendc_map_10_0002.html">…/doc_center/source/zh/CANNCommunityEdition/850/…/atlas_ascendc_map_10_0002.html</a></td>
+                    <td>拿到正文，但「快速入门」仍是一张 image map，图内文字不可抓</td>
+                  </tr>
+                  <tr>
+                    <td>4</td>
+                    <td>跟「父主题」上溯</td>
+                    <td><a href="https://www.hiascend.com/doc_center/source/zh/CANNCommunityEdition/850/opdevg/Ascendcopdevg/atlas_ascendc_map_10_0001.html">…/atlas_ascendc_map_10_0001.html</a></td>
+                    <td>入门教程目录页，首次拿到真正的文字链接：什么是 Ascend C / 环境准备 / 快速入门</td>
+                  </tr>
+                  <tr>
+                    <td>5</td>
+                    <td>展开「快速入门」</td>
+                    <td><a href="https://www.hiascend.com/doc_center/source/zh/CANNCommunityEdition/850/opdevg/Ascendcopdevg/atlas_ascendc_map_10_0016.html">…/atlas_ascendc_map_10_0016.html</a></td>
+                    <td>列出两篇正文：HelloWorld、Add 自定义算子开发</td>
+                  </tr>
+                  <tr>
+                    <td>6</td>
+                    <td>读正文</td>
+                    <td><a href="https://www.hiascend.com/doc_center/source/zh/CANNCommunityEdition/850/opdevg/Ascendcopdevg/atlas_ascendc_map_10_0003.html">…/atlas_ascendc_map_10_0003.html</a></td>
+                    <td>「环境准备」正文</td>
+                  </tr>
+                  <tr>
+                    <td>7</td>
+                    <td>读正文</td>
+                    <td><a href="https://www.hiascend.com/doc_center/source/zh/CANNCommunityEdition/850/opdevg/Ascendcopdevg/atlas_ascendc_map_10_0005.html">…/atlas_ascendc_map_10_0005.html</a></td>
+                    <td>「HelloWorld」正文</td>
+                  </tr>
+                  <tr>
+                    <td>8</td>
+                    <td>读正文</td>
+                    <td><a href="https://www.hiascend.com/doc_center/source/zh/CANNCommunityEdition/850/opdevg/Ascendcopdevg/atlas_ascendc_map_10_0006.html">…/atlas_ascendc_map_10_0006.html</a></td>
+                    <td>「Add 自定义算子开发」正文，官方入门教程主体</td>
+                  </tr>
+                </tbody>
+              </table>
+            </figure>
+            <h3 class="fn-h3">本轮路径</h3>
+            <p class="bg-body">完全没有碰发现层：<code>robots.txt</code>、<code>llms.txt</code>、<code>llms-full.txt</code>、<code>sitemap.xml</code> 一个都没请求。直接猜专区页地址进站，撞上 CSR 空壳后换到文档站，再换到 <code>/doc_center/source/…</code>，靠目录树逐级下钻到正文。四轮里唯一一轮拿到了官方入门教程的完整正文。</p>
+            <p class="bg-body"><strong>本轮发现：</strong>官方展示层（<code>/ascend-c</code> 与 <code>/document/detail/…</code>）都是纯 CSR，「快速入门」「成长地图」在页面上是图片形式的 image map，文字不可抓；只有换到 <code>/doc_center/source/…</code> 才拿得到可解析的目录树和正文。而 <code>robots.txt</code> 里恰恰写着 <code>Disallow: /doc_center/</code>——本轮唯一读得通的那条路径，是被显式禁止抓取的。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="compare">
+      <h2>四轮对照</h2>
+      <p class="bg-body">同一个提问，四个模型走出四条不同的路径。没有一条是「标准答案」，这里只如实并列。</p>
+      <figure class="af-figure">
+        <table class="aj">
+          <caption>表5 四个模型的起手方式与落点对照</caption>
+          <colgroup>
+            <col class="col-stage" />
+            <col />
+            <col />
+            <col />
+          </colgroup>
+          <thead>
+            <tr>
+              <th scope="col">模型</th>
+              <th scope="col">起手</th>
+              <th scope="col">是否读 llms</th>
+              <th scope="col">最终读到什么</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Grok 4.6</td>
+              <td>站外搜索 <code>site:hiascend.com</code></td>
+              <td>完全没读</td>
+              <td>产品页 + 一篇 2023 年技术文章；8.5.0 文档站多为 SPA 空壳</td>
+            </tr>
+            <tr>
+              <td>GPT-5.6 Sol</td>
+              <td>文档首页 <code>/document</code></td>
+              <td>没读；两个 <code>llms-content</code> 猜测地址均 404</td>
+              <td>CANN 9.1.X 概述、环境准备、SIMD HelloWorld</td>
+            </tr>
+            <tr>
+              <td>Claude Opus 5</td>
+              <td>猜落地页 <code>/ascend-c</code></td>
+              <td>读了 <code>llms.txt</code>；<code>llms-full.txt</code> 两次超时</td>
+              <td>《什么是 Ascend C》＋两篇 2023 年技术文章，未拿到快速入门章节正文</td>
+            </tr>
+            <tr>
+              <td>Claude Sonnet 5</td>
+              <td>直接猜 <code>/ascend-c</code></td>
+              <td>完全没读</td>
+              <td><code>/doc_center/source/</code> 下的环境准备、HelloWorld、Add 算子全文</td>
+            </tr>
+          </tbody>
+        </table>
+      </figure>
+      <p class="bg-body">三次独立复测（Grok 4.6、GPT-5.6、Claude Opus 5）都不是从发现层起手：Grok 先用站外搜索，GPT 猜 <code>/document</code> 及旧版文档路径，Opus 猜落地页 <code>/ascend-c</code>。四轮里只有 Opus 读了 <code>llms.txt</code>，且没拿到《Ascend C 编程指南》「快速入门」章节正文；拿到官方入门正文的两轮（GPT-5.6、Claude Sonnet 5）一次都没读 <code>llms.txt</code>。Grok 复测则卡在文档站 SPA 空壳，完整正文主要来自产品页和技术文章。四轮起手与落点各不相同，站点不能假设模型会遵循同一套发现路径。</p>
+      <p class="bg-body">复测还暴露了几处站点侧的实际故障：3 个 <code>sitemap</code> 地址返回 HTTP 500，<code>llms-full.txt</code> 连续超时，人读 HTML 多次返回 200 但正文为空或只剩 SPA 壳，<code>llms-content</code> 镜像把栏目链接地址剥成了「了解详情」。</p>
+      <p class="back-link"><a href="principles-structure-llms.html#how-discover">返回发现层部署</a></p>
+    </section>
+  </main>
+</div>
+
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js"></script>
+<script src="assets/js/module-sidebar.js"></script>
+<script>
+(function () {
+  var root = document.querySelector(".model-tabs");
+  if (!root) return;
+  var tabs = root.querySelectorAll('[role="tab"]');
+  var panels = root.querySelectorAll('[role="tabpanel"]');
+  function activate(id) {
+    tabs.forEach(function (t) {
+      var on = t.getAttribute("aria-controls") === id;
+      t.classList.toggle("is-active", on);
+      t.setAttribute("aria-selected", on ? "true" : "false");
+      t.tabIndex = on ? 0 : -1;
+    });
+    panels.forEach(function (p) {
+      var on = p.id === id;
+      p.classList.toggle("is-active", on);
+      p.hidden = !on;
+    });
+  }
+  tabs.forEach(function (t) {
+    t.addEventListener("click", function () {
+      activate(t.getAttribute("aria-controls"));
+    });
+  });
+})();
+</script>
+</body>
+</html>

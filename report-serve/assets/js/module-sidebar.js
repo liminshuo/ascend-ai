@@ -12,7 +12,7 @@
     principles: [
       {
         group: "可达", id: "structure-llms", href: "principles-structure-llms.html", label: "发现层部署",
-        pageIds: ["structure-llms", "page-discover", "machine-discover"]
+        pageIds: ["structure-llms", "page-discover", "machine-discover", "machine-entry-verify"]
       },
       {
         group: null, id: "machine-entry", href: "principles-machine-entry.html", label: "Agent 入口显化",
