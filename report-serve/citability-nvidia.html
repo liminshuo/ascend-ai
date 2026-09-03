@@ -1,19 +1,18 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+<link rel="stylesheet" href="assets/css/tokens.css">
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>NVIDIA（md）分析 · 可引用性·内容（md）分析 · 昇腾社区 AI 亲和原则</title>
 <style>
   :root {
-    --text-h1: clamp(28px, 4vw, 40px);
-    --text-h1-lh: 48px;
     --text-h1-weight: 600;
-    --bg: #F5F5F5; --panel: #ffffff; --panel2: #FAFAFA; --line: #e2e8f0;
-    --text: #191919; --muted: #595959; --accent: #1476FF; --accent-soft: rgba(20, 118, 255, 0.1);
-    --link: #1476FF; --topbar-h: 56px; --content-max: 1000px; --page-gutter: clamp(16px, 2.5vw, 24px);
-      --body-size: 14px;
-    --body-lh: 22px;
+    --bg: var(--color-bg); --panel: var(--color-surface); --panel2: var(--color-card-bg); --line: var(--color-border);
+    --text: var(--color-text); --muted: var(--color-text-secondary); --accent: var(--color-primary); --accent-soft: rgba(20, 118, 255, 0.1);
+    --link: var(--color-primary); --topbar-h: var(--header-height); --content-max: var(--content-max-width); --page-gutter: clamp(16px, 2.5vw, 24px);
+      --body-size: var(--text-body);
+    --body-lh: var(--text-body-lh);
     /* 卡片标题：字号 18 / 行高 28 */
     --card-title-size: 18px;
     --card-title-lh: 28px;
@@ -22,7 +21,7 @@
   body {
     font-size: var(--body-size);
     margin: 0;
-    font-family: "PingFang SC", sans-serif;
+    font-family: var(--font);
     background: var(--bg);
     color: var(--text); line-height: var(--body-lh);
   }
@@ -66,15 +65,15 @@
   .site-nav a {
     text-decoration: none;
     color: var(--muted);
-    font-size: 14px;
+    font-size: var(--text-body);
     font-weight: 500;
     padding: 6px 14px;
     border-radius: 6px;
     white-space: nowrap;
     transition: background .15s, color .15s;
   }
-  .site-nav a:hover { color: var(--accent); background: #F5F5F5; text-decoration: none; }
-  .site-nav a.active { color: var(--accent); background: #F5F5F5; font-weight: 600; }
+  .site-nav a:hover { color: var(--accent); background: var(--color-bg); text-decoration: none; }
+  .site-nav a.active { color: var(--accent); background: var(--color-bg); font-weight: 600; }
   .wrap {
     width: min(var(--content-max), calc(100% - 2 * var(--page-gutter)));
     margin: 0 auto;
@@ -89,7 +88,7 @@
     font-weight: 600;
   }
   h1 {
-    font-family: "PingFang SC", sans-serif;
+    font-family: var(--font);
     font-size: var(--text-h1);
     font-weight: var(--text-h1-weight, 600);
     margin: 8px 0 12px;
@@ -114,7 +113,7 @@
   }
   h2.block-title {
     margin: 40px 0 16px;
-    font-size: 24px;
+    font-size: var(--text-h2);
     line-height: 32px;
     font-weight: 650;
     letter-spacing: -0.01em;
@@ -141,7 +140,7 @@
   }
   .sum-h3 {
     margin: 24px 0 10px;
-    font-size: 14px;
+    font-size: var(--text-body);
     font-weight: 650;
     letter-spacing: -0.01em;
   }
@@ -166,10 +165,10 @@
   .domain-why code,
   .summary-points code {
     font-family: "SF Mono", "Fira Code", "Cascadia Code", ui-monospace, monospace;
-    font-size: 12px;
+    font-size: var(--text-auxiliary);
   }
   .section a { color: var(--link); }
-  footer { margin-top: 48px; color: var(--muted); font-size: 12px; }
+  footer { margin-top: 48px; color: var(--muted); font-size: var(--text-auxiliary); }
   @media (max-width: 720px) {
     .site-nav a { padding: 8px 10px; font-size: 13px; }
   }
@@ -206,7 +205,7 @@
   }
   .chip {
     display: inline-block;
-    font-size: 11px;
+    font-size: var(--text-caption);
     font-weight: 600;
     padding: 3px 8px;
     border-radius: 6px;
@@ -223,7 +222,7 @@
   .case-card p {
     margin: 0;
     color: var(--muted);
-    font-size: 14px;
+    font-size: var(--text-body);
   }
   .case-card .cta {
     margin-top: 14px;
@@ -288,7 +287,7 @@
   }
   .conclude h3 {
     margin: 0 0 10px;
-    font-size: 14px;
+    font-size: var(--text-body);
     font-weight: 600;
   }
   .conclude-cols {
@@ -301,7 +300,7 @@
     margin: 0 0 8px;
     padding: 3px 10px;
     border-radius: 6px;
-    font-size: 11px;
+    font-size: var(--text-caption);
     font-weight: 700;
     letter-spacing: .03em;
     line-height: 1.4;
@@ -361,7 +360,7 @@
     gap: 10px;
     padding: 10px 14px;
     border-bottom: 1px solid var(--line);
-    font-size: 12px;
+    font-size: var(--text-auxiliary);
     color: var(--muted);
     background: #fafbfc;
     flex: 0 0 auto;
@@ -388,7 +387,7 @@
     gap: 8px;
     padding: 8px 12px;
     border-bottom: 1px solid var(--line);
-    font-size: 12px;
+    font-size: var(--text-auxiliary);
     font-weight: 600;
     color: var(--text);
     background: #fff;
@@ -407,7 +406,7 @@
     border-radius: 2px;
     margin-right: 4px;
   }
-  .floor-map-legend .on { background: #1476FF; }
+  .floor-map-legend .on { background: var(--color-primary); }
   .floor-map-legend .off { background: #c5cad3; }
   .floor-stack {
     display: flex;
@@ -427,7 +426,7 @@
   }
   .floor-item:last-child { border-bottom: none; }
   .floor-item.in {
-    border-left-color: #1476FF;
+    border-left-color: var(--color-primary);
     background: rgba(20, 118, 255, 0.06);
   }
   .floor-item .idx {
@@ -437,7 +436,7 @@
     border-radius: 50%;
     background: #e8edf3;
     color: #5c6578;
-    font-size: 11px;
+    font-size: var(--text-caption);
     font-weight: 700;
     display: flex;
     align-items: center;
@@ -457,7 +456,7 @@
   .floor-item .desc {
     margin: 0;
     color: var(--muted);
-    font-size: 12px;
+    font-size: var(--text-auxiliary);
     line-height: var(--body-lh);
   }
   .floor-item .desc.mapsto {
@@ -475,7 +474,7 @@
   }
   .floor-item .badge {
     flex: 0 0 auto;
-    font-size: 11px;
+    font-size: var(--text-caption);
     font-weight: 700;
     padding: 2px 8px;
     border-radius: 999px;
@@ -528,7 +527,7 @@
     padding: 24px;
     background: var(--panel2);
     color: var(--muted);
-    font-size: 14px;
+    font-size: var(--text-body);
     text-align: center;
   }
   .pane-embed-fallback.show { display: flex; }
@@ -545,14 +544,14 @@
     flex-direction: column;
     background: #fff;
     color: var(--muted);
-    font-size: 14px;
+    font-size: var(--text-body);
   }
   .md-embed .fb-banner {
     flex: 0 0 auto;
     padding: 10px 14px;
     background: #f4f7fb;
     border-bottom: 1px solid var(--line);
-    font-size: 12px;
+    font-size: var(--text-auxiliary);
     color: var(--muted);
   }
   .md-embed .fb-banner a { color: var(--link); font-weight: 600; }
@@ -577,7 +576,7 @@
     flex-direction: column;
     background: #fff;
     color: var(--muted);
-    font-size: 14px;
+    font-size: var(--text-body);
   }
   .iframe-fallback.show { display: flex; }
   .iframe-fallback .fb-banner {
@@ -585,7 +584,7 @@
     padding: 10px 14px;
     background: #fff8e8;
     border-bottom: 1px solid #f0e0b8;
-    font-size: 12px;
+    font-size: var(--text-auxiliary);
     color: #6a5a30;
   }
   .iframe-fallback .fb-banner a { color: var(--link); font-weight: 600; }
@@ -618,7 +617,7 @@
   .cases-block { margin-top: 40px; }
   .cases-block > h2 {
     margin: 40px 0 8px;
-    font-size: 24px;
+    font-size: var(--text-h2);
     line-height: 32px;
     font-weight: 650;
     letter-spacing: -0.01em;
@@ -646,7 +645,7 @@
     background: var(--panel);
   }
   .peer-sidebar-title {
-    font-size: 11px;
+    font-size: var(--text-caption);
     font-weight: 700;
     letter-spacing: .08em;
     text-transform: uppercase;
@@ -655,7 +654,7 @@
   }
   .peer-nav ul { list-style: none; margin: 0; padding: 0; }
   .peer-group-label {
-    font-size: 11px;
+    font-size: var(--text-caption);
     font-weight: 700;
     letter-spacing: .04em;
     color: var(--muted);
@@ -677,7 +676,7 @@
     color: var(--muted);
     border-left: 2px solid transparent;
   }
-  .peer-nav a:hover { color: var(--text); background: #F5F5F5; }
+  .peer-nav a:hover { color: var(--text); background: var(--color-bg); }
   .peer-nav a.active {
     color: var(--accent);
     font-weight: 600;
@@ -719,7 +718,7 @@
     font: inherit;
     text-decoration: none;
     color: var(--muted);
-    font-size: 14px;
+    font-size: var(--text-body);
     font-weight: 500;
     padding: 6px 14px;
     border-radius: 6px;
@@ -744,11 +743,11 @@
   .nav-dd:hover .nav-dd-trigger,
   .nav-dd:focus-within .nav-dd-trigger {
     color: var(--accent);
-    background: #F5F5F5;
+    background: var(--color-bg);
   }
   .nav-dd-trigger.is-active {
     color: var(--accent);
-    background: #F5F5F5;
+    background: var(--color-bg);
     font-weight: 600;
   }
   .nav-dd::before {
@@ -793,7 +792,7 @@
   }
   .nav-dd-panel a:hover {
     color: var(--accent);
-    background: #F5F5F5;
+    background: var(--color-bg);
   }
   .nav-dd-panel a.is-active {
     color: var(--accent);

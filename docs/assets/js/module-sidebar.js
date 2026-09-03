@@ -12,7 +12,7 @@
     principles: [
       {
         group: "可达", id: "structure-llms", href: "principles-structure-llms.html", label: "发现层部署",
-        pageIds: ["structure-llms", "page-discover", "machine-discover", "machine-entry-verify"]
+        pageIds: ["structure-llms", "page-discover", "machine-discover"]
       },
       {
         group: null, id: "machine-entry", href: "principles-machine-entry.html", label: "Agent 入口显化",
@@ -130,6 +130,10 @@
           { id: "default-empty", href: "principles-default-empty.html", label: "缺省空态文案化" },
           { id: "exception", href: "principles-exception.html", label: "常见异常说明" }
         ]
+      },
+      {
+        group: "实测记录", id: "probe-discover", href: "principles-discover-probe.html", label: "发现层实测",
+        pageIds: ["machine-entry-verify", "probe-discover"]
       }
     ]
   };

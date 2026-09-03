@@ -1,33 +1,32 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+<link rel="stylesheet" href="assets/css/tokens.css">
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>图片 · 设计模式 · 昇腾社区 AI 亲和原则</title>
 <style>
   :root {
-    --text-h1: clamp(28px, 4vw, 40px);
-    --text-h1-lh: 48px;
     --text-h1-weight: 600;
-    --bg: #F5F5F5;
-    --panel: #ffffff;
-    --panel2: #FAFAFA;
-    --line: #e2e8f0;
-    --text: #191919;
-    --muted: #595959;
-    --accent: #1476FF;
+    --bg: var(--color-bg);
+    --panel: var(--color-surface);
+    --panel2: var(--color-card-bg);
+    --line: var(--color-border);
+    --text: var(--color-text);
+    --muted: var(--color-text-secondary);
+    --accent: var(--color-primary);
     --accent-soft: rgba(20, 118, 255, 0.1);
-    --link: #1476FF;
-    --content-max: 1000px;
+    --link: var(--color-primary);
+    --content-max: var(--content-max-width);
     --page-gutter: clamp(16px, 2.5vw, 24px);
-    --body-size: 14px;
-    --body-lh: 22px;
+    --body-size: var(--text-body);
+    --body-lh: var(--text-body-lh);
   }
   * { box-sizing: border-box; }
   body {
     font-size: var(--body-size);
     margin: 0;
-    font-family: "PingFang SC", sans-serif;
+    font-family: var(--font);
     background: var(--bg);
     color: var(--text);
     line-height: var(--body-lh);
@@ -52,12 +51,12 @@
   .brand span { color: var(--accent); }
   .site-nav { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; flex-wrap: wrap; }
   .site-nav a {
-    text-decoration: none; color: var(--muted); font-size: 14px; font-weight: 500;
+    text-decoration: none; color: var(--muted); font-size: var(--text-body); font-weight: 500;
     padding: 6px 14px; border-radius: 6px; white-space: nowrap;
     transition: background .15s, color .15s;
   }
-  .site-nav a:hover { color: var(--accent); background: #F5F5F5; text-decoration: none; }
-  .site-nav a.active { color: var(--accent); background: #F5F5F5; font-weight: 600; }
+  .site-nav a:hover { color: var(--accent); background: var(--color-bg); text-decoration: none; }
+  .site-nav a.active { color: var(--accent); background: var(--color-bg); font-weight: 600; }
   .page-wrapper {
     display: flex; align-items: stretch; width: 100%;
     min-height: calc(100vh - 56px); background: var(--bg);
@@ -71,7 +70,7 @@
   }
   .peer-nav ul { list-style: none; margin: 0; padding: 0; }
   .peer-group-label {
-    font-size: 11px; font-weight: 700; letter-spacing: .04em; color: var(--muted);
+    font-size: var(--text-caption); font-weight: 700; letter-spacing: .04em; color: var(--muted);
     padding: 12px 20px 4px; margin-top: 8px; border-top: 1px solid var(--line);
   }
   .peer-nav > .peer-group-label:first-child { margin-top: 0; border-top: none; padding-top: 0; }
@@ -79,7 +78,7 @@
     display: block; padding: 8px 20px; font-size: 13px; line-height: 1.5;
     text-decoration: none; color: var(--muted); border-left: 2px solid transparent;
   }
-  .peer-nav a:hover { color: var(--text); background: #F5F5F5; }
+  .peer-nav a:hover { color: var(--text); background: var(--color-bg); }
   .peer-nav a.active {
     color: var(--accent); font-weight: 600; background: #EEF5FF; border-left-color: var(--accent);
   }
@@ -90,13 +89,13 @@
   }
   header { margin-bottom: 28px; }
   h1 {
-    font-family: "PingFang SC", sans-serif;
+    font-family: var(--font);
     font-size: var(--text-h1); font-weight: var(--text-h1-weight, 600);
     margin: 8px 0 12px; letter-spacing: -0.02em; line-height: var(--text-h1-lh);
   }
   .sub { color: var(--muted); max-width: none; font-size: 15px; margin: 0 0 24px; line-height: var(--body-lh); }
   .eyebrow {
-    color: var(--accent); font-size: 12px; font-weight: 700;
+    color: var(--accent); font-size: var(--text-auxiliary); font-weight: 700;
     letter-spacing: .06em; margin: 0 0 4px;
   }
   .core-line {
@@ -109,7 +108,7 @@
     background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px;
   }
   .detail-card h2 {
-    margin: 0 0 10px; font-size: 12px; font-weight: 700;
+    margin: 0 0 10px; font-size: var(--text-auxiliary); font-weight: 700;
     letter-spacing: .04em; color: var(--accent);
   }
   .detail-card ul { margin: 0; padding-left: 1.15em; }
@@ -127,7 +126,7 @@
   .pattern .pattern-lead { margin: 0 0 16px; color: var(--muted); font-size: 15px; }
   .pattern-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px; }
   .pattern-cell h2, .pattern-cell h4 {
-    margin: 0 0 8px; font-size: 12px; font-weight: 700;
+    margin: 0 0 8px; font-size: var(--text-auxiliary); font-weight: 700;
     letter-spacing: .04em; color: var(--accent);
   }
   .pattern-cell ul { margin: 0; padding-left: 1.15em; color: var(--text); }
@@ -137,7 +136,7 @@
     margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line);
   }
   .pattern-check h2, .pattern-check h4 {
-    margin: 0 0 8px; font-size: 12px; font-weight: 700;
+    margin: 0 0 8px; font-size: var(--text-auxiliary); font-weight: 700;
     letter-spacing: .04em; color: var(--muted);
   }
   .pattern-check ul { margin: 0; padding-left: 1.15em; }
@@ -158,12 +157,12 @@
     text-decoration: none; color: inherit;
   }
   .hub-card .g-label {
-    font-size: 11px; font-weight: 700; letter-spacing: .06em; color: var(--accent); margin: 0 0 6px;
+    font-size: var(--text-caption); font-weight: 700; letter-spacing: .06em; color: var(--accent); margin: 0 0 6px;
   }
   .hub-card h2 { margin: 0 0 6px; font-size: 16px; font-weight: 650; }
   .hub-card p { margin: 0; color: var(--muted); font-size: 13px; }
 
-  footer { margin-top: 48px; color: var(--muted); font-size: 12px; }
+  footer { margin-top: 48px; color: var(--muted); font-size: var(--text-auxiliary); }
   @media (max-width: 900px) {
     .page-wrapper { flex-direction: column; }
     .peer-sidebar {
@@ -189,7 +188,7 @@
     font: inherit;
     text-decoration: none;
     color: var(--muted);
-    font-size: 14px;
+    font-size: var(--text-body);
     font-weight: 500;
     padding: 6px 14px;
     border-radius: 6px;
@@ -216,11 +215,11 @@
   .nav-dd:hover .nav-dd-trigger,
   .nav-dd:focus-within .nav-dd-trigger {
     color: var(--accent);
-    background: #F5F5F5;
+    background: var(--color-bg);
   }
   .nav-dd-trigger.is-active {
     color: var(--accent);
-    background: #F5F5F5;
+    background: var(--color-bg);
     font-weight: 600;
   }
   .nav-dd::before {
@@ -265,7 +264,7 @@
   }
   .nav-dd-panel a:hover {
     color: var(--accent);
-    background: #F5F5F5;
+    background: var(--color-bg);
   }
   .nav-dd-panel a.is-active {
     color: var(--accent);

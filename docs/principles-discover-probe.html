@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>发现层实测 · 实测记录 · 昇腾社区 AI 亲和原则</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid var(--color-border);
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: 100%; max-width: none; margin: 0; padding: 0 24px; box-sizing: border-box;
+    height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: var(--color-text); text-decoration: none; white-space: nowrap; margin-right: 40px;
+  }
+  .topbar .brand span { color: var(--color-primary); }
+  .topbar .site-nav { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; flex-wrap: wrap; }
+  .topbar .site-nav > a {
+    text-decoration: none; color: var(--color-text-secondary); font-size: var(--text-body); font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .topbar .site-nav > a:hover { color: var(--color-primary); background: var(--color-bg); text-decoration: none; }
+  .topbar .site-nav > a.active { color: var(--color-primary); background: var(--color-bg); font-weight: 600; }
+  body.inner-page .page-wrapper { min-height: 100vh; }
+
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 0;
+  }
+  .page-header h1 {
+    font-family: var(--font);
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1-weight, 600);
+    line-height: var(--text-h1-lh);
+    letter-spacing: -0.02em;
+    margin: 8px 0 0;
+    color: var(--color-text, var(--color-text));
+  }
+  .page-header .page-desc {
+    margin: 32px 0 0;
+    font-size: var(--text-body);
+    line-height: 1.75;
+    color: var(--text, var(--color-text));
+  }
+  body.inner-page.agent-entry-page:has(#module-sidebar) .main-content {
+    padding-top: 32px;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  body.inner-page.agent-entry-page:has(#module-sidebar) .main-content > .page-header,
+  body.inner-page.agent-entry-page:has(#module-sidebar) .main-content > .section{
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page.agent-entry-page .main-content .section > h2 {
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    letter-spacing: -0.01em;
+    margin-top: 48px;
+    margin-bottom: 16px;
+    padding-bottom: var(--space-h2-rule, 16px);
+    border-bottom: 2px solid var(--color-card-border);
+    color: var(--color-text, var(--color-text));
+  }
+  body.inner-page.agent-entry-page .main-content > .section:first-of-type > h2 {
+    margin-top: 48px;
+  }
+
+  .bg-body {
+    margin: 0 0 16px;
+    font-size: var(--text-body);
+    line-height: 22px;
+    color: var(--color-text-secondary);
+  }
+  .bg-body a,
+  .aj a {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 650;
+  }
+  .bg-body a:hover,
+  .aj a:hover {
+    text-decoration: underline;
+  }
+  .bg-body code,
+  .aj code {
+    font-size: var(--text-auxiliary);
+  }
+  .ask-quote {
+    margin: 0;
+    padding: 12px 16px;
+    background: #f5f6f8;
+    border-radius: 8px;
+    font-size: var(--text-body);
+    line-height: 22px;
+    color: var(--color-text);
+  }
+  .af-figure {
+    margin: 0 0 16px;
+    overflow-x: auto;
+  }
+  .aj {
+    width: 100%;
+    min-width: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+    font-size: var(--text-auxiliary);
+    line-height: 22px;
+    color: var(--color-text);
+  }
+  .aj caption {
+    caption-side: top;
+    text-align: left;
+    font-size: var(--text-auxiliary);
+    font-weight: 650;
+    line-height: 22px;
+    padding: 0 0 10px;
+    color: var(--color-text);
+  }
+  .aj th,
+  .aj td {
+    border: 1px solid #e8eef5;
+    border-top: none;
+    border-left: none;
+    vertical-align: top;
+    padding: 12px;
+    font-size: var(--text-auxiliary);
+    line-height: 22px;
+    word-break: break-word;
+  }
+  .aj thead tr:first-child > th {
+    border-top: 1px solid #e8eef5;
+  }
+  .aj th:first-child,
+  .aj td:first-child {
+    border-left: 1px solid #e8eef5;
+  }
+  .aj thead th {
+    background: #f5f6f8;
+    font-weight: 650;
+    text-align: left;
+    color: var(--color-text);
+  }
+  .aj thead tr:first-child > th:first-child {
+    border-top-left-radius: 8px;
+  }
+  .aj thead tr:first-child > th:last-child {
+    border-top-right-radius: 8px;
+  }
+  .aj tbody tr:last-child td:first-child {
+    border-bottom-left-radius: 8px;
+  }
+  .aj tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 8px;
+  }
+  .aj col.col-model { width: 10%; }
+  .aj col.col-start { width: 11%; }
+  .aj col.col-discover { width: 12%; }
+  .aj col.col-path { width: 12%; }
+  .aj col.col-end { width: 22%; }
+  .aj col.col-block { width: 11%; }
+  .aj col.col-detail { width: 120px; }
+  /* 表1：七列铺满内容区，禁止横向滚动 */
+  #compare .af-figure {
+    overflow-x: visible;
+  }
+  #compare .aj {
+    width: 100%;
+    min-width: 0;
+    table-layout: fixed;
+  }
+  #compare .aj col.col-model { width: 11%; }
+  #compare .aj col.col-start { width: 12%; }
+  #compare .aj col.col-discover { width: 18%; }
+  #compare .aj col.col-path { width: 16%; }
+  #compare .aj col.col-end { width: 24%; }
+  #compare .aj col.col-block { width: 13%; }
+  #compare .aj col.col-detail { width: 6%; }
+  #compare .aj th,
+  #compare .aj td {
+    padding: 12px 10px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+  #compare .aj td.col-detail {
+    white-space: nowrap;
+    overflow-wrap: normal;
+    word-break: keep-all;
+  }
+  .aj col.col-freq { width: 72px; }
+  .aj col.col-rounds { width: 28%; }
+  .aj col.col-prio { width: 72px; }
+  .aj td.is-read {
+    background: #f0f7ff;
+    color: var(--color-primary);
+    font-weight: 650;
+  }
+  .aj td.is-unread {
+    background: #f5f6f8;
+    color: #8c8c8c;
+  }
+  .aj td.is-fail {
+    background: #fff7f2;
+    color: #c2410c;
+  }
+  .aj td.is-warn {
+    background: #fffbeb;
+    color: #b45309;
+  }
+  .aj td.freq-cell {
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .aj td.freq-cell.-high {
+    background: #fff7f2;
+    color: #c2410c;
+  }
+  .aj td.freq-cell.-mid {
+    background: #fffbeb;
+    color: #b45309;
+  }
+  .aj-prio th:first-child,
+  .aj-prio td:first-child {
+    white-space: nowrap;
+  }
+  .prio {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: var(--text-auxiliary);
+    font-weight: 700;
+    line-height: var(--text-auxiliary-lh);
+    white-space: nowrap;
+  }
+  .prio.-p0 { background: #fdefe3; color: #97500d; }
+  .prio.-p1 { background: #e6f5ee; color: #0a6b45; }
+  .prio.-p2 { background: #e8f1ff; color: #0a53c4; }
+  /* 并列论断：覆盖 .section ul { margin-left: 20px }；圆点与文字编组，题头/正文左齐 */
+  .section ul.bg-list {
+    margin: 0 0 24px;
+    padding-left: 0;
+    padding-inline-start: 0;
+    list-style: none;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  .section ul.bg-list > li {
+    position: relative;
+    padding-left: 1em;
+  }
+  .section ul.bg-list > li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1em;
+    color: var(--color-text);
+    font-weight: 650;
+    line-height: var(--text-body-lh, 22px);
+  }
+  .section ul.bg-list li + li { margin-top: 16px; }
+  .section ul.bg-list li strong {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+</style>
+</head>
+<body class="inner-page agent-entry-page" data-module="principles" data-page="probe-discover" data-no-surface-tabs>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html">社区 <span>AI 亲和原则</span></a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="mintlify.html">友商对照</a>
+      <a href="reachability.html">社区诊断</a>
+      <a href="principles-overview.html" class="active">亲和原则</a>
+      <a href="community-ui.html">组件亲和</a>
+      <a href="design-guide-image-text.html">设计模式</a>
+      <a href="data-analysis.html">数据分析</a>
+    </nav>
+  </div>
+</div>
+
+<div class="page-wrapper">
+
+  <aside id="module-sidebar"></aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <h1>发现层实测</h1>
+    </div>
+
+    <section class="section" id="ask">
+      <h2>测试提问</h2>
+      <blockquote class="ask-quote">Ascend C 怎么入门？请只从 hiascend 官方文档找，并写下你每一步请求了哪个 URL</blockquote>
+    </section>
+
+    <section class="section" id="compare">
+      <h2>模型测试对照</h2>
+      <figure class="af-figure">
+        <table class="aj">
+          <caption>表1 模型测试对照</caption>
+          <colgroup>
+            <col class="col-model" />
+            <col class="col-start" />
+            <col class="col-discover" />
+            <col class="col-path" />
+            <col class="col-end" />
+            <col class="col-block" />
+            <col class="col-detail" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th scope="col">模型</th>
+              <th scope="col">起手</th>
+              <th scope="col">发现层</th>
+              <th scope="col">通路</th>
+              <th scope="col">最终读到</th>
+              <th scope="col">主卡点</th>
+              <th scope="col">详情</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Grok 4.6</td>
+              <td>站外搜索</td>
+              <td class="is-unread">全程未读</td>
+              <td>产品页 + 搜索摘要 + 2023 文章</td>
+              <td>定义与概念可拼；环境准备 / Add 教程 HTML 正文未拿到</td>
+              <td class="is-fail">文档站 CSR 空壳</td>
+              <td class="col-detail"><a href="principles-machine-entry-verify.html#panel-grok">详情</a></td>
+            </tr>
+            <tr>
+              <td>GPT-5.6 Sol</td>
+              <td>猜 <code>/document</code></td>
+              <td class="is-unread">全程未读</td>
+              <td>试探版本号 → Markdown 新线</td>
+              <td>CANN 9.1.X 概述、环境准备、SIMD HelloWorld</td>
+              <td class="is-warn">首页信息稀、靠猜版本</td>
+              <td class="col-detail"><a href="principles-machine-entry-verify.html#panel-gpt">详情</a></td>
+            </tr>
+            <tr>
+              <td>Claude Opus 5</td>
+              <td>猜 <code>/ascend-c</code></td>
+              <td class="is-read">后续补读 robots / llms；full 超时；sitemap 500</td>
+              <td><code>llms-content</code> 镜像</td>
+              <td>《什么是 Ascend C》+ 两篇 2023 文章；快速入门章节未落地</td>
+              <td class="is-fail"><code>llms.txt</code> 截断</td>
+              <td class="col-detail"><a href="principles-machine-entry-verify.html#panel-claude">详情</a></td>
+            </tr>
+            <tr>
+              <td>Claude Sonnet 5</td>
+              <td>猜 <code>/ascend-c</code></td>
+              <td class="is-unread">全程未读</td>
+              <td><code>/doc_center/source/</code>（robots Disallow）</td>
+              <td>社区版 8.5.0 环境准备、HelloWorld、Add 全文</td>
+              <td class="is-warn">可读路径被列为禁抓</td>
+              <td class="col-detail"><a href="principles-machine-entry-verify.html#panel-sonnet">详情</a></td>
+            </tr>
+            <tr>
+              <td>GLM</td>
+              <td>站外搜索</td>
+              <td class="is-unread">全程未读</td>
+              <td>搜索摘要（curl 证实 SPA 后止损）</td>
+              <td>简介结构 / API 分层 / 课程链接；完整 HTML 正文未拿到</td>
+              <td class="is-fail">文档站 CSR 空壳</td>
+              <td class="col-detail"><a href="principles-machine-entry-verify.html#panel-glm">详情</a></td>
+            </tr>
+            <tr>
+              <td>DeepSeek</td>
+              <td>站外搜索</td>
+              <td class="is-read">后续补读 robots / llms；API 探测</td>
+              <td>搜索摘要 + 协议层验证</td>
+              <td>HelloWorld 代码（摘要）；llms 过早截断；HTML 正文未拿到</td>
+              <td class="is-fail">CSR + llms 过早截断</td>
+              <td class="col-detail"><a href="principles-machine-entry-verify.html#panel-deepseek">详情</a></td>
+            </tr>
+            <tr>
+              <td>Kimi</td>
+              <td>站外搜索</td>
+              <td class="is-unread">全程未读</td>
+              <td>横向换源（文档/课程/.md/论坛/Gitee）</td>
+              <td>HelloWorld 代码与目录结构（摘要）；人读 URL 与 Gitee 均失败</td>
+              <td class="is-fail">全域 CSR + Gitee 反爬</td>
+              <td class="col-detail"><a href="principles-machine-entry-verify.html#panel-kimi">详情</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </figure>
+    </section>
+
+    <section class="section" id="insight">
+      <h2>分析洞察</h2>
+      <ul class="bg-list">
+        <li><strong>发现层部署了 ≠ 被消费</strong>七个模型里 5 个全程未请求 <code>robots.txt</code> / <code>llms.txt</code> / sitemap；仅 Opus、DeepSeek 后续补读。</li>
+        <li><strong>发现层被消费 ≠ 落到入门章节</strong>Opus 因 <code>llms.txt</code> 过大被截断；DeepSeek 虽在 AI 白名单内且读到 llms，但读取器约在 41.9KB 处截断，所见仅为文首营销索引；完整文件后方有算子文档条目（与 Opus 同类，截断点更靠前）。</li>
+        <li><strong>人读 URL 常不可抓，且可被 curl 证实</strong>七个模型均撞 CSR / 200 空壳；GLM、DeepSeek 用裸 curl 证明空壳是站点架构，不是 WebFetch 独有缺陷；Kimi 横向换 6+ 类路径仍全空。</li>
+        <li><strong>搜索摘要成了事实正文源</strong>Grok / GLM / DeepSeek / Kimi 最终主要靠引擎索引的官方摘要交卷；Sonnet 读通的正文却在 <code>Disallow: /doc_center/</code> 下——可读通路与门禁错位。</li>
+      </ul>
+    </section>
+
+    <section class="section" id="freq">
+      <h2>问题出现频次</h2>
+      <figure class="af-figure">
+        <table class="aj">
+          <caption>表2 跨模型问题频次（按出现次数降序）</caption>
+          <colgroup>
+            <col class="col-freq" />
+            <col />
+            <col class="col-rounds" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th scope="col">频次</th>
+              <th scope="col">问题</th>
+              <th scope="col">出现模型</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="freq-cell -high">7/7</td>
+              <td>人读 HTML 为 CSR / 200 空壳</td>
+              <td>全部模型</td>
+            </tr>
+            <tr>
+              <td class="freq-cell -high">7/7</td>
+              <td>第一步靠猜或搜索（≠ 全程未碰发现层）</td>
+              <td>全部模型</td>
+            </tr>
+            <tr>
+              <td class="freq-cell -high">5/7</td>
+              <td>完全未消费发现层</td>
+              <td>Grok、GPT、Sonnet、GLM、Kimi</td>
+            </tr>
+            <tr>
+              <td class="freq-cell -high">5/7</td>
+              <td>最终正文主要依赖搜索摘要 / 2023 文章（非完整人读 HTML 教程）</td>
+              <td>Grok、Opus、GLM、DeepSeek、Kimi</td>
+            </tr>
+            <tr>
+              <td class="freq-cell -mid">2/7</td>
+              <td>补读发现层后仍失败：<code>llms.txt</code> 过早截断，未落到入门章节</td>
+              <td>Opus（~1.3MB）、DeepSeek（~41.9KB）</td>
+            </tr>
+            <tr>
+              <td class="freq-cell -mid">2/7</td>
+              <td>猜镜像 / 旧路径 404</td>
+              <td>GPT、Opus</td>
+            </tr>
+            <tr>
+              <td class="freq-cell">1/7</td>
+              <td>Gitee 官方 samples 滑块反爬</td>
+              <td>Kimi</td>
+            </tr>
+            <tr>
+              <td class="freq-cell">1/7</td>
+              <td>内容网关 JSON 需 Referer；detail 接口止损</td>
+              <td>DeepSeek</td>
+            </tr>
+            <tr>
+              <td class="freq-cell">1/7</td>
+              <td>sitemap 500 / <code>llms-full</code> 超时（次要）</td>
+              <td>Opus</td>
+            </tr>
+          </tbody>
+        </table>
+      </figure>
+    </section>
+
+    <section class="section" id="fix">
+      <h2>统一改进建议</h2>
+      <p class="bg-body">由各模型建议去重，按「覆盖模型 × 投入产出」排序。逐步轨迹与抓取原文见各模型详情页。</p>
+      <figure class="af-figure">
+        <table class="aj aj-prio">
+          <caption>表3 面向文档站的统一改进建议</caption>
+          <colgroup>
+            <col class="col-prio" />
+            <col />
+            <col class="col-rounds" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th scope="col">优先级</th>
+              <th scope="col">建议</th>
+              <th scope="col">主要覆盖</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="prio -p0">P0</span></td>
+              <td>人读展示层首包输出可解析入门文字链接，或 SSR 输出正文 / 目录树；避免 CSR 空壳与 image map。亦可另提供可直接 GET 的 Markdown/静态镜像（无需 Referer）</td>
+              <td>7/7 撞 CSR；GLM/DeepSeek curl 已证实</td>
+            </tr>
+            <tr>
+              <td><span class="prio -p0">P0</span></td>
+              <td>降低 <code>llms.txt</code> 体积并分卷，或在首屏给出「Ascend C 入门」3–5 条可抓 URL；避免读取器只看到文首营销索引</td>
+              <td>Opus ~1.3MB 截断；DeepSeek ~41.9KB 截断</td>
+            </tr>
+            <tr>
+              <td><span class="prio -p0">P0</span></td>
+              <td>校准 <code>Disallow: /doc_center/</code>：若源路径是机器可读正文主通道，应对 AI agent 显式 Allow，或把同等正文放到未禁止镜像并在人读页声明</td>
+              <td>Sonnet 唯一读通路径</td>
+            </tr>
+            <tr>
+              <td><span class="prio -p1">P1</span></td>
+              <td>在模型实际会到的第一站（<code>/ascend-c</code>、<code>/document</code>、搜索易命中的简介页）及 <code>robots.txt</code> AI 白名单段附近，放置指向 <code>/llms.txt</code> 与静态入门 URL 的发现入口；聚合页镜像保留真实 URL</td>
+              <td>提高发现层被消费概率；覆盖换源/摘要派</td>
+            </tr>
+            <tr>
+              <td><span class="prio -p1">P1</span></td>
+              <td>旧版路径配置持久 301；页面声明的 <code>llms-content</code> 与真实命名对齐；修复站内搜索</td>
+              <td>GPT 猜版本 / 声明镜像 404</td>
+            </tr>
+            <tr>
+              <td><span class="prio -p2">P2</span></td>
+              <td>官方 samples 提供不受滑块拦截的 raw/镜像；入门目录同时给出当前 9.x 地址；保障 sitemap / <code>llms-full</code> 可用性</td>
+              <td>Kimi Gitee 反爬；Sonnet 版本线；Opus 兜底</td>
+            </tr>
+          </tbody>
+        </table>
+      </figure>
+    </section>
+  </main>
+</div>
+
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js"></script>
+<script src="assets/js/module-sidebar.js"></script>
+</body>
+</html>
