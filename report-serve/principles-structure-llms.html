@@ -212,6 +212,14 @@
     font-weight: 650;
     color: var(--color-text);
   }
+  /* 约定路径等短条目：题头与正文同一行 */
+  #practices .bg-list.-inline li strong {
+    display: inline;
+    margin-bottom: 0;
+  }
+  #practices .bg-list.-inline li strong::after {
+    content: "：";
+  }
   #principles .bg-list li,
   #practices .bg-list li,
   #benefits .bg-list li {
@@ -773,18 +781,18 @@
               <th class="aj-label" scope="row">解决问题</th>
               <td class="is-mute">锁定要找的官方事实。</td>
               <td>划定知识面边界，放行该抓的，拦截不该抓的。</td>
-              <td class="is-pri">提供明确的抓取顺序，直接指向主推文档。</td>
-              <td class="is-pri">提供纯净正文的聚合文件，避免逐页渲染。</td>
-              <td class="is-fb">提供知识面公开 URL 清单，用于发现深层与新增页。</td>
+              <td class="is-pri">提供明确的抓取顺序，直接指向主推文档；当全站体量较大时，采用“短索引 + 分卷”的结构，避免目录过长被截断。</td>
+              <td class="is-pri">提供聚合后的纯净正文，免去 Agent 逐页渲染的消耗；体量大时按卷拆分，避免单包过大导致请求超时。</td>
+              <td class="is-fb">把知识面所有公开网址汇总成一张清单，以便在失去导读指引时，仍能覆盖到深层页面和新增内容。</td>
               <td class="is-mute">核对对象、版本与结论。</td>
             </tr>
             <tr>
               <th class="aj-label" scope="row">发现机制</th>
               <td class="is-mute">—</td>
-              <td>基于 RFC 9309 标准（1994 年共识，2022 年全面实行）。Agent 进站时请求固定路径 <code>/robots.txt</code>。</td>
-              <td class="is-pri">基于 2024 年社区惯例（非强制标准）。约定根路径 <code>/llms.txt</code>，可用页脚或 <code>rel="llms"</code> 辅助声明。</td>
-              <td class="is-pri">无独立标准，作为 <code>llms.txt</code> 的配套扩展。链接写于导读内，或沿用 <code>/llms-full.txt</code> 惯例。无导读则无法被单独发现。</td>
-              <td class="is-fb">基于 Google Sitemaps 协议（2005 年）。必须通过 <code>robots.txt</code> 中的 <code>Sitemap:</code> 字段声明地址。</td>
+              <td>基于 RFC 9309（Robots Exclusion Protocol）标准，Agent 进站后按约定请求站点根目录下的 <code>/robots.txt</code>。</td>
+              <td class="is-pri">遵循 2024 年社区惯例（非强制协议），默认请求根路径 <code>/llms.txt</code>；也可通过 HTML 的 <code>rel="llms"</code> 标签辅助声明。</td>
+              <td class="is-pri">无独立标准，作为 <code>llms.txt</code> 的配套扩展。链接写于导读内，或沿用 <code>/llms-full.txt</code> 惯例。若没有导读，该文件无法被单独发现。</td>
+              <td class="is-fb">基于 Google Sitemaps 协议（2005 年）。站点需在 <code>robots.txt</code> 中通过 <code>Sitemap:</code> 字段声明其地址，以提供明确的发现路径。</td>
               <td class="is-mute">—</td>
             </tr>
           </tbody>
@@ -796,10 +804,11 @@
     <section class="section" id="principles">
       <h2>核心原则</h2>
       <ul class="bg-list">
-        <li><strong>聚焦知识面</strong>本套机制服务于文档与官方事实，营销面内容不占用发现层入口。</li>
-        <li><strong>门禁作为准入前提</strong><code>robots.txt</code> 的配置定义了发现层的准入规则，是其他入口能够合法生效的前提条件。</li>
-        <li><strong>导读作为主要路径</strong>存在 <code>llms.txt</code> 时，以其作为判断相关性和优先级的主要依据；<code>sitemap.xml</code> 仅在导读缺失时承担回退功能，不承担替代导读的职责。</li>
-        <li><strong>全文包作为导读配套</strong><code>llms-full.txt</code> 是 <code>llms.txt</code> 的配套组件，其内容与导读同步更新，不脱离导读单独发挥作用。</li>
+        <li><strong>聚焦知识面</strong>本套机制只面向文档与官方事实，营销面内容不占用发现层入口。</li>
+        <li><strong>门禁作为准入前提</strong><code>robots.txt</code> 承担发现层的准入角色，是其他入口能够合法触达的前提。</li>
+        <li><strong>导读作为主要路径</strong>存在 <code>llms.txt</code> 时，以此作为判断相关性优先级的主要依据；<code>sitemap.xml</code> 仅用于导读缺失时的回退，不替代导读职责。</li>
+        <li><strong>体量可控、允许分卷</strong>根目录的 <code>llms.txt</code> 应保持在可被读取器完整消费的范围内；当产品或文档站体量较大时，根文件只做总索引并链向分卷导读（如 <code>/llms/cann.txt</code>），避免单文件过大导致读取中途截断。</li>
+        <li><strong>全文包作为导读配套</strong><code>llms-full.txt</code> 是 <code>llms.txt</code> 的配套组件，内容与导读保持同步，不脱离导读单独存在；分卷时，正文包跟随分卷走。</li>
       </ul>
     </section>
 
@@ -808,9 +817,9 @@
 
       <div class="practice-block">
       <h3 class="fn-h3" id="practice-robots">1. robots.txt：准入门禁</h3>
-      <p class="file-lead">进站时优先读取的准入文件，用于明确知识面的合法抓取范围。</p>
+      <p class="file-lead">进站时优先读取的准入文件，用于界定知识面的合法抓取边界。</p>
       <h4 class="fn-h4">约定路径</h4>
-      <p class="file-lead"><code>https://{域名}/robots.txt</code>（协议规定的强制路径，不可更改）</p>
+      <p class="file-lead"><code>https://{域名}/robots.txt</code>（该路径由协议固定，站点需按此约定放置）。</p>
       <h4 class="fn-h4">最小合格示例</h4>
       <figure class="file-sample">
         <figcaption><code>robots.txt</code></figcaption>
@@ -821,6 +830,8 @@ User-agent: *
 Allow: /docs/
 Allow: /llms.txt
 Allow: /llms-full.txt
+<span class="cmt"># 如有分卷：统一放在 /llms/ 下，一条放行该目录即可</span>
+Allow: /llms/
 
 <span class="cmt"># 拦截噪声面</span>
 Disallow: /admin/
@@ -830,59 +841,63 @@ Disallow: /api/debug/
 <span class="cmt"># 声明清单完整地址；此文件公开可见，敏感内容须靠登录鉴权</span>
 Sitemap: https://docs.example.com/sitemap.xml
 
-<span class="cmt"># 进阶（非标准）：部分厂商额外声明 LLMs.txt 字段指向导读地址</span>
+<span class="cmt"># 进阶（非标准）：LLMs.txt 只指向根导读；分卷不必在此逐条声明，由根文件内链接发现</span>
 <span class="cmt"># LLMs.txt: https://docs.example.com/llms.txt</span></code></pre>
       </figure>
       <h4 class="fn-h4">执行要点</h4>
       <ul class="bg-list">
-        <li><strong>放行知识面</strong>文档站、官网知识页、<code>/llms.txt</code> 及 <code>/llms-full.txt</code> 路径应保持可访问（不设 Disallow），避免误挡主流 Agent。</li>
-        <li><strong>拦截噪声面</strong>后台、测试环境、调试接口等非公开路径应明确设置 Disallow，避免占用抓取额度。</li>
-        <li><strong>声明清单地址</strong>应在文件末尾通过 <code>Sitemap:</code> 字段列出 <code>sitemap.xml</code> 的完整地址，为 Agent 提供后续入口。</li>
-        <li><strong>进阶声明（非标准）</strong>部分厂商会在 <code>robots.txt</code> 中额外声明 <code>LLMs.txt:</code> 字段指向导读地址，仿照 <code>Sitemap:</code> 的写法；非官方规范，可作为路径不确定时的补充信号。</li>
+        <li><strong>放行知识面</strong>文档站、官网知识页、根导读 <code>/llms.txt</code> 及配套正文包 <code>/llms-full.txt</code> 保持可访问（不设 Disallow）；如有分卷，建议统一放在 <code>/llms/</code> 目录下并对其放行，避免误挡主流 Agent。</li>
+        <li><strong>拦截噪声面</strong>后台、测试环境、调试接口等非公开路径，通常需要设置 Disallow，避免占用抓取额度。</li>
+        <li><strong>声明清单地址</strong>在文件末尾通过 <code>Sitemap:</code> 字段列出 <code>sitemap.xml</code> 的完整地址，为 Agent 提供后续的发现入口。</li>
+        <li><strong>进阶声明（非标准）</strong>部分厂商会仿照 <code>Sitemap:</code> 的写法，在 <code>robots.txt</code> 中额外声明 <code>LLMs.txt:</code> 指向根导读。该字段并非官方规范，仅作为路径不确定时的补充信号；若有分卷，无需在此列出，由根文件内的链接发现即可。</li>
       </ul>
       </div>
 
       <div class="practice-block">
       <h3 class="fn-h3" id="practice-llms">2. llms.txt：优先导读</h3>
-      <p class="file-lead">面向 Agent 的精选导读，仅收录主推知识面，而非全站清单；用于明确优先阅读顺序与主推版本。</p>
+      <p class="file-lead">面向 Agent 的精选导读，只收录主推知识面，并非全站清单。根文件尽量精简；若产品线较多，采用“短索引 + 分卷导读”的结构，避免单文件过大影响读取。</p>
       <h4 class="fn-h4">约定路径</h4>
-      <p class="file-lead"><code>https://{域名}/llms.txt</code>（默认根目录；若文档站部署在子路径下，如 <code>example.com/docs</code>，则为 <code>example.com/docs/llms.txt</code>）</p>
+      <ul class="bg-list -inline">
+        <li><strong>根导读路径</strong>默认位于站点根目录：<code>https://{域名}/llms.txt</code>。若文档站部署在子路径下（例如 <code>example.com/docs</code>），对应路径则为 <code>https://example.com/docs/llms.txt</code>。</li>
+        <li><strong>分卷导读路径（多产品线 / 多文档站并存时）</strong>多条产品线或独立知识面并存（如 CANN 与 Ascend C），且根文件放不下时，建议统一放到 <code>/llms/</code> 子目录下，保持结构清爽。具体路径由根文件显式声明，如 <code>/llms/cann.txt</code>、<code>/llms/ascend-c.txt</code>。单产品站条目少，直接写在根文件即可，不用分卷。</li>
+      </ul>
       <h4 class="fn-h4">最小合格示例</h4>
       <figure class="file-sample">
-        <figcaption><code>llms.txt</code></figcaption>
+        <figcaption><code>llms.txt</code>（根索引，宜短）</figcaption>
         <pre><code class="language-markdown"># Product X 文档
 
 &gt; 主推版本：Product X 2.0。只收官方文档，不含活动页。
+&gt; 体量大时本文件只做总索引；详细条目见分卷导读。
 
-## Product X 2.0（主推）
+## 入门
 
 - [安装指南](https://docs.example.com/docs/product-x/2.0/install)
-- [API 参考](https://docs.example.com/docs/product-x/2.0/api)
-- [核心概念](https://docs.example.com/docs/product-x/2.0/concepts)
+- [快速入门](https://docs.example.com/docs/product-x/2.0/quickstart)
+- [HelloWorld](https://docs.example.com/docs/product-x/2.0/helloworld)
 
-## Product X 1.5（维护）
+## 分卷导读
 
-- [安装指南](https://docs.example.com/docs/product-x/1.5/install)</code></pre>
+- [CANN 文档导读](https://docs.example.com/llms/cann.txt)
+- [Ascend C 导读](https://docs.example.com/llms/ascend-c.txt)
+- [配套正文包（按卷）](https://docs.example.com/llms/full-cann.txt)</code></pre>
       </figure>
-      <p class="file-sample-note">说明：H1 为站点名；<code>&gt;</code> 写明主推版本；H2 按产品 / 版本分组；链接文案与目标页 H1 同名；安装、API、概念排在组内前部。</p>
       <h4 class="fn-h4">执行要点</h4>
       <ul class="bg-list">
-        <li><strong>直接可达</strong>根路径 <code>/llms.txt</code> 应直接返回内容，不设置跳转或登录拦截。</li>
-        <li><strong>内容纯化</strong>面向文档与主推版本，活动落地页不收录其中。</li>
-        <li><strong>结构对应</strong>按产品 / 版本分组，篇名与目标页面 H1 保持一致。</li>
-        <li><strong>版本声明</strong>多版本并存时，显式标注主推版本，以防引用过期稿。</li>
-        <li><strong>优先级排序</strong>安装、API、概念等核心入口置于清单前部。</li>
+        <li><strong>直接可达</strong>根路径 <code>/llms.txt</code> 直接返回内容，不设置跳转或登录拦截。</li>
+        <li><strong>结构与收录</strong>H1 标站点名；<code>&gt;</code> 标明主推版本与分卷策略（多版本需显式写出主推）。链接文案与页面 H1 一致；仅收知识面，不收营销页。</li>
+        <li><strong>控制体量</strong>根文件保持精简；避免数万行或数 MB 的索引堆砌（过大文件会中途截断，导致后方入门条目无法获取）。</li>
+        <li><strong>分卷挂接</strong>多产品线并存时，根文件只做总索引并链向分卷；分卷按产品或文档站一层拆分，不再嵌套。分卷链接可直接 GET，并在 <code>robots.txt</code> 放行。单产品站条目少时，可直接写在根文件，无需分卷。</li>
       </ul>
       </div>
 
       <div class="practice-block">
       <h3 class="fn-h3" id="practice-llms-full">3. llms-full.txt：配套正文包</h3>
-      <p class="file-lead">导读的配套正文包，由导读定向触发，支持一次性提取纯净正文。</p>
+      <p class="file-lead">导读的配套正文包。由导读触发，用于一次性提取纯净正文。导读分卷时，正文包按同卷切分，避免单包过大导致超时或截断。</p>
       <h4 class="fn-h4">约定路径</h4>
-      <p class="file-lead"><code>https://{域名}/llms-full.txt</code>（与 <code>llms.txt</code> 同目录，惯例路径）</p>
+      <p class="file-lead">默认遵循同目录惯例：<code>https://{域名}/llms-full.txt</code>。分卷时，正文包与导读成对出现在 <code>/llms/</code> 下（如 <code>/llms/full-cann.txt</code> 对应 <code>/llms/cann.txt</code>），链接在根导读或分卷导读中显式写明。</p>
       <h4 class="fn-h4">最小合格示例</h4>
       <figure class="file-sample">
-        <figcaption><code>llms-full.txt</code>（节选）</figcaption>
+        <figcaption><code>/llms/full-cann.txt</code>（节选，按卷）</figcaption>
         <pre><code class="language-markdown"># 安装指南
 
 本文说明如何安装 Product X 2.0。系统要求如下。……
@@ -891,13 +906,13 @@ Sitemap: https://docs.example.com/sitemap.xml
 
 本文说明 Product X 2.0 的接口约定。……</code></pre>
       </figure>
-      <p class="file-sample-note">说明：篇题与顺序须与 <code>llms.txt</code> 一致；只留正文，不含导航、页脚、侧栏；随文档发布自动生成，不手工维护、不单独挂空文件。</p>
       <h4 class="fn-h4">执行要点</h4>
       <ul class="bg-list">
-        <li><strong>入口限制</strong>依赖 <code>llms.txt</code> 中的链接或同目录惯例进入，不脱离导读单独配置。</li>
-        <li><strong>构建同步</strong>随文档发布流程自动生成，避免手工维护导致过期。</li>
-        <li><strong>结构对齐</strong>包内篇目顺序与 <code>llms.txt</code> 保持一致。</li>
-        <li><strong>正文纯净</strong>剔除导航、页脚和侧栏，仅保留可引用正文；不发布空文件。</li>
+        <li><strong>入口限制</strong>入口依赖导读里的链接或同目录惯例，不脱离导读单独配置。</li>
+        <li><strong>按卷拆分</strong>导读分卷时，正文包也跟着分卷，不用把全站正文打成单一超大文件（实测中这种文件容易超时，也很难完整取回）。</li>
+        <li><strong>构建同步</strong>随文档发布自动生成，不依赖人工维护，也不会单独发布空文件。</li>
+        <li><strong>结构对齐</strong>篇目和顺序跟着对应导读（根或分卷）保持一致。</li>
+        <li><strong>正文纯净</strong>只保留可引用正文，导航、页脚和侧栏都不含。</li>
       </ul>
       </div>
 
@@ -905,7 +920,7 @@ Sitemap: https://docs.example.com/sitemap.xml
       <h3 class="fn-h3" id="practice-sitemap">4. sitemap.xml：无导读兜底</h3>
       <p class="file-lead">公开知识页的 URL 清单，作为导读缺失时的兜底入口。</p>
       <h4 class="fn-h4">约定路径</h4>
-      <p class="file-lead">必须在 <code>robots.txt</code> 中通过 <code>Sitemap:</code> 字段声明完整地址——这一点与前三个文件不同，不能默认按根路径直接访问。</p>
+      <p class="file-lead">该文件的地址不能像前三个文件那样直接按根路径访问，需通过 <code>robots.txt</code> 中的 <code>Sitemap:</code> 字段显式声明完整地址，才能被 Agent 找到。</p>
       <h4 class="fn-h4">最小合格示例</h4>
       <figure class="file-sample">
         <figcaption><code>sitemap.xml</code></figcaption>
@@ -917,14 +932,12 @@ Sitemap: https://docs.example.com/sitemap.xml
   <span class="cmt">&lt;!-- 不收录 /admin、重复参数 URL、活动专题 --&gt;</span>
 &lt;/urlset&gt;</code></pre>
       </figure>
-      <p class="file-sample-note">说明：完整地址须写在 <code>robots.txt</code> 的 <code>Sitemap:</code> 行；有导读时本清单只作回退。</p>
       <h4 class="fn-h4">执行要点</h4>
       <ul class="bg-list">
-        <li><strong>收录范围</strong>面向应被公开索引的知识面页面，后台或重复 URL 不收录其中。</li>
-        <li><strong>语义化 URL</strong>路径与文件名包含明确的业务语义（如产品名、版本号），避免无意义参数和会话 ID。</li>
-        <li><strong>地址声明</strong>在 <code>robots.txt</code> 中声明绝对地址。</li>
-        <li><strong>动态维护</strong>页面增删或迁移后同步更新。</li>
-        <li><strong>定性明确</strong>在存在导读时，作为回退方案，不承担主入口职责。</li>
+        <li><strong>收录范围</strong>面向应被公开索引的知识面页面，后台和重复 URL 不纳入。</li>
+        <li><strong>语义化 URL</strong>路径与文件名带上明确的业务语义（如产品名、版本号），避免无意义参数和会话 ID。</li>
+        <li><strong>地址声明</strong>完整地址写在 <code>robots.txt</code> 的 <code>Sitemap:</code> 行，声明为绝对地址。</li>
+        <li><strong>动态维护</strong>页面增删或迁移后，清单跟着更新。</li>
       </ul>
       </div>
     </section>
@@ -932,10 +945,10 @@ Sitemap: https://docs.example.com/sitemap.xml
     <section class="section" id="benefits">
       <h2>价值收益</h2>
       <ul class="bg-list">
-        <li><strong>抓取资源更聚焦</strong>由于噪声页被隔离，抓取额度被有效集中，知识库的输入更干净，无效页面占用明显减少。</li>
-        <li><strong>检索命中更完整</strong>主推版本优先被捕获，深层或新增页面作为补充，实现从「高频核心」到「边缘细节」的全面覆盖。</li>
-        <li><strong>入库链路更高效</strong>免去逐页渲染壳层的开销，直接获取纯净正文，显著缩短了从抓取到进入知识库的耗时。</li>
-        <li><strong>回答出处更权威</strong>官方事实被优先沉淀为引用依据，有效规避了过期内容或营销页给用户带来误导，提升了 Agent 回答的整体可信度。</li>
+        <li><strong>抓取资源更聚焦</strong>噪声页被隔离后，抓取额度集中用在刀刃上，知识库输入更干净，无效页面的占用明显减少。</li>
+        <li><strong>检索命中更完整</strong>主推版本优先被抓到，深层或新增页面作为补充，从「高频核心」到「边缘细节」都能覆盖到。</li>
+        <li><strong>入库链路更高效</strong>不用再一页页渲染页面壳层，直接拿纯净正文，从抓取到进入知识库的时间更短。</li>
+        <li><strong>回答出处更权威</strong>官方事实优先成为引用依据，能避开过期内容或营销页的误导，回答的整体可信度自然更高。</li>
       </ul>
     </section>
 

@@ -112,6 +112,7 @@
     line-height: 22px;
     color: var(--color-text);
   }
+  /* 表格 UI：对齐详情页 principles-machine-entry-verify */
   .af-figure {
     margin: 0 0 16px;
     overflow-x: auto;
@@ -122,109 +123,124 @@
     border-collapse: separate;
     border-spacing: 0;
     table-layout: fixed;
-    font-size: var(--text-auxiliary);
-    line-height: 22px;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
     color: var(--color-text);
   }
   .aj caption {
     caption-side: top;
     text-align: left;
-    font-size: var(--text-auxiliary);
+    font-size: var(--text-body);
     font-weight: 650;
-    line-height: 22px;
-    padding: 0 0 10px;
+    line-height: var(--text-body-lh);
+    padding: 0 0 14px;
     color: var(--color-text);
   }
   .aj th,
   .aj td {
-    border: 1px solid #e8eef5;
+    border: 1px solid var(--color-border);
     border-top: none;
     border-left: none;
     vertical-align: top;
-    padding: 12px;
-    font-size: var(--text-auxiliary);
-    line-height: 22px;
+    padding: var(--space-p);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
     word-break: break-word;
+    overflow-wrap: anywhere;
   }
   .aj thead tr:first-child > th {
-    border-top: 1px solid #e8eef5;
+    border-top: 1px solid var(--color-border);
   }
   .aj th:first-child,
   .aj td:first-child {
-    border-left: 1px solid #e8eef5;
+    border-left: 1px solid var(--color-border);
   }
   .aj thead th {
-    background: #f5f6f8;
+    background: var(--color-bg);
     font-weight: 650;
     text-align: left;
     color: var(--color-text);
   }
   .aj thead tr:first-child > th:first-child {
-    border-top-left-radius: 8px;
+    border-top-left-radius: var(--radius);
   }
   .aj thead tr:first-child > th:last-child {
-    border-top-right-radius: 8px;
+    border-top-right-radius: var(--radius);
   }
   .aj tbody tr:last-child td:first-child {
-    border-bottom-left-radius: 8px;
+    border-bottom-left-radius: var(--radius);
   }
   .aj tbody tr:last-child td:last-child {
-    border-bottom-right-radius: 8px;
+    border-bottom-right-radius: var(--radius);
   }
-  .aj col.col-model { width: 10%; }
-  .aj col.col-start { width: 11%; }
-  .aj col.col-discover { width: 12%; }
-  .aj col.col-path { width: 12%; }
-  .aj col.col-end { width: 22%; }
-  .aj col.col-block { width: 11%; }
-  .aj col.col-detail { width: 120px; }
-  /* 表1：七列铺满内容区，禁止横向滚动 */
+  .aj a {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 650;
+  }
+  .aj a:hover {
+    text-decoration: underline;
+  }
+  .aj code {
+    font-size: var(--text-auxiliary);
+  }
+  /* 表1：六列铺满，无横向滚动 */
   #compare .af-figure {
     overflow-x: visible;
   }
-  #compare .aj {
-    width: 100%;
-    min-width: 0;
-    table-layout: fixed;
-  }
-  #compare .aj col.col-model { width: 11%; }
+  #compare .aj col.col-model { width: 13%; }
   #compare .aj col.col-start { width: 12%; }
   #compare .aj col.col-discover { width: 18%; }
-  #compare .aj col.col-path { width: 16%; }
-  #compare .aj col.col-end { width: 24%; }
-  #compare .aj col.col-block { width: 13%; }
-  #compare .aj col.col-detail { width: 6%; }
+  #compare .aj col.col-path { width: 17%; }
+  #compare .aj col.col-end { width: 25%; }
+  #compare .aj col.col-block { width: 15%; }
   #compare .aj th,
   #compare .aj td {
-    padding: 12px 10px;
-    line-height: 1.5;
-    overflow-wrap: anywhere;
-    word-break: break-word;
+    overflow-wrap: break-word;
   }
-  #compare .aj td.col-detail {
+  /* 起手表头单行；猜路径固定两行，避免单元格被 line-clamp 撑乱 */
+  #compare .aj thead th:nth-child(2) {
     white-space: nowrap;
-    overflow-wrap: normal;
-    word-break: keep-all;
+  }
+  #compare .aj tbody td:nth-child(2) code {
+    white-space: nowrap;
   }
   .aj col.col-freq { width: 72px; }
   .aj col.col-rounds { width: 28%; }
-  .aj col.col-prio { width: 72px; }
+  .aj col.col-prio { width: 80px; }
+  #fix .aj col.col-prio { width: 6%; }
+  #fix .aj col.col-goal,
+  #fix .aj col.col-rounds,
+  #fix .aj col.col-solution { width: 31.333%; }
+  #fix .sol-list {
+    margin: 0;
+    padding-left: 1.15em;
+    list-style: disc;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+  }
+  #fix .sol-list li + li {
+    margin-top: 6px;
+  }
   .aj td.is-read {
-    background: #f0f7ff;
-    color: var(--color-primary);
-    font-weight: 650;
+    background: var(--color-success-bg, #f0f7ff);
+    color: var(--color-success, var(--color-primary));
+    font-weight: 400;
   }
   .aj td.is-unread {
-    background: #f5f6f8;
-    color: #8c8c8c;
+    background: var(--color-bg);
+    color: var(--color-text-tertiary, #8c8c8c);
+    font-weight: 400;
   }
   .aj td.is-fail {
     background: #fff7f2;
     color: #c2410c;
+    font-weight: 400;
   }
   .aj td.is-warn {
     background: #fffbeb;
     color: #b45309;
+    font-weight: 400;
   }
   .aj td.freq-cell {
     font-weight: 700;
@@ -319,10 +335,10 @@
     </section>
 
     <section class="section" id="compare">
-      <h2>模型测试对照</h2>
+      <h2>跨模型路径对照</h2>
       <figure class="af-figure">
         <table class="aj">
-          <caption>表1 模型测试对照</caption>
+          <caption>表1 跨模型路径对照</caption>
           <colgroup>
             <col class="col-model" />
             <col class="col-start" />
@@ -330,82 +346,73 @@
             <col class="col-path" />
             <col class="col-end" />
             <col class="col-block" />
-            <col class="col-detail" />
           </colgroup>
           <thead>
             <tr>
               <th scope="col">模型</th>
-              <th scope="col">起手</th>
+              <th scope="col">首步动作</th>
               <th scope="col">发现层</th>
               <th scope="col">通路</th>
-              <th scope="col">最终读到</th>
-              <th scope="col">主卡点</th>
-              <th scope="col">详情</th>
+              <th scope="col">最终拿到了什么</th>
+              <th scope="col">直接卡在哪</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>Grok 4.6</td>
+              <td><a href="principles-machine-entry-verify.html#panel-grok">Grok 4.6</a></td>
               <td>站外搜索</td>
               <td class="is-unread">全程未读</td>
-              <td>产品页 + 搜索摘要 + 2023 文章</td>
-              <td>定义与概念可拼；环境准备 / Add 教程 HTML 正文未拿到</td>
-              <td class="is-fail">文档站 CSR 空壳</td>
-              <td class="col-detail"><a href="principles-machine-entry-verify.html#panel-grok">详情</a></td>
+              <td>产品页 + 搜索摘要 + 旧文章</td>
+              <td>概念能拼凑，但 HTML 正文没拿到</td>
+              <td class="is-fail">页面是空壳（CSR）</td>
             </tr>
             <tr>
-              <td>GPT-5.6 Sol</td>
-              <td>猜 <code>/document</code></td>
+              <td><a href="principles-machine-entry-verify.html#panel-gpt">GPT-5.6 Sol</a></td>
+              <td>猜<br><code>/document</code></td>
               <td class="is-unread">全程未读</td>
-              <td>试探版本号 → Markdown 新线</td>
-              <td>CANN 9.1.X 概述、环境准备、SIMD HelloWorld</td>
-              <td class="is-warn">首页信息稀、靠猜版本</td>
-              <td class="col-detail"><a href="principles-machine-entry-verify.html#panel-gpt">详情</a></td>
+              <td>猜版本号，才连上 Markdown</td>
+              <td>拿到 9.1.X 概述、环境准备、HelloWorld</td>
+              <td class="is-warn">首页信息太少，只能靠猜</td>
             </tr>
             <tr>
-              <td>Claude Opus 5</td>
-              <td>猜 <code>/ascend-c</code></td>
-              <td class="is-read">后续补读 robots / llms；full 超时；sitemap 500</td>
-              <td><code>llms-content</code> 镜像</td>
-              <td>《什么是 Ascend C》+ 两篇 2023 文章；快速入门章节未落地</td>
-              <td class="is-fail"><code>llms.txt</code> 截断</td>
-              <td class="col-detail"><a href="principles-machine-entry-verify.html#panel-claude">详情</a></td>
+              <td><a href="principles-machine-entry-verify.html#panel-claude">Claude Opus 5</a></td>
+              <td>猜<br><code>/ascend-c</code></td>
+              <td class="is-read">补读 robots / llms；full超时；sitemap 500</td>
+              <td>llms-content 镜像</td>
+              <td>拿到部分概念和旧文，入门章节没看到</td>
+              <td class="is-fail">文件太大被中途截断</td>
             </tr>
             <tr>
-              <td>Claude Sonnet 5</td>
-              <td>猜 <code>/ascend-c</code></td>
+              <td><a href="principles-machine-entry-verify.html#panel-sonnet">Claude Sonnet 5</a></td>
+              <td>猜<br><code>/ascend-c</code></td>
               <td class="is-unread">全程未读</td>
-              <td><code>/doc_center/source/</code>（robots Disallow）</td>
-              <td>社区版 8.5.0 环境准备、HelloWorld、Add 全文</td>
-              <td class="is-warn">可读路径被列为禁抓</td>
-              <td class="col-detail"><a href="principles-machine-entry-verify.html#panel-sonnet">详情</a></td>
+              <td>硬闯了被禁止抓取的路径 <code>/doc_center/source/</code>（Disallow）</td>
+              <td>拿到了 8.5.0 社区版全套教程</td>
+              <td class="is-warn">能读的路径被列为了禁抓</td>
             </tr>
             <tr>
-              <td>GLM</td>
+              <td><a href="principles-machine-entry-verify.html#panel-glm">GLM</a></td>
               <td>站外搜索</td>
               <td class="is-unread">全程未读</td>
-              <td>搜索摘要（curl 证实 SPA 后止损）</td>
-              <td>简介结构 / API 分层 / 课程链接；完整 HTML 正文未拿到</td>
-              <td class="is-fail">文档站 CSR 空壳</td>
-              <td class="col-detail"><a href="principles-machine-entry-verify.html#panel-glm">详情</a></td>
+              <td>靠搜索摘要，确认是空壳后放弃</td>
+              <td>拿到了简介结构、API 分级、课程链接</td>
+              <td class="is-fail">全站页面都是空壳</td>
             </tr>
             <tr>
-              <td>DeepSeek</td>
+              <td><a href="principles-machine-entry-verify.html#panel-deepseek">DeepSeek</a></td>
               <td>站外搜索</td>
-              <td class="is-read">后续补读 robots / llms；API 探测</td>
-              <td>搜索摘要 + 协议层验证</td>
-              <td>HelloWorld 代码（摘要）；llms 过早截断；HTML 正文未拿到</td>
-              <td class="is-fail">CSR + llms 过早截断</td>
-              <td class="col-detail"><a href="principles-machine-entry-verify.html#panel-deepseek">详情</a></td>
+              <td class="is-read">补读 robots / llms；API 探测</td>
+              <td>搜索摘要 + 协议验证</td>
+              <td>拿到了摘要里的代码，但正文没拿到</td>
+              <td class="is-fail">空壳 + 目录太早截断</td>
             </tr>
             <tr>
-              <td>Kimi</td>
+              <td><a href="principles-machine-entry-verify.html#panel-kimi">Kimi</a></td>
               <td>站外搜索</td>
               <td class="is-unread">全程未读</td>
-              <td>横向换源（文档/课程/.md/论坛/Gitee）</td>
-              <td>HelloWorld 代码与目录结构（摘要）；人读 URL 与 Gitee 均失败</td>
-              <td class="is-fail">全域 CSR + Gitee 反爬</td>
-              <td class="col-detail"><a href="principles-machine-entry-verify.html#panel-kimi">详情</a></td>
+              <td>到处换源试（文档 / Gitee 等）</td>
+              <td>拿到了代码和结构（都是摘要），外部全失败</td>
+              <td class="is-fail">全是空壳 + 外部反爬</td>
             </tr>
           </tbody>
         </table>
@@ -415,10 +422,10 @@
     <section class="section" id="insight">
       <h2>分析洞察</h2>
       <ul class="bg-list">
-        <li><strong>发现层部署了 ≠ 被消费</strong>七个模型里 5 个全程未请求 <code>robots.txt</code> / <code>llms.txt</code> / sitemap；仅 Opus、DeepSeek 后续补读。</li>
-        <li><strong>发现层被消费 ≠ 落到入门章节</strong>Opus 因 <code>llms.txt</code> 过大被截断；DeepSeek 虽在 AI 白名单内且读到 llms，但读取器约在 41.9KB 处截断，所见仅为文首营销索引；完整文件后方有算子文档条目（与 Opus 同类，截断点更靠前）。</li>
-        <li><strong>人读 URL 常不可抓，且可被 curl 证实</strong>七个模型均撞 CSR / 200 空壳；GLM、DeepSeek 用裸 curl 证明空壳是站点架构，不是 WebFetch 独有缺陷；Kimi 横向换 6+ 类路径仍全空。</li>
-        <li><strong>搜索摘要成了事实正文源</strong>Grok / GLM / DeepSeek / Kimi 最终主要靠引擎索引的官方摘要交卷；Sonnet 读通的正文却在 <code>Disallow: /doc_center/</code> 下——可读通路与门禁错位。</li>
+        <li><strong>发现层部署了，不等于会被消费。</strong>七个模型里，有五个完全没去读 <code>robots.txt</code> 或 <code>llms.txt</code>；真正后续补读的只有 Opus 和 DeepSeek。</li>
+        <li><strong>消费发现层并不等同于达到入门章节。</strong>Opus 因 <code>llms.txt</code> 文件过大在读取中发生截断；DeepSeek 虽处于 AI 白名单内并成功读取了 <code>llms.txt</code>，但读取范围在 41.9KB 处终止，仅覆盖文首的营销索引；算子文档条目位于文件后方较深位置，截断点较 Opus 更靠前。</li>
+        <li><strong>人读 URL 普遍不可抓取，且经 curl 验证为站点架构问题。</strong>七个模型均遇到 CSR 渲染导致的 200 空壳响应。GLM 与 DeepSeek 通过直接 curl 验证，确认空壳属站点架构属性，而非特定抓取工具的缺陷；Kimi 尝试切换 6 类以上路径（含文档、课程、专题、<code>.md</code>、论坛）后，仍全部返回空壳。</li>
+        <li><strong>搜索摘要成为实际正文供给源。</strong>Grok、GLM、DeepSeek 及 Kimi 最终均依赖搜索引擎索引的官方摘要完成回答；Sonnet 虽成功读取了正文，但该路径（<code>/doc_center/source/</code>）恰好位于 <code>robots.txt</code> 的 Disallow 范围内，暴露出可读路径与准入规则之间的错位。</li>
       </ul>
     </section>
 
@@ -442,47 +449,47 @@
           <tbody>
             <tr>
               <td class="freq-cell -high">7/7</td>
-              <td>人读 HTML 为 CSR / 200 空壳</td>
+              <td>人读 HTML 采用 CSR 渲染，返回 200 但正文为空壳</td>
               <td>全部模型</td>
             </tr>
             <tr>
               <td class="freq-cell -high">7/7</td>
-              <td>第一步靠猜或搜索（≠ 全程未碰发现层）</td>
+              <td>首次请求依赖猜测或搜索，未以发现层作为起点</td>
               <td>全部模型</td>
             </tr>
             <tr>
               <td class="freq-cell -high">5/7</td>
-              <td>完全未消费发现层</td>
+              <td>全程未请求发现层文件（robots / llms / sitemap）</td>
               <td>Grok、GPT、Sonnet、GLM、Kimi</td>
             </tr>
             <tr>
               <td class="freq-cell -high">5/7</td>
-              <td>最终正文主要依赖搜索摘要 / 2023 文章（非完整人读 HTML 教程）</td>
+              <td>正文主要依赖搜索摘要或 2023 年存量文章</td>
               <td>Grok、Opus、GLM、DeepSeek、Kimi</td>
             </tr>
             <tr>
               <td class="freq-cell -mid">2/7</td>
-              <td>补读发现层后仍失败：<code>llms.txt</code> 过早截断，未落到入门章节</td>
+              <td>补读发现层后受限：<code>llms.txt</code> 读取中途截断，未触及入门章节</td>
               <td>Opus（~1.3MB）、DeepSeek（~41.9KB）</td>
             </tr>
             <tr>
               <td class="freq-cell -mid">2/7</td>
-              <td>猜镜像 / 旧路径 404</td>
+              <td>尝试推测镜像 / 旧版路径返回 404</td>
               <td>GPT、Opus</td>
             </tr>
             <tr>
               <td class="freq-cell">1/7</td>
-              <td>Gitee 官方 samples 滑块反爬</td>
+              <td>Gitee 官方 samples 仓库触发滑块反爬</td>
               <td>Kimi</td>
             </tr>
             <tr>
               <td class="freq-cell">1/7</td>
-              <td>内容网关 JSON 需 Referer；detail 接口止损</td>
+              <td>内容网关 JSON 需 Referer，detail 接口未继续跟进</td>
               <td>DeepSeek</td>
             </tr>
             <tr>
               <td class="freq-cell">1/7</td>
-              <td>sitemap 500 / <code>llms-full</code> 超时（次要）</td>
+              <td>sitemap 返回 500，llms-full 请求超时</td>
               <td>Opus</td>
             </tr>
           </tbody>
@@ -492,52 +499,93 @@
 
     <section class="section" id="fix">
       <h2>统一改进建议</h2>
-      <p class="bg-body">由各模型建议去重，按「覆盖模型 × 投入产出」排序。逐步轨迹与抓取原文见各模型详情页。</p>
       <figure class="af-figure">
         <table class="aj aj-prio">
           <caption>表3 面向文档站的统一改进建议</caption>
           <colgroup>
             <col class="col-prio" />
-            <col />
+            <col class="col-goal" />
             <col class="col-rounds" />
+            <col class="col-solution" />
           </colgroup>
           <thead>
             <tr>
               <th scope="col">优先级</th>
-              <th scope="col">建议</th>
-              <th scope="col">主要覆盖</th>
+              <th scope="col">改进建议（业务目标 / 预期标准）</th>
+              <th scope="col">对应问题</th>
+              <th scope="col">解决方案（具体技术动作）</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td><span class="prio -p0">P0</span></td>
-              <td>人读展示层首包输出可解析入门文字链接，或 SSR 输出正文 / 目录树；避免 CSR 空壳与 image map。亦可另提供可直接 GET 的 Markdown/静态镜像（无需 Referer）</td>
-              <td>7/7 撞 CSR；GLM/DeepSeek curl 已证实</td>
+              <td>提升人读页的可抓取性：首包需包含入门链接，或由服务端渲染输出正文；并提供无需鉴权的纯净正文通道。</td>
+              <td>7/7 模型遇 CSR 空壳；GLM/DeepSeek 已用 curl 证实</td>
+              <td>
+                <ul class="sol-list">
+                  <li>HTML 首包输出入门章节文字链</li>
+                  <li>关键页面切换为 SSR，输出正文与目录树</li>
+                  <li>提供免鉴权的 Markdown 或静态镜像（支持 GET）</li>
+                </ul>
+              </td>
             </tr>
             <tr>
               <td><span class="prio -p0">P0</span></td>
-              <td>降低 <code>llms.txt</code> 体积并分卷，或在首屏给出「Ascend C 入门」3–5 条可抓 URL；避免读取器只看到文首营销索引</td>
-              <td>Opus ~1.3MB 截断；DeepSeek ~41.9KB 截断</td>
+              <td>防止文件过大导致截断：控制根文件体积，按产品线拆分索引。</td>
+              <td>Opus 1.3MB 截断；DeepSeek 41.9KB 截断</td>
+              <td>
+                <ul class="sol-list">
+                  <li>控制 <code>llms.txt</code> 总体积</li>
+                  <li>多产品线采用「短索引 + 分卷」模式，分卷文件置于 <code>/llms/</code> 目录</li>
+                </ul>
+              </td>
             </tr>
             <tr>
               <td><span class="prio -p0">P0</span></td>
-              <td>校准 <code>Disallow: /doc_center/</code>：若源路径是机器可读正文主通道，应对 AI agent 显式 Allow，或把同等正文放到未禁止镜像并在人读页声明</td>
-              <td>Sonnet 唯一读通路径</td>
+              <td>消除机器可读路径与门禁的错位：放开仅有的机器可读正文通路，或提供等价替代。</td>
+              <td>Sonnet：唯一读通的正文路径却被 Disallow</td>
+              <td>
+                <ul class="sol-list">
+                  <li>对 AI Agent 显式 <code>Allow: /doc_center/</code></li>
+                  <li>在未被禁止的路径提供同等正文，并在页面声明</li>
+                </ul>
+              </td>
             </tr>
             <tr>
               <td><span class="prio -p1">P1</span></td>
-              <td>在模型实际会到的第一站（<code>/ascend-c</code>、<code>/document</code>、搜索易命中的简介页）及 <code>robots.txt</code> AI 白名单段附近，放置指向 <code>/llms.txt</code> 与静态入门 URL 的发现入口；聚合页镜像保留真实 URL</td>
-              <td>提高发现层被消费概率；覆盖换源/摘要派</td>
+              <td>前置发现入口与直连链路：在模型首站和白名单附近提供导读入口；保留聚合页真链，防止猜路径。</td>
+              <td>多数模型未主动读发现层；换源/摘要派缺少首站导读与真链</td>
+              <td>
+                <ul class="sol-list">
+                  <li>在 <code>/ascend-c</code>、<code>/document</code> 等首站直接挂载 <code>llms.txt</code> 链接</li>
+                  <li>在 <code>robots.txt</code> 直接声明 <code>LLMs.txt: https://.../llms.txt</code></li>
+                  <li>聚合页镜像暴露完整真实 URL（带 <code>.md</code>/<code>.html</code>）</li>
+                </ul>
+              </td>
             </tr>
             <tr>
               <td><span class="prio -p1">P1</span></td>
-              <td>旧版路径配置持久 301；页面声明的 <code>llms-content</code> 与真实命名对齐；修复站内搜索</td>
-              <td>GPT 猜版本 / 声明镜像 404</td>
+              <td>消除路径割裂与检索障碍：修正旧版跳转、镜像命名错位及搜索不可用。</td>
+              <td>GPT 猜版本；声明镜像 404</td>
+              <td>
+                <ul class="sol-list">
+                  <li>为 <code>800alpha003</code> 等配置持久 301 跳转至新版</li>
+                  <li>将页面声明的 <code>llms-content</code> 与实际文件名对齐</li>
+                  <li>修复 <code>/search?keyword=</code> 接口，确保正常返回结果</li>
+                </ul>
+              </td>
             </tr>
             <tr>
               <td><span class="prio -p2">P2</span></td>
-              <td>官方 samples 提供不受滑块拦截的 raw/镜像；入门目录同时给出当前 9.x 地址；保障 sitemap / <code>llms-full</code> 可用性</td>
-              <td>Kimi Gitee 反爬；Sonnet 版本线；Opus 兜底</td>
+              <td>完善兜底与版本对齐：打通站外官方仓库访问，并对齐当前文档版本，修复兜底协议。</td>
+              <td>Kimi 遇 Gitee 反爬；Sonnet 版本线；Opus 兜底失效</td>
+              <td>
+                <ul class="sol-list">
+                  <li>提供免滑块的 raw 直链或静态镜像</li>
+                  <li>入门目录同步更新为 9.x 版本地址</li>
+                  <li>确保 sitemap 与 <code>llms-full</code> 接口保持稳定可用</li>
+                </ul>
+              </td>
             </tr>
           </tbody>
         </table>
