@@ -208,19 +208,37 @@
   .aj col.col-freq { width: 72px; }
   .aj col.col-rounds { width: 28%; }
   .aj col.col-prio { width: 80px; }
-  #fix .aj col.col-prio { width: 6%; }
-  #fix .aj col.col-goal,
-  #fix .aj col.col-rounds,
-  #fix .aj col.col-solution { width: 31.333%; }
-  #fix .sol-list {
+  #fix .aj col.col-prio { width: 5%; }
+  #fix .aj col.col-goal { width: 24%; }
+  #fix .aj col.col-rounds { width: 20%; }
+  #fix .aj col.col-solution { width: 28%; }
+  #fix .aj col.col-principle { width: 23%; }
+  #fix .sol-list,
+  #fix .principle-list {
     margin: 0;
-    padding-left: 1.15em;
-    list-style: disc;
+    padding-left: 0;
+    list-style: none;
     font-size: var(--text-body);
     line-height: var(--text-body-lh, 22px);
   }
-  #fix .sol-list li + li {
-    margin-top: 6px;
+  #fix .sol-list > li,
+  #fix .principle-list > li {
+    position: relative;
+    margin: 0;
+    padding-left: 1em;
+  }
+  #fix .sol-list > li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    font-weight: 650;
+  }
+  #fix .principle-list > li {
+    padding-left: 0;
+  }
+  #fix .sol-list > li + li,
+  #fix .principle-list > li + li {
+    margin-top: 10px;
   }
   .aj td.is-read {
     background: var(--color-success-bg, #f0f7ff);
@@ -507,6 +525,7 @@
             <col class="col-goal" />
             <col class="col-rounds" />
             <col class="col-solution" />
+            <col class="col-principle" />
           </colgroup>
           <thead>
             <tr>
@@ -514,9 +533,10 @@
               <th scope="col">改进建议（业务目标 / 预期标准）</th>
               <th scope="col">对应问题</th>
               <th scope="col">解决方案（具体技术动作）</th>
+              <th scope="col">相关亲和原则</th>
             </tr>
           </thead>
-          <tbody>
+                              <tbody>
             <tr>
               <td><span class="prio -p0">P0</span></td>
               <td>提升人读页的可抓取性：首包需包含入门链接，或由服务端渲染输出正文；并提供无需鉴权的纯净正文通道。</td>
@@ -526,6 +546,13 @@
                   <li>HTML 首包输出入门章节文字链</li>
                   <li>关键页面切换为 SSR，输出正文与目录树</li>
                   <li>提供免鉴权的 Markdown 或静态镜像（支持 GET）</li>
+                </ul>
+              </td>
+              <td>
+                <ul class="principle-list">
+                  <li><a href="principles-link.html">链接语义化</a></li>
+                  <li><a href="principles-content-retrievable.html">正文首包可得</a></li>
+                  <li><a href="principles-page-md.html">页级 Markdown</a> / <a href="principles-format.html">双轨交付</a></li>
                 </ul>
               </td>
             </tr>
@@ -539,6 +566,11 @@
                   <li>多产品线采用「短索引 + 分卷」模式，分卷文件置于 <code>/llms/</code> 目录</li>
                 </ul>
               </td>
+              <td>
+                <ul class="principle-list">
+                  <li><a href="principles-structure-llms.html">发现层部署</a></li>
+                </ul>
+              </td>
             </tr>
             <tr>
               <td><span class="prio -p0">P0</span></td>
@@ -548,6 +580,12 @@
                 <ul class="sol-list">
                   <li>对 AI Agent 显式 <code>Allow: /doc_center/</code></li>
                   <li>在未被禁止的路径提供同等正文，并在页面声明</li>
+                </ul>
+              </td>
+              <td>
+                <ul class="principle-list">
+                  <li><a href="principles-structure-llms.html">发现层部署</a></li>
+                  <li><a href="principles-page-md.html">页级 Markdown</a> / <a href="principles-format.html">双轨交付</a></li>
                 </ul>
               </td>
             </tr>
@@ -562,6 +600,13 @@
                   <li>聚合页镜像暴露完整真实 URL（带 <code>.md</code>/<code>.html</code>）</li>
                 </ul>
               </td>
+              <td>
+                <ul class="principle-list">
+                  <li><a href="principles-machine-entry.html">站级导读</a></li>
+                  <li><a href="principles-structure-llms.html">发现层部署</a></li>
+                  <li><a href="principles-link.html">链接语义化</a></li>
+                </ul>
+              </td>
             </tr>
             <tr>
               <td><span class="prio -p1">P1</span></td>
@@ -574,6 +619,13 @@
                   <li>修复 <code>/search?keyword=</code> 接口，确保正常返回结果</li>
                 </ul>
               </td>
+              <td>
+                <ul class="principle-list">
+                  <li><a href="principles-a2.html">失效/弃用状态显化</a> / <a href="principles-timeliness.html">版本号外显</a></li>
+                  <li><a href="principles-page-md.html">页级 Markdown</a> / <a href="principles-link.html">链接语义化</a></li>
+                  <li><a href="principles-exception.html">常见异常说明</a></li>
+                </ul>
+              </td>
             </tr>
             <tr>
               <td><span class="prio -p2">P2</span></td>
@@ -584,6 +636,13 @@
                   <li>提供免滑块的 raw 直链或静态镜像</li>
                   <li>入门目录同步更新为 9.x 版本地址</li>
                   <li>确保 sitemap 与 <code>llms-full</code> 接口保持稳定可用</li>
+                </ul>
+              </td>
+              <td>
+                <ul class="principle-list">
+                  <li><a href="principles-example.html">示例路径可参照</a> / <a href="principles-format.html">双轨交付</a></li>
+                  <li><a href="principles-timeliness.html">版本号外显</a></li>
+                  <li><a href="principles-structure-llms.html">发现层部署</a></li>
                 </ul>
               </td>
             </tr>

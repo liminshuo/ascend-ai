@@ -132,16 +132,16 @@
     border-collapse: separate;
     border-spacing: 0;
     table-layout: fixed;
-    font-size: var(--text-auxiliary);
-    line-height: 22px;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
     color: var(--color-text);
   }
   .aj caption {
     caption-side: top;
     text-align: left;
-    font-size: var(--text-auxiliary);
+    font-size: var(--text-body);
     font-weight: 650;
-    line-height: 22px;
+    line-height: var(--text-body-lh);
     padding: 0 0 10px;
     color: var(--color-text);
   }
@@ -163,8 +163,8 @@
     border-left: none;
     vertical-align: top;
     padding: 12px 12px;
-    font-size: var(--text-auxiliary);
-    line-height: 22px;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
   }
   .aj thead tr:first-child > th {
     border-top: 1px solid #e8eef5;
@@ -346,9 +346,9 @@
   .practice-shot > figcaption {
     margin: 0;
     text-align: left;
-    font-size: var(--text-auxiliary);
+    font-size: var(--text-body);
     font-weight: 650;
-    line-height: 22px;
+    line-height: var(--text-body-lh);
     padding: 0 0 10px;
     color: var(--color-text);
   }
@@ -487,21 +487,20 @@
     <div class="page-header">
       <h1>站级导读</h1>
       <p class="page-desc page-desc--split">
-        <span class="page-desc-line">当我们在 Cursor、企业内部 RAG、文档灌库工具等场景自建知识库时，爬虫往往只能抽到当前命中（或被打开）的这一页，而不会主动去获取整站的 <code>llms.txt</code>。这会导致邻篇无法进库，跨页问答断连。</span>
-        <span class="page-desc-line">站级导读是页内的兜底策略：不仅在视觉上要求 H1 标题旁必须有真实可见的入口，而且源码中必须包含一条指向 <code>llms.txt</code> 的真实链接。这样，用户看到的是清晰的去向，Agent 也能仅凭当前页面补齐整站文章清单。</span>
+        <span class="page-desc-line">尽管 <code>/llms.txt</code> 是行业惯例，但并非强制协议。实测中，多数 Agent 会绕开它，直接从搜索命中或外链落到人读 HTML。如果页内缺少回到站级导读的回链，模型就会被困在单篇正文里，既看不到邻篇，也断了继续扩抓的线索。</span>
+        <span class="page-desc-line">因此，H1 旁需要有视觉可见、源码可跟的 <code>llms.txt</code> 真链作为兜底，引导 Agent 从当前页回到发现层，再顺着目录抓取后续内容。</span>
       </p>
     </div>
 
     <section class="section" id="mechanism">
       <h2 id="mech-access">Agent 是如何发现入口的</h2>
-      <p class="bg-body">Agent 有两个层级的发现路径：</p>
-      <h4 class="fn-h4">发现层（主路径）</h4>
-      <p class="bg-body">按约定路径直接获取 <code>llms.txt</code>（位于根目录或文档站子路径）。</p>
-      <h4 class="fn-h4">内容层（兜底入口）</h4>
-      <p class="bg-body">已抓到具体页面，但未走发现层时，Agent 会从标题旁的「站点导读」链接获取清单，再按清单批量补抓邻篇。</p>
+      <h3 class="fn-h3">主路径 · 发现层</h3>
+      <p class="bg-body">按约定直接获取根目录或子路径的 <code>llms.txt</code>。</p>
+      <h3 class="fn-h3">兜底入口 · 内容层</h3>
+      <p class="bg-body">未走发现层时，通过 H1 旁指向 <code>llms.txt</code> 的真链（图标 / 文本）回接清单，再批量抓取邻篇。无需强制文案，但链接语义需明确目标。</p>
       <figure class="af-figure">
         <table class="aj">
-          <caption>表1 兜底入口 · 标题旁「站点导读」的对接流程</caption>
+          <caption>表1 兜底入口 · 标题旁 llms 真链的对接流程</caption>
           <colgroup>
             <col class="aj-rowhead" />
             <col />
@@ -511,29 +510,29 @@
           <thead>
             <tr>
               <th class="aj-corner" scope="col">行为阶段</th>
-              <th scope="col"><span class="aj-who">Agent</span><span class="aj-stage-name">已入库单页</span></th>
-              <th class="aj-pri" scope="col"><span class="aj-who">Agent</span><span class="aj-stage-name">解析标题旁导读</span></th>
+              <th scope="col"><span class="aj-who">Agent</span><span class="aj-stage-name">命中并入库单页</span></th>
+              <th class="aj-pri" scope="col"><span class="aj-who">Agent</span><span class="aj-stage-name">解析标题旁真链</span></th>
               <th scope="col"><span class="aj-who">Agent</span><span class="aj-stage-name">批量补抓邻篇</span></th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <th class="aj-label" scope="row">触点</th>
-              <td>一篇人读页的 HTML；抽取范围限定在 <code>main</code> 内</td>
-              <td class="is-pri"><span class="aj-file">H1 同一行视觉可见的「站点导读」链接</span></td>
-              <td>导读清单中的篇链接</td>
+              <td>一篇人读 HTML 页，抽取范围限定在 <code>main</code> 内</td>
+              <td class="is-pri"><span class="aj-file">H1 同一行的可见入口（图标或短文），附带指向 llms.txt 的真实链接</span></td>
+              <td>导读清单中的篇目链接</td>
             </tr>
             <tr>
               <th class="aj-label" scope="row">解决问题</th>
-              <td>仅入库当前页，邻篇无法进库，跨页检索断裂</td>
-              <td class="is-pri">确保视觉和代码可及；无需猜测 <code>llms.txt</code> 路径；不占用正文首句</td>
-              <td>按导读顺序批量补抓邻篇，补齐整站知识</td>
+              <td>解决仅入库当前页、邻篇无法进入知识库导致的跨页检索断裂问题</td>
+              <td class="is-pri">确保视觉可见且源码可跟；无需模型猜测 <code>llms.txt</code> 的路径</td>
+              <td>按导读顺序批量抓取邻篇，补齐整站知识图谱</td>
             </tr>
             <tr>
               <th class="aj-label" scope="row">如何到达</th>
-              <td>检索命中或外部链接引入，已落到该页</td>
-              <td class="is-pri">H1 同一行写出动作名并指向约定路径上的 <code>llms.txt</code></td>
-              <td>Fetch 清单中的篇；需全文包时再取 <code>llms-full.txt</code></td>
+              <td>经由检索命中或外部链接引入，模型已落到当前页</td>
+              <td class="is-pri">将真链挂在 H1 同一行，<code>href</code> 指向约定路径上的 <code>llms.txt</code>；源码侧通过 <code>aria-label</code> 等属性标明目标是 llms</td>
+              <td>Fetch 清单中的对应篇目；需要全文包时，进一步请求 <code>llms-full.txt</code></td>
             </tr>
           </tbody>
         </table>
@@ -543,8 +542,8 @@
     <section class="section" id="core-principles">
       <h2>核心原则</h2>
       <ul class="bg-list">
-        <li><strong>视觉与源码统一</strong>入口绝不是写在代码里的隐藏挂件，必须画在 H1 标题旁边。无论是纯文本、带图标的文本还是纯图标，都要出现在用户的视觉流中，同时保证是 <code>main</code> 里的真实 <code>&lt;a&gt;</code> 标签。</li>
-        <li><strong>主次分明</strong>进站主路径仍按约定路径取 <code>llms.txt</code>（见 <a href="principles-structure-llms.html">发现层部署</a>）。页内补救链只是兜底，绝不能替代发现层。</li>
+        <li><strong>视觉与源码统一</strong>入口需要显式呈现在 H1 标题旁。无论采用纯文本、带图标的文本还是纯图标，都应出现在用户的视觉流中，并在源码层面确保它是 <code>main</code> 区域内的真实 <code>&lt;a&gt;</code> 标签。</li>
+        <li><strong>主次分明</strong>站级导读的获取依然以发现层约定路径为主（详见<a href="principles-structure-llms.html">发现层部署</a>）。页面上的补救链接只作为兜底存在，不抢占主路径的职责。</li>
       </ul>
     </section>
 
@@ -553,11 +552,11 @@
 
       <h3 class="fn-h3">视觉上 · 标题旁落点</h3>
       <figure class="practice-shot">
-        <figcaption>图1 标题旁「站点导读」落点</figcaption>
+        <figcaption>图1 标题旁 llms 入口落点（图标即可）</figcaption>
         <div class="practice-sample">
         <div class="hub-shot">
           <img src="assets/design-guide/ascend-inference-hub.png" alt="昇腾社区推理开发落地页：标题「推理开发」、框架 Tab 与方案说明">
-          <a class="hub-shot-llms" href="https://docs.example.com/docs/llms.txt" aria-label="站点导读" title="站点导读">
+          <a class="hub-shot-llms" href="https://docs.example.com/docs/llms.txt" aria-label="llms.txt" title="llms.txt">
             <img class="sg-bee" src="assets/design-guide/site-guide-robot.png" alt="" width="20" height="20">
           </a>
         </div>
@@ -565,8 +564,8 @@
       </figure>
       <h4 class="fn-h4">执行要点</h4>
       <ul class="bg-list">
-        <li><strong>跟标题走</strong>入口必须与 H1 主标题同一行、垂直居中对齐，落在用户扫标题的视觉重心。如图1：图标贴在 H1「推理开发」右侧。不要写进介绍段第一句，不要抢占运营 Banner 的位置。</li>
-        <li><strong>主次视觉</strong>「站点导读」须符合站内链接视觉规范（颜色、下划线、图标），让用户一眼识别出它可点击。</li>
+        <li><strong>跟标题走</strong>入口放在 H1 主标题的同一行（如：图1），把图标放在 H1 的右侧。</li>
+        <li><strong>图标形式统一</strong>Agent 入口图标与<a href="principles-page-md.html">页级 Markdown</a>、<a href="principles-block-md.html">块级 Markdown</a> 使用同一套视觉形态，避免三类入口各画一套图标。</li>
       </ul>
       <h3 class="fn-h3">源码上 · 真链包裹</h3>
       <h4 class="fn-h4">最小合格示例</h4>
@@ -575,7 +574,7 @@
         <pre><code class="language-html">&lt;main&gt;
   &lt;div class="hub-title"&gt;
     &lt;h1&gt;推理开发&lt;/h1&gt;
-    &lt;a href="https://docs.example.com/docs/llms.txt" aria-label="站点导读"&gt;
+    &lt;a href="https://docs.example.com/docs/llms.txt" aria-label="llms.txt"&gt;
       &lt;img src="/assets/site-guide.png" alt=""&gt;
     &lt;/a&gt;
   &lt;/div&gt;
@@ -584,17 +583,17 @@
       </figure>
       <h4 class="fn-h4">执行要点</h4>
       <ul class="bg-list">
-        <li><strong>指向约定路径</strong><code>href</code> 必须使用 <code>llms.txt</code> 的绝对地址（根目录或文档站子路径）。</li>
-        <li><strong>名称写在链上</strong>有文字位就直接写出「站点导读」。只用图标时，在 <code>&lt;a&gt;</code> 上写 <code>aria-label="站点导读"</code>（可兼 <code>title</code>），<code>img</code> 的 <code>alt</code> 务必留空；避免「更多」「AI」等无意义文案。</li>
-        <li><strong>保持首包真实</strong>Agent 不认图意，可跟的是源码里的真链。图标必须落在首包已有的 <code>&lt;a&gt;</code> 内。不要用 CSS <code>background-image</code> 画图标，不要写 JS 悬停才插入 DOM，不要只写在 <code>&lt;head&gt;</code> 或页脚。</li>
+        <li><strong>指向约定路径</strong><code>href</code> 需使用 <code>llms.txt</code> 的绝对地址（位于根目录或文档站子路径）。</li>
+        <li><strong>链上标明是 llms</strong>有文字位时应写明 <code>llms.txt</code> / <code>LLMs</code> 等可识别名。只用图标时，在 <code>&lt;a&gt;</code> 标签上添加 <code>aria-label="llms.txt"</code>（可同时设置 <code>title</code>），<code>img</code> 的 <code>alt</code> 留空。避免使用「更多」「AI」「站级导读」等与文件目标无关的文案。</li>
+        <li><strong>保持首包真实</strong>Agent 无法识别图片语义，可跟的只有源码中的真实链接。图标必须落在首包已有的 <code>&lt;a&gt;</code> 标签内。不要使用 CSS <code>background-image</code> 画图标，不要通过 JS 悬停插入 DOM，也不要只写在 <code>&lt;head&gt;</code> 或页脚中。</li>
       </ul>
     </section>
 
     <section class="section" id="benefits">
       <h2>价值收益</h2>
       <ul class="bg-list">
-        <li><strong>用户与 Agent 双赢</strong>视觉上给了用户明确的路径，代码上给了 Agent 可靠的抓取锚点。</li>
-        <li><strong>落在哪页都接得住</strong>Agent 未必从文档站路径进站，落到门户或专题页本来无从猜起。只要每页标题旁都有这条可见的真链，就都能接回发现层，不必先走对约定路径。</li>
+        <li><strong>用户与 Agent 双赢</strong>用户界面提供清晰可见的入口路径，底层源码为 Agent 提供可靠的抓取锚点，两者兼顾。</li>
+        <li><strong>覆盖任意落点</strong>Agent 进入站点时未必途经文档站路径，可能直接落在门户或专题页。通过在各页标题旁挂载可见真链，即可确保从任何位置都能接回发现层，免去路径猜测。</li>
       </ul>
     </section>
   </main>

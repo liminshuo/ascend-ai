@@ -140,6 +140,7 @@
   h3.fn-h3 + .principle-example > h4.fn-h4,
   h3.fn-h3 + h4.fn-h4,
   .principle-suggestions + .principle-example > h4.fn-h4 { margin-top: 12px; }
+  #mechanism h3.fn-h3 + p.bg-body,
   #mechanism h4.fn-h4 + p.bg-body,
   #mechanism h4.fn-h4 + p.aj-takeaway {
     margin-top: 0;
@@ -164,16 +165,16 @@
     border-collapse: separate;
     border-spacing: 0;
     table-layout: fixed;
-    font-size: var(--text-auxiliary);
-    line-height: 22px;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
     color: var(--color-text);
   }
   .aj caption {
     caption-side: top;
     text-align: left;
-    font-size: var(--text-auxiliary);
+    font-size: var(--text-body);
     font-weight: 650;
-    line-height: 22px;
+    line-height: var(--text-body-lh);
     padding: 0 0 10px;
     color: var(--color-text);
   }
@@ -245,8 +246,8 @@
     border-left: none;
     vertical-align: top;
     padding: 12px 12px;
-    font-size: var(--text-auxiliary);
-    line-height: 22px;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
   }
   .aj thead tr:first-child > th {
     border-top: 1px solid #e8eef5;
@@ -883,6 +884,7 @@
     border-radius: 8px;
   }
 
+  #mechanism > p.bg-body + h3.fn-h3,
   #mechanism > p.bg-body + h4.fn-h4 { margin-top: 16px; }
   #core-principles .bg-list li + li,
   #practices .bg-list li + li,
@@ -912,9 +914,9 @@
   .practice-shot > figcaption {
     margin: 0;
     text-align: left;
-    font-size: var(--text-auxiliary);
+    font-size: var(--text-body);
     font-weight: 650;
-    line-height: 22px;
+    line-height: var(--text-body-lh);
     padding: 0 0 10px;
     color: var(--color-text);
   }
@@ -999,23 +1001,23 @@
     <div class="page-header">
       <h1>页级 Markdown</h1>
       <p class="page-desc page-desc--split">
-        <span class="page-desc-line">当用户在对话窗口里需要本页正文时，从渲染页拿内容容易带上导航和壳层噪声、丢失结构。</span>
-        <span class="page-desc-line">Agent 处理这一页时——不管是 Cursor 这类工具的单次调用，还是企业内部 RAG 的批量摄取——解析渲染 HTML 同样容易带噪声、难切块。</span>
+        <span class="page-desc-line">当用户在对话窗口中需要本页正文时，直接抓取渲染页容易混入导航和壳层噪声，也会丢失原有的层级结构。对于 Agent 而言，无论是像 Cursor 这样的单次工具调用，还是企业内部 RAG 的批量摄取，解析渲染 HTML 都会面临同样的难题：噪声多，且难以切分段落。</span>
+        <span class="page-desc-line">因此，需要为该页面提供独立的纯文本镜像（如 Markdown），让用户和 Agent 都能直接获取干净、结构完整的正文。</span>
       </p>
     </div>
 
     <section class="section" id="mechanism">
       <h2 id="mech-access">Agent 是如何取到页级 Markdown 的</h2>
       <p class="bg-body">Agent 取页级纯净正文有三条路径，按置信度从高到低排序：</p>
-      <h4 class="fn-h4" id="mech-page-md">通用发现层（主路径）</h4>
-      <p class="bg-body">按行业通用约定，直接探测根目录或文档站子路径下的 <code>llms.txt</code>，从中 Fetch 该篇地址。这是跨站点通用的社区惯例，优先级最高。</p>
-      <h4 class="fn-h4" id="mech-page-private">站点私有发现层（需站点声明）</h4>
-      <p class="bg-body">将当前页 URL 的 <code>.html</code> 改为 <code>.md</code>。前提：此规则属于站点私有约定，非通用知识，必须已在 <code>llms.txt</code> 或其他公开规范中明确声明，Agent 才会尝试。</p>
-      <h4 class="fn-h4" id="mech-page-not">内容层（兜底入口）</h4>
-      <p class="bg-body">这是一个无需前置条件的确定路径。只要已抓到这篇 HTML，且无法通过上述路径获得平行稿，Agent 即可直接从页头「打开 Markdown」的真链跟到平行 <code>.md</code>。落点固定在 H1 同一行，必须写在 <code>main</code> 里。</p>
+      <h3 class="fn-h3" id="mech-page-md">主路径 · 通用发现层</h3>
+      <p class="bg-body">按行业通用惯例，直接探测根目录或文档站子路径下的 <code>llms.txt</code>，从中 Fetch 目标页面地址。这是跨站点通用的社区约定，优先级最高。</p>
+      <h3 class="fn-h3" id="mech-page-private">条件路径 · 站点私有发现层</h3>
+      <p class="bg-body">将当前页 URL 的 <code>.html</code> 替换为 <code>.md</code>。并非行业通用规则。站点需在 <code>llms.txt</code> 或其他公开规范中明确声明，Agent 才会尝试这条路径。</p>
+      <h3 class="fn-h3" id="mech-page-not">兜底入口 · 内容层</h3>
+      <p class="bg-body">无需前置条件。已抓到 HTML 且前两条路径未获平行稿时，Agent 从 H1 旁（<code>main</code> 内）的「打开 Markdown」真链直接跟取 <code>.md</code>。</p>
       <figure class="af-figure">
         <table class="aj">
-          <caption>表1 「打开 Markdown」兜底入口的对接流程</caption>
+          <caption>表2 兜底入口 · 页头「打开 Markdown」的对接流程</caption>
           <colgroup>
             <col class="aj-rowhead" />
             <col />
@@ -1025,29 +1027,29 @@
           <thead>
             <tr>
               <th class="aj-corner" scope="col">行为阶段</th>
-              <th scope="col"><span class="aj-who">Agent</span><span class="aj-stage-name">已入库渲染页</span></th>
-              <th class="aj-pri" scope="col"><span class="aj-who">Agent</span><span class="aj-stage-name">解析页头打开链</span></th>
-              <th scope="col"><span class="aj-who">Agent</span><span class="aj-stage-name">Fetch 平行稿</span></th>
+              <th scope="col"><span class="aj-who">Agent</span><span class="aj-stage-name">命中并入库渲染页</span></th>
+              <th class="aj-pri" scope="col"><span class="aj-who">Agent</span><span class="aj-stage-name">解析页头真链</span></th>
+              <th scope="col"><span class="aj-who">Agent</span><span class="aj-stage-name">获取平行稿</span></th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <th class="aj-label" scope="row">触点</th>
-              <td>一篇人读页的 HTML；抽取范围限定在 <code>main</code> 内</td>
+              <td>一篇人读 HTML 页，抽取范围限定在 <code>main</code> 内</td>
               <td class="is-pri"><span class="aj-file">H1 同一行视觉可见的「打开 Markdown」真链</span></td>
-              <td>该页平行 <code>.md</code></td>
+              <td>该页对应的平行 <code>.md</code> 文件</td>
             </tr>
             <tr>
               <th class="aj-label" scope="row">解决问题</th>
-              <td>仅入库渲染页，正文带导航噪声，难切块</td>
-              <td class="is-pri">确保视觉和代码可及；无需猜 <code>.md</code> 后缀或仓库路径</td>
-              <td>Fetch 真链指向的平行稿</td>
+              <td>解决仅入库渲染页、正文混入导航噪声且难以切块的问题</td>
+              <td class="is-pri">确保视觉和源码均可达；无需猜测 <code>.md</code> 后缀或仓库路径</td>
+              <td>直接获取真链指向的平行稿</td>
             </tr>
             <tr>
               <th class="aj-label" scope="row">如何到达</th>
-              <td>检索命中或外部链接引入，已落到该页</td>
-              <td class="is-pri">页头写出「打开 Markdown」并指向与 <code>llms.txt</code> 一致的平行 <code>.md</code></td>
-              <td>不要把 <code>rel="alternate"</code> 或仓库源码链当成已取到平行稿</td>
+              <td>检索命中或外部链接引入，模型已落到当前页</td>
+              <td class="is-pri">页头显式写出「打开 Markdown」，并指向与 <code>llms.txt</code> 一致的平行 <code>.md</code></td>
+              <td>跟真链获取平行稿；不把 <code>rel="alternate"</code> 或仓库源码链当作已取到平行稿</td>
             </tr>
           </tbody>
         </table>
@@ -1057,8 +1059,8 @@
     <section class="section" id="core-principles">
       <h2>核心原则</h2>
       <ul class="bg-list">
-        <li><strong>主次分明与置信度</strong>遵循「先通用、后私有、再兜底」的阶梯。跨站通用的 <code>llms.txt</code> 拥有绝对优先权（主路径，见<a href="principles-structure-llms.html">发现层部署</a>）。站点私有的「URL 改写」规则，仅在公开声明（如写入 <code>llms.txt</code>）后才具备高置信度；若无声明，必须降级使用。页头「打开 Markdown」是无条件的内容层兜底。这三者不互为替代，而是按明确优先级递进。</li>
-        <li><strong>打开是真链</strong>「打开 Markdown」必须画在 H1 旁，且是 <code>main</code> 里的真实 <code>&lt;a&gt;</code>。<code>rel="alternate"</code> 和仓库源码链都不能单独替代这条链。</li>
+        <li><strong>主次分明与置信度</strong>遵循「先通用、后私有、再兜底」的阶梯原则。跨站通用的 <code>llms.txt</code> 拥有最高优先权（主路径，详见<a href="principles-structure-llms.html">发现层部署</a>）；站点私有的「URL 改写」规则，只有在明确写入 <code>llms.txt</code> 等公开声明后才具备高置信度，否则应降级处理；页头「打开 Markdown」则作为无条件的内容层兜底。三者不互相替代，按明确的优先级依次递进。</li>
+        <li><strong>打开是真链</strong>「打开 Markdown」入口需固定在 H1 旁，且是 <code>main</code> 区域内的真实 <code>&lt;a&gt;</code> 标签。<code>rel="alternate"</code> 和仓库源码链不能单独替代这条链。</li>
       </ul>
     </section>
 
@@ -1100,8 +1102,8 @@
       </figure>
       <h4 class="fn-h4">执行要点</h4>
       <ul class="bg-list">
-        <li><strong>跟标题走</strong>「打开 Markdown」必须与 H1 同一行。如图1：链在「什么是Ascend C」右侧。不要只放分享 / 收藏，不要抢运营 Banner。</li>
-        <li><strong>主次视觉</strong>用图标时，采用与站级导读一致的链接图标样式（如标准链接配色、下划线或统一图标），视觉上一眼可辨。</li>
+        <li><strong>跟标题走</strong>「打开 Markdown」入口需与 H1 标题放在同一行。</li>
+        <li><strong>主次视觉</strong>采用图标时，选用与站级导读一致的样式，确保视觉上一眼可辨，无需额外猜测。</li>
       </ul>
       <h3 class="fn-h3">源码上 · 真链包裹</h3>
       <h4 class="fn-h4">最小合格示例</h4>
@@ -1114,17 +1116,17 @@
       </figure>
       <h4 class="fn-h4">执行要点</h4>
       <ul class="bg-list">
-        <li><strong>指向约定路径</strong><code>href</code> 必须指向本页平行 <code>.md</code> 的绝对地址，并与 <code>llms.txt</code> 列出的该篇地址一致。未公开声明时，不要假设把 <code>.html</code> 换成 <code>.md</code> 即可到达。</li>
-        <li><strong>名称写在链上</strong>有文字位就写成「打开 Markdown」。只用图标时，在 <code>&lt;a&gt;</code> 上写 <code>aria-label="打开 Markdown"</code>（可兼 <code>title</code>），<code>img</code> 的 <code>alt</code> 留空。避免「更多」「AI」冒充打开。</li>
-        <li><strong>保持首包真实</strong>机器不点这条链，可跟的是源码里的真 <code>href</code>。必须落在首包 <code>main</code> 已有的 <code>&lt;a&gt;</code> 内，不要用 CSS <code>background-image</code> 画图标，不要悬停才插入 DOM。<code>rel="alternate"</code> 可并存，但不能代替这条可见链。</li>
+        <li><strong>指向约定路径</strong><code>href</code> 需指向本页平行 <code>.md</code> 的绝对地址，并与 <code>llms.txt</code> 中列出的该篇地址保持一致。在站点未公开声明前，不应假设把 <code>.html</code> 替换成 <code>.md</code> 就能直接访问。</li>
+        <li><strong>名称写在链上</strong>用图标时，<code>&lt;a&gt;</code> 带上 <code>aria-label="打开 Markdown"</code>（可加 <code>title</code>），<code>img</code> <code>alt</code> 留空。不写「更多」「AI」等含义模糊的词。</li>
+        <li><strong>保持首包真实</strong>Agent 识别的是源码中的真实 <code>href</code>。入口必须位于首包 <code>main</code> 的 <code>&lt;a&gt;</code> 内，不使用 CSS 绘制图标，不依赖悬停插入 DOM。<code>rel="alternate"</code> 可并存，但不作为替换真链的入口。</li>
       </ul>
     </section>
 
     <section class="section" id="benefits">
       <h2>价值收益</h2>
       <ul class="bg-list">
-        <li><strong>人能打开干净稿</strong>页头可见「打开 Markdown」，点开即是无导航噪声的平行 <code>.md</code>。</li>
-        <li><strong>未走通改写规则也能接住</strong>当 Agent 抓到了 HTML，且「URL 改写」规则未被声明，或其尝试无效时，<code>main</code> 里的真链仍能 100% 将其带到同一篇 <code>.md</code>，保证跨页检索不断裂。</li>
+        <li><strong>提供纯净正文入口</strong>页头增设「打开 Markdown」，供用户直接获取无导航噪声的平行 <code>.md</code> 文件。</li>
+        <li><strong>兜底抓取路径</strong>当站点未声明「URL 改写」规则，或该规则尝试失败时，<code>main</code> 内的真链可确保 Agent 稳定获取同一篇 <code>.md</code>，避免跨页检索中断。</li>
       </ul>
     </section>
 

@@ -140,6 +140,7 @@
   h3.fn-h3 + .principle-example > h4.fn-h4,
   h3.fn-h3 + h4.fn-h4,
   .principle-suggestions + .principle-example > h4.fn-h4 { margin-top: 12px; }
+  #mechanism h3.fn-h3 + p.bg-body,
   #mechanism h4.fn-h4 + p.bg-body,
   #mechanism h4.fn-h4 + p.aj-takeaway {
     margin-top: 0;
@@ -164,16 +165,16 @@
     border-collapse: separate;
     border-spacing: 0;
     table-layout: fixed;
-    font-size: var(--text-auxiliary);
-    line-height: 22px;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
     color: var(--color-text);
   }
   .aj caption {
     caption-side: top;
     text-align: left;
-    font-size: var(--text-auxiliary);
+    font-size: var(--text-body);
     font-weight: 650;
-    line-height: 22px;
+    line-height: var(--text-body-lh);
     padding: 0 0 10px;
     color: var(--color-text);
   }
@@ -245,8 +246,8 @@
     border-left: none;
     vertical-align: top;
     padding: 12px 12px;
-    font-size: var(--text-auxiliary);
-    line-height: 22px;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
   }
   .aj thead tr:first-child > th {
     border-top: 1px solid #e8eef5;
@@ -869,6 +870,7 @@
     border-radius: 8px;
   }
 
+  #mechanism > p.bg-body + h3.fn-h3,
   #mechanism > p.bg-body + h4.fn-h4 { margin-top: 16px; }
   #core-principles .bg-list li + li,
   #practices .bg-list li + li,
@@ -899,9 +901,9 @@
   .practice-shot > figcaption {
     margin: 0;
     text-align: left;
-    font-size: var(--text-auxiliary);
+    font-size: var(--text-body);
     font-weight: 650;
-    line-height: 22px;
+    line-height: var(--text-body-lh);
     padding: 0 0 10px;
     color: var(--color-text);
   }
@@ -1054,24 +1056,20 @@
     <div class="page-header">
       <h1>块级 Markdown</h1>
       <p class="page-desc page-desc--split">
-        <span class="page-desc-line">当用户只要某一层架构或某一张规格表时，这些关系与表值往往锁在图或复杂排版里。从渲染页拿内容，容易只看到截图、丢失结构。</span>
-        <span class="page-desc-line">Agent 处理这一页时——不管是 Cursor 这类工具的单次调用，还是企业内部 RAG 的批量摄取——整页 Markdown 太粗，解析渲染 HTML 同样难切到这一块。</span>
+        <span class="page-desc-line">架构图、规格表在 HTML 里排版复杂，机器直接抓取容易退化为截图。由于 Agent 无法读取截图，其中的结构与数值会随之丢失。</span>
+        <span class="page-desc-line">因此，需为这类强视觉块提供平行的块级 Markdown，保证关键信息能被直接提取。</span>
       </p>
     </div>
 
     <section class="section" id="mechanism">
       <h2 id="mech-access">Agent 是如何取到块级 Markdown 的</h2>
-      <p class="bg-body">Agent 取某一层或某一张表的纯净正文有三个层级，按理想尝试顺序排列：</p>
-      <h4 class="fn-h4" id="mech-block-md">通用发现层（主路径）</h4>
-      <p class="bg-body">按行业通用约定，直接探测根目录或文档站子路径下的 <code>llms.txt</code>，从中 Fetch 该块地址。这是跨站点通用的社区惯例，优先级最高。</p>
-      <h4 class="fn-h4" id="mech-block-private">站点私有发现层（需声明）</h4>
-      <p class="bg-body">按站点私有约定的块级稳定 URL 取稿（如将 <code>page.html#architecture</code> 改写为 <code>page-block.md</code>）。前提：此规则属于私有约定，Agent 没有凭空尝试的理由，必须已在 <code>llms.txt</code> 或站点公开规范中明确声明后才会生效。若无公开声明，此路径置信度降级，不能作为确定主路径。</p>
-      <h4 class="fn-h4" id="mech-block-not">内容层（兜底入口）</h4>
-      <p class="bg-body">已抓到这篇 HTML 时，直接跟从楼层标题旁「打开块 Markdown」的真链取稿。落点在楼层标题同一行，写在 <code>main</code> 里。</p>
-      <p class="bg-body">这一层是唯一不依赖任何前置声明的确定路径：无需探测 <code>llms.txt</code>，无需知道站点私有改写规则，只要这篇 HTML 落到了 Agent 手里，真链就一定在。</p>
+      <h3 class="fn-h3" id="mech-block-md">主路径 · 通用发现层</h3>
+      <p class="bg-body">按行业通用惯例，直接探测根目录或文档站子路径下的 <code>llms.txt</code>，从中 Fetch 该块的 Markdown 地址。该块地址需在清单中显式列出，确保路径可追溯。</p>
+      <h3 class="fn-h3" id="mech-block-not">兜底入口 · 内容层</h3>
+      <p class="bg-body">无需前置条件。当已抓到 HTML 且未通过发现层取得该块稿时，Agent 可直接跟从楼层标题旁（<code>main</code> 内）的「打开块 Markdown」真链，获取对应的块级 <code>.md</code>。</p>
       <figure class="af-figure">
         <table class="aj">
-          <caption>表1 块级「打开块 Markdown」兜底入口的对接流程</caption>
+          <caption>表1 兜底入口 · 楼层旁「打开块 Markdown」的对接流程</caption>
           <colgroup>
             <col class="aj-rowhead" />
             <col />
@@ -1081,29 +1079,29 @@
           <thead>
             <tr>
               <th class="aj-corner" scope="col">行为阶段</th>
-              <th scope="col"><span class="aj-who">Agent</span><span class="aj-stage-name">已入库渲染页</span></th>
-              <th class="aj-pri" scope="col"><span class="aj-who">Agent</span><span class="aj-stage-name">解析楼层打开链</span></th>
-              <th scope="col"><span class="aj-who">Agent</span><span class="aj-stage-name">Fetch 该块平行稿</span></th>
+              <th scope="col"><span class="aj-who">Agent</span><span class="aj-stage-name">命中并入库渲染页</span></th>
+              <th class="aj-pri" scope="col"><span class="aj-who">Agent</span><span class="aj-stage-name">解析楼层真链</span></th>
+              <th scope="col"><span class="aj-who">Agent</span><span class="aj-stage-name">获取该块平行稿</span></th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <th class="aj-label" scope="row">触点</th>
-              <td>一篇人读页的 HTML；抽取范围限定在 <code>main</code> 内</td>
+              <td>一篇人读 HTML 页，抽取范围限定在 <code>main</code> 内</td>
               <td class="is-pri"><span class="aj-file">楼层标题同一行视觉可见的「打开块 Markdown」真链</span></td>
               <td>该块平行 <code>.md</code> 及对应锚点</td>
             </tr>
             <tr>
               <th class="aj-label" scope="row">解决问题</th>
-              <td>整页稿太粗，关系或规格锁在图里，难切块</td>
-              <td class="is-pri">确保视觉和代码可及；页级 <code>.md</code> 和无字图标不能替代；无需猜块级私有路径</td>
-              <td>Fetch 真链指向的该块平行稿</td>
+              <td>整页稿粒度太粗，关系或规格锁在图里，无法切分到具体块</td>
+              <td class="is-pri">确保视觉和源码均可达；页级 <code>.md</code> 无法替代该块；无需猜测块级路径</td>
+              <td>直接获取真链指向的该块平行稿</td>
             </tr>
             <tr>
               <th class="aj-label" scope="row">如何到达</th>
-              <td>检索命中或外部链接引入，已落到该页</td>
-              <td class="is-pri">楼层标题旁写出「打开块 Markdown」并指向该块约定路径</td>
-              <td>不要把页级整页 <code>.md</code> 或 CSS 背景图标当成已取到该块</td>
+              <td>检索命中或外部链接引入，模型已落到当前页</td>
+              <td class="is-pri">楼层标题旁写出「打开块 Markdown」，并指向与 <code>llms.txt</code> 一致的块级地址</td>
+              <td>跟真链获取该块稿；不把页级整页 <code>.md</code> 或 CSS 背景图标当作已取到该块</td>
             </tr>
           </tbody>
         </table>
@@ -1113,8 +1111,8 @@
     <section class="section" id="core-principles">
       <h2>核心原则</h2>
       <ul class="bg-list">
-        <li><strong>优先级与确定性是两回事</strong>跨站通用的 <code>llms.txt</code> 是理想主路径（优先级最高）；站点私有块级 URL 规则仅在公开声明后才具备高置信度。但只有「打开块 Markdown」内容层是唯一确定成立的路径：它不依赖任何前置声明，只要拿到 HTML 就能发现，绝不能用整页 Markdown（见<a href="principles-page-md.html">页级 Markdown</a>）代替这一块。</li>
-        <li><strong>打开是真链</strong>「打开块 Markdown」必须画在楼层标题旁，且是 <code>main</code> 里的真实 <code>&lt;a&gt;</code>。<code>#</code> 锚点、无字图标、页级入口和仓库源码链都不能单独替代这条真链。</li>
+        <li><strong>主次分明</strong>主路径为 <code>llms.txt</code> 显式列出的块级地址（详见<a href="principles-structure-llms.html">发现层部署</a>）；楼层真链仅作兜底。不依赖私有锚点改写规则；整页 Markdown（见<a href="principles-page-md.html">页级 Markdown</a>）不能替代块级稿。</li>
+        <li><strong>打开是真链</strong>入口固定于楼层标题旁、<code>main</code> 区域的真实 <code>&lt;a&gt;</code> 标签。锚点、无字图标、页级入口及源码链均不可替代。</li>
       </ul>
     </section>
 
@@ -1156,8 +1154,8 @@
       </figure>
       <h4 class="fn-h4">执行要点</h4>
       <ul class="bg-list">
-        <li><strong>跟标题走</strong>「打开块 Markdown」必须与该楼层标题（如 <code>&lt;h2&gt;</code> 或 <code>&lt;h3&gt;</code>）同一行、垂直居中。如图1、图2：链在标题右侧。</li>
-        <li><strong>主次视觉</strong>图标与站级导读、页级 Markdown 的入口样式保持统一，呈现为包含标准链接配色、下划线或明确图标形态的常规可交互组件，一眼即可识别为可点击项。</li>
+        <li><strong>跟标题走</strong>「打开块 Markdown」必须与该楼层标题（如 <code>&lt;h2&gt;</code> 或 <code>&lt;h3&gt;</code>）同一行。如图1、图2：链在标题右侧。</li>
+        <li><strong>主次视觉</strong>入口图标应与站级导读、页级 Markdown 的样式保持统一。确保视觉上一眼就能识别为可点击项，无需额外引导。</li>
       </ul>
       <h3 class="fn-h3">源码上 · 真链包裹</h3>
       <h4 class="fn-h4">最小合格示例</h4>
@@ -1174,17 +1172,17 @@
       </figure>
       <h4 class="fn-h4">执行要点</h4>
       <ul class="bg-list">
-        <li><strong>指向约定路径</strong><code>href</code> 必须指向该块平行 <code>.md</code> 的绝对地址及精确锚点（如 <code>…/platform-stack.md#ascend-platform</code>），不能只写指向整页的 <code>#</code> 锚点。</li>
-        <li><strong>名称写在链上</strong>有文字位就写成「打开块 Markdown」或「打开 Markdown」。只用图标时，在 <code>&lt;a&gt;</code> 上写 <code>aria-label="打开块 Markdown"</code>（可兼 <code>title</code>），<code>img</code> 的 <code>alt</code> 留空。避免「更多」「MD」「AI」冒充打开。</li>
-        <li><strong>保持首包真实</strong>机器不点这条链，可跟的是源码里的真 <code>href</code>。必须落在首包 <code>main</code> 已有的 <code>&lt;a&gt;</code> 内，不要用 CSS <code>background-image</code> 画图标，不要悬停才插入 DOM。</li>
+        <li><strong>指向约定路径</strong><code>href</code> 需指向该块平行 <code>.md</code> 的绝对地址，并带上精确锚点（如 <code>…/platform-stack.md#ascend-platform</code>），仅指向整页的 <code>#</code> 锚点不能作为该块的入口。</li>
+        <li><strong>名称写在链上</strong>有文字位时，文案直接写「打开块 Markdown」或「打开 Markdown」。仅用图标时，在 <code>&lt;a&gt;</code> 上添加 <code>aria-label="打开块 Markdown"</code>（可同时设置 <code>title</code>），<code>img</code> 的 <code>alt</code> 留空。避免使用「更多」「MD」「AI」等容易让机器或用户混淆的词。</li>
+        <li><strong>保持首包真实</strong>Agent 无法点击页面视觉元素，可识别的是源码里的真实 <code>href</code>。入口需位于首包 <code>main</code> 区域内已存在的 <code>&lt;a&gt;</code> 标签中；不使用 CSS <code>background-image</code> 绘制图标，也不通过悬停注入 DOM。</li>
       </ul>
     </section>
 
     <section class="section" id="benefits">
       <h2>价值收益</h2>
       <ul class="bg-list">
-        <li><strong>人能打开该块干净稿</strong>楼层标题旁可见「打开块 Markdown」，点开即是这一层或这一张表的平行 <code>.md</code>，不必在整页长文里翻找。</li>
-        <li><strong>未改写块级 URL 也能接住</strong>入库主路径仍是约定块级地址或 <code>llms.txt</code>。已经抓到 HTML、不会猜块路径时，<code>main</code> 里的真链仍能跟到该块 <code>.md</code>，保证跨层、跨表问答不断裂。这层兜底无需 Agent 认识任何私有规则，是稳定生效的物理锚点。</li>
+        <li><strong>提供纯净正文入口</strong>楼层标题旁增设「打开块 Markdown」，供用户直接获取该层或该表的平行 <code>.md</code>，不必在整页长文里翻找。</li>
+        <li><strong>兜底抓取路径</strong>未读 <code>llms.txt</code>、或清单未列该块时，<code>main</code> 内楼层真链仍能稳定带到同一块 <code>.md</code>，避免跨层、跨表问答中断。</li>
       </ul>
     </section>
 

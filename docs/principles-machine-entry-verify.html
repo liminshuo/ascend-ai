@@ -595,6 +595,7 @@
     font-weight: 400;
   }
   .aj col.col-prio { width: 80px; }
+  .aj-prio col.col-principle { width: 160px; }
   .prio {
     display: inline-block;
     padding: 1px 6px;
@@ -951,12 +952,14 @@
                   <col class="col-prio" />
                   <col class="col-ideal-url" />
                   <col class="col-ideal-goal" />
+                  <col class="col-principle" />
                 </colgroup>
                 <thead>
                   <tr>
                     <th scope="col">优先级</th>
                     <th scope="col">建议</th>
                     <th scope="col">预期收益</th>
+                    <th scope="col">相关亲和原则</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -964,21 +967,25 @@
                     <td><span class="prio -p0">P0</span></td>
                     <td>降低 <code>llms.txt</code> 的消费成本：当前文件约 12 MB / 26166 行，入门条目位于第 11864 行。建议拆分索引，或提供入口级子清单（如在 <code>llms.txt</code> 首屏给出「Ascend C 入门」的 3–5 条可抓取 URL），并随条目同步提供镜像地址</td>
                     <td>目录已具备可达性，优先提升其“首屏直接可用”的能力，是当前投入产出比最高的优化动作。</td>
+                    <td><a href="principles-structure-llms.html">发现层部署</a></td>
                   </tr>
                   <tr>
                     <td><span class="prio -p0">P0</span></td>
                     <td>将发现入口放置在模型实际会访问的页面上：产品页 <code>/cann/ascend-c</code> 是本轮第一站官方页面，建议在其页头 <code>&lt;link&gt;</code> 标签或可见区域内，直接提供指向 <code>/llms.txt</code> 与静态入门 URL 的链接</td>
                     <td>提高已部署目录被消费的概率，不必指望模型先猜根路径</td>
+                    <td><a href="principles-machine-entry.html">站级导读</a></td>
                   </tr>
                   <tr>
                     <td><span class="prio -p1">P1</span></td>
                     <td>将核心教程页（环境准备、Add 入门等）进行静态化或 SSR 处理，使其首包 HTML 包含完整正文。注：由于镜像已能提供正文，此项作为「无需读取目录即可直接抓取」的兜底方案</td>
                     <td>覆盖绕开发现链、直达人读 URL 的模型访问路径</td>
+                    <td><a href="principles-content-retrievable.html">正文首包可得</a></td>
                   </tr>
                   <tr>
                     <td><span class="prio -p2">P2</span></td>
                     <td>搜索摘要自洽：针对已索引页面，通过 meta description 完整呈现核心步骤摘要</td>
                     <td>减少 AI 只能拼凑碎片摘要的现状</td>
+                    <td><a href="principles-structure-metadata.html">元数据丰富化</a></td>
                   </tr>
                 </tbody>
               </table>
@@ -1264,12 +1271,14 @@
                   <col class="col-prio" />
                   <col class="col-ideal-url" />
                   <col class="col-ideal-goal" />
+                  <col class="col-principle" />
                 </colgroup>
                 <thead>
                   <tr>
                     <th scope="col">优先级</th>
                     <th scope="col">建议</th>
                     <th scope="col">预期收益</th>
+                    <th scope="col">相关亲和原则</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1277,21 +1286,25 @@
                     <td><span class="prio -p0">P0</span></td>
                     <td>在 <code>/document</code> 首页提供机器可抓取的深链入口：包含「概述」「环境准备」「HelloWorld」对应的 Markdown 或静态 HTML 地址，并指向站级 <code>/llms.txt</code></td>
                     <td>本轮第一站就是文档首页；把正确入口放在这里，可省掉前 13 步试错</td>
+                    <td><a href="principles-machine-entry.html">站级导读</a><br><a href="principles-page-md.html">页级 Markdown</a></td>
                   </tr>
                   <tr>
                     <td><span class="prio -p0">P0</span></td>
                     <td>将页面声明的 <code>llms-content</code> 镜像地址与 <code>llms.txt</code> 的真实命名对齐，或直接修正该声明地址</td>
                     <td>避免「跟页面走反而 404」；本轮第 9、10 步即因此断掉</td>
+                    <td><a href="principles-page-md.html">页级 Markdown</a><br><a href="principles-link.html">链接语义化</a></td>
                   </tr>
                   <tr>
                     <td><span class="prio -p1">P1</span></td>
                     <td>旧版路径（如 <code>800alpha003</code>）需配置持久 301 重定向，与当前 Markdown / 静态入门页保持同源对齐</td>
                     <td>避免模型猜中旧版号后还要自行试探版本，才能落到现行入门文档；旧链应直接 301 到当前可用页</td>
+                    <td><a href="principles-a2.html">失效/弃用状态显化</a><br><a href="principles-timeliness.html">版本号外显</a></td>
                   </tr>
                   <tr>
                     <td><span class="prio -p2">P2</span></td>
                     <td>修复站内搜索接口，或提供 Agent 可用的检索路径（当前 <a href="https://www.hiascend.com/search?keyword=Ascend%20C"><code>https://www.hiascend.com/search?keyword=Ascend%20C</code></a> 返回 404）</td>
                     <td>给猜路径失败后一条合法退路</td>
+                    <td><a href="principles-exception.html">常见异常说明</a></td>
                   </tr>
                 </tbody>
               </table>
@@ -1592,12 +1605,14 @@
                   <col class="col-prio" />
                   <col class="col-ideal-url" />
                   <col class="col-ideal-goal" />
+                  <col class="col-principle" />
                 </colgroup>
                 <thead>
                   <tr>
                     <th scope="col">优先级</th>
                     <th scope="col">建议</th>
                     <th scope="col">预期收益</th>
+                    <th scope="col">相关亲和原则</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1605,21 +1620,25 @@
                     <td><span class="prio -p0">P0</span></td>
                     <td>聚合页与专区页的镜像需保留真实 URL，不要把去向压成「了解详情」；至少为《Ascend C 编程指南》各章节输出可跟地址</td>
                     <td>为「最后一跳」提供第二条通路：即便目录被截断，也能顺聚合页直达章节，无需猜文件名</td>
+                    <td><a href="principles-link.html">链接语义化</a><br><a href="principles-machine-entry.html">站级导读</a></td>
                   </tr>
                   <tr>
                     <td><span class="prio -p0">P0</span></td>
                     <td>让人读 HTML 与 <code>llms-content</code> 镜像两侧内容等价：人读页首包至少输出正文摘要，或在页面显式声明对应镜像地址</td>
                     <td>避免先撞 200 空壳再改道，减少一次无效请求与误判为「站点无正文」</td>
+                    <td><a href="principles-content-retrievable.html">正文首包可得</a><br><a href="principles-format.html">双轨交付</a><br><a href="principles-page-md.html">页级 Markdown</a></td>
                   </tr>
                   <tr>
                     <td><span class="prio -p1">P1</span></td>
                     <td>把 <code>llms.txt</code> 按产品线拆分为分卷（如 <code>llms-cann.txt</code>），或在文件头部给出分卷索引，避免单文件达 11.5MB</td>
                     <td>本轮根因：条目其实存在，但读取器在 1.3MB 处截断，编程指南章节从未进入模型视野</td>
+                    <td><a href="principles-structure-llms.html">发现层部署</a></td>
                   </tr>
                   <tr>
                     <td><span class="prio -p2">P2</span></td>
                     <td>保障 <code>robots.txt</code> 所列 sitemap 的可用性，并为 <code>llms-full.txt</code> 提供分片或分卷版本</td>
                     <td>本轮三个 sitemap 同时 500、全量包两次超时，兜底路径同时失效</td>
+                    <td><a href="principles-structure-llms.html">发现层部署</a></td>
                   </tr>
                 </tbody>
               </table>
@@ -1840,12 +1859,14 @@
                   <col class="col-prio" />
                   <col class="col-ideal-url" />
                   <col class="col-ideal-goal" />
+                  <col class="col-principle" />
                 </colgroup>
                 <thead>
                   <tr>
                     <th scope="col">优先级</th>
                     <th scope="col">建议</th>
                     <th scope="col">预期收益</th>
+                    <th scope="col">相关亲和原则</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1853,21 +1874,25 @@
                     <td><span class="prio -p0">P0</span></td>
                     <td>确保人读展示层首包包含可解析的入门文字链接，或通过 SSR 输出目录树；避免「快速入门」仅以 image map 形式呈现。</td>
                     <td>支持模型在不触发 <code>robots.txt</code> 的情况下，按目录下钻；覆盖直接访问人读 URL 的检索路径。</td>
+                    <td><a href="principles-content-retrievable.html">正文首包可得</a><br><a href="principles-hotzone.html">图片热区</a></td>
                   </tr>
                   <tr>
                     <td><span class="prio -p0">P0</span></td>
                     <td>校准 <code>Disallow: /doc_center/</code> 策略：若该路径为机器可读正文的主通道，应显式 Allow AI Agent，或将同等正文迁移至未禁止的镜像路径并在人读页声明。</td>
                     <td>避免出现「唯一可读路径 = 禁抓路径」的配置冲突；保障合规爬虫能正常获取正文。</td>
+                    <td><a href="principles-structure-llms.html">发现层部署</a></td>
                   </tr>
                   <tr>
                     <td><span class="prio -p1">P1</span></td>
                     <td>在专区页 <code>/ascend-c</code>（本轮第一站）提供指向 <code>/llms.txt</code> 与静态入门 URL 的显式发现入口。</td>
                     <td>提升发现层被主动消费的概率，降低模型路径猜测的成本。</td>
+                    <td><a href="principles-machine-entry.html">站级导读</a></td>
                   </tr>
                   <tr>
                     <td><span class="prio -p2">P2</span></td>
                     <td>在入门目录页同时提供当前版本（9.x）对应章节的真实地址，替代仅指向社区版 8.5.0 旧线。</td>
                     <td>降低「读到了正文但版本过时」的漂移风险，确保模型引用当前有效版本。</td>
+                    <td><a href="principles-timeliness.html">版本号外显</a><br><a href="principles-a2.html">失效/弃用状态显化</a></td>
                   </tr>
                 </tbody>
               </table>
@@ -2030,23 +2055,27 @@
                   <col class="col-prio" />
                   <col class="col-ideal-url" />
                   <col class="col-ideal-goal" />
+                  <col class="col-principle" />
                 </colgroup>
-                <thead><tr><th scope="col">优先级</th><th scope="col">建议</th><th scope="col">预期收益</th></tr></thead>
+                <thead><tr><th scope="col">优先级</th><th scope="col">建议</th><th scope="col">预期收益</th><th scope="col">相关亲和原则</th></tr></thead>
                 <tbody>
                   <tr>
                     <td><span class="prio -p0">P0</span></td>
                     <td>文档页首包 SSR / 静态化，或显式声明可抓镜像地址</td>
                     <td>覆盖「搜索→直抓人读 URL」路径（本轮 Fetch 3/3 空壳）</td>
+                    <td><a href="principles-content-retrievable.html">正文首包可得</a><br><a href="principles-page-md.html">页级 Markdown</a></td>
                   </tr>
                   <tr>
                     <td><span class="prio -p1">P1</span></td>
                     <td>在搜索摘要可命中的简介页增加深链到环境准备 / HelloWorld 静态页</td>
                     <td>减少只能拼摘要的现状</td>
+                    <td><a href="principles-machine-entry.html">站级导读</a><br><a href="principles-link.html">链接语义化</a></td>
                   </tr>
                   <tr>
                     <td><span class="prio -p2">P2</span></td>
                     <td>专区页放置指向 <code>/llms.txt</code> 的发现入口</td>
                     <td>提高发现层被消费概率</td>
+                    <td><a href="principles-machine-entry.html">站级导读</a></td>
                   </tr>
                 </tbody>
               </table>
@@ -2217,23 +2246,27 @@
                   <col class="col-prio" />
                   <col class="col-ideal-url" />
                   <col class="col-ideal-goal" />
+                  <col class="col-principle" />
                 </colgroup>
-                <thead><tr><th scope="col">优先级</th><th scope="col">建议</th><th scope="col">预期收益</th></tr></thead>
+                <thead><tr><th scope="col">优先级</th><th scope="col">建议</th><th scope="col">预期收益</th><th scope="col">相关亲和原则</th></tr></thead>
                 <tbody>
                   <tr>
                     <td><span class="prio -p0">P0</span></td>
                     <td>降低 <code>llms.txt</code> 体积并分卷，或在首屏列出 Ascend C 入门条目，避免读取器只看到文首营销索引</td>
                     <td>本轮 ~41.9KB 截断即折断；与 Opus 截断同属目录过大问题</td>
+                    <td><a href="principles-structure-llms.html">发现层部署</a></td>
                   </tr>
                   <tr>
                     <td><span class="prio -p0">P0</span></td>
                     <td>人读文档页改为服务端输出正文；或另提供可直接 GET 的 Markdown/静态镜像，无需携带 Referer 即可取回全文</td>
                     <td>无需逆向网关即可取正文</td>
+                    <td><a href="principles-content-retrievable.html">正文首包可得</a><br><a href="principles-page-md.html">页级 Markdown</a><br><a href="principles-format.html">双轨交付</a></td>
                   </tr>
                   <tr>
                     <td><span class="prio -p1">P1</span></td>
                     <td>在 <code>robots.txt</code> 中 AI 爬虫白名单段落附近，直接列出 3–5 条可抓的 Ascend C 入门地址（如环境准备、HelloWorld 的静态页或镜像），让已在 Allow 组内的模型第一跳就能落到正文</td>
                     <td>白名单模型第一跳即可落到可抓内容</td>
+                    <td><a href="principles-structure-llms.html">发现层部署</a><br><a href="principles-machine-entry.html">站级导读</a></td>
                   </tr>
                 </tbody>
               </table>
@@ -2395,23 +2428,27 @@
                   <col class="col-prio" />
                   <col class="col-ideal-url" />
                   <col class="col-ideal-goal" />
+                  <col class="col-principle" />
                 </colgroup>
-                <thead><tr><th scope="col">优先级</th><th scope="col">建议</th><th scope="col">预期收益</th></tr></thead>
+                <thead><tr><th scope="col">优先级</th><th scope="col">建议</th><th scope="col">预期收益</th><th scope="col">相关亲和原则</th></tr></thead>
                 <tbody>
                   <tr>
                     <td><span class="prio -p0">P0</span></td>
                     <td>人读文档 / 课程 / 专题页首包可抓；<code>.md</code> 包装页提供完整正文，不仅限于导航壳</td>
                     <td>减少换源连续 Fetch 时的空壳受阻</td>
+                    <td><a href="principles-content-retrievable.html">正文首包可得</a><br><a href="principles-page-md.html">页级 Markdown</a></td>
                   </tr>
                   <tr>
                     <td><span class="prio -p1">P1</span></td>
                     <td>在搜索易命中的简介页声明静态入门 URL 与 <code>/llms.txt</code></td>
                     <td>减少只依赖摘要交卷的情况</td>
+                    <td><a href="principles-machine-entry.html">站级导读</a></td>
                   </tr>
                   <tr>
                     <td><span class="prio -p2">P2</span></td>
                     <td>官方 HelloWorld 等样例除 Gitee 网页外，另提供可直接下载的 raw 或镜像地址（如 gitcode raw、静态 zip），避免 Agent 打开仓库页时被滑块验证码拦截而读不到 README</td>
                     <td>站外仓可作为可靠兜底</td>
+                    <td><a href="principles-example.html">示例路径可参照</a><br><a href="principles-format.html">双轨交付</a></td>
                   </tr>
                 </tbody>
               </table>
