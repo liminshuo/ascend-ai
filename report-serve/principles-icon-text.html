@@ -69,25 +69,21 @@
   .page-header {
     border-bottom: none;
     padding-bottom: 0;
-    margin-bottom: 28px;
+    margin-bottom: var(--space-stack, 16px);
   }
-  .page-header h1 {
+  .page-header > h1 {
     font-family: var(--font);
     font-size: var(--text-h1);
     font-weight: var(--text-h1-weight, 600);
     line-height: var(--text-h1-lh);
     letter-spacing: -0.02em;
-    margin: 8px 0 0;
-    color: var(--color-text, var(--color-text));
-  }
-  .page-header .page-desc {
-    margin: 32px 0 0;
-    font-size: var(--text-body);
-    line-height: 1.75;
-    color: var(--text, var(--color-text));
+    margin: 0;
+    padding-top: var(--space-h1-pad-y, 32px);
+    padding-bottom: var(--space-h1-pad-y, 32px);
+    color: var(--color-text);
   }
   body.inner-page[data-page="icon-text"]:has(#module-sidebar) .main-content {
-    padding-top: 32px;
+    padding-top: var(--content-main-pad-top, 16px);
     padding-left: 0;
     padding-right: 0;
   }
@@ -106,17 +102,18 @@
     font-weight: 700;
     line-height: var(--text-h2-lh, 36px);
     letter-spacing: -0.01em;
-    margin-top: 48px;
-    margin-bottom: 16px;
-    padding-bottom: var(--space-h2-rule, 16px);
+    margin-top: 0;
+    margin-bottom: var(--space-stack, 16px);
+    padding-top: var(--space-h2-pad-y, 16px);
+    padding-bottom: var(--space-h2-pad-y, 16px);
     border-bottom: 2px solid var(--color-card-border);
     color: var(--color-text, var(--color-text));
   }
   body.inner-page[data-page="icon-text"] .main-content .section h3 { height: auto; }
   h3.fn-h3 {
     margin: 0;
-    padding-top: var(--space-h3-pad-y, 24px);
-    padding-bottom: var(--space-h3-pad-y, 24px);
+    padding-top: var(--space-h3-pad-y, 16px);
+    padding-bottom: var(--space-h3-pad-y, 16px);
     font-size: var(--text-h3, 18px);
     line-height: var(--text-h3-lh, 28px);
     font-weight: var(--text-h3-weight, 650);
@@ -125,9 +122,9 @@
   }
   body.inner-page[data-page="icon-text"] .main-content .section h4 { height: auto; }
   h4.fn-h4 {
-    margin: 24px 0 0;
-    padding-top: 0;
-    padding-bottom: var(--space-h4-pad-b, 16px);
+    margin: 0;
+    padding-top: var(--space-h4-pad-y, 16px);
+    padding-bottom: var(--space-h4-pad-y, 16px);
     font-size: var(--text-h4, 14px);
     line-height: var(--text-h4-lh, 22px);
     font-weight: var(--text-h4-weight, 650);
@@ -135,7 +132,18 @@
     letter-spacing: -0.01em;
   }
   h3.fn-h3 + .principle-example > h4.fn-h4,
-  h3.fn-h3 + h4.fn-h4 { margin-top: 12px; }
+  h3.fn-h3 + h4.fn-h4 { margin-top: 0; }
+  h4.fn-h4:has(> .fn-h3-link) {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  h4.fn-h4 > .fn-h3-link {
+    margin-left: auto;
+    flex-shrink: 0;
+    font-weight: 500;
+  }
 
   #scenarios .scene-def-table td .badge { border: none; }
   .scene-def-table td .badge-optional {
@@ -295,8 +303,7 @@ h3.fn-h3 .fn-h3-link,
   .fn-ex-row .fn-ex-mock:has(.an-bar),
   .fn-ex-row .fn-ex-mock:has(.rec-card),
   .fn-ex-row .fn-ex-mock:has(.open-card),
-  .fn-ex-row .fn-ex-mock:has(.tip-bar),
-  .fn-ex-row .fn-ex-mock:has(.logo-wall) {
+  .fn-ex-row .fn-ex-mock:has(.tip-bar) {
     min-height: 0;
     height: 100%;
     box-sizing: border-box;
@@ -314,7 +321,13 @@ h3.fn-h3 .fn-h3-link,
   }
   .fn-ex-row .fn-ex-foot .fn-ex-list {
     margin: 0;
+    padding: 0;
+    list-style: none;
     gap: 4px;
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-list li {
+    font-size: 14px;
+    line-height: 22px;
   }
   .fn-ex-row .fn-ex-foot .fn-ex-group {
     margin: 8px 0 0;
@@ -586,6 +599,41 @@ h3.fn-h3 .fn-h3-link,
     color: #fff;
     background: var(--color-primary);
   }
+  .paper-card .sk {
+    background: #ececec;
+    color: transparent;
+    user-select: none;
+    pointer-events: none;
+    overflow: hidden;
+    border-radius: 4px;
+  }
+  .paper-card-title.sk {
+    height: 16px;
+    width: 92%;
+    margin-bottom: 10px;
+    font-size: 0;
+    line-height: 16px;
+  }
+  .paper-card-desc.sk {
+    height: 12px;
+    width: 100%;
+    margin: 0 0 8px;
+    font-size: 0;
+    line-height: 12px;
+    display: block;
+    -webkit-line-clamp: unset;
+  }
+  .paper-card-desc.sk.sk-short {
+    width: 64%;
+    margin-bottom: 14px;
+  }
+  .paper-card-btn.sk {
+    width: 76px;
+    height: 32px;
+    padding: 0;
+    border: none;
+    background: #ececec;
+  }
   .an-bar {
     display: flex;
     align-items: center;
@@ -644,11 +692,34 @@ h3.fn-h3 .fn-h3-link,
     min-width: 0;
     font-weight: 650;
   }
+  .an-bar .sk {
+    display: inline-block;
+    color: transparent;
+    user-select: none;
+    pointer-events: none;
+    background: #ececec;
+    overflow: hidden;
+  }
+  .an-bar-tag.sk {
+    width: 52px;
+    height: 16px;
+    padding: 0;
+    line-height: 16px;
+    border-radius: 4px;
+    background: #ececec;
+  }
+  .an-bar-ttl.sk {
+    width: 148px;
+    height: 14px;
+    border-radius: 4px;
+    font-weight: 400;
+  }
   .an-bar-date {
     margin-left: auto;
     flex-shrink: 0;
     color: #8c8c8c;
-    font-size: var(--text-auxiliary);
+    font-size: 14px;
+    line-height: 22px;
   }
   .tip-bar {
     display: flex;
@@ -718,80 +789,6 @@ h3.fn-h3 .fn-h3-link,
     padding: 16px;
   }
 
-  .logo-wall {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    height: 100%;
-    padding: 12px;
-    box-sizing: border-box;
-    background: var(--color-bg);
-    border-radius: 8px;
-  }
-  .fn-ex-mock:has(.logo-wall) {
-    background: var(--color-bg);
-    border: 1px solid var(--color-border);
-    padding: 0;
-  }
-  .logo-wall-title {
-    margin: 0;
-    text-align: center;
-    font-size: 13px;
-    line-height: 20px;
-    font-weight: 650;
-    color: var(--color-text);
-  }
-  .logo-wall > img {
-    display: block;
-    width: 100%;
-    height: auto;
-    border-radius: 4px;
-  }
-  .logo-wall-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 8px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-  .logo-wall-grid a {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    min-height: 68px;
-    padding: 6px 4px;
-    background: #fff;
-    border-radius: 6px;
-    font-size: var(--text-caption);
-    line-height: 16px;
-    font-weight: 500;
-    color: var(--color-text);
-    text-align: center;
-    text-decoration: none;
-  }
-  .logo-wall-grid a:hover,
-  .logo-wall-grid a:visited {
-    color: var(--color-text);
-    text-decoration: none;
-  }
-  .logo-wall-grid img {
-    display: block;
-    width: 100%;
-    height: 40px;
-    max-width: 100%;
-    object-fit: contain;
-    border-radius: 0;
-  }
-  .logo-wall-grid a span {
-    display: block;
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
   .rec-head {
     display: flex;
     align-items: center;
@@ -851,6 +848,30 @@ h3.fn-h3 .fn-h3-link,
     fill: none;
     stroke: currentColor;
     stroke-width: 1.5;
+  }
+  .rec-card .sk {
+    background: #ececec;
+    color: transparent;
+    user-select: none;
+    pointer-events: none;
+    overflow: hidden;
+    border-radius: 4px;
+  }
+  .rec-head.sk {
+    width: 88px;
+    height: 16px;
+    margin-bottom: 8px;
+  }
+  .rec-tag.sk {
+    width: 36px;
+    height: 16px;
+    padding: 0;
+    line-height: 16px;
+    background: #ececec;
+  }
+  .rec-ttl.sk {
+    height: 14px;
+    max-width: 180px;
   }
   .open-card {
     padding: 16px 16px 14px;
@@ -1009,21 +1030,372 @@ h3.fn-h3 .fn-h3-link,
   .scene-def-table col.col-type { width: 18%; }
   .scene-def-table col.col-desc { width: 55%; }
   .scene-def-table col.col-place { width: 27%; }
-  .fn-ex-row { margin: 16px 0 0; }
-  .principle-example + .principle-example { margin-top: 28px; }
+  .fn-ex-row { margin: var(--space-stack, 16px) 0 0; }
+  body.inner-page[data-page="icon-text"] .principle-example + .principle-example {
+    margin-top: var(--space-stack, 16px);
+    padding-top: 0;
+    border-top: none;
+  }
   .scene-def-table { margin-bottom: 24px; }
   .section .fn-ex-row .paper-card-title { margin: 0 0 10px; color: var(--color-text); }
   .section .fn-ex-row .paper-card-desc { margin: 0 0 14px; color: var(--color-text-secondary); }
   .section .fn-ex-row .open-card-ttl { margin: 0; color: var(--color-text); }
   .section .fn-ex-row .open-card-desc { margin: 0 0 12px; color: var(--color-text-secondary); }
   .section .fn-ex-row .rec-head { margin: 0 0 8px; color: var(--color-text); }
-  .section .fn-ex-row .logo-wall-title { margin: 0; color: var(--color-text); }
   .section .fn-ex-list { margin: 0; }
   .section .fn-ex-list li { color: var(--color-text); margin-bottom: 0; }
 
+
+  body.inner-page[data-page="icon-text"] .main-content > .section:first-of-type > h2 {
+    margin-top: 0;
+  }
+  #practices .principle-example > h3.fn-h3 + h4.fn-h4 {
+    margin-top: 0;
+  }
+  #practices .fn-h3-desc {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  #practices .principle-example > .fn-h3-desc + h4.fn-h4 {
+    margin-top: var(--space-stack, 16px);
+  }
+  #practices .principle-example { margin: 0; }
+  #practices .principle-example + .principle-example { margin-top: var(--space-stack, 16px); }
+  #practices .principle-example > .ex-fold-panel + h4.fn-h4 {
+    margin-top: var(--space-stack, 16px);
+    padding-top: var(--space-h4-pad-y, 16px);
+    border-top: none;
+  }
+  #practices h4.fn-h4 + .file-sample { margin-top: 0; }
+  #scenarios .scene-def-table { margin-bottom: 0; }
+  #problem > p.page-lead,
+  #practices > p.page-lead,
+  #core-principles > p.page-lead {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  #problem > h2 + .page-lead,
+  #core-principles > h2 + .principle-body {
+    margin-top: 0;
+  }
+  #problem,
+  #core-principles,
+  #practices {
+    margin-bottom: var(--space-stack, 16px);
+  }
+  #core-principles .principle-body {
+    margin: 0;
+  }
+  .af-figure { margin: 0; padding: 0; }
+  .af-figure + .af-figure { margin-top: 28px; }
+  .aj {
+    width: 100%;
+    min-width: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+    color: var(--color-text);
+  }
+  .aj caption {
+    caption-side: top;
+    text-align: left;
+    font-size: var(--text-body);
+    font-weight: 650;
+    line-height: var(--text-body-lh);
+    padding: 0 0 10px;
+    color: var(--color-text);
+  }
+  .aj th,
+  .aj td {
+    border: 1px solid #e8eef5;
+    border-top: none;
+    border-left: none;
+    vertical-align: top;
+    padding: 12px 12px;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+  }
+  .aj thead tr:first-child > th { border-top: 1px solid #e8eef5; }
+  .aj th:first-child,
+  .aj td:first-child { border-left: 1px solid #e8eef5; }
+  .aj .aj-corner,
+  .aj .aj-label {
+    width: 136px;
+    background: #f5f6f8;
+    color: var(--color-text-secondary);
+    font-weight: 650;
+    text-align: left;
+    padding: 12px 12px;
+    border-left: 1px solid #e8eef5;
+    white-space: nowrap;
+  }
+  .aj thead th {
+    background: #f5f6f8;
+    font-weight: 650;
+    text-align: left;
+    vertical-align: bottom;
+    padding: 10px 12px;
+    color: var(--color-text);
+  }
+  .aj thead th.aj-corner { border-top-left-radius: 8px; }
+  .aj thead tr:first-child > th:last-child { border-top-right-radius: 8px; }
+  .aj tbody tr:last-child .aj-label { border-bottom-left-radius: 8px; }
+  .aj tbody tr:last-child td:last-child { border-bottom-right-radius: 8px; }
+  .aj thead .aj-who,
+  .aj thead .aj-stage-name {
+    display: block;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  .aj thead .aj-who {
+    margin: 0 0 2px;
+    font-size: var(--text-caption);
+    color: #8c8c8c;
+  }
+  .aj td.is-pri { background: #f7fbff; }
+  .aj-takeaway {
+    margin: 12px 0 0;
+    font-size: 13px;
+    line-height: 22px;
+    color: var(--color-text-secondary);
+  }
+  .aj-takeaway strong { font-weight: 650; color: var(--color-text); }
+  .bg-list {
+    margin: 0;
+    padding-left: 1.25em;
+    font-size: var(--text-body);
+    line-height: 22px;
+    list-style: disc;
+    color: var(--color-text-secondary);
+  }
+  #core-principles .principle-body p {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: 22px;
+    color: var(--color-text-secondary);
+  }
+  #core-principles .principle-body strong {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  #practices .bg-list li + li,
+  #benefits .bg-list li + li { margin-top: 16px; }
+  #practices .bg-list li strong,
+  #benefits .bg-list li strong {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  .file-sample {
+    margin: 0 0 20px;
+    padding: 0;
+    background: #1e1e1e;
+    border: 1px solid #111;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .file-sample figcaption {
+    margin: 0;
+    padding: 10px 14px;
+    font-size: var(--text-auxiliary);
+    font-weight: 650;
+    line-height: 22px;
+    color: #a3a3a3;
+    border-bottom: 1px solid #333;
+  }
+  .file-sample figcaption code {
+    font-size: inherit;
+    color: #e8e8e8;
+    background: none;
+  }
+  .file-sample pre {
+    margin: 0;
+    padding: 12px 14px 14px;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: var(--text-auxiliary);
+    line-height: 20px;
+    color: #e8e8e8;
+    background: transparent;
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .file-sample pre code {
+    display: block;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    color: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    font-family: inherit;
+    white-space: inherit;
+  }
+  .file-sample .code-line-hl {
+    display: block;
+    margin: 0 -14px;
+    padding: 0 14px;
+  }
+  .file-sample .code-line-hl.is-bad {
+    background: rgba(180, 35, 24, 0.28);
+  }
+  .file-sample .code-line-hl.is-good {
+    background: rgba(4, 120, 87, 0.28);
+  }
+
+
+  .ex-card {
+    margin: 0 0 16px;
+    background: #fff;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .ex-card:last-child { margin-bottom: 0; }
+  .principle-example + .principle-example { margin-top: var(--space-stack, 16px); }
+  .ex-card-title {
+    margin: 0;
+    padding: 0;
+    font-size: var(--text-body);
+    font-weight: 650;
+    line-height: 22px;
+    color: #191919;
+    background: none;
+    border: none;
+  }
+  .ex-card-pair > .ex-card-title {
+    grid-column: 1 / -1;
+    margin: 0;
+  }
+  .ex-card-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    padding: 16px;
+    align-items: stretch;
+  }
+  .ex-card-pane {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .ex-card-pane .file-sample {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0;
+  }
+  .ex-card-pane .file-sample pre {
+    flex: 1;
+  }
+  .ex-fold-intro {
+    grid-column: 1 / -1;
+  }
+  .ex-fold-intro .fn-ex-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    gap: 4px;
+  }
+  .ex-fold-intro .fn-ex-list li {
+    font-size: 14px;
+    line-height: 22px;
+  }
+  .ex-fold-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: var(--space-stack, 16px) 0;
+  }
+  .ex-fold-bar + .ex-fold-panel {
+    margin-top: var(--space-stack, 16px);
+  }
+  .ex-fold-btn {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    padding: 4px 6px;
+    margin: 0;
+    cursor: pointer;
+    font: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 22px;
+    color: var(--color-text);
+  }
+  .ex-fold-btn img {
+    width: 20px;
+    height: 20px;
+    display: block;
+    flex-shrink: 0;
+  }
+  .ex-fold-btn img[src*="ex-fold-code.png"] {
+    width: 22px;
+    height: 22px;
+  }
+  .ex-fold-btn[aria-expanded="true"] {
+    background: var(--color-primary-subtle);
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+  .ex-fold-panel {
+    margin: var(--space-stack, 16px) 0;
+  }
+  .ex-fold-panel > .ex-card {
+    margin: 0;
+  }
+  .ex-fold-panel > .ex-card-pair {
+    margin: 0;
+    border: none;
+    border-radius: 8px;
+    background: #fafafa;
+  }
+  .ex-card-pane-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .ex-card-pane-head .fn-ex-label { margin: 0; }
+  .ex-card-pane-head .fn-ex-bar {
+    display: block;
+    width: 100%;
+    margin: 0;
+  }
+  .ex-card-note {
+    margin: 10px 0 0;
+    font-size: var(--text-auxiliary, 13px);
+    line-height: 20px;
+    color: var(--color-text-secondary);
+  }
+  .ex-card-note strong { color: var(--color-text); }
+  .ex-card .file-sample--compact { margin: 0; }
+  .ex-card .file-sample--compact pre {
+    max-height: 180px;
+    overflow: auto;
+    margin: 0;
+  }
+  @media (max-width: 900px) {
+    .ex-card-pair { grid-template-columns: 1fr; }
+  }
+
 </style>
 </head>
-<body class="inner-page" data-module="principles" data-page="icon-text">
+<body class="inner-page agent-entry-page" data-module="principles" data-page="icon-text" data-no-surface-tabs>
 
 <div class="topbar">
   <div class="topbar-inner">
@@ -1047,104 +1419,27 @@ h3.fn-h3 .fn-h3-link,
   <main class="main-content">
     <div class="page-header">
       <h1>图标语义可锚定</h1>
-      <p class="page-desc page-desc--split">
-        <span class="page-desc-line">为了帮助 Agent 理解状态、类别与量纲，信息型图标旁须有文字锚定含义；装饰图标可剥离，禁止只靠图形表意。</span>
-      </p>
     </div>
 
-    <section class="section" id="objects">
-      <h2>适用对象</h2>
-      <table class="scene-def-table">
-        <colgroup>
-          <col class="col-type" />
-          <col class="col-desc" />
-          <col class="col-place" />
-        </colgroup>
-        <thead>
-          <tr>
-            <th class="col-type">名称</th>
-            <th class="col-desc">说明</th>
-            <th class="col-place">常见落点</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="col-type">提示图标</td>
-            <td class="col-desc">公告、说明等提示图标须配文字名称；日期须标明是发布时间还是更新截止时间。</td>
-            <td class="col-place">公告条、说明提示</td>
-          </tr>
-          <tr>
-            <td class="col-type">卡片信息图标</td>
-            <td class="col-desc">字段名、类型名与统计指标须以文字标注；数字须附指标名或单位，禁止仅以图形或裸数字承载。</td>
-            <td class="col-place">卡片「作者」「发布时间」、统计</td>
-          </tr>
-          <tr>
-            <td class="col-type">品牌 Logo</td>
-            <td class="col-desc">品牌须配可检索名称：Logo 旁显示文字，或写入非空 alt，二选一即可。</td>
-            <td class="col-place">Logo 墙、生态伙伴</td>
-          </tr>
-        </tbody>
-      </table>
+    <section class="section" id="problem">
+      <h2>解决什么问题</h2>
+      <p class="page-lead">Agent 无法仅凭图形表意来理解图标的具体语义（如：喇叭图标代表“公告”，人像图标代表“作者”）。</p>
     </section>
 
-    <section class="section" id="scenarios">
-      <h2>适用场景</h2>
-      <table class="scene-def-table">
-        <colgroup>
-          <col class="col-type" />
-          <col class="col-place" />
-          <col class="col-desc" />
-        </colgroup>
-        <thead>
-          <tr>
-            <th class="col-type">优先级</th>
-            <th class="col-place">页面类型</th>
-            <th class="col-desc">说明</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="col-type"><span class="badge badge-bad">必做</span></td>
-            <td class="col-place">公告条、文档卡片列表</td>
-            <td class="col-desc">图标常承载类型与字段，须文字锚定。</td>
-          </tr>
-          <tr>
-            <td class="col-type"><span class="badge badge-should">建议做</span></td>
-            <td class="col-place">官网 Logo 墙、生态伙伴</td>
-            <td class="col-desc">品牌名进引用池时，须可见名称或非空 alt。</td>
-          </tr>
-          <tr>
-            <td class="col-type"><span class="badge badge-optional">可不做完整改造</span></td>
-            <td class="col-place">纯装饰图标、氛围点缀</td>
-            <td class="col-desc">不表意时可 <code>aria-hidden</code> / 空 alt，勿硬写标签。</td>
-          </tr>
-        </tbody>
-      </table>
+    <section class="section" id="core-principles">
+      <h2>核心原则</h2>
+      <div class="principle-body">
+        <strong>图标不独自表意</strong>
+        <p>信息类图标旁需配有文字说明，数字需附带单位；装饰类图标不承载事实，无需添加文字。</p>
+      </div>
     </section>
 
-    <section class="section" id="design-ui">
-      <h2>设计UI调整</h2>
-
-      <h3 class="fn-h3" id="design-suggestions">调整建议</h3>
-      <ul class="principle-suggestions">
-        <li>
-          <span class="sug-title">图标不独自表意</span>
-          <span class="sug-desc">图标承载的字段、类型或量纲须配可见文字；图标可保留但不得作唯一载体；数字须附单位或指标名。</span>
-        </li>
-        <li>
-          <span class="sug-title">提示图标配名称</span>
-          <span class="sug-desc">公告、说明等提示图标旁须有可见文字名称；日期须标明发布时间或更新截止时间。</span>
-        </li>
-        <li>
-          <span class="sug-title">品牌 Logo 可识别</span>
-          <span class="sug-desc">Logo 旁显示名称，或写入源码非空 alt，二选一；每项可跟链。旁白已列同一名单时，Logo 可只作装饰。</span>
-        </li>
-      </ul>
-
-      <h3 class="fn-h3" id="design-example">调整示例</h3>
+        <section class="section" id="practices">
+      <h2>典型示例</h2>
       <div class="principle-example">
-        <h4 class="fn-h4">提示图标 · 用文字表达公告图标</h4>
-<div class="fn-ex-row">
+        <h3 class="fn-h3">图标旁写清含义</h3>
+        <h4 class="fn-h4">示例 1 · 公告 <a class="fn-h3-link" href="https://www.hiascend.com/developer" target="_blank" rel="noopener">查看示例来源</a></h4>
+      <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
     <span class="fn-ex-label">反面</span>
@@ -1157,14 +1452,16 @@ h3.fn-h3 .fn-h3-link,
           <svg viewBox="0 0 24 24"><path d="M3 10v4h4l6 5V5L7 10H3z"/><path d="M16.2 8.2a4.5 4.5 0 0 1 0 7.6"/></svg>
         </span>
         <span class="an-bar-div" aria-hidden="true"></span>
-        <span class="an-bar-tag">社区版</span>
-        <span class="an-bar-ttl">昇腾CANN 9.1.0版本发布</span>
+        <span class="an-bar-tag sk" aria-hidden="true"></span>
+        <span class="an-bar-ttl sk" aria-hidden="true"></span>
         <span class="an-bar-date">2026/07/31</span>
       </div>
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>常见疏漏：</strong>仅有喇叭图标，未配“公告”文字；日期未标明是发布时间，机器无法识别内容类型与时间含义。 <a class="fn-h3-link" href="https://www.hiascend.com/developer" target="_blank" rel="noopener">查看示例来源</a></li>
+      <li><strong>常见疏漏：</strong></li>
+      <li>1. 仅有喇叭图标，未配「公告」</li>
+      <li>2. 日期未标明是发布时间</li>
     </ul>
     </div>
     </div>
@@ -1182,73 +1479,99 @@ h3.fn-h3 .fn-h3-link,
           <span class="an-bar-lab">公告</span>
         </span>
         <span class="an-bar-div" aria-hidden="true"></span>
-        <span class="an-bar-tag">社区版</span>
-        <span class="an-bar-ttl">昇腾CANN 9.1.0版本发布</span>
+        <span class="an-bar-tag sk" aria-hidden="true"></span>
+        <span class="an-bar-ttl sk" aria-hidden="true"></span>
         <span class="an-bar-date">2026/07/31 发布</span>
       </div>
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>正确做法：</strong>图标旁标注「公告」；日期写为「2026/07/31 发布」。</li>
+      <li><strong>正确做法：</strong></li>
+      <li>1. 图标旁标注「公告」</li>
+      <li>2. 日期写为「2026/07/31 发布」</li>
     </ul>
     </div>
     </div>
   </div>
-  </div>
+</div>
+      <div class="ex-fold-bar">
+        <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex1-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
+        <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex1-html" aria-label="前端源码调整"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
+      </div>
+      <div class="ex-fold-panel" id="ex1-md" hidden>
+        <div class="ex-card-pair">
+    <p class="ex-card-title">Markdown 书写</p>
+    <div class="ex-fold-intro">
+      <ul class="fn-ex-list">
+        <li>1. 用加粗「公告」写出图标语义</li>
+        <li>2. 日期写为「发布时间」并附具体日期</li>
+      </ul>
+    </div>
+    <div class="ex-card-pane">
+      <div class="ex-card-pane-head">
+        <span class="fn-ex-label">反面</span>
+        <div class="fn-ex-bar" aria-hidden="true"></div>
+      </div>
+      <figure class="file-sample file-sample--compact">
+        <pre><code class="language-markdown">社区版 昇腾CANN 9.1.0版本发布
+2026/07/31</code></pre>
+      </figure>
+    </div>
+    <div class="ex-card-pane">
+      <div class="ex-card-pane-head">
+        <span class="fn-ex-label is-good">正面</span>
+        <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+      </div>
+      <figure class="file-sample file-sample--compact">
+        <pre><code class="language-markdown">**公告** · 社区版 · 昇腾CANN 9.1.0版本发布  
+**发布时间**：2026/07/31</code></pre>
+      </figure>
+    </div>
+        </div>
+      </div>
+      <div class="ex-fold-panel" id="ex1-html" hidden>
+        <div class="ex-card-pair">
+    <p class="ex-card-title">前端源码调整</p>
+    <div class="ex-fold-intro">
+      <ul class="fn-ex-list">
+        <li>1. 图标旁写入可见文本「公告」</li>
+        <li>2. 日期写成「2026/07/31 发布」，并用 time 标注</li>
+      </ul>
+    </div>
+    <div class="ex-card-pane">
+      <div class="ex-card-pane-head">
+        <span class="fn-ex-label">反面</span>
+        <div class="fn-ex-bar" aria-hidden="true"></div>
+      </div>
+      <figure class="file-sample file-sample--compact">
+        <pre><code class="language-html">&lt;div class="announce"&gt;
+<span class="code-line-hl is-bad">  &lt;span aria-hidden="true"&gt;…icon…&lt;/span&gt;</span>
+  &lt;span&gt;社区版&lt;/span&gt;
+  &lt;span&gt;昇腾CANN 9.1.0版本发布&lt;/span&gt;
+<span class="code-line-hl is-bad">  &lt;time&gt;2026/07/31&lt;/time&gt;</span>
+&lt;/div&gt;</code></pre>
+      </figure>
+    </div>
+    <div class="ex-card-pane">
+      <div class="ex-card-pane-head">
+        <span class="fn-ex-label is-good">正面</span>
+        <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+      </div>
+      <figure class="file-sample file-sample--compact">
+        <pre><code class="language-html">&lt;div class="announce"&gt;
+  &lt;span aria-hidden="true"&gt;…icon…&lt;/span&gt;
+<span class="code-line-hl is-good">  &lt;span&gt;公告&lt;/span&gt;</span>
+  &lt;span&gt;社区版&lt;/span&gt;
+  &lt;span&gt;昇腾CANN 9.1.0版本发布&lt;/span&gt;
+<span class="code-line-hl is-good">  &lt;time datetime="2026-07-31"&gt;2026/07/31 发布&lt;/time&gt;</span>
+&lt;/div&gt;</code></pre>
+      </figure>
+    </div>
+        </div>
       </div>
 
-      <div class="principle-example">
-        <h4 class="fn-h4">提示图标 · 用文字表达说明图标</h4>
-<div class="fn-ex-row">
-  <div class="fn-ex">
-    <div class="fn-ex-head">
-    <span class="fn-ex-label">反面</span>
-    <div class="fn-ex-bar" aria-hidden="true"></div>
-    </div>
-    <div class="fn-ex-body">
-    <div class="fn-ex-mock" aria-label="反面：只有灯泡图标">
-      <div class="tip-bar">
-        <span class="tip-bar-ico" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 1 4 10c-.7.7-1 1.5-1 2.5V16H9v-.5c0-1-.3-1.8-1-2.5A6 6 0 0 1 12 3z"/></svg>
-        </span>
-        <span class="tip-bar-txt">如何选择多级API，可参考 <span class="tip-bar-link">Ascend C多级API选择指南</span><svg class="tip-bar-ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 5h5v5"/><path d="M10 14 19 5"/><path d="M19 13v6a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h6"/></svg>。</span>
-      </div>
-    </div>
-    <div class="fn-ex-foot">
-    <ul class="fn-ex-list">
-      <li><strong>常见疏漏：</strong>仅有灯泡图标，未配“说明”文字，机器无法识别该提示类型。 <a class="fn-h3-link" href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/910/programug/Ascendcopdevg/docs/guide/%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B/Ascend-C%E6%A6%82%E8%BF%B0%E4%B8%8E%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%84.md" target="_blank" rel="noopener">查看示例来源</a></li>
-    </ul>
-    </div>
-    </div>
-  </div>
-  <div class="fn-ex">
-    <div class="fn-ex-head">
-    <span class="fn-ex-label is-good">正面</span>
-    <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-    </div>
-    <div class="fn-ex-body">
-    <div class="fn-ex-mock" aria-label="正面：灯泡旁写说明">
-      <div class="tip-bar">
-        <span class="tip-bar-ico">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 1 4 10c-.7.7-1 1.5-1 2.5V16H9v-.5c0-1-.3-1.8-1-2.5A6 6 0 0 1 12 3z"/></svg>
-          <span class="tip-bar-lab">说明</span>
-        </span>
-        <span class="tip-bar-txt">如何选择多级API，可参考 <span class="tip-bar-link">Ascend C多级API选择指南</span><svg class="tip-bar-ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 5h5v5"/><path d="M10 14 19 5"/><path d="M19 13v6a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h6"/></svg>。</span>
-      </div>
-    </div>
-    <div class="fn-ex-foot">
-    <ul class="fn-ex-list">
-      <li><strong>正确做法：</strong>图标旁配「说明」文字，灯泡等图形仅作辅助识别。</li>
-    </ul>
-    </div>
-    </div>
-  </div>
-  </div>
-      </div>
-
-      <div class="principle-example">
-        <h4 class="fn-h4">卡片信息图标 · 用文字表达字段图标</h4>
-<div class="fn-ex-row">
+        <h4 class="fn-h4">示例 2 · 作者与发布时间 <a class="fn-h3-link" href="https://www.mindspore.cn/papers" target="_blank" rel="noopener">查看示例来源</a></h4>
+      <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
     <span class="fn-ex-label">反面</span>
@@ -1257,8 +1580,9 @@ h3.fn-h3 .fn-h3-link,
     <div class="fn-ex-body">
     <div class="fn-ex-mock" aria-label="含义图标反面示例：图标独自说明字段，日期未写明含义">
       <div class="paper-card">
-        <p class="paper-card-title">MWPO: Enhancing LLMs Performance through Multi-Weight Preference Strength and Length Optimization</p>
-        <p class="paper-card-desc">Direct Preference Optimization (DPO) have proposed offline alternatives to Reinforcement Learning from Human Feedback (RLHF). In DPO, each preference pair, which serves as the foundation for learning, is typically constructed by first</p>
+        <p class="paper-card-title sk" aria-hidden="true"></p>
+        <p class="paper-card-desc sk" aria-hidden="true"></p>
+        <p class="paper-card-desc sk sk-short" aria-hidden="true"></p>
         <div class="paper-card-meta">
           <div class="paper-card-row">
             <span class="mi" aria-hidden="true">
@@ -1274,14 +1598,16 @@ h3.fn-h3 .fn-h3-link,
           </div>
         </div>
         <div class="paper-card-actions">
-          <span class="paper-card-btn is-ghost">查看代码</span>
-          <span class="paper-card-btn is-solid">查看论文</span>
+          <span class="paper-card-btn sk" aria-hidden="true"></span>
+          <span class="paper-card-btn sk" aria-hidden="true"></span>
         </div>
       </div>
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>常见疏漏：</strong>时钟图标旁仅有日期，未配“发布时间”等时间类型标注，机器无法识别该时间含义。 <a class="fn-h3-link" href="https://www.mindspore.cn/papers" target="_blank" rel="noopener">查看示例来源</a></li>
+      <li><strong>常见疏漏：</strong></li>
+      <li>1. 人像旁未写「作者」</li>
+      <li>2. 时钟旁仅有日期，未配「发布时间」</li>
     </ul>
     </div>
     </div>
@@ -1294,8 +1620,9 @@ h3.fn-h3 .fn-h3-link,
     <div class="fn-ex-body">
     <div class="fn-ex-mock" aria-label="含义图标正面示例：字段含义写成文字">
       <div class="paper-card">
-        <p class="paper-card-title">MWPO: Enhancing LLMs Performance through Multi-Weight Preference Strength and Length Optimization</p>
-        <p class="paper-card-desc">Direct Preference Optimization (DPO) have proposed offline alternatives to Reinforcement Learning from Human Feedback (RLHF). In DPO, each preference pair, which serves as the foundation for learning, is typically constructed by first</p>
+        <p class="paper-card-title sk" aria-hidden="true"></p>
+        <p class="paper-card-desc sk" aria-hidden="true"></p>
+        <p class="paper-card-desc sk sk-short" aria-hidden="true"></p>
         <div class="paper-card-meta">
           <div class="paper-card-row">
             <span class="mi" aria-hidden="true">
@@ -1311,139 +1638,131 @@ h3.fn-h3 .fn-h3-link,
           </div>
         </div>
         <div class="paper-card-actions">
-          <span class="paper-card-btn is-ghost">查看代码</span>
-          <span class="paper-card-btn is-solid">查看论文</span>
+          <span class="paper-card-btn sk" aria-hidden="true"></span>
+          <span class="paper-card-btn sk" aria-hidden="true"></span>
         </div>
       </div>
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>正确做法：</strong>图标旁标注「作者」「发布时间」等字段名；图形仅作辅助。</li>
-      <li><strong>可免场景：</strong>旁白已写清同一字段时，图标可只作装饰。</li>
+      <li><strong>正确做法：</strong></li>
+      <li>1. 图标旁写清「作者」</li>
+      <li>2. 图标旁写清「发布时间」</li>
     </ul>
     </div>
     </div>
   </div>
-  </div>
+</div>
+      <div class="ex-fold-bar">
+        <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex2-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
+        <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex2-html" aria-label="前端源码调整"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
+      </div>
+      <div class="ex-fold-panel" id="ex2-md" hidden>
+        <div class="ex-card-pair">
+    <p class="ex-card-title">Markdown 书写</p>
+    <div class="ex-fold-intro">
+      <ul class="fn-ex-list">
+        <li>1. 用加粗「作者」写出图标语义</li>
+        <li>2. 日期写为「发布时间」并附具体日期</li>
+      </ul>
+    </div>
+    <div class="ex-card-pane">
+      <div class="ex-card-pane-head">
+        <span class="fn-ex-label">反面</span>
+        <div class="fn-ex-bar" aria-hidden="true"></div>
+      </div>
+      <figure class="file-sample file-sample--compact">
+        <pre><code class="language-markdown"># MWPO: …
+
+Shiyue Xu, Fu Zhang, …  
+2025年7月</code></pre>
+      </figure>
+    </div>
+    <div class="ex-card-pane">
+      <div class="ex-card-pane-head">
+        <span class="fn-ex-label is-good">正面</span>
+        <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+      </div>
+      <figure class="file-sample file-sample--compact">
+        <pre><code class="language-markdown"># MWPO: …
+
+**作者** Shiyue Xu, Fu Zhang, …  
+**发布时间**：2025年7月</code></pre>
+      </figure>
+    </div>
+        </div>
+      </div>
+      <div class="ex-fold-panel" id="ex2-html" hidden>
+        <div class="ex-card-pair">
+    <p class="ex-card-title">前端源码调整</p>
+    <div class="ex-fold-intro">
+      <ul class="fn-ex-list">
+        <li>1. 图标旁写入可见文本「作者」</li>
+        <li>2. 日期写成「发布时间 2025年7月」，并用 time 标注</li>
+      </ul>
+    </div>
+    <div class="ex-card-pane">
+      <div class="ex-card-pane-head">
+        <span class="fn-ex-label">反面</span>
+        <div class="fn-ex-bar" aria-hidden="true"></div>
+      </div>
+      <figure class="file-sample file-sample--compact">
+        <pre><code class="language-html">&lt;div class="meta"&gt;
+  &lt;span aria-hidden="true"&gt;…icon…&lt;/span&gt;
+<span class="code-line-hl is-bad">  &lt;span&gt;Shiyue Xu, …&lt;/span&gt;</span>
+  &lt;span aria-hidden="true"&gt;…icon…&lt;/span&gt;
+<span class="code-line-hl is-bad">  &lt;time&gt;2025年7月&lt;/time&gt;</span>
+&lt;/div&gt;</code></pre>
+      </figure>
+    </div>
+    <div class="ex-card-pane">
+      <div class="ex-card-pane-head">
+        <span class="fn-ex-label is-good">正面</span>
+        <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+      </div>
+      <figure class="file-sample file-sample--compact">
+        <pre><code class="language-html">&lt;div class="meta"&gt;
+  &lt;span aria-hidden="true"&gt;…icon…&lt;/span&gt;
+<span class="code-line-hl is-good">  &lt;span&gt;作者 Shiyue Xu, …&lt;/span&gt;</span>
+  &lt;span aria-hidden="true"&gt;…icon…&lt;/span&gt;
+<span class="code-line-hl is-good">  &lt;time datetime="2025-07"&gt;发布时间 2025年7月&lt;/time&gt;</span>
+&lt;/div&gt;</code></pre>
+      </figure>
+    </div>
+        </div>
+      </div>
       </div>
 
       <div class="principle-example">
-        <h4 class="fn-h4">卡片信息图标 · 用文字表达类型与指标</h4>
-<div class="fn-ex-row">
+        <h3 class="fn-h3">数字后写单位</h3>
+        <p class="fn-h3-desc">在统计场景下，字段名可省，数字需带单位（如「人」「次」），帮助 Agent 识别该数值属于统计量。</p>
+        <h4 class="fn-h4">示例 3 · 单位 <a class="fn-h3-link" href="https://www.hiascend.com/developer" target="_blank" rel="noopener">查看示例来源</a></h4>
+      <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
     <span class="fn-ex-label">反面</span>
     <div class="fn-ex-bar" aria-hidden="true"></div>
     </div>
     <div class="fn-ex-body">
-    <div class="fn-ex-mock" aria-label="反面：类型图标未写文字，指标只有数字">
-      <div class="open-card">
-        <div class="open-card-head">
-          <span class="open-card-logo" aria-hidden="true">
-            <img src="assets/design-guide/ascend-sipboost-logo.png?v=2" alt="">
-          </span>
-          <p class="open-card-ttl">AscendSiPBoost</p>
-        </div>
-        <div class="open-card-tags">
-          <span class="open-card-tag">信号处理</span>
-          <span class="open-card-tag">BLAS</span>
-          <span class="open-card-tag">Solver</span>
-          <span class="open-card-tag">FFT</span>
-        </div>
-        <p class="open-card-desc">面向AI模型场景和信号处理场景，提供FFT、BLAS、Solver等一系列信号处理领域相关的高性能算子</p>
-        <div class="open-card-stats">
-          <span class="open-card-stat"><svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 3 14.5 9.5 21.5 10 16 14.8 17.8 21.5 12 18 6.2 21.5 8 14.8 2.5 10 9.5 9.5"/></svg>228</span>
-          <span class="open-card-stat"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="12" cy="18" r="2"/><path d="M8 7v2a4 4 0 0 0 4 4h0a4 4 0 0 0 4-4V7"/><path d="M12 13v3"/></svg>61</span>
-          <span class="open-card-stat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>0</span>
-        </div>
-        <span class="open-card-link">获取源码<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 5h5v5"/><path d="M10 14 19 5"/><path d="M19 13v6a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h6"/></svg></span>
-      </div>
-    </div>
-    <div class="fn-ex-foot">
-    <ul class="fn-ex-list">
-      <li><strong>常见疏漏：</strong>类型仅靠图标无文字；收藏等指标旁只有数字，未配指标名，机器无法识别类型与指标含义。 <a class="fn-h3-link" href="https://www.hiascend.com/cann/open-map" target="_blank" rel="noopener">查看示例来源</a></li>
-    </ul>
-    </div>
-    </div>
-  </div>
-  <div class="fn-ex">
-    <div class="fn-ex-head">
-    <span class="fn-ex-label is-good">正面</span>
-    <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-    </div>
-    <div class="fn-ex-body">
-    <div class="fn-ex-mock" aria-label="正面：类型与指标写成文字">
-      <div class="open-card">
-        <div class="open-card-head">
-          <span class="open-card-logo" aria-hidden="true">
-            <img src="assets/design-guide/ascend-sipboost-logo.png?v=2" alt="">
-          </span>
-          <div class="open-card-head-txt">
-            <p class="open-card-ttl">AscendSiPBoost</p>
-            <span class="open-card-type">图引擎</span>
-          </div>
-        </div>
-        <div class="open-card-tags">
-          <span class="open-card-tag">信号处理</span>
-          <span class="open-card-tag">BLAS</span>
-          <span class="open-card-tag">Solver</span>
-          <span class="open-card-tag">FFT</span>
-        </div>
-        <p class="open-card-desc">面向AI模型场景和信号处理场景，提供FFT、BLAS、Solver等一系列信号处理领域相关的高性能算子</p>
-        <div class="open-card-stats">
-          <span class="open-card-stat"><svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 3 14.5 9.5 21.5 10 16 14.8 17.8 21.5 12 18 6.2 21.5 8 14.8 2.5 10 9.5 9.5"/></svg>收藏 228</span>
-          <span class="open-card-stat"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="12" cy="18" r="2"/><path d="M8 7v2a4 4 0 0 0 4 4h0a4 4 0 0 0 4-4V7"/><path d="M12 13v3"/></svg>分支 61</span>
-          <span class="open-card-stat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>浏览 0</span>
-        </div>
-        <span class="open-card-link">获取源码<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 5h5v5"/><path d="M10 14 19 5"/><path d="M19 13v6a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h6"/></svg></span>
-      </div>
-    </div>
-    <div class="fn-ex-foot">
-    <ul class="fn-ex-list">
-      <li><strong>正确做法：</strong>类型标注「图引擎」；指标写成「收藏 228」「分支 61」「浏览 0」。</li>
-      <li><strong>可免场景：</strong>产品 Logo 只作装饰时，不必再配文字。</li>
-    </ul>
-    </div>
-    </div>
-  </div>
-  </div>
-      </div>
-
-      <div class="principle-example">
-        <h4 class="fn-h4">卡片信息图标 · 用单位表达数量量纲</h4>
-<div class="fn-ex-row">
-  <div class="fn-ex">
-    <div class="fn-ex-head">
-    <span class="fn-ex-label">反面</span>
-    <div class="fn-ex-bar" aria-hidden="true"></div>
-    </div>
-    <div class="fn-ex-body">
-    <div class="fn-ex-mock" aria-label="反面：人像加数字">
+    <div class="fn-ex-mock" aria-label="反面：人像旁只有数字">
       <div class="rec-card">
-        <p class="rec-head">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 3 14.5 9.5 21.5 10 16 14.8 17.8 21.5 12 18 6.2 21.5 8 14.8 2.5 10 9.5 9.5"/></svg>
-          精品推荐
-        </p>
+        <p class="rec-head sk" aria-hidden="true"></p>
         <div class="rec-row">
-          <span class="rec-tag">课程</span>
-          <span class="rec-ttl">【新】【昇腾软件说】社区支持与活动专场</span>
+          <span class="rec-tag sk" aria-hidden="true"></span>
+          <span class="rec-ttl sk" aria-hidden="true"></span>
           <span class="rec-meta"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="3.5"/></svg>2</span>
         </div>
         <div class="rec-row">
-          <span class="rec-tag">课程</span>
-          <span class="rec-ttl">【新】【昇腾软件说】推理解决方案专场</span>
-          <span class="rec-meta"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="3.5"/></svg>5</span>
-        </div>
-        <div class="rec-row">
-          <span class="rec-tag">课程</span>
-          <span class="rec-ttl">【新】【昇腾软件说】昇腾算子编程专场</span>
+          <span class="rec-tag sk" aria-hidden="true"></span>
+          <span class="rec-ttl sk" aria-hidden="true"></span>
           <span class="rec-meta"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="3.5"/></svg>5</span>
         </div>
       </div>
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>常见疏漏：</strong>图标旁只有数字，未附单位或指标名。机器无法识别量纲。 <a class="fn-h3-link" href="https://www.hiascend.com/developer" target="_blank" rel="noopener">查看示例来源</a></li>
+      <li><strong>常见疏漏：</strong></li>
+      <li>1. 只有数字，未附单位，看不出是人数还是其他统计</li>
     </ul>
     </div>
     </div>
@@ -1454,306 +1773,139 @@ h3.fn-h3 .fn-h3-link,
     <div class="fn-ex-bar is-good" aria-hidden="true"></div>
     </div>
     <div class="fn-ex-body">
-    <div class="fn-ex-mock" aria-label="正面：写成几人">
+    <div class="fn-ex-mock" aria-label="正面：数字写成几人">
       <div class="rec-card">
-        <p class="rec-head">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 3 14.5 9.5 21.5 10 16 14.8 17.8 21.5 12 18 6.2 21.5 8 14.8 2.5 10 9.5 9.5"/></svg>
-          精品推荐
-        </p>
+        <p class="rec-head sk" aria-hidden="true"></p>
         <div class="rec-row">
-          <span class="rec-tag">课程</span>
-          <span class="rec-ttl">【新】【昇腾软件说】社区支持与活动专场</span>
+          <span class="rec-tag sk" aria-hidden="true"></span>
+          <span class="rec-ttl sk" aria-hidden="true"></span>
           <span class="rec-meta"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="3.5"/></svg>2人</span>
         </div>
         <div class="rec-row">
-          <span class="rec-tag">课程</span>
-          <span class="rec-ttl">【新】【昇腾软件说】推理解决方案专场</span>
-          <span class="rec-meta"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="3.5"/></svg>5人</span>
-        </div>
-        <div class="rec-row">
-          <span class="rec-tag">课程</span>
-          <span class="rec-ttl">【新】【昇腾软件说】昇腾算子编程专场</span>
+          <span class="rec-tag sk" aria-hidden="true"></span>
+          <span class="rec-ttl sk" aria-hidden="true"></span>
           <span class="rec-meta"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="3.5"/></svg>5人</span>
         </div>
       </div>
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>正确做法：</strong>数字附单位写成「2人」，或附名称写成「讲师 2」。</li>
-      <li><strong>可免场景：</strong>标题已表意的装饰图标，不必再配文字。</li>
+      <li><strong>正确做法：</strong></li>
+      <li>1. 写成「2人」，标明这是数量统计</li>
     </ul>
     </div>
     </div>
   </div>
-  </div>
+</div>
+      <div class="ex-fold-bar">
+        <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex3-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
+        <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex3-html" aria-label="前端源码调整"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
       </div>
-
-      <div class="principle-example">
-        <h4 class="fn-h4">品牌 Logo · 用名称表达品牌 Logo</h4>
-<div class="fn-ex-row">
-  <div class="fn-ex">
-    <div class="fn-ex-head">
-    <span class="fn-ex-label">反面</span>
-    <div class="fn-ex-bar" aria-hidden="true"></div>
-    </div>
-    <div class="fn-ex-body">
-    <div class="fn-ex-mock" aria-label="反面：友好社区 Logo 墙，名称烧进图片">
-      <div class="logo-wall">
-        <img src="assets/design-guide/cann-friendly-community.png" alt="">
-      </div>
-    </div>
-    <div class="fn-ex-foot">
-    <ul class="fn-ex-list">
-      <li><strong>常见疏漏：</strong>Logo 无旁可见名称，也未写入 alt。机器无法识别品牌名单。 <a class="fn-h3-link" href="https://www.hiascend.com/cann" target="_blank" rel="noopener">查看示例来源</a></li>
-    </ul>
-    </div>
-    </div>
-  </div>
-  <div class="fn-ex">
-    <div class="fn-ex-head">
-    <span class="fn-ex-label is-good">正面</span>
-    <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-    </div>
-    <div class="fn-ex-body">
-    <div class="fn-ex-mock" aria-label="正面：各 Logo 下方写出项目名">
-      <div class="logo-wall">
-        <p class="logo-wall-title">友好社区</p>
-        <div class="logo-wall-grid">
-          <a href="https://github.com/volcengine/verl"><img src="assets/design-guide/cann-logo-verl.png" alt="verl"><span>verl</span></a>
-          <a href="https://github.com/vllm-project/vllm"><img src="assets/design-guide/cann-logo-vllm.png" alt="vLLM"><span>vLLM</span></a>
-          <a href="https://github.com/sgl-project/sglang"><img src="assets/design-guide/cann-logo-sgl.png" alt="SGL"><span>SGL</span></a>
-          <a href="https://www.hiascend.com/cann"><img src="assets/design-guide/cann-logo-xllm.png" alt="xLLM"><span>xLLM</span></a>
-          <a href="https://www.mindspore.cn"><img src="assets/design-guide/cann-logo-mindspore.png" alt="MindSpore"><span>MindSpore</span></a>
-          <a href="https://github.com/kvcache-ai/Mooncake"><img src="assets/design-guide/cann-logo-mooncake.png" alt="Mooncake"><span>Mooncake</span></a>
-          <a href="https://pytorch.org"><img src="assets/design-guide/cann-logo-pytorch.png" alt="PyTorch"><span>PyTorch</span></a>
-          <a href="https://www.hiascend.com/cann"><img src="assets/design-guide/cann-logo-unknown.png" alt="须写名称"><span>须写名称</span></a>
-          <a href="https://github.com/tile-ai/tilelang"><img src="assets/design-guide/cann-logo-tilelang.png" alt="TileLang"><span>TileLang</span></a>
-          <a href="https://www.tensorflow.org"><img src="assets/design-guide/cann-logo-tensorflow.png" alt="TensorFlow"><span>TensorFlow</span></a>
-        </div>
-      </div>
-    </div>
-    <div class="fn-ex-foot">
-    <ul class="fn-ex-list">
-      <li><strong>正确做法：</strong>品牌名写在 Logo 旁，或写入源码 alt，二选一即可；每项须可跟链。</li>
-      <li><strong>可免场景：</strong>旁白已列出同一套名单时，Logo 可只作装饰。</li>
-    </ul>
-    </div>
-    </div>
-  </div>
-  </div>
-      </div>
-
-      <p class="principle-example-note" style="margin-top:12px;">设计专项完整说明见 <a href="design-guide-icon-text.html">图标语义锚定</a>。</p>
-    </section>
-
-    <section class="section" id="content-adjust">
-      <h2>文档内容调整</h2>
-
-      <h3 class="fn-h3" id="content-suggestions">调整建议</h3>
-      <ul class="principle-suggestions">
-        <li>
-          <span class="sug-title">文案与图标语义一致</span>
-          <span class="sug-desc">文案含义须与图标一致（如「告警」不要配成功勾）；字段名、类型名写入正文，不依赖读者识图。</span>
-        </li>
-        <li>
-          <span class="sug-title">列表勿只放图标列</span>
-          <span class="sug-desc">表格或列表中承载语义的列须有文字表头与单元格文案，禁止仅以图标列区分状态或类别。</span>
-        </li>
-        <li>
-          <span class="sug-title">指标数字附名称</span>
-          <span class="sug-desc">统计数字须附指标名或单位（如「收藏 228」），禁止裸数字或仅靠图标暗示量纲。</span>
-        </li>
+      <div class="ex-fold-panel" id="ex3-md" hidden>
+        <div class="ex-card-pair">
+    <p class="ex-card-title">Markdown 书写</p>
+    <div class="ex-fold-intro">
+      <ul class="fn-ex-list">
+        <li>1. 数字后写单位「人」</li>
       </ul>
-
-      <h3 class="fn-h3" id="content-example">调整示例</h3>
-      <div class="principle-example">
-        <h4 class="fn-h4">字段与日期写成文字</h4>
-        <div class="fn-ex-row" id="icon-content-field">
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label">反面</span>
-              <div class="fn-ex-bar" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="反面：仅靠图标">
-                <pre class="st-code">[人像图标] Shiyue Xu, Fu Zhang, …
-[时钟图标] 2025年7月</pre>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>常见疏漏：</strong>字段名只靠图标，机器不知道是作者还是时间。</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label is-good">正面</span>
-              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="正面：字段名成文">
-                <pre class="st-code">作者 Shiyue Xu, Fu Zhang, …
-发布时间 2025年7月</pre>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>正确做法：</strong>字段名与时间语义写成可见文字。</li>
-                </ul>
-              </div>
-            </div>
-          </div>
+    </div>
+    <div class="ex-card-pane">
+      <div class="ex-card-pane-head">
+        <span class="fn-ex-label">反面</span>
+        <div class="fn-ex-bar" aria-hidden="true"></div>
+      </div>
+      <figure class="file-sample file-sample--compact">
+        <pre><code class="language-markdown"><span class="code-line-hl is-bad">- 社区支持与活动专场  2</span>
+<span class="code-line-hl is-bad">- 推理解决方案专场  5</span></code></pre>
+      </figure>
+    </div>
+    <div class="ex-card-pane">
+      <div class="ex-card-pane-head">
+        <span class="fn-ex-label is-good">正面</span>
+        <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+      </div>
+      <figure class="file-sample file-sample--compact">
+        <pre><code class="language-markdown"><span class="code-line-hl is-good">- 社区支持与活动专场  2人</span>
+<span class="code-line-hl is-good">- 推理解决方案专场  5人</span></code></pre>
+      </figure>
+    </div>
         </div>
       </div>
-
-      <div class="principle-example">
-        <h4 class="fn-h4">指标数字附单位 / 名称</h4>
-        <div class="fn-ex-row" id="icon-content-metric">
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label">反面</span>
-              <div class="fn-ex-bar" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="反面：裸数字">
-                <pre class="st-code">[星] 228   [分支] 61   [眼] 0</pre>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>常见疏漏：</strong>裸数字 + 图标，量纲不可检索。</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label is-good">正面</span>
-              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="正面：指标名加数字">
-                <pre class="st-code">收藏 228 · 分支 61 · 浏览 0</pre>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>正确做法：</strong>指标名 + 数字，图标仅作辅助。</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="frontend-adjust">
-      <h2>前端调整</h2>
-
-      <h3 class="fn-h3" id="frontend-suggestions">调整建议</h3>
-      <ul class="principle-suggestions">
-        <li>
-          <span class="sug-title">信息图标可访问名称</span>
-          <span class="sug-desc">信息型图标提供可见旁路文本或 <code>aria-label</code>；装饰图标用 <code>aria-hidden="true"</code> 或空 alt。</span>
-        </li>
-        <li>
-          <span class="sug-title">入库抽取旁路文字</span>
-          <span class="sug-desc">切片管道抽取图标旁文案 / aria-label，不依赖 icon font 字形或纯 SVG path；装饰项跳过向量化。</span>
-        </li>
-        <li>
-          <span class="sug-title">Logo 名称可检索</span>
-          <span class="sug-desc">品牌 Logo 须非空 <code>alt</code> 或旁路可见名称；首包即含该文字，禁止仅客户端补全。</span>
-        </li>
+      <div class="ex-fold-panel" id="ex3-html" hidden>
+        <div class="ex-card-pair">
+    <p class="ex-card-title">前端源码调整</p>
+    <div class="ex-fold-intro">
+      <ul class="fn-ex-list">
+        <li>1. 文本节点写成「2人」，不要只写数字</li>
       </ul>
-
-      <h3 class="fn-h3" id="frontend-example">调整示例</h3>
-      <div class="principle-example">
-        <h4 class="fn-h4">公告图标须有旁路文本</h4>
-        <div class="fn-ex-row" id="icon-frontend-label">
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label">反面</span>
-              <div class="fn-ex-bar" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="反面：仅图形">
-                <pre class="st-code">&lt;span class="ico" aria-hidden="true"&gt;…喇叭 SVG…&lt;/span&gt;
-&lt;span&gt;昇腾 CANN 9.1.0 版本发布&lt;/span&gt;
-&lt;time&gt;2026/07/31&lt;/time&gt;</pre>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>常见疏漏：</strong>无「公告」文案；日期语义不明。</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label is-good">正面</span>
-              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="正面：可见文案加时间语义">
-                <pre class="st-code">&lt;span class="ico"&gt;
-  &lt;svg aria-hidden="true"&gt;…&lt;/svg&gt;
-  &lt;span class="lab"&gt;公告&lt;/span&gt;
-&lt;/span&gt;
-&lt;span&gt;昇腾 CANN 9.1.0 版本发布&lt;/span&gt;
-&lt;time datetime="2026-07-31"&gt;2026/07/31 发布&lt;/time&gt;</pre>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>正确做法：</strong>可见「公告」+ 时间语义写清。</li>
-                </ul>
-              </div>
-            </div>
-          </div>
+    </div>
+    <div class="ex-card-pane">
+      <div class="ex-card-pane-head">
+        <span class="fn-ex-label">反面</span>
+        <div class="fn-ex-bar" aria-hidden="true"></div>
+      </div>
+      <figure class="file-sample file-sample--compact">
+        <pre><code class="language-html">&lt;div class="item"&gt;
+  &lt;span&gt;社区支持与活动专场&lt;/span&gt;
+  &lt;span aria-hidden="true"&gt;…icon…&lt;/span&gt;
+<span class="code-line-hl is-bad">  &lt;span&gt;2&lt;/span&gt;</span>
+&lt;/div&gt;
+&lt;div class="item"&gt;
+  &lt;span&gt;推理解决方案专场&lt;/span&gt;
+  &lt;span aria-hidden="true"&gt;…icon…&lt;/span&gt;
+<span class="code-line-hl is-bad">  &lt;span&gt;5&lt;/span&gt;</span>
+&lt;/div&gt;</code></pre>
+      </figure>
+    </div>
+    <div class="ex-card-pane">
+      <div class="ex-card-pane-head">
+        <span class="fn-ex-label is-good">正面</span>
+        <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+      </div>
+      <figure class="file-sample file-sample--compact">
+        <pre><code class="language-html">&lt;div class="item"&gt;
+  &lt;span&gt;社区支持与活动专场&lt;/span&gt;
+  &lt;span aria-hidden="true"&gt;…icon…&lt;/span&gt;
+<span class="code-line-hl is-good">  &lt;span&gt;2人&lt;/span&gt;</span>
+&lt;/div&gt;
+&lt;div class="item"&gt;
+  &lt;span&gt;推理解决方案专场&lt;/span&gt;
+  &lt;span aria-hidden="true"&gt;…icon…&lt;/span&gt;
+<span class="code-line-hl is-good">  &lt;span&gt;5人&lt;/span&gt;</span>
+&lt;/div&gt;</code></pre>
+      </figure>
+    </div>
         </div>
       </div>
-
-      <div class="principle-example">
-        <h4 class="fn-h4">Logo 须有 alt 或旁路名称</h4>
-        <div class="fn-ex-row" id="icon-frontend-logo">
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label">反面</span>
-              <div class="fn-ex-bar" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="反面：空 alt">
-                <pre class="st-code">&lt;img src="vllm.png" alt=""&gt;</pre>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>常见疏漏：</strong>空 alt，品牌名不可检索。</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label is-good">正面</span>
-              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="正面：名称可检索">
-                <pre class="st-code">&lt;a href="…"&gt;
-  &lt;img src="vllm.png" alt="vLLM"&gt;
-  &lt;span&gt;vLLM&lt;/span&gt;
-&lt;/a&gt;</pre>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>正确做法：</strong>非空 alt 或旁路可见名称（可二选一）。</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
 
+<section class="section" id="benefits">
+      <h2>价值收益</h2>
+      <ul class="bg-list">
+        <li><strong>图标语义可被理解</strong>Agent 能识别图形所代表的信息类别，引用时点明字段名（如喇叭=「公告」、人像=「作者」、日期=「发布时间」）。</li>
+        <li><strong>统计量可作佐证</strong>规模类结论可带单位写入回答，作为证据提升置信度（如专场「2人」「5人」可被引用核对）。</li>
+      </ul>
+    </section>
   </main>
 </div>
+
+
+
+
+<script>
+(function () {
+  document.querySelectorAll(".ex-fold-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var panel = document.getElementById(btn.getAttribute("aria-controls"));
+      if (!panel) return;
+      var open = btn.getAttribute("aria-expanded") === "true";
+      btn.setAttribute("aria-expanded", open ? "false" : "true");
+      panel.hidden = open;
+    });
+  });
+})();
+</script>
 
 <script src="assets/js/site-config.js"></script>
 <script src="assets/js/site-init.js"></script>

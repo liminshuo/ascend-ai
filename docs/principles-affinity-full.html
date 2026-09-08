@@ -361,7 +361,7 @@
           </tr>
           <tr id="principle-full-23" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
             <td class="col-id">23</td>
-            <td>明确更新日期</td>
+            <td>更新日期外显</td>
             <td><strong>要求</strong>：<br>每个文档页面必须在页面的显著位置（通常在标题下方或者页面底部）以明确的格式标注该页面内容的最后实质性修改日期。日期应遵循ISO 8601 格式（YYYY-MM-DD）以便于机器解析，同时也可以展示为人类友好的格式。仅标注“发布于”初始日期二不持续更新“最后修改”是不够的。</td>
             <td><strong>要求</strong>：<br>日期写成字，不靠色标 页头与列表须展示可读更新日期；「新」角标可保留，但不得替代日期文字。<br><strong>日期与版本同排可辨</strong>：<br>若同时展示版本号，用分隔符同排（如 v8.0.0 · 更新 2026-03-12），避免只留版本、省略日期。</td>
             <td><strong>使用语义化 &lt;time&gt; 标签</strong>：<br>日期必须用 &lt;time datetime=&quot;2026-05-27&quot;&gt; 输出，而非纯文本，大模型和搜索引擎可直接解析 datetime 属性拿到标准格式日期<br><strong>last-modified 写入 meta</strong>：<br>在 &lt;head&gt; 中输出 &lt;meta name=&quot;last-modified&quot; content=&quot;2026-05-27&quot;&gt;，以及 JSON-LD 中的 dateModified 字段，机器可读优先保证<br><strong>CMS 自动更新日期</strong>：<br>内容发生实质性修改并发布时，由系统自动更新 last-modified 字段，禁止人工维护，避免遗漏或造假<br><strong>区分&quot;发布日期&quot;与&quot;修改日期&quot;</strong>：<br>CMS 中两个字段分开存储，datePublished 和 dateModified 独立维护，接口和 meta 中都分别输出，不能合并成一个字段。</td>
@@ -369,7 +369,7 @@
           </tr>
           <tr id="principle-full-24" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
             <td class="col-id">24</td>
-            <td>失效/弃用状态显化</td>
+            <td>生命周期状态显化</td>
             <td><strong>任何已弃用、将下线、或对特定环境无效的功能、API端点、配置参数、必须在描述它的最靠近的标题下方使用显著的警告块进行标记。该警告必须说明</strong>：<br>弃用/失效的时间点（或版本）、影响范围、以及代替方案（链接到新文档）。<br>b.文档失效<br>对于已停止维护的文档版本或章节，必须在页面顶部（H1上方）展示一个清晰的提示框，说明“此文档适用于已停止维护的[产品名]vX.Y”，并提供一个指向最新版本推荐文档的醒目链接。</td>
             <td><strong>警告块组件规范</strong>：<br>功能/接口失效的警告块需要有统一的视觉样式（颜色、图标、边框），与普通提示框、信息框明确区分，视觉权重足够高，用户不会忽略<br><strong>页顶文档失效提示框</strong>：<br>位置固定在 H1 上方，样式与正文完全隔离（如全宽背景色条），包含失效说明文本和指向新文档的醒目链接，不能被页面其他内容淹没。</td>
             <td><strong>失效状态元数据字段</strong>：<br>CMS 中为每个页面和内容块增加结构化字段，包括 status（active / deprecated / sunset）、deprecated-since（版本或时间）、replacement-url（替代文档链接），与内容分离管理，不依赖人工在正文中手写<br><strong>失效内容的机器可读标注</strong>：<br>废弃警告块加 data-status=&quot;deprecated&quot;、data-since=&quot;vX.Y&quot;、data-replacement=&quot;url&quot; 属性，大模型抓取时可直接识别该内容块的有效性，自动过滤或降权失效内容<br><strong>页顶提示框自动渲染</strong>：<br>当页面 status 字段为 deprecated 时，由模板自动在 H1 上方注入提示框，不依赖内容侧手动添加，避免遗漏<br><strong>失效内容在大纲接口中标注</strong>：<br>上文已有页面大纲接口，此处需在接口中为每个内容块带上 status 字段，供大模型在消费大纲时直接过滤失效章节，无需进入页面逐一判断。</td>

@@ -361,20 +361,26 @@
       <tr>
         <td>H2</td>
         <td><code>--text-h2</code> / <code>--text-h2-lh</code></td>
-        <td><strong>24 / 36</strong> · 底线 pad <code>--space-h2-rule: 16px</code></td>
+        <td><strong>24 / 36</strong></td>
         <td>区块标题（.section h2）</td>
       </tr>
       <tr>
         <td>H3</td>
         <td><code>--text-h3</code> / <code>--text-h3-lh</code></td>
-        <td><strong>18 / 28</strong> · 上下 pad <code>--space-h3-pad-y: 24px</code></td>
+        <td><strong>18 / 28</strong></td>
         <td>.section h3 与 h3.fn-h3 同源</td>
       </tr>
       <tr>
         <td>H4</td>
         <td><code>--text-h4</code> / <code>--text-h4-lh</code></td>
-        <td><strong>14 / 22</strong> · 底 pad <code>--space-h4-pad-b: 16px</code></td>
+        <td><strong>14 / 22</strong></td>
         <td>.section h4 与 h4.fn-h4 同源</td>
+      </tr>
+      <tr>
+        <td>H5</td>
+        <td><code>--text-h5</code> / <code>--text-h5-lh</code></td>
+        <td><strong>12 / 20</strong></td>
+        <td>.section h5 与 h5.fn-h5 同源</td>
       </tr>
       <tr>
         <td>正文</td>
@@ -390,12 +396,103 @@
       </tr>
     </tbody>
   </table>
+
+  <h2 class="block-title">标题上下 Padding</h2>
+  <p class="spec-lead">H1–H5 上下 padding 对称，写在 <code>tokens.css</code> 的 <code>--space-hN-pad-y</code>。Padding 是标题<strong>盒子内部</strong>的上下留白，不承担盒子与盒子之间的空隙。内容区距 <code>main</code> 顶为 <code>--content-main-pad-top: 16px</code>。</p>
+  <table class="token-table">
+    <thead>
+      <tr><th>层级</th><th>Token</th><th>上 Padding</th><th>下 Padding</th><th>选择器</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>H1</td>
+        <td><code>--space-h1-pad-y</code></td>
+        <td><strong>32px</strong></td>
+        <td><strong>32px</strong></td>
+        <td><code>.page-header &gt; h1</code></td>
+      </tr>
+      <tr>
+        <td>H2</td>
+        <td><code>--space-h2-pad-y</code></td>
+        <td><strong>16px</strong></td>
+        <td><strong>16px</strong></td>
+        <td><code>.section h2</code></td>
+      </tr>
+      <tr>
+        <td>H3</td>
+        <td><code>--space-h3-pad-y</code></td>
+        <td><strong>16px</strong></td>
+        <td><strong>16px</strong></td>
+        <td><code>.section h3</code> / <code>h3.fn-h3</code></td>
+      </tr>
+      <tr>
+        <td>H4</td>
+        <td><code>--space-h4-pad-y</code></td>
+        <td><strong>16px</strong></td>
+        <td><strong>16px</strong></td>
+        <td><code>.section h4</code> / <code>h4.fn-h4</code></td>
+      </tr>
+      <tr>
+        <td>H5</td>
+        <td><code>--space-h5-pad-y</code></td>
+        <td><strong>16px</strong></td>
+        <td><strong>16px</strong></td>
+        <td><code>.section h5</code> / <code>h5.fn-h5</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 class="block-title">邻接 Margin（叠在 Padding 上）</h2>
+  <p class="spec-lead">相邻<strong>盒子</strong>之间另加 <code>--space-stack: 16px</code> 的 margin。Margin 与标题 padding <strong>同时生效、不互相替代</strong>。只在一侧写 16px（上一块 <code>margin-bottom</code> 或下一块 <code>margin-top</code>），相邻外边距折叠后仍为 16，避免双边各 16 且不折叠时变成 32。</p>
+  <table class="token-table">
+    <thead>
+      <tr><th>相邻盒子</th><th>Margin</th><th>实现</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>main</code> 顶 → H1 盒子</td>
+        <td><strong>16px</strong></td>
+        <td><code>--content-main-pad-top</code>（main 的 padding-top，不是标题 margin）</td>
+      </tr>
+      <tr>
+        <td>H1 盒子 → 首个 H2 盒子</td>
+        <td><strong>16px</strong></td>
+        <td><code>.page-header { margin-bottom: 16px }</code>；H1 仍保留 32px 下 padding</td>
+      </tr>
+      <tr>
+        <td>H2 盒子 → 紧随正文</td>
+        <td><strong>16px</strong></td>
+        <td><code>.section &gt; h2 { margin-bottom: 16px }</code>；正文自身 margin 为 0</td>
+      </tr>
+      <tr>
+        <td>上节末块 → 下一节 H2 盒子</td>
+        <td><strong>16px</strong></td>
+        <td>上节 <code>.section { margin-bottom: 16px }</code>；下一 H2 仍保留上 padding</td>
+      </tr>
+      <tr>
+        <td>分组说明 → 下一 H4 盒子</td>
+        <td><strong>16px</strong></td>
+        <td><code>.fn-h3-desc + h4.fn-h4 { margin-top: 16px }</code></td>
+      </tr>
+      <tr>
+        <td>折叠按钮条 → 展开卡片</td>
+        <td><strong>16px</strong></td>
+        <td><code>.ex-fold-panel { margin-top: 16px }</code>；<code>[hidden]</code> 不占位</td>
+      </tr>
+      <tr>
+        <td>折叠按钮条 → 下一 H3 / H4 盒子</td>
+        <td><strong>16px</strong></td>
+        <td><code>.ex-fold-bar { margin-bottom: 16px }</code>；示例组之间 <code>margin-top: 16px</code></td>
+      </tr>
+    </tbody>
+  </table>
   <div class="spec-sample">
     <p>这是正文示例：适用场景、要求、原因，以及亲和原则条目，均按 14 / 22 排版。</p>
     <p class="meta">font-size: var(--text-body) · line-height: 22px</p>
   </div>
   <ul class="affinity-principles">
-    <li><strong>统一：</strong>全站标题与正文只引用 <code>tokens.css</code>；原则页勿再写死 18/16 字号。</li>
+    <li><strong>统一：</strong>全站标题与正文只引用 <code>tokens.css</code>；原则页勿再写死 18/16 字号。H1–H5 上下 padding 只引用 <code>--space-h1-pad-y</code>～<code>--space-h5-pad-y</code>。盒子之间的邻接空隙只引用 <code>--space-stack</code>（16px），叠在 padding 之外。</li>
+    <li><strong>量法：</strong>检查间距时量的是两个盒子边框盒之间的空隙（margin），不是文字到文字。文字到文字 = 上一块 padding-bottom + margin + 下一块 padding-top。</li>
     <li><strong>例外：</strong>组件 mock、侧栏、顶栏可用局部尺寸，不占用正文规格。</li>
   </ul>
 

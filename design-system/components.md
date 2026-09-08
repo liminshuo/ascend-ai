@@ -794,6 +794,7 @@
 ## 待补充
 
 - [x] Odate-table 表标题 / 表内 / 图标题字号与行高（统一 14/22）
+- [x] 页面标题 Padding 与邻接 Margin（见 [page-spacing.md](./page-spacing.md)）
 - [ ] 各组件精确色值、其余字号与间距 Token
 - [ ] Hover / Focus 全状态补全
 - [ ] DatePicker / TimePicker 面板展开态

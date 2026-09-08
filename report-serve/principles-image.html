@@ -70,7 +70,7 @@
   .page-header {
     border-bottom: none;
     padding-bottom: 0;
-    margin-bottom: 28px;
+    margin-bottom: 0;
   }
   .page-header h1 {
     font-family: var(--font);
@@ -78,7 +78,9 @@
     font-weight: var(--text-h1-weight, 600);
     line-height: var(--text-h1-lh);
     letter-spacing: -0.02em;
-    margin: 8px 0 0;
+    margin: 0;
+    padding-top: var(--space-h1-pad-y, 32px);
+    padding-bottom: var(--space-h1-pad-y, 32px);
     color: var(--color-text, var(--color-text));
   }
   .page-header .page-desc {
@@ -88,7 +90,7 @@
     color: var(--text, var(--color-text));
   }
   body.inner-page[data-page="image"]:has(#module-sidebar) .main-content {
-    padding-top: 32px;
+    padding-top: var(--content-main-pad-top, 16px);
     padding-left: 0;
     padding-right: 0;
   }
@@ -107,17 +109,18 @@
     font-weight: 700;
     line-height: var(--text-h2-lh, 36px);
     letter-spacing: -0.01em;
-    margin-top: 48px;
-    margin-bottom: 16px;
-    padding-bottom: var(--space-h2-rule, 16px);
+    margin-top: var(--space-h2-margin-t, 24px);
+    margin-bottom: var(--space-h2-margin-b, 24px);
+    padding-top: var(--space-h2-pad-y, 16px);
+    padding-bottom: var(--space-h2-pad-y, 16px);
     border-bottom: 2px solid var(--color-card-border);
     color: var(--color-text, var(--color-text));
   }
   body.inner-page[data-page="image"] .main-content .section h3 { height: auto; }
   h3.fn-h3 {
     margin: 0;
-    padding-top: var(--space-h3-pad-y, 24px);
-    padding-bottom: var(--space-h3-pad-y, 24px);
+    padding-top: var(--space-h3-pad-y, 16px);
+    padding-bottom: var(--space-h3-pad-y, 16px);
     font-size: var(--text-h3, 18px);
     line-height: var(--text-h3-lh, 28px);
     font-weight: var(--text-h3-weight, 650);
@@ -126,9 +129,9 @@
   }
   body.inner-page[data-page="image"] .main-content .section h4 { height: auto; }
   h4.fn-h4 {
-    margin: 24px 0 0;
-    padding-top: 0;
-    padding-bottom: var(--space-h4-pad-b, 16px);
+    margin: 0;
+    padding-top: var(--space-h4-pad-y, 16px);
+    padding-bottom: var(--space-h4-pad-y, 16px);
     font-size: var(--text-h4, 14px);
     line-height: var(--text-h4-lh, 22px);
     font-weight: var(--text-h4-weight, 650);
@@ -136,7 +139,7 @@
     letter-spacing: -0.01em;
   }
   h3.fn-h3 + .principle-example > h4.fn-h4,
-  h3.fn-h3 + h4.fn-h4 { margin-top: 12px; }
+  h3.fn-h3 + h4.fn-h4 { margin-top: 24px; }
 
   #scenarios .scene-def-table td .badge { border: none; }
   .scene-def-table td .badge-optional {
@@ -292,6 +295,7 @@
   }
   .fn-ex-row .fn-ex-mock,
   .fn-ex-row .fn-ex-mock:has(.obj-banner),
+  .fn-ex-row .fn-ex-mock:has(.logo-wall),
   .fn-ex-row .fn-ex-mock:has(.info-card) {
     min-height: 0;
     height: 100%;
@@ -722,6 +726,81 @@
     white-space: nowrap;
     box-shadow: none;
   }
+  .logo-wall {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    height: 100%;
+    padding: 12px;
+    box-sizing: border-box;
+    background: var(--color-bg);
+    border-radius: 8px;
+  }
+  .fn-ex-mock:has(.logo-wall) {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    padding: 0;
+  }
+  .logo-wall-title {
+    margin: 0;
+    text-align: center;
+    font-size: 13px;
+    line-height: 20px;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  .logo-wall > img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+  }
+  .logo-wall-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .logo-wall-grid a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-height: 68px;
+    padding: 6px 4px;
+    background: #fff;
+    border-radius: 6px;
+    font-size: var(--text-caption);
+    line-height: 16px;
+    font-weight: 500;
+    color: var(--color-text);
+    text-align: center;
+    text-decoration: none;
+  }
+  .logo-wall-grid a:hover,
+  .logo-wall-grid a:visited {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+  .logo-wall-grid img {
+    display: block;
+    width: 100%;
+    height: 40px;
+    max-width: 100%;
+    object-fit: contain;
+    border-radius: 0;
+  }
+  .logo-wall-grid a span {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .section .fn-ex-row .logo-wall-title { margin: 0; color: var(--color-text); }
   .scene-def-table {
     width: 100%;
     border-collapse: collapse;
@@ -821,6 +900,11 @@
             <td class="col-place">活动 Banner、首页招揽</td>
           </tr>
           <tr>
+            <td class="col-type">官网·Logo 墙</td>
+            <td class="col-desc">各品牌名须为独立文字或非空 alt，禁止整墙烧成一张图。</td>
+            <td class="col-place">友好社区、生态合作</td>
+          </tr>
+          <tr>
             <td class="col-type">官网·架构图</td>
             <td class="col-desc">层名与产品关系须以文字链接或旁注徽标（Markdown）交付，禁止仅以图片承载。</td>
             <td class="col-place">平台栈、官网结构图</td>
@@ -862,8 +946,8 @@
           </tr>
           <tr>
             <td class="col-type"><span class="badge badge-should">建议做</span></td>
-            <td class="col-place">官网 Banner、平台栈展示</td>
-            <td class="col-desc">标题与入口若进引用池，须独立文字层或平行 MD。</td>
+            <td class="col-place">官网 Banner、Logo 墙、平台栈展示</td>
+            <td class="col-desc">标题、入口与品牌名若进引用池，须独立文字层、非空 alt 或平行 MD。</td>
           </tr>
           <tr>
             <td class="col-type"><span class="badge badge-optional">可不做完整改造</span></td>
@@ -881,7 +965,7 @@
       <ul class="principle-suggestions">
         <li>
           <span class="sug-title">信息不烧图</span>
-          <span class="sug-desc">标题与入口文案须独立于图片，禁止烧入图中；图可作背景，信息须有可抓文字层。</span>
+          <span class="sug-desc">标题、入口与品牌名须独立于图片，禁止烧入图中；图可作背景，信息须有可抓文字层。</span>
         </li>
         <li>
           <span class="sug-title">图意成文</span>
@@ -939,6 +1023,60 @@
     <ul class="fn-ex-list">
       <li><strong>正确做法：</strong>标题与报名入口叠于图上，但须为独立文案；角标若承载信息，也须独立成文。</li>
       <li><strong>可免场景：</strong>1）图仅作氛围，不承载标题或入口信息时，可不加独立文案；2）标题与入口已在页内别处以文字形式存在，不单靠 Banner 承载时，图上可不叠加。</li>
+    </ul>
+    </div>
+    </div>
+      </div>
+  </div>
+      </div>
+
+      <div class="principle-example">
+        <h4 class="fn-h4">官网·Logo 墙 · 品牌名写在图外或写入 alt</h4>
+  <div class="fn-ex-row">
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label">反面</span>
+    <div class="fn-ex-bar" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="反面：友好社区 Logo 墙，名称烧进图片">
+      <div class="logo-wall">
+        <img src="assets/design-guide/cann-friendly-community.png" alt="">
+      </div>
+    </div>
+    <div class="fn-ex-foot">
+    <ul class="fn-ex-list">
+      <li><strong>常见疏漏：</strong>整墙烧成一张图，Logo 无旁可见名称，也未写入 alt。机器无法点名合作项目。 <a class="fn-h3-link" href="https://www.hiascend.com/cann" target="_blank" rel="noopener">查看示例来源</a></li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label is-good">正面</span>
+    <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="正面：各 Logo 下方写出项目名">
+      <div class="logo-wall">
+        <p class="logo-wall-title">友好社区</p>
+        <div class="logo-wall-grid">
+          <a href="https://github.com/volcengine/verl"><img src="assets/design-guide/cann-logo-verl.png" alt="verl"><span>verl</span></a>
+          <a href="https://github.com/vllm-project/vllm"><img src="assets/design-guide/cann-logo-vllm.png" alt="vLLM"><span>vLLM</span></a>
+          <a href="https://github.com/sgl-project/sglang"><img src="assets/design-guide/cann-logo-sgl.png" alt="SGL"><span>SGL</span></a>
+          <a href="https://www.hiascend.com/cann"><img src="assets/design-guide/cann-logo-xllm.png" alt="xLLM"><span>xLLM</span></a>
+          <a href="https://www.mindspore.cn"><img src="assets/design-guide/cann-logo-mindspore.png" alt="MindSpore"><span>MindSpore</span></a>
+          <a href="https://github.com/kvcache-ai/Mooncake"><img src="assets/design-guide/cann-logo-mooncake.png" alt="Mooncake"><span>Mooncake</span></a>
+          <a href="https://pytorch.org"><img src="assets/design-guide/cann-logo-pytorch.png" alt="PyTorch"><span>PyTorch</span></a>
+          <a href="https://www.hiascend.com/cann"><img src="assets/design-guide/cann-logo-unknown.png" alt="须写名称"><span>须写名称</span></a>
+          <a href="https://github.com/tile-ai/tilelang"><img src="assets/design-guide/cann-logo-tilelang.png" alt="TileLang"><span>TileLang</span></a>
+          <a href="https://www.tensorflow.org"><img src="assets/design-guide/cann-logo-tensorflow.png" alt="TensorFlow"><span>TensorFlow</span></a>
+        </div>
+      </div>
+    </div>
+    <div class="fn-ex-foot">
+    <ul class="fn-ex-list">
+      <li><strong>正确做法：</strong>每个 Logo 旁写出项目名，并写入非空 alt；区块标题「友好社区」为独立文字层。</li>
     </ul>
     </div>
     </div>

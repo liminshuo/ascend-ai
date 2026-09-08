@@ -15,7 +15,16 @@
         pageIds: ["structure-llms", "page-discover", "machine-discover"]
       },
       {
-        group: null, id: "machine-entry", href: "principles-machine-entry.html", label: "Agent 入口显化",
+        group: null, id: "site-locate", href: "principles-breadcrumb.html", label: "站内可定位",
+        pageIds: ["site-locate", "page-context", "breadcrumb", "neighbor", "section-locate", "section-anchor"],
+        children: [
+          { id: "breadcrumb", href: "principles-breadcrumb.html", label: "面包屑" },
+          { id: "neighbor", href: "principles-neighbor.html", label: "邻篇导航" },
+          { id: "section-anchor", href: "principles-section-anchor.html", label: "章节可访问", pageIds: ["section-locate", "section-anchor"] }
+        ]
+      },
+      {
+        group: "可读", id: "machine-entry", href: "principles-machine-entry.html", label: "Agent 入口显化",
         pageIds: ["machine-entry", "page-md", "block-md"],
         children: [
           { id: "machine-entry", href: "principles-machine-entry.html", label: "站级导读" },
@@ -31,16 +40,7 @@
         ]
       },
       {
-        group: null, id: "site-locate", href: "principles-breadcrumb.html", label: "站内可定位",
-        pageIds: ["site-locate", "page-context", "breadcrumb", "neighbor", "section-locate", "section-anchor"],
-        children: [
-          { id: "breadcrumb", href: "principles-breadcrumb.html", label: "面包屑" },
-          { id: "neighbor", href: "principles-neighbor.html", label: "邻篇导航" },
-          { id: "section-anchor", href: "principles-section-anchor.html", label: "章节可访问", pageIds: ["section-locate", "section-anchor"] }
-        ]
-      },
-      {
-        group: "可读", id: "content-retrievable", href: "principles-content-retrievable.html", label: "页面 HTML 可读",
+        group: null, id: "content-retrievable", href: "principles-content-retrievable.html", label: "页面 HTML 可读",
         pageIds: ["page-readable", "content-retrievable"]
       },
       {
@@ -92,8 +92,8 @@
         pageIds: ["lifecycle", "timeliness", "date-modified", "a2", "structure-metadata"],
         children: [
           { id: "timeliness", href: "principles-timeliness.html", label: "版本号外显" },
-          { id: "date-modified", href: "principles-date-modified.html", label: "明确更新日期" },
-          { id: "a2", href: "principles-a2.html", label: "失效/弃用状态显化" },
+          { id: "date-modified", href: "principles-date-modified.html", label: "更新日期外显" },
+          { id: "a2", href: "principles-a2.html", label: "生命周期状态显化" },
           { id: "structure-metadata", href: "principles-structure-metadata.html", label: "元数据丰富化" }
         ]
       },
