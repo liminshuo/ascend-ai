@@ -265,6 +265,7 @@
     margin: 0; font-size: var(--text-body); line-height: 22px; color: var(--color-text);
   }
   .fn-ex-list strong { font-weight: 650; }
+  .principle-example[id] { scroll-margin-top: 80px; }
   .st-card {
     padding: 16px 18px 14px;
     color: var(--color-text);
@@ -549,6 +550,64 @@
     }
     .ex-card-pair { grid-template-columns: 1fr; }
   }
+  .st-cap {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      line-height: 24px;
+    }
+
+  .st-cap + .st-cap { margin-top: 4px; }
+
+  .st-cap-name { color: var(--color-text); }
+
+  .st-cap-mark {
+      flex-shrink: 0;
+      width: 16px;
+      height: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #8c8c8c;
+    }
+
+  .st-cap-mark.is-ok { color: var(--color-primary); }
+
+  .st-cap-mark.is-fail { color: #8c8c8c; }
+
+  .st-cap-mark.is-ok-green { color: #16a34a; }
+
+  .st-cap-mark.is-fail-red { color: #dc2626; }
+
+  .st-cap-mark.is-mute { color: #a3a3a3; }
+
+  .st-cap-mark svg { display: block; }
+
+  .st-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background: currentColor;
+    }
+
+  .st-word-row {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+  .st-word {
+      flex-shrink: 0;
+      font-weight: 650;
+      color: var(--color-text);
+    }
+
+  .st-word.is-wait { color: var(--color-text-secondary); font-weight: 500; }
 </style>
 </head>
 <body class="inner-page" data-module="principles" data-page="style-semantic">
@@ -579,7 +638,7 @@
 
     <section class="section" id="problem">
       <h2>解决什么问题</h2>
-      <p class="page-lead">Agent 无法仅凭颜色理解其含义（如：红条代表“警告”，灰字代表“已禁用”）。</p>
+      <p class="page-lead">Agent 无法仅凭颜色理解其含义（如：红条代表“警告”，灰字代表“已禁用”，绿点代表“运行中”）。</p>
     </section>
 
     <section class="section" id="core-principles">
@@ -813,7 +872,7 @@
       <div class="principle-example">
         <h3 class="fn-h3">用文字标明图例分类</h3>
         <p class="fn-h3-desc">分类以文字图例为主（如「训练」「推理」），颜色仅作辅助标识，不应只靠色块加数字。</p>
-        <h4 class="fn-h4">示例 3 · 训练与推理</h4>
+        <h4 class="fn-h4">示例 3 · 图例</h4>
         <div class="fn-ex-row">
           <div class="fn-ex">
             <div class="fn-ex-head">
@@ -955,6 +1014,116 @@
           </div>
         </div>
       </div>
+      <div class="principle-example" id="runtime">
+        <h3 class="fn-h3">用文字标明运行状态</h3>
+        <p class="fn-h3-desc">服务或进程的运行态须写成「运行中」「已停止」；绿点 / 灰点只作辅助，不得当唯一含义。</p>
+        <h4 class="fn-h4">示例 4 · 运行态</h4>
+<div class="fn-ex-row">
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label">反面</span>
+    <div class="fn-ex-bar" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="反面：只有绿点和灰点">
+      <div class="st-card">
+        <div class="st-cap"><span class="st-cap-name">设备管理服务</span><span class="st-cap-mark is-ok-green" aria-hidden="true"><span class="st-dot"></span></span></div>
+        <div class="st-cap"><span class="st-cap-name">日志采集</span><span class="st-cap-mark is-mute" aria-hidden="true"><span class="st-dot"></span></span></div>
+      </div>
+    </div>
+    <div class="fn-ex-foot">
+    <ul class="fn-ex-list">
+      <li><strong>常见疏漏：</strong>仅有绿点 / 灰点，未配「运行中」「已停止」文字，机器无法识别运行态。</li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label is-good">正面</span>
+    <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="正面：写成运行中、已停止">
+      <div class="st-card">
+        <div class="st-cap"><span class="st-cap-name">设备管理服务</span><span class="st-word-row"><span class="st-cap-mark is-ok-green" aria-hidden="true"><span class="st-dot"></span></span><span class="st-word">运行中</span></span></div>
+        <div class="st-cap"><span class="st-cap-name">日志采集</span><span class="st-word-row"><span class="st-cap-mark is-mute" aria-hidden="true"><span class="st-dot"></span></span><span class="st-word is-wait">已停止</span></span></div>
+      </div>
+    </div>
+    <div class="fn-ex-foot">
+    <ul class="fn-ex-list">
+      <li><strong>正确做法：</strong>状态写成「运行中」「已停止」；色点只辅助。</li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  </div>
+
+        <div class="ex-fold-bar">
+          <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex4-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
+          <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex4-html" aria-label="前端源码调整"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
+        </div>
+        <div class="ex-fold-panel" id="ex4-md" hidden>
+          <div class="ex-card-pair">
+            <p class="ex-card-title">Markdown 书写</p>
+            <div class="ex-fold-intro">
+              <ul class="fn-ex-list">
+                <li>1. 运行态写成「运行中」「已停止」，不要只靠色点</li>
+              </ul>
+            </div>
+            <div class="ex-card-pane">
+              <div class="ex-card-pane-head">
+                <span class="fn-ex-label">反面</span>
+                <div class="fn-ex-bar" aria-hidden="true"></div>
+              </div>
+              <figure class="file-sample file-sample--compact">
+                <pre><code class="language-markdown"><span class="code-line-hl is-bad">- 设备管理服务 ●</span>
+<span class="code-line-hl is-bad">- 日志采集 ●</span></code></pre>
+              </figure>
+            </div>
+            <div class="ex-card-pane">
+              <div class="ex-card-pane-head">
+                <span class="fn-ex-label is-good">正面</span>
+                <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+              </div>
+              <figure class="file-sample file-sample--compact">
+                <pre><code class="language-markdown"><span class="code-line-hl is-good">- 设备管理服务：运行中</span>
+<span class="code-line-hl is-good">- 日志采集：已停止</span></code></pre>
+              </figure>
+            </div>
+          </div>
+        </div>
+        <div class="ex-fold-panel" id="ex4-html" hidden>
+          <div class="ex-card-pair">
+            <p class="ex-card-title">前端源码调整</p>
+            <div class="ex-fold-intro">
+              <ul class="fn-ex-list">
+                <li>1. 「运行中」「已停止」写入可见文本，色点 aria-hidden</li>
+              </ul>
+            </div>
+            <div class="ex-card-pane">
+              <div class="ex-card-pane-head">
+                <span class="fn-ex-label">反面</span>
+                <div class="fn-ex-bar" aria-hidden="true"></div>
+              </div>
+              <figure class="file-sample file-sample--compact">
+                <pre><code class="language-html"><span class="code-line-hl is-bad">&lt;span class="dot is-green"&gt;&lt;/span&gt;设备管理服务</span></code></pre>
+              </figure>
+            </div>
+            <div class="ex-card-pane">
+              <div class="ex-card-pane-head">
+                <span class="fn-ex-label is-good">正面</span>
+                <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+              </div>
+              <figure class="file-sample file-sample--compact">
+                <pre><code class="language-html">&lt;span class="dot is-green" aria-hidden="true"&gt;&lt;/span&gt;
+<span class="code-line-hl is-good">&lt;span&gt;运行中&lt;/span&gt;</span></code></pre>
+              </figure>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </section>
 
     <section class="section" id="benefits">
@@ -963,6 +1132,7 @@
         <li><strong>级别可被理解</strong>Agent 能准确识别「警告」「注意」「提示」，无需猜测红橙蓝对应的具体级别。</li>
         <li><strong>不可用状态可被理解</strong>Agent 能识别「已禁用」等明确状态，不会将灰字误读为可用入口。</li>
         <li><strong>图例分类可被理解</strong>Agent 能识别「训练」「推理」「微调」，引用规模数据时无需猜测色块对应的类别。</li>
+        <li><strong>运行态可被理解</strong>Agent 能识别「运行中」「已停止」，无需猜测绿点 / 灰点。</li>
       </ul>
     </section>
   </main>

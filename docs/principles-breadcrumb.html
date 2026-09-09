@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>面包屑路径可定位 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
+  <title>站内可定位 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
   <link rel="stylesheet" href="assets/css/style.css">
 
 <style>
@@ -66,13 +66,12 @@
   .nav-dd-panel a:hover { color: var(--color-primary); background: var(--color-bg); }
   body.inner-page .page-wrapper { min-height: 100vh; }
 
-  /* 对齐 principles-overview / structure-llms：padding + 1200 居中 + H1–H4 */
   .page-header {
     border-bottom: none;
     padding-bottom: 0;
-    margin-bottom: 0;
+    margin-bottom: var(--space-stack, 16px);
   }
-  .page-header h1 {
+  .page-header > h1 {
     font-family: var(--font);
     font-size: var(--text-h1);
     font-weight: var(--text-h1-weight, 600);
@@ -81,13 +80,7 @@
     margin: 0;
     padding-top: var(--space-h1-pad-y, 32px);
     padding-bottom: var(--space-h1-pad-y, 32px);
-    color: var(--color-text, var(--color-text));
-  }
-  .page-header .page-desc {
-    margin: 32px 0 0;
-    font-size: var(--text-body);
-    line-height: 1.75;
-    color: var(--text, var(--color-text));
+    color: var(--color-text);
   }
   body.inner-page[data-page="breadcrumb"]:has(#module-sidebar) .main-content {
     padding-top: var(--content-main-pad-top, 16px);
@@ -109,8 +102,8 @@
     font-weight: 700;
     line-height: var(--text-h2-lh, 36px);
     letter-spacing: -0.01em;
-    margin-top: var(--space-h2-margin-t, 24px);
-    margin-bottom: var(--space-h2-margin-b, 24px);
+    margin-top: 0;
+    margin-bottom: var(--space-stack, 16px);
     padding-top: var(--space-h2-pad-y, 16px);
     padding-bottom: var(--space-h2-pad-y, 16px);
     border-bottom: 2px solid var(--color-card-border);
@@ -145,7 +138,18 @@
     letter-spacing: -0.01em;
   }
   h3.fn-h3 + .principle-example > h4.fn-h4,
-  h3.fn-h3 + h4.fn-h4 { margin-top: 24px; }
+  h3.fn-h3 + h4.fn-h4 { margin-top: 0; }
+  h4.fn-h4:has(> .fn-h3-link) {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  h4.fn-h4 > .fn-h3-link {
+    margin-left: auto;
+    flex-shrink: 0;
+    font-weight: 500;
+  }
 
   #scenarios .scene-def-table td .badge {
     border: none;
@@ -254,7 +258,16 @@
     padding: 12px 14px 14px; background: #fff;
     border-top: 1px solid var(--color-border);
   }
-  .fn-ex-row .fn-ex-foot .fn-ex-list { margin: 0; gap: 4px; }
+  .fn-ex-row .fn-ex-foot .fn-ex-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    gap: 4px;
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-list li {
+    font-size: 14px;
+    line-height: 22px;
+  }
   .fn-ex-label {
     display: inline-block; padding: 0 8px; border-radius: 4px;
     font-size: var(--text-auxiliary); font-weight: 650; line-height: 20px;
@@ -297,60 +310,6 @@
     line-height: 18px;
     color: var(--color-text-secondary);
   }
-  .st-card .st-body-block {
-    margin-top: 14px;
-    padding-top: 12px;
-    border-top: 1px solid var(--color-border);
-  }
-  .st-card .st-body-label {
-    margin: 0 0 6px;
-    font-size: var(--text-caption);
-    line-height: 16px;
-    font-weight: 650;
-    letter-spacing: 0.02em;
-    color: #8c8c8c;
-  }
-  .st-card .st-body-h1 {
-    margin: 0 0 8px;
-    font-size: 15px;
-    line-height: 22px;
-    font-weight: 700;
-    color: var(--color-text);
-  }
-  .st-card .st-body-cond {
-    margin: 0;
-    font-size: var(--text-auxiliary);
-    line-height: 18px;
-    color: var(--color-text-secondary);
-  }
-  .st-card .st-body-cond strong {
-    font-weight: 650;
-    color: var(--color-text);
-  }
-  .st-card .st-toolbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-  }
-  .st-card .st-ver-btn {
-    flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    margin: 0;
-    padding: 2px 8px;
-    border: 1px solid var(--color-border);
-    border-radius: 4px;
-    background: #fff;
-    font-size: var(--text-auxiliary);
-    line-height: 18px;
-    color: #8c8c8c;
-  }
-  .st-card .st-ver-btn svg {
-    display: block;
-    flex-shrink: 0;
-  }
   .st-card .st-title {
     margin: 0;
     font-size: 13px;
@@ -367,64 +326,409 @@
     font-size: var(--text-auxiliary);
     color: #8c8c8c;
   }
-  .principle-example + .principle-example { margin-top: 28px; }
-
-  /* 调整建议：标题 + 说明，无卡片边框 */
-  #design-ui .principle-suggestions,
-  #content-adjust .principle-suggestions,
-  #frontend-adjust .principle-suggestions {
-    list-style: none;
-    margin: 0 0 32px;
+  .st-card .st-related {
+    margin: 12px 0 0;
     padding: 0;
+    list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    counter-reset: sug;
+    gap: 6px;
   }
-  #design-ui .principle-suggestions > li,
-  #content-adjust .principle-suggestions > li,
-  #frontend-adjust .principle-suggestions > li {
-    position: relative;
+  .st-card .st-related li {
     margin: 0;
-    padding: 0 0 0 36px;
-    color: var(--color-text-secondary);
-    counter-increment: sug;
-  }
-  #design-ui .principle-suggestions > li::before,
-  #content-adjust .principle-suggestions > li::before,
-  #frontend-adjust .principle-suggestions > li::before {
-    content: counter(sug, decimal-leading-zero);
-    position: absolute;
-    left: 0;
-    top: 1px;
     font-size: 13px;
-    font-weight: 700;
-    line-height: 22px;
-    letter-spacing: 0.02em;
+    line-height: 20px;
     color: var(--color-primary);
   }
-  #design-ui .principle-suggestions > li .sug-title,
-  #content-adjust .principle-suggestions > li .sug-title,
-  #frontend-adjust .principle-suggestions > li .sug-title {
-    display: block;
-    margin: 0 0 6px;
-    font-size: 15px;
-    font-weight: 700;
-    line-height: 24px;
-    color: var(--color-text);
+  .st-card .st-related.is-vague li { color: #8c8c8c; font-size: var(--text-auxiliary); }
+  .st-card .st-related-label {
+    margin: 12px 0 0;
+    font-size: var(--text-auxiliary);
+    line-height: 18px;
+    color: var(--color-text-secondary);
+    font-weight: 650;
   }
-  #design-ui .principle-suggestions > li .sug-desc,
-  #content-adjust .principle-suggestions > li .sug-desc,
-  #frontend-adjust .principle-suggestions > li .sug-desc {
-    display: block;
-    margin: 0;
-    max-width: none;
-    width: 100%;
+  .ck-card { padding: 16px 18px 14px; color: var(--color-text); }
+  .an-doc { display: flex; gap: 16px; align-items: flex-start; }
+  .an-body { flex: 1; min-width: 0; }
+  .an-toc {
+    width: 112px; flex-shrink: 0;
+    padding-left: 12px; border-left: 1px solid var(--color-border);
+  }
+  .an-doc-t {
+    margin: 0 0 10px; font-size: var(--text-body); line-height: 22px;
+    font-weight: 650; color: var(--color-text);
+  }
+  .an-h {
+    margin: 0 0 4px; font-size: 13px; line-height: 20px;
+    font-weight: 650; color: var(--color-text);
+  }
+  .an-hash { margin-left: 4px; color: var(--color-primary); font-weight: 500; }
+  .an-h--with-toast {
+    position: relative;
+    display: inline-block;
+    max-width: 100%;
+  }
+  .an-toast {
+    position: absolute;
+    left: calc(100% + 8px);
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: var(--text-auxiliary);
+    line-height: 18px;
+    font-weight: 500;
+    color: var(--color-text);
+    background: #fff;
+    border: 1px solid var(--color-border);
+    box-shadow: 0 6px 16px rgba(25, 25, 25, 0.1);
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  .an-toast::before {
+    content: "";
+    position: absolute;
+    left: -5px;
+    top: 50%;
+    transform: translateY(-50%) rotate(45deg);
+    width: 8px;
+    height: 8px;
+    background: #fff;
+    border-left: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .fn-ex-row .fn-ex-body:has(.an-toast) {
+    overflow: visible;
+  }
+  .an-p {
+    margin: 0 0 10px; font-size: var(--text-auxiliary); line-height: 18px; color: var(--color-text-secondary);
+  }
+  .an-p:last-child { margin-bottom: 0; }
+  .an-toc-t {
+    margin: 0 0 8px; font-size: var(--text-auxiliary); line-height: 18px;
+    font-weight: 650; color: var(--color-text);
+  }
+  .an-toc ul {
+    margin: 0; padding: 0; list-style: none;
+    font-size: var(--text-auxiliary); line-height: 20px;
+  }
+  .an-toc .is-vague { color: #8c8c8c; }
+  .an-toc .is-link { color: var(--color-primary); }
+  .principle-example + .principle-example { margin-top: var(--space-stack, 16px); }
+  .fn-h3-link {
+    margin-left: 12px;
     font-size: var(--text-body);
-    font-weight: 400;
-    line-height: 24px;
+    font-weight: 500;
+    line-height: 22px;
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+  .fn-h3-link:hover { text-decoration: underline; }
+  body.inner-page[data-page="breadcrumb"] .main-content > .section:first-of-type > h2 {
+    margin-top: 0;
+  }
+  #problem,
+  #how-walk,
+  #core-principles,
+  #practices {
+    margin-bottom: var(--space-stack, 16px);
+  }
+  #crumb, #neighbor, #section {
+    scroll-margin-top: calc(var(--header-height, 56px) + 16px);
+  }
+  #problem > p.page-lead,
+  #how-walk > p.page-lead {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
     color: var(--color-text-secondary);
   }
+  #how-walk > .af-figure {
+    margin-top: var(--space-stack, 16px);
+  }
+  #core-principles .principle-body {
+    margin: 0;
+  }
+  #core-principles .principle-body + .principle-body {
+    margin-top: var(--space-stack, 16px);
+  }
+  #core-principles .principle-body p {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: 22px;
+    color: var(--color-text-secondary);
+  }
+  #core-principles .principle-body strong {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  #practices .fn-h3-desc {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  #practices .principle-example > h3.fn-h3 + h4.fn-h4 { margin-top: 0; }
+  #practices .principle-example > .fn-h3-desc + h4.fn-h4 {
+    margin-top: var(--space-stack, 16px);
+  }
+  #practices .principle-example { margin: 0; }
+  #practices .principle-example > .ex-fold-panel + h4.fn-h4 {
+    margin-top: var(--space-stack, 16px);
+    padding-top: var(--space-h4-pad-y, 16px);
+  }
+  .bg-list {
+    margin: 0;
+    padding-left: 1.25em;
+    font-size: var(--text-body);
+    line-height: 22px;
+    list-style: disc;
+    color: var(--color-text-secondary);
+  }
+  #benefits .bg-list li + li { margin-top: 16px; }
+  #benefits .bg-list li strong {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  .file-sample {
+    margin: 0;
+    padding: 0;
+    background: #1e1e1e;
+    border: 1px solid #111;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .file-sample pre {
+    margin: 0;
+    padding: 12px 14px 14px;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: var(--text-auxiliary);
+    line-height: 20px;
+    color: #e8e8e8;
+    background: transparent;
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .file-sample pre code {
+    display: block;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    color: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    font-family: inherit;
+    white-space: inherit;
+  }
+  .file-sample .code-line-hl {
+    display: block;
+    margin: 0 -14px;
+    padding: 0 14px;
+  }
+  .file-sample .code-line-hl.is-bad { background: rgba(180, 35, 24, 0.28); }
+  .file-sample .code-line-hl.is-good { background: rgba(4, 120, 87, 0.28); }
+  .ex-card-title {
+    margin: 0;
+    padding: 0;
+    font-size: var(--text-body);
+    font-weight: 650;
+    line-height: 22px;
+    color: #191919;
+  }
+  .ex-card-pair > .ex-card-title { grid-column: 1 / -1; }
+  .ex-card-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    padding: 16px;
+    align-items: stretch;
+  }
+  .ex-card-pane {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .ex-card-pane .file-sample {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0;
+  }
+  .ex-card-pane .file-sample pre { flex: 1; }
+  .ex-fold-intro { grid-column: 1 / -1; }
+  .ex-fold-intro .fn-ex-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    gap: 4px;
+  }
+  .ex-fold-intro .fn-ex-list li {
+    font-size: 14px;
+    line-height: 22px;
+  }
+  .ex-fold-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: var(--space-stack, 16px) 0;
+  }
+  .ex-fold-bar + .ex-fold-panel { margin-top: var(--space-stack, 16px); }
+  .ex-fold-btn {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    padding: 4px 6px;
+    margin: 0;
+    cursor: pointer;
+    font: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 22px;
+    color: var(--color-text);
+  }
+  .ex-fold-btn img {
+    width: 20px;
+    height: 20px;
+    display: block;
+    flex-shrink: 0;
+  }
+  .ex-fold-btn img[src*="ex-fold-code.png"] { width: 22px; height: 22px; }
+  .ex-fold-btn[aria-expanded="true"] {
+    background: var(--color-primary-subtle);
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+  .ex-fold-panel { margin: var(--space-stack, 16px) 0; }
+  .ex-fold-panel > .ex-card-pair {
+    margin: 0;
+    border: none;
+    border-radius: 8px;
+    background: #fafafa;
+  }
+  .ex-card-pane-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .ex-card-pane-head .fn-ex-label { margin: 0; }
+  .ex-card-pane-head .fn-ex-bar {
+    display: block;
+    width: 100%;
+    margin: 0;
+  }
+  .af-figure {
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: none;
+    overflow-x: auto;
+    border-radius: 8px;
+  }
+  .aj {
+    width: 100%;
+    min-width: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+    color: var(--color-text);
+  }
+  .aj caption {
+    caption-side: top;
+    text-align: left;
+    font-size: var(--text-body);
+    font-weight: 650;
+    line-height: var(--text-body-lh);
+    padding: 0 0 10px;
+    color: var(--color-text);
+  }
+  .aj th,
+  .aj td {
+    border: 1px solid #e8eef5;
+    border-top: none;
+    border-left: none;
+    vertical-align: top;
+    padding: 12px 12px;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+  }
+  .aj tbody td {
+    vertical-align: middle;
+  }
+  .aj tbody tr:first-child > .aj-label,
+  .aj tbody tr:first-child > td {
+    vertical-align: top;
+  }
+  .aj thead tr:first-child > th { border-top: 1px solid #e8eef5; }
+  .aj .aj-corner,
+  .aj .aj-label {
+    width: 108px;
+    background: #f5f6f8;
+    color: var(--color-text-secondary);
+    font-weight: 650;
+    vertical-align: middle;
+    text-align: left;
+    padding: 12px 12px;
+    border-left: 1px solid #e8eef5;
+  }
+  .aj thead th.aj-corner {
+    background: #f5f6f8;
+    color: var(--color-text-secondary);
+    padding: 12px 12px;
+    border-top-left-radius: 8px;
+  }
+  .aj thead th.aj-corner .aj-stage-name {
+    color: inherit;
+  }
+  .aj thead tr:first-child > th:last-child { border-top-right-radius: 8px; }
+  .aj tbody tr:last-child .aj-label { border-bottom-left-radius: 8px; }
+  .aj tbody tr:last-child td:last-child { border-bottom-right-radius: 8px; }
+  .aj thead th {
+    background: #f5f6f8;
+    font-weight: 650;
+    text-align: left;
+    padding: 12px 12px;
+    color: var(--color-text);
+    vertical-align: middle;
+  }
+  .aj thead .aj-who {
+    display: block;
+    margin: 0 0 2px;
+    font-size: var(--text-caption);
+    color: #8c8c8c;
+    font-weight: 650;
+  }
+  .aj thead .aj-stage-name {
+    display: block;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  .aj thead .aj-pri { background: #f7fbff; }
+  .aj td.is-pri { background: #f7fbff; }
+  .aj tbody td:not(.is-pri):not(.is-mute):not(.aj-label) { background: #fff; }
+  .aj col.aj-rowhead { width: 108px; }
+  .aj .aj-file {
+    display: block;
+    margin: 0 0 6px;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  .aj td.is-mute { color: #8c8c8c; background: #f5f6f8; }
 
   @media (max-width: 900px) {
     .fn-ex-row {
@@ -435,11 +739,12 @@
     .fn-ex-row .fn-ex-body {
       display: flex; flex-direction: column; grid-row: auto;
     }
+    .ex-card-pair { grid-template-columns: 1fr; }
   }
 </style>
 
 </head>
-<body class="inner-page" data-module="principles" data-page="breadcrumb">
+<body class="inner-page agent-entry-page" data-module="principles" data-page="breadcrumb" data-no-surface-tabs>
 
 <div class="topbar">
   <div class="topbar-inner">
@@ -461,90 +766,86 @@
   <aside id="module-sidebar"></aside>
 
   <main class="main-content">
-
     <div class="page-header">
-      <h1>面包屑路径可定位</h1>
-      <p class="page-desc page-desc--split">
-        <span class="page-desc-line">为了帮助 Agent 精准定位任务上下文并建立站内知识树坐标，面包屑必须展示真实的层级路径：祖先层级可点击，当前层级用纯文本。</span>
-      </p>
+      <h1>站内可定位</h1>
     </div>
 
-    <section class="section" id="objects">
-      <h2>适用对象</h2>
-      <table class="scene-def-table">
-        <colgroup>
-          <col class="col-type" />
-          <col class="col-desc" />
-        </colgroup>
-        <thead>
-          <tr>
-            <th class="col-type">名称</th>
-            <th class="col-desc">说明</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="col-type">面包屑</td>
-            <td class="col-desc">当前页在站点中的层级路径导航。</td>
-          </tr>
-        </tbody>
-      </table>
+    <section class="section" id="problem">
+      <h2>解决什么问题</h2>
+      <p class="page-lead">Agent 经搜索或发现层打开某篇文档后，单页信息缺乏上下文锚点，导致机器无法建立局部与整体的连接。</p>
     </section>
 
-    <section class="section" id="scenarios">
-      <h2>适用场景</h2>
-      <table class="scene-def-table">
-        <colgroup>
-          <col class="col-type" />
-          <col class="col-place" />
-          <col class="col-desc" />
-        </colgroup>
-        <thead>
-          <tr>
-            <th class="col-type">优先级</th>
-            <th class="col-place">页面类型</th>
-            <th class="col-desc">说明</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="col-type"><span class="badge badge-bad">必做</span></td>
-            <td class="col-place">文档站正文页、手册 / 教程栏目页</td>
-            <td class="col-desc">Agent 最常引用的事实页。</td>
-          </tr>
-          <tr>
-            <td class="col-type"><span class="badge badge-should">建议做</span></td>
-            <td class="col-place">官网产品 / 能力详情页</td>
-            <td class="col-desc">规格、能力说明等会进入引用池的页面。</td>
-          </tr>
-          <tr>
-            <td class="col-type"><span class="badge badge-optional">可不做完整改造</span></td>
-            <td class="col-place">纯营销落地页、活动页</td>
-            <td class="col-desc">须在收录策略中明确划界。</td>
-          </tr>
-        </tbody>
-      </table>
+    <section class="section" id="how-walk">
+      <h2>Agent 是如何完成站内定位的</h2>
+      <figure class="af-figure">
+        <table class="aj">
+          <caption>表1 Agent 落页后的定位顺序（以《安装指南》为例）</caption>
+          <colgroup>
+            <col class="aj-rowhead" />
+            <col />
+            <col />
+            <col />
+            <col />
+          </colgroup>
+          <thead>
+            <tr>
+              <th class="aj-corner" scope="col">行为阶段</th>
+              <th scope="col"><span class="aj-stage-name">落到当前篇</span></th>
+              <th class="aj-pri" scope="col"><span class="aj-stage-name">读路径定坐标</span></th>
+              <th scope="col"><span class="aj-stage-name">落到任务节</span></th>
+              <th scope="col"><span class="aj-stage-name">沿邻篇续读</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th class="aj-label" scope="row">触点元素</th>
+              <td class="is-mute"><span class="aj-file">当前篇 HTML</span>搜索 / 发现层命中</td>
+              <td class="is-pri"><span class="aj-file">面包屑</span>文档中心 › CANN 8.0 › 安装指南</td>
+              <td><span class="aj-file">段落锚点</span>节标题旁带「#」，右侧锚点导航项「安装步骤」可跟链至该节</td>
+              <td><span class="aj-file">邻篇导航</span>上一篇 安装驱动 ｜ 下一篇 配置环境变量</td>
+            </tr>
+            <tr>
+              <th class="aj-label" scope="row">解决问题</th>
+              <td class="is-mute">—</td>
+              <td class="is-pri">归属不明（纵向坐标）：无法确认手册与产品线</td>
+              <td>提取不准（微观精度）：无法精准引用章节或步骤</td>
+              <td>路径中断（横向顺序）：看完这篇就断了，无法沿手册往下读</td>
+            </tr>
+            <tr>
+              <th class="aj-label" scope="row">阶段说明</th>
+              <td class="is-mute">起点：进入《安装指南》正文</td>
+              <td class="is-pri">接着读面包屑，确认这篇的手册与产品线</td>
+              <td>再对准「安装步骤」，让引用精准落到该节而非整页；此时地址变为 <code>…/install.html#install-steps</code></td>
+              <td>再打开《配置环境变量》，沿手册续读下一章</td>
+            </tr>
+          </tbody>
+        </table>
+      </figure>
     </section>
 
-    <section class="section" id="design-ui">
-      <h2>设计UI调整</h2>
+    <section class="section" id="core-principles">
+      <h2>核心原则</h2>
+      <div class="principle-body">
+        <strong>面包屑写出真实层级</strong>
+        <p>路径按父级到子级完整写出（如：文档中心 › 产品线 › 手册 › 当前篇），当前篇不可点击，各级名称与对应页标题一致。</p>
+      </div>
+      <div class="principle-body">
+        <strong>节级锚点可引用</strong>
+        <p>段落标题旁露出「#」，每个锚点对应稳定 URL，并与右侧目录指向同一小节。点击可复制含 hash 的完整地址。</p>
+      </div>
+      <div class="principle-body">
+        <strong>邻篇导航齐全</strong>
+        <p>页底默认可见上一篇 / 下一篇，篇名与目标页标题一致，并附带真实可跟链接。</p>
+      </div>
+    </section>
 
-      <h3 class="fn-h3" id="design-suggestions">调整建议</h3>
-      <ul class="principle-suggestions">
-        <li>
-          <span class="sug-title">路径默认可见</span>
-          <span class="sug-desc">面包屑必须呈现真实站点层级路径（含产品线 / 手册名 / 版本等上级层）；末级为当前篇名，采用不可点击的纯文本样式。</span>
-        </li>
-        <li>
-          <span class="sug-title">版本须写进路径</span>
-          <span class="sug-desc">版本号作为路径中的一级写出；页眉下拉可保留，但不得以只写「版本」的控件替代路径层，默认态须能读到具体版本。</span>
-        </li>
-      </ul>
-
-      <h3 class="fn-h3" id="design-example">调整示例</h3>
+    <section class="section" id="practices">
+      <h2>典型示例</h2>
       <div class="principle-example">
-        <h4 class="fn-h4">面包屑须写出层级</h4>
-        <div class="fn-ex-row" id="page-context-crumb">
+        <h3 class="fn-h3" id="crumb">面包屑 · 写出真实层级</h3>
+        <p class="fn-h3-desc">顶栏按父级到子级写出「文档中心 › CANN 8.0 › 安装指南」；当前篇不可点击，各级名称与对应页标题一致。</p>
+        <h4 class="fn-h4">示例 1 · 文档路径</h4>
+        <div class="fn-ex-row">
           <div class="fn-ex">
             <div class="fn-ex-head">
               <span class="fn-ex-label">反面</span>
@@ -556,7 +857,8 @@
               </div>
               <div class="fn-ex-foot">
                 <ul class="fn-ex-list">
-                  <li><strong>常见疏漏：</strong>只有篇名，看不出手册、版本等上级层。</li>
+                  <li><strong>常见疏漏：</strong></li>
+                  <li>1. 只有篇名，看不出手册、版本等上级层</li>
                 </ul>
               </div>
             </div>
@@ -567,41 +869,129 @@
               <div class="fn-ex-bar is-good" aria-hidden="true"></div>
             </div>
             <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="正面：面包屑">
+              <div class="fn-ex-mock" aria-label="正面：完整面包屑">
                 <div class="st-card">
                   <p class="st-crumb">文档中心 › CANN 8.0 › <span class="st-crumb-current">安装指南</span></p>
                 </div>
               </div>
               <div class="fn-ex-foot">
                 <ul class="fn-ex-list">
-                  <li><strong>正确做法：</strong>每一级（含手册与版本）写进路径，末级为当前篇。</li>
+                  <li><strong>正确做法：</strong></li>
+                  <li>1. 每一级（含手册与版本）写进路径，末级为当前篇</li>
                 </ul>
               </div>
             </div>
           </div>
         </div>
+        <div class="ex-fold-bar">
+          <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex1-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
+          <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex1-html" aria-label="前端源码调整"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
+        </div>
+        <div class="ex-fold-panel" id="ex1-md" hidden>
+          <div class="ex-card-pair">
+            <p class="ex-card-title">Markdown 书写</p>
+            <div class="ex-fold-intro">
+              <ul class="fn-ex-list">
+                <li>1. 正文前按父级到子级写出路径；父级做成链接，当前篇不要做成链接</li>
+                <li>2. 当前篇名与标题一致</li>
+              </ul>
+            </div>
+            <div class="ex-card-pane">
+              <div class="ex-card-pane-head">
+                <span class="fn-ex-label">反面</span>
+                <div class="fn-ex-bar" aria-hidden="true"></div>
+              </div>
+              <figure class="file-sample file-sample--compact">
+                <pre><code class="language-markdown"><span class="code-line-hl is-bad"># 安装指南</span></code></pre>
+              </figure>
+            </div>
+            <div class="ex-card-pane">
+              <div class="ex-card-pane-head">
+                <span class="fn-ex-label is-good">正面</span>
+                <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+              </div>
+              <figure class="file-sample file-sample--compact">
+                <pre><code class="language-markdown"><span class="code-line-hl is-good">[文档中心](/docs) › [CANN 8.0](/docs/cann/8.0) › 安装指南</span>
+
+<span class="code-line-hl is-good"># 安装指南</span></code></pre>
+              </figure>
+            </div>
+          </div>
+        </div>
+        <div class="ex-fold-panel" id="ex1-html" hidden>
+          <div class="ex-card-pair">
+            <p class="ex-card-title">前端源码调整</p>
+            <div class="ex-fold-intro">
+              <ul class="fn-ex-list">
+                <li>1. 首包即输出全量祖先可跟链，当前篇用纯文本</li>
+                <li>2. href 指向手册祖先页，不要链到 sitemap</li>
+              </ul>
+            </div>
+            <div class="ex-card-pane">
+              <div class="ex-card-pane-head">
+                <span class="fn-ex-label">反面</span>
+                <div class="fn-ex-bar" aria-hidden="true"></div>
+              </div>
+              <figure class="file-sample file-sample--compact">
+                <pre><code class="language-html">&lt;div class="o-breadcrumb"&gt;
+<span class="code-line-hl is-bad">  &lt;a href="/sitemap/sitemapdoc1.xml"&gt;文档中心&lt;/a&gt;</span>
+<span class="code-line-hl is-bad">  &lt;a href="…/install.html"&gt;安装指南&lt;/a&gt;</span>
+&lt;/div&gt;</code></pre>
+              </figure>
+            </div>
+            <div class="ex-card-pane">
+              <div class="ex-card-pane-head">
+                <span class="fn-ex-label is-good">正面</span>
+                <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+              </div>
+              <figure class="file-sample file-sample--compact">
+                <pre><code class="language-html">&lt;nav aria-label="面包屑"&gt;
+<span class="code-line-hl is-good">  &lt;a href="/docs"&gt;文档中心&lt;/a&gt; ›</span>
+<span class="code-line-hl is-good">  &lt;a href="/docs/cann/8.0"&gt;CANN 8.0&lt;/a&gt; ›</span>
+<span class="code-line-hl is-good">  &lt;span aria-current="page"&gt;安装指南&lt;/span&gt;</span>
+&lt;/nav&gt;</code></pre>
+              </figure>
+            </div>
+          </div>
+        </div>
+
       </div>
 
       <div class="principle-example">
-        <h4 class="fn-h4">版本须写进路径，勿只放在下拉</h4>
-        <div class="fn-ex-row" id="page-context-manual">
+        <h3 class="fn-h3" id="section">章节 · 节级锚点可引用</h3>
+        <p class="fn-h3-desc">段落标题旁露出「#」，每个锚点对应稳定 URL，并与右侧目录指向同一小节。点击可复制含 hash 的完整地址。</p>
+        <h4 class="fn-h4">示例 2 · 节锚点与目录</h4>
+        <div class="fn-ex-row">
           <div class="fn-ex">
             <div class="fn-ex-head">
               <span class="fn-ex-label">反面</span>
               <div class="fn-ex-bar" aria-hidden="true"></div>
             </div>
             <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="反面：版本未写进路径且下拉未露出版本号">
-                <div class="st-card">
-                  <div class="st-toolbar">
-                    <p class="st-crumb" style="margin:0;">文档中心 › CANN › <span class="st-crumb-current">安装指南</span></p>
-                    <span class="st-ver-btn">版本 <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.25 6 7.75l3.5-3.5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <div class="fn-ex-mock" aria-label="反面：目录不能按节引用">
+                <div class="ck-card">
+                  <div class="an-doc">
+                    <div class="an-body">
+                      <p class="an-doc-t">安装指南</p>
+                      <p class="an-h">安装前提</p>
+                      <p class="an-p">准备驱动与依赖环境…</p>
+                      <p class="an-h">安装步骤</p>
+                      <p class="an-p">按顺序执行安装命令…</p>
+                    </div>
+                    <div class="an-toc">
+                      <p class="an-toc-t">页内导航</p>
+                      <ul>
+                        <li class="is-vague">安装前提</li>
+                        <li class="is-vague">安装步骤</li>
+                      </ul>
+                    </div>
                   </div>
                 </div>
               </div>
               <div class="fn-ex-foot">
                 <ul class="fn-ex-list">
-                  <li><strong>常见疏漏：</strong>路径缺版本级；页眉下拉只写「版本」，默认态读不到「CANN 8.0」。</li>
+                  <li><strong>常见疏漏：</strong></li>
+                  <li>1. 目录只能滚到位置，没有独立 URL</li>
                 </ul>
               </div>
             </div>
@@ -612,162 +1002,259 @@
               <div class="fn-ex-bar is-good" aria-hidden="true"></div>
             </div>
             <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="正面：版本写进路径">
-                <div class="st-card">
-                  <p class="st-crumb">文档中心 › CANN 8.0 › <span class="st-crumb-current">安装指南</span></p>
+              <div class="fn-ex-mock" aria-label="正面：标题旁有井号，点击后复制链接">
+                <div class="ck-card">
+                  <div class="an-doc">
+                    <div class="an-body">
+                      <p class="an-doc-t">安装指南</p>
+                      <p class="an-h">安装前提<span class="an-hash">#</span></p>
+                      <p class="an-p">准备驱动与依赖环境…</p>
+                      <p class="an-h an-h--with-toast">安装步骤<span class="an-hash">#</span><span class="an-toast" role="status">已复制链接</span></p>
+                      <p class="an-p">按顺序执行安装命令…</p>
+                    </div>
+                    <div class="an-toc">
+                      <p class="an-toc-t">页内导航</p>
+                      <ul>
+                        <li class="is-link">安装前提</li>
+                        <li class="is-link">安装步骤</li>
+                      </ul>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div class="fn-ex-foot">
                 <ul class="fn-ex-list">
-                  <li><strong>正确做法：</strong>版本作为路径中的一级写出；下拉可保留，但不能替代路径层。</li>
+                  <li><strong>正确做法：</strong></li>
+                  <li>1. 目录指向该节；点击「#」复制含 hash 的完整 URL，并给出成功反馈</li>
                 </ul>
               </div>
             </div>
           </div>
         </div>
+        <div class="ex-fold-bar">
+          <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex2-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
+          <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex2-html" aria-label="前端源码调整"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
+        </div>
+        <div class="ex-fold-panel" id="ex2-md" hidden>
+          <div class="ex-card-pair">
+            <p class="ex-card-title">Markdown 书写</p>
+            <div class="ex-fold-intro">
+              <ul class="fn-ex-list">
+                <li>1. 节标题写出稳定 id；目录用 <code>#id</code> 链到该节，不要只写不能跳转的纯文本</li>
+              </ul>
+            </div>
+            <div class="ex-card-pane">
+              <div class="ex-card-pane-head">
+                <span class="fn-ex-label">反面</span>
+                <div class="fn-ex-bar" aria-hidden="true"></div>
+              </div>
+              <figure class="file-sample file-sample--compact">
+                <pre><code class="language-markdown">## 安装前提
+准备驱动与依赖环境…
+
+## 安装步骤
+按顺序执行安装命令…
+
+页内导航
+<span class="code-line-hl is-bad">- 安装前提</span>
+<span class="code-line-hl is-bad">- 安装步骤</span></code></pre>
+              </figure>
+            </div>
+            <div class="ex-card-pane">
+              <div class="ex-card-pane-head">
+                <span class="fn-ex-label is-good">正面</span>
+                <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+              </div>
+              <figure class="file-sample file-sample--compact">
+                <pre><code class="language-markdown"><span class="code-line-hl is-good">## 安装前提 {#install-prereq}</span>
+准备驱动与依赖环境…
+
+<span class="code-line-hl is-good">## 安装步骤 {#install-steps}</span>
+按顺序执行安装命令…
+
+页内导航
+<span class="code-line-hl is-good">- [安装前提](#install-prereq)</span>
+<span class="code-line-hl is-good">- [安装步骤](#install-steps)</span></code></pre>
+              </figure>
+            </div>
+          </div>
+        </div>
+        <div class="ex-fold-panel" id="ex2-html" hidden>
+          <div class="ex-card-pair">
+            <p class="ex-card-title">前端源码调整</p>
+            <div class="ex-fold-intro">
+              <ul class="fn-ex-list">
+                <li>1. 标题带稳定 id；目录用 <code>a[href="#id"]</code>，首包即含</li>
+              </ul>
+            </div>
+            <div class="ex-card-pane">
+              <div class="ex-card-pane-head">
+                <span class="fn-ex-label">反面</span>
+                <div class="fn-ex-bar" aria-hidden="true"></div>
+              </div>
+              <figure class="file-sample file-sample--compact">
+                <pre><code class="language-html"><span class="code-line-hl is-bad">&lt;h2&gt;安装前提&lt;/h2&gt;</span>
+&lt;nav class="toc"&gt;
+<span class="code-line-hl is-bad">  &lt;span&gt;安装前提&lt;/span&gt;</span>
+&lt;/nav&gt;</code></pre>
+              </figure>
+            </div>
+            <div class="ex-card-pane">
+              <div class="ex-card-pane-head">
+                <span class="fn-ex-label is-good">正面</span>
+                <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+              </div>
+              <figure class="file-sample file-sample--compact">
+                <pre><code class="language-html"><span class="code-line-hl is-good">&lt;h2 id="install-prereq"&gt;安装前提&lt;/h2&gt;</span>
+&lt;nav class="toc"&gt;
+<span class="code-line-hl is-good">  &lt;a href="#install-prereq"&gt;安装前提&lt;/a&gt;</span>
+&lt;/nav&gt;</code></pre>
+              </figure>
+            </div>
+          </div>
+        </div>
       </div>
+      <div class="principle-example">
+        <h3 class="fn-h3" id="neighbor">邻篇 · 邻篇导航齐全</h3>
+        <p class="fn-h3-desc">页底默认可见「上一篇 安装驱动」「下一篇 配置环境变量」，篇名与目标页标题一致，并附带真实可跟链接。</p>
+        <h4 class="fn-h4">示例 3 · 上一篇 / 下一篇</h4>
+        <div class="fn-ex-row">
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label">反面</span>
+              <div class="fn-ex-bar" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="反面：只有上一页下一页">
+                <div class="st-card">
+                  <p class="st-title">安装指南</p>
+                  <p class="st-nav is-vague">‹ 上一页　　下一页 ›</p>
+                </div>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>常见疏漏：</strong></li>
+                  <li>1. 只写「上一页 / 下一页」，看不出邻篇是谁</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label is-good">正面</span>
+              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="正面：写出篇名">
+                <div class="st-card">
+                  <p class="st-title">安装指南</p>
+                  <p class="st-nav">上一篇 安装驱动　　下一篇 配置环境变量</p>
+                </div>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>正确做法：</strong></li>
+                  <li>1. 写成「上一篇 / 下一篇」加真实篇名，且与目标页文档标题一致</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ex-fold-bar">
+          <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex3-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
+          <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex3-html" aria-label="前端源码调整"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
+        </div>
+        <div class="ex-fold-panel" id="ex3-md" hidden>
+          <div class="ex-card-pair">
+            <p class="ex-card-title">Markdown 书写</p>
+            <div class="ex-fold-intro">
+              <ul class="fn-ex-list">
+                <li>1. 写成「上一篇 / 下一篇」加篇名，并链到目标页</li>
+              </ul>
+            </div>
+            <div class="ex-card-pane">
+              <div class="ex-card-pane-head">
+                <span class="fn-ex-label">反面</span>
+                <div class="fn-ex-bar" aria-hidden="true"></div>
+              </div>
+              <figure class="file-sample file-sample--compact">
+                <pre><code class="language-markdown"><span class="code-line-hl is-bad">‹ 上一页　　下一页 ›</span></code></pre>
+              </figure>
+            </div>
+            <div class="ex-card-pane">
+              <div class="ex-card-pane-head">
+                <span class="fn-ex-label is-good">正面</span>
+                <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+              </div>
+              <figure class="file-sample file-sample--compact">
+                <pre><code class="language-markdown"><span class="code-line-hl is-good">上一篇 [安装驱动](/docs/driver)　　下一篇 [配置环境变量](/docs/env)</span></code></pre>
+              </figure>
+            </div>
+          </div>
+        </div>
+        <div class="ex-fold-panel" id="ex3-html" hidden>
+          <div class="ex-card-pair">
+            <p class="ex-card-title">前端源码调整</p>
+            <div class="ex-fold-intro">
+              <ul class="fn-ex-list">
+                <li>1. 首包输出 <code>a[href]</code>，锚文本含关系词和篇名</li>
+              </ul>
+            </div>
+            <div class="ex-card-pane">
+              <div class="ex-card-pane-head">
+                <span class="fn-ex-label">反面</span>
+                <div class="fn-ex-bar" aria-hidden="true"></div>
+              </div>
+              <figure class="file-sample file-sample--compact">
+                <pre><code class="language-html"><span class="code-line-hl is-bad">&lt;button type="button"&gt;上一页&lt;/button&gt;</span>
+<span class="code-line-hl is-bad">&lt;button type="button"&gt;下一页&lt;/button&gt;</span></code></pre>
+              </figure>
+            </div>
+            <div class="ex-card-pane">
+              <div class="ex-card-pane-head">
+                <span class="fn-ex-label is-good">正面</span>
+                <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+              </div>
+              <figure class="file-sample file-sample--compact">
+                <pre><code class="language-html">&lt;nav aria-label="邻篇"&gt;
+<span class="code-line-hl is-good">  &lt;a href="/docs/driver"&gt;上一篇 安装驱动&lt;/a&gt;</span>
+<span class="code-line-hl is-good">  &lt;a href="/docs/env"&gt;下一篇 配置环境变量&lt;/a&gt;</span>
+&lt;/nav&gt;</code></pre>
+              </figure>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
     </section>
 
-    <section class="section" id="content-adjust">
-      <h2>文档内容调整</h2>
-
-      <h3 class="fn-h3" id="content-suggestions">调整建议</h3>
-      <ul class="principle-suggestions">
-        <li>
-          <span class="sug-title">全链路同名</span>
-          <span class="sug-desc">面包屑层级名、侧栏手册树、页内 H1、正文适用条件以及 sitemap / MD 路径，必须保持全局统一的命名与版本号。严禁出现「看得见但对不上」的割裂感，或同一页面被识别为多个入口的歧义。</span>
-        </li>
-        <li>
-          <span class="sug-title">过渡期路径补位</span>
-          <span class="sug-desc">页面面包屑未达标前，须在 llms.txt 或平行 MD 源中显式写出祖先链作为补位；页面 HTML 达标后，以 HTML 为准，并及时移除冗余的重复维护。</span>
-        </li>
+    <section class="section" id="benefits">
+      <h2>价值收益</h2>
+      <ul class="bg-list">
+        <li><strong>归属更清楚</strong>回答能点明产品线与手册，同名文档不再串篇。</li>
+        <li><strong>引用更可核</strong>回答能落到具体章节或步骤，含 hash 的地址可复制核对。</li>
+        <li><strong>续读更连贯</strong>回答能沿手册指到下一章，不会看完这篇就断。</li>
       </ul>
-
-      <h3 class="fn-h3" id="content-example">调整示例</h3>
-      <div class="principle-example">
-        <h4 class="fn-h4">路径用语须全链路对齐</h4>
-        <div class="fn-ex-row" id="page-context-naming">
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label">反面</span>
-              <div class="fn-ex-bar" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="反面：用语不一致">
-                <div class="st-card">
-                  <p class="st-crumb">文档中心 › 昇腾安装 › <span class="st-crumb-current">安装指南</span></p>
-                  <div class="st-body-block">
-                    <p class="st-body-h1">安装指南</p>
-                    <p class="st-body-cond"><strong>适用条件</strong> · CANN 8.0</p>
-                  </div>
-                </div>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>常见疏漏：</strong>面包屑写「昇腾安装」，正文适用条件写「CANN 8.0」，对不上。</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label is-good">正面</span>
-              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="正面：用语对齐">
-                <div class="st-card">
-                  <p class="st-crumb">文档中心 › CANN 8.0 › <span class="st-crumb-current">安装指南</span></p>
-                  <div class="st-body-block">
-                    <p class="st-body-h1">安装指南</p>
-                    <p class="st-body-cond"><strong>适用条件</strong> · CANN 8.0</p>
-                  </div>
-                </div>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>正确做法：</strong>面包屑与正文适用条件使用同一手册名与版本号。</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </section>
-
-    <section class="section" id="frontend-adjust">
-      <h2>前端调整</h2>
-
-      <h3 class="fn-h3" id="frontend-suggestions">调整建议</h3>
-      <ul class="principle-suggestions">
-        <li>
-          <span class="sug-title">真实可跟链</span>
-          <span class="sug-desc">每一级祖先须为带真实文档地址的 <code>a[href]</code> + 可见文案；当前页用纯文本，勿做成自链。href 须指向手册祖先页，不得链到 sitemap XML 等无关地址。</span>
-        </li>
-        <li>
-          <span class="sug-title">首包即含全量路径</span>
-          <span class="sug-desc">首包 HTML 输出与可见 UI 一致的完整祖先路径；中间级不得缺失，也不得只写在 <code>__NUXT_DATA__</code> 或前端脚本里、等 JS 跑完才补全。</span>
-        </li>
-        <li>
-          <span class="sug-title">结构化可选</span>
-          <span class="sug-desc">在可跟链与首包达标后，可再补 <code>BreadcrumbList</code> / <code>isPartOf</code> 等结构化数据；不得用 JSON-LD 代替首包路径。</span>
-        </li>
-      </ul>
-
-      <h3 class="fn-h3" id="frontend-example">调整示例</h3>
-      <div class="principle-example">
-        <h4 class="fn-h4">首包须输出可跟链路径</h4>
-        <div class="fn-ex-row" id="breadcrumb-frontend">
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label">反面</span>
-              <div class="fn-ex-bar" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="反面：首包缺中间级">
-                <pre class="st-code">&lt;div class="o-breadcrumb server-breadcrumb"&gt;
-  &lt;a href="/sitemap/sitemapdoc1.xml"&gt;文档中心&lt;/a&gt;
-  &lt;a href="…/install.html"&gt;安装指南&lt;/a&gt;
-&lt;/div&gt;
-&lt;!-- 可见三级；中间祖先只在 __NUXT_DATA__ --&gt;</pre>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>常见疏漏：</strong>首包仅 2 链，中间级缺失；「文档中心」链到 sitemap；当前页自链。</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label is-good">正面</span>
-              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="正面：首包全量可跟链">
-                <pre class="st-code">&lt;nav aria-label="面包屑" class="o-breadcrumb"&gt;
-  &lt;a href="/docs"&gt;文档中心&lt;/a&gt; ›
-  &lt;a href="/docs/cann/8.0"&gt;CANN 8.0&lt;/a&gt; ›
-  &lt;span aria-current="page"&gt;安装指南&lt;/span&gt;
-&lt;/nav&gt;</pre>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>正确做法：</strong>首包即含全量祖先可跟链；末级纯文本。静态抓取即可逐级回溯。</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
   </main>
 </div>
 
+<script>
+(function () {
+  document.querySelectorAll(".ex-fold-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var panel = document.getElementById(btn.getAttribute("aria-controls"));
+      if (!panel) return;
+      var open = btn.getAttribute("aria-expanded") === "true";
+      btn.setAttribute("aria-expanded", open ? "false" : "true");
+      panel.hidden = open;
+    });
+  });
+})();
+</script>
 <script src="assets/js/site-config.js"></script>
 <script src="assets/js/site-init.js"></script>
 <script src="assets/js/module-sidebar.js"></script>
-
 </body>
 </html>

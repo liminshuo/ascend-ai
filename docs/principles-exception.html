@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>常见异常可说明处置 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
+  <title>失败状态可处理 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
   <link rel="stylesheet" href="assets/css/style.css">
 <style>
   .topbar {
@@ -68,9 +68,9 @@
   .page-header {
     border-bottom: none;
     padding-bottom: 0;
-    margin-bottom: 0;
+    margin-bottom: var(--space-stack, 16px);
   }
-  .page-header h1 {
+  .page-header > h1 {
     font-family: var(--font);
     font-size: var(--text-h1);
     font-weight: var(--text-h1-weight, 600);
@@ -79,13 +79,7 @@
     margin: 0;
     padding-top: var(--space-h1-pad-y, 32px);
     padding-bottom: var(--space-h1-pad-y, 32px);
-    color: var(--color-text, var(--color-text));
-  }
-  .page-header .page-desc {
-    margin: 32px 0 0;
-    font-size: var(--text-body);
-    line-height: 1.75;
-    color: var(--text, var(--color-text));
+    color: var(--color-text);
   }
   body.inner-page[data-page="exception"]:has(#module-sidebar) .main-content {
     padding-top: var(--content-main-pad-top, 16px);
@@ -107,8 +101,8 @@
     font-weight: 700;
     line-height: var(--text-h2-lh, 36px);
     letter-spacing: -0.01em;
-    margin-top: var(--space-h2-margin-t, 24px);
-    margin-bottom: var(--space-h2-margin-b, 24px);
+    margin-top: 0;
+    margin-bottom: var(--space-stack, 16px);
     padding-top: var(--space-h2-pad-y, 16px);
     padding-bottom: var(--space-h2-pad-y, 16px);
     border-bottom: 2px solid var(--color-card-border);
@@ -137,14 +131,13 @@
     letter-spacing: -0.01em;
   }
   h3.fn-h3 + .principle-example > h4.fn-h4,
-  h3.fn-h3 + h4.fn-h4 { margin-top: 24px; }
+  h3.fn-h3 + h4.fn-h4 { margin-top: 0; }
 
   #scenarios .scene-def-table td .badge { border: none; }
   .scene-def-table td .badge-optional {
     background: var(--color-bg);
     color: var(--color-text-secondary);
   }
-
   .scene-def-table {
     width: 100%;
     border-collapse: collapse;
@@ -192,7 +185,7 @@
     column-gap: 16px;
     row-gap: 0;
     align-items: stretch;
-    margin: 16px 0 0;
+    margin: var(--space-stack, 16px) 0 0;
   }
   .fn-ex-row .fn-ex {
     display: grid;
@@ -226,10 +219,6 @@
     min-height: 0; height: 100%; box-sizing: border-box;
     border: none; border-radius: 0; align-self: stretch;
   }
-  .fn-ex-row .fn-ex-mock:has(.st-card) {
-    padding: 12px;
-    background: var(--color-bg);
-  }
   .fn-ex-row .fn-ex-mock pre.st-code {
     margin: 0;
     padding: 14px 16px;
@@ -250,7 +239,13 @@
     padding: 12px 14px 14px; background: #fff;
     border-top: 1px solid var(--color-border);
   }
-  .fn-ex-row .fn-ex-foot .fn-ex-list { margin: 0; gap: 4px; }
+  .fn-ex-row .fn-ex-foot .fn-ex-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    gap: 4px;
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-list li { font-size: 14px; line-height: 22px; }
   .fn-ex-label {
     display: inline-block; padding: 0 8px; border-radius: 4px;
     font-size: var(--text-auxiliary); font-weight: 650; line-height: 20px;
@@ -270,74 +265,40 @@
     margin: 0; font-size: var(--text-body); line-height: 22px; color: var(--color-text);
   }
   .fn-ex-list strong { font-weight: 650; }
-
+  .principle-example[id] { scroll-margin-top: 80px; }
   .st-card {
-    padding: 14px 16px 12px;
+    padding: 16px 18px 14px;
     color: var(--color-text);
     background: #fff;
     border-radius: 8px;
-    height: 100%;
-    box-sizing: border-box;
   }
-  .ex-fail {
-    margin: 0;
-    padding: 12px 14px;
-    border-radius: 6px;
-    border: 1px solid #fecaca;
-    background: #fef2f2;
-  }
-  .ex-fail-title {
-    margin: 0 0 10px;
-    padding: 0 0 0 10px;
+  .fn-ex-mock:has(.st-card) { padding: 16px; }
+
+  .term-p {
+    margin: 0 0 8px;
     font-size: 13px;
-    font-weight: 700;
-    line-height: 20px;
-    color: #b42318;
-    border-left: 3px solid #dc2626;
-  }
-  .ex-fail-list {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-  .ex-fail-list li {
-    margin: 0;
-    display: grid;
-    grid-template-columns: 48px minmax(0, 1fr);
-    gap: 8px;
-    font-size: var(--text-auxiliary);
-    line-height: 18px;
+    line-height: 22px;
     color: var(--color-text);
   }
-  .ex-fail-list .k {
+  .term-p:last-child { margin-bottom: 0; }
+  .term-hit {
+    padding: 0 4px;
+    border-radius: 3px;
+    background: #fef3f2;
     color: #b42318;
     font-weight: 650;
   }
-  .ex-icon-only {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 13px;
-    line-height: 20px;
-    color: var(--color-text);
+  .term-ok {
+    padding: 0 4px;
+    border-radius: 3px;
+    background: #ecfdf5;
+    color: #047857;
+    font-weight: 650;
   }
-  .ex-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: #dc2626;
-    flex-shrink: 0;
-  }
-
-  .principle-example + .principle-example { margin-top: 28px; }
-  .principle-example-note {
-    margin-top: 12px;
-    font-size: var(--text-body);
-    line-height: 22px;
-    color: var(--color-text-secondary);
+  body.inner-page[data-page="exception"] .principle-example + .principle-example {
+    margin-top: var(--space-stack, 16px);
+    padding-top: 0;
+    border-top: none;
   }
 
   #design-ui .principle-suggestions,
@@ -358,16 +319,23 @@
     margin: 0;
     padding: 0 0 0 36px;
     color: var(--color-text-secondary);
-    counter-increment: sug;
   }
   #design-ui .principle-suggestions > li::before,
   #content-adjust .principle-suggestions > li::before,
   #frontend-adjust .principle-suggestions > li::before {
-    content: counter(sug, decimal-leading-zero);
+    counter-increment: sug;
+    content: counter(sug);
     position: absolute;
     left: 0;
-    top: 1px;
-    font-size: 13px;
+    top: 2px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #eff6ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--text-auxiliary);
     font-weight: 700;
     line-height: 22px;
     letter-spacing: 0.02em;
@@ -396,6 +364,203 @@
     color: var(--color-text-secondary);
   }
 
+  body.inner-page[data-page="exception"] .main-content > .section:first-of-type > h2 {
+    margin-top: 0;
+  }
+  #problem > p.page-lead,
+  #practices > p.page-lead,
+  #core-principles > p.page-lead {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  #problem > h2 + .page-lead,
+  #core-principles > h2 + .principle-body {
+    margin-top: 0;
+  }
+  #problem,
+  #core-principles,
+  #practices {
+    margin-bottom: var(--space-stack, 16px);
+  }
+  #core-principles .principle-body {
+    margin: 0;
+  }
+  #core-principles .principle-body p {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  #core-principles .principle-body strong {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  .bg-list {
+    margin: 0;
+    padding-left: 1.25em;
+    font-size: var(--text-body);
+    line-height: 22px;
+    list-style: disc;
+    color: var(--color-text-secondary);
+  }
+  #benefits .bg-list li + li { margin-top: 16px; }
+  #benefits .bg-list li strong {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  #practices .principle-example > h3.fn-h3 + h4.fn-h4 {
+    margin-top: 0;
+  }
+  #practices .principle-example > .fn-h3-desc + h4.fn-h4 {
+    margin-top: var(--space-stack, 16px);
+  }
+  #practices .fn-h3-desc {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  #practices .principle-example { margin: 0; }
+  #practices .principle-example + .principle-example { margin-top: var(--space-stack, 16px); }
+  #practices .principle-example > .ex-fold-panel + h4.fn-h4 {
+    margin-top: var(--space-stack, 16px);
+    padding-top: var(--space-h4-pad-y, 16px);
+    border-top: none;
+  }
+  .file-sample {
+    margin: 0 0 20px;
+    padding: 0;
+    background: #1e1e1e;
+    border: 1px solid #111;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .file-sample pre {
+    margin: 0;
+    padding: 12px 14px 14px;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: var(--text-auxiliary);
+    line-height: 20px;
+    color: #e8e8e8;
+    background: transparent;
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .file-sample pre code {
+    display: block;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    color: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    font-family: inherit;
+    white-space: inherit;
+  }
+  .file-sample .code-line-hl {
+    display: block;
+    margin: 0 -14px;
+    padding: 0 14px;
+  }
+  .file-sample .code-line-hl.is-bad { background: rgba(180, 35, 24, 0.28); }
+  .file-sample .code-line-hl.is-good { background: rgba(4, 120, 87, 0.28); }
+  .ex-card-title {
+    margin: 0;
+    padding: 0;
+    font-size: var(--text-body);
+    font-weight: 650;
+    line-height: 22px;
+    color: #191919;
+    background: none;
+    border: none;
+  }
+  .ex-card-pair > .ex-card-title { grid-column: 1 / -1; margin: 0; }
+  .ex-card-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    padding: 16px;
+    align-items: stretch;
+  }
+  .ex-card-pane { display: flex; flex-direction: column; min-width: 0; }
+  .ex-card-pane .file-sample {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0;
+  }
+  .ex-card-pane .file-sample pre { flex: 1; }
+  .ex-fold-intro { grid-column: 1 / -1; }
+  .ex-fold-intro .fn-ex-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    gap: 4px;
+  }
+  .ex-fold-intro .fn-ex-list li { font-size: 14px; line-height: 22px; }
+  .ex-fold-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: var(--space-stack, 16px) 0;
+  }
+  .ex-fold-bar + .ex-fold-panel { margin-top: var(--space-stack, 16px); }
+  .ex-fold-btn {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    padding: 4px 6px;
+    margin: 0;
+    cursor: pointer;
+    font: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 22px;
+    color: var(--color-text);
+  }
+  .ex-fold-btn img {
+    width: 20px;
+    height: 20px;
+    display: block;
+    flex-shrink: 0;
+  }
+  .ex-fold-btn img[src*="ex-fold-code.png"] {
+    width: 22px;
+    height: 22px;
+  }
+  .ex-fold-btn[aria-expanded="true"] {
+    background: var(--color-primary-subtle);
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+  .ex-fold-panel { margin: var(--space-stack, 16px) 0; }
+  .ex-fold-panel > .ex-card-pair {
+    margin: 0;
+    border: none;
+    border-radius: 8px;
+    background: #fafafa;
+  }
+  .ex-card-pane-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .ex-card-pane-head .fn-ex-label { margin: 0; }
+  .ex-card-pane-head .fn-ex-bar { display: block; width: 100%; margin: 0; }
+
   @media (max-width: 900px) {
     .fn-ex-row {
       grid-template-columns: 1fr;
@@ -405,10 +570,101 @@
     .fn-ex-row .fn-ex-body {
       display: flex; flex-direction: column; grid-row: auto;
     }
+    .ex-card-pair { grid-template-columns: 1fr; }
   }
+  .st-cap {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      line-height: 24px;
+    }
+
+  .st-cap + .st-cap { margin-top: 4px; }
+
+  .st-cap-name { color: var(--color-text); }
+
+  .st-cap-mark {
+      flex-shrink: 0;
+      width: 16px;
+      height: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #8c8c8c;
+    }
+
+  .st-cap-mark.is-ok { color: var(--color-primary); }
+
+  .st-cap-mark.is-fail { color: #8c8c8c; }
+
+  .st-cap-mark.is-ok-green { color: #16a34a; }
+
+  .st-cap-mark.is-fail-red { color: #dc2626; }
+
+  .st-cap-mark.is-mute { color: #a3a3a3; }
+
+  .st-cap-mark svg { display: block; }
+
+  .st-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background: currentColor;
+    }
+
+  .st-word-row {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+  .st-word {
+      flex-shrink: 0;
+      font-weight: 650;
+      color: var(--color-text);
+    }
+
+  .st-word.is-wait { color: var(--color-text-secondary); font-weight: 500; }
+
+  .fn-ex-row .fn-ex-mock:has(.dl-face),
+  .fn-ex-row .fn-ex-mock:has(.st-card) {
+    padding: 12px;
+    background: var(--color-bg);
+  }
+  .dl-face { padding: 0; height: 100%; box-sizing: border-box; }
+  .dl-face-inner { padding: 12px; background: #fff; border-radius: 6px; }
+  .dl-title { margin: 0 0 12px; font-size: var(--text-body); line-height: 22px; font-weight: 650; color: var(--color-text); }
+  .dl-field { margin: 0 0 4px; font-size: 13px; line-height: 20px; color: var(--color-text-secondary); }
+  .dl-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 10px; }
+  .dl-chip { padding: 4px 10px; border: 1px solid #e5e5e5; background: #fff; color: #8c8c8c; border-radius: 6px; font-size: var(--text-auxiliary); line-height: 18px; }
+  .dl-chip.is-on { border-color: #93c5fd; background: #eff6ff; color: #1d4ed8; font-weight: 650; }
+  .dl-select { margin: 0 0 12px; padding: 6px 10px; display: flex; justify-content: space-between; align-items: center; background: #fff; border: 1px solid #e5e5e5; border-radius: 4px; font-size: 13px; line-height: 20px; color: var(--color-text); }
+  .dl-select span { color: #8c8c8c; font-size: var(--text-micro); }
+  .dl-empty { margin: 0; padding: 10px 12px; background: var(--color-bg); border-radius: 4px; font-size: 13px; line-height: 20px; color: var(--color-text); }
+  .dl-empty.is-blank { color: #a3a3a3; text-align: center; }
+  .ex-fail { margin: 0; padding: 12px 14px; border-radius: 6px; border: 1px solid #fecaca; background: #fef2f2; }
+  .ex-fail-title { margin: 0 0 10px; padding: 0 0 0 10px; font-size: 13px; font-weight: 700; line-height: 20px; color: #b42318; border-left: 3px solid #dc2626; }
+  .ex-fail-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .ex-fail-list li { margin: 0; display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 8px; font-size: var(--text-auxiliary); line-height: 18px; color: var(--color-text); }
+  .ex-fail-list .k { color: #b42318; font-weight: 650; }
+  .ex-icon-only { display: flex; align-items: center; gap: 8px; font-size: 13px; line-height: 20px; color: var(--color-text); }
+  .ex-dot { width: 10px; height: 10px; border-radius: 50%; background: #dc2626; flex-shrink: 0; }
+  .st-cap { display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 13px; line-height: 24px; }
+  .st-cap + .st-cap { margin-top: 4px; }
+  .st-cap-name { color: var(--color-text); }
+  .st-word { flex-shrink: 0; font-weight: 650; color: var(--color-text); }
+  .st-word.is-wait { color: var(--color-text-secondary); font-weight: 500; }
+  .st-word.is-bad { color: #dc2626; }
+  .st-line { margin: 0 0 8px; font-size: 13px; line-height: 22px; color: var(--color-text); }
+  .st-line:last-child { margin-bottom: 0; }
 </style>
 </head>
-<body class="inner-page" data-module="principles" data-page="exception">
+<body class="inner-page agent-entry-page" data-module="principles" data-page="exception" data-no-surface-tabs>
 
 <div class="topbar">
   <div class="topbar-inner">
@@ -429,102 +685,130 @@
 
   <aside id="module-sidebar"></aside>
 
-  <main class="main-content">
+        <main class="main-content">
     <div class="page-header">
-      <h1>常见异常可说明处置</h1>
-      <p class="page-desc page-desc--split">
-        <span class="page-desc-line">为了帮助 Agent 在失败、报错与排障时不凭空臆造，须给出可抓取的含义说明与官方下一步；无结论时显式写「暂无官方处理说明」。空态默认见 <a href="principles-default-empty.html">缺省空态可文案处理</a>。</span>
-      </p>
+      <h1>失败状态可处理</h1>
     </div>
 
-    <section class="section" id="objects">
-      <h2>适用对象</h2>
-      <table class="scene-def-table">
-        <colgroup>
-          <col class="col-type" />
-          <col class="col-desc" />
-          <col class="col-place" />
-        </colgroup>
-        <thead>
-          <tr>
-            <th class="col-type">名称</th>
-            <th class="col-desc">说明</th>
-            <th class="col-place">常见落点</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="col-type">失败 / 报错态</td>
-            <td class="col-desc">错误与失败须有可见文案区，不单靠红色或图标表意。</td>
-            <td class="col-place">安装回执、任务结果、控制台</td>
-          </tr>
-          <tr>
-            <td class="col-type">错误码说明</td>
-            <td class="col-desc">错误码 / 报错原文旁附可引用的解释与处置步骤，与当前版本对齐。</td>
-            <td class="col-place">错误码表、排障手册</td>
-          </tr>
-          <tr>
-            <td class="col-type">官方下一步</td>
-            <td class="col-desc">「含义 → 原因 → 下一步」可扫读；无官方结论时显式声明，禁止暗示可猜。</td>
-            <td class="col-place">排障入口、异常条目</td>
-          </tr>
-        </tbody>
-      </table>
+    <section class="section" id="problem">
+      <h2>解决什么问题</h2>
+      <p class="page-lead">Agent 在空结果、报错或回执短词上停住或臆造下一步（如：结果区只有「-」、失败只标红点、只写「成功 / 失败 / 加载中」）。</p>
     </section>
 
-    <section class="section" id="scenarios">
-      <h2>适用场景</h2>
-      <table class="scene-def-table">
-        <colgroup>
-          <col class="col-type" />
-          <col class="col-place" />
-          <col class="col-desc" />
-        </colgroup>
-        <thead>
-          <tr>
-            <th class="col-type">优先级</th>
-            <th class="col-place">页面类型</th>
-            <th class="col-desc">说明</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="col-type"><span class="badge badge-bad">必做</span></td>
-            <td class="col-place">排障手册、错误码参考、安装失败回执</td>
-            <td class="col-desc">Agent 最易在结果不明时臆造；须官方含义与下一步。</td>
-          </tr>
-          <tr>
-            <td class="col-type"><span class="badge badge-should">建议做</span></td>
-            <td class="col-place">API 错误响应说明、任务失败态文案</td>
-            <td class="col-desc">错误旁附解释与处置；与版本对齐。</td>
-          </tr>
-          <tr>
-            <td class="col-type"><span class="badge badge-optional">可不做完整改造</span></td>
-            <td class="col-place">纯成功路径演示、无错误分支的概念页</td>
-            <td class="col-desc">可链到排障手册；出现失败态时仍须文案。</td>
-          </tr>
-        </tbody>
-      </table>
+    <section class="section" id="core-principles">
+      <h2>核心原则</h2>
+      <div class="principle-body">
+        <strong>空因可写清，失败可处置</strong>
+        <p>空列表、无匹配、无权限须写成可见文案：缺什么、为何空、下一步改什么；禁止空白或「-」单独表意。错误 / 失败须有含义、原因与官方下一步，不单靠颜色或图标。回执写成完整句（对象 + 结果；失败附处置；加载写正在做什么）。无官方结论时写「暂无官方处理说明」。怎样算做对见 <a href="principles-expected.html">任务结果可确认</a>。</p>
+      </div>
     </section>
 
-    <section class="section" id="design-ui">
-      <h2>设计UI调整</h2>
+    <section class="section" id="practices">
+      <h2>典型示例</h2>
+      <div class="principle-example" id="empty">
+        <h3 class="fn-h3">空态写成可行动文案</h3>
+        <p class="fn-h3-desc">区分无数据、无权限、筛选过空；写清缺失内容与可执行改法。</p>
+        <h4 class="fn-h4">示例 1 · 筛选无结果</h4>
+        <div class="fn-ex-row" id="ex-empty-ui">
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label">反面</span>
+              <div class="fn-ex-bar" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="反面：结果区只有横杠">
+                <div class="dl-face">
+                  <div class="dl-face-inner">
+                    <p class="dl-title">CANN 软件包下载</p>
+                    <p class="dl-field">芯片型号</p>
+                    <p class="dl-chips">
+                      <span class="dl-chip">Atlas 800T A2</span>
+                      <span class="dl-chip is-on">Atlas 200I</span>
+                      <span class="dl-chip">Atlas 300I</span>
+                    </p>
+                    <p class="dl-field">软件版本</p>
+                    <p class="dl-select">8.0.0<span>▾</span></p>
+                    <p class="dl-field">筛选结果</p>
+                    <p class="dl-empty is-blank">-</p>
+                  </div>
+                </div>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>常见疏漏：</strong>只有「-」，无法识别空因与下一步。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label is-good">正面</span>
+              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="正面：写出暂无匹配和下一步">
+                <div class="dl-face">
+                  <div class="dl-face-inner">
+                    <p class="dl-title">CANN 软件包下载</p>
+                    <p class="dl-field">芯片型号</p>
+                    <p class="dl-chips">
+                      <span class="dl-chip">Atlas 800T A2</span>
+                      <span class="dl-chip is-on">Atlas 200I</span>
+                      <span class="dl-chip">Atlas 300I</span>
+                    </p>
+                    <p class="dl-field">软件版本</p>
+                    <p class="dl-select">8.0.0<span>▾</span></p>
+                    <p class="dl-field">筛选结果</p>
+                    <p class="dl-empty">暂无匹配的软件包。请更换芯片型号或版本后再筛选。</p>
+                  </div>
+                </div>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>正确做法：</strong>写清「暂无匹配」与可执行改法。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ex-fold-bar">
+          <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex1-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
+          <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex1-html" aria-label="前端源码调整"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
+        </div>
+        <div class="ex-fold-panel" id="ex1-md" hidden>
+          <div class="ex-card-pair">
+            <p class="ex-card-title">Markdown 书写</p>
+            <div class="ex-fold-intro"><ul class="fn-ex-list"><li>1. 写清空因与改法，不要只用「-」</li></ul></div>
+            <div class="ex-card-pane">
+              <div class="ex-card-pane-head"><span class="fn-ex-label">反面</span><div class="fn-ex-bar" aria-hidden="true"></div></div>
+              <figure class="file-sample file-sample--compact"><pre><code class="language-markdown"><span class="code-line-hl is-bad">筛选结果：-</span></code></pre></figure>
+            </div>
+            <div class="ex-card-pane">
+              <div class="ex-card-pane-head"><span class="fn-ex-label is-good">正面</span><div class="fn-ex-bar is-good" aria-hidden="true"></div></div>
+              <figure class="file-sample file-sample--compact"><pre><code class="language-markdown"><span class="code-line-hl is-good">筛选结果：暂无匹配的软件包。请更换芯片型号或版本后再筛选。</span></code></pre></figure>
+            </div>
+          </div>
+        </div>
+        <div class="ex-fold-panel" id="ex1-html" hidden>
+          <div class="ex-card-pair">
+            <p class="ex-card-title">前端源码调整</p>
+            <div class="ex-fold-intro"><ul class="fn-ex-list"><li>1. 空态文案进首包；可用 data-empty-reason</li></ul></div>
+            <div class="ex-card-pane">
+              <div class="ex-card-pane-head"><span class="fn-ex-label">反面</span><div class="fn-ex-bar" aria-hidden="true"></div></div>
+              <figure class="file-sample file-sample--compact"><pre><code class="language-html"><span class="code-line-hl is-bad">&lt;div class="spinner"&gt;&lt;/div&gt;</span></code></pre></figure>
+            </div>
+            <div class="ex-card-pane">
+              <div class="ex-card-pane-head"><span class="fn-ex-label is-good">正面</span><div class="fn-ex-bar is-good" aria-hidden="true"></div></div>
+              <figure class="file-sample file-sample--compact"><pre><code class="language-html"><span class="code-line-hl is-good">&lt;p data-empty-reason="no-match"&gt;暂无匹配的软件包。请更换芯片型号或版本后再筛选。&lt;/p&gt;</span></code></pre></figure>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      <h3 class="fn-h3" id="design-suggestions">调整建议</h3>
-      <ul class="principle-suggestions">
-        <li>
-          <span class="sug-title">失败态须有可见文案</span>
-          <span class="sug-desc">错误 / 失败态须有可见文案区，不单靠红色或图标表意。</span>
-        </li>
-        <li>
-          <span class="sug-title">含义 → 原因 → 下一步可扫读</span>
-          <span class="sug-desc">排障入口位置固定；层级结构清晰，便于人机扫读与抓取。</span>
-        </li>
-      </ul>
-
-      <h3 class="fn-h3" id="design-example">调整示例</h3>
-      <div class="principle-example">
-        <h4 class="fn-h4">失败态写出含义与下一步</h4>
+      <div class="principle-example" id="fail">
+        <h3 class="fn-h3">失败写出含义与官方下一步</h3>
+        <p class="fn-h3-desc">不单靠红色或图标。无官方结论时写「暂无官方处理说明」。</p>
+        <h4 class="fn-h4">示例 2 · 安装失败</h4>
         <div class="fn-ex-row" id="ex-fail-copy">
           <div class="fn-ex">
             <div class="fn-ex-head">
@@ -542,7 +826,7 @@
               </div>
               <div class="fn-ex-foot">
                 <ul class="fn-ex-list">
-                  <li><strong>常见疏漏：</strong>仅色点 / 图标，机器无法识别失败含义与处置路径。</li>
+                  <li><strong>常见疏漏：</strong>仅色点，无法识别失败含义与处置路径。</li>
                 </ul>
               </div>
             </div>
@@ -573,108 +857,65 @@
             </div>
           </div>
         </div>
-      </div>
-    </section>
-
-    <section class="section" id="content-adjust">
-      <h2>文档内容调整</h2>
-
-      <h3 class="fn-h3" id="content-suggestions">调整建议</h3>
-      <ul class="principle-suggestions">
-        <li>
-          <span class="sug-title">给出官方处理路径</span>
-          <span class="sug-desc">常见异常写清含义与下一步；错误码旁附可引用解释与处置，与当前版本对齐。</span>
-        </li>
-        <li>
-          <span class="sug-title">无结论时显式声明</span>
-          <span class="sug-desc">若官方尚无结论，写明「暂无官方处理说明」，禁止暗示可猜或编造步骤。</span>
-        </li>
-      </ul>
-
-      <h3 class="fn-h3" id="content-example">调整示例</h3>
-      <div class="principle-example">
-        <h4 class="fn-h4">错误码旁附官方处置</h4>
-        <div class="fn-ex-row" id="ex-content-code">
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label">反面</span>
-              <div class="fn-ex-bar" aria-hidden="true"></div>
+        <div class="ex-fold-bar">
+          <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex2-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
+          <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex2-html" aria-label="前端源码调整"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
+        </div>
+        <div class="ex-fold-panel" id="ex2-md" hidden>
+          <div class="ex-card-pair">
+            <p class="ex-card-title">Markdown 书写</p>
+            <div class="ex-fold-intro"><ul class="fn-ex-list"><li>1. 错误码旁写含义 / 原因 / 下一步，与版本对齐</li></ul></div>
+            <div class="ex-card-pane">
+              <div class="ex-card-pane-head"><span class="fn-ex-label">反面</span><div class="fn-ex-bar" aria-hidden="true"></div></div>
+              <figure class="file-sample file-sample--compact"><pre><code class="language-markdown"><span class="code-line-hl is-bad">错误码：0xA0001</span></code></pre></figure>
             </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="反面：仅错误码">
-                <pre class="st-code">错误码：0xA0001
-
-← 无含义 / 无下一步</pre>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>常见疏漏：</strong>仅抛错误码，Agent 易凭空臆造处置。</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label is-good">正面</span>
-              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="正面：官方路径">
-                <pre class="st-code">**错误码** `0xA0001`（CANN 8.0）
-
+            <div class="ex-card-pane">
+              <div class="ex-card-pane-head"><span class="fn-ex-label is-good">正面</span><div class="fn-ex-bar is-good" aria-hidden="true"></div></div>
+              <figure class="file-sample file-sample--compact"><pre><code class="language-markdown"><span class="code-line-hl is-good">**错误码** `0xA0001`（CANN 8.0）</span>
 **含义**：驱动与 CANN 版本不匹配。
-**原因**：驱动未升级到配套版本。
-**下一步**：按《驱动安装指南》
-安装配套驱动后重试。
-
-← 可引用处置</pre>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>正确做法：</strong>含义 / 原因 / 下一步可抓取；与版本对齐。</li>
-                </ul>
-              </div>
+**下一步**：按《驱动安装指南》安装配套驱动后重试。</code></pre></figure>
+            </div>
+          </div>
+        </div>
+        <div class="ex-fold-panel" id="ex2-html" hidden>
+          <div class="ex-card-pair">
+            <p class="ex-card-title">前端源码调整</p>
+            <div class="ex-fold-intro"><ul class="fn-ex-list"><li>1. 失败说明进首包；可用 data-result="failure"</li></ul></div>
+            <div class="ex-card-pane">
+              <div class="ex-card-pane-head"><span class="fn-ex-label">反面</span><div class="fn-ex-bar" aria-hidden="true"></div></div>
+              <figure class="file-sample file-sample--compact"><pre><code class="language-html"><span class="code-line-hl is-bad">&lt;span class="dot-red" aria-hidden="true"&gt;&lt;/span&gt;依赖安装</span></code></pre></figure>
+            </div>
+            <div class="ex-card-pane">
+              <div class="ex-card-pane-head"><span class="fn-ex-label is-good">正面</span><div class="fn-ex-bar is-good" aria-hidden="true"></div></div>
+              <figure class="file-sample file-sample--compact"><pre><code class="language-html"><span class="code-line-hl is-good">&lt;aside data-result="failure"&gt;</span>
+  &lt;p&gt;依赖安装失败：校验和不一致。请重新下载后重试。&lt;/p&gt;
+&lt;/aside&gt;</code></pre></figure>
             </div>
           </div>
         </div>
       </div>
-    </section>
 
-    <section class="section" id="frontend-adjust">
-      <h2>前端调整</h2>
-
-      <h3 class="fn-h3" id="frontend-suggestions">调整建议</h3>
-      <ul class="principle-suggestions">
-        <li>
-          <span class="sug-title">错误文案进入首包</span>
-          <span class="sug-desc">失败说明在 SSR / 首包输出，禁 JS 仍可读。</span>
-        </li>
-        <li>
-          <span class="sug-title">语义标注失败态</span>
-          <span class="sug-desc">可用 <code>data-result="failure"</code> 等标注，便于切片识别失败块。</span>
-        </li>
-      </ul>
-
-      <h3 class="fn-h3" id="frontend-example">调整示例</h3>
-      <div class="principle-example">
-        <h4 class="fn-h4">失败块可机读标注</h4>
-        <div class="fn-ex-row" id="ex-frontend">
+      <div class="principle-example" id="receipt">
+        <h3 class="fn-h3">回执写成完整句</h3>
+        <p class="fn-h3-desc">成功写对象与结果；失败附下一步；加载写正在做什么。短词不够。</p>
+        <h4 class="fn-h4">示例 3 · 任务回执</h4>
+        <div class="fn-ex-row" id="ex-receipt">
           <div class="fn-ex">
             <div class="fn-ex-head">
               <span class="fn-ex-label">反面</span>
               <div class="fn-ex-bar" aria-hidden="true"></div>
             </div>
             <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="反面：仅样式类">
-                <pre class="st-code">&lt;div class="alert-red"&gt;
-  &lt;i class="icon-x"&gt;&lt;/i&gt;
-&lt;/div&gt;
-
-← 无文案 / 无语义</pre>
+              <div class="fn-ex-mock" aria-label="反面：只有短词">
+                <div class="st-card">
+                  <div class="st-cap"><span class="st-cap-name">环境检查</span><span class="st-word">成功</span></div>
+                  <div class="st-cap"><span class="st-cap-name">依赖安装</span><span class="st-word is-bad">失败</span></div>
+                  <div class="st-cap"><span class="st-cap-name">软件包</span><span class="st-word is-wait">加载中</span></div>
+                </div>
               </div>
               <div class="fn-ex-foot">
                 <ul class="fn-ex-list">
-                  <li><strong>常见疏漏：</strong>仅样式表达失败，切片拿不到含义与下一步。</li>
+                  <li><strong>常见疏漏：</strong>只有「成功 / 失败 / 加载中」，后续动作不可读。</li>
                 </ul>
               </div>
             </div>
@@ -685,27 +926,82 @@
               <div class="fn-ex-bar is-good" aria-hidden="true"></div>
             </div>
             <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="正面：文案 + data">
-                <pre class="st-code">&lt;aside data-result="failure"
-  data-error-code="0xA0001"&gt;
-  &lt;p&gt;含义：驱动与 CANN 不匹配。&lt;/p&gt;
-  &lt;p&gt;下一步：安装配套驱动后重试。&lt;/p&gt;
-&lt;/aside&gt;
-
-← 可切失败 chunk</pre>
+              <div class="fn-ex-mock" aria-label="正面：完整句">
+                <div class="st-card">
+                  <p class="st-line">环境检查成功：驱动版本与 CANN 8.0.0 匹配。</p>
+                  <p class="st-line">依赖安装失败：校验和不一致。请重新下载软件包后重试。</p>
+                  <p class="st-line">正在拉取 CANN 8.0.0 软件包。</p>
+                </div>
               </div>
               <div class="fn-ex-foot">
                 <ul class="fn-ex-list">
-                  <li><strong>正确做法：</strong>首包含文案；data-* 标失败与错误码。</li>
+                  <li><strong>正确做法：</strong>完整句写清对象、结果与失败时的下一步。</li>
                 </ul>
               </div>
             </div>
           </div>
         </div>
+        <div class="ex-fold-bar">
+          <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex3-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
+          <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex3-html" aria-label="前端源码调整"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
+        </div>
+        <div class="ex-fold-panel" id="ex3-md" hidden>
+          <div class="ex-card-pair">
+            <p class="ex-card-title">Markdown 书写</p>
+            <div class="ex-fold-intro"><ul class="fn-ex-list"><li>1. 回执写成句，不要只写成功 / 失败</li></ul></div>
+            <div class="ex-card-pane">
+              <div class="ex-card-pane-head"><span class="fn-ex-label">反面</span><div class="fn-ex-bar" aria-hidden="true"></div></div>
+              <figure class="file-sample file-sample--compact"><pre><code class="language-markdown"><span class="code-line-hl is-bad">依赖安装：失败</span></code></pre></figure>
+            </div>
+            <div class="ex-card-pane">
+              <div class="ex-card-pane-head"><span class="fn-ex-label is-good">正面</span><div class="fn-ex-bar is-good" aria-hidden="true"></div></div>
+              <figure class="file-sample file-sample--compact"><pre><code class="language-markdown"><span class="code-line-hl is-good">依赖安装失败：校验和不一致。请重新下载软件包后重试。</span></code></pre></figure>
+            </div>
+          </div>
+        </div>
+        <div class="ex-fold-panel" id="ex3-html" hidden>
+          <div class="ex-card-pair">
+            <p class="ex-card-title">前端源码调整</p>
+            <div class="ex-fold-intro"><ul class="fn-ex-list"><li>1. 回执全文在可见文本节点，不要只靠 badge 短词</li></ul></div>
+            <div class="ex-card-pane">
+              <div class="ex-card-pane-head"><span class="fn-ex-label">反面</span><div class="fn-ex-bar" aria-hidden="true"></div></div>
+              <figure class="file-sample file-sample--compact"><pre><code class="language-html"><span class="code-line-hl is-bad">&lt;span class="badge"&gt;失败&lt;/span&gt;</span></code></pre></figure>
+            </div>
+            <div class="ex-card-pane">
+              <div class="ex-card-pane-head"><span class="fn-ex-label is-good">正面</span><div class="fn-ex-bar is-good" aria-hidden="true"></div></div>
+              <figure class="file-sample file-sample--compact"><pre><code class="language-html"><span class="code-line-hl is-good">&lt;p data-result="failure"&gt;依赖安装失败：校验和不一致。请重新下载后重试。&lt;/p&gt;</span></code></pre></figure>
+            </div>
+          </div>
+        </div>
       </div>
+    </section>
+
+    <section class="section" id="benefits">
+      <h2>价值收益</h2>
+      <ul class="bg-list">
+        <li><strong>空结果可改条件</strong>Agent 知道缺什么、下一步筛什么，不会停在空白区。</li>
+        <li><strong>失败可引用官方路径</strong>含义与下一步可抓取，减少臆造排障。</li>
+      </ul>
     </section>
   </main>
+
+
 </div>
+
+
+<script>
+(function () {
+  document.querySelectorAll(".ex-fold-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var panel = document.getElementById(btn.getAttribute("aria-controls"));
+      if (!panel) return;
+      var open = btn.getAttribute("aria-expanded") === "true";
+      btn.setAttribute("aria-expanded", open ? "false" : "true");
+      panel.hidden = open;
+    });
+  });
+})();
+</script>
 
 <script src="assets/js/site-config.js"></script>
 <script src="assets/js/site-init.js"></script>

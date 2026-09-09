@@ -15,16 +15,7 @@
         pageIds: ["structure-llms", "page-discover", "machine-discover"]
       },
       {
-        group: null, id: "site-locate", href: "principles-breadcrumb.html", label: "站内可定位",
-        pageIds: ["site-locate", "page-context", "breadcrumb", "neighbor", "section-locate", "section-anchor"],
-        children: [
-          { id: "breadcrumb", href: "principles-breadcrumb.html", label: "面包屑" },
-          { id: "neighbor", href: "principles-neighbor.html", label: "邻篇导航" },
-          { id: "section-anchor", href: "principles-section-anchor.html", label: "章节可访问", pageIds: ["section-locate", "section-anchor"] }
-        ]
-      },
-      {
-        group: "可读", id: "machine-entry", href: "principles-machine-entry.html", label: "Agent 入口显化",
+        group: null, id: "machine-entry", href: "principles-machine-entry.html", label: "Agent 入口显化",
         pageIds: ["machine-entry", "page-md", "block-md"],
         children: [
           { id: "machine-entry", href: "principles-machine-entry.html", label: "站级导读" },
@@ -33,50 +24,37 @@
         ]
       },
       {
-        group: null, id: "machine-track", href: "principles-format.html", label: "机器消费轨道",
-        pageIds: ["machine-track", "format", "dual-track"],
-        children: [
-          { id: "format", href: "principles-format.html", label: "双轨交付", pageIds: ["format", "dual-track"] }
-        ]
+        group: null, id: "site-locate", href: "principles-breadcrumb.html", label: "站内可定位",
+        pageIds: ["site-locate", "page-context", "breadcrumb", "neighbor", "section-locate", "section-anchor"]
+      },
+      {
+        group: "可读", id: "format", href: "principles-format.html", label: "双轨交付",
+        pageIds: ["machine-track", "format", "dual-track"]
       },
       {
         group: null, id: "content-retrievable", href: "principles-content-retrievable.html", label: "页面 HTML 可读",
         pageIds: ["page-readable", "content-retrievable"]
       },
       {
-        group: null, id: "nontext", href: "principles-image.html", label: "非文本信息等价表达",
-        pageIds: ["nontext", "image", "icon-text", "style-semantic", "media"],
+        group: null, id: "carrier", href: "principles-image.html", label: "载体信息可转写",
+        pageIds: ["carrier", "nontext", "image", "icon-text", "style-semantic", "media", "structured", "table", "code"],
         children: [
           { id: "image", href: "principles-image.html", label: "图片内容转译" },
+          { id: "media", href: "principles-media.html", label: "音视频要点伴随" },
           { id: "icon-text", href: "principles-icon-text.html", label: "图标语义锚定" },
           { id: "style-semantic", href: "principles-style-semantic.html", label: "颜色语义转写" },
-          { id: "media", href: "principles-media.html", label: "音视频要点伴随" }
-        ]
-      },
-      {
-        group: null, id: "structured", href: "principles-table.html", label: "结构化可读",
-        pageIds: ["structured", "table", "code"],
-        children: [
           { id: "table", href: "principles-table.html", label: "表格语义化" },
           { id: "code", href: "principles-code.html", label: "代码块语义化" }
         ]
       },
       {
-        group: null, id: "hidden", href: "principles-tab.html", label: "隐藏信息持续可获取",
-        pageIds: ["hidden", "tab", "collapse", "default-visible", "mask-clear"],
+        group: null, id: "interactive", href: "principles-hidden.html", label: "交互信息可抓取",
+        pageIds: ["interactive", "hidden", "tab", "collapse", "default-visible", "mask-clear", "page-elements", "controls", "control-label", "gui-map"],
         children: [
-          { id: "tab", href: "principles-tab.html", label: "Tab 面板可全量抓取" },
-          { id: "collapse", href: "principles-collapse.html", label: "折叠默认展开" },
-          { id: "default-visible", href: "principles-default-visible.html", label: "悬停不承载关键内容" },
-          { id: "mask-clear", href: "principles-mask-clear.html", label: "蒙版不遮挡关键步骤" }
-        ]
-      },
-      {
-        group: null, id: "page-elements", href: "principles-control-label.html", label: "页面元素与状态可获取",
-        pageIds: ["page-elements", "controls", "control-label", "gui-map"],
-        children: [
-          { id: "control-label", href: "principles-control-label.html", label: "控件须配独立标签" },
-          { id: "gui-map", href: "principles-gui-map.html", label: "控件数值转写" }
+          { id: "hidden", href: "principles-hidden.html", label: "交互不藏关键正文",
+            pageIds: ["hidden", "tab", "collapse", "default-visible", "mask-clear"] },
+          { id: "control-label", href: "principles-control-label.html", label: "控件标签与数值可读取",
+            pageIds: ["controls", "page-elements", "control-label", "gui-map"] }
         ]
       },
       {
@@ -98,38 +76,27 @@
         ]
       },
       {
-        group: null, id: "meaning", href: "principles-status-word.html", label: "内容含义明确",
-        pageIds: ["meaning", "status-word", "note", "link"],
+        group: null, id: "meaning", href: "principles-link.html", label: "内容含义明确",
+        pageIds: ["meaning", "status-word", "note", "link", "term"],
         children: [
-          { id: "status-word", href: "principles-status-word.html", label: "状态完整标注" },
-          { id: "note", href: "principles-note.html", label: "安全警示语义化" },
-          { id: "link", href: "principles-link.html", label: "链接语义化" }
+          { id: "link", href: "principles-link.html", label: "链接语义化" },
+          { id: "term", href: "principles-term.html", label: "术语用词一致" }
         ]
       },
       {
-        group: "可操作", id: "executable", href: "principles-steps.html", label: "操作可执行",
-        pageIds: ["executable", "example", "playground", "steps"],
-        children: [
-          { id: "steps", href: "principles-steps.html", label: "步骤列表化" },
-          { id: "example", href: "principles-example.html", label: "示例路径可参照" },
-          { id: "playground", href: "principles-playground.html", label: "可交互示例" }
-        ]
+        group: "可操作", id: "steps", href: "principles-steps.html", label: "操作可按序照抄",
+        pageIds: ["executable", "example", "steps"]
+      },
+      {
+        group: null, id: "playground", href: "principles-playground.html", label: "可交互示例"
       },
       {
         group: "可验证", id: "outcome", href: "principles-expected.html", label: "任务结果可确认",
-        pageIds: ["outcome", "verify", "expected"],
-        children: [
-          { id: "expected", href: "principles-expected.html", label: "写明预期结果" },
-          { id: "verify", href: "principles-verify.html", label: "验证区块" }
-        ]
+        pageIds: ["outcome", "verify", "expected"]
       },
       {
-        group: null, id: "failure-handle", href: "principles-default-empty.html", label: "失败状态可处理",
-        pageIds: ["failure-handle", "default-empty", "exception"],
-        children: [
-          { id: "default-empty", href: "principles-default-empty.html", label: "缺省空态文案化" },
-          { id: "exception", href: "principles-exception.html", label: "常见异常说明" }
-        ]
+        group: null, id: "failure-handle", href: "principles-exception.html", label: "失败状态可处理",
+        pageIds: ["failure-handle", "default-empty", "exception"]
       },
       {
         group: "实测记录", id: "probe-discover", href: "principles-discover-probe.html", label: "发现层实测",

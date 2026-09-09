@@ -68,9 +68,9 @@
   .page-header {
     border-bottom: none;
     padding-bottom: 0;
-    margin-bottom: 0;
+    margin-bottom: var(--space-stack, 16px);
   }
-  .page-header h1 {
+  .page-header > h1 {
     font-family: var(--font);
     font-size: var(--text-h1);
     font-weight: var(--text-h1-weight, 600);
@@ -107,8 +107,8 @@
     font-weight: 700;
     line-height: var(--text-h2-lh, 36px);
     letter-spacing: -0.01em;
-    margin-top: var(--space-h2-margin-t, 24px);
-    margin-bottom: var(--space-h2-margin-b, 24px);
+    margin-top: 0;
+    margin-bottom: var(--space-stack, 16px);
     padding-top: var(--space-h2-pad-y, 16px);
     padding-bottom: var(--space-h2-pad-y, 16px);
     border-bottom: 2px solid var(--color-card-border);
@@ -194,6 +194,18 @@
     align-items: stretch;
     margin: 16px 0 0;
   }
+  .fn-ex-row:has(> .fn-ex:only-child) {
+    grid-template-columns: 1fr;
+  }
+  .fn-ex-row:not(:has(.fn-ex-head)) {
+    grid-template-rows: 1fr auto;
+  }
+  .fn-ex-row:not(:has(.fn-ex-head)) .fn-ex {
+    grid-row: 1 / span 2;
+  }
+  .fn-ex-row:not(:has(.fn-ex-head)) .fn-ex-body {
+    grid-row: 1 / span 2;
+  }
   .fn-ex-row .fn-ex {
     display: grid;
     grid-template-rows: subgrid;
@@ -277,6 +289,7 @@
     overflow: auto;
     padding: 10px 12px 12px;
   }
+  .principle-example[id] { scroll-margin-top: 80px; }
   .ex-table {
     width: 100%;
     border-collapse: collapse;
@@ -381,9 +394,400 @@
       display: flex; flex-direction: column; grid-row: auto;
     }
   }
+  h4.fn-h4:has(> .fn-h3-link) {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  h4.fn-h4 > .fn-h3-link {
+    margin-left: auto;
+    flex-shrink: 0;
+    font-weight: 500;
+  }
+  body.inner-page[data-page="table"] .main-content > .section:first-of-type > h2 {
+    margin-top: 0;
+  }
+  #practices .principle-example > h3.fn-h3 + h4.fn-h4 {
+    margin-top: 0;
+  }
+  #practices .fn-h3-desc {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  #practices .principle-example > .fn-h3-desc + h4.fn-h4 {
+    margin-top: var(--space-stack, 16px);
+  }
+  #practices .principle-example { margin: 0; }
+  #practices .principle-example + .principle-example { margin-top: var(--space-stack, 16px); }
+  #practices .principle-example > .ex-fold-panel + h4.fn-h4 {
+    margin-top: var(--space-stack, 16px);
+    padding-top: var(--space-h4-pad-y, 16px);
+    border-top: none;
+  }
+  #problem > p.page-lead,
+  #practices > p.page-lead,
+  #core-principles > p.page-lead {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  #problem > h2 + .page-lead,
+  #core-principles > h2 + .principle-body {
+    margin-top: 0;
+  }
+  #problem,
+  #core-principles,
+  #practices {
+    margin-bottom: var(--space-stack, 16px);
+  }
+  #core-principles .principle-body { margin: 0; }
+  #core-principles .principle-body p {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: 22px;
+    color: var(--color-text-secondary);
+  }
+  #core-principles .principle-body strong {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  .bg-list {
+    margin: 0;
+    padding-left: 1.25em;
+    font-size: var(--text-body);
+    line-height: 22px;
+    list-style: disc;
+    color: var(--color-text-secondary);
+  }
+  #benefits .bg-list li + li { margin-top: 16px; }
+  #benefits .bg-list li strong {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    gap: 4px;
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-list li {
+    font-size: 14px;
+    line-height: 22px;
+  }
+  .file-sample {
+    margin: 0 0 20px;
+    padding: 0;
+    background: #1e1e1e;
+    border: 1px solid #111;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .file-sample pre {
+    margin: 0;
+    padding: 12px 14px 14px;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: var(--text-auxiliary);
+    line-height: 20px;
+    color: #e8e8e8;
+    background: transparent;
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .file-sample pre code {
+    display: block;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    color: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    font-family: inherit;
+    white-space: inherit;
+  }
+  .file-sample .code-line-hl {
+    display: block;
+    margin: 0 -14px;
+    padding: 0 14px;
+  }
+  .file-sample .code-line-hl.is-bad { background: rgba(180, 35, 24, 0.28); }
+  .file-sample .code-line-hl.is-good { background: rgba(4, 120, 87, 0.28); }
+  .ex-card-title {
+    margin: 0;
+    padding: 0;
+    font-size: var(--text-body);
+    font-weight: 650;
+    line-height: 22px;
+    color: #191919;
+    background: none;
+    border: none;
+  }
+  .ex-card-pair > .ex-card-title {
+    grid-column: 1 / -1;
+    margin: 0;
+  }
+  .ex-card-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    padding: 16px;
+    align-items: stretch;
+  }
+  .ex-card-pane {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .ex-card-pane .file-sample {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0;
+  }
+  .ex-card-pane .file-sample pre { flex: 1; }
+  .ex-fold-intro { grid-column: 1 / -1; }
+  .ex-fold-intro .fn-ex-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    gap: 4px;
+  }
+  .ex-fold-intro .fn-ex-list li {
+    font-size: 14px;
+    line-height: 22px;
+  }
+  .ex-fold-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: var(--space-stack, 16px) 0;
+  }
+  .ex-fold-bar + .ex-fold-panel { margin-top: var(--space-stack, 16px); }
+  .ex-fold-btn {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    padding: 4px 6px;
+    margin: 0;
+    cursor: pointer;
+    font: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 22px;
+    color: var(--color-text);
+  }
+  .ex-fold-btn img {
+    width: 20px;
+    height: 20px;
+    display: block;
+    flex-shrink: 0;
+  }
+  .ex-fold-btn img[src*="ex-fold-code.png"] {
+    width: 22px;
+    height: 22px;
+  }
+  .ex-fold-btn[aria-expanded="true"] {
+    background: var(--color-primary-subtle);
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+  .ex-fold-panel { margin: var(--space-stack, 16px) 0; }
+  .ex-fold-panel > .ex-card-pair {
+    margin: 0;
+    border: none;
+    border-radius: 8px;
+    background: #fafafa;
+  }
+  .ex-card-pane-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .ex-card-pane-head .fn-ex-label { margin: 0; }
+  .ex-card-pane-head .fn-ex-bar {
+    display: block;
+    width: 100%;
+    margin: 0;
+  }
+  .ex-card .file-sample--compact { margin: 0; }
+  .ex-card .file-sample--compact pre,
+  .file-sample--compact pre {
+    max-height: 180px;
+    overflow: auto;
+    margin: 0;
+  }
+  @media (max-width: 900px) {
+    .ex-card-pair { grid-template-columns: 1fr; }
+  }
+
+  .status-ex-table {
+      font-size: var(--text-caption);
+      line-height: 16px;
+    }
+
+  .fn-ex-row .status-ex-table .ck-txt,
+    .fn-ex-row .status-ex-table .ck-no {
+      font-size: var(--text-auxiliary);
+      line-height: 16px;
+    }
+
+  .fn-ex-row .status-ex-table th,
+    .fn-ex-row .status-ex-table td {
+      padding: 8px 6px;
+    }
+
+  .fn-ex-row .paper-card {
+      padding: 14px 14px 12px;
+    }
+
+  .fn-ex-row .paper-card-title {
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+  @media (max-width: 900px) {
+      .fn-ex-row {
+        grid-template-columns: 1fr;
+        grid-template-rows: none;
+      }
+      .fn-ex-row .fn-ex {
+        display: block;
+        grid-row: auto;
+      }
+      .fn-ex-row .fn-ex-body {
+        display: block;
+      }
+    }
+
+  .fn-ex-label {
+      display: inline-block;
+      margin: 0 0 10px;
+      padding: 0 8px;
+      border-radius: 4px;
+      font-size: var(--text-auxiliary);
+      font-weight: 650;
+      line-height: 20px;
+      color: #b42318;
+      background: #fef3f2;
+    }
+
+  .fn-ex-label.is-good {
+      color: #047857;
+      background: #ecfdf5;
+    }
+
+  .fn-ex-bar {
+      display: block;
+      width: 100%;
+      height: 3px;
+      margin: 0 0 16px;
+      background: #b42318;
+      border-radius: 2px;
+    }
+
+  .fn-ex-bar.is-good {
+      background: #047857;
+    }
+
+  .fn-ex-bar + .fn-ex-mock {
+      border-radius: 8px;
+    }
+
+  .fn-ex-mock {
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+    }
+
+  .status-ex-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      font-size: 13px;
+      line-height: 20px;
+      color: var(--color-text);
+      background: #fff;
+    }
+
+  .status-ex-table th,
+    .status-ex-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--color-border);
+      border-right: 1px solid var(--color-border);
+      vertical-align: middle;
+      text-align: left;
+      font-weight: 400;
+    }
+
+  .status-ex-table th:last-child,
+    .status-ex-table td:last-child {
+      border-right: none;
+    }
+
+  .status-ex-table tr:last-child td {
+      border-bottom: none;
+    }
+
+  .status-ex-table thead th {
+      font-weight: 500;
+      color: var(--color-text);
+      border-bottom: 2px solid var(--color-primary);
+      background: var(--color-card-bg);
+    }
+
+  .status-ex-table .col-scene { width: 16%; }
+
+  .status-ex-table .col-model { width: 30%; }
+
+  .status-ex-table .col-hw { width: 27%; text-align: center; }
+
+  .status-ex-table td.col-hw {
+      text-align: center;
+    }
+
+  .status-ex-table .ck {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      color: var(--color-primary);
+      font-size: 16px;
+      line-height: 1;
+      font-weight: 500;
+    }
+
+  .status-ex-table .ck-txt {
+      font-size: var(--text-auxiliary);
+      line-height: 16px;
+      font-weight: 400;
+      color: var(--color-text);
+    }
+
+  .status-ex-table .ck-no {
+      font-size: var(--text-auxiliary);
+      line-height: 16px;
+      font-weight: 400;
+      color: var(--color-text-secondary);
+    }
+  .fn-ex-mock:has(.status-ex-table) { padding: 0; overflow: auto; background: #fff; }
 </style>
 </head>
-<body class="inner-page" data-module="principles" data-page="table">
+<body class="inner-page agent-entry-page" data-module="principles" data-page="table" data-no-surface-tabs>
 
 <div class="topbar">
   <div class="topbar-inner">
@@ -407,221 +811,29 @@
   <main class="main-content">
     <div class="page-header">
       <h1>表格语义可结构化</h1>
-      <p class="page-desc page-desc--split">
-        <span class="page-desc-line">为了帮助 Agent 切片后仍能还原「行名 × 列名」与表主题，表格须用 <code>caption</code>、<code>th</code> + <code>scope</code> 与合法合并表达标题与行列归属；格内嵌套列表独立成结构。状态词写法见 <a href="principles-status-word.html">状态词可完整识别</a>。</span>
-      </p>
     </div>
 
-    <section class="section" id="objects">
-      <h2>适用对象</h2>
-      <table class="scene-def-table">
-        <colgroup>
-          <col class="col-type" />
-          <col class="col-desc" />
-          <col class="col-place" />
-        </colgroup>
-        <thead>
-          <tr>
-            <th class="col-type">名称</th>
-            <th class="col-desc">说明</th>
-            <th class="col-place">常见落点</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="col-type">表头与标题</td>
-            <td class="col-desc">每表有描述性 <code>caption</code>；列 / 行名用 <code>th</code> + <code>scope</code>，禁止用样式伪表头。</td>
-            <td class="col-place">规格表、参数表</td>
-          </tr>
-          <tr>
-            <td class="col-type">合并与多级表头</td>
-            <td class="col-desc"><code>colspan</code> / <code>rowspan</code> 后每格仍能还原「行名 × 列名」；禁止只靠底色或框线表达分组。</td>
-            <td class="col-place">分组规格表、兼容矩阵</td>
-          </tr>
-          <tr>
-            <td class="col-type">嵌套内容</td>
-            <td class="col-desc">格内接口 / 要点列表用真实列表，不拆成伪数据行。</td>
-            <td class="col-place">I/O 规格、能力说明格</td>
-          </tr>
-        </tbody>
-      </table>
+    <section class="section" id="problem">
+      <h2>解决什么问题</h2>
+      <p class="page-lead">Agent 切片后拿不到可查询的表结构，只能看到打散、互不相属的单元格。</p>
     </section>
 
-    <section class="section" id="scenarios">
-      <h2>适用场景</h2>
-      <table class="scene-def-table">
-        <colgroup>
-          <col class="col-type" />
-          <col class="col-place" />
-          <col class="col-desc" />
-        </colgroup>
-        <thead>
-          <tr>
-            <th class="col-type">优先级</th>
-            <th class="col-place">页面类型</th>
-            <th class="col-desc">说明</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="col-type"><span class="badge badge-bad">必做</span></td>
-            <td class="col-place">文档站规格表、参数表、兼容矩阵</td>
-            <td class="col-desc">Agent 最常引用的结构化事实页。</td>
-          </tr>
-          <tr>
-            <td class="col-type"><span class="badge badge-should">建议做</span></td>
-            <td class="col-place">官网产品对比 / 能力规格表</td>
-            <td class="col-desc">规格、能力说明会进入引用池的页面。</td>
-          </tr>
-          <tr>
-            <td class="col-type"><span class="badge badge-optional">可不做完整改造</span></td>
-            <td class="col-place">纯布局用表、无数据语义的两列排版</td>
-            <td class="col-desc">非数据表；勿强行 caption，收录策略中划界即可。</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-
-    <section class="section" id="design-ui">
-      <h2>设计UI调整</h2>
-
-      <h3 class="fn-h3" id="design-suggestions">调整建议</h3>
-      <ul class="principle-suggestions">
-        <li>
-          <span class="sug-title">每表须有描述性标题</span>
-          <span class="sug-desc">每张表必须提供能说明主题的描述性标题（如「表1 Ascend C Add 算子设计规格」）。严禁使用「表格1」「数据表」等无法辨识主题的模糊命名。</span>
-        </li>
-        <li>
-          <span class="sug-title">表头与数据区须语义化</span>
-          <span class="sug-desc">表格必须明确标清哪一行 / 列是表头、哪是数据格，以及表头管辖的是整列还是整行。严禁仅靠视觉加粗充当表头，否则机器无法识别语义表头。</span>
-        </li>
-        <li>
-          <span class="sug-title">合并归属须可还原</span>
-          <span class="sug-desc">合并单元格必须声明跨行 / 跨列（如 <code>rowspan</code> / <code>colspan</code>），确保合并后的内容归属关系可被还原。分组严禁仅靠颜色或底色区分，须提供结构化标识。</span>
-        </li>
-        <li>
-          <span class="sug-title">表内列表单独成块</span>
-          <span class="sug-desc">接口参数、要点等内容必须作为独立列表呈现；严禁拆成假表格行，也严禁与相邻字段揉进同一格写成一大段。</span>
-        </li>
-      </ul>
-
-      <h3 class="fn-h3" id="design-example">调整示例</h3>
-      <div class="principle-example">
-        <h4 class="fn-h4">描述性标题与语义表头须齐全</h4>
-        <div class="fn-ex-row" id="table-caption-th">
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label">反面</span>
-              <div class="fn-ex-bar" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="反面：无标题，伪表头">
-                <div class="ex-table-wrap">
-                  <table class="ex-table">
-                    <tr>
-                      <td>name</td>
-                      <td>shape</td>
-                      <td>data type</td>
-                    </tr>
-                    <tr>
-                      <td>x</td>
-                      <td>(8,2048)</td>
-                      <td>float16</td>
-                    </tr>
-                  </table>
-                </div>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>常见疏漏：</strong>首行是 <code>td</code>；无 caption，切片后难当列名。</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label is-good">正面</span>
-              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="正面：caption + th + scope">
-                <div class="ex-table-wrap">
-                  <table class="ex-table">
-                    <caption>表1 Ascend C Add 算子设计规格</caption>
-                    <tr>
-                      <th scope="col">name</th>
-                      <th scope="col">shape</th>
-                      <th scope="col">data type</th>
-                    </tr>
-                    <tr>
-                      <td>x</td>
-                      <td>(8,2048)</td>
-                      <td>float16</td>
-                    </tr>
-                  </table>
-                </div>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>正确做法：</strong>描述性 caption + 列名 <code>th</code> + <code>scope="col"</code>。</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
+    <section class="section" id="core-principles">
+      <h2>核心原则</h2>
+      <div class="principle-body">
+        <strong>表骨架可机读</strong>
+        <p>表头由表格组件给出。须写出能点名的表题，并用合法合并表达行列归属；格内列表独立成结构。能力格须写成「支持 / 不支持」，禁止只靠对号或空格。</p>
       </div>
+    </section>
 
+    <section class="section" id="practices">
+      <h2>典型示例</h2>
       <div class="principle-example">
-        <h4 class="fn-h4">合并归属须可还原</h4>
-        <div class="fn-ex-row" id="table-rowspan">
+        <h3 class="fn-h3">合并与分组可还原</h3>
+        <p class="fn-h3-desc">合并后每格仍能还原行名 × 列名；Markdown 无 rowspan 时逐行写全场景名，HTML 用 rowspan + scope 呈现合并。</p>
+        <h4 class="fn-h4">示例 1 · 场景合并</h4>
+<div class="fn-ex-row" id="table-rowspan">
           <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label">反面</span>
-              <div class="fn-ex-bar" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="反面：只靠底色分组，无 rowspan">
-                <div class="ex-table-wrap">
-                  <table class="ex-table">
-                    <tr>
-                      <th>场景</th>
-                      <th>模型</th>
-                      <th>A2</th>
-                      <th>A3</th>
-                    </tr>
-                    <tr class="is-tint">
-                      <td>预训练</td>
-                      <td>DeepSeek V3</td>
-                      <td>支持</td>
-                      <td>支持</td>
-                    </tr>
-                    <tr class="is-tint">
-                      <td class="is-empty">（空）</td>
-                      <td>DeepSeek-Janus-Pro</td>
-                      <td>不支持</td>
-                      <td>支持</td>
-                    </tr>
-                    <tr>
-                      <td>推理</td>
-                      <td>Qwen2</td>
-                      <td>支持</td>
-                      <td>支持</td>
-                    </tr>
-                  </table>
-                </div>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>常见疏漏：</strong>空场景格 + 底色；机器难判定第二行仍属「预训练」。</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label is-good">正面</span>
-              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-            </div>
             <div class="fn-ex-body">
               <div class="fn-ex-mock" aria-label="正面：rowspan 行头 + scope">
                 <div class="ex-table-wrap">
@@ -658,18 +870,98 @@
                 </div>
               </div>
               <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>正确做法：</strong>行头 <code>rowspan</code> + <code>scope</code>；每格可还原为「预训练 × Janus × A2」。</li>
-                </ul>
+                    <ul class="fn-ex-list">
+      <li><strong>正确做法：</strong></li>
+      <li>1. 行头用 rowspan + scope</li>
+      <li>2. 每格可还原为「预训练 × 模型 × 芯片」</li>
+    </ul>
               </div>
             </div>
           </div>
         </div>
+      <div class="ex-fold-bar">
+        <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex2-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
+        <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex2-html" aria-label="前端源码调整"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
       </div>
+      <div class="ex-fold-panel" id="ex2-md" hidden>
+        <div class="ex-card-pair">
+    <p class="ex-card-title">Markdown 书写</p>
+    <div class="ex-fold-intro">
+      <ul class="fn-ex-list">
+        <li>1. Markdown 没有 rowspan，每行写全场景名</li>
+        <li>2. 不要用空首列去「看起来像合并」</li>
+      </ul>
+    </div>
+    <div class="ex-card-pane">
+      <div class="ex-card-pane-head">
+        <span class="fn-ex-label">反面</span>
+        <div class="fn-ex-bar" aria-hidden="true"></div>
+      </div>
+      <figure class="file-sample file-sample--compact">
+        <pre><code class="language-markdown">**表2 场景 × 芯片能力矩阵**
 
-      <div class="principle-example">
-        <h4 class="fn-h4">输入 / 输出用行头，不靠括号混排</h4>
-        <div class="fn-ex-row" id="table-io-scope">
+| 场景 | 模型 | A2 | A3 |
+| --- | --- | --- | --- |
+| 预训练 | DeepSeek V3 | 支持 | 支持 |
+<span class="code-line-hl is-bad">|  | DeepSeek-Janus-Pro | 不支持 | 支持 |</span>
+| 推理 | Qwen2 | 支持 | 支持 |</code></pre>
+      </figure>
+    </div>
+    <div class="ex-card-pane">
+      <div class="ex-card-pane-head">
+        <span class="fn-ex-label is-good">正面</span>
+        <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+      </div>
+      <figure class="file-sample file-sample--compact">
+        <pre><code class="language-markdown">**表2 场景 × 芯片能力矩阵**
+
+| 场景 | 模型 | A2 | A3 |
+| --- | --- | --- | --- |
+<span class="code-line-hl is-good">| 预训练 | DeepSeek V3 | 支持 | 支持 |</span>
+<span class="code-line-hl is-good">| 预训练 | DeepSeek-Janus-Pro | 不支持 | 支持 |</span>
+| 推理 | Qwen2 | 支持 | 支持 |</code></pre>
+      </figure>
+    </div>
+        </div>
+      </div>
+      <div class="ex-fold-panel" id="ex2-html" hidden>
+        <div class="ex-card-pair">
+    <p class="ex-card-title">前端源码调整</p>
+    <div class="ex-fold-intro">
+      <ul class="fn-ex-list">
+        <li>1. 行头用 th + rowspan + scope=row</li>
+        <li>2. 切片展开时带回场景名</li>
+      </ul>
+    </div>
+    <div class="ex-card-pane">
+      <div class="ex-card-pane-head">
+        <span class="fn-ex-label">反面</span>
+        <div class="fn-ex-bar" aria-hidden="true"></div>
+      </div>
+      <figure class="file-sample file-sample--compact">
+        <pre><code class="language-html">&lt;tr&gt;&lt;td&gt;预训练&lt;/td&gt;&lt;td&gt;DeepSeek V3&lt;/td&gt;&lt;/tr&gt;
+<span class="code-line-hl is-bad">&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;DeepSeek-Janus-Pro&lt;/td&gt;&lt;/tr&gt;</span></code></pre>
+      </figure>
+    </div>
+    <div class="ex-card-pane">
+      <div class="ex-card-pane-head">
+        <span class="fn-ex-label is-good">正面</span>
+        <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+      </div>
+      <figure class="file-sample file-sample--compact">
+        <pre><code class="language-html">&lt;tr&gt;
+<span class="code-line-hl is-good">  &lt;th scope="row" rowspan="2"&gt;预训练&lt;/th&gt;</span>
+  &lt;td&gt;DeepSeek V3&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;td&gt;DeepSeek-Janus-Pro&lt;/td&gt;
+&lt;/tr&gt;</code></pre>
+      </figure>
+    </div>
+        </div>
+      </div>
+        <h4 class="fn-h4">示例 2 · 输入 / 输出</h4>
+<div class="fn-ex-row" id="table-io-scope">
           <div class="fn-ex">
             <div class="fn-ex-head">
               <span class="fn-ex-label">反面</span>
@@ -703,9 +995,11 @@
                 </div>
               </div>
               <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>常见疏漏：</strong>方向写在名称括号里，切片后难稳定分组。</li>
-                </ul>
+                    <ul class="fn-ex-list">
+      <li><strong>常见疏漏：</strong></li>
+      <li>1. 方向写在名称括号里</li>
+      <li>2. 切片后难稳定分成输入 / 输出</li>
+    </ul>
               </div>
             </div>
           </div>
@@ -755,150 +1049,318 @@
                 </div>
               </div>
               <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>正确做法：</strong>方向独立为行头 <code>th</code>，字段名与类型分列可切片。</li>
-                </ul>
+                    <ul class="fn-ex-list">
+      <li><strong>正确做法：</strong></li>
+      <li>1. 方向独立为行头 th</li>
+      <li>2. 字段名与类型分列可切片</li>
+    </ul>
               </div>
             </div>
           </div>
         </div>
+      <div class="ex-fold-bar">
+        <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex3-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
+        <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex3-html" aria-label="前端源码调整"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
+      </div>
+      <div class="ex-fold-panel" id="ex3-md" hidden>
+        <div class="ex-card-pair">
+    <p class="ex-card-title">Markdown 书写</p>
+    <div class="ex-fold-intro">
+      <ul class="fn-ex-list">
+        <li>1. 方向单独成列或行头</li>
+        <li>2. 不要写在名称括号里</li>
+      </ul>
+    </div>
+    <div class="ex-card-pane">
+      <div class="ex-card-pane-head">
+        <span class="fn-ex-label">反面</span>
+        <div class="fn-ex-bar" aria-hidden="true"></div>
+      </div>
+      <figure class="file-sample file-sample--compact">
+        <pre><code class="language-markdown">| 参数 | 类型 |
+| --- | --- |
+<span class="code-line-hl is-bad">| x（输入） | float16 |</span>
+<span class="code-line-hl is-bad">| z（输出） | float16 |</span></code></pre>
+      </figure>
+    </div>
+    <div class="ex-card-pane">
+      <div class="ex-card-pane-head">
+        <span class="fn-ex-label is-good">正面</span>
+        <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+      </div>
+      <figure class="file-sample file-sample--compact">
+        <pre><code class="language-markdown">| 方向 | name | 类型 |
+| --- | --- | --- |
+<span class="code-line-hl is-good">| 输入 | x | float16 |</span>
+<span class="code-line-hl is-good">| 输出 | z | float16 |</span></code></pre>
+      </figure>
+    </div>
+        </div>
+      </div>
+      <div class="ex-fold-panel" id="ex3-html" hidden>
+        <div class="ex-card-pair">
+    <p class="ex-card-title">前端源码调整</p>
+    <div class="ex-fold-intro">
+      <ul class="fn-ex-list">
+        <li>1. 方向用 th scope=row</li>
+        <li>2. 字段分列</li>
+      </ul>
+    </div>
+    <div class="ex-card-pane">
+      <div class="ex-card-pane-head">
+        <span class="fn-ex-label">反面</span>
+        <div class="fn-ex-bar" aria-hidden="true"></div>
+      </div>
+      <figure class="file-sample file-sample--compact">
+        <pre><code class="language-html"><span class="code-line-hl is-bad">&lt;td&gt;x（输入）&lt;/td&gt;</span></code></pre>
+      </figure>
+    </div>
+    <div class="ex-card-pane">
+      <div class="ex-card-pane-head">
+        <span class="fn-ex-label is-good">正面</span>
+        <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+      </div>
+      <figure class="file-sample file-sample--compact">
+        <pre><code class="language-html"><span class="code-line-hl is-good">&lt;th scope="row"&gt;输入&lt;/th&gt;</span>
+&lt;td&gt;x&lt;/td&gt;</code></pre>
+      </figure>
+    </div>
+        </div>
+      </div>
+      </div>
+      <div class="principle-example" id="capability">
+        <h3 class="fn-h3">格内状态写成词</h3>
+        <p class="fn-h3-desc">能力矩阵的单元格须写成「支持」「不支持」；对号可保留作辅助，空格不得暗示不支持。</p>
+        <h4 class="fn-h4">示例 3 · 能力矩阵 <a class="fn-h3-link" href="https://www.mindspore.cn/topics/deepseek" target="_blank" rel="noopener">查看示例来源</a></h4>
+<div class="fn-ex-row">
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label">反面</span>
+    <div class="fn-ex-bar" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="反面：仅对号或空单元格">
+      <table class="status-ex-table">
+        <thead>
+          <tr>
+            <th class="col-scene">场景</th>
+            <th class="col-model">模型</th>
+            <th class="col-hw">Atlas 800T 900 A2</th>
+            <th class="col-hw">Atlas 800T A3</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>预训练</td>
+            <td>DeepSeek V3</td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+          </tr>
+          <tr>
+            <td rowspan="2">SFT</td>
+            <td>DeepSeek V3</td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+          </tr>
+          <tr>
+            <td>DeepSeek-R1-Distill-Qwen</td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+          </tr>
+          <tr>
+            <td rowspan="4">推理</td>
+            <td>Qwen2.5-7B/32B</td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+          </tr>
+          <tr>
+            <td>DeepSeek-V3-0324 W4A16</td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+          </tr>
+          <tr>
+            <td>DeepSeek-R1 W4A16</td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+          </tr>
+          <tr>
+            <td>DeepSeek-Janus-Pro</td>
+            <td class="col-hw"></td>
+            <td class="col-hw"><span class="ck" aria-hidden="true">✓</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="fn-ex-foot">
+    <ul class="fn-ex-list">
+      <li><strong>常见疏漏：</strong>仅有对号或留空，未配“支持”“不支持”文字，机器无法识别能力是否可用。 <a class="fn-h3-link" href="https://www.mindspore.cn/topics/deepseek" target="_blank" rel="noopener">查看示例来源</a></li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  <div class="fn-ex">
+    <div class="fn-ex-head">
+    <span class="fn-ex-label is-good">正面</span>
+    <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+    </div>
+    <div class="fn-ex-body">
+    <div class="fn-ex-mock" aria-label="正面：支持与不支持均有可见文案">
+      <table class="status-ex-table">
+        <thead>
+          <tr>
+            <th class="col-scene">场景</th>
+            <th class="col-model">模型</th>
+            <th class="col-hw">Atlas 800T 900 A2</th>
+            <th class="col-hw">Atlas 800T A3</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>预训练</td>
+            <td>DeepSeek V3</td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+          </tr>
+          <tr>
+            <td rowspan="2">SFT</td>
+            <td>DeepSeek V3</td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+          </tr>
+          <tr>
+            <td>DeepSeek-R1-Distill-Qwen</td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+          </tr>
+          <tr>
+            <td rowspan="4">推理</td>
+            <td>Qwen2.5-7B/32B</td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+          </tr>
+          <tr>
+            <td>DeepSeek-V3-0324 W4A16</td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+          </tr>
+          <tr>
+            <td>DeepSeek-R1 W4A16</td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+          </tr>
+          <tr>
+            <td>DeepSeek-Janus-Pro</td>
+            <td class="col-hw"><span class="ck-no">不支持</span></td>
+            <td class="col-hw"><span class="ck"><span aria-hidden="true">✓</span><span class="ck-txt">支持</span></span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="fn-ex-foot">
+    <ul class="fn-ex-list">
+      <li><strong>正确做法：</strong>状态写成「支持」「不支持」；对号只辅助。</li>
+    </ul>
+    </div>
+    </div>
+  </div>
+  </div>
+
+        <div class="ex-fold-bar">
+          <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex4-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
+          <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex4-html" aria-label="前端源码调整"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
+        </div>
+      <div class="ex-fold-panel" id="ex4-md" hidden>
+        <div class="ex-card-pair">
+    <p class="ex-card-title">Markdown 书写</p>
+    <div class="ex-fold-intro">
+      <ul class="fn-ex-list">
+        <li>1. 格内写「支持」「不支持」，不要只打勾或留空</li>
+      </ul>
+    </div>
+    <div class="ex-card-pane">
+      <div class="ex-card-pane-head">
+        <span class="fn-ex-label">反面</span>
+        <div class="fn-ex-bar" aria-hidden="true"></div>
+      </div>
+      <figure class="file-sample file-sample--compact">
+        <pre><code class="language-markdown">| 型号 | A2 | A3 |
+| ---- | -- | -- |
+<span class="code-line-hl is-bad">| 推理 | ✓  |    |</span></code></pre>
+      </figure>
+    </div>
+    <div class="ex-card-pane">
+      <div class="ex-card-pane-head">
+        <span class="fn-ex-label is-good">正面</span>
+        <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+      </div>
+      <figure class="file-sample file-sample--compact">
+        <pre><code class="language-markdown">| 型号 | A2   | A3   |
+| ---- | ---- | ---- |
+<span class="code-line-hl is-good">| 推理 | 支持 | 支持 |</span>
+<span class="code-line-hl is-good">| 训练 | 不支持 | 支持 |</span></code></pre>
+      </figure>
+    </div>
+        </div>
+      </div>
+      <div class="ex-fold-panel" id="ex4-html" hidden>
+        <div class="ex-card-pair">
+    <p class="ex-card-title">前端源码调整</p>
+    <div class="ex-fold-intro">
+      <ul class="fn-ex-list">
+        <li>1. 状态词写入文本节点，空单元格不要当「不支持」</li>
+      </ul>
+    </div>
+    <div class="ex-card-pane">
+      <div class="ex-card-pane-head">
+        <span class="fn-ex-label">反面</span>
+        <div class="fn-ex-bar" aria-hidden="true"></div>
+      </div>
+      <figure class="file-sample file-sample--compact">
+        <pre><code class="language-html"><span class="code-line-hl is-bad">&lt;td&gt;✓&lt;/td&gt;</span>
+<span class="code-line-hl is-bad">&lt;td&gt;&lt;/td&gt;</span></code></pre>
+      </figure>
+    </div>
+    <div class="ex-card-pane">
+      <div class="ex-card-pane-head">
+        <span class="fn-ex-label is-good">正面</span>
+        <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+      </div>
+      <figure class="file-sample file-sample--compact">
+        <pre><code class="language-html"><span class="code-line-hl is-good">&lt;td data-status="supported"&gt;支持&lt;/td&gt;</span>
+<span class="code-line-hl is-good">&lt;td data-status="unsupported"&gt;不支持&lt;/td&gt;</span></code></pre>
+      </figure>
+    </div>
+        </div>
+      </div>
+
       </div>
     </section>
 
-    <section class="section" id="content-adjust">
-      <h2>文档内容调整</h2>
-
-      <h3 class="fn-h3" id="content-suggestions">调整建议</h3>
-      <ul class="principle-suggestions">
-        <li>
-          <span class="sug-title">caption 与列名写全</span>
-          <span class="sug-desc">稿面与 Markdown 表均有描述性标题；列名稳定、可当字段名，勿用「列1」「备注」等空泛词。</span>
-        </li>
-        <li>
-          <span class="sug-title">合并在文稿可还原</span>
-          <span class="sug-desc">Markdown 无 rowspan 时，优先拆行写全场景名，或注明「以下两行同属预训练」；勿留空首列指望读者脑补。</span>
-        </li>
-        <li>
-          <span class="sug-title">状态词另遵状态页</span>
-          <span class="sug-desc">格内「支持 / 不支持」等词义见 <a href="principles-status-word.html">状态词可完整识别</a>；本页只约束表骨架，不重复符号替换细则。</span>
-        </li>
+    <section class="section" id="benefits">
+      <h2>价值收益</h2>
+      <ul class="bg-list">
+        <li><strong>行列可切片还原</strong>入库后仍能回答「某场景 × 某芯片是否支持」，而不是丢了行头的碎片。</li>
+        <li><strong>主题可点名</strong>描述性 caption 让引用能落到具体规格表，而不是「见上表」。</li>
+        <li><strong>能力可点名</strong>格子里能读出「支持 / 不支持」，而不是对号或空白。</li>
       </ul>
-
-      <h3 class="fn-h3" id="content-example">调整示例</h3>
-      <div class="principle-example">
-        <h4 class="fn-h4">Markdown 合并须写全归属</h4>
-        <div class="fn-ex-row" id="table-content-md">
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label">反面</span>
-              <div class="fn-ex-bar" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="反面：空首列">
-                <pre class="st-code">| 场景 | 模型 | A2 |
-| --- | --- | --- |
-| 预训练 | DeepSeek V3 | 支持 |
-|  | Janus-Pro | 不支持 |
-
-← 空首列，归属靠脑补</pre>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>常见疏漏：</strong>空单元格入库后丢场景名，矩阵问答易串行。</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label is-good">正面</span>
-              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="正面：每行写全场景">
-                <pre class="st-code">| 场景 | 模型 | A2 |
-| --- | --- | --- |
-| 预训练 | DeepSeek V3 | 支持 |
-| 预训练 | Janus-Pro | 不支持 |
-
-← 每行写全场景名</pre>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>正确做法：</strong>文稿层逐行写全；HTML 再用 rowspan 合并呈现。</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="frontend-adjust">
-      <h2>前端调整</h2>
-
-      <h3 class="fn-h3" id="frontend-suggestions">调整建议</h3>
-      <ul class="principle-suggestions">
-        <li>
-          <span class="sug-title">输出完整语义结构</span>
-          <span class="sug-desc">首包 HTML 含 <code>caption</code>、<code>thead</code> / <code>th</code>+<code>scope</code>、<code>tbody</code>；禁止用样式 <code>td</code> 冒充表头。</span>
-        </li>
-        <li>
-          <span class="sug-title">合并须可切片展开</span>
-          <span class="sug-desc"><code>rowspan</code> / <code>colspan</code> 后管道须能展开为「列名:值」且带上合并行头；空首列不得入库为独立行。</span>
-        </li>
-        <li>
-          <span class="sug-title">嵌套列表同 chunk</span>
-          <span class="sug-desc">格内 <code>ul</code> 与所属表 / 单元格绑定切片，不拆散成游离列表块。</span>
-        </li>
-      </ul>
-
-      <h3 class="fn-h3" id="frontend-example">调整示例</h3>
-      <div class="principle-example">
-        <h4 class="fn-h4">合并行头须用 rowspan</h4>
-        <div class="fn-ex-row" id="table-frontend-rowspan">
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label">反面</span>
-              <div class="fn-ex-bar" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="反面：空单元格">
-                <pre class="st-code">&lt;tr&gt;&lt;td&gt;预训练&lt;/td&gt;&lt;td&gt;V3&lt;/td&gt;…&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;Janus&lt;/td&gt;…&lt;/tr&gt;</pre>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>常见疏漏：</strong>空单元格、归属靠视觉；空 <code>td</code> 入库后场景名丢失。</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label is-good">正面</span>
-              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="正面：rowspan 行头">
-                <pre class="st-code">&lt;tr&gt;
-  &lt;th scope="row" rowspan="2"&gt;预训练&lt;/th&gt;
-  &lt;td&gt;V3&lt;/td&gt;…
-&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;Janus&lt;/td&gt;…&lt;/tr&gt;</pre>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>正确做法：</strong>行头合并，切片可还原场景；行头 <code>th</code> + <code>rowspan</code>，管道展开时带回场景名。</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </section>
   </main>
+
 </div>
+
+<script>
+(function () {
+  document.querySelectorAll(".ex-fold-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var panel = document.getElementById(btn.getAttribute("aria-controls"));
+      if (!panel) return;
+      var open = btn.getAttribute("aria-expanded") === "true";
+      btn.setAttribute("aria-expanded", open ? "false" : "true");
+      panel.hidden = open;
+    });
+  });
+})();
+</script>
 
 <script src="assets/js/site-config.js"></script>
 <script src="assets/js/site-init.js"></script>

@@ -69,9 +69,9 @@
   .page-header {
     border-bottom: none;
     padding-bottom: 0;
-    margin-bottom: 0;
+    margin-bottom: var(--space-stack, 16px);
   }
-  .page-header h1 {
+  .page-header > h1 {
     font-family: var(--font);
     font-size: var(--text-h1);
     font-weight: var(--text-h1-weight, 600);
@@ -108,8 +108,8 @@
     font-weight: 700;
     line-height: var(--text-h2-lh, 36px);
     letter-spacing: -0.01em;
-    margin-top: var(--space-h2-margin-t, 24px);
-    margin-bottom: var(--space-h2-margin-b, 24px);
+    margin-top: 0;
+    margin-bottom: var(--space-stack, 16px);
     padding-top: var(--space-h2-pad-y, 16px);
     padding-bottom: var(--space-h2-pad-y, 16px);
     border-bottom: 2px solid var(--color-card-border);
@@ -291,6 +291,9 @@ h3.fn-h3 .fn-h3-link:hover,
     max-width: none;
     margin: 0 0 20px;
   }
+  .fn-ex-row:has(> .fn-ex:only-child) {
+    grid-template-columns: 1fr;
+  }
 
 .fn-ex-row .fn-ex {
     display: grid;
@@ -401,6 +404,10 @@ h3.fn-h3 .fn-h3-link:hover,
       flex-direction: column;
       grid-row: auto;
     }
+    .case-video {
+      flex-direction: column;
+    }
+    .case-video-player { min-height: 132px; }
   }
 
 .fn-ex-label {
@@ -453,8 +460,9 @@ h3.fn-h3 .fn-h3-link:hover,
 
 .case-video {
     display: flex;
-    flex-direction: column;
-    gap: 10px;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 12px;
     height: 100%;
     padding: 12px;
     box-sizing: border-box;
@@ -462,7 +470,9 @@ h3.fn-h3 .fn-h3-link:hover,
 
 .case-video-player {
     position: relative;
-    height: 132px;
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 132px;
     border-radius: 6px;
     overflow: hidden;
     background:
@@ -508,16 +518,23 @@ h3.fn-h3 .fn-h3-link:hover,
   }
 
 .case-video-copy {
-    padding: 10px 12px 12px;
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 12px 14px;
     background: #fff;
     border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-sizing: border-box;
   }
 
-.case-video-copy h4 {
+.case-video-copy .case-video-copy-t {
     margin: 0 0 6px;
-    font-size: 13px;
-    line-height: 20px;
-    font-weight: 650;
+    padding: 0;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 700;
     color: var(--color-text);
   }
 
@@ -590,6 +607,9 @@ h3.fn-h3 .fn-h3-link:hover,
 .st-card .audio-bar + p,
   .st-card .audio-bar + .case-video-copy {
     margin-top: 10px;
+  }
+  .st-card .case-video-copy {
+    flex: none;
   }
 
 .fn-ex-title {
@@ -721,9 +741,249 @@ h3.fn-h3 .fn-h3-link:hover,
   .section .fn-ex-list { margin: 0; }
   .section .fn-ex-list li { color: var(--color-text); margin-bottom: 0; }
 
+  h4.fn-h4:has(> .fn-h3-link) {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  h4.fn-h4 > .fn-h3-link {
+    margin-left: auto;
+    flex-shrink: 0;
+    font-weight: 500;
+  }
+  body.inner-page[data-page="media"] .main-content > .section:first-of-type > h2 {
+    margin-top: 0;
+  }
+  #practices .principle-example > h3.fn-h3 + h4.fn-h4 {
+    margin-top: 0;
+  }
+  #practices .fn-h3-desc {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  #practices .principle-example > .fn-h3-desc + h4.fn-h4 {
+    margin-top: var(--space-stack, 16px);
+  }
+  #practices .principle-example { margin: 0; }
+  #practices .principle-example + .principle-example { margin-top: var(--space-stack, 16px); }
+  #practices .principle-example > .ex-fold-panel + h4.fn-h4 {
+    margin-top: var(--space-stack, 16px);
+    padding-top: var(--space-h4-pad-y, 16px);
+    border-top: none;
+  }
+  #problem > p.page-lead,
+  #practices > p.page-lead,
+  #core-principles > p.page-lead {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  #problem > h2 + .page-lead,
+  #core-principles > h2 + .principle-body {
+    margin-top: 0;
+  }
+  #problem,
+  #core-principles,
+  #practices {
+    margin-bottom: var(--space-stack, 16px);
+  }
+  #core-principles .principle-body { margin: 0; }
+  #core-principles .principle-body p {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: 22px;
+    color: var(--color-text-secondary);
+  }
+  #core-principles .principle-body strong {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  .bg-list {
+    margin: 0;
+    padding-left: 1.25em;
+    font-size: var(--text-body);
+    line-height: 22px;
+    list-style: disc;
+    color: var(--color-text-secondary);
+  }
+  #benefits .bg-list li + li { margin-top: 16px; }
+  #benefits .bg-list li strong {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    gap: 4px;
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-list li {
+    font-size: 14px;
+    line-height: 22px;
+  }
+  .file-sample {
+    margin: 0 0 20px;
+    padding: 0;
+    background: #1e1e1e;
+    border: 1px solid #111;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .file-sample pre {
+    margin: 0;
+    padding: 12px 14px 14px;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: var(--text-auxiliary);
+    line-height: 20px;
+    color: #e8e8e8;
+    background: transparent;
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .file-sample pre code {
+    display: block;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    color: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    font-family: inherit;
+    white-space: inherit;
+  }
+  .file-sample .code-line-hl {
+    display: block;
+    margin: 0 -14px;
+    padding: 0 14px;
+  }
+  .file-sample .code-line-hl.is-bad { background: rgba(180, 35, 24, 0.28); }
+  .file-sample .code-line-hl.is-good { background: rgba(4, 120, 87, 0.28); }
+  .ex-card-title {
+    margin: 0;
+    padding: 0;
+    font-size: var(--text-body);
+    font-weight: 650;
+    line-height: 22px;
+    color: #191919;
+    background: none;
+    border: none;
+  }
+  .ex-card-pair > .ex-card-title {
+    grid-column: 1 / -1;
+    margin: 0;
+  }
+  .ex-card-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    padding: 16px;
+    align-items: stretch;
+  }
+  .ex-card-pane {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .ex-card-pane .file-sample {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0;
+  }
+  .ex-card-pane .file-sample pre { flex: 1; }
+  .ex-fold-intro { grid-column: 1 / -1; }
+  .ex-fold-intro .fn-ex-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    gap: 4px;
+  }
+  .ex-fold-intro .fn-ex-list li {
+    font-size: 14px;
+    line-height: 22px;
+  }
+  .ex-fold-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: var(--space-stack, 16px) 0;
+  }
+  .ex-fold-bar + .ex-fold-panel { margin-top: var(--space-stack, 16px); }
+  .ex-fold-btn {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    padding: 4px 6px;
+    margin: 0;
+    cursor: pointer;
+    font: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 22px;
+    color: var(--color-text);
+  }
+  .ex-fold-btn img {
+    width: 20px;
+    height: 20px;
+    display: block;
+    flex-shrink: 0;
+  }
+  .ex-fold-btn img[src*="ex-fold-code.png"] {
+    width: 22px;
+    height: 22px;
+  }
+  .ex-fold-btn[aria-expanded="true"] {
+    background: var(--color-primary-subtle);
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+  .ex-fold-panel { margin: var(--space-stack, 16px) 0; }
+  .ex-fold-panel > .ex-card-pair {
+    margin: 0;
+    border: none;
+    border-radius: 8px;
+    background: #fafafa;
+  }
+  .ex-card-pane-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .ex-card-pane-head .fn-ex-label { margin: 0; }
+  .ex-card-pane-head .fn-ex-bar {
+    display: block;
+    width: 100%;
+    margin: 0;
+  }
+  .ex-card .file-sample--compact { margin: 0; }
+  .ex-card .file-sample--compact pre,
+  .file-sample--compact pre {
+    max-height: 180px;
+    overflow: auto;
+    margin: 0;
+  }
+  @media (max-width: 900px) {
+    .ex-card-pair { grid-template-columns: 1fr; }
+  }
+
 </style>
 </head>
-<body class="inner-page" data-module="principles" data-page="media">
+<body class="inner-page agent-entry-page" data-module="principles" data-page="media" data-no-surface-tabs>
 
 <div class="topbar">
   <div class="topbar-inner">
@@ -747,116 +1007,28 @@ h3.fn-h3 .fn-h3-link:hover,
   <main class="main-content">
     <div class="page-header">
       <h1>音视频要点可伴随</h1>
-      <p class="page-desc page-desc--split">
-        <span class="page-desc-line">为了帮助 Agent 在不必「听完 / 看完」的情况下答题，音视频不独自表意：关键步骤、结论与参数须有可读取的旁侧文字要点。</span>
-      </p>
     </div>
 
-    <section class="section" id="objects">
-      <h2>适用对象</h2>
-      <table class="scene-def-table">
-        <colgroup>
-          <col class="col-type" />
-          <col class="col-desc" />
-          <col class="col-place" />
-        </colgroup>
-        <thead>
-          <tr>
-            <th class="col-type">名称</th>
-            <th class="col-desc">说明</th>
-            <th class="col-place">常见落点</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="col-type">视频</td>
-            <td class="col-desc">讲解、步骤与结论须以播放器旁标题与要点 / 正文交付，禁止仅存于播放器或画面烧字。</td>
-            <td class="col-place">案例视频、教程片</td>
-          </tr>
-          <tr>
-            <td class="col-type">音频</td>
-            <td class="col-desc">讲解与结论须以音频条旁标题与要点 / 正文交付，禁止仅以波形或口播承载。</td>
-            <td class="col-place">答疑音频、播客片段</td>
-          </tr>
-        </tbody>
-      </table>
+    <section class="section" id="problem">
+      <h2>解决什么问题</h2>
+      <p class="page-lead">Agent 无法仅凭播放器拿到步骤与结论（如：案例名烧进画面，安装要点只在口播里，音频条只有波形没有标题）。</p>
     </section>
 
-    <section class="section" id="scenarios">
-      <h2>适用场景</h2>
-      <table class="scene-def-table">
-        <colgroup>
-          <col class="col-type" />
-          <col class="col-place" />
-          <col class="col-desc" />
-        </colgroup>
-        <thead>
-          <tr>
-            <th class="col-type">优先级</th>
-            <th class="col-place">页面类型</th>
-            <th class="col-desc">说明</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="col-type"><span class="badge badge-bad">必做</span></td>
-            <td class="col-place">教程片、安装 / 答疑音视频</td>
-            <td class="col-desc">步骤与结论常靠口播，须旁侧文字可抓。</td>
-          </tr>
-          <tr>
-            <td class="col-type"><span class="badge badge-should">建议做</span></td>
-            <td class="col-place">官网案例视频、产品演示</td>
-            <td class="col-desc">案例要点进引用池时，须配标题与摘要。</td>
-          </tr>
-          <tr>
-            <td class="col-type"><span class="badge badge-optional">可不做完整改造</span></td>
-            <td class="col-place">装饰性背景音 / 氛围视频</td>
-            <td class="col-desc">不承载步骤结论，且旁侧正文已覆盖同一内容时，可只作装饰。</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-
-    <section class="section" id="design-ui">
-      <h2>设计UI调整</h2>
-
-      <h3 class="fn-h3" id="design-suggestions">调整建议</h3>
-      <ul class="principle-suggestions">
-        <li>
-          <span class="sug-title">媒体不独自表意</span>
-          <span class="sug-desc">讲解、步骤与结论不得仅存于音视频；须配旁侧可抓取标题与要点。画面烧字与口播均不视为文本替代。</span>
-        </li>
-        <li>
-          <span class="sug-title">要点概括即可</span>
-          <span class="sug-desc">旁侧文字概括关键步骤、参数与结论即可，无需逐字转写口播；布局上要点默认可见，勿藏进需点击才展开的唯一入口。</span>
-        </li>
-      </ul>
-
-      <h3 class="fn-h3" id="design-example">调整示例</h3>
-      <div class="principle-example">
-        <h4 class="fn-h4">用旁侧文字表达视频要点</h4>
-<div class="fn-ex-row">
-  <div class="fn-ex">
-    <div class="fn-ex-head">
-    <span class="fn-ex-label">反面</span>
-    <div class="fn-ex-bar" aria-hidden="true"></div>
-    </div>
-    <div class="fn-ex-body">
-    <div class="fn-ex-mock" aria-label="反面：只有播放器，标题烧进画面">
-      <div class="case-video">
-        <div class="case-video-player">
-          <p class="case-video-burn">龙岗智慧城市 2.0</p>
-          <span class="case-video-play" aria-hidden="true"></span>
-        </div>
+    <section class="section" id="core-principles">
+      <h2>核心原则</h2>
+      <div class="principle-body">
+        <strong>音视频不独自表意</strong>
+        <p>关键步骤、结论与参数须有可读取的旁侧文字要点；画面烧字与口播均不视为文本替代。装饰性背景音 / 氛围视频不承载事实时，无需硬写转写。</p>
       </div>
-    </div>
-    <div class="fn-ex-foot">
-    <ul class="fn-ex-list">
-      <li><strong>常见疏漏：</strong>仅有播放器，标题烧进画面，机器无法不播放即抓取案例要点。 <a class="fn-h3-link" href="https://www.hiascend.com/industries/solutions/smart-city" target="_blank" rel="noopener">查看示例来源</a></li>
-    </ul>
-    </div>
-    </div>
-  </div>
+    </section>
+
+    <section class="section" id="practices">
+      <h2>典型示例</h2>
+      <div class="principle-example">
+        <h3 class="fn-h3">旁侧写出要点</h3>
+        <p class="fn-h3-desc">概括关键步骤、参数与结论即可，不必逐字转写口播；要点默认可见，勿藏进需点击才展开的唯一入口。</p>
+        <h4 class="fn-h4">示例 1 · 视频 <a class="fn-h3-link" href="https://www.hiascend.com/industries/solutions/smart-city" target="_blank" rel="noopener">查看示例来源</a></h4>
+      <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
     <span class="fn-ex-label is-good">正面</span>
@@ -869,7 +1041,7 @@ h3.fn-h3 .fn-h3-link:hover,
           <span class="case-video-play" aria-hidden="true"></span>
         </div>
         <div class="case-video-copy">
-          <h4>以智生慧、融慧赋能</h4>
+          <p class="case-video-copy-t">以智生慧、融慧赋能</p>
           <p>深圳龙岗以「数据 + 算力」打造智慧城市 2.0，赋能城管、消防、交通、工地、水务、市监 6 大领域、60+ 场景。</p>
           <p>大运 AI 小镇以「数据 + 算力 + 平台」孵化企业，开发 20 多种 AI 算法。</p>
         </div>
@@ -877,41 +1049,90 @@ h3.fn-h3 .fn-h3-link:hover,
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>正确做法：</strong>播放器旁写标题与要点正文；画面烧字不算文本替代。</li>
+      <li><strong>正确做法：</strong></li>
+      <li>1. 播放器旁写标题与要点正文</li>
+      <li>2. 画面烧字不算文本替代</li>
     </ul>
     </div>
     </div>
   </div>
-  </div>
+</div>
+      <div class="ex-fold-bar">
+        <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex1-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
+        <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex1-html" aria-label="前端源码调整"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
       </div>
-
-      <div class="principle-example">
-        <h4 class="fn-h4">用旁侧文字表达音频要点</h4>
-<div class="fn-ex-row">
-  <div class="fn-ex">
-    <div class="fn-ex-head">
-    <span class="fn-ex-label">反面</span>
-    <div class="fn-ex-bar" aria-hidden="true"></div>
+      <div class="ex-fold-panel" id="ex1-md" hidden>
+        <div class="ex-card-pair">
+    <p class="ex-card-title">Markdown 书写</p>
+    <div class="ex-fold-intro">
+      <ul class="fn-ex-list">
+        <li>1. 页内写出标题与要点，禁止只写「详见视频」</li>
+        <li>2. 概括关键事实即可，不必逐字转写口播</li>
+      </ul>
     </div>
-    <div class="fn-ex-body">
-    <div class="fn-ex-mock" aria-label="反面：只有音频条">
-      <div class="st-card">
-        <div class="audio-bar">
-          <span class="audio-bar-play" aria-hidden="true"></span>
-          <span class="audio-bar-wave" aria-hidden="true">
-            <i style="height:8px"></i><i style="height:16px"></i><i style="height:12px"></i><i style="height:22px"></i><i style="height:10px"></i><i style="height:18px"></i><i style="height:14px"></i><i style="height:20px"></i><i style="height:9px"></i><i style="height:16px"></i><i style="height:11px"></i><i style="height:19px"></i><i style="height:7px;background:#d9d9d9"></i><i style="height:13px;background:#d9d9d9"></i><i style="height:8px;background:#d9d9d9"></i><i style="height:15px;background:#d9d9d9"></i>
-          </span>
-          <span class="audio-bar-time">8:15</span>
+    <div class="ex-card-pane">
+      <div class="ex-card-pane-head">
+        <span class="fn-ex-label">反面</span>
+        <div class="fn-ex-bar" aria-hidden="true"></div>
+      </div>
+      <figure class="file-sample file-sample--compact">
+        <pre><code class="language-markdown">## 案例视频
+
+<span class="code-line-hl is-bad">详见下方视频讲解。</span></code></pre>
+      </figure>
+    </div>
+    <div class="ex-card-pane">
+      <div class="ex-card-pane-head">
+        <span class="fn-ex-label is-good">正面</span>
+        <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+      </div>
+      <figure class="file-sample file-sample--compact">
+        <pre><code class="language-markdown">## 以智生慧、融慧赋能
+
+<span class="code-line-hl is-good">深圳龙岗以「数据 + 算力」打造智慧城市 2.0，赋能城管、消防、交通、工地、水务、市监 6 大领域、60+ 场景。</span>
+
+<span class="code-line-hl is-good">大运 AI 小镇以「数据 + 算力 + 平台」孵化企业，开发 20 多种 AI 算法。</span></code></pre>
+      </figure>
+    </div>
         </div>
       </div>
+      <div class="ex-fold-panel" id="ex1-html" hidden>
+        <div class="ex-card-pair">
+    <p class="ex-card-title">前端源码调整</p>
+    <div class="ex-fold-intro">
+      <ul class="fn-ex-list">
+        <li>1. 标题与要点随首包输出，不要异步注入</li>
+        <li>2. 字幕轨可有，但不能当唯一替代</li>
+      </ul>
     </div>
-    <div class="fn-ex-foot">
-    <ul class="fn-ex-list">
-      <li><strong>常见疏漏：</strong>仅有波形与时长，未配标题与要点，机器无法识别所讲内容。</li>
-    </ul>
+    <div class="ex-card-pane">
+      <div class="ex-card-pane-head">
+        <span class="fn-ex-label">反面</span>
+        <div class="fn-ex-bar" aria-hidden="true"></div>
+      </div>
+      <figure class="file-sample file-sample--compact">
+        <pre><code class="language-html"><span class="code-line-hl is-bad">&lt;video src="case.mp4"&gt;&lt;/video&gt;</span>
+<span class="code-line-hl is-bad">&lt;div id="tips" data-lazy="true"&gt;&lt;/div&gt;</span></code></pre>
+      </figure>
     </div>
+    <div class="ex-card-pane">
+      <div class="ex-card-pane-head">
+        <span class="fn-ex-label is-good">正面</span>
+        <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+      </div>
+      <figure class="file-sample file-sample--compact">
+        <pre><code class="language-html">&lt;video src="case.mp4"&gt;&lt;/video&gt;
+&lt;aside class="media-tips"&gt;
+<span class="code-line-hl is-good">  &lt;h3&gt;以智生慧、融慧赋能&lt;/h3&gt;</span>
+<span class="code-line-hl is-good">  &lt;p&gt;深圳龙岗以「数据 + 算力」打造智慧城市 2.0……&lt;/p&gt;</span>
+&lt;/aside&gt;</code></pre>
+      </figure>
     </div>
-  </div>
+        </div>
+      </div>
+
+        <h4 class="fn-h4">示例 2 · 音频</h4>
+      <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
     <span class="fn-ex-label is-good">正面</span>
@@ -928,160 +1149,120 @@ h3.fn-h3 .fn-h3-link:hover,
           <span class="audio-bar-time">8:15</span>
         </div>
         <div class="case-video-copy">
-          <h4>CANN 安装答疑</h4>
+          <p class="case-video-copy-t">CANN 安装答疑</p>
           <p>驱动版本须与 CANN 配套；配置 PATH 后用版本查询确认匹配。</p>
         </div>
       </div>
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
-      <li><strong>正确做法：</strong>音频条旁写标题与要点正文；波形只辅助。</li>
-      <li><strong>可免场景：</strong>装饰性背景音，且旁侧要点已覆盖同一内容时，音频可只装饰。</li>
+      <li><strong>正确做法：</strong></li>
+      <li>1. 音频条旁写标题与要点正文</li>
+      <li>2. 波形只辅助，口播不算文本替代</li>
     </ul>
     </div>
     </div>
   </div>
-  </div>
-      </div>
-
-      <p class="principle-example-note" style="margin-top:12px;">设计专项完整说明见 <a href="design-guide-media.html">音视频要点伴随</a>。</p>
-    </section>
-
-<section class="section" id="content-adjust">
-      <h2>文档内容调整</h2>
-
-      <h3 class="fn-h3" id="content-suggestions">调整建议</h3>
-      <ul class="principle-suggestions">
-        <li>
-          <span class="sug-title">要点与口播一致</span>
-          <span class="sug-desc">用条目概括操作步骤、命令与预期结果；旁侧要点须与口播关键事实一致，勿另写一套营销摘要。</span>
-        </li>
-        <li>
-          <span class="sug-title">页内须有足够摘要</span>
-          <span class="sug-desc">可链完整讲义 / Markdown，但页内须有足够步骤与结论摘要，禁止「详见视频」作为唯一出处。</span>
-        </li>
-      </ul>
-
-      <h3 class="fn-h3" id="content-example">调整示例</h3>
-      <div class="principle-example">
-        <h4 class="fn-h4">要点须写进旁侧正文</h4>
-        <div class="fn-ex-row" id="media-content-points">
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label">反面</span>
-              <div class="fn-ex-bar" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="反面：仅指向视频">
-                <pre class="st-code">## 安装步骤
-
-详见下方视频讲解。
-
-← 源稿无步骤正文</pre>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>常见疏漏：</strong>关键步骤只在口播里，机器抓不到可引用结论。</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label is-good">正面</span>
-              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="正面：旁侧要点">
-                <pre class="st-code">## 安装步骤（视频要点）
-
-1. 驱动版本须与 CANN 配套
-2. 配置 PATH 后查询版本确认匹配
-3. 安装完成后重启设备
-
-（完整讲义见附件 MD）</pre>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>正确做法：</strong>页内摘要覆盖关键步骤；讲义可作补充链。</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="frontend-adjust">
-      <h2>前端调整</h2>
-
-      <h3 class="fn-h3" id="frontend-suggestions">调整建议</h3>
-      <ul class="principle-suggestions">
-        <li>
-          <span class="sug-title">要点在首包 HTML</span>
-          <span class="sug-desc">旁侧标题与要点须随首包输出；禁止仅靠 XHR / 点击后加载字幕或摘要作为唯一文本。</span>
-        </li>
-        <li>
-          <span class="sug-title">字幕不作唯一替代</span>
-          <span class="sug-desc">可提供字幕轨，但关键步骤仍须以可见正文 / 要点块交付；勿假设爬虫会解析媒体轨。</span>
-        </li>
-        <li>
-          <span class="sug-title">装饰媒体勿入库</span>
-          <span class="sug-desc">装饰性背景视频 / 氛围音标记跳过向量化；信息型媒体旁的要点块须参与切片。</span>
-        </li>
-      </ul>
-
-      <h3 class="fn-h3" id="frontend-example">调整示例</h3>
-      <div class="principle-example">
-        <h4 class="fn-h4">旁侧要点须在首包</h4>
-        <div class="fn-ex-row" id="media-frontend-ssr">
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label">反面</span>
-              <div class="fn-ex-bar" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="反面：要点后加载">
-                <pre class="st-code">&lt;video src="install.mp4"&gt;&lt;/video&gt;
-&lt;div id="tips" data-lazy="true"&gt;&lt;/div&gt;
-&lt;script&gt;fetchTips().then(render)&lt;/script&gt;
-
-← 静态抓取无要点</pre>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>常见疏漏：</strong>要点异步注入，禁 JS 时只有空播放器。</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label is-good">正面</span>
-              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="正面：首包含要点">
-                <pre class="st-code">&lt;video src="install.mp4"&gt;&lt;/video&gt;
-&lt;aside class="media-tips"&gt;
-  &lt;h3&gt;CANN 安装答疑&lt;/h3&gt;
-  &lt;p&gt;驱动版本须与 CANN 配套；
-  配置 PATH 后用版本查询确认匹配。&lt;/p&gt;
-&lt;/aside&gt;</pre>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>正确做法：</strong>首包即含标题与要点文本节点。</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-  </main>
 </div>
+      <div class="ex-fold-bar">
+        <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex2-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
+        <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex2-html" aria-label="前端源码调整"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
+      </div>
+      <div class="ex-fold-panel" id="ex2-md" hidden>
+        <div class="ex-card-pair">
+    <p class="ex-card-title">Markdown 书写</p>
+    <div class="ex-fold-intro">
+      <ul class="fn-ex-list">
+        <li>1. 用条目概括操作步骤与确认方式</li>
+        <li>2. 页内摘要须覆盖口播关键事实</li>
+      </ul>
+    </div>
+    <div class="ex-card-pane">
+      <div class="ex-card-pane-head">
+        <span class="fn-ex-label">反面</span>
+        <div class="fn-ex-bar" aria-hidden="true"></div>
+      </div>
+      <figure class="file-sample file-sample--compact">
+        <pre><code class="language-markdown">## 安装步骤
+
+<span class="code-line-hl is-bad">详见下方音频讲解。</span></code></pre>
+      </figure>
+    </div>
+    <div class="ex-card-pane">
+      <div class="ex-card-pane-head">
+        <span class="fn-ex-label is-good">正面</span>
+        <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+      </div>
+      <figure class="file-sample file-sample--compact">
+        <pre><code class="language-markdown">## CANN 安装答疑
+
+<span class="code-line-hl is-good">1. 驱动版本须与 CANN 配套</span>
+<span class="code-line-hl is-good">2. 配置 PATH 后查询版本确认匹配</span>
+<span class="code-line-hl is-good">3. 安装完成后重启设备</span></code></pre>
+      </figure>
+    </div>
+        </div>
+      </div>
+      <div class="ex-fold-panel" id="ex2-html" hidden>
+        <div class="ex-card-pair">
+    <p class="ex-card-title">前端源码调整</p>
+    <div class="ex-fold-intro">
+      <ul class="fn-ex-list">
+        <li>1. 标题与要点写成可见文本节点</li>
+        <li>2. 装饰性氛围音可跳过入库，信息型要点须进切片</li>
+      </ul>
+    </div>
+    <div class="ex-card-pane">
+      <div class="ex-card-pane-head">
+        <span class="fn-ex-label">反面</span>
+        <div class="fn-ex-bar" aria-hidden="true"></div>
+      </div>
+      <figure class="file-sample file-sample--compact">
+        <pre><code class="language-html"><span class="code-line-hl is-bad">&lt;audio src="faq.mp3" controls&gt;&lt;/audio&gt;</span></code></pre>
+      </figure>
+    </div>
+    <div class="ex-card-pane">
+      <div class="ex-card-pane-head">
+        <span class="fn-ex-label is-good">正面</span>
+        <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+      </div>
+      <figure class="file-sample file-sample--compact">
+        <pre><code class="language-html">&lt;audio src="faq.mp3" controls&gt;&lt;/audio&gt;
+&lt;aside class="media-tips"&gt;
+<span class="code-line-hl is-good">  &lt;h3&gt;CANN 安装答疑&lt;/h3&gt;</span>
+<span class="code-line-hl is-good">  &lt;p&gt;驱动版本须与 CANN 配套；配置 PATH 后用版本查询确认匹配。&lt;/p&gt;</span>
+&lt;/aside&gt;</code></pre>
+      </figure>
+    </div>
+        </div>
+      </div>
+      </div>
+    </section>
+
+    <section class="section" id="benefits">
+      <h2>价值收益</h2>
+      <ul class="bg-list">
+        <li><strong>不必听完也能引用</strong>Agent 能点名案例结论与安装要点，而不必解析媒体轨或依赖烧字。</li>
+        <li><strong>口播与正文可核对</strong>旁侧摘要覆盖关键步骤与参数后，回答可带回可复核的文字证据（如驱动须与 CANN 配套）。</li>
+      </ul>
+    </section>
+  </main>
+
+</div>
+
+<script>
+(function () {
+  document.querySelectorAll(".ex-fold-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var panel = document.getElementById(btn.getAttribute("aria-controls"));
+      if (!panel) return;
+      var open = btn.getAttribute("aria-expanded") === "true";
+      btn.setAttribute("aria-expanded", open ? "false" : "true");
+      panel.hidden = open;
+    });
+  });
+})();
+</script>
 
 <script src="assets/js/site-config.js"></script>
 <script src="assets/js/site-init.js"></script>
