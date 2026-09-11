@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mintlify llms · 实测记录 · 昇腾社区 AI 亲和原则</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid var(--color-border);
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: 100%; max-width: none; margin: 0; padding: 0 24px; box-sizing: border-box;
+    height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: var(--color-text); text-decoration: none; white-space: nowrap; margin-right: 40px;
+  }
+  .topbar .brand span { color: var(--color-primary); }
+  .topbar .site-nav { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; flex-wrap: wrap; }
+  .topbar .site-nav > a {
+    text-decoration: none; color: var(--color-text-secondary); font-size: var(--text-body); font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .topbar .site-nav > a:hover { color: var(--color-primary); background: var(--color-bg); text-decoration: none; }
+  .topbar .site-nav > a.active { color: var(--color-primary); background: var(--color-bg); font-weight: 600; }
+  .nav-dd { position: relative; z-index: 210; display: inline-flex; align-items: center; }
+  .nav-dd-trigger {
+    appearance: none; border: 0; background: transparent; cursor: pointer; font: inherit;
+    text-decoration: none; color: var(--color-text-secondary); font-size: var(--text-body); font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+    display: inline-flex; align-items: center; gap: 12px;
+  }
+  .nav-dd-trigger::after {
+    content: ""; width: 6px; height: 6px;
+    border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg); opacity: .65; margin-top: -3px; flex-shrink: 0;
+  }
+  .nav-dd-trigger:hover, .nav-dd:hover .nav-dd-trigger, .nav-dd:focus-within .nav-dd-trigger {
+    color: var(--color-primary); background: var(--color-bg);
+  }
+  .nav-dd::before { content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 10px; }
+  .nav-dd-panel {
+    position: absolute; top: calc(100% + 4px); left: 0; min-width: 148px; padding: 6px;
+    background: #fff; border: 1px solid var(--color-border); border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(25, 25, 25, 0.08);
+    opacity: 0; visibility: hidden; transform: translateY(-4px);
+    transition: opacity .15s, transform .15s, visibility .15s; z-index: 210;
+  }
+  .nav-dd:hover .nav-dd-panel, .nav-dd:focus-within .nav-dd-panel {
+    opacity: 1; visibility: visible; transform: translateY(0);
+  }
+  .nav-dd-panel a {
+    display: block; padding: 8px 12px; border-radius: 6px; text-decoration: none;
+    color: var(--color-text-secondary); font-size: 13px; font-weight: 500; line-height: 1.4;
+  }
+  .nav-dd-panel a:hover { color: var(--color-primary); background: var(--color-bg); }
+  body.inner-page .page-wrapper { min-height: 100vh; }
+
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: var(--space-stack, 16px);
+  }
+  .page-header > h1 {
+    font-family: var(--font);
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1-weight, 600);
+    line-height: var(--text-h1-lh);
+    letter-spacing: -0.02em;
+    margin: 0;
+    padding-top: var(--space-h1-pad-y, 32px);
+    padding-bottom: var(--space-h1-pad-y, 32px);
+    color: var(--color-text);
+  }
+  .page-header .page-desc {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  body.inner-page[data-page="llms-parse-mintlify"]:has(#module-sidebar) .main-content {
+    padding-top: var(--content-main-pad-top, 16px);
+    padding-left: 0;
+    padding-right: 0;
+  }
+  body.inner-page[data-page="llms-parse-mintlify"]:has(#module-sidebar) .main-content > .page-header,
+  body.inner-page[data-page="llms-parse-mintlify"]:has(#module-sidebar) .main-content > .section,
+  body.inner-page[data-page="llms-parse-mintlify"]:has(#module-sidebar) .main-content > .surface-tabs {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page[data-page="llms-parse-mintlify"] .main-content .section > h2 {
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    letter-spacing: -0.01em;
+    margin-top: 0;
+    margin-bottom: var(--space-stack, 16px);
+    padding-top: var(--space-h2-pad-y, 16px);
+    padding-bottom: var(--space-h2-pad-y, 16px);
+    border-bottom: 2px solid var(--color-card-border);
+    color: var(--color-text, var(--color-text));
+  }
+  body.inner-page[data-page="llms-parse-mintlify"] .main-content > .section {
+    margin-bottom: var(--space-stack, 16px);
+  }
+  body.inner-page[data-page="llms-parse-mintlify"] .main-content .section > p {
+    margin: 0;
+  }
+  body.inner-page[data-page="llms-parse-mintlify"] .main-content .section h3 { height: auto; }
+  h3.fn-h3 {
+    margin: 0 0 var(--space-stack, 16px);
+    padding-top: var(--space-h3-pad-y, 16px);
+    padding-bottom: var(--space-h3-pad-y, 16px);
+    font-size: var(--text-h3, 18px);
+    line-height: var(--text-h3-lh, 28px);
+    font-weight: var(--text-h3-weight, 650);
+    color: var(--color-text, var(--color-text));
+    letter-spacing: -0.01em;
+  }
+  body.inner-page[data-page="llms-parse-mintlify"] .main-content .section h4 { height: auto; }
+  h4.fn-h4 {
+    margin: 0 0 var(--space-stack, 16px);
+    padding-top: var(--space-h4-pad-y, 16px);
+    padding-bottom: var(--space-h4-pad-y, 16px);
+    font-size: var(--text-h4, 14px);
+    line-height: var(--text-h4-lh, 22px);
+    font-weight: var(--text-h4-weight, 650);
+    color: var(--color-text, var(--color-text));
+    letter-spacing: -0.01em;
+  }
+  h3.fn-h3 + .principle-example > h4.fn-h4,
+  h3.fn-h3 + h4.fn-h4 { margin-top: 0; }
+  #practices .file-lead {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: 22px;
+    color: var(--color-text-secondary);
+  }
+  #practices .file-lead + h4.fn-h4,
+  #practices .file-sample + h4.fn-h4,
+  #practices .file-sample-note + h4.fn-h4,
+  #practices h2 + h4.fn-h4 {
+    margin-top: var(--space-stack, 16px);
+  }
+  #practices .bg-list + h2,
+  #practices .file-sample + h2 {
+    margin-top: var(--space-stack, 16px);
+  }
+  #practices .file-lead + .file-sample {
+    margin-top: var(--space-stack, 16px);
+  }
+  .practice-block {
+    margin: 0;
+    padding: 0;
+    border: none;
+  }
+  .practice-block + .practice-block {
+    margin-top: var(--space-stack, 16px);
+  }
+
+  body.inner-page[data-page="llms-parse-mintlify"] .main-content .section > p.flow-verify {
+    margin: var(--space-stack, 16px) 0 0;
+    font-size: var(--text-body);
+    line-height: 22px;
+  }
+  .flow-verify a {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 650;
+  }
+  .flow-verify a:hover {
+    text-decoration: underline;
+  }
+  body.inner-page[data-page="llms-parse-mintlify"] .main-content > .section:first-of-type > h2 {
+    margin-top: 0;
+  }
+  .bg-body {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: 22px;
+    color: var(--color-text, var(--color-text));
+  }
+  .bg-body:last-child { margin-bottom: 0; }
+  .bg-list {
+    margin: 0;
+    padding-left: 1.25em;
+    font-size: var(--text-body);
+    line-height: 22px;
+    color: var(--color-text, var(--color-text));
+  }
+  .bg-list li + li { margin-top: 6px; }
+  #principles .bg-list,
+  #practices .bg-list,
+  #benefits .bg-list {
+    list-style: disc;
+    padding-left: 1.25em;
+    margin: 0;
+  }
+  #principles .bg-list li + li,
+  #practices .bg-list li + li,
+  #benefits .bg-list li + li { margin-top: 16px; }
+  #principles .bg-list li strong,
+  #practices .bg-list li strong,
+  #benefits .bg-list li strong {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  /* 约定路径等短条目：题头与正文同一行 */
+  #practices .bg-list.-inline li strong {
+    display: inline;
+    margin-bottom: 0;
+  }
+  #practices .bg-list.-inline li strong::after {
+    content: "：";
+  }
+  #principles .bg-list li,
+  #practices .bg-list li,
+  #benefits .bg-list li {
+    color: var(--color-text-secondary);
+  }
+  .file-sample {
+    margin: 0;
+    padding: 0;
+    background: #1e1e1e;
+    border: 1px solid #111;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .file-sample figcaption {
+    margin: 0;
+    padding: 10px 14px;
+    font-size: var(--text-auxiliary);
+    font-weight: 650;
+    line-height: 22px;
+    color: #a3a3a3;
+    border-bottom: 1px solid #333;
+  }
+  .file-sample figcaption code {
+    font-size: inherit;
+    color: #e8e8e8;
+    background: none;
+  }
+  .file-sample pre {
+    margin: 0;
+    padding: 12px 14px 14px;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: var(--text-auxiliary);
+    line-height: 20px;
+    color: #e8e8e8;
+    background: transparent;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    overflow-x: hidden;
+  }
+  .file-sample pre code {
+    display: block;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    color: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    font-family: inherit;
+    white-space: inherit;
+  }
+  .file-sample .cmt { color: #737373; }
+  .file-sample:has(+ .file-sample-note) { margin-bottom: 8px; }
+  .file-sample-note {
+    margin: 0;
+    font-size: 13px;
+    line-height: 22px;
+    color: #8c8c8c;
+  }
+  h3.fn-h3 + .file-sample { margin-top: 0; }
+  .file-sample + .bg-list,
+  .file-sample-note + .bg-list { margin-top: 0; }
+  .af-figure {
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: none;
+    overflow-x: auto;
+    border-radius: 8px;
+  }
+
+  .aj {
+    width: 100%;
+    min-width: 880px;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+    color: var(--color-text);
+  }
+  .aj caption {
+    caption-side: top;
+    text-align: left;
+    font-size: var(--text-body);
+    font-weight: 650;
+    line-height: var(--text-body-lh);
+    padding: 0 0 10px;
+    color: var(--color-text);
+  }
+  .aj .aj-col-mute { width: 76px; }
+  .aj td.is-mute {
+    color: #8c8c8c;
+  }
+  .aj th,
+  .aj td {
+    border: 1px solid #e8eef5;
+    border-top: none;
+    border-left: none;
+    vertical-align: top;
+    padding: 12px 12px;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+  }
+  .aj thead tr:first-child > th {
+    border-top: 1px solid #e8eef5;
+  }
+  .aj .aj-corner,
+  .aj .aj-label {
+    width: 92px;
+    background: #f5f6f8;
+    color: var(--color-text-secondary);
+    font-weight: 650;
+    vertical-align: middle;
+    text-align: left;
+    padding: 12px 12px;
+    border-left: 1px solid #e8eef5;
+  }
+  .aj thead th.aj-corner {
+    background: #f5f6f8;
+    color: var(--color-text-secondary);
+    padding: 12px 12px;
+    border-top-left-radius: 8px;
+  }
+  .aj thead tr.aj-group > th:last-child {
+    border-top-right-radius: 8px;
+  }
+  .aj tbody tr:last-child .aj-label {
+    border-bottom-left-radius: 8px;
+  }
+  .aj tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 8px;
+  }
+  .aj thead th {
+    background: #f5f6f8;
+    font-weight: 650;
+    text-align: left;
+    padding: 12px 12px;
+    color: var(--color-text);
+  }
+  .aj thead th.aj-group {
+    text-align: center;
+    vertical-align: middle;
+    font-weight: 650;
+    letter-spacing: 0;
+    background: #eceef1;
+    color: var(--color-text);
+    padding: 10px 12px;
+  }
+  .aj thead th.aj-span {
+    vertical-align: middle;
+  }
+  .aj thead .aj-stage-name {
+    display: block;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  .aj thead .aj-corner .aj-stage-name {
+    color: inherit;
+    margin-bottom: 2px;
+  }
+  .aj thead .aj-mute {
+    background: #f5f6f8;
+    color: var(--color-text-secondary);
+  }
+  .aj thead .aj-mute .aj-stage-name { color: var(--color-text-secondary); }
+  .aj thead .aj-pri,
+  .aj thead .aj-opt {
+    background: #f5f6f8;
+  }
+  .aj thead .aj-fb {
+    background: #f3f3f3;
+  }
+  .aj .aj-tag {
+    display: block;
+    width: fit-content;
+    margin: 0;
+    padding: 0 6px;
+    border-radius: 3px;
+    font-size: var(--text-micro);
+    font-weight: 700;
+    line-height: 18px;
+    color: var(--color-primary);
+  }
+  .aj-tag--must { background: rgba(20, 118, 255, .18); }
+  .aj-tag--pri  { background: rgba(20, 118, 255, .12); }
+  .aj-tag--opt  { background: rgba(20, 118, 255, .08); }
+  .aj-tag--fb   { background: rgba(20, 118, 255, .04); color: #3d7fd4; }
+  .aj tbody td:not(.is-mute):not(.is-fb):not(.is-pri):not(.aj-label) {
+    background: #fff;
+  }
+  .aj td.is-pri { background: #f7fbff; }
+  .aj td.is-fb { background: var(--color-card-bg); }
+  .aj td.is-mute { background: #f5f6f8 !important; color: #8c8c8c; }
+  .aj td .aj-subhead {
+    display: block;
+    font-weight: 650;
+    color: var(--color-text);
+    margin: 0 0 6px;
+  }
+  .aj-stack + .aj-stack { margin-top: 12px; }
+  .aj .aj-file {
+    display: block;
+    margin: 0 0 6px;
+    font-family: var(--font-mono, "SF Mono", monospace);
+    font-weight: 650;
+    color: var(--color-primary);
+  }
+  .aj ul {
+    margin: 0;
+    padding-left: 1.1em;
+  }
+  .aj li {
+    color: inherit;
+    margin-bottom: 0;
+  }
+  .aj li + li { margin-top: 8px; }
+  .aj code {
+    font-size: inherit;
+    line-height: inherit;
+  }
+
+  #scenarios .scene-def-table td .badge { border: none; }
+  .scene-def-table td .badge-optional {
+    background: var(--color-bg);
+    color: var(--color-text-secondary);
+  }
+  .scene-def-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--text-body);
+    line-height: 22px;
+    margin: 0 0 24px;
+    table-layout: fixed;
+  }
+  .scene-def-table th,
+  .scene-def-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: middle;
+    font-size: var(--text-body);
+    line-height: 22px;
+    font-weight: 400;
+  }
+  .scene-def-table tbody td {
+    height: auto;
+    min-height: 48px;
+  }
+  .scene-def-table th {
+    font-size: var(--text-auxiliary);
+    font-weight: 650;
+    color: var(--color-text-secondary);
+    background: var(--color-card-bg);
+    height: 40px;
+    box-sizing: border-box;
+  }
+  .scene-def-table .col-type { width: 18%; }
+  .scene-def-table .col-desc { width: 55%; }
+  .scene-def-table .col-place { width: 27%; }
+  #objects .scene-def-table .col-type,
+  #scenarios .scene-def-table .col-type { width: 22%; }
+  #objects .scene-def-table .col-desc { width: 78%; }
+  #scenarios .scene-def-table .col-place { width: 38%; }
+  #scenarios .scene-def-table .col-desc { width: 40%; }
+
+  .fn-ex-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr auto;
+    column-gap: 16px;
+    row-gap: 0;
+    align-items: stretch;
+    margin: 16px 0 0;
+  }
+  .fn-ex-row .fn-ex {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 1 / span 3;
+    margin: 0;
+    min-width: 0;
+  }
+  .fn-ex-row .fn-ex-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .fn-ex-row .fn-ex-head .fn-ex-label { margin: 0; }
+  .fn-ex-row .fn-ex-head .fn-ex-bar {
+    display: block; margin: 0; width: 100%; align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-body {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 2 / span 2;
+    min-height: 0;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .fn-ex-row .fn-ex-mock {
+    min-height: 0; height: 100%; box-sizing: border-box;
+    border: none; border-radius: 0; align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-mock:has(.site-foot) {
+    background: var(--color-bg);
+    padding: 12px;
+  }
+  .fn-ex-row .fn-ex-mock pre.st-code {
+    margin: 0;
+    padding: 14px 16px;
+    background: #1e1e1e;
+    border: 1px solid #111;
+    border-radius: 0;
+    font-size: var(--text-auxiliary);
+    line-height: 18px;
+    color: #e8e8e8;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow: auto;
+    box-sizing: border-box;
+    min-height: 100%;
+  }
+  .fn-ex-row .fn-ex-foot {
+    display: flex; flex-direction: column; gap: 8px;
+    padding: 12px 14px 14px; background: #fff;
+    border-top: 1px solid var(--color-border);
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-list { margin: 0; gap: 4px; }
+  .fn-ex-label {
+    display: inline-block; padding: 0 8px; border-radius: 4px;
+    font-size: var(--text-auxiliary); font-weight: 650; line-height: 20px;
+    color: #b42318; background: #fef3f2;
+  }
+  .fn-ex-label.is-good { color: #047857; background: #ecfdf5; }
+  .fn-ex-bar {
+    display: block; width: 100%; height: 3px;
+    background: #b42318; border-radius: 2px;
+  }
+  .fn-ex-bar.is-good { background: #047857; }
+  .fn-ex-list {
+    margin: 0; padding: 0 0 0 1.25em; list-style: disc;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .fn-ex-list li {
+    margin: 0; font-size: var(--text-body); line-height: 22px; color: var(--color-text);
+  }
+  .fn-ex-list strong { font-weight: 650; }
+  .site-foot {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 10px;
+    overflow: hidden;
+    font-family: var(--font);
+  }
+  .site-foot-body {
+    padding: 16px 14px 20px;
+    min-height: 52px;
+    background: linear-gradient(180deg, #fafbfc 0%, #fff 100%);
+  }
+  .site-foot-body p {
+    margin: 0;
+    font-size: var(--text-caption);
+    line-height: 16px;
+    color: #bfbfbf;
+  }
+  .site-foot-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 12px;
+    padding: 10px 14px;
+    border-top: 1px solid #eef1f5;
+    background: var(--color-card-bg);
+  }
+  .site-foot-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .site-foot-links a {
+    font-size: var(--text-caption);
+    line-height: 16px;
+    color: #8c8c8c;
+    text-decoration: none;
+  }
+  .site-foot-links a.is-machine {
+    color: var(--color-text-secondary);
+    font-variant-numeric: tabular-nums;
+  }
+  .site-foot-copy {
+    margin: 0;
+    font-size: var(--text-micro);
+    line-height: 14px;
+    color: #bfbfbf;
+  }
+  .principle-example + .principle-example { margin-top: var(--space-stack, 16px); }
+
+  #design-ui .principle-suggestions,
+  #content-adjust .principle-suggestions,
+  #frontend-adjust .principle-suggestions {
+    list-style: none;
+    margin: 0 0 32px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    counter-reset: sug;
+  }
+  #design-ui .principle-suggestions > li,
+  #content-adjust .principle-suggestions > li,
+  #frontend-adjust .principle-suggestions > li {
+    position: relative;
+    margin: 0;
+    padding: 0 0 0 36px;
+    color: var(--color-text-secondary);
+  }
+  #design-ui .principle-suggestions > li::before,
+  #content-adjust .principle-suggestions > li::before,
+  #frontend-adjust .principle-suggestions > li::before {
+    counter-increment: sug;
+    content: counter(sug);
+    position: absolute;
+    left: 0;
+    top: 2px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #eff6ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--text-auxiliary);
+    font-weight: 700;
+    line-height: 22px;
+    letter-spacing: 0.02em;
+    color: var(--color-primary);
+  }
+  #design-ui .principle-suggestions > li .sug-title,
+  #content-adjust .principle-suggestions > li .sug-title,
+  #frontend-adjust .principle-suggestions > li .sug-title {
+    display: block;
+    margin: 0 0 6px;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 24px;
+    color: var(--color-text);
+  }
+  #design-ui .principle-suggestions > li .sug-desc,
+  #content-adjust .principle-suggestions > li .sug-desc,
+  #frontend-adjust .principle-suggestions > li .sug-desc {
+    display: block;
+    margin: 0;
+    max-width: none;
+    width: 100%;
+    font-size: var(--text-body);
+    font-weight: 400;
+    line-height: 24px;
+    color: var(--color-text-secondary);
+  }
+
+  @media (max-width: 900px) {
+    .fn-ex-row {
+      grid-template-columns: 1fr;
+      grid-template-rows: none;
+    }
+    .fn-ex-row .fn-ex { display: block; grid-row: auto; }
+    .fn-ex-row .fn-ex-body {
+      display: flex; flex-direction: column; grid-row: auto;
+    }
+  }
+  #problem > p.page-lead,
+  #mechanism > p.page-lead {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  #problem > h2 + .page-lead,
+  #mechanism > h2 + .page-lead { margin-top: 0; }
+  #mechanism > p.page-lead {
+    margin-bottom: var(--space-stack, 16px);
+  }
+  #mechanism > p.page-lead strong {
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  #mechanism > .page-lead + .af-figure { margin-top: 0; }
+  #mechanism .aj,
+  #path .aj { min-width: 0; }
+  #mechanism .aj col.aj-rowhead,
+  #path .aj col.aj-rowhead { width: 136px; }
+  #mechanism .aj .aj-corner,
+  #mechanism .aj .aj-label,
+  #path .aj .aj-corner,
+  #path .aj .aj-label {
+    width: 136px;
+    white-space: nowrap;
+    color: var(--color-text);
+  }
+  #mechanism .aj thead th,
+  #path .aj thead th {
+    text-align: left;
+    vertical-align: bottom;
+  }
+  #core-principles > h2 + .bg-list { margin-top: 0; }
+  #core-principles .bg-list,
+  #benefits .bg-list {
+    list-style: disc;
+    padding-left: 1.25em;
+    margin: 0;
+  }
+  #core-principles .bg-list li + li,
+  #benefits .bg-list li + li { margin-top: 16px; }
+  #core-principles .bg-list li > strong:first-child,
+  #benefits .bg-list li > strong:first-child {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  #core-principles .bg-list li,
+  #benefits .bg-list li { color: var(--color-text-secondary); }
+  .file-sample {
+    margin: 0 0 var(--space-stack, 16px);
+  }
+  .file-sample-note {
+    margin: 0 0 var(--space-stack, 16px);
+  }
+  .file-sample .code-line-hl {
+    display: block;
+    padding: 0 14px;
+    margin: 0 -14px;
+    background: rgba(4, 120, 87, 0.28);
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+  .file-sample--wrap pre,
+  .file-sample--wrap pre code {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  #practices > figure.file-sample--wrap:first-of-type pre {
+    height: 200px;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  #practices h2 + h3.fn-h3,
+  #practices h2 + .file-sample-note,
+  #practices h3.fn-h3 + .file-sample-note,
+  #practices .file-sample-note + .file-sample,
+  #practices .file-sample + .file-sample-note {
+    margin-top: 0;
+  }
+  #practices .file-sample-note + h3.fn-h3,
+  #practices .file-sample-note + h2 {
+    margin-top: var(--space-stack, 16px);
+  }
+  #path h2 + h3.fn-h3,
+  #path h3.fn-h3 + .file-sample-note,
+  #path h3.fn-h3 + .af-figure,
+  #path h3.fn-h3 + .file-sample,
+  #path .file-sample + .file-sample-note,
+  #path .file-sample-note + .file-sample,
+  #path .file-sample-note + .af-figure {
+    margin-top: 0;
+  }
+  #path .file-sample-note + h3.fn-h3,
+  #path .af-figure + h3.fn-h3,
+  #path .file-sample + h3.fn-h3 {
+    margin-top: var(--space-stack, 16px);
+  }
+
+  /* 详情页壳：顶部只保留返回与当前位置，不带站点主导航与模块侧栏 */
+  .detail-bar { background: var(--color-surface); }
+  .detail-bar-inner { gap: 12px; }
+  .detail-back {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    margin-left: -6px;
+    border-radius: var(--radius);
+    color: var(--color-text);
+    text-decoration: none;
+    transition: background .15s, color .15s;
+  }
+  .detail-back:hover { background: var(--color-bg); color: var(--color-primary); }
+  .detail-back svg { width: 18px; height: 18px; display: block; }
+  .detail-divider {
+    flex-shrink: 0;
+    width: 1px;
+    height: 18px;
+    background: var(--color-border);
+  }
+  .detail-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+    color: var(--color-text-tertiary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .detail-title a { color: var(--color-text-secondary); text-decoration: none; }
+  .detail-title a:hover { color: var(--color-primary); }
+  .detail-title strong { color: var(--color-text); font-weight: 650; }
+  .detail-exit {
+    flex-shrink: 0;
+    margin-left: auto;
+    padding: 5px 14px;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    font-size: var(--code-copy-size);
+    line-height: var(--text-auxiliary-lh);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    transition: background .15s, color .15s, border-color .15s;
+  }
+  .detail-exit:hover { color: var(--color-primary); border-color: var(--color-primary); background: var(--color-primary-subtle); }
+  .detail-wrapper { display: flex; align-items: flex-start; background: var(--color-surface); }
+  .model-nav {
+    flex-shrink: 0;
+    width: var(--sidebar-width);
+    box-sizing: border-box;
+    position: sticky;
+    top: var(--header-height, 56px);
+    height: calc(100vh - var(--header-height, 56px));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: var(--color-card-bg);
+    border-right: 1px solid var(--color-border);
+  }
+  .model-nav-label {
+    font-size: var(--text-body);
+    font-weight: var(--text-h2-weight);
+    letter-spacing: .04em;
+    color: var(--color-text-tertiary);
+    padding: 4px 6px 2px;
+  }
+  .model-nav-label.is-sub {
+    margin-top: 8px;
+    padding-top: 12px;
+    border-top: 1px solid var(--color-border);
+  }
+  a.nav-vendor {
+    display: block;
+    padding: 6px 10px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+  }
+  a.nav-vendor:hover {
+    color: var(--color-primary);
+    background: var(--color-primary-subtle);
+    text-decoration: none;
+  }
+  a.nav-vendor.is-active {
+    color: var(--color-primary);
+    background: var(--color-primary-subtle);
+    font-weight: 650;
+  }
+  a.nav-model-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 10px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-surface);
+    font: inherit;
+    text-align: left;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition: border-color .15s, box-shadow .15s, background .15s;
+  }
+  a.nav-model-card:hover {
+    border-color: var(--color-primary-hover-border);
+    background: var(--color-primary-subtle);
+  }
+  a.nav-model-card.is-active {
+    border-color: var(--color-primary);
+    background: var(--color-primary-subtle);
+    box-shadow: inset 3px 0 0 var(--color-primary);
+  }
+  a.nav-model-card .idx {
+    font-size: var(--text-body);
+    font-weight: 600;
+    line-height: var(--text-body-lh);
+    color: var(--color-text-secondary);
+  }
+  a.nav-model-card.is-active .idx { color: var(--color-primary); }
+  a.nav-model-card .card-title {
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+    font-weight: 650;
+    color: var(--color-text);
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  @media (max-width: 900px) {
+    .detail-wrapper { flex-direction: column; }
+    .model-nav {
+      width: 100%;
+      position: static;
+      height: auto;
+      max-height: 36vh;
+      border-right: none;
+      border-bottom: 1px solid var(--color-border);
+    }
+  }
+  body.inner-page .detail-wrapper .main-content {
+    padding-top: 40px;
+    min-width: 0;
+    flex: 1;
+    background: var(--color-surface);
+    min-height: calc(100vh - var(--header-height, 56px));
+  }
+  body.inner-page .detail-wrapper .main-content > .page-header,
+  body.inner-page .detail-wrapper .main-content > .section {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin-inline: auto;
+    box-sizing: border-box;
+  }
+</style>
+</head>
+<body class="inner-page agent-entry-page" data-module="principles" data-page="llms-parse-mintlify" data-no-surface-tabs>
+
+<div class="topbar detail-bar">
+  <div class="topbar-inner detail-bar-inner">
+    <a class="detail-back" href="principles-llms-parse.html" aria-label="返回 根 llms 解析">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6L9 12l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <span class="detail-divider" aria-hidden="true"></span>
+    <div class="detail-title"><a href="principles-llms-parse.html">根 llms 解析</a><span aria-hidden="true">›</span>Mintlify<span aria-hidden="true">›</span><strong>根 llms.txt</strong></div>
+    <a class="detail-exit" href="principles-llms-parse.html">返回解析</a>
+  </div>
+</div>
+
+<div class="page-wrapper detail-wrapper">
+
+  <aside class="model-nav" id="llms-parse-nav" data-vendor="mintlify" data-layer="root" aria-label="解析导航"></aside>
+
+  <main class="main-content">
+
+    <div class="page-header">
+      <h1>Mintlify 根 llms.txt</h1>
+    </div>
+
+    <section class="section" id="mechanism">
+      <h2>解析什么</h2>
+      <p class="page-lead">对照 Mintlify 站根 <a href="https://www.mintlify.com/llms.txt" target="_blank" rel="noopener">https://www.mintlify.com/llms.txt</a>。这是单站入口：同一份里分册 <code>llms.txt</code> 与单页 <code>.md</code> 并存。原则写法见<a href="principles-llms.html">根llms</a>。</p>
+    </section>
+
+    <section class="section" id="problem">
+      <h2>它在解决什么</h2>
+      <p class="page-lead">文档站、博客、资料库页多，官网还有定价、法务等一页就能读完的入口。根文件只当目录：大面链分册，单页链 <code>.md</code>，避免全站 URL 堆砌导致截断。</p>
+    </section>
+
+    <section class="section" id="core-principles">
+      <h2>这张根清单怎么分面</h2>
+      <ul class="bg-list">
+        <li><strong>按下一步分节</strong>文档面、站点页、分面入口、可选入口分开，不是把导航菜单原样搬家。</li>
+        <li><strong>大面写分册，单页写 .md</strong>文档 / 博客 / 资料库 / 客户案例链分册；首页、定价、法务直接 <code>.md</code>。</li>
+        <li><strong>正文包不是第二份根清单</strong><code>llms-full.txt</code> 标在 Docs 里，是营销页正文包，不是又一本目录。</li>
+      </ul>
+    </section>
+    <section class="section" id="practices">
+      <h2>根 llms 交付示例</h2>
+      <p class="file-sample-note">对照 Mintlify 站根 <code>llms.txt</code> 全文。收录的是入口：文档/博客/资料库/客户案例的分册 <code>llms.txt</code>，以及首页、定价、法务等一页就能读完的 <code>.md</code>。不收录文档站每一页、每一篇博文或案例的正文——那些在分册里再摊开。分册打开之后写什么，见<a href="principles-llms-volume.html">分册llms</a>。</p>
+
+      <figure class="file-sample file-sample--wrap">
+        <figcaption><code>https://www.mintlify.com/llms.txt</code></figcaption>
+        <pre><code># Mintlify
+
+&gt; Mintlify is the knowledge platform built for agents: self-updating documentation for startups, enterprises, and AI agents. This file indexes the markdown version of every page on www.mintlify.com. Append `.md` to any page URL (or send `Accept: text/markdown`) to get its markdown twin.
+
+## Docs
+
+- [Documentation index](https://www.mintlify.com/docs/llms.txt): llms.txt index of the full product documentation
+- [Documentation home](https://www.mintlify.com/docs/index.md): Mintlify product documentation
+- [Quickstart](https://www.mintlify.com/docs/quickstart.md): deploy your first documentation site
+- [Full corpus](https://www.mintlify.com/llms-full.txt): all marketing pages in one file
+- [Agent skill](https://www.mintlify.com/skill.md): operating guide for agents working with Mintlify
+
+## Pages
+
+- [The Knowledge Platform Built for Agents](https://www.mintlify.com/index.md): Self-updating documentation for startups, enterprises, and agents.
+- [Pricing](https://www.mintlify.com/pricing.md): Choose the plan that works for you. From startups to enterprise, find flexible pricing options that scale with your team.
+- [Enterprise](https://www.mintlify.com/enterprise.md): Scale your documentation with enterprise-grade features.
+- [Careers](https://www.mintlify.com/careers.md): Join us in our mission to empower builders.
+- [Contact Sales](https://www.mintlify.com/contact/sales.md): The knowledge infrastructure agents build on. Book a call with the Mintlify sales team.
+- [Startups](https://www.mintlify.com/startups.md): The Mintlify Startup Program gives eligible venture-backed startups six months of Mintlify Pro free, with 12 months free for companies in the current YC batch.
+- [Migrate your docs to Mintlify](https://www.mintlify.com/switch.md): Migrate your documentation to Mintlify from ReadMe, GitBook, Docusaurus, Fern, or any platform. Get migration support and up to 12 months free.
+- [Support](https://www.mintlify.com/support.md): Get help with Mintlify. Email support, live chat in the dashboard, and self-serve resources. We respond within 2 business days.
+- [Wall of Love](https://www.mintlify.com/wall-of-love.md): See what others are saying about Mintlify.
+- [OSS Program](https://www.mintlify.com/oss-program.md): Support for non-commercial open source projects with Mintlify Pro free forever through the OSS program.
+- [Build vs Buy](https://www.mintlify.com/build-vs-buy.md): Should you build your own documentation platform or buy one? See why the world's top builders chose Mintlify.
+- [Events](https://www.mintlify.com/events.md): Where Mintlify is speaking, upcoming events, past events and recordings.
+- [Data](https://www.mintlify.com/data.md): The internet is being read by agents. Real-time data across every site Mintlify powers: agents vs. humans, MCP requests, geography, and the pages agents keep coming back to.
+- [Convert your codebase into docs](https://www.mintlify.com/wiki.md): Generate guides, references, and API docs from any GitHub repository.
+- [Index](https://www.mintlify.com/search-index.md): One API and MCP server for fast, accurate, up-to-date information from across the technical web.
+- [Developer Documentation](https://www.mintlify.com/use-cases/dev-docs.md): Beautiful docs for developers. Instant answers for the agents they send ahead. Mintlify makes your documentation the fastest path from question to working code.
+- [Knowledge Base](https://www.mintlify.com/use-cases/knowledge-base.md): Your team's source of truth.
+- [API Reference](https://www.mintlify.com/use-cases/api-reference.md): Interactive for developers. Structured for agents. Generated from the spec you already maintain, and updated every time it changes.
+- [Help Center](https://www.mintlify.com/use-cases/help-center.md): Build a beautiful, AI-powered help center with Mintlify.
+- [Mintlify for Slack](https://www.mintlify.com/use-cases/slack-agent.md): A personal agent for your team's knowledge, in Slack. Answers from your docs, pull requests from threads, and context from the rest of your stack.
+- [Documentation for AI Companies](https://www.mintlify.com/industries/ai.md): Documentation that keeps pace with weekly ship cycles, optimized for the agents your users are running. Trusted by the labs defining AI—Anthropic, Perplexity, Baseten, and more.
+
+## Blog
+
+Product updates, engineering deep dives, and company news.
+
+- [Blog posts index (nested)](https://www.mintlify.com/blog/llms.txt): every post with its .md link
+- [Blog listing](https://www.mintlify.com/blog.md): markdown twin of the blog page
+
+## Library
+
+Guides and resources on documentation, AI agents, and developer experience.
+
+- [Library guides index (nested)](https://www.mintlify.com/library/llms.txt): every guide with its .md link
+- [Library listing](https://www.mintlify.com/library.md): markdown twin of the library page
+
+## Customers
+
+Stories from teams that build their documentation with Mintlify.
+
+- [Customer stories index (nested)](https://www.mintlify.com/customers/llms.txt): every story with its .md link
+- [Customers listing](https://www.mintlify.com/customers.md): markdown twin of the customers page
+
+## Legal
+
+Terms, privacy, and provider policies.
+
+- [Privacy Policy](https://www.mintlify.com/legal/privacy.md)
+- [Terms of Service](https://www.mintlify.com/legal/terms.md)
+- [Third-Party Provider Terms](https://www.mintlify.com/legal/third-party-provider-terms.md)
+
+## Security
+
+Security and disclosure policies.
+
+- [Responsible Disclosure](https://www.mintlify.com/security/responsible-disclosure.md)
+
+## Optional
+
+- [Agent Score](https://www.mintlify.com/score.md): live ranking of how documentation sites score for AI agents
+- [Sitemap](https://www.mintlify.com/sitemap.xml): XML sitemap of the HTML pages
+</code></pre>
+      </figure>
+
+      <h2>根 llms.txt 交付件拆解</h2>
+      <p class="file-sample-note">对照 Mintlify 站根 <code>llms.txt</code>：只当目录，不写文章正文。分节按 Agent 下一步要干什么，不是把站点导航原样搬家。同一文件里，分册 <code>llms.txt</code>、单页 <code>.md</code>、正文包、非目录兜底可以并存——先选面，再决定跟哪一种地址。</p>
+
+      <h3 class="fn-h3">页顶</h3>
+      <figure class="file-sample">
+        <figcaption><code>https://www.mintlify.com/llms.txt</code></figcaption>
+        <pre><code># Mintlify
+&gt; Mintlify is the knowledge platform built for agents: self-updating documentation for startups, enterprises, and AI agents. This file indexes the markdown version of every page on www.mintlify.com. Append `.md` to any page URL (or send `Accept: text/markdown`) to get its markdown twin.</code></pre>
+      </figure>
+      <p class="file-sample-note"><code># Mintlify</code> 是站点名。引用块说明本文件是全站 Markdown 索引，并约定：任意页 URL 加 <code>.md</code>，或发送 <code>Accept: text/markdown</code>，即可取平行稿。</p>
+
+      <h3 class="fn-h3">文档面</h3>
+      <figure class="file-sample">
+        <figcaption><code>https://www.mintlify.com/llms.txt</code></figcaption>
+        <pre><code>## Docs
+<span class="code-line-hl">- [Documentation index](https://www.mintlify.com/docs/llms.txt): llms.txt index of the full product documentation</span>
+- [Documentation home](https://www.mintlify.com/docs/index.md): Mintlify product documentation
+- [Quickstart](https://www.mintlify.com/docs/quickstart.md): deploy your first documentation site
+<span class="code-line-hl">- [Full corpus](https://www.mintlify.com/llms-full.txt): all marketing pages in one file</span>
+- [Agent skill](https://www.mintlify.com/skill.md): operating guide for agents working with Mintlify</code></pre>
+      </figure>
+      <p class="file-sample-note">进站主任务是找产品文档，所以单独成节。这一面页多，第一条链分册 <code>docs/llms.txt</code>；home、quickstart、skill 一页就能读完，直接 <code>.md</code>。绿行里的 <code>llms-full.txt</code> 是正文包，不是又一本目录，Agent 不该把它当第二份根清单。分册内部怎么写，见<a href="principles-llms-volume.html">分册llms</a>。</p>
+
+      <h3 class="fn-h3">站点页</h3>
+      <figure class="file-sample">
+        <figcaption><code>https://www.mintlify.com/llms.txt</code></figcaption>
+        <pre><code>## Pages
+- [The Knowledge Platform Built for Agents](https://www.mintlify.com/index.md): Self-updating documentation for startups, enterprises, and agents.
+- [Pricing](https://www.mintlify.com/pricing.md): Choose the plan that works for you.
+- [Enterprise](https://www.mintlify.com/enterprise.md): Scale your documentation with enterprise-grade features.</code></pre>
+      </figure>
+      <p class="file-sample-note">官网营销/公司页：首页、定价、招聘。每页一份平行 <code>.md</code>，没有「再打开一本 llms」。和 Docs 拆开，避免把「读产品手册」和「读官网一页」混在同一组。</p>
+
+      <h3 class="fn-h3">分面入口</h3>
+      <figure class="file-sample">
+        <figcaption><code>https://www.mintlify.com/llms.txt</code></figcaption>
+        <pre><code>## Blog
+- [Blog posts index (nested)](https://www.mintlify.com/blog/llms.txt): every post with its .md link
+- [Blog listing](https://www.mintlify.com/blog.md): markdown twin of the blog page
+## Library
+- [Library guides index (nested)](https://www.mintlify.com/library/llms.txt): every guide with its .md link
+- [Library listing](https://www.mintlify.com/library.md): markdown twin of the library page
+## Customers
+- [Customer stories index (nested)](https://www.mintlify.com/customers/llms.txt): every story with its .md link
+- [Customers listing](https://www.mintlify.com/customers.md): markdown twin of the customers page
+## Legal
+- [Privacy Policy](https://www.mintlify.com/legal/privacy.md)
+- [Terms of Service](https://www.mintlify.com/legal/terms.md)
+- [Third-Party Provider Terms](https://www.mintlify.com/legal/third-party-provider-terms.md)
+## Security
+- [Responsible Disclosure](https://www.mintlify.com/security/responsible-disclosure.md)</code></pre>
+      </figure>
+      <p class="file-sample-note">Blog、Library、Customers 是会持续变长的集合：一条分册 <code>llms.txt</code> 摊开各篇，一条 listing <code>.md</code> 对应人读列表。Legal、Security 也是独立的面，但页少，不单开分册，只挂 <code>.md</code>。同一逻辑：面大才分册，面小直接叶子。</p>
+
+      <h3 class="fn-h3">可选入口</h3>
+      <figure class="file-sample">
+        <figcaption><code>https://www.mintlify.com/llms.txt</code></figcaption>
+        <pre><code>## Optional
+- [Agent Score](https://www.mintlify.com/score.md): live ranking of how documentation sites score for AI agents
+- [Sitemap](https://www.mintlify.com/sitemap.xml): XML sitemap of the HTML pages</code></pre>
+      </figure>
+      <p class="file-sample-note">不在主消费路径上，放最后等于告诉 Agent：前面读完就可以停。<code>score.md</code> 是排行；<code>sitemap.xml</code> 是 HTML 页兜底，都不是 Markdown 知识目录。</p>
+    </section>
+
+    <section class="section" id="benefits">
+      <h2>价值收益</h2>
+      <ul class="bg-list">
+        <li><strong>先看该看的</strong>主推知识面写在清单前面，Agent 不必从营销页或全站 URL 里筛。</li>
+        <li><strong>能跟到正文</strong>分册或单页地址写明，落到单页后可直接取平行稿。</li>
+        <li><strong>读得完</strong>根文件保持精简，体量大则分册。</li>
+      </ul>
+    </section>
+
+  </main>
+</div>
+
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js"></script>
+<script src="assets/js/llms-parse-nav.js"></script>
+<script src="assets/js/module-sidebar.js"></script>
+</body>
+</html>

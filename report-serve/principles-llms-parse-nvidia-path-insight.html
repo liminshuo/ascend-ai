@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>路径分析 · 洞察 · 实测记录 · 昇腾社区 AI 亲和原则</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid var(--color-border);
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: 100%; max-width: none; margin: 0; padding: 0 24px; box-sizing: border-box;
+    height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: var(--color-text); text-decoration: none; white-space: nowrap; margin-right: 40px;
+  }
+  .topbar .brand span { color: var(--color-primary); }
+  .topbar .site-nav { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; flex-wrap: wrap; }
+  .topbar .site-nav > a {
+    text-decoration: none; color: var(--color-text-secondary); font-size: var(--text-body); font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .topbar .site-nav > a:hover { color: var(--color-primary); background: var(--color-bg); text-decoration: none; }
+  .topbar .site-nav > a.active { color: var(--color-primary); background: var(--color-bg); font-weight: 600; }
+  .nav-dd { position: relative; z-index: 210; display: inline-flex; align-items: center; }
+  .nav-dd-trigger {
+    appearance: none; border: 0; background: transparent; cursor: pointer; font: inherit;
+    text-decoration: none; color: var(--color-text-secondary); font-size: var(--text-body); font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+    display: inline-flex; align-items: center; gap: 12px;
+  }
+  .nav-dd-trigger::after {
+    content: ""; width: 6px; height: 6px;
+    border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg); opacity: .65; margin-top: -3px; flex-shrink: 0;
+  }
+  .nav-dd-trigger:hover, .nav-dd:hover .nav-dd-trigger, .nav-dd:focus-within .nav-dd-trigger {
+    color: var(--color-primary); background: var(--color-bg);
+  }
+  .nav-dd::before { content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 10px; }
+  .nav-dd-panel {
+    position: absolute; top: calc(100% + 4px); left: 0; min-width: 148px; padding: 6px;
+    background: #fff; border: 1px solid var(--color-border); border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(25, 25, 25, 0.08);
+    opacity: 0; visibility: hidden; transform: translateY(-4px);
+    transition: opacity .15s, transform .15s, visibility .15s; z-index: 210;
+  }
+  .nav-dd:hover .nav-dd-panel, .nav-dd:focus-within .nav-dd-panel {
+    opacity: 1; visibility: visible; transform: translateY(0);
+  }
+  .nav-dd-panel a {
+    display: block; padding: 8px 12px; border-radius: 6px; text-decoration: none;
+    color: var(--color-text-secondary); font-size: 13px; font-weight: 500; line-height: 1.4;
+  }
+  .nav-dd-panel a:hover { color: var(--color-primary); background: var(--color-bg); }
+  body.inner-page .page-wrapper { min-height: 100vh; }
+
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: var(--space-stack, 16px);
+  }
+  .page-header > h1 {
+    font-family: var(--font);
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1-weight, 600);
+    line-height: var(--text-h1-lh);
+    letter-spacing: -0.02em;
+    margin: 0;
+    padding-top: var(--space-h1-pad-y, 32px);
+    padding-bottom: var(--space-h1-pad-y, 32px);
+    color: var(--color-text);
+  }
+  .page-header .page-desc {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  body.inner-page[data-page="llms-parse-nvidia-path-insight"]:has(#module-sidebar) .main-content {
+    padding-top: var(--content-main-pad-top, 16px);
+    padding-left: 0;
+    padding-right: 0;
+  }
+  body.inner-page[data-page="llms-parse-nvidia-path-insight"]:has(#module-sidebar) .main-content > .page-header,
+  body.inner-page[data-page="llms-parse-nvidia-path-insight"]:has(#module-sidebar) .main-content > .section,
+  body.inner-page[data-page="llms-parse-nvidia-path-insight"]:has(#module-sidebar) .main-content > .surface-tabs {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page[data-page="llms-parse-nvidia-path-insight"] .main-content .section > h2 {
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    letter-spacing: -0.01em;
+    margin-top: 0;
+    margin-bottom: var(--space-stack, 16px);
+    padding-top: var(--space-h2-pad-y, 16px);
+    padding-bottom: var(--space-h2-pad-y, 16px);
+    border-bottom: 2px solid var(--color-card-border);
+    color: var(--color-text, var(--color-text));
+  }
+  body.inner-page[data-page="llms-parse-nvidia-path-insight"] .main-content > .section {
+    margin-bottom: var(--space-stack, 16px);
+  }
+  body.inner-page[data-page="llms-parse-nvidia-path-insight"] .main-content .section > p {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  body.inner-page[data-page="llms-parse-nvidia-path-insight"] .main-content .section > p + p {
+    margin-top: 8px;
+  }
+  body.inner-page[data-page="llms-parse-nvidia-path-insight"] .main-content .section > p.page-lead strong {
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  body.inner-page[data-page="llms-parse-nvidia-path-insight"] .main-content .section h3 { height: auto; }
+  h3.fn-h3 {
+    margin: 0 0 var(--space-stack, 16px);
+    padding-top: var(--space-h3-pad-y, 16px);
+    padding-bottom: var(--space-h3-pad-y, 16px);
+    font-size: var(--text-h3, 18px);
+    line-height: var(--text-h3-lh, 28px);
+    font-weight: var(--text-h3-weight, 650);
+    color: var(--color-text, var(--color-text));
+    letter-spacing: -0.01em;
+  }
+  body.inner-page[data-page="llms-parse-nvidia-path-insight"] .main-content .section h4 { height: auto; }
+  h4.fn-h4 {
+    margin: 0 0 var(--space-stack, 16px);
+    padding-top: var(--space-h4-pad-y, 16px);
+    padding-bottom: var(--space-h4-pad-y, 16px);
+    font-size: var(--text-h4, 14px);
+    line-height: var(--text-h4-lh, 22px);
+    font-weight: var(--text-h4-weight, 650);
+    color: var(--color-text, var(--color-text));
+    letter-spacing: -0.01em;
+  }
+  h3.fn-h3 + .principle-example > h4.fn-h4,
+  h3.fn-h3 + h4.fn-h4 { margin-top: 0; }
+  #practices .file-lead {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: 22px;
+    color: var(--color-text-secondary);
+  }
+  #practices .file-lead + h4.fn-h4,
+  #practices .file-sample + h4.fn-h4,
+  #practices .file-sample-note + h4.fn-h4,
+  #practices h2 + h4.fn-h4 {
+    margin-top: var(--space-stack, 16px);
+  }
+  #practices .bg-list + h2,
+  #practices .file-sample + h2 {
+    margin-top: var(--space-stack, 16px);
+  }
+  #practices .file-lead + .file-sample {
+    margin-top: var(--space-stack, 16px);
+  }
+  .practice-block {
+    margin: 0;
+    padding: 0;
+    border: none;
+  }
+  .practice-block + .practice-block {
+    margin-top: var(--space-stack, 16px);
+  }
+
+  body.inner-page[data-page="llms-parse-nvidia-path-insight"] .main-content .section > p.flow-verify {
+    margin: var(--space-stack, 16px) 0 0;
+    font-size: var(--text-body);
+    line-height: 22px;
+  }
+  .flow-verify a {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 650;
+  }
+  .flow-verify a:hover {
+    text-decoration: underline;
+  }
+  body.inner-page[data-page="llms-parse-nvidia-path-insight"] .main-content > .section:first-of-type > h2 {
+    margin-top: 0;
+  }
+  .bg-body {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: 22px;
+    color: var(--color-text, var(--color-text));
+  }
+  .bg-body:last-child { margin-bottom: 0; }
+  .bg-list {
+    margin: 0;
+    padding-left: 1.25em;
+    font-size: var(--text-body);
+    line-height: 22px;
+    color: var(--color-text, var(--color-text));
+  }
+  .bg-list li + li { margin-top: 6px; }
+  #principles .bg-list,
+  #practices .bg-list,
+  #benefits .bg-list {
+    list-style: disc;
+    padding-left: 1.25em;
+    margin: 0;
+  }
+  #principles .bg-list li + li,
+  #practices .bg-list li + li,
+  #benefits .bg-list li + li { margin-top: 16px; }
+  #principles .bg-list li strong,
+  #practices .bg-list li strong,
+  #benefits .bg-list li strong {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  /* 约定路径等短条目：题头与正文同一行 */
+  #practices .bg-list.-inline li strong {
+    display: inline;
+    margin-bottom: 0;
+  }
+  #practices .bg-list.-inline li strong::after {
+    content: "：";
+  }
+  #principles .bg-list li,
+  #practices .bg-list li,
+  #benefits .bg-list li {
+    color: var(--color-text-secondary);
+  }
+  .file-sample {
+    margin: 0;
+    padding: 0;
+    background: #1e1e1e;
+    border: 1px solid #111;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .file-sample figcaption {
+    margin: 0;
+    padding: 10px 14px;
+    font-size: var(--text-auxiliary);
+    font-weight: 650;
+    line-height: 22px;
+    color: #a3a3a3;
+    border-bottom: 1px solid #333;
+  }
+  .file-sample figcaption code {
+    font-size: inherit;
+    color: #e8e8e8;
+    background: none;
+  }
+  .file-sample pre {
+    margin: 0;
+    padding: 12px 14px 14px;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: var(--text-auxiliary);
+    line-height: 20px;
+    color: #e8e8e8;
+    background: transparent;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    overflow-x: hidden;
+  }
+  .file-sample pre code {
+    display: block;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    color: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    font-family: inherit;
+    white-space: inherit;
+  }
+  .file-sample .cmt { color: #737373; }
+  .file-sample:has(+ .file-sample-note) { margin-bottom: 8px; }
+  .file-sample-note {
+    margin: 0;
+    font-size: 13px;
+    line-height: 22px;
+    color: #8c8c8c;
+  }
+  h3.fn-h3 + .file-sample { margin-top: 0; }
+  .file-sample + .bg-list,
+  .file-sample-note + .bg-list { margin-top: 0; }
+  .af-figure {
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: none;
+    overflow-x: auto;
+    border-radius: 8px;
+  }
+
+  .aj {
+    width: 100%;
+    min-width: 880px;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+    color: var(--color-text);
+  }
+  .aj caption {
+    caption-side: top;
+    text-align: left;
+    font-size: var(--text-body);
+    font-weight: 650;
+    line-height: var(--text-body-lh);
+    padding: 0 0 10px;
+    color: var(--color-text);
+  }
+  .aj .aj-col-mute { width: 76px; }
+  .aj td.is-mute {
+    color: #8c8c8c;
+  }
+  .aj th,
+  .aj td {
+    border: 1px solid #e8eef5;
+    border-top: none;
+    border-left: none;
+    vertical-align: top;
+    padding: 12px 12px;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+  }
+  .aj thead tr:first-child > th {
+    border-top: 1px solid #e8eef5;
+  }
+  .aj .aj-corner,
+  .aj .aj-label {
+    width: 92px;
+    background: #f5f6f8;
+    color: var(--color-text-secondary);
+    font-weight: 650;
+    vertical-align: middle;
+    text-align: left;
+    padding: 12px 12px;
+    border-left: 1px solid #e8eef5;
+  }
+  .aj thead th.aj-corner {
+    background: #f5f6f8;
+    color: var(--color-text-secondary);
+    padding: 12px 12px;
+    border-top-left-radius: 8px;
+  }
+  .aj thead tr.aj-group > th:last-child {
+    border-top-right-radius: 8px;
+  }
+  .aj tbody tr:last-child .aj-label {
+    border-bottom-left-radius: 8px;
+  }
+  .aj tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 8px;
+  }
+  .aj thead th {
+    background: #f5f6f8;
+    font-weight: 650;
+    text-align: left;
+    padding: 12px 12px;
+    color: var(--color-text);
+  }
+  .aj thead th.aj-group {
+    text-align: center;
+    vertical-align: middle;
+    font-weight: 650;
+    letter-spacing: 0;
+    background: #eceef1;
+    color: var(--color-text);
+    padding: 10px 12px;
+  }
+  .aj thead th.aj-span {
+    vertical-align: middle;
+  }
+  .aj thead .aj-stage-name {
+    display: block;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  .aj thead .aj-corner .aj-stage-name {
+    color: inherit;
+    margin-bottom: 2px;
+  }
+  .aj thead .aj-mute {
+    background: #f5f6f8;
+    color: var(--color-text-secondary);
+  }
+  .aj thead .aj-mute .aj-stage-name { color: var(--color-text-secondary); }
+  .aj thead .aj-pri,
+  .aj thead .aj-opt {
+    background: #f5f6f8;
+  }
+  .aj thead .aj-fb {
+    background: #f3f3f3;
+  }
+  .aj .aj-tag {
+    display: block;
+    width: fit-content;
+    margin: 0;
+    padding: 0 6px;
+    border-radius: 3px;
+    font-size: var(--text-micro);
+    font-weight: 700;
+    line-height: 18px;
+    color: var(--color-primary);
+  }
+  .aj-tag--must { background: rgba(20, 118, 255, .18); }
+  .aj-tag--pri  { background: rgba(20, 118, 255, .12); }
+  .aj-tag--opt  { background: rgba(20, 118, 255, .08); }
+  .aj-tag--fb   { background: rgba(20, 118, 255, .04); color: #3d7fd4; }
+  .aj tbody td:not(.is-mute):not(.is-fb):not(.is-pri):not(.aj-label) {
+    background: #fff;
+  }
+  .aj td.is-pri { background: #f7fbff; }
+  .aj td.is-fb { background: var(--color-card-bg); }
+  .aj td.is-mute { background: #f5f6f8 !important; color: #8c8c8c; }
+  .aj td .aj-subhead {
+    display: block;
+    font-weight: 650;
+    color: var(--color-text);
+    margin: 0 0 6px;
+  }
+  .aj-stack + .aj-stack { margin-top: 12px; }
+  .aj .aj-file {
+    display: block;
+    margin: 0 0 6px;
+    font-family: var(--font-mono, "SF Mono", monospace);
+    font-weight: 650;
+    color: var(--color-primary);
+  }
+  .aj ul {
+    margin: 0;
+    padding-left: 1.1em;
+  }
+  .aj li {
+    color: inherit;
+    margin-bottom: 0;
+  }
+  .aj li + li { margin-top: 8px; }
+  .aj code {
+    font-size: inherit;
+    line-height: inherit;
+  }
+
+  #scenarios .scene-def-table td .badge { border: none; }
+  .scene-def-table td .badge-optional {
+    background: var(--color-bg);
+    color: var(--color-text-secondary);
+  }
+  .scene-def-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--text-body);
+    line-height: 22px;
+    margin: 0 0 24px;
+    table-layout: fixed;
+  }
+  .scene-def-table th,
+  .scene-def-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: middle;
+    font-size: var(--text-body);
+    line-height: 22px;
+    font-weight: 400;
+  }
+  .scene-def-table tbody td {
+    height: auto;
+    min-height: 48px;
+  }
+  .scene-def-table th {
+    font-size: var(--text-auxiliary);
+    font-weight: 650;
+    color: var(--color-text-secondary);
+    background: var(--color-card-bg);
+    height: 40px;
+    box-sizing: border-box;
+  }
+  .scene-def-table .col-type { width: 18%; }
+  .scene-def-table .col-desc { width: 55%; }
+  .scene-def-table .col-place { width: 27%; }
+  #objects .scene-def-table .col-type,
+  #scenarios .scene-def-table .col-type { width: 22%; }
+  #objects .scene-def-table .col-desc { width: 78%; }
+  #scenarios .scene-def-table .col-place { width: 38%; }
+  #scenarios .scene-def-table .col-desc { width: 40%; }
+
+  .fn-ex-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr auto;
+    column-gap: 16px;
+    row-gap: 0;
+    align-items: stretch;
+    margin: 16px 0 0;
+  }
+  .fn-ex-row .fn-ex {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 1 / span 3;
+    margin: 0;
+    min-width: 0;
+  }
+  .fn-ex-row .fn-ex-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .fn-ex-row .fn-ex-head .fn-ex-label { margin: 0; }
+  .fn-ex-row .fn-ex-head .fn-ex-bar {
+    display: block; margin: 0; width: 100%; align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-body {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 2 / span 2;
+    min-height: 0;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .fn-ex-row .fn-ex-mock {
+    min-height: 0; height: 100%; box-sizing: border-box;
+    border: none; border-radius: 0; align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-mock:has(.site-foot) {
+    background: var(--color-bg);
+    padding: 12px;
+  }
+  .fn-ex-row .fn-ex-mock pre.st-code {
+    margin: 0;
+    padding: 14px 16px;
+    background: #1e1e1e;
+    border: 1px solid #111;
+    border-radius: 0;
+    font-size: var(--text-auxiliary);
+    line-height: 18px;
+    color: #e8e8e8;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow: auto;
+    box-sizing: border-box;
+    min-height: 100%;
+  }
+  .fn-ex-row .fn-ex-foot {
+    display: flex; flex-direction: column; gap: 8px;
+    padding: 12px 14px 14px; background: #fff;
+    border-top: 1px solid var(--color-border);
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-list { margin: 0; gap: 4px; }
+  .fn-ex-label {
+    display: inline-block; padding: 0 8px; border-radius: 4px;
+    font-size: var(--text-auxiliary); font-weight: 650; line-height: 20px;
+    color: #b42318; background: #fef3f2;
+  }
+  .fn-ex-label.is-good { color: #047857; background: #ecfdf5; }
+  .fn-ex-bar {
+    display: block; width: 100%; height: 3px;
+    background: #b42318; border-radius: 2px;
+  }
+  .fn-ex-bar.is-good { background: #047857; }
+  .fn-ex-list {
+    margin: 0; padding: 0 0 0 1.25em; list-style: disc;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .fn-ex-list li {
+    margin: 0; font-size: var(--text-body); line-height: 22px; color: var(--color-text);
+  }
+  .fn-ex-list strong { font-weight: 650; }
+  .site-foot {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 10px;
+    overflow: hidden;
+    font-family: var(--font);
+  }
+  .site-foot-body {
+    padding: 16px 14px 20px;
+    min-height: 52px;
+    background: linear-gradient(180deg, #fafbfc 0%, #fff 100%);
+  }
+  .site-foot-body p {
+    margin: 0;
+    font-size: var(--text-caption);
+    line-height: 16px;
+    color: #bfbfbf;
+  }
+  .site-foot-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 12px;
+    padding: 10px 14px;
+    border-top: 1px solid #eef1f5;
+    background: var(--color-card-bg);
+  }
+  .site-foot-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .site-foot-links a {
+    font-size: var(--text-caption);
+    line-height: 16px;
+    color: #8c8c8c;
+    text-decoration: none;
+  }
+  .site-foot-links a.is-machine {
+    color: var(--color-text-secondary);
+    font-variant-numeric: tabular-nums;
+  }
+  .site-foot-copy {
+    margin: 0;
+    font-size: var(--text-micro);
+    line-height: 14px;
+    color: #bfbfbf;
+  }
+  .principle-example + .principle-example { margin-top: var(--space-stack, 16px); }
+
+  #design-ui .principle-suggestions,
+  #content-adjust .principle-suggestions,
+  #frontend-adjust .principle-suggestions {
+    list-style: none;
+    margin: 0 0 32px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    counter-reset: sug;
+  }
+  #design-ui .principle-suggestions > li,
+  #content-adjust .principle-suggestions > li,
+  #frontend-adjust .principle-suggestions > li {
+    position: relative;
+    margin: 0;
+    padding: 0 0 0 36px;
+    color: var(--color-text-secondary);
+  }
+  #design-ui .principle-suggestions > li::before,
+  #content-adjust .principle-suggestions > li::before,
+  #frontend-adjust .principle-suggestions > li::before {
+    counter-increment: sug;
+    content: counter(sug);
+    position: absolute;
+    left: 0;
+    top: 2px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #eff6ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--text-auxiliary);
+    font-weight: 700;
+    line-height: 22px;
+    letter-spacing: 0.02em;
+    color: var(--color-primary);
+  }
+  #design-ui .principle-suggestions > li .sug-title,
+  #content-adjust .principle-suggestions > li .sug-title,
+  #frontend-adjust .principle-suggestions > li .sug-title {
+    display: block;
+    margin: 0 0 6px;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 24px;
+    color: var(--color-text);
+  }
+  #design-ui .principle-suggestions > li .sug-desc,
+  #content-adjust .principle-suggestions > li .sug-desc,
+  #frontend-adjust .principle-suggestions > li .sug-desc {
+    display: block;
+    margin: 0;
+    max-width: none;
+    width: 100%;
+    font-size: var(--text-body);
+    font-weight: 400;
+    line-height: 24px;
+    color: var(--color-text-secondary);
+  }
+
+  @media (max-width: 900px) {
+    .fn-ex-row {
+      grid-template-columns: 1fr;
+      grid-template-rows: none;
+    }
+    .fn-ex-row .fn-ex { display: block; grid-row: auto; }
+    .fn-ex-row .fn-ex-body {
+      display: flex; flex-direction: column; grid-row: auto;
+    }
+  }
+  #problem > p.page-lead,
+  #mechanism > p.page-lead {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  #problem > h2 + .page-lead,
+  #mechanism > h2 + .page-lead { margin-top: 0; }
+  #mechanism > p.page-lead {
+    margin-bottom: var(--space-stack, 16px);
+  }
+  #mechanism > p.page-lead strong {
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  #mechanism > .page-lead + .af-figure { margin-top: 0; }
+  #mechanism .aj,
+  #path .aj { min-width: 0; }
+  #mechanism .aj col.aj-rowhead,
+  #path .aj col.aj-rowhead { width: 136px; }
+  #mechanism .aj .aj-corner,
+  #mechanism .aj .aj-label,
+  #path .aj .aj-corner,
+  #path .aj .aj-label {
+    width: 136px;
+    white-space: nowrap;
+    color: var(--color-text);
+  }
+  #mechanism .aj thead th,
+  #path .aj thead th {
+    text-align: left;
+    vertical-align: bottom;
+  }
+  #core-principles > h2 + .bg-list { margin-top: 0; }
+  #core-principles .bg-list,
+  #benefits .bg-list {
+    list-style: disc;
+    padding-left: 1.25em;
+    margin: 0;
+  }
+  #core-principles .bg-list li + li,
+  #benefits .bg-list li + li { margin-top: 16px; }
+  #core-principles .bg-list li > strong:first-child,
+  #benefits .bg-list li > strong:first-child {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  #core-principles .bg-list li,
+  #benefits .bg-list li { color: var(--color-text-secondary); }
+  .file-sample {
+    margin: 0 0 var(--space-stack, 16px);
+  }
+  .file-sample-note {
+    margin: 0 0 var(--space-stack, 16px);
+  }
+  .file-sample .code-line-hl {
+    display: block;
+    padding: 0 14px;
+    margin: 0 -14px;
+    background: rgba(4, 120, 87, 0.28);
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+  .file-sample--wrap pre,
+  .file-sample--wrap pre code {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  #practices > figure.file-sample--wrap:first-of-type pre {
+    height: 200px;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  #practices h2 + h3.fn-h3,
+  #practices h2 + .file-sample-note,
+  #practices h3.fn-h3 + .file-sample-note,
+  #practices .file-sample-note + .file-sample,
+  #practices .file-sample + .file-sample-note {
+    margin-top: 0;
+  }
+  #practices .file-sample-note + h3.fn-h3,
+  #practices .file-sample-note + h2 {
+    margin-top: var(--space-stack, 16px);
+  }
+  #path h2 + h3.fn-h3,
+  #path h3.fn-h3 + .file-sample-note,
+  #path h3.fn-h3 + .af-figure,
+  #path h3.fn-h3 + .file-sample,
+  #path .file-sample + .file-sample-note,
+  #path .file-sample-note + .file-sample,
+  #path .file-sample-note + .af-figure {
+    margin-top: 0;
+  }
+  #path .file-sample-note + h3.fn-h3,
+  #path .af-figure + h3.fn-h3,
+  #path .file-sample + h3.fn-h3 {
+    margin-top: var(--space-stack, 16px);
+  }
+
+  /* 详情页壳：顶部只保留返回与当前位置，不带站点主导航与模块侧栏 */
+  .detail-bar { background: var(--color-surface); }
+  .detail-bar-inner { gap: 12px; }
+  .detail-back {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    margin-left: -6px;
+    border-radius: var(--radius);
+    color: var(--color-text);
+    text-decoration: none;
+    transition: background .15s, color .15s;
+  }
+  .detail-back:hover { background: var(--color-bg); color: var(--color-primary); }
+  .detail-back svg { width: 18px; height: 18px; display: block; }
+  .detail-divider {
+    flex-shrink: 0;
+    width: 1px;
+    height: 18px;
+    background: var(--color-border);
+  }
+  .detail-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+    color: var(--color-text-tertiary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .detail-title a { color: var(--color-text-secondary); text-decoration: none; }
+  .detail-title a:hover { color: var(--color-primary); }
+  .detail-title strong { color: var(--color-text); font-weight: 650; }
+  .detail-exit {
+    flex-shrink: 0;
+    margin-left: auto;
+    padding: 5px 14px;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    font-size: var(--code-copy-size);
+    line-height: var(--text-auxiliary-lh);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    transition: background .15s, color .15s, border-color .15s;
+  }
+  .detail-exit:hover { color: var(--color-primary); border-color: var(--color-primary); background: var(--color-primary-subtle); }
+  .detail-wrapper { display: flex; align-items: flex-start; background: var(--color-surface); }
+  .model-nav {
+    flex-shrink: 0;
+    width: var(--sidebar-width);
+    box-sizing: border-box;
+    position: sticky;
+    top: var(--header-height, 56px);
+    height: calc(100vh - var(--header-height, 56px));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: var(--color-card-bg);
+    border-right: 1px solid var(--color-border);
+  }
+  .model-nav-label {
+    font-size: var(--text-body);
+    font-weight: var(--text-h2-weight);
+    letter-spacing: .04em;
+    color: var(--color-text-tertiary);
+    padding: 4px 6px 2px;
+  }
+  .model-nav-label.is-sub {
+    margin-top: 8px;
+    padding-top: 12px;
+    border-top: 1px solid var(--color-border);
+  }
+  a.nav-vendor {
+    display: block;
+    padding: 6px 10px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+  }
+  a.nav-vendor:hover {
+    color: var(--color-primary);
+    background: var(--color-primary-subtle);
+    text-decoration: none;
+  }
+  a.nav-vendor.is-active {
+    color: var(--color-primary);
+    background: var(--color-primary-subtle);
+    font-weight: 650;
+  }
+  a.nav-model-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 10px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-surface);
+    font: inherit;
+    text-align: left;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition: border-color .15s, box-shadow .15s, background .15s;
+  }
+  a.nav-model-card:hover {
+    border-color: var(--color-primary-hover-border);
+    background: var(--color-primary-subtle);
+  }
+  a.nav-model-card.is-active {
+    border-color: var(--color-primary);
+    background: var(--color-primary-subtle);
+    box-shadow: inset 3px 0 0 var(--color-primary);
+  }
+  a.nav-model-card .idx {
+    font-size: var(--text-body);
+    font-weight: 600;
+    line-height: var(--text-body-lh);
+    color: var(--color-text-secondary);
+  }
+  a.nav-model-card.is-active .idx { color: var(--color-primary); }
+  a.nav-model-card .card-title {
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+    font-weight: 650;
+    color: var(--color-text);
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  @media (max-width: 900px) {
+    .detail-wrapper { flex-direction: column; }
+    .model-nav {
+      width: 100%;
+      position: static;
+      height: auto;
+      max-height: 36vh;
+      border-right: none;
+      border-bottom: 1px solid var(--color-border);
+    }
+  }
+  body.inner-page .detail-wrapper .main-content {
+    padding-top: 40px;
+    min-width: 0;
+    flex: 1;
+    background: var(--color-surface);
+    min-height: calc(100vh - var(--header-height, 56px));
+  }
+  body.inner-page .detail-wrapper .main-content > .page-header,
+  body.inner-page .detail-wrapper .main-content > .section {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin-inline: auto;
+    box-sizing: border-box;
+  }
+  .seq {
+    margin: 0 0 var(--space-stack, 16px);
+    padding: 16px 20px 12px;
+    background-color: #f4f4f2;
+    background-image: radial-gradient(#d8d8d4 1.1px, transparent 1.1px);
+    background-size: 14px 14px;
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+  }
+  .seq svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    font-family: var(--font);
+  }
+  .seq figcaption {
+    margin: 10px 0 0;
+    font-size: 13px;
+    line-height: 22px;
+    color: #8c8c8c;
+  }
+  #mechanism .seq { margin-top: 0; }
+</style>
+</head>
+<body class="inner-page agent-entry-page" data-module="principles" data-page="llms-parse-nvidia-path-insight" data-no-surface-tabs>
+
+<div class="topbar detail-bar">
+  <div class="topbar-inner detail-bar-inner">
+    <a class="detail-back" href="principles-llms-parse.html" aria-label="返回 根 llms 解析">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6L9 12l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <span class="detail-divider" aria-hidden="true"></span>
+    <div class="detail-title"><a href="principles-llms-parse.html">根 llms 解析</a><span aria-hidden="true">›</span>NVIDIA<span aria-hidden="true">›</span><strong>洞察</strong></div>
+    <a class="detail-exit" href="principles-llms-parse.html">返回解析</a>
+  </div>
+</div>
+
+<div class="page-wrapper detail-wrapper">
+
+  <aside class="model-nav" id="llms-parse-nav" data-vendor="nvidia" data-layer="path-insight" aria-label="解析导航"></aside>
+
+  <main class="main-content">
+
+    <div class="page-header">
+      <h1>洞察</h1>
+    </div>
+
+    <section class="section" id="mechanism">
+      <h2>先分清两件事</h2>
+      <p class="page-lead">Agent 读文档，不是在浏览器里滚动。它对某个 URL 做一次 GET，这一份文件全文回来，然后在这份文字里决定要不要再 GET 下一个地址。</p>
+      <figure class="seq">
+        <svg viewBox="0 0 720 348" role="img" aria-labelledby="seq-title seq-desc">
+          <title id="seq-title">Agent 取文件与阅读的时序</title>
+          <desc id="seq-desc">Agent 向文档站 GET 某 URL，文档站返回整份文件。Agent 在本地顺读、跳读或不看。若问句还缺内容，再 GET 下一 URL；若已够，停止请求并回到 IDE 作答。</desc>
+          <defs>
+            <marker id="seq-arr" viewBox="0 0 8 8" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+              <path d="M0 0.6 L8 4 L0 7.4 Z" fill="#191919"/>
+            </marker>
+            <marker id="seq-arr-back" viewBox="0 0 8 8" markerWidth="8" markerHeight="8" refX="1.5" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+              <path d="M8 0.6 L0 4 L8 7.4 Z" fill="#191919"/>
+            </marker>
+            <marker id="seq-arr-read" viewBox="0 0 8 8" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+              <path d="M0 0.6 L8 4 L0 7.4 Z" fill="#047857"/>
+            </marker>
+            <marker id="seq-arr-mute" viewBox="0 0 8 8" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+              <path d="M0 0.6 L8 4 L0 7.4 Z" fill="#737373"/>
+            </marker>
+          </defs>
+          <text x="180" y="22" text-anchor="middle" font-size="12" font-weight="650" fill="#191919">Agent</text>
+          <text x="540" y="22" text-anchor="middle" font-size="12" font-weight="650" fill="#191919">文档站</text>
+          <rect x="118" y="30" width="124" height="28" rx="6" fill="#fff" stroke="#191919" stroke-width="1.5"/>
+          <text x="180" y="48" text-anchor="middle" font-size="12" fill="#191919">上下文 / IDE</text>
+          <rect x="478" y="30" width="124" height="28" rx="6" fill="#fff" stroke="#191919" stroke-width="1.5"/>
+          <text x="540" y="48" text-anchor="middle" font-size="12" fill="#191919">llms.txt / .md</text>
+          <line x1="180" y1="58" x2="180" y2="338" stroke="#d8d8d4" stroke-width="2"/>
+          <line x1="540" y1="58" x2="540" y2="338" stroke="#d8d8d4" stroke-width="2"/>
+
+          <line x1="188" y1="86" x2="524" y2="86" stroke="#191919" stroke-width="1.75" marker-end="url(#seq-arr)"/>
+          <text x="360" y="78" text-anchor="middle" font-size="12" font-weight="650" fill="#191919">① GET 某 URL</text>
+          <text x="360" y="102" text-anchor="middle" font-size="11" fill="#737373">一次 HTTP · 没有「只下第 3 节」</text>
+
+          <line x1="532" y1="128" x2="196" y2="128" stroke="#191919" stroke-width="1.75" marker-end="url(#seq-arr)"/>
+          <text x="360" y="120" text-anchor="middle" font-size="12" font-weight="650" fill="#191919">② 200 · 整份文件回来</text>
+
+          <path d="M180 158 C92 158, 92 198, 180 198" fill="none" stroke="#047857" stroke-width="1.75" marker-end="url(#seq-arr-read)"/>
+          <text x="88" y="172" text-anchor="middle" font-size="12" font-weight="650" fill="#047857">③ 读</text>
+          <text x="88" y="188" text-anchor="middle" font-size="11" fill="#047857">顺读 / 跳读节名</text>
+          <text x="88" y="202" text-anchor="middle" font-size="11" fill="#047857">有些条目不看</text>
+          <text x="268" y="186" font-size="11" fill="#737373">发生在 Agent 侧 · 不打 HTTP</text>
+          <text x="268" y="202" font-size="11" fill="#737373">绿行画的是这一步，不是请求</text>
+
+          <rect x="214" y="220" width="292" height="108" rx="8" fill="#fff" fill-opacity="0.72" stroke="#191919" stroke-width="1.25" stroke-dasharray="5 4"/>
+          <text x="360" y="240" text-anchor="middle" font-size="11" fill="#737373">问句还缺什么？</text>
+          <line x1="188" y1="262" x2="524" y2="262" stroke="#191919" stroke-width="1.75" marker-end="url(#seq-arr)"/>
+          <text x="360" y="254" text-anchor="middle" font-size="12" font-weight="650" fill="#191919">还缺 → ④ GET 下一 URL</text>
+          <path d="M180 292 C108 292, 108 324, 180 324" fill="none" stroke="#737373" stroke-width="1.75" marker-end="url(#seq-arr-mute)"/>
+          <text x="88" y="310" text-anchor="middle" font-size="12" font-weight="650" fill="#737373">够了 → 停</text>
+          <text x="360" y="316" text-anchor="middle" font-size="11" fill="#737373">回到 IDE 作答 · 不再向文档站发请求</text>
+        </svg>
+        <figcaption>实线箭头是 HTTP。左侧回环是读：文件已经在手里，只决定用哪些字、要不要再打开一份。</figcaption>
+      </figure>
+      <p class="page-lead"><strong>GET</strong> 是取文件：一次请求，整份 <code>llms.txt</code> 或整份 <code>.md</code> 都回来，没有「只下载第 3 节」。<strong>读</strong> 是回来之后怎么用这些字：顺读、只扫节名、某几条看都不看。绿行 / 没涂色画的是读，不是 HTTP。</p>
+      <p class="page-lead">所以效率主要不在「同一份里少读两行」，而在 <strong>少打开下一份 URL</strong>，以及已经打开过的目录 <strong>不要当新文件再扫一遍</strong>。</p>
+    </section>
+
+    <section class="section" id="compare">
+      <h2>对照哪两条路径</h2>
+      <p class="page-lead">下面七条都从 NVIDIA 两条实测路径里来。<a href="principles-llms-parse-nvidia-path.html">编程模型</a>是单任务：集团根 → 文档站 → 产品册 → 编程指南，打开 4 份文件（三本 <code>llms.txt</code> + 一篇正文），后面的 Architecture / API 不再打开。<a href="principles-llms-parse-nvidia-path-cross.html">安装与编程模型</a>是两个任务拼在一起（Linux 安装 + thread / block / grid）：根和文档站仍各跟一条，分叉在产品册；先打开 Linux 安装，发现组织方式不在这页，再回到产品册跟编程指南。打开 5 份文件。</p>
+    </section>
+
+    <section class="section" id="insight-1">
+      <h2>1 · 先分站，再选产品</h2>
+      <p class="page-lead">NVIDIA 不是一座站。集团根按站点切开：北美营销、技术文档、开发者、GTC、地区博客。编程和安装都在技术文档里，所以只进 Tech Docs，不进北美站、开发者站、RSS、中国站。</p>
+      <p class="page-lead">进了文档站还要再选产品：CUDA Toolkit 不是 CUDA-Q。产品册才列页。分站是因为集团多入口会撑爆一份根文件，不是把官网导航菜单原样搬家。</p>
+      <p class="page-lead">这一问因此有三本 <code>llms.txt</code>。单任务打开四份文件；跨任务再加一篇安装正文，共五份。官网、博客没有产品线这一刀，第 2 本就列页。</p>
+      <p class="page-lead"><strong>原则</strong>集团根按站点切，每条一句用途（营销 / 技术文档 / 下载与 SDK）。技术问句只进文档站。文档站再按产品线切，不要在根清单里直接铺所有产品页。</p>
+    </section>
+
+    <section class="section" id="insight-2">
+      <h2>2 · 文档站只当产品索引</h2>
+      <p class="page-lead"><code>docs.nvidia.com/llms.txt</code> 按字母序列产品。Agent 跳读各 <code>##</code> 和一句说明：读到 CUDA Toolkit 记下；看下一条 CUDA-Q，确认是量子平台不是装驱动、不是编程模型。<strong>没读</strong> AICR、NIM 等分册地址。</p>
+      <p class="page-lead">这一层不是页名总表。任务页（Linux 安装、Programming Guide）不在这里出现，再进产品册才有直链。站点级目录只负责「进哪一本产品 <code>llms.txt</code>」。</p>
+      <p class="page-lead"><strong>原则</strong>站点级清单每条产品一个 <code>##</code>、一句何时进这本。扫节名就能排除近邻（CUDA 不是 CUDA-Q）。这里不列每页，否则又变成扫不完的页名总表。</p>
+    </section>
+
+    <section class="section" id="insight-3">
+      <h2>3 · 任务页在产品册直链，并写清何时读</h2>
+      <p class="page-lead">产品册 <code>cuda/llms.txt</code> 按任务分节：Installation Guides、Programming Guides。链接文案写使用场景：Linux 上装、Windows 上装、学习 thread / block / grid、做性能优化。</p>
+      <p class="page-lead">所以两条实测都不必再开一本页名总表。编程模型那条第一次跳读就能点中 Programming Guide；安装与编程模型那条在同一本里就能记下两条叶子。Mintlify 快捷键多一跳 181 页，是因为分册里没有同级任务节。</p>
+      <p class="page-lead"><strong>原则</strong>高频、能独立成答的任务页，在产品册里直链 <code>.md</code>。链接名称用标题，后面一句写清何时读。任务升不到产品册的 <code>##</code>，Agent 只能另开总表或猜。</p>
+    </section>
+
+    <section class="section" id="insight-4">
+      <h2>4 · 问句先拆成几个任务面，再决定跟几条</h2>
+      <p class="page-lead">编程模型是一件事，每一层只跟一条，跟到正文就停。安装加编程模型是两件事：Linux 怎么装，以及 thread / block / grid 怎么组织。两件事不在同一页，但都在同一本产品册里。分叉发生在产品册，不在集团根、也不在文档站。</p>
+      <p class="page-lead">高效顺序是：第一次扫产品册时两条都记下（还没打开）；先 GET Linux 安装；读完发现组织方式不在这页，再 GET Programming Guide。不要一看到两条就同时打开两页；也不要退回文档站去撞别的产品。</p>
+      <p class="page-lead">「记下」只是记住 URL；「打开」才是下一次 HTTP。打开是先后的，不是两页同时 GET。</p>
+      <p class="page-lead"><strong>原则</strong>问句若跨两个任务，产品册里应有两个并列的任务节，两条直链都能从同一本够到。两页互相不能替代时，不要指望一篇正文顶另一篇。</p>
+    </section>
+
+    <section class="section" id="insight-5">
+      <h2>5 · 回到产品册，不等于把产品册当没读过</h2>
+      <p class="page-lead">跨任务那条第二次给产品册标 12，是保守画法：同一份 <code>cuda/llms.txt</code> 再 GET 一次，从页顶重新扫到 Programming Guides。第一次跳读节名时，其实已经见过那条编程指南链接。</p>
+      <p class="page-lead">更省的做法：安装页读完缺组织方式，直接 GET 已经记下的 Programming Guide URL，不必再把 Installation、Architecture、API 节名过一遍。再 GET 叶子该付；再扫一遍目录可省。目录还在这次对话的上下文里，就不要当新文件。</p>
+      <p class="page-lead"><strong>原则</strong>产品册可能被再 GET、再扫一遍，站点控不了某次会不会重读，但控得了再读的成本：尽量短，只当本产品目录；按任务分节，节名稳、同构，第二次靠 <code>## CUDA Programming Guides</code> 就能落到该进的那一块。又长又糊，重读照样找不到。</p>
+    </section>
+
+    <section class="section" id="insight-6">
+      <h2>6 · 一份文件内部，用节名当过滤器；候选所在节要读完</h2>
+      <p class="page-lead">GET 已经把整份文件带走。所谓跳读，是少把已下载的字拿来推理，避免跟错链。</p>
+      <p class="page-lead">集团根：读到 Tech Docs 就够，RSS 各条不用跟。文档站：各产品 <code>##</code> 和一句说明几乎都要扫过（用来排除），分册地址只有像答案的那条才 GET。产品册：安装节要读完才能判断是 Linux 不是 quick start、不是 Windows；Programming Guides 要读完才能判断是 programming guide 不是 best practices。后面 Architecture / API / Tools 只扫节名。</p>
+      <p class="page-lead"><code>##</code> 用来排除整章。节里的链接只有「像答案」的那一节才逐条看。只有决定跟的那一条才再 GET。碰到黄行不立刻走，同节后面几条也要看。</p>
+      <p class="page-lead"><strong>原则</strong>节名按任务面来写，不要把站点树原样搬家。同一节里每条说明要能用来排除（Linux 不是 Windows；programming guide 不是 best practices），否则候选节读完也选不准。</p>
+    </section>
+
+    <section class="section" id="insight-7">
+      <h2>7 · 当前页已经能答就停；挂出去的 .md 必须有正文</h2>
+      <p class="page-lead">安装页只回答 Linux 怎么装，thread / block / grid 不在这里，所以还要再跳。编程指南页顶和「本指南如何组织」已经写明编程模型在 Part 1；Part 4 / 附录只扫节名，不再打开特性手册。打开次数看问句还缺什么，不看目录还链了谁。</p>
+      <p class="page-lead">现网 Linux 安装的 <code>index.html.md</code> 平行稿是空的，实测只能抽同页 HTML。一次 GET 回来没有正文，等于白打开一份 URL，还要再猜 HTML。</p>
+      <p class="page-lead"><strong>原则</strong>叶子页要自足：页顶就能判断本页答什么、不答什么；问句所需写在正文。产品册里挂的 <code>.md</code> 必须是可扫的全文，不能是空壳。页内深链、相关页是人读导航，不当 Agent 的必经下一跳。</p>
+    </section>
+
+    <section class="section" id="core-principles">
+      <h2>从路径推出的原则</h2>
+      <ul class="bg-list">
+        <li><strong>每份可 GET 的文件都要能扫完</strong>一次请求带走全文。集团根、文档站、产品册、叶子都一样。答案靠前；扫不完的页名外包，不把正文写进目录。</li>
+        <li><strong>集团根按站点切</strong>每条一句用途。技术问句进文档站，营销、开发者门户、RSS 分开，不要把官网菜单原样搬进根清单。</li>
+        <li><strong>文档站只列产品线</strong>每个产品一个 <code>##</code>、一句何时进这本。近邻产品要能靠这一句排除。这里不列每页。</li>
+        <li><strong>能直链的任务不要经过页名总表</strong>产品册里已有 <code>.md</code> 就跟它。安装、编程模型这类高频任务升到产品册节级。</li>
+        <li><strong>跨任务在同一本产品册并列直链</strong>两页互相不能替代时，都要从这一本够到。打开仍串行：先记两条，先读一条，缺什么再打开第二条。</li>
+        <li><strong>产品册按可能被再读来写</strong>尽量短，只当本产品目录；<code>##</code> 按任务分节、节名稳定。再 GET 一次时，靠节名就能落到该进的块。</li>
+        <li><strong>节名可跳读，同节说明可排除</strong>节名是任务面。候选所在节的条目要能判断跟谁、不跟谁。</li>
+        <li><strong>链接写清何时读</strong>名称用标题，说明写使用场景（Linux 安装、thread / block / grid）。升不到产品册节级，再聪明也多一跳。</li>
+        <li><strong>叶子自足，.md 不能空</strong>页顶写清本页答什么。问句所需写在正文。目录里指向的 <code>.md</code> 必须有全文，空壳等于白 GET。</li>
+      </ul>
+    </section>
+
+    <section class="section" id="benefits">
+      <h2>收束</h2>
+      <ul class="bg-list">
+        <li><strong>下载是整份的，决策是挑着的</strong>一次 GET 带走全文；绿行是用来做决定的那些字。没涂色不等于没下载。</li>
+        <li><strong>能少打开一份文件，就比在一份文件里多读两行更划算</strong>贵的是下一跳 URL，不是页内跳读。三本 llms 已经够贵，不要再给空壳 .md。</li>
+        <li><strong>跨任务在目录里记账，打开仍串行</strong>同一本产品册可以记下两条；先打开一条，缺什么再打开第二条。</li>
+      </ul>
+    </section>
+
+  </main>
+</div>
+
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js"></script>
+<script src="assets/js/llms-parse-nav.js"></script>
+<script src="assets/js/module-sidebar.js"></script>
+</body>
+</html>

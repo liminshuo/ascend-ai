@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NVIDIA 文档站分册 · 实测记录 · 昇腾社区 AI 亲和原则</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid var(--color-border);
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: 100%; max-width: none; margin: 0; padding: 0 24px; box-sizing: border-box;
+    height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: var(--color-text); text-decoration: none; white-space: nowrap; margin-right: 40px;
+  }
+  .topbar .brand span { color: var(--color-primary); }
+  .topbar .site-nav { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; flex-wrap: wrap; }
+  .topbar .site-nav > a {
+    text-decoration: none; color: var(--color-text-secondary); font-size: var(--text-body); font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .topbar .site-nav > a:hover { color: var(--color-primary); background: var(--color-bg); text-decoration: none; }
+  .topbar .site-nav > a.active { color: var(--color-primary); background: var(--color-bg); font-weight: 600; }
+  .nav-dd { position: relative; z-index: 210; display: inline-flex; align-items: center; }
+  .nav-dd-trigger {
+    appearance: none; border: 0; background: transparent; cursor: pointer; font: inherit;
+    text-decoration: none; color: var(--color-text-secondary); font-size: var(--text-body); font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+    display: inline-flex; align-items: center; gap: 12px;
+  }
+  .nav-dd-trigger::after {
+    content: ""; width: 6px; height: 6px;
+    border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg); opacity: .65; margin-top: -3px; flex-shrink: 0;
+  }
+  .nav-dd-trigger:hover, .nav-dd:hover .nav-dd-trigger, .nav-dd:focus-within .nav-dd-trigger {
+    color: var(--color-primary); background: var(--color-bg);
+  }
+  .nav-dd::before { content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 10px; }
+  .nav-dd-panel {
+    position: absolute; top: calc(100% + 4px); left: 0; min-width: 148px; padding: 6px;
+    background: #fff; border: 1px solid var(--color-border); border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(25, 25, 25, 0.08);
+    opacity: 0; visibility: hidden; transform: translateY(-4px);
+    transition: opacity .15s, transform .15s, visibility .15s; z-index: 210;
+  }
+  .nav-dd:hover .nav-dd-panel, .nav-dd:focus-within .nav-dd-panel {
+    opacity: 1; visibility: visible; transform: translateY(0);
+  }
+  .nav-dd-panel a {
+    display: block; padding: 8px 12px; border-radius: 6px; text-decoration: none;
+    color: var(--color-text-secondary); font-size: 13px; font-weight: 500; line-height: 1.4;
+  }
+  .nav-dd-panel a:hover { color: var(--color-primary); background: var(--color-bg); }
+  body.inner-page .page-wrapper { min-height: 100vh; }
+
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: var(--space-stack, 16px);
+  }
+  .page-header > h1 {
+    font-family: var(--font);
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1-weight, 600);
+    line-height: var(--text-h1-lh);
+    letter-spacing: -0.02em;
+    margin: 0;
+    padding-top: var(--space-h1-pad-y, 32px);
+    padding-bottom: var(--space-h1-pad-y, 32px);
+    color: var(--color-text);
+  }
+  .page-header .page-desc {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  body.inner-page[data-page="llms-parse-nvidia-docs"]:has(#module-sidebar) .main-content {
+    padding-top: var(--content-main-pad-top, 16px);
+    padding-left: 0;
+    padding-right: 0;
+  }
+  body.inner-page[data-page="llms-parse-nvidia-docs"]:has(#module-sidebar) .main-content > .page-header,
+  body.inner-page[data-page="llms-parse-nvidia-docs"]:has(#module-sidebar) .main-content > .section,
+  body.inner-page[data-page="llms-parse-nvidia-docs"]:has(#module-sidebar) .main-content > .surface-tabs {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page[data-page="llms-parse-nvidia-docs"] .main-content .section > h2 {
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    letter-spacing: -0.01em;
+    margin-top: 0;
+    margin-bottom: var(--space-stack, 16px);
+    padding-top: var(--space-h2-pad-y, 16px);
+    padding-bottom: var(--space-h2-pad-y, 16px);
+    border-bottom: 2px solid var(--color-card-border);
+    color: var(--color-text, var(--color-text));
+  }
+  body.inner-page[data-page="llms-parse-nvidia-docs"] .main-content > .section {
+    margin-bottom: var(--space-stack, 16px);
+  }
+  body.inner-page[data-page="llms-parse-nvidia-docs"] .main-content .section > p {
+    margin: 0;
+  }
+  body.inner-page[data-page="llms-parse-nvidia-docs"] .main-content .section h3 { height: auto; }
+  h3.fn-h3 {
+    margin: 0 0 var(--space-stack, 16px);
+    padding-top: var(--space-h3-pad-y, 16px);
+    padding-bottom: var(--space-h3-pad-y, 16px);
+    font-size: var(--text-h3, 18px);
+    line-height: var(--text-h3-lh, 28px);
+    font-weight: var(--text-h3-weight, 650);
+    color: var(--color-text, var(--color-text));
+    letter-spacing: -0.01em;
+  }
+  body.inner-page[data-page="llms-parse-nvidia-docs"] .main-content .section h4 { height: auto; }
+  h4.fn-h4 {
+    margin: 0 0 var(--space-stack, 16px);
+    padding-top: var(--space-h4-pad-y, 16px);
+    padding-bottom: var(--space-h4-pad-y, 16px);
+    font-size: var(--text-h4, 14px);
+    line-height: var(--text-h4-lh, 22px);
+    font-weight: var(--text-h4-weight, 650);
+    color: var(--color-text, var(--color-text));
+    letter-spacing: -0.01em;
+  }
+  h3.fn-h3 + .principle-example > h4.fn-h4,
+  h3.fn-h3 + h4.fn-h4 { margin-top: 0; }
+  #practices .file-lead {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: 22px;
+    color: var(--color-text-secondary);
+  }
+  #practices .file-lead + h4.fn-h4,
+  #practices .file-sample + h4.fn-h4,
+  #practices .file-sample-note + h4.fn-h4,
+  #practices h2 + h4.fn-h4 {
+    margin-top: var(--space-stack, 16px);
+  }
+  #practices .bg-list + h2,
+  #practices .file-sample + h2 {
+    margin-top: var(--space-stack, 16px);
+  }
+  #practices .file-lead + .file-sample {
+    margin-top: var(--space-stack, 16px);
+  }
+  .practice-block {
+    margin: 0;
+    padding: 0;
+    border: none;
+  }
+  .practice-block + .practice-block {
+    margin-top: var(--space-stack, 16px);
+  }
+
+  body.inner-page[data-page="llms-parse-nvidia-docs"] .main-content .section > p.flow-verify {
+    margin: var(--space-stack, 16px) 0 0;
+    font-size: var(--text-body);
+    line-height: 22px;
+  }
+  .flow-verify a {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 650;
+  }
+  .flow-verify a:hover {
+    text-decoration: underline;
+  }
+  body.inner-page[data-page="llms-parse-nvidia-docs"] .main-content > .section:first-of-type > h2 {
+    margin-top: 0;
+  }
+  .bg-body {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: 22px;
+    color: var(--color-text, var(--color-text));
+  }
+  .bg-body:last-child { margin-bottom: 0; }
+  .bg-list {
+    margin: 0;
+    padding-left: 1.25em;
+    font-size: var(--text-body);
+    line-height: 22px;
+    color: var(--color-text, var(--color-text));
+  }
+  .bg-list li + li { margin-top: 6px; }
+  #principles .bg-list,
+  #practices .bg-list,
+  #benefits .bg-list {
+    list-style: disc;
+    padding-left: 1.25em;
+    margin: 0;
+  }
+  #principles .bg-list li + li,
+  #practices .bg-list li + li,
+  #benefits .bg-list li + li { margin-top: 16px; }
+  #principles .bg-list li strong,
+  #practices .bg-list li strong,
+  #benefits .bg-list li strong {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  /* 约定路径等短条目：题头与正文同一行 */
+  #practices .bg-list.-inline li strong {
+    display: inline;
+    margin-bottom: 0;
+  }
+  #practices .bg-list.-inline li strong::after {
+    content: "：";
+  }
+  #principles .bg-list li,
+  #practices .bg-list li,
+  #benefits .bg-list li {
+    color: var(--color-text-secondary);
+  }
+  .file-sample {
+    margin: 0;
+    padding: 0;
+    background: #1e1e1e;
+    border: 1px solid #111;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .file-sample figcaption {
+    margin: 0;
+    padding: 10px 14px;
+    font-size: var(--text-auxiliary);
+    font-weight: 650;
+    line-height: 22px;
+    color: #a3a3a3;
+    border-bottom: 1px solid #333;
+  }
+  .file-sample figcaption code {
+    font-size: inherit;
+    color: #e8e8e8;
+    background: none;
+  }
+  .file-sample pre {
+    margin: 0;
+    padding: 12px 14px 14px;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: var(--text-auxiliary);
+    line-height: 20px;
+    color: #e8e8e8;
+    background: transparent;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    overflow-x: hidden;
+  }
+  .file-sample pre code {
+    display: block;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    color: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    font-family: inherit;
+    white-space: inherit;
+  }
+  .file-sample .cmt { color: #737373; }
+  .file-sample:has(+ .file-sample-note) { margin-bottom: 8px; }
+  .file-sample-note {
+    margin: 0;
+    font-size: 13px;
+    line-height: 22px;
+    color: #8c8c8c;
+  }
+  h3.fn-h3 + .file-sample { margin-top: 0; }
+  .file-sample + .bg-list,
+  .file-sample-note + .bg-list { margin-top: 0; }
+  .af-figure {
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: none;
+    overflow-x: auto;
+    border-radius: 8px;
+  }
+
+  .aj {
+    width: 100%;
+    min-width: 880px;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+    color: var(--color-text);
+  }
+  .aj caption {
+    caption-side: top;
+    text-align: left;
+    font-size: var(--text-body);
+    font-weight: 650;
+    line-height: var(--text-body-lh);
+    padding: 0 0 10px;
+    color: var(--color-text);
+  }
+  .aj .aj-col-mute { width: 76px; }
+  .aj td.is-mute {
+    color: #8c8c8c;
+  }
+  .aj th,
+  .aj td {
+    border: 1px solid #e8eef5;
+    border-top: none;
+    border-left: none;
+    vertical-align: top;
+    padding: 12px 12px;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+  }
+  .aj thead tr:first-child > th {
+    border-top: 1px solid #e8eef5;
+  }
+  .aj .aj-corner,
+  .aj .aj-label {
+    width: 92px;
+    background: #f5f6f8;
+    color: var(--color-text-secondary);
+    font-weight: 650;
+    vertical-align: middle;
+    text-align: left;
+    padding: 12px 12px;
+    border-left: 1px solid #e8eef5;
+  }
+  .aj thead th.aj-corner {
+    background: #f5f6f8;
+    color: var(--color-text-secondary);
+    padding: 12px 12px;
+    border-top-left-radius: 8px;
+  }
+  .aj thead tr.aj-group > th:last-child {
+    border-top-right-radius: 8px;
+  }
+  .aj tbody tr:last-child .aj-label {
+    border-bottom-left-radius: 8px;
+  }
+  .aj tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 8px;
+  }
+  .aj thead th {
+    background: #f5f6f8;
+    font-weight: 650;
+    text-align: left;
+    padding: 12px 12px;
+    color: var(--color-text);
+  }
+  .aj thead th.aj-group {
+    text-align: center;
+    vertical-align: middle;
+    font-weight: 650;
+    letter-spacing: 0;
+    background: #eceef1;
+    color: var(--color-text);
+    padding: 10px 12px;
+  }
+  .aj thead th.aj-span {
+    vertical-align: middle;
+  }
+  .aj thead .aj-stage-name {
+    display: block;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  .aj thead .aj-corner .aj-stage-name {
+    color: inherit;
+    margin-bottom: 2px;
+  }
+  .aj thead .aj-mute {
+    background: #f5f6f8;
+    color: var(--color-text-secondary);
+  }
+  .aj thead .aj-mute .aj-stage-name { color: var(--color-text-secondary); }
+  .aj thead .aj-pri,
+  .aj thead .aj-opt {
+    background: #f5f6f8;
+  }
+  .aj thead .aj-fb {
+    background: #f3f3f3;
+  }
+  .aj .aj-tag {
+    display: block;
+    width: fit-content;
+    margin: 0;
+    padding: 0 6px;
+    border-radius: 3px;
+    font-size: var(--text-micro);
+    font-weight: 700;
+    line-height: 18px;
+    color: var(--color-primary);
+  }
+  .aj-tag--must { background: rgba(20, 118, 255, .18); }
+  .aj-tag--pri  { background: rgba(20, 118, 255, .12); }
+  .aj-tag--opt  { background: rgba(20, 118, 255, .08); }
+  .aj-tag--fb   { background: rgba(20, 118, 255, .04); color: #3d7fd4; }
+  .aj tbody td:not(.is-mute):not(.is-fb):not(.is-pri):not(.aj-label) {
+    background: #fff;
+  }
+  .aj td.is-pri { background: #f7fbff; }
+  .aj td.is-fb { background: var(--color-card-bg); }
+  .aj td.is-mute { background: #f5f6f8 !important; color: #8c8c8c; }
+  .aj td .aj-subhead {
+    display: block;
+    font-weight: 650;
+    color: var(--color-text);
+    margin: 0 0 6px;
+  }
+  .aj-stack + .aj-stack { margin-top: 12px; }
+  .aj .aj-file {
+    display: block;
+    margin: 0 0 6px;
+    font-family: var(--font-mono, "SF Mono", monospace);
+    font-weight: 650;
+    color: var(--color-primary);
+  }
+  .aj ul {
+    margin: 0;
+    padding-left: 1.1em;
+  }
+  .aj li {
+    color: inherit;
+    margin-bottom: 0;
+  }
+  .aj li + li { margin-top: 8px; }
+  .aj code {
+    font-size: inherit;
+    line-height: inherit;
+  }
+
+  #scenarios .scene-def-table td .badge { border: none; }
+  .scene-def-table td .badge-optional {
+    background: var(--color-bg);
+    color: var(--color-text-secondary);
+  }
+  .scene-def-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--text-body);
+    line-height: 22px;
+    margin: 0 0 24px;
+    table-layout: fixed;
+  }
+  .scene-def-table th,
+  .scene-def-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: middle;
+    font-size: var(--text-body);
+    line-height: 22px;
+    font-weight: 400;
+  }
+  .scene-def-table tbody td {
+    height: auto;
+    min-height: 48px;
+  }
+  .scene-def-table th {
+    font-size: var(--text-auxiliary);
+    font-weight: 650;
+    color: var(--color-text-secondary);
+    background: var(--color-card-bg);
+    height: 40px;
+    box-sizing: border-box;
+  }
+  .scene-def-table .col-type { width: 18%; }
+  .scene-def-table .col-desc { width: 55%; }
+  .scene-def-table .col-place { width: 27%; }
+  #objects .scene-def-table .col-type,
+  #scenarios .scene-def-table .col-type { width: 22%; }
+  #objects .scene-def-table .col-desc { width: 78%; }
+  #scenarios .scene-def-table .col-place { width: 38%; }
+  #scenarios .scene-def-table .col-desc { width: 40%; }
+
+  .fn-ex-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr auto;
+    column-gap: 16px;
+    row-gap: 0;
+    align-items: stretch;
+    margin: 16px 0 0;
+  }
+  .fn-ex-row .fn-ex {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 1 / span 3;
+    margin: 0;
+    min-width: 0;
+  }
+  .fn-ex-row .fn-ex-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .fn-ex-row .fn-ex-head .fn-ex-label { margin: 0; }
+  .fn-ex-row .fn-ex-head .fn-ex-bar {
+    display: block; margin: 0; width: 100%; align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-body {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 2 / span 2;
+    min-height: 0;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .fn-ex-row .fn-ex-mock {
+    min-height: 0; height: 100%; box-sizing: border-box;
+    border: none; border-radius: 0; align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-mock:has(.site-foot) {
+    background: var(--color-bg);
+    padding: 12px;
+  }
+  .fn-ex-row .fn-ex-mock pre.st-code {
+    margin: 0;
+    padding: 14px 16px;
+    background: #1e1e1e;
+    border: 1px solid #111;
+    border-radius: 0;
+    font-size: var(--text-auxiliary);
+    line-height: 18px;
+    color: #e8e8e8;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow: auto;
+    box-sizing: border-box;
+    min-height: 100%;
+  }
+  .fn-ex-row .fn-ex-foot {
+    display: flex; flex-direction: column; gap: 8px;
+    padding: 12px 14px 14px; background: #fff;
+    border-top: 1px solid var(--color-border);
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-list { margin: 0; gap: 4px; }
+  .fn-ex-label {
+    display: inline-block; padding: 0 8px; border-radius: 4px;
+    font-size: var(--text-auxiliary); font-weight: 650; line-height: 20px;
+    color: #b42318; background: #fef3f2;
+  }
+  .fn-ex-label.is-good { color: #047857; background: #ecfdf5; }
+  .fn-ex-bar {
+    display: block; width: 100%; height: 3px;
+    background: #b42318; border-radius: 2px;
+  }
+  .fn-ex-bar.is-good { background: #047857; }
+  .fn-ex-list {
+    margin: 0; padding: 0 0 0 1.25em; list-style: disc;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .fn-ex-list li {
+    margin: 0; font-size: var(--text-body); line-height: 22px; color: var(--color-text);
+  }
+  .fn-ex-list strong { font-weight: 650; }
+  .site-foot {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 10px;
+    overflow: hidden;
+    font-family: var(--font);
+  }
+  .site-foot-body {
+    padding: 16px 14px 20px;
+    min-height: 52px;
+    background: linear-gradient(180deg, #fafbfc 0%, #fff 100%);
+  }
+  .site-foot-body p {
+    margin: 0;
+    font-size: var(--text-caption);
+    line-height: 16px;
+    color: #bfbfbf;
+  }
+  .site-foot-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 12px;
+    padding: 10px 14px;
+    border-top: 1px solid #eef1f5;
+    background: var(--color-card-bg);
+  }
+  .site-foot-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .site-foot-links a {
+    font-size: var(--text-caption);
+    line-height: 16px;
+    color: #8c8c8c;
+    text-decoration: none;
+  }
+  .site-foot-links a.is-machine {
+    color: var(--color-text-secondary);
+    font-variant-numeric: tabular-nums;
+  }
+  .site-foot-copy {
+    margin: 0;
+    font-size: var(--text-micro);
+    line-height: 14px;
+    color: #bfbfbf;
+  }
+  .principle-example + .principle-example { margin-top: var(--space-stack, 16px); }
+
+  #design-ui .principle-suggestions,
+  #content-adjust .principle-suggestions,
+  #frontend-adjust .principle-suggestions {
+    list-style: none;
+    margin: 0 0 32px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    counter-reset: sug;
+  }
+  #design-ui .principle-suggestions > li,
+  #content-adjust .principle-suggestions > li,
+  #frontend-adjust .principle-suggestions > li {
+    position: relative;
+    margin: 0;
+    padding: 0 0 0 36px;
+    color: var(--color-text-secondary);
+  }
+  #design-ui .principle-suggestions > li::before,
+  #content-adjust .principle-suggestions > li::before,
+  #frontend-adjust .principle-suggestions > li::before {
+    counter-increment: sug;
+    content: counter(sug);
+    position: absolute;
+    left: 0;
+    top: 2px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #eff6ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--text-auxiliary);
+    font-weight: 700;
+    line-height: 22px;
+    letter-spacing: 0.02em;
+    color: var(--color-primary);
+  }
+  #design-ui .principle-suggestions > li .sug-title,
+  #content-adjust .principle-suggestions > li .sug-title,
+  #frontend-adjust .principle-suggestions > li .sug-title {
+    display: block;
+    margin: 0 0 6px;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 24px;
+    color: var(--color-text);
+  }
+  #design-ui .principle-suggestions > li .sug-desc,
+  #content-adjust .principle-suggestions > li .sug-desc,
+  #frontend-adjust .principle-suggestions > li .sug-desc {
+    display: block;
+    margin: 0;
+    max-width: none;
+    width: 100%;
+    font-size: var(--text-body);
+    font-weight: 400;
+    line-height: 24px;
+    color: var(--color-text-secondary);
+  }
+
+  @media (max-width: 900px) {
+    .fn-ex-row {
+      grid-template-columns: 1fr;
+      grid-template-rows: none;
+    }
+    .fn-ex-row .fn-ex { display: block; grid-row: auto; }
+    .fn-ex-row .fn-ex-body {
+      display: flex; flex-direction: column; grid-row: auto;
+    }
+  }
+  #problem > p.page-lead,
+  #mechanism > p.page-lead {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  #problem > h2 + .page-lead,
+  #mechanism > h2 + .page-lead { margin-top: 0; }
+  #mechanism > p.page-lead {
+    margin-bottom: var(--space-stack, 16px);
+  }
+  #mechanism > p.page-lead strong {
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  #mechanism > .page-lead + .af-figure { margin-top: 0; }
+  #mechanism .aj,
+  #path .aj { min-width: 0; }
+  #mechanism .aj col.aj-rowhead,
+  #path .aj col.aj-rowhead { width: 136px; }
+  #mechanism .aj .aj-corner,
+  #mechanism .aj .aj-label,
+  #path .aj .aj-corner,
+  #path .aj .aj-label {
+    width: 136px;
+    white-space: nowrap;
+    color: var(--color-text);
+  }
+  #mechanism .aj thead th,
+  #path .aj thead th {
+    text-align: left;
+    vertical-align: bottom;
+  }
+  #core-principles > h2 + .bg-list { margin-top: 0; }
+  #core-principles .bg-list,
+  #benefits .bg-list {
+    list-style: disc;
+    padding-left: 1.25em;
+    margin: 0;
+  }
+  #core-principles .bg-list li + li,
+  #benefits .bg-list li + li { margin-top: 16px; }
+  #core-principles .bg-list li > strong:first-child,
+  #benefits .bg-list li > strong:first-child {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  #core-principles .bg-list li,
+  #benefits .bg-list li { color: var(--color-text-secondary); }
+  .file-sample {
+    margin: 0 0 var(--space-stack, 16px);
+  }
+  .file-sample-note {
+    margin: 0 0 var(--space-stack, 16px);
+  }
+  .file-sample .code-line-hl {
+    display: block;
+    padding: 0 14px;
+    margin: 0 -14px;
+    background: rgba(4, 120, 87, 0.28);
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+  .file-sample--wrap pre,
+  .file-sample--wrap pre code {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  #practices > figure.file-sample--wrap:first-of-type pre {
+    height: 200px;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  #practices h2 + h3.fn-h3,
+  #practices h2 + .file-sample-note,
+  #practices h3.fn-h3 + .file-sample-note,
+  #practices .file-sample-note + .file-sample,
+  #practices .file-sample + .file-sample-note {
+    margin-top: 0;
+  }
+  #practices .file-sample-note + h3.fn-h3,
+  #practices .file-sample-note + h2 {
+    margin-top: var(--space-stack, 16px);
+  }
+  #path h2 + h3.fn-h3,
+  #path h3.fn-h3 + .file-sample-note,
+  #path h3.fn-h3 + .af-figure,
+  #path h3.fn-h3 + .file-sample,
+  #path .file-sample + .file-sample-note,
+  #path .file-sample-note + .file-sample,
+  #path .file-sample-note + .af-figure {
+    margin-top: 0;
+  }
+  #path .file-sample-note + h3.fn-h3,
+  #path .af-figure + h3.fn-h3,
+  #path .file-sample + h3.fn-h3 {
+    margin-top: var(--space-stack, 16px);
+  }
+
+  /* 详情页壳：顶部只保留返回与当前位置，不带站点主导航与模块侧栏 */
+  .detail-bar { background: var(--color-surface); }
+  .detail-bar-inner { gap: 12px; }
+  .detail-back {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    margin-left: -6px;
+    border-radius: var(--radius);
+    color: var(--color-text);
+    text-decoration: none;
+    transition: background .15s, color .15s;
+  }
+  .detail-back:hover { background: var(--color-bg); color: var(--color-primary); }
+  .detail-back svg { width: 18px; height: 18px; display: block; }
+  .detail-divider {
+    flex-shrink: 0;
+    width: 1px;
+    height: 18px;
+    background: var(--color-border);
+  }
+  .detail-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+    color: var(--color-text-tertiary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .detail-title a { color: var(--color-text-secondary); text-decoration: none; }
+  .detail-title a:hover { color: var(--color-primary); }
+  .detail-title strong { color: var(--color-text); font-weight: 650; }
+  .detail-exit {
+    flex-shrink: 0;
+    margin-left: auto;
+    padding: 5px 14px;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    font-size: var(--code-copy-size);
+    line-height: var(--text-auxiliary-lh);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    transition: background .15s, color .15s, border-color .15s;
+  }
+  .detail-exit:hover { color: var(--color-primary); border-color: var(--color-primary); background: var(--color-primary-subtle); }
+  .detail-wrapper { display: flex; align-items: flex-start; background: var(--color-surface); }
+  .model-nav {
+    flex-shrink: 0;
+    width: var(--sidebar-width);
+    box-sizing: border-box;
+    position: sticky;
+    top: var(--header-height, 56px);
+    height: calc(100vh - var(--header-height, 56px));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: var(--color-card-bg);
+    border-right: 1px solid var(--color-border);
+  }
+  .model-nav-label {
+    font-size: var(--text-body);
+    font-weight: var(--text-h2-weight);
+    letter-spacing: .04em;
+    color: var(--color-text-tertiary);
+    padding: 4px 6px 2px;
+  }
+  .model-nav-label.is-sub {
+    margin-top: 8px;
+    padding-top: 12px;
+    border-top: 1px solid var(--color-border);
+  }
+  a.nav-vendor {
+    display: block;
+    padding: 6px 10px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+  }
+  a.nav-vendor:hover {
+    color: var(--color-primary);
+    background: var(--color-primary-subtle);
+    text-decoration: none;
+  }
+  a.nav-vendor.is-active {
+    color: var(--color-primary);
+    background: var(--color-primary-subtle);
+    font-weight: 650;
+  }
+  a.nav-model-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 10px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-surface);
+    font: inherit;
+    text-align: left;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition: border-color .15s, box-shadow .15s, background .15s;
+  }
+  a.nav-model-card:hover {
+    border-color: var(--color-primary-hover-border);
+    background: var(--color-primary-subtle);
+  }
+  a.nav-model-card.is-active {
+    border-color: var(--color-primary);
+    background: var(--color-primary-subtle);
+    box-shadow: inset 3px 0 0 var(--color-primary);
+  }
+  a.nav-model-card .idx {
+    font-size: var(--text-body);
+    font-weight: 600;
+    line-height: var(--text-body-lh);
+    color: var(--color-text-secondary);
+  }
+  a.nav-model-card.is-active .idx { color: var(--color-primary); }
+  a.nav-model-card .card-title {
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+    font-weight: 650;
+    color: var(--color-text);
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  @media (max-width: 900px) {
+    .detail-wrapper { flex-direction: column; }
+    .model-nav {
+      width: 100%;
+      position: static;
+      height: auto;
+      max-height: 36vh;
+      border-right: none;
+      border-bottom: 1px solid var(--color-border);
+    }
+  }
+  body.inner-page .detail-wrapper .main-content {
+    padding-top: 40px;
+    min-width: 0;
+    flex: 1;
+    background: var(--color-surface);
+    min-height: calc(100vh - var(--header-height, 56px));
+  }
+  body.inner-page .detail-wrapper .main-content > .page-header,
+  body.inner-page .detail-wrapper .main-content > .section {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin-inline: auto;
+    box-sizing: border-box;
+  }
+</style>
+</head>
+<body class="inner-page agent-entry-page" data-module="principles" data-page="llms-parse-nvidia-docs" data-no-surface-tabs>
+
+<div class="topbar detail-bar">
+  <div class="topbar-inner detail-bar-inner">
+    <a class="detail-back" href="principles-llms-parse-book.html" aria-label="返回 分册 llms 解析">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6L9 12l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <span class="detail-divider" aria-hidden="true"></span>
+    <div class="detail-title"><a href="principles-llms-parse-book.html">分册 llms 解析</a><span aria-hidden="true">›</span>NVIDIA<span aria-hidden="true">›</span><strong>docs.nvidia.com/llms.txt</strong></div>
+    <a class="detail-exit" href="principles-llms-parse-book.html">返回解析</a>
+  </div>
+</div>
+
+<div class="page-wrapper detail-wrapper">
+
+  <aside class="model-nav" id="llms-parse-nav" data-vendor="nvidia" data-layer="docs" aria-label="解析导航"></aside>
+
+  <main class="main-content">
+
+    <div class="page-header">
+      <h1>NVIDIA 文档站分册</h1>
+    </div>
+
+    <section class="section" id="mechanism">
+      <h2>解析什么</h2>
+      <p class="page-lead">对照文档站总册 <a href="https://docs.nvidia.com/llms.txt" target="_blank" rel="noopener">https://docs.nvidia.com/llms.txt</a>。从集团根的 Tech Docs 跟过来。这一本按产品线挂下一本 <code>llms.txt</code>，本身几乎不列页 <code>.md</code>。</p>
+    </section>
+
+    <section class="section" id="problem">
+      <h2>它在解决什么</h2>
+      <p class="page-lead">NVIDIA 文档站产品线很多。若在集团根或这一本里摊每一页，会截断。文档站总册只告诉 Agent：CUDA、NIM、NeMo 各自的产品册在哪。</p>
+    </section>
+
+    <section class="section" id="core-principles">
+      <h2>这本分册怎么摊开</h2>
+      <ul class="bg-list">
+        <li><strong>一节一条产品册</strong>每个 <code>##</code> 是一条产品线：一句说明 + 一条 <code>…/llms.txt</code>。</li>
+        <li><strong>按字母排</strong>现网按产品名英文字母序，不是按人读导航。</li>
+        <li><strong>下一跳仍是 llms</strong>和 Mintlify 文档分册不同：这里还要再打开产品线 <code>llms.txt</code>，才到各页平行稿。</li>
+      </ul>
+    </section>
+
+    <section class="section" id="practices">
+      <h2>分册交付示例</h2>
+      <p class="file-sample-note">对照文档站总册的结构。全文按产品线逐条排列，这里只摘页顶与三条产品（含 CUDA）。其余产品同一写法。</p>
+      <figure class="file-sample file-sample--wrap">
+        <figcaption><code>https://docs.nvidia.com/llms.txt</code></figcaption>
+        <pre><code># NVIDIA Technical Product Documentation
+
+&gt; Collection of NVIDIA Technical Documentation llms.txt files for AI user agents. Content is in English and listed in alphabetical order. Last updated 9 September 2026
+
+## NVIDIA AI Cluster Runtime (AICR)
+
+&gt; Tooling for generating validated, optimized GPU-accelerated Kubernetes configurations through a snapshot-recipe-validate-bundle workflow.
+
+- [NVIDIA AI Cluster Runtime](https://docs.nvidia.com/aicr/llms.txt)
+
+## NVIDIA CUDA Toolkit
+
+&gt; Development environment for creating high performance GPU-accelerated applications with libraries, compilers, and debugging tools.
+
+<span class="code-line-hl">- [NVIDIA CUDA Toolkit](https://docs.nvidia.com/cuda/llms.txt)</span>
+
+## NVIDIA NIM
+
+&gt; Containers to self-host GPU-accelerated inferencing microservices for pretrained and customized AI models.
+
+- [NVIDIA NIM](https://docs.nvidia.com/nim/llms.txt)
+</code></pre>
+      </figure>
+
+      <h2>站点 llms.txt 交付件拆解</h2>
+      <p class="file-sample-note">对照 <code>docs.nvidia.com/llms.txt</code>：产品线目录。下一跳几乎全是另一本 <code>llms.txt</code>。</p>
+
+      <h3 class="fn-h3">页顶</h3>
+      <figure class="file-sample">
+        <figcaption><code>https://docs.nvidia.com/llms.txt</code></figcaption>
+        <pre><code># NVIDIA Technical Product Documentation
+&gt; Collection of NVIDIA Technical Documentation llms.txt files for AI user agents. Content is in English and listed in alphabetical order. Last updated 9 September 2026</code></pre>
+      </figure>
+      <p class="file-sample-note">标题标明是技术产品文档集合。引用块说明收录的是各产品 <code>llms.txt</code>，英文、按字母序，并写更新日期。</p>
+
+      <h3 class="fn-h3">产品块</h3>
+      <figure class="file-sample">
+        <figcaption><code>https://docs.nvidia.com/llms.txt</code></figcaption>
+        <pre><code>## NVIDIA CUDA Toolkit
+&gt; Development environment for creating high performance GPU-accelerated applications with libraries, compilers, and debugging tools.
+- [NVIDIA CUDA Toolkit](https://docs.nvidia.com/cuda/llms.txt)</code></pre>
+      </figure>
+      <p class="file-sample-note">一节只服务一条产品线：先一句说明，再一条分册地址。Agent 选中产品后再打开产品册。</p>
+
+      <h3 class="fn-h3">例外</h3>
+      <figure class="file-sample">
+        <figcaption><code>https://docs.nvidia.com/llms.txt</code></figcaption>
+        <pre><code>- [NVIDIA Nemotron Documentation on HuggingFace](https://huggingface.co/docs/transformers/en/model_doc/nemotron.md)
+- [NVIDIA CUDA-Q documentation on GitHub](https://nvidia.github.io/cuda-quantum/latest/llms.txt)</code></pre>
+      </figure>
+      <p class="file-sample-note">不是上一块那种「本站产品册」。Nemotron 直接链站外 <code>.md</code>，已经是叶子，没有第三层 NVIDIA 分册。CUDA-Q 的分册不在 <code>docs.nvidia.com</code>，而在 GitHub Pages。</p>
+    </section>
+
+    <section class="section" id="benefits">
+      <h2>价值收益</h2>
+      <ul class="bg-list">
+        <li><strong>集团根读得完</strong>产品线不进 nvidia.com 根文件。</li>
+        <li><strong>先选产品再摊页</strong>文档站总册只回答「下一本产品册在哪」。</li>
+        <li><strong>给第三层留位置</strong>CUDA 等产品册才列各页平行稿。</li>
+      </ul>
+    </section>
+
+    </main>
+</div>
+
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js"></script>
+<script src="assets/js/llms-parse-nav.js"></script>
+<script src="assets/js/module-sidebar.js"></script>
+</body>
+</html>

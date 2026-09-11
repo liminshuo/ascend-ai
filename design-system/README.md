@@ -5,7 +5,7 @@
 | 文件 | 说明 |
 |------|------|
 | [components.md](./components.md) | 组件索引与视觉说明 |
-| [page-spacing.md](./page-spacing.md) | 页面标题 Padding 与邻接 Margin |
+| [page-spacing.md](./page-spacing.md) | 页面标题 Padding、邻接 Margin、表格 Padding |
 | [assets/](./assets/) | 各组件截图原图 |
 
 **已收录：** 导航类 8 · 操作类 8 · 输入类 11 · 展示类 3 · 容器类 4 · 反馈类 5（共 39；OUpload 含 3 张截图）  

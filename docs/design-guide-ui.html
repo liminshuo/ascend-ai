@@ -130,7 +130,7 @@
   .token-table th,
   .token-table td {
     text-align: left;
-    padding: 10px 12px;
+    padding: var(--table-cell-pad);
     border-bottom: 1px solid var(--line);
     vertical-align: top;
   }
@@ -139,6 +139,7 @@
     font-weight: 650;
     color: var(--muted);
     background: var(--color-card-bg);
+    padding: var(--table-head-pad-y) var(--table-head-pad-x);
   }
   .token-table code {
     font-size: var(--text-auxiliary);
@@ -442,6 +443,30 @@
     </tbody>
   </table>
 
+  <h2 class="block-title">表格 Padding</h2>
+  <p class="spec-lead">原则页对照表（<code>.aj</code>）的单元格内部留白。表体四边相等；表头上下略紧、左右与表体对齐。Token 写在 <code>tokens.css</code>。</p>
+  <table class="token-table">
+    <thead>
+      <tr><th>区域</th><th>Token</th><th>上 / 下</th><th>左 / 右</th><th>选择器</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>表体单元格</td>
+        <td><code>--table-cell-pad</code></td>
+        <td><strong>16px</strong></td>
+        <td><strong>16px</strong></td>
+        <td><code>.aj td</code>、<code>.aj .aj-label</code></td>
+      </tr>
+      <tr>
+        <td>表头</td>
+        <td><code>--table-head-pad-y</code> / <code>--table-head-pad-x</code></td>
+        <td><strong>12px</strong></td>
+        <td><strong>16px</strong></td>
+        <td><code>.aj thead th</code></td>
+      </tr>
+    </tbody>
+  </table>
+
   <h2 class="block-title">邻接 Margin（叠在 Padding 上）</h2>
   <p class="spec-lead">相邻<strong>盒子</strong>之间另加 <code>--space-stack: 16px</code> 的 margin。Margin 与标题 padding <strong>同时生效、不互相替代</strong>。只在一侧写 16px（上一块 <code>margin-bottom</code> 或下一块 <code>margin-top</code>），相邻外边距折叠后仍为 16，避免双边各 16 且不折叠时变成 32。</p>
   <table class="token-table">
@@ -491,7 +516,7 @@
     <p class="meta">font-size: var(--text-body) · line-height: 22px</p>
   </div>
   <ul class="affinity-principles">
-    <li><strong>统一：</strong>全站标题与正文只引用 <code>tokens.css</code>；原则页勿再写死 18/16 字号。H1–H5 上下 padding 只引用 <code>--space-h1-pad-y</code>～<code>--space-h5-pad-y</code>。盒子之间的邻接空隙只引用 <code>--space-stack</code>（16px），叠在 padding 之外。</li>
+    <li><strong>统一：</strong>全站标题与正文只引用 <code>tokens.css</code>；原则页勿再写死 18/16 字号。H1–H5 上下 padding 只引用 <code>--space-h1-pad-y</code>～<code>--space-h5-pad-y</code>。对照表单元格只引用 <code>--table-cell-pad</code>、<code>--table-head-pad-y</code>、<code>--table-head-pad-x</code>。盒子之间的邻接空隙只引用 <code>--space-stack</code>（16px），叠在 padding 之外。</li>
     <li><strong>量法：</strong>检查间距时量的是两个盒子边框盒之间的空隙（margin），不是文字到文字。文字到文字 = 上一块 padding-bottom + margin + 下一块 padding-top。</li>
     <li><strong>例外：</strong>组件 mock、侧栏、顶栏可用局部尺寸，不占用正文规格。</li>
   </ul>

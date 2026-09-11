@@ -1,0 +1,1982 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>读取路径 · 编辑器快捷键 · 实测记录 · 昇腾社区 AI 亲和原则</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid var(--color-border);
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: 100%; max-width: none; margin: 0; padding: 0 24px; box-sizing: border-box;
+    height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: var(--color-text); text-decoration: none; white-space: nowrap; margin-right: 40px;
+  }
+  .topbar .brand span { color: var(--color-primary); }
+  .topbar .site-nav { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; flex-wrap: wrap; }
+  .topbar .site-nav > a {
+    text-decoration: none; color: var(--color-text-secondary); font-size: var(--text-body); font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .topbar .site-nav > a:hover { color: var(--color-primary); background: var(--color-bg); text-decoration: none; }
+  .topbar .site-nav > a.active { color: var(--color-primary); background: var(--color-bg); font-weight: 600; }
+  .nav-dd { position: relative; z-index: 210; display: inline-flex; align-items: center; }
+  .nav-dd-trigger {
+    appearance: none; border: 0; background: transparent; cursor: pointer; font: inherit;
+    text-decoration: none; color: var(--color-text-secondary); font-size: var(--text-body); font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+    display: inline-flex; align-items: center; gap: 12px;
+  }
+  .nav-dd-trigger::after {
+    content: ""; width: 6px; height: 6px;
+    border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg); opacity: .65; margin-top: -3px; flex-shrink: 0;
+  }
+  .nav-dd-trigger:hover, .nav-dd:hover .nav-dd-trigger, .nav-dd:focus-within .nav-dd-trigger {
+    color: var(--color-primary); background: var(--color-bg);
+  }
+  .nav-dd::before { content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 10px; }
+  .nav-dd-panel {
+    position: absolute; top: calc(100% + 4px); left: 0; min-width: 148px; padding: 6px;
+    background: #fff; border: 1px solid var(--color-border); border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(25, 25, 25, 0.08);
+    opacity: 0; visibility: hidden; transform: translateY(-4px);
+    transition: opacity .15s, transform .15s, visibility .15s; z-index: 210;
+  }
+  .nav-dd:hover .nav-dd-panel, .nav-dd:focus-within .nav-dd-panel {
+    opacity: 1; visibility: visible; transform: translateY(0);
+  }
+  .nav-dd-panel a {
+    display: block; padding: 8px 12px; border-radius: 6px; text-decoration: none;
+    color: var(--color-text-secondary); font-size: 13px; font-weight: 500; line-height: 1.4;
+  }
+  .nav-dd-panel a:hover { color: var(--color-primary); background: var(--color-bg); }
+  body.inner-page .page-wrapper { min-height: 100vh; }
+
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: var(--space-stack, 16px);
+  }
+  .page-header > h1 {
+    font-family: var(--font);
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1-weight, 600);
+    line-height: var(--text-h1-lh);
+    letter-spacing: -0.02em;
+    margin: 0;
+    padding-top: var(--space-h1-pad-y, 32px);
+    padding-bottom: var(--space-h1-pad-y, 32px);
+    color: var(--color-text);
+  }
+  .page-header .page-desc {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  body.inner-page[data-page="llms-parse-mintlify-path"]:has(#module-sidebar) .main-content {
+    padding-top: var(--content-main-pad-top, 16px);
+    padding-left: 0;
+    padding-right: 0;
+  }
+  body.inner-page[data-page="llms-parse-mintlify-path"]:has(#module-sidebar) .main-content > .page-header,
+  body.inner-page[data-page="llms-parse-mintlify-path"]:has(#module-sidebar) .main-content > .section,
+  body.inner-page[data-page="llms-parse-mintlify-path"]:has(#module-sidebar) .main-content > .surface-tabs {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page[data-page="llms-parse-mintlify-path"] .main-content .section > h2 {
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    letter-spacing: -0.01em;
+    margin-top: 0;
+    margin-bottom: var(--space-stack, 16px);
+    padding-top: var(--space-h2-pad-y, 16px);
+    padding-bottom: var(--space-h2-pad-y, 16px);
+    border-bottom: 2px solid var(--color-card-border);
+    color: var(--color-text, var(--color-text));
+  }
+  body.inner-page[data-page="llms-parse-mintlify-path"] .main-content > .section {
+    margin-bottom: var(--space-stack, 16px);
+  }
+  body.inner-page[data-page="llms-parse-mintlify-path"] .main-content .section > p {
+    margin: 0;
+  }
+  body.inner-page[data-page="llms-parse-mintlify-path"] .main-content .section h3 { height: auto; }
+  h3.fn-h3 {
+    margin: 0 0 var(--space-stack, 16px);
+    padding-top: var(--space-h3-pad-y, 16px);
+    padding-bottom: var(--space-h3-pad-y, 16px);
+    font-size: var(--text-h3, 18px);
+    line-height: var(--text-h3-lh, 28px);
+    font-weight: var(--text-h3-weight, 650);
+    color: var(--color-text, var(--color-text));
+    letter-spacing: -0.01em;
+  }
+  body.inner-page[data-page="llms-parse-mintlify-path"] .main-content .section h4 { height: auto; }
+  h4.fn-h4 {
+    margin: 0 0 var(--space-stack, 16px);
+    padding-top: var(--space-h4-pad-y, 16px);
+    padding-bottom: var(--space-h4-pad-y, 16px);
+    font-size: var(--text-h4, 14px);
+    line-height: var(--text-h4-lh, 22px);
+    font-weight: var(--text-h4-weight, 650);
+    color: var(--color-text, var(--color-text));
+    letter-spacing: -0.01em;
+  }
+  h3.fn-h3 + .principle-example > h4.fn-h4,
+  h3.fn-h3 + h4.fn-h4 { margin-top: 0; }
+  #practices .file-lead {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: 22px;
+    color: var(--color-text-secondary);
+  }
+  #practices .file-lead + h4.fn-h4,
+  #practices .file-sample + h4.fn-h4,
+  #practices .file-sample-note + h4.fn-h4,
+  #practices h2 + h4.fn-h4 {
+    margin-top: var(--space-stack, 16px);
+  }
+  #practices .bg-list + h2,
+  #practices .file-sample + h2 {
+    margin-top: var(--space-stack, 16px);
+  }
+  #practices .file-lead + .file-sample {
+    margin-top: var(--space-stack, 16px);
+  }
+  .practice-block {
+    margin: 0;
+    padding: 0;
+    border: none;
+  }
+  .practice-block + .practice-block {
+    margin-top: var(--space-stack, 16px);
+  }
+
+  body.inner-page[data-page="llms-parse-mintlify-path"] .main-content .section > p.flow-verify {
+    margin: var(--space-stack, 16px) 0 0;
+    font-size: var(--text-body);
+    line-height: 22px;
+  }
+  .flow-verify a {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 650;
+  }
+  .flow-verify a:hover {
+    text-decoration: underline;
+  }
+  body.inner-page[data-page="llms-parse-mintlify-path"] .main-content > .section:first-of-type > h2 {
+    margin-top: 0;
+  }
+  .bg-body {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: 22px;
+    color: var(--color-text, var(--color-text));
+  }
+  .bg-body:last-child { margin-bottom: 0; }
+  .bg-list {
+    margin: 0;
+    padding-left: 1.25em;
+    font-size: var(--text-body);
+    line-height: 22px;
+    color: var(--color-text, var(--color-text));
+  }
+  .bg-list li + li { margin-top: 6px; }
+  #principles .bg-list,
+  #practices .bg-list,
+  #benefits .bg-list {
+    list-style: disc;
+    padding-left: 1.25em;
+    margin: 0;
+  }
+  #principles .bg-list li + li,
+  #practices .bg-list li + li,
+  #benefits .bg-list li + li { margin-top: 16px; }
+  #principles .bg-list li strong,
+  #practices .bg-list li strong,
+  #benefits .bg-list li strong {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  /* 约定路径等短条目：题头与正文同一行 */
+  #practices .bg-list.-inline li strong {
+    display: inline;
+    margin-bottom: 0;
+  }
+  #practices .bg-list.-inline li strong::after {
+    content: "：";
+  }
+  #principles .bg-list li,
+  #practices .bg-list li,
+  #benefits .bg-list li {
+    color: var(--color-text-secondary);
+  }
+  .file-sample {
+    margin: 0;
+    padding: 0;
+    background: #1e1e1e;
+    border: 1px solid #111;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .file-sample figcaption {
+    margin: 0;
+    padding: 10px 14px;
+    font-size: var(--text-auxiliary);
+    font-weight: 650;
+    line-height: 22px;
+    color: #a3a3a3;
+    border-bottom: 1px solid #333;
+  }
+  .file-sample figcaption code {
+    font-size: inherit;
+    color: #e8e8e8;
+    background: none;
+  }
+  .file-sample pre {
+    margin: 0;
+    padding: 12px 14px 14px;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: var(--text-auxiliary);
+    line-height: 20px;
+    color: #e8e8e8;
+    background: transparent;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    overflow-x: hidden;
+  }
+  .file-sample pre code {
+    display: block;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    color: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    font-family: inherit;
+    white-space: inherit;
+  }
+  .file-sample .cmt { color: #737373; }
+  .file-sample-note {
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: 13px;
+    line-height: 22px;
+    color: #8c8c8c;
+  }
+  h3.fn-h3 + .file-sample { margin-top: 0; }
+  .file-sample + .bg-list,
+  .file-sample-note + .bg-list { margin-top: 0; }
+  .af-figure {
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: none;
+    overflow-x: auto;
+    border-radius: 8px;
+  }
+
+  .aj {
+    width: 100%;
+    min-width: 880px;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+    color: var(--color-text);
+  }
+  .aj caption {
+    caption-side: top;
+    text-align: left;
+    font-size: var(--text-body);
+    font-weight: 650;
+    line-height: var(--text-body-lh);
+    padding: 0 0 10px;
+    color: var(--color-text);
+  }
+  .aj .aj-col-mute { width: 76px; }
+  .aj td.is-mute {
+    color: #8c8c8c;
+  }
+  .aj th,
+  .aj td {
+    border: 1px solid #e8eef5;
+    border-top: none;
+    border-left: none;
+    vertical-align: top;
+    padding: 12px 12px;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+  }
+  .aj thead tr:first-child > th {
+    border-top: 1px solid #e8eef5;
+  }
+  .aj .aj-corner,
+  .aj .aj-label {
+    width: 92px;
+    background: #f5f6f8;
+    color: var(--color-text-secondary);
+    font-weight: 650;
+    vertical-align: middle;
+    text-align: left;
+    padding: 12px 12px;
+    border-left: 1px solid #e8eef5;
+  }
+  .aj thead th.aj-corner {
+    background: #f5f6f8;
+    color: var(--color-text-secondary);
+    padding: 12px 12px;
+    border-top-left-radius: 8px;
+  }
+  .aj thead tr.aj-group > th:last-child {
+    border-top-right-radius: 8px;
+  }
+  .aj tbody tr:last-child .aj-label {
+    border-bottom-left-radius: 8px;
+  }
+  .aj tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 8px;
+  }
+  .aj thead th {
+    background: #f5f6f8;
+    font-weight: 650;
+    text-align: left;
+    padding: 12px 12px;
+    color: var(--color-text);
+  }
+  .aj thead th.aj-group {
+    text-align: center;
+    vertical-align: middle;
+    font-weight: 650;
+    letter-spacing: 0;
+    background: #eceef1;
+    color: var(--color-text);
+    padding: 10px 12px;
+  }
+  .aj thead th.aj-span {
+    vertical-align: middle;
+  }
+  .aj thead .aj-stage-name {
+    display: block;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  .aj thead .aj-corner .aj-stage-name {
+    color: inherit;
+    margin-bottom: 2px;
+  }
+  .aj thead .aj-mute {
+    background: #f5f6f8;
+    color: var(--color-text-secondary);
+  }
+  .aj thead .aj-mute .aj-stage-name { color: var(--color-text-secondary); }
+  .aj thead .aj-pri,
+  .aj thead .aj-opt {
+    background: #f5f6f8;
+  }
+  .aj thead .aj-fb {
+    background: #f3f3f3;
+  }
+  .aj .aj-tag {
+    display: block;
+    width: fit-content;
+    margin: 0;
+    padding: 0 6px;
+    border-radius: 3px;
+    font-size: var(--text-micro);
+    font-weight: 700;
+    line-height: 18px;
+    color: var(--color-primary);
+  }
+  .aj-tag--must { background: rgba(20, 118, 255, .18); }
+  .aj-tag--pri  { background: rgba(20, 118, 255, .12); }
+  .aj-tag--opt  { background: rgba(20, 118, 255, .08); }
+  .aj-tag--fb   { background: rgba(20, 118, 255, .04); color: #3d7fd4; }
+  .aj tbody td:not(.is-mute):not(.is-fb):not(.is-pri):not(.aj-label) {
+    background: #fff;
+  }
+  .aj td.is-pri { background: #f7fbff; }
+  .aj td.is-fb { background: var(--color-card-bg); }
+  .aj td.is-mute { background: #f5f6f8 !important; color: #8c8c8c; }
+  .aj td .aj-subhead {
+    display: block;
+    font-weight: 650;
+    color: var(--color-text);
+    margin: 0 0 6px;
+  }
+  .aj-stack + .aj-stack { margin-top: 12px; }
+  .aj .aj-file {
+    display: block;
+    margin: 0 0 6px;
+    font-family: var(--font-mono, "SF Mono", monospace);
+    font-weight: 650;
+    color: var(--color-primary);
+  }
+  .aj ul {
+    margin: 0;
+    padding-left: 1.1em;
+  }
+  .aj li {
+    color: inherit;
+    margin-bottom: 0;
+  }
+  .aj li + li { margin-top: 8px; }
+  .aj code {
+    font-size: inherit;
+    line-height: inherit;
+  }
+
+  #scenarios .scene-def-table td .badge { border: none; }
+  .scene-def-table td .badge-optional {
+    background: var(--color-bg);
+    color: var(--color-text-secondary);
+  }
+  .scene-def-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--text-body);
+    line-height: 22px;
+    margin: 0 0 24px;
+    table-layout: fixed;
+  }
+  .scene-def-table th,
+  .scene-def-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: middle;
+    font-size: var(--text-body);
+    line-height: 22px;
+    font-weight: 400;
+  }
+  .scene-def-table tbody td {
+    height: auto;
+    min-height: 48px;
+  }
+  .scene-def-table th {
+    font-size: var(--text-auxiliary);
+    font-weight: 650;
+    color: var(--color-text-secondary);
+    background: var(--color-card-bg);
+    height: 40px;
+    box-sizing: border-box;
+  }
+  .scene-def-table .col-type { width: 18%; }
+  .scene-def-table .col-desc { width: 55%; }
+  .scene-def-table .col-place { width: 27%; }
+  #objects .scene-def-table .col-type,
+  #scenarios .scene-def-table .col-type { width: 22%; }
+  #objects .scene-def-table .col-desc { width: 78%; }
+  #scenarios .scene-def-table .col-place { width: 38%; }
+  #scenarios .scene-def-table .col-desc { width: 40%; }
+
+  .fn-ex-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr auto;
+    column-gap: 16px;
+    row-gap: 0;
+    align-items: stretch;
+    margin: 16px 0 0;
+  }
+  .fn-ex-row .fn-ex {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 1 / span 3;
+    margin: 0;
+    min-width: 0;
+  }
+  .fn-ex-row .fn-ex-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .fn-ex-row .fn-ex-head .fn-ex-label { margin: 0; }
+  .fn-ex-row .fn-ex-head .fn-ex-bar {
+    display: block; margin: 0; width: 100%; align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-body {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 2 / span 2;
+    min-height: 0;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .fn-ex-row .fn-ex-mock {
+    min-height: 0; height: 100%; box-sizing: border-box;
+    border: none; border-radius: 0; align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-mock:has(.site-foot) {
+    background: var(--color-bg);
+    padding: 12px;
+  }
+  .fn-ex-row .fn-ex-mock pre.st-code {
+    margin: 0;
+    padding: 14px 16px;
+    background: #1e1e1e;
+    border: 1px solid #111;
+    border-radius: 0;
+    font-size: var(--text-auxiliary);
+    line-height: 18px;
+    color: #e8e8e8;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow: auto;
+    box-sizing: border-box;
+    min-height: 100%;
+  }
+  .fn-ex-row .fn-ex-foot {
+    display: flex; flex-direction: column; gap: 8px;
+    padding: 12px 14px 14px; background: #fff;
+    border-top: 1px solid var(--color-border);
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-list { margin: 0; gap: 4px; }
+  .fn-ex-label {
+    display: inline-block; padding: 0 8px; border-radius: 4px;
+    font-size: var(--text-auxiliary); font-weight: 650; line-height: 20px;
+    color: #b42318; background: #fef3f2;
+  }
+  .fn-ex-label.is-good { color: #047857; background: #ecfdf5; }
+  .fn-ex-bar {
+    display: block; width: 100%; height: 3px;
+    background: #b42318; border-radius: 2px;
+  }
+  .fn-ex-bar.is-good { background: #047857; }
+  .fn-ex-list {
+    margin: 0; padding: 0 0 0 1.25em; list-style: disc;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .fn-ex-list li {
+    margin: 0; font-size: var(--text-body); line-height: 22px; color: var(--color-text);
+  }
+  .fn-ex-list strong { font-weight: 650; }
+  .site-foot {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 10px;
+    overflow: hidden;
+    font-family: var(--font);
+  }
+  .site-foot-body {
+    padding: 16px 14px 20px;
+    min-height: 52px;
+    background: linear-gradient(180deg, #fafbfc 0%, #fff 100%);
+  }
+  .site-foot-body p {
+    margin: 0;
+    font-size: var(--text-caption);
+    line-height: 16px;
+    color: #bfbfbf;
+  }
+  .site-foot-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 12px;
+    padding: 10px 14px;
+    border-top: 1px solid #eef1f5;
+    background: var(--color-card-bg);
+  }
+  .site-foot-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .site-foot-links a {
+    font-size: var(--text-caption);
+    line-height: 16px;
+    color: #8c8c8c;
+    text-decoration: none;
+  }
+  .site-foot-links a.is-machine {
+    color: var(--color-text-secondary);
+    font-variant-numeric: tabular-nums;
+  }
+  .site-foot-copy {
+    margin: 0;
+    font-size: var(--text-micro);
+    line-height: 14px;
+    color: #bfbfbf;
+  }
+  .principle-example + .principle-example { margin-top: var(--space-stack, 16px); }
+
+  #design-ui .principle-suggestions,
+  #content-adjust .principle-suggestions,
+  #frontend-adjust .principle-suggestions {
+    list-style: none;
+    margin: 0 0 32px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    counter-reset: sug;
+  }
+  #design-ui .principle-suggestions > li,
+  #content-adjust .principle-suggestions > li,
+  #frontend-adjust .principle-suggestions > li {
+    position: relative;
+    margin: 0;
+    padding: 0 0 0 36px;
+    color: var(--color-text-secondary);
+  }
+  #design-ui .principle-suggestions > li::before,
+  #content-adjust .principle-suggestions > li::before,
+  #frontend-adjust .principle-suggestions > li::before {
+    counter-increment: sug;
+    content: counter(sug);
+    position: absolute;
+    left: 0;
+    top: 2px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #eff6ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--text-auxiliary);
+    font-weight: 700;
+    line-height: 22px;
+    letter-spacing: 0.02em;
+    color: var(--color-primary);
+  }
+  #design-ui .principle-suggestions > li .sug-title,
+  #content-adjust .principle-suggestions > li .sug-title,
+  #frontend-adjust .principle-suggestions > li .sug-title {
+    display: block;
+    margin: 0 0 6px;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 24px;
+    color: var(--color-text);
+  }
+  #design-ui .principle-suggestions > li .sug-desc,
+  #content-adjust .principle-suggestions > li .sug-desc,
+  #frontend-adjust .principle-suggestions > li .sug-desc {
+    display: block;
+    margin: 0;
+    max-width: none;
+    width: 100%;
+    font-size: var(--text-body);
+    font-weight: 400;
+    line-height: 24px;
+    color: var(--color-text-secondary);
+  }
+
+  @media (max-width: 900px) {
+    .fn-ex-row {
+      grid-template-columns: 1fr;
+      grid-template-rows: none;
+    }
+    .fn-ex-row .fn-ex { display: block; grid-row: auto; }
+    .fn-ex-row .fn-ex-body {
+      display: flex; flex-direction: column; grid-row: auto;
+    }
+  }
+  #mechanism > p.page-lead {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  #mechanism > h2 + .page-lead { margin-top: 0; }
+  #problem > h2 + .wf { margin-top: 0; }
+  .wf {
+    margin: 0;
+    padding: var(--space-stack, 16px) 24px;
+    background-color: #f4f4f2;
+    background-image: radial-gradient(#d8d8d4 1.1px, transparent 1.1px);
+    background-size: 14px 14px;
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    overflow-x: auto;
+  }
+  .wf-track {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0;
+    width: 100%;
+    min-width: 872px;
+  }
+  .wf-step {
+    position: relative;
+    flex: 0 0 188px;
+    width: 188px;
+    padding-top: 32px;
+  }
+  .wf-node {
+    position: relative;
+    appearance: none;
+    display: block;
+    width: 100%;
+    margin: 0;
+    box-sizing: border-box;
+    padding-top: 0;
+    background: #fff;
+    border: 1px solid #e6e6e4;
+    border-radius: 14px;
+    box-shadow: 0 1px 2px rgba(17, 17, 17, 0.06), 0 8px 24px rgba(17, 17, 17, 0.04);
+    overflow: hidden;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .wf-node:hover {
+    border-color: #c8c8c4;
+    box-shadow: 0 1px 2px rgba(17, 17, 17, 0.08), 0 10px 28px rgba(17, 17, 17, 0.08);
+  }
+  .wf-node[aria-selected="true"] {
+    border-color: #191919;
+    box-shadow: 0 1px 2px rgba(17, 17, 17, 0.08), 0 10px 28px rgba(17, 17, 17, 0.08);
+  }
+  .wf-node:focus-visible {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--color-primary);
+  }
+  #practices .hop-panel { margin: 0; }
+  .wf-pill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: inline-block;
+    margin: 0;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: #fff;
+    border: 1px solid #e6e6e4;
+    font-size: 11px;
+    font-weight: 650;
+    line-height: 18px;
+    color: var(--color-text);
+  }
+  .wf-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 10px 12px;
+    font-size: 13px;
+    font-weight: 650;
+    line-height: 18px;
+    color: var(--color-text);
+    border-bottom: 1px solid #f0f0ee;
+  }
+  .wf-head svg { flex-shrink: 0; margin-top: 2px; }
+  .wf-head-text { min-width: 0; flex: 1; }
+  .wf-title { font-weight: 650; }
+  .wf-req {
+    margin-top: 2px;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 16px;
+    color: #8c8c8c;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .wf-rows { padding: 4px 0 8px; }
+  .wf-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 6px 12px;
+    font-size: 12px;
+    line-height: 18px;
+  }
+  .wf-row dt {
+    margin: 0;
+    color: #8c8c8c;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+  .wf-row dd {
+    margin: 0;
+    color: var(--color-text);
+    font-weight: 550;
+    text-align: right;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .wf-row--go dd { color: #b45309; }
+  .wf-link {
+    flex: 0 0 40px;
+    width: 40px;
+    height: 16px;
+    margin-top: 0;
+    display: block;
+    overflow: visible;
+  }
+  @media (max-width: 900px) {
+    .wf-track { min-width: 0; flex-direction: column; }
+    .wf-link { width: 16px; height: 36px; flex-basis: 36px; margin-top: 0; }
+  }
+  #mechanism > p.page-lead strong {
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  #mechanism > .page-lead + .af-figure { margin-top: 0; }
+  #mechanism .aj,
+  #path .aj { min-width: 0; }
+  #mechanism .aj col.aj-rowhead,
+  #path .aj col.aj-rowhead { width: 136px; }
+  #mechanism .aj .aj-corner,
+  #mechanism .aj .aj-label,
+  #path .aj .aj-corner,
+  #path .aj .aj-label {
+    width: 136px;
+    white-space: nowrap;
+    color: var(--color-text);
+  }
+  #mechanism .aj thead th,
+  #path .aj thead th {
+    text-align: left;
+    vertical-align: bottom;
+  }
+  #core-principles > h2 + .bg-list,
+  #benefits > h2 + .bg-list { margin-top: 0; }
+  #core-principles .bg-list,
+  #benefits .bg-list {
+    list-style: disc;
+    padding-left: 1.25em;
+    margin: 0;
+  }
+  #core-principles .bg-list li + li,
+  #benefits .bg-list li + li { margin-top: 16px; }
+  #core-principles .bg-list li > strong:first-child,
+  #benefits .bg-list li > strong:first-child {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  #core-principles .bg-list li,
+  #benefits .bg-list li { color: var(--color-text-secondary); }
+  .file-sample-note {
+    font-size: 13px;
+    line-height: 22px;
+    color: #8c8c8c;
+  }
+  .file-sample .code-line-hl {
+    display: inline;
+    padding: 0;
+    margin: 0;
+    background: rgba(4, 120, 87, 0.28);
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+  .file-sample .code-line-go {
+    background: rgba(245, 158, 11, 0.42);
+  }
+  .file-sample--wrap pre,
+  .file-sample--wrap pre code {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  #practices figure.file-sample--wrap pre {
+    height: 420px;
+    max-height: 420px;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  #practices h2 + h3.fn-h3,
+  #practices h2 + .file-sample-note,
+  #practices .hop-panel > h3.fn-h3,
+  #practices h3.fn-h3 + .file-sample-note,
+  #practices .file-sample-note + .file-sample-note,
+  #practices .file-sample-note + .file-sample,
+  #practices .file-sample + .file-sample-note {
+    margin-top: 0;
+  }
+  #practices .hop-panel > .file-sample:last-child {
+    margin-bottom: 0;
+  }
+  #path h2 + h3.fn-h3,
+  #path h3.fn-h3 + .file-sample-note,
+  #path h3.fn-h3 + .af-figure,
+  #path h3.fn-h3 + .file-sample,
+  #path .file-sample + .file-sample-note,
+  #path .file-sample-note + .file-sample,
+  #path .file-sample-note + .af-figure {
+    margin-top: 0;
+  }
+  #path .file-sample-note + h3.fn-h3,
+  #path .af-figure + h3.fn-h3,
+  #path .file-sample + h3.fn-h3 {
+    margin-top: var(--space-stack, 16px);
+  }
+
+  /* 详情页壳：顶部只保留返回与当前位置，不带站点主导航与模块侧栏 */
+  .detail-bar { background: var(--color-surface); }
+  .detail-bar-inner { gap: 12px; }
+  .detail-back {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    margin-left: -6px;
+    border-radius: var(--radius);
+    color: var(--color-text);
+    text-decoration: none;
+    transition: background .15s, color .15s;
+  }
+  .detail-back:hover { background: var(--color-bg); color: var(--color-primary); }
+  .detail-back svg { width: 18px; height: 18px; display: block; }
+  .detail-divider {
+    flex-shrink: 0;
+    width: 1px;
+    height: 18px;
+    background: var(--color-border);
+  }
+  .detail-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+    color: var(--color-text-tertiary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .detail-title a { color: var(--color-text-secondary); text-decoration: none; }
+  .detail-title a:hover { color: var(--color-primary); }
+  .detail-title strong { color: var(--color-text); font-weight: 650; }
+  .detail-exit {
+    flex-shrink: 0;
+    margin-left: auto;
+    padding: 5px 14px;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    font-size: var(--code-copy-size);
+    line-height: var(--text-auxiliary-lh);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    transition: background .15s, color .15s, border-color .15s;
+  }
+  .detail-exit:hover { color: var(--color-primary); border-color: var(--color-primary); background: var(--color-primary-subtle); }
+  .detail-wrapper { display: flex; align-items: flex-start; background: var(--color-surface); }
+  .model-nav {
+    flex-shrink: 0;
+    width: var(--sidebar-width);
+    box-sizing: border-box;
+    position: sticky;
+    top: var(--header-height, 56px);
+    height: calc(100vh - var(--header-height, 56px));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: var(--color-card-bg);
+    border-right: 1px solid var(--color-border);
+  }
+  .model-nav-label {
+    font-size: var(--text-body);
+    font-weight: var(--text-h2-weight);
+    letter-spacing: .04em;
+    color: var(--color-text-tertiary);
+    padding: 4px 6px 2px;
+  }
+  .model-nav-label.is-sub {
+    margin-top: 8px;
+    padding-top: 12px;
+    border-top: 1px solid var(--color-border);
+  }
+  a.nav-vendor {
+    display: block;
+    padding: 6px 10px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+  }
+  a.nav-vendor:hover {
+    color: var(--color-primary);
+    background: var(--color-primary-subtle);
+    text-decoration: none;
+  }
+  a.nav-vendor.is-active {
+    color: var(--color-primary);
+    background: var(--color-primary-subtle);
+    font-weight: 650;
+  }
+  a.nav-model-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 10px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-surface);
+    font: inherit;
+    text-align: left;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition: border-color .15s, box-shadow .15s, background .15s;
+  }
+  a.nav-model-card:hover {
+    border-color: var(--color-primary-hover-border);
+    background: var(--color-primary-subtle);
+  }
+  a.nav-model-card.is-active {
+    border-color: var(--color-primary);
+    background: var(--color-primary-subtle);
+    box-shadow: inset 3px 0 0 var(--color-primary);
+  }
+  a.nav-model-card .idx {
+    font-size: var(--text-body);
+    font-weight: 600;
+    line-height: var(--text-body-lh);
+    color: var(--color-text-secondary);
+  }
+  a.nav-model-card.is-active .idx { color: var(--color-primary); }
+  a.nav-model-card .card-title {
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+    font-weight: 650;
+    color: var(--color-text);
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  @media (max-width: 900px) {
+    .detail-wrapper { flex-direction: column; }
+    .model-nav {
+      width: 100%;
+      position: static;
+      height: auto;
+      max-height: 36vh;
+      border-right: none;
+      border-bottom: 1px solid var(--color-border);
+    }
+  }
+  body.inner-page .detail-wrapper .main-content {
+    padding-top: var(--content-main-pad-top, 16px);
+    min-width: 0;
+    flex: 1;
+    background: var(--color-surface);
+    min-height: calc(100vh - var(--header-height, 56px));
+  }
+  body.inner-page .detail-wrapper .main-content > .page-header,
+  body.inner-page .detail-wrapper .main-content > .section {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin-inline: auto;
+    box-sizing: border-box;
+  }
+</style>
+</head>
+<body class="inner-page agent-entry-page" data-module="principles" data-page="llms-parse-mintlify-path" data-no-surface-tabs>
+
+<div class="topbar detail-bar">
+  <div class="topbar-inner detail-bar-inner">
+    <a class="detail-back" href="principles-llms-parse.html" aria-label="返回 根 llms 解析">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6L9 12l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <span class="detail-divider" aria-hidden="true"></span>
+    <div class="detail-title"><a href="principles-llms-parse.html">根 llms 解析</a><span aria-hidden="true">›</span>Mintlify<span aria-hidden="true">›</span><strong>读取路径</strong></div>
+    <a class="detail-exit" href="principles-llms-parse.html">返回解析</a>
+  </div>
+</div>
+
+<div class="page-wrapper detail-wrapper">
+
+  <aside class="model-nav" id="llms-parse-nav" data-vendor="mintlify" data-layer="path" aria-label="解析导航"></aside>
+
+  <main class="main-content">
+
+    <div class="page-header">
+      <h1>读取路径</h1>
+    </div>
+
+    <section class="section" id="mechanism">
+      <h2>问句</h2>
+      <p class="page-lead">「帮我查看 Mintlify 网络编辑器的完整键盘快捷键列表」</p>
+    </section>
+
+    <section class="section" id="problem">
+      <h2>路径一览</h2>
+      <div class="wf">
+        <div class="wf-track" role="tablist" aria-label="读取路径四跳">
+          <div class="wf-step">
+            <span class="wf-pill">Start</span>
+            <button type="button" class="wf-node" role="tab" id="tab-file-root" aria-controls="file-root" aria-selected="true" tabindex="0" data-hop="file-root">
+            <div class="wf-head">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5.5 4 2 8l3.5 4M10.5 4 14 8l-3.5 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <div class="wf-head-text">
+                <div class="wf-title">根清单</div>
+                <div class="wf-req" title="https://www.mintlify.com/llms.txt">GET /llms.txt</div>
+              </div>
+            </div>
+            <dl class="wf-rows">
+              <div class="wf-row wf-row--go"><dt>进入</dt><dd>Documentation index</dd></div>
+            </dl>
+            </button>
+          </div>
+          <svg class="wf-link" viewBox="0 0 40 16" fill="none" aria-hidden="true">
+            <path d="M2 8 H38" stroke="#191919" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="3" cy="8" r="3.5" fill="#fff" stroke="#191919" stroke-width="2.5"/>
+            <circle cx="37" cy="8" r="3.5" fill="#fff" stroke="#191919" stroke-width="2.5"/>
+          </svg>
+          <div class="wf-step">
+            <button type="button" class="wf-node" role="tab" id="tab-file-docs" aria-controls="file-docs" aria-selected="false" tabindex="-1" data-hop="file-docs">
+            <div class="wf-head">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5.5 4 2 8l3.5 4M10.5 4 14 8l-3.5 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <div class="wf-head-text">
+                <div class="wf-title">文档分册</div>
+                <div class="wf-req" title="https://www.mintlify.com/docs/llms.txt">GET /docs/llms.txt</div>
+              </div>
+            </div>
+            <dl class="wf-rows">
+              <div class="wf-row wf-row--go"><dt>进入</dt><dd>181 pages</dd></div>
+            </dl>
+            </button>
+          </div>
+          <svg class="wf-link" viewBox="0 0 40 16" fill="none" aria-hidden="true">
+            <path d="M2 8 H38" stroke="#191919" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="3" cy="8" r="3.5" fill="#fff" stroke="#191919" stroke-width="2.5"/>
+            <circle cx="37" cy="8" r="3.5" fill="#fff" stroke="#191919" stroke-width="2.5"/>
+          </svg>
+          <div class="wf-step">
+            <button type="button" class="wf-node" role="tab" id="tab-file-pages" aria-controls="file-pages" aria-selected="false" tabindex="-1" data-hop="file-pages">
+            <div class="wf-head">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5.5 4 2 8l3.5 4M10.5 4 14 8l-3.5 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <div class="wf-head-text">
+                <div class="wf-title">页名清单</div>
+                <div class="wf-req" title="https://www.mintlify.com/docs/_llms/en/documentation.md">GET documentation.md</div>
+              </div>
+            </div>
+            <dl class="wf-rows">
+              <div class="wf-row wf-row--go"><dt>进入</dt><dd>Keyboard shortcuts</dd></div>
+            </dl>
+            </button>
+          </div>
+          <svg class="wf-link" viewBox="0 0 40 16" fill="none" aria-hidden="true">
+            <path d="M2 8 H38" stroke="#191919" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="3" cy="8" r="3.5" fill="#fff" stroke="#191919" stroke-width="2.5"/>
+            <circle cx="37" cy="8" r="3.5" fill="#fff" stroke="#191919" stroke-width="2.5"/>
+          </svg>
+          <div class="wf-step">
+            <span class="wf-pill">End</span>
+            <button type="button" class="wf-node" role="tab" id="tab-file-leaf" aria-controls="file-leaf" aria-selected="false" tabindex="-1" data-hop="file-leaf">
+            <div class="wf-head">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5.5 4 2 8l3.5 4M10.5 4 14 8l-3.5 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <div class="wf-head-text">
+                <div class="wf-title">快捷键正文</div>
+                <div class="wf-req" title="https://www.mintlify.com/docs/editor/keyboard-shortcuts.md">GET keyboard-shortcuts.md</div>
+              </div>
+            </div>
+            <dl class="wf-rows">
+              <div class="wf-row"><dt>进入</dt><dd>—</dd></div>
+            </dl>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="practices">
+      <div class="hop-panel" id="file-root" role="tabpanel" aria-labelledby="tab-file-root">
+      <h3 class="fn-h3">第 1 步 · 根清单</h3>
+      <p class="file-sample-note">绿行 = 读过（顺读或跳读）。橙行 = 点进去、打开下一跳。没涂色 = 没读。</p>
+      <p class="file-sample-note">不是绿全读完再点黄。顺序是：从上往下读到黄行（Documentation index）先记下；再读同节 home / quickstart 等确认不是它们；再跳读后面的 <code>##</code> 节名，确认博客、定价也不是。然后才打开黄行。<strong>没读</strong>Pages 里每一条营销 URL。</p>
+      <figure class="file-sample file-sample--wrap">
+        <figcaption><code>https://www.mintlify.com/llms.txt</code></figcaption>
+        <pre><code><span class="code-line-hl"># Mintlify</span>
+
+<span class="code-line-hl">&gt; Mintlify is the knowledge platform built for agents: self-updating documentation for startups, enterprises, and AI agents. This file indexes the markdown version of every page on www.mintlify.com. Append `.md` to any page URL (or send `Accept: text/markdown`) to get its markdown twin.</span>
+
+<span class="code-line-hl">## Docs</span>
+
+<span class="code-line-hl code-line-go">- [Documentation index](https://www.mintlify.com/docs/llms.txt): llms.txt index of the full product documentation</span>
+<span class="code-line-hl">- [Documentation home](https://www.mintlify.com/docs/index.md): Mintlify product documentation</span>
+<span class="code-line-hl">- [Quickstart](https://www.mintlify.com/docs/quickstart.md): deploy your first documentation site</span>
+<span class="code-line-hl">- [Full corpus](https://www.mintlify.com/llms-full.txt): all marketing pages in one file</span>
+<span class="code-line-hl">- [Agent skill](https://www.mintlify.com/skill.md): operating guide for agents working with Mintlify</span>
+
+<span class="code-line-hl">## Pages</span>
+
+- [The Knowledge Platform Built for Agents](https://www.mintlify.com/index.md): Self-updating documentation for startups, enterprises, and agents.
+- [Pricing](https://www.mintlify.com/pricing.md): Choose the plan that works for you. From startups to enterprise, find flexible pricing options that scale with your team.
+- [Enterprise](https://www.mintlify.com/enterprise.md): Scale your documentation with enterprise-grade features.
+- [Careers](https://www.mintlify.com/careers.md): Join us in our mission to empower builders.
+- [Contact Sales](https://www.mintlify.com/contact/sales.md): The knowledge infrastructure agents build on. Book a call with the Mintlify sales team.
+- [Startups](https://www.mintlify.com/startups.md): The Mintlify Startup Program gives eligible venture-backed startups six months of Mintlify Pro free, with 12 months free for companies in the current YC batch.
+- [Migrate your docs to Mintlify](https://www.mintlify.com/switch.md): Migrate your documentation to Mintlify from ReadMe, GitBook, Docusaurus, Fern, or any platform. Get migration support and up to 12 months free.
+- [Support](https://www.mintlify.com/support.md): Get help with Mintlify. Email support, live chat in the dashboard, and self-serve resources. We respond within 2 business days.
+- [Wall of Love](https://www.mintlify.com/wall-of-love.md): See what others are saying about Mintlify.
+- [OSS Program](https://www.mintlify.com/oss-program.md): Support for non-commercial open source projects with Mintlify Pro free forever through the OSS program.
+- [Build vs Buy](https://www.mintlify.com/build-vs-buy.md): Should you build your own documentation platform or buy one? See why the world&#x27;s top builders chose Mintlify.
+- [Events](https://www.mintlify.com/events.md): Where Mintlify is speaking, upcoming events, past events and recordings.
+- [Data](https://www.mintlify.com/data.md): The internet is being read by agents. Real-time data across every site Mintlify powers: agents vs. humans, MCP requests, geography, and the pages agents keep coming back to.
+- [Convert your codebase into docs](https://www.mintlify.com/wiki.md): Generate guides, references, and API docs from any GitHub repository.
+- [Index](https://www.mintlify.com/search-index.md): One API and MCP server for fast, accurate, up-to-date information from across the technical web.
+- [Developer Documentation](https://www.mintlify.com/use-cases/dev-docs.md): Beautiful docs for developers. Instant answers for the agents they send ahead. Mintlify makes your documentation the fastest path from question to working code.
+- [Knowledge Base](https://www.mintlify.com/use-cases/knowledge-base.md): Your team&#x27;s source of truth.
+- [API Reference](https://www.mintlify.com/use-cases/api-reference.md): Interactive for developers. Structured for agents. Generated from the spec you already maintain, and updated every time it changes.
+- [Help Center](https://www.mintlify.com/use-cases/help-center.md): Build a beautiful, AI-powered help center with Mintlify.
+- [Mintlify for Slack](https://www.mintlify.com/use-cases/slack-agent.md): A personal agent for your team&#x27;s knowledge, in Slack. Answers from your docs, pull requests from threads, and context from the rest of your stack.
+- [Documentation for AI Companies](https://www.mintlify.com/industries/ai.md): Documentation that keeps pace with weekly ship cycles, optimized for the agents your users are running. Trusted by the labs defining AI—Anthropic, Perplexity, Baseten, and more.
+
+<span class="code-line-hl">## Blog</span>
+
+<span class="code-line-hl">Product updates, engineering deep dives, and company news.</span>
+
+- [Blog posts index (nested)](https://www.mintlify.com/blog/llms.txt): every post with its .md link
+- [Blog listing](https://www.mintlify.com/blog.md): markdown twin of the blog page
+
+<span class="code-line-hl">## Library</span>
+
+<span class="code-line-hl">Guides and resources on documentation, AI agents, and developer experience.</span>
+
+- [Library guides index (nested)](https://www.mintlify.com/library/llms.txt): every guide with its .md link
+- [Library listing](https://www.mintlify.com/library.md): markdown twin of the library page
+
+<span class="code-line-hl">## Customers</span>
+
+<span class="code-line-hl">Stories from teams that build their documentation with Mintlify.</span>
+
+- [Customer stories index (nested)](https://www.mintlify.com/customers/llms.txt): every story with its .md link
+- [Customers listing](https://www.mintlify.com/customers.md): markdown twin of the customers page
+
+<span class="code-line-hl">## Legal</span>
+
+<span class="code-line-hl">Terms, privacy, and provider policies.</span>
+
+- [Privacy Policy](https://www.mintlify.com/legal/privacy.md)
+- [Terms of Service](https://www.mintlify.com/legal/terms.md)
+- [Third-Party Provider Terms](https://www.mintlify.com/legal/third-party-provider-terms.md)
+
+<span class="code-line-hl">## Security</span>
+
+<span class="code-line-hl">Security and disclosure policies.</span>
+
+- [Responsible Disclosure](https://www.mintlify.com/security/responsible-disclosure.md)
+
+<span class="code-line-hl">## Optional</span>
+
+- [Agent Score](https://www.mintlify.com/score.md): live ranking of how documentation sites score for AI agents
+- [Sitemap](https://www.mintlify.com/sitemap.xml): XML sitemap of the HTML pages</code></pre>
+      </figure>
+      </div>
+
+      <div class="hop-panel" id="file-docs" role="tabpanel" aria-labelledby="tab-file-docs" hidden>
+      <h3 class="fn-h3">第 2 步 · 文档分册</h3>
+      <p class="file-sample-note">绿行 = 读过（顺读或跳读）。橙行 = 点进去、打开下一跳。没涂色 = 没读。</p>
+      <p class="file-sample-note"><strong>顺读</strong>页顶和文档总表（181 pages）。<strong>跳读</strong>各 <code>##</code> 节名；进 API 只读第一节名和第一条，确认是 REST 不是编辑器。文末再读 Indexes 说明和英文 181 页那条（与总表同一本）。<strong>没读</strong>接口清单、Help center 各篇、法文/中文 Indexes。<strong>打开下一跳</strong><code>_llms/en/documentation.md</code>。</p>
+      <figure class="file-sample file-sample--wrap">
+        <figcaption><code>https://www.mintlify.com/docs/llms.txt</code></figcaption>
+        <pre><code><span class="code-line-hl"># Mintlify</span>
+
+<span class="code-line-hl">&gt; Mintlify is a platform for building and hosting documentation websites. It provides a set of tools and services for maintaining documentation and making it accessible to AI agents.</span>
+
+<span class="code-line-hl code-line-go">- [Documentation (181 pages)](https://www.mintlify.com/docs/_llms/en/documentation.md): Documentation for Documentation.</span>
+
+<span class="code-line-hl">## API reference</span>
+
+<span class="code-line-hl">### API reference</span>
+
+<span class="code-line-hl">- [Mintlify REST API introduction](https://www.mintlify.com/docs/api/introduction.md): Use the Mintlify REST API to trigger deployments, embed an AI assistant, export analytics data, and manage documentation programmatically.</span>
+
+### Admin
+
+- [Trigger deployment](https://www.mintlify.com/docs/api/update/trigger.md): Queue a deployment update for your documentation project. Returns a status ID that can be used to track the update progress. The update is triggered from your configured deployment branch.
+- [Get deployment status](https://www.mintlify.com/docs/api/update/status.md): Get the status of an update from the status ID
+- [Trigger preview deployment](https://www.mintlify.com/docs/api/preview/trigger.md): Create or update a preview deployment for a specific branch. If a preview already exists for the branch, it triggers a redeployment. Returns a status ID to track progress and the preview URL.
+- [Trigger automation](https://www.mintlify.com/docs/api/automations/trigger.md): Trigger a scheduled automation to run immediately, instead of waiting for its next scheduled time. Useful for running automations from CI/CD pipelines, like a GitHub Action that runs on every merge to your default branch. Only scheduled (custom schedule) automations can be triggered. The run picks u…
+
+### Agent
+
+- [Create agent job](https://www.mintlify.com/docs/api/agent/v2/create-agent-job.md): Creates a new agent job that runs in the background. The job processes the prompt asynchronously — poll the get job endpoint to track progress. If the agent edits files successfully, a pull request is automatically created.
+- [Get agent job](https://www.mintlify.com/docs/api/agent/v2/get-agent-job.md): Retrieves the current status and details of an agent job. Poll this endpoint to track job progress.
+- [Send follow-up message](https://www.mintlify.com/docs/api/agent/v2/send-message.md): Sends a follow-up message to an existing agent job. The message is processed asynchronously — poll the get job endpoint to track progress.
+
+### Assistant
+
+- [Create assistant message](https://www.mintlify.com/docs/api/assistant/create-assistant-message-v2.md): Generates a response message from the assistant for the specified domain. Compatible with AI SDK v5+.
+
+### Search
+
+- [Search documentation](https://www.mintlify.com/docs/api/assistant/search.md): Perform semantic and keyword searches across your documentation with configurable filtering and pagination.
+- [Get page content](https://www.mintlify.com/docs/api/assistant/get-page-content.md): Retrieve the full text content of a specific documentation page by its path. Use this after a search to fetch the complete content of a matching page.
+
+### Mintlify Index
+
+- [Mintlify Index REST API](https://www.mintlify.com/docs/api/search-index/introduction.md): Use the Mintlify Index REST API to search documentation and the web, assemble source-cited context, and retrieve page contents for applications and agents.
+- [Build implementation context](https://www.mintlify.com/docs/api/search-index/context.md): Searches Mintlify Index and returns source-cited content assembled within a token budget. Use this endpoint when an application or agent needs ready-to-use context in one request.
+- [Search technical knowledge](https://www.mintlify.com/docs/api/search-index/search.md): Returns ranked results from publisher-maintained documentation or the web. Use Mintlify result IDs or any result URL with the contents endpoint when you need more content.
+- [Get result contents](https://www.mintlify.com/docs/api/search-index/contents.md): Retrieves content for Mintlify result IDs or result URLs returned by the search endpoint. A request can include up to 20 items across both fields.
+
+### Analytics
+
+- [Get feedback](https://www.mintlify.com/docs/api/analytics/feedback.md): Returns paginated user feedback with optional filtering
+- [Get feedback by page](https://www.mintlify.com/docs/api/analytics/feedback-by-page.md): Returns feedback counts aggregated by documentation page path (thumbs up/down for contextual feedback, code snippet count, and total per page)
+- [Get assistant conversations](https://www.mintlify.com/docs/api/analytics/assistant-conversations.md): Returns paginated AI assistant conversation history
+- [Get assistant conversation thread](https://www.mintlify.com/docs/api/analytics/assistant-thread.md): Returns the full message transcript for a single assistant conversation thread. The thread ID is available from the assistant conversations endpoint, or as the `threadId` query parameter appended to assistant link-mode deflection support URLs.
+- [Get assistant caller stats](https://www.mintlify.com/docs/api/analytics/assistant-caller-stats.md): Returns a breakdown of assistant query counts by caller type (web, API, and other) for the specified date range.
+- [Get search queries](https://www.mintlify.com/docs/api/analytics/searches.md): Returns paginated documentation search terms for the date range, ordered by hit count descending. Each row includes click-through rate, the most-clicked result path for that query (if any), and the last time the term was searched. `totalSearches` is the total number of search query events in the sam…
+- [Get page views](https://www.mintlify.com/docs/api/analytics/views.md): Returns per-path and site-wide content view event counts, split by human and AI traffic.
+- [Get unique visitors](https://www.mintlify.com/docs/api/analytics/visitors.md): Returns per-path and site-wide approximate distinct visitors by traffic type. The `total` field is deduplicated across human and AI (union of distinct visitor IDs with any qualifying content view).
+
+### Static export
+
+- [Start static export job](https://www.mintlify.com/docs/api/static-export/start-job.md): Start a static export job for a deployment. The job pre-renders your documentation into a self-contained set of static HTML, RSC, and asset files, then packages the result as a single downloadable archive.
+- [Get static export job status](https://www.mintlify.com/docs/api/static-export/get-job-status.md): Retrieve the current status of a static export job. Poll this endpoint after starting a job until `status` is `completed` (or `failed`).
+
+<span class="code-line-hl">## Help center</span>
+
+### Help center
+
+- [Fix &quot;Failed to fetch OpenAPI file for anchor or tab&quot; error](https://www.mintlify.com/docs/help-center/openapi-url-fetch-fails-during-build.md): Fix Mintlify builds that fail to download a hosted OpenAPI document because of private hosts, authenticated URLs, TLS, DNS, or CI race conditions.
+- [Fix &quot;Domain already claimed by another organization&quot; error](https://www.mintlify.com/docs/help-center/domain-already-claimed-by-another-organization.md): Release a custom domain from another Mintlify deployment or request help when adding it fails because another deployment or organization already holds it.
+- [Configure OAuth 2.0 authentication with Auth0](https://www.mintlify.com/docs/help-center/configure-oauth-with-auth0.md): Set up Auth0 as the OAuth 2.0 identity provider for a private Mintlify docs site: endpoint URLs, callback registration, and group-based access.
+- [Private repo missing when creating a second deployment](https://www.mintlify.com/docs/help-center/private-repo-missing-when-creating-second-deployment.md): Re-authorize Mintlify with private-repo access so an existing private GitHub repository shows up in the onboarding repo picker for a new deployment.
+- [Fix a static file that returns 404 on your docs site](https://www.mintlify.com/docs/help-center/static-file-not-served.md): Diagnose why a file you added to your documentation repository (like a JSON, PDF, or image) does not load at its expected URL on your Mintlify site.
+- [Preview deployment not created for a fork branch](https://www.mintlify.com/docs/help-center/preview-deployment-not-created-for-fork-branch.md): Why fork pull requests and fork branches passed to the preview API do not produce preview deployments, and how maintainers can preview fork changes.
+- [Branch missing from the web editor branch list](https://www.mintlify.com/docs/help-center/branch-missing-from-editor-branch-list.md): Why a branch that exists in your repository does not appear in the web editor branch dropdown, and how to find it with search.
+- [Style the icon inside a Card component](https://www.mintlify.com/docs/help-center/style-card-icons-with-custom-css.md): Add a background color, rounded corners, or padding to Card component icons using custom CSS and the card-icon data attribute selector.
+- [Can I rename my deployment or organization?](https://www.mintlify.com/docs/help-center/can-i-rename-my-deployment-or-organization.md): Change your deployment&#x27;s name from the dashboard, and learn why subdomains and organization names require deleting and recreating instead of renaming.
+- [Tailwind classes not applying in the editor&#x27;s live preview](https://www.mintlify.com/docs/help-center/tailwind-classes-not-applying-in-editor-preview.md): The web editor&#x27;s live preview skips the build step that generates CSS for Tailwind classes. Check styling with mint dev or a preview deployment.
+- [Fix agent runs blocked by a git provider IP allow list](https://www.mintlify.com/docs/help-center/agent-blocked-by-git-provider-ip-allow-list.md): Resolve agent session failures caused by a GitHub or GitLab IP allow list by routing your deployment through the Mintlify static IP.
+- [Change your workspace icon](https://www.mintlify.com/docs/help-center/change-your-workspace-icon.md): Upload, replace, or remove the icon that represents your workspace in the Mintlify dashboard, and learn the supported file formats and size limit.
+
+<span class="code-line-hl">## Learn</span>
+
+### Guides
+
+#### Overview
+
+- [Guides](https://www.mintlify.com/docs/guides/index.md): Browse guides on documentation best practices, content strategy, SEO optimization, accessibility, and docs-as-code workflows for your team.
+
+#### AI
+
+- [Tutorial: Build an in-app documentation assistant](https://www.mintlify.com/docs/guides/assistant-embed.md): Build and embed an in-app documentation assistant that answers user questions with cited information from your Mintlify documentation site.
+- [Configure automerge for GitHub Apps](https://www.mintlify.com/docs/guides/configure-automerge.md): Set up GitHub workflows to automatically merge Mintlify pull requests by adding the Mintlify bot to your repository&#x27;s ruleset bypass list.
+- [Use automations](https://www.mintlify.com/docs/guides/use-automations.md): Use Mintlify automations to automate recurring docs maintenance: choose the right trigger, write effective instructions, and get consistent agent results.
+- [Write documentation with Claude Code](https://www.mintlify.com/docs/guides/claude-code.md): Configure Claude Code with CLAUDE.md project instructions to write, review, and update your Mintlify documentation following your style guide.
+- [Write documentation with Codex](https://www.mintlify.com/docs/guides/codex.md): Configure OpenAI Codex CLI with project instructions and MCP to write Mintlify documentation that follows your style guide and MDX standards.
+- [Write documentation with Cursor](https://www.mintlify.com/docs/guides/cursor.md): Configure Cursor with project rules to write Mintlify documentation that follows your style guide, component usage, and MDX conventions.
+- [Write documentation with Devin Desktop](https://www.mintlify.com/docs/guides/devin-desktop.md): Configure Devin Desktop&#x27;s Cascade AI with workspace rules to write Mintlify documentation that follows your style guide and MDX standards.
+- [GEO guide: Optimize docs for AI search and answer engines](https://www.mintlify.com/docs/guides/geo.md): Optimize your documentation for AI-powered answer engines like ChatGPT, Perplexity, and Google AI Overviews with Generative Engine Optimization techniques.
+
+#### API docs
+
+- [Migrating MDX API pages to OpenAPI navigation](https://www.mintlify.com/docs/guides/migrating-from-mdx.md): Migrate your manually written MDX API pages to automated OpenAPI-generated documentation with flexible navigation and endpoint grouping.
+
+#### Best practices
+
+- [How to create accessible documentation](https://www.mintlify.com/docs/guides/accessibility.md): Create accessible documentation following WCAG guidelines with semantic HTML, keyboard navigation, alt text, and inclusive content practices.
+- [Changelogs](https://www.mintlify.com/docs/create/changelogs.md): Create product changelogs with date-based entries, RSS feed support, and subscriber notifications to keep users informed about updates.
+- [Documentation content types](https://www.mintlify.com/docs/guides/content-types.md): Choose the right documentation type for each page using the Diátaxis framework: tutorials, how-to guides, reference, and explanation.
+- [Documentation content templates](https://www.mintlify.com/docs/guides/content-templates.md): Copy and modify ready-to-use MDX templates for how-to guides, tutorials, concept explanations, and API reference pages in your documentation.
+- [Build custom page layouts](https://www.mintlify.com/docs/guides/custom-layouts.md): Use page modes and components to build custom landing pages, marketing pages, and other non-standard layouts in your Mintlify documentation.
+- [How to measure and improve documentation quality](https://www.mintlify.com/docs/guides/improving-docs.md): Use analytics, user feedback, and content audits to identify documentation gaps and improve the pages that matter most to your users.
+- [How to set up multi-language documentation](https://www.mintlify.com/docs/guides/internationalization.md): Set up multi-language documentation with locale-based routing, language switcher navigation, and translated content to reach global audiences.
+- [How to link documentation pages effectively](https://www.mintlify.com/docs/guides/linking.md): Create internal links, anchor links, and deep links in your documentation, and maintain link integrity with redirects and broken link checks.
+- [How to maintain documentation over time](https://www.mintlify.com/docs/guides/maintenance.md): Keep documentation accurate and up-to-date with review schedules, ownership models, automated checks, and content lifecycle practices.
+- [How to use images, screenshots, and videos in documentation](https://www.mintlify.com/docs/guides/media.md): Learn when and how to use screenshots, GIFs, and videos in documentation with guidance on format selection, alt text, and long-term maintenance.
+- [How to structure documentation navigation](https://www.mintlify.com/docs/guides/navigation.md): Design documentation navigation that helps users find what they need with clear information architecture, logical grouping, and validated structure.
+- [How to improve documentation SEO](https://www.mintlify.com/docs/guides/seo.md): Improve your documentation&#x27;s search engine rankings with page titles, keyword research, internal linking, and technical SEO techniques.
+- [How to write technical documentation](https://www.mintlify.com/docs/guides/style-and-tone.md): Write clear, consistent technical documentation with practical guidance on voice, structure, terminology, and tone for developer and product docs.
+- [How to understand your documentation audience](https://www.mintlify.com/docs/guides/understand-your-audience.md): Define your documentation audience, research their goals and knowledge level, and apply those insights to write content that helps them succeed.
+
+#### Git
+
+- [Git concepts for documentation](https://www.mintlify.com/docs/guides/git-concepts.md): Learn Git version control fundamentals for docs-as-code workflows, including repositories, branches, commits, and pull request collaboration.
+- [Work with branches](https://www.mintlify.com/docs/guides/branches.md): Create and manage documentation branches to preview changes, collaborate with teammates, and merge updates before publishing to production.
+
+#### Use cases
+
+- [Create developer documentation](https://www.mintlify.com/docs/guides/developer-documentation.md): Build developer documentation that helps engineers integrate with your APIs, SDKs, and tools, including quickstarts, references, and guides.
+- [Create a knowledge base](https://www.mintlify.com/docs/guides/knowledge-base.md): Host your internal knowledge base on Mintlify to consolidate information for your team, improve search, and reduce maintenance burden.
+- [Create a help center](https://www.mintlify.com/docs/guides/help-center.md): Build a self-service help center on Mintlify that helps customers find answers, reduces support ticket volume, and scales with your team.
+- [Headless docs with a custom frontend](https://www.mintlify.com/docs/guides/custom-frontend.md): Build a headless documentation frontend with Astro while using Mintlify for content management, AI-powered search, and assistant features.
+- [Static export](https://www.mintlify.com/docs/api/static-export/overview.md): Generate a self-contained static export of your documentation and download it as a single bundle through the Mintlify REST API for self-hosting.
+
+<span class="code-line-hl">## OpenAPI Specs</span>
+
+- [openapi](/docs/es/openapi.json)
+- [openapi](/docs/fr/openapi.json)
+- [openapi](/docs/openapi.json)
+- [openapi](/docs/zh/openapi.json)
+- [admin-openapi](/docs/admin-openapi.json)
+- [admin-openapi](/docs/es/admin-openapi.json)
+- [admin-openapi](/docs/fr/admin-openapi.json)
+- [admin-openapi](/docs/zh/admin-openapi.json)
+- [discovery-openapi](/docs/discovery-openapi.json)
+- [discovery-openapi](/docs/es/discovery-openapi.json)
+- [discovery-openapi](/docs/fr/discovery-openapi.json)
+- [discovery-openapi](/docs/zh/discovery-openapi.json)
+- [index-openapi](/docs/es/index-openapi.json)
+- [index-openapi](/docs/fr/index-openapi.json)
+- [index-openapi](/docs/index-openapi.json)
+- [index-openapi](/docs/zh/index-openapi.json)
+- [analytics.openapi](/docs/analytics.openapi.json)
+- [analytics.openapi](/docs/es/analytics.openapi.json)
+- [analytics.openapi](/docs/fr/analytics.openapi.json)
+- [analytics.openapi](/docs/zh/analytics.openapi.json)
+- [static-export-openapi](/docs/es/static-export-openapi.json)
+- [static-export-openapi](/docs/fr/static-export-openapi.json)
+- [static-export-openapi](/docs/static-export-openapi.json)
+- [static-export-openapi](/docs/zh/static-export-openapi.json)
+
+<span class="code-line-hl">## AsyncAPI Specs</span>
+
+- [asyncapi](/docs/asyncapi.yaml)
+- [asyncapi](/docs/es/asyncapi.yaml)
+- [asyncapi](/docs/fr/asyncapi.yaml)
+- [asyncapi](/docs/zh/asyncapi.yaml)
+
+<span class="code-line-hl">## Optional</span>
+
+- [Learn](https://learn.mintlify.com/): Self-paced lessons to get the most from Mintlify.
+
+<span class="code-line-hl">&gt; The links below point to documentation indexes. Follow each `/_llms/` index recursively until you reach documentation pages.</span>
+
+<span class="code-line-hl">## Indexes</span>
+
+<span class="code-line-hl">- [English / Documentation (181 pages)](https://www.mintlify.com/docs/_llms/en/documentation.md): Documentation for English / Documentation.</span>
+- [French (249 pages)](https://www.mintlify.com/docs/_llms/fr.md): Documentation for French.
+- [French / Documentation (181 pages)](https://www.mintlify.com/docs/_llms/fr/documentation.md): Documentation for French / Documentation.
+- [Spanish (249 pages)](https://www.mintlify.com/docs/_llms/es.md): Documentation for Spanish.
+- [Spanish / Documentación (181 pages)](https://www.mintlify.com/docs/_llms/es/documentacion.md): Documentation for Spanish / Documentación.
+- [Chinese (249 pages)](https://www.mintlify.com/docs/_llms/zh.md): Documentation for Chinese.
+- [Chinese / 文档 (181 pages)](https://www.mintlify.com/docs/_llms/zh/tab.md): Documentation for Chinese / 文档.</code></pre>
+      </figure>
+      </div>
+
+      <div class="hop-panel" id="file-pages" role="tabpanel" aria-labelledby="tab-file-pages" hidden>
+      <h3 class="fn-h3">第 3 步 · 页名清单</h3>
+      <p class="file-sample-note">绿行 = 读过（顺读或跳读）。橙行 = 点进去、打开下一跳。没涂色 = 没读。</p>
+      <p class="file-sample-note"><strong>顺读</strong>页顶。<strong>跳读</strong>所有 <code>###</code> / <code>####</code> 标题往下找 Editor；Get started 里 Quickstart 提到 web editor，读了这一条后排除（那是入门，不是快捷键表）。<strong>顺读</strong><code>#### Editor</code> 整组，才能在 overview 和 Keyboard shortcuts 之间选。<strong>没读</strong>CLI、组件库等节的各页说明。<strong>打开下一跳</strong><code>/docs/editor/keyboard-shortcuts.md</code>。</p>
+      <figure class="file-sample file-sample--wrap">
+        <figcaption><code>https://www.mintlify.com/docs/_llms/en/documentation.md</code></figcaption>
+        <pre><code><span class="code-line-hl"># Mintlify: English Documentation</span>
+
+<span class="code-line-hl">&gt; Mintlify is a platform for building and hosting documentation websites. It provides a set of tools and services for maintaining documentation and making it accessible to AI agents.</span>
+
+<span class="code-line-hl">## Documentation</span>
+
+<span class="code-line-hl">### Get started</span>
+
+- [Introduction](https://www.mintlify.com/docs/index.md): Mintlify is an AI-native documentation platform built for developers, with beautiful defaults, interactive API playgrounds, and smart search.
+<span class="code-line-hl">- [Quickstart](https://www.mintlify.com/docs/quickstart.md): Get started with Mintlify by deploying your documentation site in minutes and making your first content change with the web editor or Git.</span>
+- [AI-native documentation](https://www.mintlify.com/docs/ai-native.md): Discover how AI-native features enhance reading, writing, and discovering your documentation with the assistant, agent, and Model Context Protocol (MCP) server.
+
+<span class="code-line-hl">#### CLI</span>
+
+- [Mintlify CLI](https://www.mintlify.com/docs/cli/index.md): Use the Mintlify CLI to preview docs locally, test changes in real time, and run accessibility, link, and validation checks before deploying.
+- [Install the CLI](https://www.mintlify.com/docs/cli/install.md): Install the Mintlify CLI to preview documentation locally, test changes in real time, and catch build errors before deploying to production.
+- [Mintlify MDX extension](https://www.mintlify.com/docs/cli/mdx-extension.md): Install the Mintlify MDX extension for autocomplete, inline diagnostics, hover documentation, and an in-editor preview while you write MDX locally.
+- [Preview locally](https://www.mintlify.com/docs/cli/preview.md): Run a local preview of your Mintlify documentation site with live reload, full-text search, and AI assistant support using mint dev.
+- [Mintlify CLI command reference](https://www.mintlify.com/docs/cli/commands.md): Complete reference for Mintlify CLI commands and flags, including mint index, mint dev, mint validate, mint broken-links, and more.
+
+<span class="code-line-hl">#### Migration guide</span>
+
+- [Migration overview](https://www.mintlify.com/docs/migration/index.md): Choose a migration path for moving existing documentation from Docusaurus, ReadMe, GitBook, Fern, Document360, or another platform to Mintlify.
+- [Migrate from Docusaurus](https://www.mintlify.com/docs/migration/docusaurus.md): Migrate Docusaurus documentation to Mintlify, including MDX pages, sidebars, versions, localized content, assets, and custom components.
+- [Migrate from ReadMe](https://www.mintlify.com/docs/migration/readme.md): Migrate ReadMe guides, API references, recipes, custom pages, versions, reusable content, and assets to Mintlify with the scraper or a project export.
+- [Migrate from GitBook](https://www.mintlify.com/docs/migration/gitbook.md): Migrate GitBook sections, Markdown, navigation, reusable content, variants, assets, and OpenAPI documentation to Mintlify using Git Sync or the scraper.
+- [Migrate from Fern](https://www.mintlify.com/docs/migration/fern.md): Migrate a Fern site to Mintlify. Convert MDX content, docs.yml navigation, products, versions, assets, API references, and components.
+- [Migrate from Document360](https://www.mintlify.com/docs/migration/document360.md): Export a Document360 project ZIP and migrate its workspaces, languages, articles, categories, media, reusable content, and API references to Mintlify.
+- [Migrate from another platform](https://www.mintlify.com/docs/migration/manual.md): Convert documentation from any source platform to Mintlify pages, navigation, components, API references, assets, and redirects.
+
+<span class="code-line-hl">### Create content</span>
+
+- [Reusable snippets](https://www.mintlify.com/docs/create/reusable-snippets.md): Create reusable content snippets with variables to maintain consistency across documentation pages and reduce duplication in your MDX files.
+- [Personalized content](https://www.mintlify.com/docs/create/personalization.md): Show personalized content based on identified visitor data, group memberships, and custom variables to tailor documentation per audience.
+- [CI checks](https://www.mintlify.com/docs/deploy/ci.md): Automate documentation quality checks in your CI/CD pipeline with broken link detection, linting, grammar validation, and build previews.
+
+<span class="code-line-hl">#### Pages</span>
+
+- [Pages](https://www.mintlify.com/docs/organize/pages.md): Configure page metadata, titles, descriptions, icons, and layout modes using YAML frontmatter properties at the top of your MDX documentation.
+- [Hidden pages](https://www.mintlify.com/docs/organize/hidden-pages.md): Hide documentation pages from the sidebar navigation while keeping them accessible via direct URL, search, or AI assistant for special use cases.
+- [Related topics](https://www.mintlify.com/docs/organize/related-pages.md): Add a related topics section at the bottom of each page using automatic recommendations or manually curated links defined in page frontmatter.
+
+<span class="code-line-hl">#### Formatting</span>
+
+- [Format text](https://www.mintlify.com/docs/create/text.md): Format text in your documentation with Markdown headings, bold, italic, links, blockquotes, and other inline styling options in MDX pages.
+- [Format code](https://www.mintlify.com/docs/create/code.md): Format code in your documentation with syntax highlighting, line numbers, diffs, copy buttons, and interactive code group features in MDX.
+- [Lists and tables](https://www.mintlify.com/docs/create/list-table.md): Format structured data in your documentation with Markdown tables, ordered and unordered lists, nested structures, and task list checkboxes.
+
+<span class="code-line-hl">#### Components</span>
+
+- [Components overview](https://www.mintlify.com/docs/components/index.md): Browse the full Mintlify component library for layout, emphasis, API documentation, and navigation elements available in your MDX pages.
+- [Accordions](https://www.mintlify.com/docs/components/accordions.md): Use the accordion component to show and hide content sections, organize related information, and enable progressive disclosure in your docs.
+- [Badge](https://www.mintlify.com/docs/components/badge.md): Use the badge component to highlight status indicators, version labels, or metadata inline with customizable colors and hover tooltips.
+- [Banner](https://www.mintlify.com/docs/components/banner.md): Add a dismissible banner at the top of your documentation site to display important announcements, release notes, or notifications.
+- [Callouts](https://www.mintlify.com/docs/components/callouts.md): Add info, notes, tips, checks, warnings, danger, and custom callout components to highlight important information in your documentation.
+- [Cards](https://www.mintlify.com/docs/components/cards.md): Use the Mintlify Card component to display links, icons, images, and grouped content as visual containers, including horizontal layouts and CardGroup grids.
+- [Code groups](https://www.mintlify.com/docs/components/code-groups.md): Use the CodeGroup component to display multiple code examples in a tabbed interface and let readers compare implementations across languages.
+- [Color](https://www.mintlify.com/docs/components/color.md): Display color swatches with hex values and click-to-copy capability using the color component for design system and branding documentation.
+- [Columns](https://www.mintlify.com/docs/components/columns.md): Arrange cards and other components in a responsive multi-column grid layout with the columns component, including customizable column counts.
+- [Examples](https://www.mintlify.com/docs/components/examples.md): Display code examples in the right sidebar panel on desktop devices to show request and response samples alongside API documentation.
+- [Expandables](https://www.mintlify.com/docs/components/expandables.md): Use the expandable component to toggle nested object properties in API documentation, showing child fields for request and response objects.
+- [Fields](https://www.mintlify.com/docs/components/fields.md): Use ParamField and ResponseField components to document API request and response parameters with types, defaults, and validation rules.
+- [Frames](https://www.mintlify.com/docs/components/frames.md): Wrap images, videos, and other components with the frame component to add styled borders, captions, and visual emphasis to your content.
+- [GitHub](https://www.mintlify.com/docs/components/github.md): Use the GitHub component to embed a public repository card with a live description, star count, and fork count on any documentation page.
+- [Icons](https://www.mintlify.com/docs/components/icons.md): Add icons from Font Awesome, Lucide, Tabler, or custom sources to your documentation pages using the icon component with size and color options.
+- [MDX](https://www.mintlify.com/docs/components/mdx.md): Use the MDX component to render Markdown inside JSX expressions and conditionals so headings, code blocks, and tables compile like the rest of your page.
+- [Mermaid](https://www.mintlify.com/docs/components/mermaid-diagrams.md): Create flowcharts, sequence diagrams, and other visualizations in your documentation using Mermaid syntax with automatic rendering.
+- [Panel](https://www.mintlify.com/docs/components/panel.md): Customize the right side panel content on documentation pages to display supplementary information, examples, or navigation elements.
+- [Prompt](https://www.mintlify.com/docs/components/prompt.md): Display pre-built AI prompts with one-click copy and Cursor integration buttons so users can quickly use prompts in their AI tools.
+- [Response fields](https://www.mintlify.com/docs/components/responses.md): Document API response fields using the ResponseField component with type annotations, descriptions, and required or optional indicators.
+- [Steps](https://www.mintlify.com/docs/components/steps.md): Create numbered step-by-step procedures with the steps component to guide users through sequential tasks, tutorials, and setup workflows.
+- [Tabs](https://www.mintlify.com/docs/components/tabs.md): Use the tab component to organize content into switchable panels for showing different options, platform versions, or language examples.
+- [Tiles](https://www.mintlify.com/docs/components/tiles.md): Use the tiles component to display visual previews with image thumbnails, titles, and descriptions in a responsive grid layout for your docs.
+- [Tooltips](https://www.mintlify.com/docs/components/tooltips.md): Add tooltips to display contextual definitions and explanations when users hover over terms, abbreviations, or technical concepts in your documentation.
+- [Tree](https://www.mintlify.com/docs/components/tree.md): Use the tree component to display hierarchical file and folder structures with collapsible nodes and syntax highlighting for path names.
+- [Update](https://www.mintlify.com/docs/components/update.md): Use the update component to display product updates, release notes, and changelog entries in a structured timeline format with dates.
+- [View](https://www.mintlify.com/docs/components/view.md): Use the view component to create switchable content panels for different programming languages, frameworks, or configuration alternatives.
+- [Visibility](https://www.mintlify.com/docs/components/visibility.md): Use the visibility component to show different content to humans on the web UI and to AI agents in Markdown output for conditional rendering.
+- [React components](https://www.mintlify.com/docs/customize/react-components.md): Build interactive and reusable elements with custom React components in your Mintlify documentation using JSX, state, and client-side logic.
+
+<span class="code-line-hl">#### Media</span>
+
+- [Images and embeds](https://www.mintlify.com/docs/create/image-embeds.md): Add images, embed YouTube videos, and include iframes in your MDX pages to enhance documentation with visual and interactive media content.
+- [Files](https://www.mintlify.com/docs/create/files.md): Serve static assets like images, videos, PDFs, and data files from your documentation repository with automatic optimization and CDN delivery.
+
+<span class="code-line-hl">#### Editor</span>
+
+<span class="code-line-hl">- [Editor overview](https://www.mintlify.com/docs/editor/index.md): Create, edit, and publish content in your browser with the Mintlify editor. Supports real-time collaboration and continuous Git sync.</span>
+<span class="code-line-hl">- [How to use the editor](https://www.mintlify.com/docs/editor/tutorial.md): Step-by-step walkthrough of the Mintlify editor: create a branch, edit pages, share a preview deployment for review, and publish your changes.</span>
+<span class="code-line-hl">- [Create and edit pages](https://www.mintlify.com/docs/editor/pages.md): Create pages, edit content, add media, organize your navigation, restore earlier page versions, and manage private pages in the editor.</span>
+<span class="code-line-hl">- [Publish changes](https://www.mintlify.com/docs/editor/publish.md): Publish changes from the editor to your live site. Branches and protection rules determine what happens when you publish.</span>
+<span class="code-line-hl">- [Review changes](https://www.mintlify.com/docs/editor/review.md): Preview changes before they go live, share them with your team, and approve and merge pull requests from the editor.</span>
+<span class="code-line-hl">- [Collaborate in the editor](https://www.mintlify.com/docs/editor/collaborate.md): Leave comments, propose changes as suggestions, and edit alongside teammates in real time in the editor.</span>
+<span class="code-line-hl">- [Ask agent](https://www.mintlify.com/docs/editor/agent.md): Use the editor&#x27;s built-in AI agent to write content, edit pages, leave comments and suggestions, search your site, upload files, and configure settings.</span>
+<span class="code-line-hl">- [Editor settings for AI and publishing](https://www.mintlify.com/docs/editor/settings.md): Configure editor appearance, AI instructions, and publishing defaults to control how the Mintlify web editor looks and how it commits and merges changes.</span>
+<span class="code-line-hl code-line-go">- [Keyboard shortcuts](https://www.mintlify.com/docs/editor/keyboard-shortcuts.md): View the complete list of keyboard shortcuts for the Mintlify web editor, including text formatting, navigation, and editing commands.</span>
+
+<span class="code-line-hl">### Manage your site</span>
+
+- [Navigation](https://www.mintlify.com/docs/organize/navigation.md): Configure your documentation site navigation with groups, pages, dropdowns, tabs, and anchors in docs.json to build a sidebar structure.
+- [Contextual menu](https://www.mintlify.com/docs/ai/contextual-menu.md): Add a contextual menu to your docs with one-click AI integrations for ChatGPT, Claude, Perplexity, Google AI Studio, Devin, Devin Desktop, and MCP tools.
+- [Bring your own model](https://www.mintlify.com/docs/ai/bring-your-own-model.md): Use your own LLM provider API key and choose the model that powers the Mintlify assistant, agent, and automations on Enterprise plans.
+- [Redirects](https://www.mintlify.com/docs/create/redirects.md): Configure URL redirects in docs.json for moved, renamed, or deleted documentation pages to preserve SEO rankings and prevent broken links.
+- [Exclude files from publishing](https://www.mintlify.com/docs/organize/mintignore.md): Exclude specific files and directories from your published documentation using a .mintignore file with glob patterns, similar to .gitignore syntax.
+- [Notifications](https://www.mintlify.com/docs/dashboard/notifications.md): Choose which email notifications you receive about comments, suggestions, automation runs, and page feedback in your Mintlify dashboard.
+
+<span class="code-line-hl">#### Global settings</span>
+
+- [Global settings](https://www.mintlify.com/docs/organize/settings.md): Configure your Mintlify documentation site with docs.json, the required configuration file that controls navigation, appearance, integrations, and more.
+- [Appearance and branding](https://www.mintlify.com/docs/organize/settings-appearance.md): Configure theme, colors, logo, favicon, fonts, and background in docs.json to control the visual identity of your documentation site.
+- [Site structure](https://www.mintlify.com/docs/organize/settings-structure.md): Configure navbar, navigation groups, footer links, banner, contextual menu, redirects, and other structural elements in your docs.json file.
+- [API settings](https://www.mintlify.com/docs/organize/settings-api.md): Configure OpenAPI and AsyncAPI specs, the interactive API playground, SDK code examples, and authentication settings in your docs.json file.
+- [Integrations](https://www.mintlify.com/docs/organize/settings-integrations.md): Connect analytics platforms, chat widgets, and third-party services to your Mintlify documentation site through the docs.json integrations config.
+- [SEO and search](https://www.mintlify.com/docs/organize/settings-seo.md): Configure SEO settings in docs.json including site description, search engine indexing, meta tags, search bar placeholder, and page timestamps.
+- [docs.json schema reference](https://www.mintlify.com/docs/organize/settings-reference.md): Complete reference for every docs.json configuration property with types, default values, descriptions, and usage examples for your docs site.
+
+<span class="code-line-hl">#### Repository setup</span>
+
+- [Monorepo setup](https://www.mintlify.com/docs/deploy/monorepo.md): Configure the documentation path and content directory in a monorepo project so Mintlify deploys only from your designated docs folder.
+- [Multi-repository deployments](https://www.mintlify.com/docs/deploy/multi-repo.md): Combine multiple Git repositories into one Mintlify site, with a dedicated URL path for each source repo&#x27;s content and navigation.
+
+<span class="code-line-hl">#### Visual customization</span>
+
+- [Themes](https://www.mintlify.com/docs/customize/themes.md): Choose and configure a theme to customize your documentation site&#x27;s colors, dark mode behavior, layout style, and overall visual appearance.
+- [Fonts](https://www.mintlify.com/docs/customize/fonts.md): Customize typography on your documentation site with Google Fonts or self-hosted font files for headings, body text, and code blocks.
+- [Custom scripts](https://www.mintlify.com/docs/customize/custom-scripts.md): Add custom JavaScript and CSS for analytics, widgets, styling, third-party integrations, and API playground server variables on your documentation site.
+- [Custom 404 page](https://www.mintlify.com/docs/customize/custom-404-page.md): Customize the title, description, and appearance of your documentation site&#x27;s 404 error page to match your brand and guide visitors.
+
+<span class="code-line-hl">#### Analytics</span>
+
+- [Analytics overview](https://www.mintlify.com/docs/analytics/index.md): Explore the Mintlify analytics dashboard to measure documentation traffic, assistant conversations, search queries, engagement, and reader feedback.
+- [Analyze documentation traffic](https://www.mintlify.com/docs/analytics/traffic.md): Review traffic analytics to track visitors, page views, referrals, popular pages, and traffic from both human readers and AI agents.
+- [Analyze assistant conversations](https://www.mintlify.com/docs/analytics/assistant.md): Review assistant analytics in the Mintlify dashboard to explore conversation categories, topics, satisfaction, chat history, and content gaps.
+- [Analyze documentation searches](https://www.mintlify.com/docs/analytics/search.md): Review documentation search analytics to track query volume, spot searches returning no results, and improve result click-through rates.
+- [Analyze user engagements](https://www.mintlify.com/docs/analytics/user-engagements.md): Use engagement analytics to measure content actions, CTA click-through rates, user flows through your docs, and search and assistant funnels.
+- [Collect page feedback from users and AI agents](https://www.mintlify.com/docs/optimize/feedback.md): Enable feedback widgets, page ratings, contextual notes, code snippet reactions, and agent feedback to find and fix documentation gaps.
+- [Export analytics to CSV](https://www.mintlify.com/docs/analytics/export.md): Export traffic, referrals, assistant, search, and feedback analytics to CSV from your Mintlify dashboard and interpret each export field.
+- [Stream analytics events to Amazon S3](https://www.mintlify.com/docs/analytics/streaming.md): Configure Enterprise analytics streaming to send selected event categories from your Mintlify deployments to Amazon S3 in near real time.
+
+<span class="code-line-hl">#### Deployments</span>
+
+- [Deployments](https://www.mintlify.com/docs/deploy/deployments.md): Manage documentation deployments in the Mintlify dashboard, including viewing deployment history, monitoring build status, and troubleshooting.
+- [GitHub](https://www.mintlify.com/docs/deploy/github.md): Connect your GitHub repository to Mintlify for automated deployments, pull request preview builds, and continuous documentation synchronization.
+- [GitHub Enterprise Server](https://www.mintlify.com/docs/deploy/ghes.md): Install and configure the Mintlify GitHub App on your GitHub Enterprise Server instance for automated documentation deployments and syncing.
+- [GitLab](https://www.mintlify.com/docs/deploy/gitlab.md): Connect your GitLab repository to Mintlify for automated documentation deployments, merge request previews, and continuous synchronization.
+- [Bitbucket Cloud](https://www.mintlify.com/docs/deploy/bitbucket.md): Connect a Bitbucket Cloud repository to Mintlify for automatic deployments, pull request previews, and continuous synchronization.
+- [Preview deployments](https://www.mintlify.com/docs/deploy/preview-deployments.md): Get unique preview URLs for each pull request so reviewers can see documentation changes in a live environment before merging to production.
+- [Rollbacks](https://www.mintlify.com/docs/deploy/rollbacks.md): Restore your live Mintlify site to a previous successful build from your dashboard without reverting commits or waiting for a rebuild.
+
+<span class="code-line-hl">#### Hosting</span>
+
+- [Custom domain](https://www.mintlify.com/docs/customize/custom-domain.md): Host your site at your own domain, subdomain, or subpath with DNS records, automatic TLS certificates, and Mintlify-managed or proxy traffic routing.
+- [Content Security Policy (CSP) configuration](https://www.mintlify.com/docs/deploy/csp-configuration.md): Configure Content Security Policy headers to allow Mintlify resources while maintaining security for reverse proxies and strict network policies.
+- [Self-host](https://www.mintlify.com/docs/deploy/self-host.md): Run Mintlify inside your own cloud or on-premises environment, on AWS or any Kubernetes platform including Azure, Google Cloud, Oracle Cloud, and OpenShift.
+- [Custom developer portals](https://www.mintlify.com/docs/deploy/custom-portal.md): Deploy a fully custom developer portal on top of self-hosted Mintlify, designed and built by Mintlify and delivered through versioned releases.
+
+<span class="code-line-hl">##### Subpath hosting</span>
+
+- [Host docs at a subpath](https://www.mintlify.com/docs/deploy/docs-subpath.md): Host your Mintlify documentation at a subpath like /docs on your main domain using Cloudflare Workers, Vercel rewrites, or an nginx reverse proxy.
+- [Deploy at a subpath with Cloudflare Workers](https://www.mintlify.com/docs/deploy/cloudflare.md): Deploy your Mintlify documentation at a subpath on your domain using Cloudflare Workers with step-by-step setup and DNS configuration.
+- [Deploy at a subpath with AWS Route 53 and CloudFront](https://www.mintlify.com/docs/deploy/route53-cloudfront.md): Deploy your Mintlify documentation at a subpath on AWS by combining Route 53 DNS routing, a CloudFront distribution, and cache behaviors.
+- [Deploy at a subpath with Vercel](https://www.mintlify.com/docs/deploy/vercel.md): Serve your Mintlify site at a subpath on your main domain using Vercel rewrites, with a step-by-step vercel.json configuration walkthrough.
+- [Reverse proxy](https://www.mintlify.com/docs/deploy/reverse-proxy.md): Configure a custom reverse proxy with nginx or a similar tool to serve your Mintlify documentation at a subpath on your own domain.
+
+<span class="code-line-hl">#### Export your site</span>
+
+- [Offline export](https://www.mintlify.com/docs/deploy/export.md): Export your documentation site as a self-contained zip archive for offline viewing, internal distribution, or air-gapped environment hosting.
+- [PDF exports](https://www.mintlify.com/docs/optimize/pdf-exports.md): Export your entire documentation site as a single PDF with a navigable table of contents for offline reading, sharing, and print distribution.
+
+<span class="code-line-hl">#### Authentication</span>
+
+- [Authentication setup](https://www.mintlify.com/docs/deploy/authentication-setup.md): Set up user authentication to control access to pages and API references using password, OAuth, JWT, or Mintlify-managed private access.
+- [Single sign-on (SSO)](https://www.mintlify.com/docs/dashboard/sso.md): Set up single sign-on with SAML or OIDC identity providers like Okta, Azure AD, and Google Workspace for secure team authentication.
+- [SCIM user provisioning](https://www.mintlify.com/docs/dashboard/scim.md): Automatically provision, deprovision, and map users to roles for Mintlify dashboard members from Okta or another SCIM 2.0 identity provider.
+- [Session security](https://www.mintlify.com/docs/dashboard/session-security.md): Configure dashboard session timeouts, maximum session lifetime, and an IP allowlist to enforce stricter authentication and network access policies.
+
+<span class="code-line-hl">#### Security</span>
+
+- [Dashboard access policies](https://www.mintlify.com/docs/dashboard/network-access.md): Restrict Mintlify dashboard access to trusted IP addresses and control how long dashboard sessions stay valid with idle timeouts and maximum session lifetimes.
+- [Roles](https://www.mintlify.com/docs/dashboard/roles.md): Assign admin, editor, or viewer roles to team members to control access levels, editing permissions, and deployment capabilities in Mintlify.
+- [Audit logs](https://www.mintlify.com/docs/dashboard/audit-logs.md): Review, export, and stream audit logs to Amazon S3 or Datadog to track deployments, configuration changes, and permission updates in your organization.
+- [Security contact](https://www.mintlify.com/docs/dashboard/security-contact.md): Configure a security contact email address for your organization to receive vulnerability reports, security alerts, and compliance updates.
+
+<span class="code-line-hl">### Agent</span>
+
+- [What is the agent?](https://www.mintlify.com/docs/agent/index.md): Learn how the Mintlify agent researches, plans, and writes documentation, then opens pull requests with proposed changes for your team to review.
+- [Add the agent to Slack](https://www.mintlify.com/docs/agent/slack.md): Install the Mintlify agent in Slack to ask questions about your product, create content updates from team conversations, and capture knowledge in pull requests.
+- [Customize agent behavior](https://www.mintlify.com/docs/agent/customize.md): Customize agent behavior with an `AGENTS.md` configuration file to control how the agent handles documentation tasks and follows your conventions.
+- [Write effective prompts](https://www.mintlify.com/docs/agent/effective-prompts.md): Write clear, specific prompts to get better results from the Mintlify agent, with examples of effective instructions and tips for common patterns.
+- [Mintlify agent use cases and examples](https://www.mintlify.com/docs/agent/use-cases.md): Explore real-world examples of using the Mintlify agent to automate documentation updates, capture knowledge, and maintain accurate docs.
+
+<span class="code-line-hl">#### Automations</span>
+
+- [Automations overview](https://www.mintlify.com/docs/automations/index.md): Automate content maintenance with Mintlify automations by running the agent on a schedule, on repository pushes, or on connected integration events.
+- [Create a custom automation](https://www.mintlify.com/docs/automations/create.md): Create a Mintlify automation that runs on a schedule, repository push, or integration event. Add context repositories and a custom agent prompt.
+- [Manage automations](https://www.mintlify.com/docs/automations/manage.md): Enable, disable, trigger, and delete automations from your dashboard. Configure repository, schedule, and integration triggers; context repos; and automerge.
+- [Integrations for the agent and automations](https://www.mintlify.com/docs/automations/integrations.md): Connect third-party apps so the Mintlify agent can use live context in Slack, during automation runs, or as a trigger for custom automations.
+- [Predefined automations](https://www.mintlify.com/docs/automations/reference.md): Reference for all predefined Mintlify automations, including default trigger, update mode, context repository support, and required configurations.
+- [Self-hosted GitLab OAuth](https://www.mintlify.com/docs/deploy/gitlab-self-hosted.md): Connect a self-hosted GitLab instance to Mintlify via OAuth so automations can clone repositories, push commits, and open merge requests on your behalf.
+
+<span class="code-line-hl">### Assistant</span>
+
+- [Assistant](https://www.mintlify.com/docs/assistant/index.md): Add an AI-powered chat assistant to your documentation site that answers user questions, cites sources, and generates code examples on demand.
+- [Configure the assistant](https://www.mintlify.com/docs/assistant/configure.md): Configure the AI assistant in your Mintlify dashboard: toggle availability, customize responses, add starter questions, set bot protection, and manage billing.
+- [Customize assistant behavior](https://www.mintlify.com/docs/assistant/customize.md): Customize the AI assistant by adding an Assistant.md file with system instructions that shape its tone, persona, focus areas, and response behavior.
+- [Embed the AI assistant widget](https://www.mintlify.com/docs/assistant/widget.md): Install and configure the Mintlify widget to embed an AI assistant trained on your content into any website, web app, or dashboard.
+- [Add assistant skills](https://www.mintlify.com/docs/assistant/skills.md): Tune the assistant&#x27;s responses with topic-specific Markdown guides that the assistant loads on demand to answer specific questions with your team&#x27;s guidance.
+- [Use the assistant](https://www.mintlify.com/docs/assistant/use.md): Open the assistant with keyboard shortcuts, highlighted text, code blocks, file attachments, or URL parameters. Test assistant behavior in local preview.
+
+<span class="code-line-hl">### Agent-ready content</span>
+
+- [Admin Model Context Protocol (MCP) server](https://www.mintlify.com/docs/ai/mintlify-mcp.md): Give AI tools like Claude, ChatGPT, and Cursor write access to your Mintlify content and dashboard so they can edit pages, update settings, and open PRs.
+- [Search Model Context Protocol (MCP) server](https://www.mintlify.com/docs/ai/model-context-protocol.md): Connect AI tools like Claude, Cursor, and ChatGPT to your hosted search MCP server so they can search and retrieve content from your site.
+- [llms.txt](https://www.mintlify.com/docs/ai/llmstxt.md): Automatically generate llms.txt and llms-full.txt files so AI tools like ChatGPT and Claude can index and understand your documentation.
+- [skill.md](https://www.mintlify.com/docs/ai/skillmd.md): Make your documentation agent-ready with automatically generated skill.md files that describe your product&#x27;s capabilities for AI agents.
+- [Markdown export](https://www.mintlify.com/docs/ai/markdown-export.md): Export clean Markdown versions of your documentation pages for AI tools, LLM integrations, and automated content processing workflows.
+
+<span class="code-line-hl">#### Mintlify Index</span>
+
+- [Index](https://www.mintlify.com/docs/search-index/index.md): Give coding agents current technical context from publisher-maintained documentation and the web through one MCP server or REST API.
+- [Connect Mintlify Index to your coding agent](https://www.mintlify.com/docs/search-index/connect.md): Set up the Mintlify Index MCP server in Claude Code, Cursor, VS Code, Codex, OpenCode, Windsurf, or Zed with the CLI or manual configuration.
+- [Mintlify Index MCP server](https://www.mintlify.com/docs/search-index/mcp.md): Reference for the public Mintlify Index MCP server: connection URL, the context tool, parameters, response format, rate limits, and usage examples.
+
+<span class="code-line-hl">### Search and SEO</span>
+
+- [Configure in-product search ranking, results, and filters](https://www.mintlify.com/docs/optimize/search.md): Configure the in-product search bar on your Mintlify docs site: ranking boosts, maximum results per query, and product and version search filters.
+- [SEO](https://www.mintlify.com/docs/optimize/seo.md): Configure meta tags, Open Graph properties, canonical URLs, and page-level SEO settings to improve your documentation&#x27;s search engine ranking.
+
+<span class="code-line-hl">### Document APIs</span>
+
+- [API playground overview](https://www.mintlify.com/docs/api-playground/overview.md): Let developers test API endpoints directly in your documentation with an interactive playground that sends real requests and shows responses.
+- [Troubleshooting](https://www.mintlify.com/docs/api-playground/troubleshooting.md): Troubleshoot common issues with API playground configuration, including OpenAPI validation errors, missing endpoints, and auth problems.
+
+<span class="code-line-hl">#### API specifications</span>
+
+- [OpenAPI setup](https://www.mintlify.com/docs/api-playground/openapi-setup.md): Generate interactive API documentation from OpenAPI specification files with automatic endpoint pages, request builders, and navigation.
+- [AsyncAPI setup](https://www.mintlify.com/docs/api-playground/asyncapi-setup.md): Set up real-time WebSocket documentation using AsyncAPI specification files to generate interactive channel and message reference pages.
+- [GraphQL setup](https://www.mintlify.com/docs/api-playground/graphql-setup.md): Generate reference pages for your GraphQL API from a schema definition file, with linked types and example queries, mutations, and responses.
+
+<span class="code-line-hl">##### SDK reference setup</span>
+
+- [Generate SDK reference pages from doc-tool output](https://www.mintlify.com/docs/api-playground/sdk-reference-setup.md): Publish SDK reference documentation in Mintlify from TypeDoc, DocFX, Javadoc, Sphinx, or phpDocumentor artifacts using the sdk navigation property.
+- [Add SDK examples](https://www.mintlify.com/docs/api-playground/adding-sdk-examples.md): Add SDK code samples to your API documentation with the x-codeSamples OpenAPI extension or automatically with Speakeasy.
+
+<span class="code-line-hl">#### Endpoint pages</span>
+
+- [Complex data types](https://www.mintlify.com/docs/api-playground/complex-data-types.md): Describe APIs with flexible schemas using oneOf, anyOf, and allOf keywords for optional properties, polymorphism, and multiple data formats.
+- [Multiple responses](https://www.mintlify.com/docs/api-playground/multiple-responses.md): Document multiple response variations for API endpoints, including success and error cases, with status codes and example payloads.
+- [Manage page visibility](https://www.mintlify.com/docs/api-playground/managing-page-visibility.md): Control which API endpoints appear in your documentation navigation by hiding, filtering, or organizing autogenerated OpenAPI pages.
+- [Create manual API pages](https://www.mintlify.com/docs/api-playground/mdx-setup.md): Create API reference pages manually with MDX files when you need full control over layout for small APIs, prototypes, or custom docs.
+
+<span class="code-line-hl">### Integrations</span>
+
+<span class="code-line-hl">#### Analytics</span>
+
+- [Analytics integrations](https://www.mintlify.com/docs/integrations/analytics/overview.md): Connect your Mintlify documentation to analytics platforms like Google Analytics, Mixpanel, PostHog, and more to track visitor engagement.
+- [Adobe Analytics](https://www.mintlify.com/docs/integrations/analytics/adobe.md): Integrate Adobe Analytics with your Mintlify documentation site using Adobe Experience Platform Launch tags for detailed usage tracking.
+- [Amplitude](https://www.mintlify.com/docs/integrations/analytics/amplitude.md): Integrate Amplitude analytics with your Mintlify documentation site to track user behavior, page views, and content engagement metrics.
+- [Clarity](https://www.mintlify.com/docs/integrations/analytics/clarity.md): Integrate Microsoft Clarity with your Mintlify documentation site to capture session recordings, heatmaps, and user interaction analytics.
+- [Clearbit](https://www.mintlify.com/docs/integrations/analytics/clearbit.md): Integrate Clearbit with your Mintlify documentation to enrich visitor data, identify visiting companies, and track enterprise engagement.
+- [Fathom](https://www.mintlify.com/docs/integrations/analytics/fathom.md): Integrate Fathom Analytics with your Mintlify documentation for privacy-focused, GDPR-compliant visitor tracking with a simple site ID setup.
+- [Google Analytics 4](https://www.mintlify.com/docs/integrations/analytics/google-analytics.md): Integrate Google Analytics 4 with your Mintlify documentation to track visitor behavior, page views, and content engagement with your GA4 ID.
+- [Google Tag Manager](https://www.mintlify.com/docs/integrations/analytics/google-tag-manager.md): Integrate Google Tag Manager with your Mintlify documentation to manage analytics tags, conversion tracking, and marketing events centrally.
+- [Heap](https://www.mintlify.com/docs/integrations/analytics/heap.md): Integrate Heap analytics with your Mintlify documentation site to automatically capture user interactions and events for behavioral analysis.
+- [Hightouch](https://www.mintlify.com/docs/integrations/analytics/hightouch.md): Integrate Hightouch with your Mintlify documentation to sync analytics data for audience activation, segmentation, and downstream tool routing.
+- [Hotjar](https://www.mintlify.com/docs/integrations/analytics/hotjar.md): Integrate Hotjar with your Mintlify documentation site to capture session recordings, heatmaps, and user feedback for experience insights.
+- [LogRocket](https://www.mintlify.com/docs/integrations/analytics/logrocket.md): Integrate LogRocket with your Mintlify documentation to replay user sessions, monitor frontend errors, and debug interaction issues in detail.
+- [Mixpanel](https://www.mintlify.com/docs/integrations/analytics/mixpanel.md): Integrate Mixpanel with your Mintlify documentation site to track product analytics, user behavior funnels, and content engagement events.
+- [Pirsch](https://www.mintlify.com/docs/integrations/analytics/pirsch.md): Integrate Pirsch with your Mintlify documentation for GDPR-compliant, cookie-free analytics that tracks page views without collecting personal data.
+- [Plausible](https://www.mintlify.com/docs/integrations/analytics/plausible.md): Integrate Plausible Analytics with your Mintlify documentation for lightweight, privacy-respecting visitor tracking without cookies or consent banners.
+- [PostHog](https://www.mintlify.com/docs/integrations/analytics/posthog.md): Integrate PostHog with your Mintlify documentation site to track product analytics, feature usage, and user behavior with your API key.
+- [Segment](https://www.mintlify.com/docs/integrations/analytics/segment.md): Integrate Segment with your Mintlify documentation to route analytics events to downstream tools like warehouses, CRMs, and marketing platforms.
+
+<span class="code-line-hl">#### Support</span>
+
+- [Support integrations](https://www.mintlify.com/docs/integrations/support/overview.md): Connect your Mintlify documentation to support platforms like Intercom and Front so visitors can get live help directly from your docs pages.
+- [Intercom](https://www.mintlify.com/docs/integrations/support/intercom.md): Integrate the Intercom chat widget into your Mintlify documentation site to provide real-time customer messaging, support, and onboarding help.
+- [Front](https://www.mintlify.com/docs/integrations/support/front.md): Integrate Front chat with your Mintlify documentation site so visitors can start customer support conversations directly from your docs pages.
+
+<span class="code-line-hl">#### Privacy</span>
+
+- [Privacy integrations](https://www.mintlify.com/docs/integrations/privacy/overview.md): Connect your Mintlify documentation site to privacy platforms like Osano and Transcend to manage cookie consent, compliance banners, and user preferences.
+- [Osano](https://www.mintlify.com/docs/integrations/privacy/osano.md): Integrate Osano with your Mintlify documentation site to manage cookie consent banners, privacy preferences, and regulatory compliance.
+- [Transcend](https://www.mintlify.com/docs/integrations/privacy/transcend.md): Integrate Transcend Consent Management with your Mintlify docs to gate analytics behind visitor consent using your existing Transcend bundle.
+
+<span class="code-line-hl">### Reference</span>
+
+- [Concepts](https://www.mintlify.com/docs/reference/concepts.md): Learn how Mintlify connects your organization, documentation repository, editing workflows, previews, deployments, analytics, and AI features.
+- [Glossary](https://www.mintlify.com/docs/reference/glossary.md): Definitions for Mintlify product, content, navigation, deployment, Git, API playground, and AI terminology used throughout the documentation.
+- [Credit pricing](https://www.mintlify.com/docs/credits.md): Learn the fixed credit price of each AI action, how your shared credit balance works, and how Mintlify bills add-ons, overages, and rollovers.</code></pre>
+      </figure>
+      </div>
+
+      <div class="hop-panel" id="file-leaf" role="tabpanel" aria-labelledby="tab-file-leaf" hidden>
+      <h3 class="fn-h3">第 4 步 · 快捷键正文</h3>
+      <p class="file-sample-note">绿行 = 读过（顺读或跳读）。橙行 = 点进去、打开下一跳。没涂色 = 没读。</p>
+      <p class="file-sample-note"><strong>顺读</strong>整页快捷键表（含文件头的 Documentation Index 提示，以及 Editor-wide / Visual / Source 全部表格）。<strong>跳读</strong>文末 <code>## Related topics</code> 节名后停下。<strong>没读、没打开</strong>下面三条相关页。答案就是这一页。</p>
+      <figure class="file-sample file-sample--wrap">
+        <figcaption><code>https://www.mintlify.com/docs/editor/keyboard-shortcuts.md</code></figcaption>
+        <pre><code><span class="code-line-hl">&gt; ## Documentation Index</span>
+<span class="code-line-hl">&gt; Fetch the complete documentation index at: https://www.mintlify.com/docs/llms.txt</span>
+<span class="code-line-hl">&gt; Use this file to discover all available pages before exploring further.</span>
+
+<span class="code-line-hl"># Keyboard shortcuts</span>
+
+<span class="code-line-hl">&gt; View the complete list of keyboard shortcuts for the Mintlify web editor, including text formatting, navigation, and editing commands.</span>
+
+<span class="code-line-hl">Use keyboard shortcuts to navigate and edit faster in the web editor. The editor supports common shortcuts like copy, paste, undo, and select all, along with the shortcuts listed below.</span>
+
+<span class="code-line-hl">## Editor-wide</span>
+
+<span class="code-line-hl">These shortcuts work regardless of which mode you&#x27;re in.</span>
+
+<span class="code-line-hl">| Command                                                       | macOS                                            | Windows                                           |</span>
+<span class="code-line-hl">| :------------------------------------------------------------ | :----------------------------------------------- | :------------------------------------------------ |</span>
+<span class="code-line-hl">| **Search files and content**                                  | &lt;kbd&gt;Cmd&lt;/kbd&gt; + &lt;kbd&gt;K&lt;/kbd&gt;                    | &lt;kbd&gt;Ctrl&lt;/kbd&gt; + &lt;kbd&gt;K&lt;/kbd&gt;                    |</span>
+<span class="code-line-hl">| **Toggle AI assistant** (when not editing text)               | &lt;kbd&gt;Cmd&lt;/kbd&gt; + &lt;kbd&gt;I&lt;/kbd&gt;                    | &lt;kbd&gt;Ctrl&lt;/kbd&gt; + &lt;kbd&gt;I&lt;/kbd&gt;                    |</span>
+<span class="code-line-hl">| **Switch between visual and source mode**                     | &lt;kbd&gt;Cmd&lt;/kbd&gt; + &lt;kbd&gt;Shift&lt;/kbd&gt; + &lt;kbd&gt;S&lt;/kbd&gt; | &lt;kbd&gt;Ctrl&lt;/kbd&gt; + &lt;kbd&gt;Shift&lt;/kbd&gt; + &lt;kbd&gt;S&lt;/kbd&gt; |</span>
+<span class="code-line-hl">| **Show all files** (including dotfiles and non-content files) | &lt;kbd&gt;Cmd&lt;/kbd&gt; + &lt;kbd&gt;Shift&lt;/kbd&gt; + &lt;kbd&gt;.&lt;/kbd&gt; | &lt;kbd&gt;Ctrl&lt;/kbd&gt; + &lt;kbd&gt;Shift&lt;/kbd&gt; + &lt;kbd&gt;.&lt;/kbd&gt; |</span>
+
+<span class="code-line-hl">## Visual mode</span>
+
+<span class="code-line-hl">Use these shortcuts when editing in visual mode.</span>
+
+<span class="code-line-hl">### Text formatting</span>
+
+<span class="code-line-hl">| Command           | macOS                                            | Windows                                           |</span>
+<span class="code-line-hl">| :---------------- | :----------------------------------------------- | :------------------------------------------------ |</span>
+<span class="code-line-hl">| **Bold**          | &lt;kbd&gt;Cmd&lt;/kbd&gt; + &lt;kbd&gt;B&lt;/kbd&gt;                    | &lt;kbd&gt;Ctrl&lt;/kbd&gt; + &lt;kbd&gt;B&lt;/kbd&gt;                    |</span>
+<span class="code-line-hl">| **Italic**        | &lt;kbd&gt;Cmd&lt;/kbd&gt; + &lt;kbd&gt;I&lt;/kbd&gt;                    | &lt;kbd&gt;Ctrl&lt;/kbd&gt; + &lt;kbd&gt;I&lt;/kbd&gt;                    |</span>
+<span class="code-line-hl">| **Underline**     | &lt;kbd&gt;Cmd&lt;/kbd&gt; + &lt;kbd&gt;U&lt;/kbd&gt;                    | &lt;kbd&gt;Ctrl&lt;/kbd&gt; + &lt;kbd&gt;U&lt;/kbd&gt;                    |</span>
+<span class="code-line-hl">| **Strikethrough** | &lt;kbd&gt;Cmd&lt;/kbd&gt; + &lt;kbd&gt;Shift&lt;/kbd&gt; + &lt;kbd&gt;X&lt;/kbd&gt; | &lt;kbd&gt;Ctrl&lt;/kbd&gt; + &lt;kbd&gt;Shift&lt;/kbd&gt; + &lt;kbd&gt;X&lt;/kbd&gt; |</span>
+<span class="code-line-hl">| **Code**          | &lt;kbd&gt;Cmd&lt;/kbd&gt; + &lt;kbd&gt;E&lt;/kbd&gt;                    | &lt;kbd&gt;Ctrl&lt;/kbd&gt; + &lt;kbd&gt;E&lt;/kbd&gt;                    |</span>
+<span class="code-line-hl">| **Subscript**     | &lt;kbd&gt;Cmd&lt;/kbd&gt; + &lt;kbd&gt;,&lt;/kbd&gt;                    | &lt;kbd&gt;Ctrl&lt;/kbd&gt; + &lt;kbd&gt;,&lt;/kbd&gt;                    |</span>
+<span class="code-line-hl">| **Superscript**   | &lt;kbd&gt;Cmd&lt;/kbd&gt; + &lt;kbd&gt;.&lt;/kbd&gt;                    | &lt;kbd&gt;Ctrl&lt;/kbd&gt; + &lt;kbd&gt;.&lt;/kbd&gt;                    |</span>
+
+<span class="code-line-hl">### Headings</span>
+
+<span class="code-line-hl">| Command       | macOS                                             | Windows                                         |</span>
+<span class="code-line-hl">| :------------ | :------------------------------------------------ | :---------------------------------------------- |</span>
+<span class="code-line-hl">| **Text**      | &lt;kbd&gt;Cmd&lt;/kbd&gt; + &lt;kbd&gt;Option&lt;/kbd&gt; + &lt;kbd&gt;0&lt;/kbd&gt; | &lt;kbd&gt;Ctrl&lt;/kbd&gt; + &lt;kbd&gt;Alt&lt;/kbd&gt; + &lt;kbd&gt;0&lt;/kbd&gt; |</span>
+<span class="code-line-hl">| **Heading 1** | &lt;kbd&gt;Cmd&lt;/kbd&gt; + &lt;kbd&gt;Option&lt;/kbd&gt; + &lt;kbd&gt;1&lt;/kbd&gt; | &lt;kbd&gt;Ctrl&lt;/kbd&gt; + &lt;kbd&gt;Alt&lt;/kbd&gt; + &lt;kbd&gt;1&lt;/kbd&gt; |</span>
+<span class="code-line-hl">| **Heading 2** | &lt;kbd&gt;Cmd&lt;/kbd&gt; + &lt;kbd&gt;Option&lt;/kbd&gt; + &lt;kbd&gt;2&lt;/kbd&gt; | &lt;kbd&gt;Ctrl&lt;/kbd&gt; + &lt;kbd&gt;Alt&lt;/kbd&gt; + &lt;kbd&gt;2&lt;/kbd&gt; |</span>
+<span class="code-line-hl">| **Heading 3** | &lt;kbd&gt;Cmd&lt;/kbd&gt; + &lt;kbd&gt;Option&lt;/kbd&gt; + &lt;kbd&gt;3&lt;/kbd&gt; | &lt;kbd&gt;Ctrl&lt;/kbd&gt; + &lt;kbd&gt;Alt&lt;/kbd&gt; + &lt;kbd&gt;3&lt;/kbd&gt; |</span>
+<span class="code-line-hl">| **Heading 4** | &lt;kbd&gt;Cmd&lt;/kbd&gt; + &lt;kbd&gt;Option&lt;/kbd&gt; + &lt;kbd&gt;4&lt;/kbd&gt; | &lt;kbd&gt;Ctrl&lt;/kbd&gt; + &lt;kbd&gt;Alt&lt;/kbd&gt; + &lt;kbd&gt;4&lt;/kbd&gt; |</span>
+<span class="code-line-hl">| **Heading 5** | &lt;kbd&gt;Cmd&lt;/kbd&gt; + &lt;kbd&gt;Option&lt;/kbd&gt; + &lt;kbd&gt;5&lt;/kbd&gt; | &lt;kbd&gt;Ctrl&lt;/kbd&gt; + &lt;kbd&gt;Alt&lt;/kbd&gt; + &lt;kbd&gt;5&lt;/kbd&gt; |</span>
+<span class="code-line-hl">| **Heading 6** | &lt;kbd&gt;Cmd&lt;/kbd&gt; + &lt;kbd&gt;Option&lt;/kbd&gt; + &lt;kbd&gt;6&lt;/kbd&gt; | &lt;kbd&gt;Ctrl&lt;/kbd&gt; + &lt;kbd&gt;Alt&lt;/kbd&gt; + &lt;kbd&gt;6&lt;/kbd&gt; |</span>
+
+<span class="code-line-hl">### Lists and blocks</span>
+
+<span class="code-line-hl">| Command            | macOS                                            | Windows                                           |</span>
+<span class="code-line-hl">| :----------------- | :----------------------------------------------- | :------------------------------------------------ |</span>
+<span class="code-line-hl">| **Unordered list** | &lt;kbd&gt;Cmd&lt;/kbd&gt; + &lt;kbd&gt;Shift&lt;/kbd&gt; + &lt;kbd&gt;8&lt;/kbd&gt; | &lt;kbd&gt;Ctrl&lt;/kbd&gt; + &lt;kbd&gt;Shift&lt;/kbd&gt; + &lt;kbd&gt;8&lt;/kbd&gt; |</span>
+<span class="code-line-hl">| **Blockquote**     | &lt;kbd&gt;Cmd&lt;/kbd&gt; + &lt;kbd&gt;Shift&lt;/kbd&gt; + &lt;kbd&gt;B&lt;/kbd&gt; | &lt;kbd&gt;Ctrl&lt;/kbd&gt; + &lt;kbd&gt;Shift&lt;/kbd&gt; + &lt;kbd&gt;B&lt;/kbd&gt; |</span>
+
+<span class="code-line-hl">### Content actions</span>
+
+<span class="code-line-hl">| Command                         | macOS                                            | Windows                                           |</span>
+<span class="code-line-hl">| :------------------------------ | :----------------------------------------------- | :------------------------------------------------ |</span>
+<span class="code-line-hl">| **Add link** to selected text   | &lt;kbd&gt;Cmd&lt;/kbd&gt; + &lt;kbd&gt;K&lt;/kbd&gt;                    | &lt;kbd&gt;Ctrl&lt;/kbd&gt; + &lt;kbd&gt;K&lt;/kbd&gt;                    |</span>
+<span class="code-line-hl">| **Add line break**              | &lt;kbd&gt;Cmd&lt;/kbd&gt; + &lt;kbd&gt;Enter&lt;/kbd&gt;                | &lt;kbd&gt;Ctrl&lt;/kbd&gt; + &lt;kbd&gt;Enter&lt;/kbd&gt;                |</span>
+<span class="code-line-hl">| **Comment on highlighted text** | &lt;kbd&gt;Cmd&lt;/kbd&gt; + &lt;kbd&gt;Shift&lt;/kbd&gt; + &lt;kbd&gt;M&lt;/kbd&gt; | &lt;kbd&gt;Ctrl&lt;/kbd&gt; + &lt;kbd&gt;Shift&lt;/kbd&gt; + &lt;kbd&gt;M&lt;/kbd&gt; |</span>
+<span class="code-line-hl">| **Toggle suggesting mode**      | &lt;kbd&gt;Cmd&lt;/kbd&gt; + &lt;kbd&gt;Shift&lt;/kbd&gt; + &lt;kbd&gt;E&lt;/kbd&gt; | &lt;kbd&gt;Ctrl&lt;/kbd&gt; + &lt;kbd&gt;Shift&lt;/kbd&gt; + &lt;kbd&gt;E&lt;/kbd&gt; |</span>
+<span class="code-line-hl">| **Component menu**              | &lt;kbd&gt;/&lt;/kbd&gt;                                     | &lt;kbd&gt;/&lt;/kbd&gt;                                      |</span>
+<span class="code-line-hl">| **Emoji picker**                | &lt;kbd&gt;:&lt;/kbd&gt; + keyword                           | &lt;kbd&gt;:&lt;/kbd&gt; + keyword                            |</span>
+
+<span class="code-line-hl">### Smart substitutions</span>
+
+<span class="code-line-hl">The editor automatically converts certain character sequences into typographic symbols as you type. The editor skips substitutions inside code blocks and inline code.</span>
+
+<span class="code-line-hl">| Type | Result |</span>
+<span class="code-line-hl">| :--- | :----- |</span>
+<span class="code-line-hl">| `-&gt;` | →      |</span>
+<span class="code-line-hl">| `&lt;-` | ←      |</span>
+<span class="code-line-hl">| `=&gt;` | ⇒      |</span>
+<span class="code-line-hl">| `&lt;=` | ≤      |</span>
+<span class="code-line-hl">| `&gt;=` | ≥      |</span>
+<span class="code-line-hl">| `!=` | ≠      |</span>
+
+<span class="code-line-hl">## Source mode</span>
+
+<span class="code-line-hl">Source mode uses CodeMirror. Most common code editor shortcuts work, along with the ones below.</span>
+
+<span class="code-line-hl">### Search and navigation</span>
+
+<span class="code-line-hl">| Command          | macOS                         | Windows                        |</span>
+<span class="code-line-hl">| :--------------- | :---------------------------- | :----------------------------- |</span>
+<span class="code-line-hl">| **Search files** | &lt;kbd&gt;Cmd&lt;/kbd&gt; + &lt;kbd&gt;K&lt;/kbd&gt; | &lt;kbd&gt;Ctrl&lt;/kbd&gt; + &lt;kbd&gt;K&lt;/kbd&gt; |</span>
+<span class="code-line-hl">| **Find**         | &lt;kbd&gt;Cmd&lt;/kbd&gt; + &lt;kbd&gt;F&lt;/kbd&gt; | &lt;kbd&gt;Ctrl&lt;/kbd&gt; + &lt;kbd&gt;F&lt;/kbd&gt; |</span>
+
+<span class="code-line-hl">### Editing</span>
+
+<span class="code-line-hl">| Command                   | macOS                                                                 | Windows                                                             |</span>
+<span class="code-line-hl">| :------------------------ | :-------------------------------------------------------------------- | :------------------------------------------------------------------ |</span>
+<span class="code-line-hl">| **Bold** (wraps in `**`)  | &lt;kbd&gt;Cmd&lt;/kbd&gt; + &lt;kbd&gt;B&lt;/kbd&gt;                                         | &lt;kbd&gt;Ctrl&lt;/kbd&gt; + &lt;kbd&gt;B&lt;/kbd&gt;                                      |</span>
+<span class="code-line-hl">| **Italic** (wraps in `_`) | &lt;kbd&gt;Cmd&lt;/kbd&gt; + &lt;kbd&gt;I&lt;/kbd&gt;                                         | &lt;kbd&gt;Ctrl&lt;/kbd&gt; + &lt;kbd&gt;I&lt;/kbd&gt;                                      |</span>
+<span class="code-line-hl">| **Toggle comment**        | &lt;kbd&gt;Cmd&lt;/kbd&gt; + &lt;kbd&gt;/&lt;/kbd&gt;                                         | &lt;kbd&gt;Ctrl&lt;/kbd&gt; + &lt;kbd&gt;/&lt;/kbd&gt;                                      |</span>
+<span class="code-line-hl">| **Fold all**              | &lt;kbd&gt;Cmd&lt;/kbd&gt; + &lt;kbd&gt;Option&lt;/kbd&gt; + &lt;kbd&gt;Shift&lt;/kbd&gt; + &lt;kbd&gt;\[&lt;/kbd&gt; | &lt;kbd&gt;Ctrl&lt;/kbd&gt; + &lt;kbd&gt;Alt&lt;/kbd&gt; + &lt;kbd&gt;Shift&lt;/kbd&gt; + &lt;kbd&gt;\[&lt;/kbd&gt; |</span>
+<span class="code-line-hl">| **Unfold all**            | &lt;kbd&gt;Cmd&lt;/kbd&gt; + &lt;kbd&gt;Option&lt;/kbd&gt; + &lt;kbd&gt;Shift&lt;/kbd&gt; + &lt;kbd&gt;]&lt;/kbd&gt;  | &lt;kbd&gt;Ctrl&lt;/kbd&gt; + &lt;kbd&gt;Alt&lt;/kbd&gt; + &lt;kbd&gt;Shift&lt;/kbd&gt; + &lt;kbd&gt;]&lt;/kbd&gt;  |</span>
+<span class="code-line-hl">| **Indent line**           | &lt;kbd&gt;Tab&lt;/kbd&gt;                                                        | &lt;kbd&gt;Tab&lt;/kbd&gt;                                                      |</span>
+<span class="code-line-hl">| **Outdent line**          | &lt;kbd&gt;Shift&lt;/kbd&gt; + &lt;kbd&gt;Tab&lt;/kbd&gt;                                     | &lt;kbd&gt;Shift&lt;/kbd&gt; + &lt;kbd&gt;Tab&lt;/kbd&gt;                                   |</span>
+<span class="code-line-hl">| **Move line up**          | &lt;kbd&gt;Option&lt;/kbd&gt; + &lt;kbd&gt;↑&lt;/kbd&gt;                                      | &lt;kbd&gt;Alt&lt;/kbd&gt; + &lt;kbd&gt;↑&lt;/kbd&gt;                                       |</span>
+<span class="code-line-hl">| **Move line down**        | &lt;kbd&gt;Option&lt;/kbd&gt; + &lt;kbd&gt;↓&lt;/kbd&gt;                                      | &lt;kbd&gt;Alt&lt;/kbd&gt; + &lt;kbd&gt;↓&lt;/kbd&gt;                                       |</span>
+<span class="code-line-hl">| **Duplicate line**        | &lt;kbd&gt;Shift&lt;/kbd&gt; + &lt;kbd&gt;Option&lt;/kbd&gt; + &lt;kbd&gt;↓&lt;/kbd&gt;                   | &lt;kbd&gt;Shift&lt;/kbd&gt; + &lt;kbd&gt;Alt&lt;/kbd&gt; + &lt;kbd&gt;↓&lt;/kbd&gt;                    |</span>
+
+<span class="code-line-hl">### Multiple cursors</span>
+
+<span class="code-line-hl">| Command              | macOS                                             | Windows                                         |</span>
+<span class="code-line-hl">| :------------------- | :------------------------------------------------ | :---------------------------------------------- |</span>
+<span class="code-line-hl">| **Add cursor**       | &lt;kbd&gt;Option&lt;/kbd&gt; + Click                         | &lt;kbd&gt;Alt&lt;/kbd&gt; + Click                          |</span>
+<span class="code-line-hl">| **Add cursor above** | &lt;kbd&gt;Cmd&lt;/kbd&gt; + &lt;kbd&gt;Option&lt;/kbd&gt; + &lt;kbd&gt;↑&lt;/kbd&gt; | &lt;kbd&gt;Ctrl&lt;/kbd&gt; + &lt;kbd&gt;Alt&lt;/kbd&gt; + &lt;kbd&gt;↑&lt;/kbd&gt; |</span>
+<span class="code-line-hl">| **Add cursor below** | &lt;kbd&gt;Cmd&lt;/kbd&gt; + &lt;kbd&gt;Option&lt;/kbd&gt; + &lt;kbd&gt;↓&lt;/kbd&gt; | &lt;kbd&gt;Ctrl&lt;/kbd&gt; + &lt;kbd&gt;Alt&lt;/kbd&gt; + &lt;kbd&gt;↓&lt;/kbd&gt; |</span>
+
+
+<span class="code-line-hl">## Related topics</span>
+
+- [Use the assistant](/docs/assistant/use.md)
+- [Markdown export](/docs/ai/markdown-export.md)
+- [Tutorial: Build an in-app documentation assistant](/docs/guides/assistant-embed.md)</code></pre>
+      </figure>
+      </div>
+    </section>
+
+    <section class="section" id="benefits">
+      <h2>这条路径说明什么</h2>
+      <ul class="bg-list">
+        <li><strong>从上往下读，碰到候选先记下</strong>Agent 按文件顺序读，不是先把所有 URL 打开再挑。读到像入口的那条（橙行）先记下，不立刻跳走。</li>
+        <li><strong>候选所在的节要读完，后面几条也看</strong>同一节里，候选下面的条目仍会读，用来确认不是它们。根清单 Docs 里，Documentation index 后面的 home / Quickstart 就是这样。不是碰到黄行就走。</li>
+        <li><strong>其它章只扫标题和一句说明，再进下一层</strong>后面的 <code>##</code> / <code>###</code> 跳读节名和描述，排除博客、定价、API、CLI 等。相关才进节里看第一条。排除完，再打开下一份。这一问每层跟一条；问句要对照两页时，同一层可以跟两条。</li>
+        <li><strong>答案在当前文件就停</strong>第四份已经是完整快捷键表，Related topics 只扫节名，不再打开。打开几次由「问句还缺什么」决定，不由目录有几层决定。</li>
+        <li><strong>第三份不是第三本 llms</strong><code>llms.txt</code> 只在「还要再选一本目录」时出现。根清单选出文档，下一份仍是文档分册 <code>llms.txt</code>。分册已经在列这一面有哪些页，页多就写成页名 <code>.md</code>，不再叫 <code>llms.txt</code>。所以这一问打开四份文件，llms 只有两本。</li>
+      </ul>
+    </section>
+
+    </main>
+</div>
+
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js"></script>
+<script src="assets/js/llms-parse-nav.js"></script>
+<script src="assets/js/wf-link-layout.js"></script>
+<script src="assets/js/module-sidebar.js"></script>
+<script>
+(function () {
+  var tabs = Array.prototype.slice.call(document.querySelectorAll(".wf-node[data-hop]"));
+  var panels = Array.prototype.slice.call(document.querySelectorAll(".hop-panel"));
+  if (!tabs.length) return;
+  function show(id, focusTab) {
+    tabs.forEach(function (tab) {
+      var on = tab.getAttribute("data-hop") === id;
+      tab.setAttribute("aria-selected", on ? "true" : "false");
+      tab.tabIndex = on ? 0 : -1;
+      if (on && focusTab) tab.focus();
+    });
+    panels.forEach(function (panel) {
+      panel.hidden = panel.id !== id;
+    });
+  }
+  tabs.forEach(function (tab) {
+    tab.addEventListener("click", function () {
+      show(tab.getAttribute("data-hop"), false);
+    });
+    tab.addEventListener("keydown", function (e) {
+      var i = tabs.indexOf(tab);
+      var next = -1;
+      if (e.key === "ArrowRight" || e.key === "ArrowDown") next = (i + 1) % tabs.length;
+      if (e.key === "ArrowLeft" || e.key === "ArrowUp") next = (i - 1 + tabs.length) % tabs.length;
+      if (e.key === "Home") next = 0;
+      if (e.key === "End") next = tabs.length - 1;
+      if (next < 0) return;
+      e.preventDefault();
+      show(tabs[next].getAttribute("data-hop"), true);
+    });
+  });
+})();
+</script>
+</body>
+</html>

@@ -37,9 +37,9 @@
   .page-header {
     border-bottom: none;
     padding-bottom: 0;
-    margin-bottom: 0;
+    margin-bottom: var(--space-stack, 16px);
   }
-  .page-header h1 {
+  .page-header > h1 {
     font-family: var(--font);
     font-size: var(--text-h1);
     font-weight: var(--text-h1-weight, 600);
@@ -50,12 +50,23 @@
     padding-bottom: var(--space-h1-pad-y, 32px);
     color: var(--color-text, var(--color-text));
   }
-  .page-header .page-desc {
-    margin: 32px 0 0;
+  #problem > p.page-lead,
+  #mechanism > p.page-lead {
+    margin: 0;
     font-size: var(--text-body);
-    line-height: 1.75;
-    color: var(--text, var(--color-text));
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
   }
+  #problem > h2 + .page-lead,
+  #mechanism > h2 + .page-lead { margin-top: 0; }
+  #mechanism > p.page-lead {
+    margin-bottom: var(--space-stack, 16px);
+  }
+  #mechanism > p.page-lead strong {
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  #mechanism > .page-lead + .af-figure { margin-top: 0; }
   body.inner-page.agent-entry-page:has(#module-sidebar) .main-content {
     padding-top: var(--content-main-pad-top, 16px);
     padding-left: 0;
@@ -76,14 +87,17 @@
     line-height: var(--text-h2-lh, 36px);
     letter-spacing: -0.01em;
     margin-top: 0;
-    margin-bottom: 0;
+    margin-bottom: var(--space-stack, 16px);
     padding-top: var(--space-h2-pad-y, 16px);
     padding-bottom: var(--space-h2-pad-y, 16px);
     border-bottom: 2px solid var(--color-card-border);
     color: var(--color-text, var(--color-text));
   }
   body.inner-page.agent-entry-page .main-content > .section:first-of-type > h2 {
-    margin-top: 40px;
+    margin-top: 0;
+  }
+  body.inner-page.agent-entry-page .main-content > .section {
+    margin-bottom: var(--space-stack, 16px);
   }
   body.inner-page.agent-entry-page .main-content .section h3 { height: auto; }
   h3.fn-h3 {
@@ -107,29 +121,20 @@
     color: var(--color-text, var(--color-text));
     letter-spacing: -0.01em;
   }
-  h3.fn-h3 + h4.fn-h4{ margin-top: 12px; }
+  h3.fn-h3 + h4.fn-h4 { margin-top: 0; }
   #mechanism > p.bg-body + h3.fn-h3,
-  #mechanism > p.bg-body + h4.fn-h4 { margin-top: 16px; }
-  #mechanism > h2 + h3.fn-h3 { padding-top: 8px; }
+  #mechanism > p.bg-body + h4.fn-h4 { margin-top: var(--space-stack, 16px); }
   #mechanism h3.fn-h3 + p.bg-body,
   #mechanism h4.fn-h4 + p.bg-body,
   #mechanism h4.fn-h4 + p.aj-takeaway,
-  #practices h3.fn-h3 + p.bg-body {
+  #practices h3.fn-h3 + p.bg-body,
+  #practices h2 + h3.fn-h3,
+  #mechanism h2 + h3.fn-h3 {
     margin-top: 0;
-  }
-  #practices > h2 + h3.fn-h3 {
-    padding-top: 16px;
-  }
-  #practices .file-sample + h3.fn-h3 {
-    padding-top: 8px;
-  }
-  #practices .file-sample-note + h3.fn-h3,
-  #practices .practice-shot + h3.fn-h3 {
-    padding-top: 16px;
   }
 
   .af-figure + .af-figure {
-    margin-top: 32px;
+    margin-top: var(--space-stack, 16px);
   }
   .aj {
     width: 100%;
@@ -150,9 +155,9 @@
     padding: 0 0 10px;
     color: var(--color-text);
   }
-  .af-figure + .bg-body { margin-top: 32px; }
+  .af-figure + .bg-body { margin-top: var(--space-stack, 16px); }
   .aj-takeaway {
-    margin: 10px 0 0;
+    margin: var(--space-stack, 16px) 0 0;
     font-size: 13px;
     line-height: 22px;
     color: var(--color-text-secondary);
@@ -167,7 +172,7 @@
     border-top: none;
     border-left: none;
     vertical-align: top;
-    padding: 12px 12px;
+    padding: var(--table-cell-pad);
     font-size: var(--text-body);
     line-height: var(--text-body-lh);
   }
@@ -182,17 +187,17 @@
   .aj .aj-label {
     width: 148px;
     background: #f5f6f8;
-    color: var(--color-text-secondary);
+    color: var(--color-text);
     font-weight: 650;
     vertical-align: middle;
     text-align: left;
-    padding: 12px 12px;
+    padding: var(--table-cell-pad);
     border-left: 1px solid #e8eef5;
   }
   .aj thead th.aj-corner {
     background: #f5f6f8;
-    color: var(--color-text-secondary);
-    padding: 12px 12px;
+    color: var(--color-text);
+    padding: var(--table-head-pad-y) var(--table-head-pad-x);
     border-top-left-radius: 8px;
   }
   .aj tbody tr:last-child .aj-label {
@@ -211,22 +216,25 @@
     background: #f5f6f8;
     font-weight: 650;
     text-align: left;
-    padding: 12px 12px;
+    padding: var(--table-head-pad-y) var(--table-head-pad-x);
     color: var(--color-text);
   }
+  .aj thead .aj-who,
   .aj thead .aj-stage-name {
-    display: block;
+    display: inline;
     font-weight: 650;
     color: var(--color-text);
   }
+  .aj thead .aj-who + .aj-stage-name::before {
+    content: "：";
+  }
   .aj thead .aj-corner .aj-stage-name {
     color: inherit;
-    margin-bottom: 2px;
+    margin-bottom: 0;
   }
   .aj thead .aj-pri{
     background: #f5f6f8;
   }
-  .aj td.is-pri { background: #f7fbff; }
   .aj .aj-file {
     display: block;
     margin: 0 0 6px;
@@ -242,22 +250,15 @@
     color: inherit;
     margin-bottom: 0;
   }
-  .aj li + li { margin-top: 6px; }
+  .aj li + li { margin-top: 12px; }
+  #mechanism .aj li strong {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 650;
+    color: var(--color-text);
+  }
   #mechanism .aj tbody td[rowspan] {
     vertical-align: middle;
-  }
-  #mechanism .aj td.aj-merge {
-    background: #f0f4f8;
-    vertical-align: middle;
-    text-align: left;
-  }
-  #mechanism .aj .aj-merge-kicker {
-    display: block;
-    margin: 0 0 4px;
-    font-size: var(--text-caption);
-    font-weight: 650;
-    line-height: 18px;
-    color: var(--color-text-secondary);
   }
   #mechanism .aj thead th {
     text-align: left;
@@ -265,25 +266,29 @@
     height: auto;
     min-height: 0;
     box-sizing: border-box;
-    padding: 10px 12px;
+    padding: var(--table-head-pad-y) var(--table-head-pad-x);
   }
   #mechanism .aj thead th.aj-corner {
     text-align: left;
+    vertical-align: middle;
     white-space: normal;
     height: auto;
     line-height: 18px;
   }
   #mechanism .aj thead .aj-corner .aj-stage-name,
-  #mechanism .aj thead .aj-who {
-    display: block;
-    margin: 0 0 2px;
-    font-size: var(--text-caption);
+  #mechanism .aj thead .aj-who,
+  #mechanism .aj thead .aj-stage-name {
+    display: inline;
+    margin: 0;
+    font-size: inherit;
     font-weight: 650;
-    color: #8c8c8c;
+    color: inherit;
   }
-  #mechanism .aj tbody td,
-  #mechanism .aj tbody .aj-label {
+  #mechanism .aj tbody td {
     vertical-align: top;
+  }
+  #mechanism .aj tbody .aj-label {
+    vertical-align: middle;
   }
   #mechanism .aj .aj-file {
     margin-bottom: 6px;
@@ -298,37 +303,29 @@
     white-space: nowrap;
   }
   .bg-body {
-    margin: 0 0 16px;
+    margin: 0 0 var(--space-stack, 16px);
     font-size: var(--text-body);
     line-height: 22px;
     color: var(--color-text, var(--color-text));
   }
   #mechanism > p.bg-body {
-    margin-bottom: 8px;
-  }
-  #mechanism > p.bg-body:last-of-type {
-    margin-bottom: 16px;
+    margin-bottom: var(--space-stack, 16px);
   }
   #mechanism > p.bg-body > strong {
     display: block;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
     font-weight: 650;
   }
-  #mechanism > h2 + h3.fn-h3,
-  #mechanism > p.bg-body + h3.fn-h3 {
-    padding-top: 8px;
-  }
-  #mechanism .aj-takeaway + h3.fn-h3 {
-    padding-top: 16px;
-  }
-  #core-principles > h2 + p.aj-takeaway {
+  #core-principles > h2 + p.aj-takeaway,
+  #core-principles > h2 + .bg-list {
     margin-top: 0;
   }
   #core-principles > p.aj-takeaway + p.aj-takeaway {
-    margin-top: 16px;
+    margin-top: var(--space-stack, 16px);
   }
+  #mechanism .aj-takeaway + h3.fn-h3,
   #mechanism .af-figure + h3.fn-h3 {
-    padding-top: 24px;
+    margin-top: var(--space-stack, 16px);
   }
   .bg-list {
     margin: 0;
@@ -341,15 +338,21 @@
   #practices .bg-list li + li,
   #benefits .bg-list li + li,
   #core-principles .bg-list li + li,
+  #find-md .bg-list li + li,
   #mechanism .bg-list li + li{ margin-top: 16px; }
-  #practices .bg-list li strong,
-  #benefits .bg-list li strong,
-  #core-principles .bg-list li strong,
-  #mechanism .bg-list li strong{
+  #practices .bg-list li > strong:first-child,
+  #benefits .bg-list li > strong:first-child,
+  #core-principles .bg-list li > strong:first-child,
+  #find-md .bg-list li > strong:first-child,
+  #mechanism .bg-list li > strong:first-child{
     display: block;
     margin-bottom: 4px;
     font-weight: 650;
     color: var(--color-text);
+  }
+  #core-principles .bg-list li strong {
+    color: var(--color-text);
+    font-weight: 650;
   }
   #practices .bg-list,
   #benefits .bg-list,
@@ -360,17 +363,73 @@
   #practices .file-sample-note + h4.fn-h4,
   #practices .practice-shot + h4.fn-h4,
   #practices .file-sample + h4.fn-h4,
-  #practices .bg-list + h4.fn-h4 {
-    margin-top: 24px;
+  #practices .practice-pair + h4.fn-h4,
+  #practices .bg-list + h4.fn-h4,
+  #practices .bg-list + h3.fn-h3,
+  #practices .file-sample + h3.fn-h3,
+  #practices .file-sample-note + h3.fn-h3,
+  #practices .practice-shot + h3.fn-h3,
+  #practices .practice-pair + h3.fn-h3,
+  #practices .track-compare + h4.fn-h4,
+  #practices .track-compare + h3.fn-h3,
+  #practices .track-compare + h2 {
+    margin-top: var(--space-stack, 16px);
   }
-  #practices .bg-list + h3.fn-h3 {
-    padding-top: 16px;
-  }
-  #practices h4.fn-h4 + .file-sample {
+  #practices h3.fn-h3 + .fn-h3-desc,
+  #practices h4.fn-h4 + .fn-h3-desc {
     margin-top: 0;
   }
+  #practices .fn-h3-desc {
+    margin: 0 0 10px;
+    font-size: var(--text-body);
+    font-weight: 650;
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text);
+  }
+  #practices h4.fn-h4 + .practice-pair,
+  #practices h3.fn-h3 + .practice-pair,
+  #practices .file-sample + .file-sample-note,
+  #practices .practice-pair + .file-sample-note,
+  #practices h4.fn-h4 + .file-sample,
+  #practices h3.fn-h3 + .file-sample,
+  #practices h4.fn-h4 + .practice-shot,
+  #practices .fn-h3-desc + .file-sample,
+  #practices .fn-h3-desc + .practice-shot,
+  #practices .fn-h3-desc + .sample-pair,
+  #practices .fn-h3-desc + .practice-pair,
+  #practices h4.fn-h4 + .bg-list,
+  #practices h4.fn-h4 + .track-compare,
+  #practices h3.fn-h3 + .track-compare,
+  #practices h2 + .track-compare,
+  #practices h3.fn-h3 + .bg-list,
+  #practices h3.fn-h3 + h4.fn-h4,
+  #practices h3.fn-h3 + .file-sample-note,
+  #practices h2 + .file-sample-note,
+  #practices h4.fn-h4 + .af-figure {
+    margin-top: 0;
+  }
+  #find-md h2 + h3.fn-h3,
+  #find-md h3.fn-h3 + .file-sample-note,
+  #find-md h3.fn-h3 + h4.fn-h4,
+  #find-md h3.fn-h3 + .af-figure,
+  #find-md h3.fn-h3 + .file-sample,
+  #find-md h4.fn-h4 + .af-figure,
+  #find-md h4.fn-h4 + .file-sample,
+  #find-md h4.fn-h4 + .bg-list,
+  #find-md .file-sample + .file-sample-note,
+  #find-md .file-sample-note + h4.fn-h4,
+  #find-md .file-sample-note + .file-sample,
+  #find-md .file-sample-note + .af-figure,
+  #find-md .file-sample-note + .bg-list {
+    margin-top: 0;
+  }
+  #find-md .file-sample-note + h3.fn-h3,
+  #find-md .af-figure + h3.fn-h3,
+  #find-md .file-sample + h3.fn-h3 {
+    margin-top: var(--space-stack, 16px);
+  }
   .practice-shot {
-    margin: 0 0 8px;
+    margin: 0 0 var(--space-stack, 16px);
     padding: 0;
     background: none;
     border: none;
@@ -387,20 +446,43 @@
   .practice-shot .practice-sample {
     margin: 0;
   }
+  .practice-shot img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid #e8ecf1;
+    border-radius: 8px;
+  }
   .practice-sample {
-    margin: 0 0 8px;
+    margin: 0;
     padding: 16px;
     background: var(--color-bg);
     border: 1px solid #e8ecf1;
     border-radius: 8px;
   }
   .file-sample {
-    margin: 0 0 20px;
+    margin: 0 0 var(--space-stack, 16px);
     padding: 0;
     background: #1e1e1e;
     border: 1px solid #111;
     border-radius: 8px;
     overflow: hidden;
+    color-scheme: dark;
+    scrollbar-color: #5c5c5c #1e1e1e;
+  }
+  .file-sample::-webkit-scrollbar,
+  .file-sample pre::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  .file-sample::-webkit-scrollbar-track,
+  .file-sample pre::-webkit-scrollbar-track {
+    background: #1e1e1e;
+  }
+  .file-sample::-webkit-scrollbar-thumb,
+  .file-sample pre::-webkit-scrollbar-thumb {
+    background: #5c5c5c;
+    border-radius: 4px;
   }
   .file-sample figcaption {
     margin: 0;
@@ -426,6 +508,8 @@
     background: transparent;
     white-space: pre;
     overflow-x: auto;
+    color-scheme: dark;
+    scrollbar-color: #5c5c5c #1e1e1e;
   }
   .file-sample pre code {
     display: block;
@@ -438,8 +522,19 @@
     font-family: inherit;
     white-space: inherit;
   }
+  .file-sample .code-line-hl {
+    display: block;
+    margin: 0 -14px;
+    padding: 2px 14px;
+    background: rgba(4, 120, 87, 0.28);
+  }
+  .file-sample--wrap pre,
+  .file-sample--wrap pre code {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
   .file-sample-note {
-    margin: 0 0 20px;
+    margin: 0 0 var(--space-stack, 16px);
     font-size: 13px;
     line-height: 22px;
     color: #8c8c8c;
@@ -528,24 +623,49 @@
   .practice-pair {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 16px;
+    gap: var(--space-stack, 16px);
+    margin: 0 0 var(--space-stack, 16px);
+    align-items: start;
+  }
+  .practice-pair > .file-sample,
+  .practice-pair > .practice-shot {
+    margin-bottom: 0;
+    min-width: 0;
+  }
+  .practice-pair > .practice-shot {
+    display: flex;
+    flex-direction: column;
+  }
+  .practice-pair > .practice-shot img {
+    flex: none;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    object-position: top left;
+  }
+  .practice-pair > .practice-shot .file-sample {
+    flex: none;
+    margin: 0;
+    overflow: hidden;
+  }
+  .practice-pair > .practice-shot .file-sample pre {
+    box-sizing: border-box;
+    margin: 0;
+    min-height: 0;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
   @media (max-width: 800px) {
     .practice-pair { grid-template-columns: 1fr; }
   }
-  #practices .track-compare + h4.fn-h4,
-  #practices .track-compare-note + h4.fn-h4 {
-    margin-top: 24px;
-  }
-  #practices .track-compare + h3.fn-h3,
-  #practices .track-compare-note + h3.fn-h3 {
-    padding-top: 16px;
-  }
   .track-compare {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin: 0 0 8px;
+    gap: var(--space-stack, 16px);
+    margin: 0 0 var(--space-stack, 16px);
     align-items: stretch;
   }
   @media (max-width: 800px) {
@@ -569,6 +689,19 @@
     padding: 0 0 10px;
     color: var(--color-text);
   }
+  .track-pane > figcaption .track-pane-url {
+    display: block;
+    margin-top: 2px;
+    font-size: 10px;
+    font-weight: 400;
+    line-height: 14px;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+  }
+  .track-pane > figcaption .track-pane-url:hover {
+    color: var(--color-primary);
+    text-decoration: underline;
+  }
   .track-pane-scroll {
     height: 480px;
     overflow: auto;
@@ -580,6 +713,12 @@
   .track-pane-scroll--shot {
     background: #0b0c0e;
   }
+  .track-pane-scroll--md {
+    background: #0b0c0e;
+    border-color: #0b0c0e;
+    color-scheme: dark;
+    scrollbar-color: #5c5c5c #0b0c0e;
+  }
   .track-pane-scroll--shot img {
     display: block;
     width: 100%;
@@ -589,18 +728,15 @@
   .track-md-source {
     margin: 0;
     padding: 16px 18px;
+    min-height: 100%;
+    box-sizing: border-box;
     font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
     font-size: var(--text-auxiliary);
     line-height: 20px;
-    color: var(--color-text);
+    color: #e8e8e8;
+    background: #0b0c0e;
     white-space: pre-wrap;
     word-break: break-word;
-  }
-  .track-compare-note {
-    margin: 0 0 8px;
-    font-size: var(--text-auxiliary);
-    line-height: 22px;
-    color: var(--color-text-secondary);
   }
 
 </style>
@@ -629,17 +765,14 @@
   <main class="main-content">
     <div class="page-header">
       <h1>双轨同源可消费</h1>
-      <p class="page-desc page-desc--split">
-        <span class="page-desc-line">Agent 打开人读 HTML 时，常因 CSR 空壳或复杂排版拿不到正文。为解决此问题，需遵循双轨同源的内容契约：机器轨（Markdown / 纯净正文）供 Agent 直读，HTML 轨供人类浏览，两边事实必须一致。</span>
-        <span class="page-desc-line">入口挂载详见 <a href="principles-machine-entry.html">Agent 入口显化</a>，本页仅界定机器侧的内容。</span>
-      </p>
     </div>
 
     <section class="section" id="mechanism">
-      <h2 id="mech-access">双轨消费的契约要求</h2>
+      <h2 id="mech-access">什么是双轨交付</h2>
+      <p class="page-lead">双轨交付：同一套事实，两份交付——<strong>人读 HTML</strong>，<strong>机器读 Markdown</strong>。</p>
       <figure class="af-figure">
         <table class="aj">
-          <caption>表1 双轨对照 · 人读与机器源</caption>
+          <caption>表1 双轨对照</caption>
           <colgroup>
             <col class="aj-rowhead" />
             <col />
@@ -648,16 +781,11 @@
           <thead>
             <tr>
               <th class="aj-corner" scope="col">对照项</th>
-              <th scope="col"><span class="aj-who">人读轨</span><span class="aj-stage-name">渲染 HTML</span></th>
-              <th class="aj-pri" scope="col"><span class="aj-who">机器轨</span><span class="aj-stage-name">平行机器源 Markdown</span></th>
+              <th scope="col"><span class="aj-who">人读</span><span class="aj-stage-name">渲染 HTML</span></th>
+              <th class="aj-pri" scope="col"><span class="aj-who">机器读</span><span class="aj-stage-name">纯净正文 / 静态镜像</span></th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <th class="aj-label" scope="row">形态</th>
-              <td>文档 / 产品页的渲染 HTML</td>
-              <td class="is-pri"><span class="aj-file">页级 / 块级 .md、纯净正文或静态镜像</span></td>
-            </tr>
             <tr>
               <th class="aj-label" scope="row">场景</th>
               <td>人类用户浏览、阅读文档与产品页</td>
@@ -665,122 +793,230 @@
             </tr>
             <tr>
               <th class="aj-label" scope="row">信息表现特点</th>
-              <td>信息常依赖视觉承载：卡片、图标、颜色分组，以及图片里的规格表（图锁规格）；同时，导航、分享按钮、推荐楼层等噪声，常与正文混排。</td>
-              <td class="is-pri">为提取而生：天然结构（标题、代码、表格）保留真实语义，强视觉内容（架构图、规格表）提供平行文本转写，两者共同确保所有信息可被机器完整读取；同时剔除导航与营销噪声，内容随首包直接输出，免去渲染等待。</td>
+              <td>
+                <ul>
+                  <li><strong>重要信息靠视觉承载</strong>通过卡片、图标、颜色及图片表格呈现，便于人眼快速扫读和理解。</li>
+                  <li><strong>导航与正文同页</strong>导航、分享、推荐楼层与正文混排，方便跳转和继续浏览。</li>
+                </ul>
+              </td>
+              <td class="is-pri">
+                <ul>
+                  <li><strong>文字是核心载体</strong>标题、代码、表格体现真实语义；架构图、规格表的关键要点以纯文本形式写入正文，不依赖视觉排版。</li>
+                  <li><strong>首包直出</strong>文件只含正文，剔除了导航与营销楼层；获取文件即可读取，无需等待页面渲染。</li>
+                </ul>
+              </td>
             </tr>
             <tr>
               <th class="aj-label" scope="row">解决的问题</th>
-              <td>提升人类的认知效率与产品体验：让用户一眼抓住关键信息，建立对内容或产品的信任，并顺畅走完转化路径。</td>
-              <td class="is-pri">解决 Agent 打开 HTML 拿不到正文、只能退回搜索摘要的问题。保障内容可入库、可引用、可复核，不因排版或渲染方式而丢失事实。</td>
-            </tr>
-            <tr>
-              <th class="aj-label" scope="row">契约要求</th>
-              <td colspan="2" class="aj-merge"><span class="aj-merge-kicker">两列共同 · 同源同文</span>人读页与机器源必须是同一套事实，随发布同步更新；机器源须可直接取到正文。</td>
+              <td>提升人类认知效率与产品体验：让用户一眼抓住关键信息，建立对内容或产品的信任，并顺畅走完转化路径。</td>
+              <td class="is-pri">解决 Agent 打开 HTML 时无法提取结构完整、可验证正文的问题。保障内容可入库、可引用、可复核，不因排版或渲染方式而丢失事实。</td>
             </tr>
           </tbody>
         </table>
       </figure>
     </section>
 
+    <section class="section" id="problem">
+      <h2>解决什么问题</h2>
+      <p class="page-lead">Agent 打开人读 HTML 时，常因 CSR 空壳或复杂排版无法提取结构完整的事实正文，只能拿到碎片化、不可验证的片段。人读页可保留视觉设计，但机器侧需提供一份可直取、且与人读同源的事实正文。</p>
+    </section>
+
     <section class="section" id="core-principles">
       <h2>核心原则</h2>
       <ul class="bg-list">
-        <li><strong>同源同文</strong>人读页与机器轨基于同一套事实，随发布同步更新；不按 User-Agent 身份（UA）切换内容。</li>
-        <li><strong>先判可抓性</strong>HTML 首包已含可解析正文或语义化表格时，平行 Markdown 作为增强项；若人读页为 CSR 空壳，机器轨为必做项。</li>
-        <li><strong>选型与入口分工</strong>整页事实对应页级 Markdown；单块架构图 / 规格表对应块级 Markdown；需绕开鉴权时，提供免鉴权的静态镜像。入口挂载方式见 <a href="principles-machine-entry.html">Agent 入口显化</a>。</li>
-        <li><strong>声明对齐</strong>页内地址、<code>llms-content</code> 与 <code>llms.txt</code> 条目，均与真实文件同管道生成，避免出现「跟声明走却 404」（GPT 实测见 <a href="principles-machine-entry-verify.html#panel-gpt">七模型详情 · GPT</a>）。</li>
-        <li><strong>可直取</strong>机器源支持 HTTP GET 直接获取正文；仓库页、登录墙及需 Referer 的网关，不计入已获取机器轨。</li>
+        <li><strong>同源同文</strong>人读页与机器基于同一套事实，随发布同步更新。HTML 首包已含可解析正文时，平行 Markdown 作为增强项；<strong>人读页为 CSR 空壳时，须提供机器可读正文</strong>。</li>
+        <li><strong>机器可直取</strong>取事实以机器为准。打开即可读到正文，不依赖人读页渲染，也不设登录或浏览器门槛。</li>
       </ul>
     </section>
 
     <section class="section" id="practices">
-      <h2>典型做法</h2>
+      <h2>双轨交付示例</h2>
 
-      <h3 class="fn-h3">内容上 · 机器轨写什么</h3>
-      <div class="track-compare" role="group" aria-label="人读 HTML 与建议 Markdown 对照">
+      <div class="track-compare" role="group" aria-label="人读 HTML 与平行 Markdown 对照">
         <figure class="track-pane">
-          <figcaption>HTML 示例 · hiascend.com/developer.html</figcaption>
+          <figcaption>人读轨渲染 HTML<a class="track-pane-url" href="https://www.mintlify.com/docs/editor" target="_blank" rel="noopener">mintlify.com/docs/editor</a></figcaption>
           <div class="track-pane-scroll track-pane-scroll--shot">
-            <img src="assets/cases-ascend/developer.png?v=1" alt="昇腾开发者中心人读页截图" loading="lazy" />
+            <img src="assets/cases-html/docs-editor.png?v=2" alt="mintlify.com/docs/editor 人读页截图" loading="lazy" />
           </div>
         </figure>
         <figure class="track-pane">
-          <figcaption>Markdown 示例 · hiascend.com/developer.md</figcaption>
-          <div class="track-pane-scroll">
-            <pre class="track-md-source">&gt; ## 建议稿（非线上实文件）
-&gt; 本文件为 Ascend 社区可引用性对照用的拟定 Markdown，供改造参考。
-
-# 昇腾开发者中心
-
-&gt; 开发者入口：技术热点、开发资源、学习成长、互动交流与开发者计划。
-
-## 了解技术热点
-
-- 昇腾技术动态与社区精选内容入口（以站内「技术热点」栏目为准）
-
-## 获取开发资源
-
-- 文档与开发指南入口
-- 软件包 / SDK / 工具链入口（详见下载中心）
-- 样例与教程入口
-
-## 开启学习成长
-
-- 入门到进阶学习路径
-- 课程 / 实训 / 认证相关入口
-
-## 参与互动交流
-
-- 论坛 / 活动 / 开发者交流入口
-
-## 加入开发者计划
-
-- 开发者计划说明与报名入口
-
-## 支持与帮助
-
-- 常见问题与支持渠道
-
-## 相关链接
-
-- 开发者首页：https://www.hiascend.com/developer
-- 资源下载中心：https://www.hiascend.com/developer/download</pre>
+          <figcaption>机器轨纯净正文<a class="track-pane-url" href="https://www.mintlify.com/docs/editor.md" target="_blank" rel="noopener">mintlify.com/docs/editor.md</a></figcaption>
+          <div class="track-pane-scroll track-pane-scroll--md">
+            <pre class="track-md-source" id="format-md-source">加载中…</pre>
           </div>
         </figure>
       </div>
-      <p class="track-compare-note">说明：以开发者入口壳页为例——左为人读截图，右为目录型机器轨拟定稿。完整对照见 <a href="citability-ascend.html">可引用性 · Ascend</a>。</p>
-      <h4 class="fn-h4">执行要点</h4>
-      <ul class="bg-list">
-        <li><strong>收录范围</strong>热点、资源、学习、互动等分区目录可进入机器轨；指向文档与下载的链接予以保留。</li>
-        <li><strong>排除范围</strong>大视觉、活动海报、转化 CTA 仅用于人类浏览，不进入机器轨。</li>
-        <li><strong>可免平行文件</strong>首包 HTML 已含可解析正文时，可省略平行 MD；可免的是第二份文件，不是可读事实本身。</li>
-      </ul>
 
-      <h3 class="fn-h3">管道上 · 双轨怎么对齐</h3>
-      <h4 class="fn-h4">最小合格示例</h4>
+      <h2>Markdown 交付件拆解</h2>
+      <p class="file-sample-note">机器轨只写事实正文，对照 Mintlify <code>editor.md</code>：不写导航和营销楼层，与人读页同一套事实。</p>
+
+      <h3 class="fn-h3">页顶索引</h3>
       <figure class="file-sample">
-        <figcaption><code>*.md</code> 文首 frontmatter（由构建生成）</figcaption>
-        <pre><code class="language-yaml">---
-source_url: /doc_center/source/…/operator_dev.md
-render_url: /document/detail/…/operator_dev.html
----
-# 禁止手改一侧；HTML 与 MD 同一次导出</code></pre>
+        <figcaption><code>https://www.mintlify.com/docs/editor.md</code></figcaption>
+        <pre><code>&gt; ## Documentation Index
+&gt; Fetch the complete documentation index at: https://www.mintlify.com/docs/llms.txt
+&gt; Use this file to discover all available pages before exploring further.</code></pre>
       </figure>
-      <h4 class="fn-h4">执行要点</h4>
-      <ul class="bg-list">
-        <li><strong>写在 MD 文首</strong>在机器轨 <code>*.md</code> 正文标题之上写入 YAML frontmatter，用 <code>source_url</code> / <code>render_url</code> 绑定同源 HTML；由构建生成，禁止手改一侧。</li>
-        <li><strong>同一来源导出</strong>改人读正文必须同步机器轨；构建对比事实正文，不一致则阻断发布。</li>
-        <li><strong>命名对齐</strong>页内 <code>llms-content</code>、发现层条目与磁盘文件名一致。</li>
-        <li><strong>机器轨只写事实</strong>导航、分享、营销楼层不进 Markdown / 纯净正文。</li>
-      </ul>
+      <p class="file-sample-note"><code>## Documentation Index</code> 指向「文档目录」这一导引区块。完整清单见下一行：<code>https://www.mintlify.com/docs/llms.txt</code>。先浏览全站有哪些页面，再继续阅读本篇。</p>
+
+      <h3 class="fn-h3">标题与导语</h3>
+      <div class="practice-pair">
+        <figure class="practice-shot">
+          <figcaption>HTML</figcaption>
+          <img src="assets/cases-html/docs-editor-hero.png?v=2" alt="mintlify.com/docs/editor 人读页：Editor overview 标题、导语与教程卡">
+        </figure>
+        <figure class="practice-shot">
+          <figcaption>Markdown</figcaption>
+          <div class="file-sample">
+            <pre><code># Editor overview
+
+&gt; Create, edit, and publish content in your browser with the Mintlify editor. Supports real-time collaboration and continuous Git sync.
+
+&lt;Card title="New to the editor? Start with the tutorial." icon="graduation-cap" horizontal href="/docs/editor/tutorial"&gt;
+  Create a branch, make a change, share a preview, and publish.
+&lt;/Card&gt;</code></pre>
+          </div>
+        </figure>
+      </div>
+      <p class="file-sample-note">对照左侧人读页：<code># Editor overview</code> 是页面主标题，两轨使用同一句文案，不为机器另起名字。标题下的引用块对应导语段落。下方的 <code>&lt;Card&gt;</code> 代表「开始教程」入口：人读页是带毕业帽图标的卡片，机器轨则直接写出卡片标题、跳转地址 <code>href</code> 以及卡片内说明。这样，Agent 无需读取图标，也能识别出教程入口及其学习内容。</p>
+
+      <h3 class="fn-h3">章节正文</h3>
+      <div class="practice-pair">
+        <figure class="practice-shot">
+          <figcaption>HTML</figcaption>
+          <img src="assets/cases-html/docs-editor-how.png?v=4" alt="mintlify.com/docs/editor 人读页：How the editor works 章节与提示框">
+        </figure>
+        <figure class="practice-shot">
+          <figcaption>Markdown</figcaption>
+          <div class="file-sample">
+            <pre><code>## How the editor works
+
+**Changes save automatically, but saving is separate from publishing.** As you type, the editor stores your work. Your changes persist across tabs, devices, and network interruptions. For any changes to reach your live site, you must [publish](/docs/editor/branching-and-publishing) them.
+
+**Publishing writes to Git.** When you publish, the editor commits your changes to your repository. If you publish to your deployment branch, this updates your live site immediately. On a feature branch, you can save changes to the branch or open a pull request for review. Nothing on a feature branch reaches your live site until it merges into your deployment branch.
+
+**Git stays in sync.** When someone pushes to your repository, those changes appear automatically. You don't need to pull or refresh. The editor merges non-conflicting changes and flags anything that needs your attention.
+
+**Your team edits together.** Multiple people can edit the same page at once, with live cursors showing who is working where. Comments and suggestions are visible to everyone.
+
+&lt;Tip&gt;
+  If the editor ever appears out of sync with your repository, use [Reset editor](/docs/editor/settings#reset-editor) to force a resync.
+&lt;/Tip&gt;</code></pre>
+          </div>
+        </figure>
+      </div>
+      <p class="file-sample-note">对照左侧人读页：<code>## How the editor works</code> 对应章节标题。四条要点都用加粗句起头，后面跟完整说明，和人读段落一一对应。绿色提示框写成 <code>&lt;Tip&gt;</code>，框内的 Reset editor 仍是可跟链接，不藏在展开或悬停里。</p>
+
+      <h3 class="fn-h3">图意转写</h3>
+      <div class="practice-pair">
+        <figure class="practice-shot">
+          <figcaption>HTML</figcaption>
+          <img src="assets/cases-html/docs-editor-layout.png?v=3" alt="mintlify.com/docs/editor 人读页：Editor layout 配图与要点列表">
+        </figure>
+        <figure class="practice-shot">
+          <figcaption>Markdown</figcaption>
+          <div class="file-sample">
+            <pre><code>## Editor layout
+
+&lt;Frame&gt;
+  &lt;img src="https://mintcdn.com/…/editor-layout-light.png" alt="Screenshot of the editor showing Home and Publishing tabs, the navigation tree, Ask agent, branch selector, preview, and Publish." /&gt;
+&lt;/Frame&gt;
+
+* **Top bar**: Use the top bar to control what branch you work on, access the agent, preview, and publish changes.
+* **Sidebar**: Use the sidebar to select pages to edit, create new pages, and manage your site structure.
+    * **Home**: The file tree for your project. Pages in **Personal** are private to you. Pages in **Workspace** are public to your organization.
+    * **Publishing**: The navigation structure for your site. Organize pages as you want them to appear in your site.</code></pre>
+          </div>
+        </figure>
+      </div>
+      <p class="file-sample-note"><code>## Editor layout</code> 为章节标题。机器轨保留布局图可抓取地址，alt 写出图中要素；下方列表用句子说明 Top bar、Sidebar、Home、Publishing 的功能。Agent 无需读图即可理解分区。</p>
+
+      <h3 class="fn-h3">相关链接</h3>
+      <div class="practice-pair">
+        <figure class="practice-shot">
+          <figcaption>HTML</figcaption>
+          <img src="assets/cases-html/docs-editor-related.png?v=2" alt="mintlify.com/docs/editor 人读页 Related topics：Editor overview、Glossary、术语表">
+        </figure>
+        <figure class="practice-shot">
+          <figcaption>Markdown</figcaption>
+          <div class="file-sample">
+            <pre><code>## Related topics
+
+- [Editor overview](/docs/editor/index.md)
+- [Glossary](/docs/reference/glossary.md)
+- [术语表](/docs/zh/reference/glossary.md)</code></pre>
+          </div>
+        </figure>
+      </div>
+      <p class="file-sample-note">Related topics 三条链接在机器轨中以 <code>## Related topics</code> 呈现，href 指向对应 <code>.md</code>（Editor overview、Glossary、术语表）；文案与人读页一致，图标不作语义载体。</p>
+    </section>
+
+    <section class="section" id="find-md">
+      <h2>Agent 如何找到机器轨</h2>
+      <h3 class="fn-h3">方式一：从 llms.txt 发现</h3>
+      <p class="file-sample-note">Agent 尚未落到单页时，会先打开站级 <code>llms.txt</code>，按清单逐一获取各页 Markdown。清单中需写明对应 <code>.md</code> 的地址。</p>
+      <figure class="file-sample file-sample--wrap">
+        <figcaption><code>https://www.mintlify.com/docs/llms.txt</code></figcaption>
+        <pre><code># Mintlify
+
+<span class="code-line-hl">- [Documentation (181 pages)](https://www.mintlify.com/docs/_llms/en/documentation.md): Documentation for Documentation.</span>
+
+## API reference</code></pre>
+      </figure>
+      <p class="file-sample-note">若清单指向分册而不是单页，再打开分册，按其中条目获取各页 Markdown。下面这一条对应 Editor overview。</p>
+      <figure class="file-sample file-sample--wrap">
+        <figcaption><code>https://www.mintlify.com/docs/_llms/en/documentation.md</code></figcaption>
+        <pre><code>#### Editor
+
+<span class="code-line-hl">- [Editor overview](https://www.mintlify.com/docs/editor/index.md): Create, edit, and publish content in your browser with the Mintlify editor. Supports real-time collaboration and continuous Git sync.</span>
+- [How to use the editor](https://www.mintlify.com/docs/editor/tutorial.md): Step-by-step walkthrough of the Mintlify editor: create a branch, edit pages, share a preview deployment for review, and publish your changes.</code></pre>
+      </figure>
+
+      <h3 class="fn-h3">方式二：试路径</h3>
+      <p class="file-sample-note">Agent 已经拿到人读 HTML 的地址时，会在同一路径后面加上 <code>.md</code> 去试。这是站点私有的路径约定，Mintlify 即此做法：两份地址只差一个后缀。</p>
+      <figure class="af-figure">
+        <table class="aj">
+          <caption>表2 同一路径试探</caption>
+          <thead>
+            <tr>
+              <th class="aj-corner" scope="col">来源</th>
+              <th scope="col">地址</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th class="aj-label" scope="row">人读 HTML</th>
+              <td><a href="https://www.mintlify.com/docs/editor" target="_blank" rel="noopener">https://www.mintlify.com/docs/editor</a></td>
+            </tr>
+            <tr>
+              <th class="aj-label" scope="row">机器 Markdown</th>
+              <td><a href="https://www.mintlify.com/docs/editor.md" target="_blank" rel="noopener">https://www.mintlify.com/docs/editor.md</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </figure>
+
+      <h3 class="fn-h3">方式三：读 HTML 源码</h3>
+      <p class="file-sample-note">Agent 也会读人读页的 HTML 源码。建议在 <code>&lt;head&gt;</code> 里声明平行 Markdown，让源码里就能跟到，不必只靠猜后缀。</p>
+      <figure class="file-sample">
+        <figcaption><code>https://www.mintlify.com/docs/editor</code></figcaption>
+        <pre><code>&lt;head&gt;
+  &lt;link rel="canonical" href="https://www.mintlify.com/docs/editor"&gt;
+  &lt;link rel="alternate" type="text/markdown" href="https://www.mintlify.com/docs/editor.md"&gt;
+&lt;/head&gt;</code></pre>
+      </figure>
+      <p class="file-sample-note"><code>canonical</code> 确认本页人读地址；<code>rel="alternate"</code> 标出平行 Markdown。这是源码声明，不能替代下面的页内真链。</p>
+
+      <h3 class="fn-h3">方式四：跟页内入口</h3>
+      <p class="file-sample-note">HTML 正文中提供「打开 Markdown」入口，指向本页平行稿。此为内容层兜底，细则见<a href="principles-page-md.html">页级 Markdown</a>。<code>rel="alternate"</code> 可并存，不单独作入口。</p>
     </section>
 
     <section class="section" id="benefits">
       <h2>价值收益</h2>
       <ul class="bg-list">
-        <li><strong>人读体验与机器可读兼得</strong>人读页面可以继续用 CSR 或复杂的视觉设计，但不管怎么排，Agent 都能直接 GET 到一份干净的事实正文。</li>
-        <li><strong>跨模型引用可对齐、可复核</strong>两边内容同源，就算有的模型走摘要、有的模型抓正文，引用的都是同一套事实，对得上也查得到。</li>
-        <li><strong>入库更干净</strong>机器轨只收可核对事实，不进运营大视觉与转化 CTA，问答少被海报和营销楼层带偏。</li>
+        <li><strong>人读与机器兼得</strong>人读页可以继续做视觉设计；机器仍能打开一份干净正文，不等人读页渲染。</li>
+        <li><strong>引用对得上</strong>两边同一套事实。模型无论走摘要还是抓正文，引用都能对上、也能回查。</li>
+        <li><strong>入库更干净</strong>只收可核对的事实正文，导航、海报和转化楼层不进问答。</li>
       </ul>
     </section>
   </main>
@@ -789,5 +1025,64 @@ render_url: /document/detail/…/operator_dev.html
 <script src="assets/js/site-config.js"></script>
 <script src="assets/js/site-init.js"></script>
 <script src="assets/js/module-sidebar.js"></script>
+<script>
+(function () {
+  var el = document.getElementById("format-md-source");
+  if (el) {
+    fetch("assets/cases/docs-editor.md")
+      .then(function (r) { return r.ok ? r.text() : Promise.reject(); })
+      .then(function (t) { el.textContent = t; })
+      .catch(function () { el.textContent = "无法加载 Markdown 示例。"; });
+  }
+
+  var mq = window.matchMedia("(max-width: 800px)");
+  function syncPracticePairHeights() {
+    document.querySelectorAll("#practices .practice-pair").forEach(function (pair) {
+      var shots = pair.querySelectorAll(":scope > .practice-shot");
+      if (shots.length < 2) return;
+      var img = shots[0].querySelector("img");
+      var sample = shots[1].querySelector(".file-sample");
+      var pre = sample && sample.querySelector("pre");
+      if (!img || !sample || !pre) return;
+      if (mq.matches) {
+        sample.style.height = "";
+        pre.style.height = "";
+        pre.style.maxHeight = "";
+        return;
+      }
+      var h = img.offsetHeight;
+      if (h < 1) return;
+      sample.style.height = h + "px";
+      pre.style.minHeight = "0";
+      pre.style.height = h + "px";
+      pre.style.maxHeight = h + "px";
+    });
+  }
+  function watchPracticePairs() {
+    var imgs = document.querySelectorAll("#practices .practice-pair > .practice-shot:first-child img");
+    imgs.forEach(function (img) {
+      if (!img.complete) img.addEventListener("load", syncPracticePairHeights);
+    });
+    if (typeof ResizeObserver !== "undefined") {
+      var ro = new ResizeObserver(function () {
+        requestAnimationFrame(syncPracticePairHeights);
+      });
+      imgs.forEach(function (img) { ro.observe(img); });
+    }
+    window.addEventListener("resize", syncPracticePairHeights);
+    if (mq.addEventListener) mq.addEventListener("change", syncPracticePairHeights);
+    else mq.addListener(syncPracticePairHeights);
+    requestAnimationFrame(syncPracticePairHeights);
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(syncPracticePairHeights);
+    }
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", watchPracticePairs);
+  } else {
+    watchPracticePairs();
+  }
+})();
+</script>
 </body>
 </html>

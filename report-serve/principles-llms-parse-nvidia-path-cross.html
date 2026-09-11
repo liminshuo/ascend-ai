@@ -1,0 +1,2878 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>路径分析 · 安装与编程模型 · 实测记录 · 昇腾社区 AI 亲和原则</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid var(--color-border);
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: 100%; max-width: none; margin: 0; padding: 0 24px; box-sizing: border-box;
+    height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: var(--color-text); text-decoration: none; white-space: nowrap; margin-right: 40px;
+  }
+  .topbar .brand span { color: var(--color-primary); }
+  .topbar .site-nav { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; flex-wrap: wrap; }
+  .topbar .site-nav > a {
+    text-decoration: none; color: var(--color-text-secondary); font-size: var(--text-body); font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .topbar .site-nav > a:hover { color: var(--color-primary); background: var(--color-bg); text-decoration: none; }
+  .topbar .site-nav > a.active { color: var(--color-primary); background: var(--color-bg); font-weight: 600; }
+  .nav-dd { position: relative; z-index: 210; display: inline-flex; align-items: center; }
+  .nav-dd-trigger {
+    appearance: none; border: 0; background: transparent; cursor: pointer; font: inherit;
+    text-decoration: none; color: var(--color-text-secondary); font-size: var(--text-body); font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+    display: inline-flex; align-items: center; gap: 12px;
+  }
+  .nav-dd-trigger::after {
+    content: ""; width: 6px; height: 6px;
+    border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg); opacity: .65; margin-top: -3px; flex-shrink: 0;
+  }
+  .nav-dd-trigger:hover, .nav-dd:hover .nav-dd-trigger, .nav-dd:focus-within .nav-dd-trigger {
+    color: var(--color-primary); background: var(--color-bg);
+  }
+  .nav-dd::before { content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 10px; }
+  .nav-dd-panel {
+    position: absolute; top: calc(100% + 4px); left: 0; min-width: 148px; padding: 6px;
+    background: #fff; border: 1px solid var(--color-border); border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(25, 25, 25, 0.08);
+    opacity: 0; visibility: hidden; transform: translateY(-4px);
+    transition: opacity .15s, transform .15s, visibility .15s; z-index: 210;
+  }
+  .nav-dd:hover .nav-dd-panel, .nav-dd:focus-within .nav-dd-panel {
+    opacity: 1; visibility: visible; transform: translateY(0);
+  }
+  .nav-dd-panel a {
+    display: block; padding: 8px 12px; border-radius: 6px; text-decoration: none;
+    color: var(--color-text-secondary); font-size: 13px; font-weight: 500; line-height: 1.4;
+  }
+  .nav-dd-panel a:hover { color: var(--color-primary); background: var(--color-bg); }
+  body.inner-page .page-wrapper { min-height: 100vh; }
+
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: var(--space-stack, 16px);
+  }
+  .page-header > h1 {
+    font-family: var(--font);
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1-weight, 600);
+    line-height: var(--text-h1-lh);
+    letter-spacing: -0.02em;
+    margin: 0;
+    padding-top: var(--space-h1-pad-y, 32px);
+    padding-bottom: var(--space-h1-pad-y, 32px);
+    color: var(--color-text);
+  }
+  .page-header .page-desc {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  body.inner-page[data-page="llms-parse-nvidia-path-cross"]:has(#module-sidebar) .main-content {
+    padding-top: var(--content-main-pad-top, 16px);
+    padding-left: 0;
+    padding-right: 0;
+  }
+  body.inner-page[data-page="llms-parse-nvidia-path-cross"]:has(#module-sidebar) .main-content > .page-header,
+  body.inner-page[data-page="llms-parse-nvidia-path-cross"]:has(#module-sidebar) .main-content > .section,
+  body.inner-page[data-page="llms-parse-nvidia-path-cross"]:has(#module-sidebar) .main-content > .surface-tabs {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page[data-page="llms-parse-nvidia-path-cross"] .main-content .section > h2 {
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    letter-spacing: -0.01em;
+    margin-top: 0;
+    margin-bottom: var(--space-stack, 16px);
+    padding-top: var(--space-h2-pad-y, 16px);
+    padding-bottom: var(--space-h2-pad-y, 16px);
+    border-bottom: 2px solid var(--color-card-border);
+    color: var(--color-text, var(--color-text));
+  }
+  body.inner-page[data-page="llms-parse-nvidia-path-cross"] .main-content > .section {
+    margin-bottom: var(--space-stack, 16px);
+  }
+  body.inner-page[data-page="llms-parse-nvidia-path-cross"] .main-content .section > p {
+    margin: 0;
+  }
+  body.inner-page[data-page="llms-parse-nvidia-path-cross"] .main-content .section h3 { height: auto; }
+  h3.fn-h3 {
+    margin: 0 0 var(--space-stack, 16px);
+    padding-top: var(--space-h3-pad-y, 16px);
+    padding-bottom: var(--space-h3-pad-y, 16px);
+    font-size: var(--text-h3, 18px);
+    line-height: var(--text-h3-lh, 28px);
+    font-weight: var(--text-h3-weight, 650);
+    color: var(--color-text, var(--color-text));
+    letter-spacing: -0.01em;
+  }
+  body.inner-page[data-page="llms-parse-nvidia-path-cross"] .main-content .section h4 { height: auto; }
+  h4.fn-h4 {
+    margin: 0 0 var(--space-stack, 16px);
+    padding-top: var(--space-h4-pad-y, 16px);
+    padding-bottom: var(--space-h4-pad-y, 16px);
+    font-size: var(--text-h4, 14px);
+    line-height: var(--text-h4-lh, 22px);
+    font-weight: var(--text-h4-weight, 650);
+    color: var(--color-text, var(--color-text));
+    letter-spacing: -0.01em;
+  }
+  h3.fn-h3 + .principle-example > h4.fn-h4,
+  h3.fn-h3 + h4.fn-h4 { margin-top: 0; }
+  #practices .file-lead {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: 22px;
+    color: var(--color-text-secondary);
+  }
+  #practices .file-lead + h4.fn-h4,
+  #practices .file-sample + h4.fn-h4,
+  #practices .file-sample-note + h4.fn-h4,
+  #practices h2 + h4.fn-h4 {
+    margin-top: var(--space-stack, 16px);
+  }
+  #practices .bg-list + h2,
+  #practices .file-sample + h2 {
+    margin-top: var(--space-stack, 16px);
+  }
+  #practices .file-lead + .file-sample {
+    margin-top: var(--space-stack, 16px);
+  }
+  .practice-block {
+    margin: 0;
+    padding: 0;
+    border: none;
+  }
+  .practice-block + .practice-block {
+    margin-top: var(--space-stack, 16px);
+  }
+
+  body.inner-page[data-page="llms-parse-nvidia-path-cross"] .main-content .section > p.flow-verify {
+    margin: var(--space-stack, 16px) 0 0;
+    font-size: var(--text-body);
+    line-height: 22px;
+  }
+  .flow-verify a {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 650;
+  }
+  .flow-verify a:hover {
+    text-decoration: underline;
+  }
+  body.inner-page[data-page="llms-parse-nvidia-path-cross"] .main-content > .section:first-of-type > h2 {
+    margin-top: 0;
+  }
+  .bg-body {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: 22px;
+    color: var(--color-text, var(--color-text));
+  }
+  .bg-body:last-child { margin-bottom: 0; }
+  .bg-list {
+    margin: 0;
+    padding-left: 1.25em;
+    font-size: var(--text-body);
+    line-height: 22px;
+    color: var(--color-text, var(--color-text));
+  }
+  .bg-list li + li { margin-top: 6px; }
+  #principles .bg-list,
+  #practices .bg-list,
+  #benefits .bg-list {
+    list-style: disc;
+    padding-left: 1.25em;
+    margin: 0;
+  }
+  #principles .bg-list li + li,
+  #practices .bg-list li + li,
+  #benefits .bg-list li + li { margin-top: 16px; }
+  #principles .bg-list li strong,
+  #practices .bg-list li strong,
+  #benefits .bg-list li strong {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  /* 约定路径等短条目：题头与正文同一行 */
+  #practices .bg-list.-inline li strong {
+    display: inline;
+    margin-bottom: 0;
+  }
+  #practices .bg-list.-inline li strong::after {
+    content: "：";
+  }
+  #principles .bg-list li,
+  #practices .bg-list li,
+  #benefits .bg-list li {
+    color: var(--color-text-secondary);
+  }
+  .file-sample {
+    margin: 0;
+    padding: 0;
+    background: #1e1e1e;
+    border: 1px solid #111;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .file-sample figcaption {
+    margin: 0;
+    padding: 10px 14px;
+    font-size: var(--text-auxiliary);
+    font-weight: 650;
+    line-height: 22px;
+    color: #a3a3a3;
+    border-bottom: 1px solid #333;
+  }
+  .file-sample figcaption code {
+    font-size: inherit;
+    color: #e8e8e8;
+    background: none;
+  }
+  .file-sample pre {
+    margin: 0;
+    padding: 12px 14px 14px;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: var(--text-auxiliary);
+    line-height: 20px;
+    color: #e8e8e8;
+    background: transparent;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    overflow-x: hidden;
+  }
+  .file-sample pre code {
+    display: block;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    color: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    font-family: inherit;
+    white-space: inherit;
+  }
+  .file-sample .cmt { color: #737373; }
+  .file-sample-note {
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: 13px;
+    line-height: 22px;
+    color: #8c8c8c;
+  }
+  h3.fn-h3 + .file-sample { margin-top: 0; }
+  .file-sample + .bg-list,
+  .file-sample-note + .bg-list { margin-top: 0; }
+  .af-figure {
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: none;
+    overflow-x: auto;
+    border-radius: 8px;
+  }
+
+  .aj {
+    width: 100%;
+    min-width: 880px;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+    color: var(--color-text);
+  }
+  .aj caption {
+    caption-side: top;
+    text-align: left;
+    font-size: var(--text-body);
+    font-weight: 650;
+    line-height: var(--text-body-lh);
+    padding: 0 0 10px;
+    color: var(--color-text);
+  }
+  .aj .aj-col-mute { width: 76px; }
+  .aj td.is-mute {
+    color: #8c8c8c;
+  }
+  .aj th,
+  .aj td {
+    border: 1px solid #e8eef5;
+    border-top: none;
+    border-left: none;
+    vertical-align: top;
+    padding: 12px 12px;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+  }
+  .aj thead tr:first-child > th {
+    border-top: 1px solid #e8eef5;
+  }
+  .aj .aj-corner,
+  .aj .aj-label {
+    width: 92px;
+    background: #f5f6f8;
+    color: var(--color-text-secondary);
+    font-weight: 650;
+    vertical-align: middle;
+    text-align: left;
+    padding: 12px 12px;
+    border-left: 1px solid #e8eef5;
+  }
+  .aj thead th.aj-corner {
+    background: #f5f6f8;
+    color: var(--color-text-secondary);
+    padding: 12px 12px;
+    border-top-left-radius: 8px;
+  }
+  .aj thead tr.aj-group > th:last-child {
+    border-top-right-radius: 8px;
+  }
+  .aj tbody tr:last-child .aj-label {
+    border-bottom-left-radius: 8px;
+  }
+  .aj tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 8px;
+  }
+  .aj thead th {
+    background: #f5f6f8;
+    font-weight: 650;
+    text-align: left;
+    padding: 12px 12px;
+    color: var(--color-text);
+  }
+  .aj thead th.aj-group {
+    text-align: center;
+    vertical-align: middle;
+    font-weight: 650;
+    letter-spacing: 0;
+    background: #eceef1;
+    color: var(--color-text);
+    padding: 10px 12px;
+  }
+  .aj thead th.aj-span {
+    vertical-align: middle;
+  }
+  .aj thead .aj-stage-name {
+    display: block;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  .aj thead .aj-corner .aj-stage-name {
+    color: inherit;
+    margin-bottom: 2px;
+  }
+  .aj thead .aj-mute {
+    background: #f5f6f8;
+    color: var(--color-text-secondary);
+  }
+  .aj thead .aj-mute .aj-stage-name { color: var(--color-text-secondary); }
+  .aj thead .aj-pri,
+  .aj thead .aj-opt {
+    background: #f5f6f8;
+  }
+  .aj thead .aj-fb {
+    background: #f3f3f3;
+  }
+  .aj .aj-tag {
+    display: block;
+    width: fit-content;
+    margin: 0;
+    padding: 0 6px;
+    border-radius: 3px;
+    font-size: var(--text-micro);
+    font-weight: 700;
+    line-height: 18px;
+    color: var(--color-primary);
+  }
+  .aj-tag--must { background: rgba(20, 118, 255, .18); }
+  .aj-tag--pri  { background: rgba(20, 118, 255, .12); }
+  .aj-tag--opt  { background: rgba(20, 118, 255, .08); }
+  .aj-tag--fb   { background: rgba(20, 118, 255, .04); color: #3d7fd4; }
+  .aj tbody td:not(.is-mute):not(.is-fb):not(.is-pri):not(.aj-label) {
+    background: #fff;
+  }
+  .aj td.is-pri { background: #f7fbff; }
+  .aj td.is-fb { background: var(--color-card-bg); }
+  .aj td.is-mute { background: #f5f6f8 !important; color: #8c8c8c; }
+  .aj td .aj-subhead {
+    display: block;
+    font-weight: 650;
+    color: var(--color-text);
+    margin: 0 0 6px;
+  }
+  .aj-stack + .aj-stack { margin-top: 12px; }
+  .aj .aj-file {
+    display: block;
+    margin: 0 0 6px;
+    font-family: var(--font-mono, "SF Mono", monospace);
+    font-weight: 650;
+    color: var(--color-primary);
+  }
+  .aj ul {
+    margin: 0;
+    padding-left: 1.1em;
+  }
+  .aj li {
+    color: inherit;
+    margin-bottom: 0;
+  }
+  .aj li + li { margin-top: 8px; }
+  .aj code {
+    font-size: inherit;
+    line-height: inherit;
+  }
+
+  #scenarios .scene-def-table td .badge { border: none; }
+  .scene-def-table td .badge-optional {
+    background: var(--color-bg);
+    color: var(--color-text-secondary);
+  }
+  .scene-def-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--text-body);
+    line-height: 22px;
+    margin: 0 0 24px;
+    table-layout: fixed;
+  }
+  .scene-def-table th,
+  .scene-def-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: middle;
+    font-size: var(--text-body);
+    line-height: 22px;
+    font-weight: 400;
+  }
+  .scene-def-table tbody td {
+    height: auto;
+    min-height: 48px;
+  }
+  .scene-def-table th {
+    font-size: var(--text-auxiliary);
+    font-weight: 650;
+    color: var(--color-text-secondary);
+    background: var(--color-card-bg);
+    height: 40px;
+    box-sizing: border-box;
+  }
+  .scene-def-table .col-type { width: 18%; }
+  .scene-def-table .col-desc { width: 55%; }
+  .scene-def-table .col-place { width: 27%; }
+  #objects .scene-def-table .col-type,
+  #scenarios .scene-def-table .col-type { width: 22%; }
+  #objects .scene-def-table .col-desc { width: 78%; }
+  #scenarios .scene-def-table .col-place { width: 38%; }
+  #scenarios .scene-def-table .col-desc { width: 40%; }
+
+  .fn-ex-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr auto;
+    column-gap: 16px;
+    row-gap: 0;
+    align-items: stretch;
+    margin: 16px 0 0;
+  }
+  .fn-ex-row .fn-ex {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 1 / span 3;
+    margin: 0;
+    min-width: 0;
+  }
+  .fn-ex-row .fn-ex-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .fn-ex-row .fn-ex-head .fn-ex-label { margin: 0; }
+  .fn-ex-row .fn-ex-head .fn-ex-bar {
+    display: block; margin: 0; width: 100%; align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-body {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 2 / span 2;
+    min-height: 0;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .fn-ex-row .fn-ex-mock {
+    min-height: 0; height: 100%; box-sizing: border-box;
+    border: none; border-radius: 0; align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-mock:has(.site-foot) {
+    background: var(--color-bg);
+    padding: 12px;
+  }
+  .fn-ex-row .fn-ex-mock pre.st-code {
+    margin: 0;
+    padding: 14px 16px;
+    background: #1e1e1e;
+    border: 1px solid #111;
+    border-radius: 0;
+    font-size: var(--text-auxiliary);
+    line-height: 18px;
+    color: #e8e8e8;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow: auto;
+    box-sizing: border-box;
+    min-height: 100%;
+  }
+  .fn-ex-row .fn-ex-foot {
+    display: flex; flex-direction: column; gap: 8px;
+    padding: 12px 14px 14px; background: #fff;
+    border-top: 1px solid var(--color-border);
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-list { margin: 0; gap: 4px; }
+  .fn-ex-label {
+    display: inline-block; padding: 0 8px; border-radius: 4px;
+    font-size: var(--text-auxiliary); font-weight: 650; line-height: 20px;
+    color: #b42318; background: #fef3f2;
+  }
+  .fn-ex-label.is-good { color: #047857; background: #ecfdf5; }
+  .fn-ex-bar {
+    display: block; width: 100%; height: 3px;
+    background: #b42318; border-radius: 2px;
+  }
+  .fn-ex-bar.is-good { background: #047857; }
+  .fn-ex-list {
+    margin: 0; padding: 0 0 0 1.25em; list-style: disc;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .fn-ex-list li {
+    margin: 0; font-size: var(--text-body); line-height: 22px; color: var(--color-text);
+  }
+  .fn-ex-list strong { font-weight: 650; }
+  .site-foot {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 10px;
+    overflow: hidden;
+    font-family: var(--font);
+  }
+  .site-foot-body {
+    padding: 16px 14px 20px;
+    min-height: 52px;
+    background: linear-gradient(180deg, #fafbfc 0%, #fff 100%);
+  }
+  .site-foot-body p {
+    margin: 0;
+    font-size: var(--text-caption);
+    line-height: 16px;
+    color: #bfbfbf;
+  }
+  .site-foot-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 12px;
+    padding: 10px 14px;
+    border-top: 1px solid #eef1f5;
+    background: var(--color-card-bg);
+  }
+  .site-foot-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .site-foot-links a {
+    font-size: var(--text-caption);
+    line-height: 16px;
+    color: #8c8c8c;
+    text-decoration: none;
+  }
+  .site-foot-links a.is-machine {
+    color: var(--color-text-secondary);
+    font-variant-numeric: tabular-nums;
+  }
+  .site-foot-copy {
+    margin: 0;
+    font-size: var(--text-micro);
+    line-height: 14px;
+    color: #bfbfbf;
+  }
+  .principle-example + .principle-example { margin-top: var(--space-stack, 16px); }
+
+  #design-ui .principle-suggestions,
+  #content-adjust .principle-suggestions,
+  #frontend-adjust .principle-suggestions {
+    list-style: none;
+    margin: 0 0 32px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    counter-reset: sug;
+  }
+  #design-ui .principle-suggestions > li,
+  #content-adjust .principle-suggestions > li,
+  #frontend-adjust .principle-suggestions > li {
+    position: relative;
+    margin: 0;
+    padding: 0 0 0 36px;
+    color: var(--color-text-secondary);
+  }
+  #design-ui .principle-suggestions > li::before,
+  #content-adjust .principle-suggestions > li::before,
+  #frontend-adjust .principle-suggestions > li::before {
+    counter-increment: sug;
+    content: counter(sug);
+    position: absolute;
+    left: 0;
+    top: 2px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #eff6ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--text-auxiliary);
+    font-weight: 700;
+    line-height: 22px;
+    letter-spacing: 0.02em;
+    color: var(--color-primary);
+  }
+  #design-ui .principle-suggestions > li .sug-title,
+  #content-adjust .principle-suggestions > li .sug-title,
+  #frontend-adjust .principle-suggestions > li .sug-title {
+    display: block;
+    margin: 0 0 6px;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 24px;
+    color: var(--color-text);
+  }
+  #design-ui .principle-suggestions > li .sug-desc,
+  #content-adjust .principle-suggestions > li .sug-desc,
+  #frontend-adjust .principle-suggestions > li .sug-desc {
+    display: block;
+    margin: 0;
+    max-width: none;
+    width: 100%;
+    font-size: var(--text-body);
+    font-weight: 400;
+    line-height: 24px;
+    color: var(--color-text-secondary);
+  }
+
+  @media (max-width: 900px) {
+    .fn-ex-row {
+      grid-template-columns: 1fr;
+      grid-template-rows: none;
+    }
+    .fn-ex-row .fn-ex { display: block; grid-row: auto; }
+    .fn-ex-row .fn-ex-body {
+      display: flex; flex-direction: column; grid-row: auto;
+    }
+  }
+  #mechanism > p.page-lead {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  #mechanism > h2 + .page-lead { margin-top: 0; }
+  #mechanism > p.page-lead + p.page-lead { margin-top: 8px; }
+  #problem > h2 + .wf { margin-top: 0; }
+  .wf {
+    margin: 0;
+    padding: var(--space-stack, 16px) 24px;
+    background-color: #f4f4f2;
+    background-image: radial-gradient(#d8d8d4 1.1px, transparent 1.1px);
+    background-size: 14px 14px;
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    overflow-x: auto;
+  }
+  .wf-track {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0;
+    width: 100%;
+    min-width: 1080px;
+  }
+  .wf-split {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    flex: 0 0 188px;
+    width: 188px;
+  }
+  .wf-split .wf-step {
+    flex: none;
+    width: 188px;
+  }
+  .wf-step {
+    position: relative;
+    flex: 0 0 188px;
+    width: 188px;
+    padding-top: 32px;
+  }
+  .wf-node {
+    position: relative;
+    appearance: none;
+    display: block;
+    width: 100%;
+    margin: 0;
+    box-sizing: border-box;
+    padding-top: 0;
+    background: #fff;
+    border: 1px solid #e6e6e4;
+    border-radius: 14px;
+    box-shadow: 0 1px 2px rgba(17, 17, 17, 0.06), 0 8px 24px rgba(17, 17, 17, 0.04);
+    overflow: hidden;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .wf-node:hover {
+    border-color: #c8c8c4;
+    box-shadow: 0 1px 2px rgba(17, 17, 17, 0.08), 0 10px 28px rgba(17, 17, 17, 0.08);
+  }
+  .wf-node[aria-selected="true"] {
+    border-color: #191919;
+    box-shadow: 0 1px 2px rgba(17, 17, 17, 0.08), 0 10px 28px rgba(17, 17, 17, 0.08);
+  }
+  .wf-node:focus-visible {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--color-primary);
+  }
+  #practices .hop-panel { margin: 0; }
+  .wf-pill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: inline-block;
+    margin: 0;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: #fff;
+    border: 1px solid #e6e6e4;
+    font-size: 11px;
+    font-weight: 650;
+    line-height: 18px;
+    color: var(--color-text);
+  }
+  .wf-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 10px 12px;
+    font-size: 13px;
+    font-weight: 650;
+    line-height: 18px;
+    color: var(--color-text);
+    border-bottom: 1px solid #f0f0ee;
+  }
+  .wf-head svg { flex-shrink: 0; margin-top: 2px; }
+  .wf-head-text { min-width: 0; flex: 1; }
+  .wf-title { font-weight: 650; }
+  .wf-req {
+    margin-top: 2px;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 16px;
+    color: #8c8c8c;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .wf-rows { padding: 4px 0 8px; }
+  .wf-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 6px 12px;
+    font-size: 12px;
+    line-height: 18px;
+  }
+  .wf-row dt {
+    margin: 0;
+    color: #8c8c8c;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+  .wf-row dd {
+    margin: 0;
+    color: var(--color-text);
+    font-weight: 550;
+    text-align: right;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .wf-row--go + .wf-row--go { margin-top: 8px; }
+  .wf-link {
+    flex: 0 0 40px;
+    width: 40px;
+    height: 16px;
+    margin-top: 0;
+    display: block;
+    overflow: visible;
+  }
+  @media (max-width: 900px) {
+    .wf-track { min-width: 0; flex-direction: column; }
+    .wf-link { width: 16px; height: 36px; flex-basis: 36px; margin-top: 0; }
+  }
+  #mechanism > p.page-lead strong {
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  #mechanism > .page-lead + .af-figure { margin-top: 0; }
+  #mechanism .aj,
+  #path .aj { min-width: 0; }
+  #mechanism .aj col.aj-rowhead,
+  #path .aj col.aj-rowhead { width: 136px; }
+  #mechanism .aj .aj-corner,
+  #mechanism .aj .aj-label,
+  #path .aj .aj-corner,
+  #path .aj .aj-label {
+    width: 136px;
+    white-space: nowrap;
+    color: var(--color-text);
+  }
+  #mechanism .aj thead th,
+  #path .aj thead th {
+    text-align: left;
+    vertical-align: bottom;
+  }
+  #core-principles > h2 + .bg-list,
+  #benefits > h2 + .bg-list { margin-top: 0; }
+  #core-principles .bg-list,
+  #benefits .bg-list {
+    list-style: disc;
+    padding-left: 1.25em;
+    margin: 0;
+  }
+  #core-principles .bg-list li + li,
+  #benefits .bg-list li + li { margin-top: 16px; }
+  #core-principles .bg-list li > strong:first-child,
+  #benefits .bg-list li > strong:first-child {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  #core-principles .bg-list li,
+  #benefits .bg-list li { color: var(--color-text-secondary); }
+  .file-sample-note {
+    font-size: 13px;
+    line-height: 22px;
+    color: #8c8c8c;
+  }
+  .file-sample .code-line-hl {
+    display: inline;
+    padding: 0;
+    margin: 0;
+    background: rgba(4, 120, 87, 0.32);
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+  .file-sample .code-line-hl2 {
+    display: inline;
+    padding: 0;
+    margin: 0;
+    background: rgba(124, 58, 237, 0.36);
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+  .file-sample .code-line-hl.code-line-hl2 {
+    background: linear-gradient(90deg, rgba(4, 120, 87, 0.32), rgba(124, 58, 237, 0.36));
+  }
+  .file-sample .code-line-go {
+    background: rgba(245, 158, 11, 0.48);
+  }
+  .file-sample .code-click,
+  .file-sample-note .code-click {
+    display: inline-block;
+    height: 16px;
+    margin-right: 6px;
+    padding: 0 5px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 16px;
+    text-align: center;
+    vertical-align: 1px;
+    color: #fff;
+    background: #d97706;
+    white-space: nowrap;
+  }
+  .file-sample .code-pass,
+  .file-sample-note .code-pass {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-right: 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 16px;
+    text-align: center;
+    vertical-align: 1px;
+    color: #fff;
+  }
+  .file-sample .code-pass--1,
+  .file-sample-note .code-pass--1 { background: #047857; }
+  .file-sample .code-pass--2,
+  .file-sample-note .code-pass--2 { background: #7c3aed; }
+  .file-sample--wrap pre,
+  .file-sample--wrap pre code {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  #practices figure.file-sample--wrap pre {
+    height: 420px;
+    max-height: 420px;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  #practices #file-root figure.file-sample--wrap pre,
+  #practices #file-docs figure.file-sample--wrap pre,
+  #practices #file-cuda figure.file-sample--wrap pre,
+  #practices #file-install figure.file-sample--wrap pre,
+  #practices #file-prog figure.file-sample--wrap pre {
+    height: 580px;
+    max-height: 580px;
+  }
+  #practices h2 + h3.fn-h3,
+  #practices h2 + .file-sample-note,
+  #practices .hop-panel > h3.fn-h3,
+  #practices h3.fn-h3 + .file-sample-note,
+  #practices .file-sample-note + .file-sample-note,
+  #practices .file-sample-note + .file-sample,
+  #practices .file-sample + .file-sample-note {
+    margin-top: 0;
+  }
+  #practices .hop-panel > .file-sample:last-child {
+    margin-bottom: 0;
+  }
+  #path h2 + h3.fn-h3,
+  #path h3.fn-h3 + .file-sample-note,
+  #path h3.fn-h3 + .af-figure,
+  #path h3.fn-h3 + .file-sample,
+  #path .file-sample + .file-sample-note,
+  #path .file-sample-note + .file-sample,
+  #path .file-sample-note + .af-figure {
+    margin-top: 0;
+  }
+  #path .file-sample-note + h3.fn-h3,
+  #path .af-figure + h3.fn-h3,
+  #path .file-sample + h3.fn-h3 {
+    margin-top: var(--space-stack, 16px);
+  }
+
+  /* 详情页壳：顶部只保留返回与当前位置，不带站点主导航与模块侧栏 */
+  .detail-bar { background: var(--color-surface); }
+  .detail-bar-inner { gap: 12px; }
+  .detail-back {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    margin-left: -6px;
+    border-radius: var(--radius);
+    color: var(--color-text);
+    text-decoration: none;
+    transition: background .15s, color .15s;
+  }
+  .detail-back:hover { background: var(--color-bg); color: var(--color-primary); }
+  .detail-back svg { width: 18px; height: 18px; display: block; }
+  .detail-divider {
+    flex-shrink: 0;
+    width: 1px;
+    height: 18px;
+    background: var(--color-border);
+  }
+  .detail-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+    color: var(--color-text-tertiary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .detail-title a { color: var(--color-text-secondary); text-decoration: none; }
+  .detail-title a:hover { color: var(--color-primary); }
+  .detail-title strong { color: var(--color-text); font-weight: 650; }
+  .detail-exit {
+    flex-shrink: 0;
+    margin-left: auto;
+    padding: 5px 14px;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    font-size: var(--code-copy-size);
+    line-height: var(--text-auxiliary-lh);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    transition: background .15s, color .15s, border-color .15s;
+  }
+  .detail-exit:hover { color: var(--color-primary); border-color: var(--color-primary); background: var(--color-primary-subtle); }
+  .detail-wrapper { display: flex; align-items: flex-start; background: var(--color-surface); }
+  .model-nav {
+    flex-shrink: 0;
+    width: var(--sidebar-width);
+    box-sizing: border-box;
+    position: sticky;
+    top: var(--header-height, 56px);
+    height: calc(100vh - var(--header-height, 56px));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: var(--color-card-bg);
+    border-right: 1px solid var(--color-border);
+  }
+  .model-nav-label {
+    font-size: var(--text-body);
+    font-weight: var(--text-h2-weight);
+    letter-spacing: .04em;
+    color: var(--color-text-tertiary);
+    padding: 4px 6px 2px;
+  }
+  .model-nav-label.is-sub {
+    margin-top: 8px;
+    padding-top: 12px;
+    border-top: 1px solid var(--color-border);
+  }
+  a.nav-vendor {
+    display: block;
+    padding: 6px 10px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+  }
+  a.nav-vendor:hover {
+    color: var(--color-primary);
+    background: var(--color-primary-subtle);
+    text-decoration: none;
+  }
+  a.nav-vendor.is-active {
+    color: var(--color-primary);
+    background: var(--color-primary-subtle);
+    font-weight: 650;
+  }
+  a.nav-model-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 10px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-surface);
+    font: inherit;
+    text-align: left;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition: border-color .15s, box-shadow .15s, background .15s;
+  }
+  a.nav-model-card:hover {
+    border-color: var(--color-primary-hover-border);
+    background: var(--color-primary-subtle);
+  }
+  a.nav-model-card.is-active {
+    border-color: var(--color-primary);
+    background: var(--color-primary-subtle);
+    box-shadow: inset 3px 0 0 var(--color-primary);
+  }
+  a.nav-model-card .idx {
+    font-size: var(--text-body);
+    font-weight: 600;
+    line-height: var(--text-body-lh);
+    color: var(--color-text-secondary);
+  }
+  a.nav-model-card.is-active .idx { color: var(--color-primary); }
+  a.nav-model-card .card-title {
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+    font-weight: 650;
+    color: var(--color-text);
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  @media (max-width: 900px) {
+    .detail-wrapper { flex-direction: column; }
+    .model-nav {
+      width: 100%;
+      position: static;
+      height: auto;
+      max-height: 36vh;
+      border-right: none;
+      border-bottom: 1px solid var(--color-border);
+    }
+  }
+  body.inner-page .detail-wrapper .main-content {
+    padding-top: var(--content-main-pad-top, 16px);
+    min-width: 0;
+    flex: 1;
+    background: var(--color-surface);
+    min-height: calc(100vh - var(--header-height, 56px));
+  }
+  body.inner-page .detail-wrapper .main-content > .page-header,
+  body.inner-page .detail-wrapper .main-content > .section {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin-inline: auto;
+    box-sizing: border-box;
+  }
+</style>
+</head>
+<body class="inner-page agent-entry-page" data-module="principles" data-page="llms-parse-nvidia-path-cross" data-no-surface-tabs>
+
+<div class="topbar detail-bar">
+  <div class="topbar-inner detail-bar-inner">
+    <a class="detail-back" href="principles-llms-parse.html" aria-label="返回 根 llms 解析">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6L9 12l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <span class="detail-divider" aria-hidden="true"></span>
+    <div class="detail-title"><a href="principles-llms-parse.html">根 llms 解析</a><span aria-hidden="true">›</span>NVIDIA<span aria-hidden="true">›</span><strong>安装与编程模型</strong></div>
+    <a class="detail-exit" href="principles-llms-parse.html">返回解析</a>
+  </div>
+</div>
+
+<div class="page-wrapper detail-wrapper">
+
+  <aside class="model-nav" id="llms-parse-nav" data-vendor="nvidia" data-layer="path-cross" aria-label="解析导航"></aside>
+
+  <main class="main-content">
+
+    <div class="page-header">
+      <h1>路径分析</h1>
+    </div>
+
+    <section class="section" id="mechanism">
+      <h2>问句</h2>
+      <p class="page-lead">「Linux 上怎么装 CUDA，装完 thread、block、grid 怎么组织？」</p>
+      <p class="page-lead">单条链不够：安装在 Installation Guides，编程模型在 Programming Guides。扫产品册时两条都记下；打开是先后的——先读 Linux 安装，发现组织方式不在这页，再回到产品册跟编程指南。</p>
+    </section>
+
+    <section class="section" id="problem">
+      <h2>路径一览</h2>
+      <div class="wf">
+        <div class="wf-track" role="tablist" aria-label="跨文档读取路径">
+          <div class="wf-step">
+            <span class="wf-pill">Start</span>
+            <button type="button" class="wf-node" role="tab" id="tab-file-root" aria-controls="file-root" aria-selected="true" tabindex="0" data-hop="file-root">
+            <div class="wf-head">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5.5 4 2 8l3.5 4M10.5 4 14 8l-3.5 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <div class="wf-head-text">
+                <div class="wf-title">集团根</div>
+                <div class="wf-req" title="https://www.nvidia.com/llms.txt">GET /llms.txt</div>
+              </div>
+            </div>
+            <dl class="wf-rows">
+              <div class="wf-row wf-row--go"><dt>进入</dt><dd>Tech Docs</dd></div>
+            </dl>
+            </button>
+          </div>
+          <svg class="wf-link" viewBox="0 0 40 16" fill="none" aria-hidden="true">
+            <path d="M2 8 H38" stroke="#191919" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="3" cy="8" r="3.5" fill="#fff" stroke="#191919" stroke-width="2.5"/>
+            <circle cx="37" cy="8" r="3.5" fill="#fff" stroke="#191919" stroke-width="2.5"/>
+          </svg>
+          <div class="wf-step">
+            <button type="button" class="wf-node" role="tab" id="tab-file-docs" aria-controls="file-docs" aria-selected="false" tabindex="-1" data-hop="file-docs">
+            <div class="wf-head">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5.5 4 2 8l3.5 4M10.5 4 14 8l-3.5 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <div class="wf-head-text">
+                <div class="wf-title">文档站</div>
+                <div class="wf-req" title="https://docs.nvidia.com/llms.txt">GET docs.nvidia.com/llms.txt</div>
+              </div>
+            </div>
+            <dl class="wf-rows">
+              <div class="wf-row wf-row--go"><dt>进入</dt><dd>CUDA Toolkit</dd></div>
+            </dl>
+            </button>
+          </div>
+          <svg class="wf-link" viewBox="0 0 40 16" fill="none" aria-hidden="true">
+            <path d="M2 8 H38" stroke="#191919" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="3" cy="8" r="3.5" fill="#fff" stroke="#191919" stroke-width="2.5"/>
+            <circle cx="37" cy="8" r="3.5" fill="#fff" stroke="#191919" stroke-width="2.5"/>
+          </svg>
+          <div class="wf-step">
+            <button type="button" class="wf-node" role="tab" id="tab-file-cuda" aria-controls="file-cuda" aria-selected="false" tabindex="-1" data-hop="file-cuda">
+            <div class="wf-head">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5.5 4 2 8l3.5 4M10.5 4 14 8l-3.5 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <div class="wf-head-text">
+                <div class="wf-title">产品册</div>
+                <div class="wf-req" title="https://docs.nvidia.com/cuda/llms.txt">GET cuda/llms.txt</div>
+              </div>
+            </div>
+            <dl class="wf-rows">
+              <div class="wf-row wf-row--go"><dt>先进入</dt><dd>Linux 安装</dd></div>
+              <div class="wf-row wf-row--go"><dt>再进入</dt><dd>Programming Guide</dd></div>
+            </dl>
+            </button>
+          </div>
+          <svg class="wf-link" viewBox="0 0 40 16" fill="none" aria-hidden="true">
+            <path d="M2 8 H38" stroke="#191919" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="3" cy="8" r="3.5" fill="#fff" stroke="#191919" stroke-width="2.5"/>
+            <circle cx="37" cy="8" r="3.5" fill="#fff" stroke="#191919" stroke-width="2.5"/>
+          </svg>
+          <div class="wf-split">
+            <div class="wf-step">
+              <span class="wf-pill">再回</span>
+              <button type="button" class="wf-node" role="tab" id="tab-file-install" aria-controls="file-install" aria-selected="false" tabindex="-1" data-hop="file-install">
+              <div class="wf-head">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5.5 4 2 8l3.5 4M10.5 4 14 8l-3.5 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <div class="wf-head-text">
+                  <div class="wf-title">Linux 安装</div>
+                  <div class="wf-req" title="https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html.md">GET installation-guide-linux</div>
+                </div>
+              </div>
+              <dl class="wf-rows">
+                <div class="wf-row"><dt>回到</dt><dd>产品册</dd></div>
+              </dl>
+              </button>
+            </div>
+            <div class="wf-step">
+              <span class="wf-pill">End</span>
+              <button type="button" class="wf-node" role="tab" id="tab-file-prog" aria-controls="file-prog" aria-selected="false" tabindex="-1" data-hop="file-prog">
+              <div class="wf-head">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5.5 4 2 8l3.5 4M10.5 4 14 8l-3.5 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <div class="wf-head-text">
+                  <div class="wf-title">编程指南</div>
+                  <div class="wf-req" title="https://docs.nvidia.com/cuda/cuda-programming-guide/index.html.md">GET programming-guide.md</div>
+                </div>
+              </div>
+              <dl class="wf-rows">
+                <div class="wf-row"><dt>进入</dt><dd>—</dd></div>
+              </dl>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="practices">
+      <div class="hop-panel" id="file-root" role="tabpanel" aria-labelledby="tab-file-root">
+      <h3 class="fn-h3">第 1 步 · 集团根</h3>
+      <p class="file-sample-note">绿行 = 读过（顺读或跳读）。橙行 = 点进去、打开下一跳。没涂色 = 没读。下面是 <code>nvidia.com/llms.txt</code> 全文，未删节。</p>
+      <p class="file-sample-note">安装和编程都在技术文档站，不在北美营销站。读到 Tech Docs 记下；跳读 Developer / GTC 节名排除。<strong>没读</strong>RSS、中国站各条。然后打开黄行。</p>
+      <figure class="file-sample file-sample--wrap">
+        <figcaption><code>https://www.nvidia.com/llms.txt</code></figcaption>
+        <pre><code><span class="code-line-hl"># NVIDIA Corporation</span>
+
+<span class="code-line-hl">&gt; This file provides links to the llms.txt of NVIDIA&#x27;s main and international websites, helping large language models (LLMs) better understand the content and structure of each of NVIDIA&#x27;s locale-specific websites. Follow the links below to deeper llms.txt pages for each locale website. Each country may have more than one language that content is translated into.</span>
+
+<span class="code-line-hl">## The NVIDIA North America Websites</span>
+<span class="code-line-hl">- [NVIDIA U.S. Website](https://www.nvidia.com/en-us/llms.txt): Marketing, corporate, product information. </span>
+<span class="code-line-hl">- [NVIDIA OpenSource Website] (https://opensource.nvidia.com/en-us/llms.txt)</span>
+
+<span class="code-line-hl">## NVIDIA Technical Documentation Website</span>
+<span class="code-line-hl code-line-go">- [Tech Docs](https://docs.nvidia.com/llms.txt): Technical documentation for NVIDIA products.</span>
+
+<span class="code-line-hl">## NVIDIA Developer Websites</span>
+- [NVIDIA Developer](https://developer.nvidia.com/llms.txt): Downloads, SDKs, frameworks, libraries, forums. 
+- [NVIDIA Technical Blog](https://developer.nvidia.com/blog/llms.txt): News and blog articles for developer community.
+
+<span class="code-line-hl">## NVIDIA GTC AI Conference Website</span>
+- [GTC](https://www.nvidia.com/gtc/llms.txt): Conference locations, sessions, speakers, venues.
+
+<span class="code-line-hl">## NVIDIA Regional Blog RSS Feeds</span>
+- [NVIDIA Corporate Blog RSS Feed](https://blogs.nvidia.com/feed/): Latest corporate blog posts.
+- [NVIDIA Developer Technical Blog RSS Feed](https://developer.nvidia.com/blog/feed/): Latest developer blog posts.
+- [NVIDIA Newsroom RSS Feed](https://nvidianews.nvidia.com/releases.xml):Press releases, news articles.
+- [NVIDIA Germany Blog RSS Feed](https://blogs.nvidia.de/feed/): Content in German.
+- [NVIDIA France Blog RSS Feed](https://blogs.nvidia.fr/feed/): Content in French.
+- [NVIDIA Developer China RSS Feed](https://developer.nvidia.com/zh-cn/blog/feed/): Content in Simplified Chinese.
+- [NVIDIA Japan Blog RSS Feed](https://blogs.nvidia.co.jp/feed/): Content in Japanese.
+- [NVIDIA Developer Japan RSS Feed](https://developer.nvidia.com/ja-jp/blog/feed/): Content in Japanese
+- [NVIDIA Korea Blog RSS Feed](https://blogs.nvidia.co.kr/feed/): Content in Korean.
+- [NVIDIA Taiwan Blog RSS Feed](https://blogs.nvidia.com.tw/feed/): Content in Traditional Chinese.
+- [NVIDIA Brazil Blog RSS Feed](https://blog.nvidia.com.br/feed/): Content in Brazilian Portuguese. 
+- [NVIDIA Latin America Blog RSS Feed](https://la.blogs.nvidia.com/feed/): Content in Spanish.
+
+<span class="code-line-hl">### NVIDIA China Websites</span>
+- [NVIDIA China](https://www.nvidia.cn/llms.txt): Content in Simplified Chinese.
+- [NVIDIA China Developer](https://developer.nvidia.cn/llms.txt): Developer site for China. Content in Simplified Chinese.</code></pre>
+      </figure>
+      </div>
+
+      <div class="hop-panel" id="file-docs" role="tabpanel" aria-labelledby="tab-file-docs" hidden>
+      <h3 class="fn-h3">第 2 步 · 文档站</h3>
+      <p class="file-sample-note">绿行 = 读过。橙行 = 点进去。没涂色 = 没读。下面是 <code>docs.nvidia.com/llms.txt</code> 全文，未删节。</p>
+      <p class="file-sample-note">安装和编程模型都在 CUDA 这一条产品线。读到 CUDA Toolkit 记下；看下一条 CUDA-Q，确认是量子平台不是装驱动。<strong>没读</strong>AICR、NIM 等分册。然后打开黄行。</p>
+      <figure class="file-sample file-sample--wrap">
+        <figcaption><code>https://docs.nvidia.com/llms.txt</code></figcaption>
+        <pre><code><span class="code-line-hl"># NVIDIA Technical Product Documentation</span>
+
+<span class="code-line-hl">&gt; Collection of NVIDIA Technical Documentation llms.txt files for AI user agents. Content is in English and listed in alphabetical order. Last updated 9 September 2026</span>
+
+<span class="code-line-hl">## NVIDIA AI Cluster Runtime (AICR)</span>
+
+<span class="code-line-hl">&gt; Tooling for generating validated, optimized GPU-accelerated Kubernetes configurations through a snapshot-recipe-validate-bundle workflow.</span>
+
+- [NVIDIA AI Cluster Runtime](https://docs.nvidia.com/aicr/llms.txt)
+
+<span class="code-line-hl">## NVIDIA AIPerf</span>
+
+<span class="code-line-hl">&gt; AIPerf is a comprehensive CLI benchmarking tool that measures the performance of generative AI models across inference backends, delivering detailed real-time metrics and benchmark reports.</span>
+
+- [NVIDIA AIPerf](https://docs.nvidia.com/aiperf/llms.txt)
+
+<span class="code-line-hl">## NVIDIA AIStore</span>
+
+<span class="code-line-hl">&gt; AIStore is a deploy-anywhere distributed object store for AI workloads, with seamless fast-tiering for cloud storage and linear scalability.</span>
+
+- [NVIDIA AIStore](https://docs.nvidia.com/aistore/llms.txt)
+
+<span class="code-line-hl">## NVIDIA AITune</span>
+
+<span class="code-line-hl">&gt; An inference toolkit for tuning and deploying deep learning models on NVIDIA GPUs.</span>
+
+- [NVIDIA AITune](https://docs.nvidia.com/aitune/llms.txt)
+
+<span class="code-line-hl">## NVIDIA BioNeMo Inference Runtime</span>
+
+<span class="code-line-hl">&gt; GPU-accelerated PyTorch inference runtime for biomolecular structure prediction models.</span>
+
+- [NVIDIA BioNeMo Inference Runtime](https://docs.nvidia.com/bionemo/inference-runtime/llms.txt)
+
+<span class="code-line-hl">## NVIDIA Brev</span>
+
+<span class="code-line-hl">&gt; NVIDIA Brev provides easy access to GPU sandboxes for experimentation.</span>
+
+- [NVIDIA Brev](https://docs.nvidia.com/brev/llms.txt)
+
+<span class="code-line-hl">## NVIDIA Clara Parabricks</span>
+
+<span class="code-line-hl">&gt; Parabricks is a free software suite for performing secondary analysis of next generation sequencing (NGS) DNA and RNA data.</span>
+
+- [NVIDIA Clara Parabricks](https://docs.nvidia.com/clara/parabricks/llms.txt)
+
+<span class="code-line-hl">## NVIDIA Cloud Functions (NVCF)</span>
+
+<span class="code-line-hl">&gt; A unified API layer for scaling inference and simulation workloads across one or more Kubernetes clusters.</span>
+
+- [NVIDIA Cloud Functions](https://docs.nvidia.com/nvcf/llms.txt)
+
+<span class="code-line-hl">## NVIDIA Cosmos</span>
+
+<span class="code-line-hl">&gt; Suite of models, ontologies, and benchmarks to enable multimodal LLMs to generate physically-grounded responses</span>
+
+- [NVIDIA Cosmos](https://docs.nvidia.com/cosmos/llms.txt)
+
+<span class="code-line-hl">## NVIDIA CUDA Toolkit</span>
+
+<span class="code-line-hl">&gt; Development environment for creating high performance GPU-accelerated applications with libraries, compilers, and debugging tools.</span>
+
+<span class="code-line-hl code-line-go">- [NVIDIA CUDA Toolkit](https://docs.nvidia.com/cuda/llms.txt)</span>
+
+<span class="code-line-hl">## NVIDIA CUDA-Q</span>
+
+<span class="code-line-hl">&gt; A Platform for accelerated quantum supercomputing that offers a hybrid programming model for heterogeneous environments that include QPUs, GPUs and CPUs.</span>
+
+- [NVIDIA CUDA-Q documentation on GitHub](https://nvidia.github.io/cuda-quantum/latest/llms.txt)
+
+<span class="code-line-hl">## NVIDIA cuVS</span>
+
+<span class="code-line-hl">&gt; cuVS is NVIDIA&#x27;s open-source GPU library for unstructured data processing: nearest neighbors, clustering, and vector compression</span>
+
+- [NVIDIA cuVS](https://docs.nvidia.com/cuvs/llms.txt)
+
+<span class="code-line-hl">## NVIDIA Dynamo</span>
+
+<span class="code-line-hl">&gt; High-throughput, low-latency inference framework designed for serving generative AI and reasoning models in multi-node distributed environments.</span>
+
+- [NVIDIA Dynamo](https://docs.nvidia.com/dynamo/llms.txt)
+
+<span class="code-line-hl">## NVIDIA Fleet Intelligence</span>
+
+<span class="code-line-hl">&gt; Service that enables organizations to monitor and manage their GPU fleet through robust inventory, integrity, and health monitoring.</span>
+
+- [NVIDIA Fleet Intelligence](https://docs.nvidia.com/fleet-intel/llms.txt)
+
+<span class="code-line-hl">## NVIDIA Fleet Intelligence Agent</span>
+
+<span class="code-line-hl">&gt; Monitoring agent that discovers available GPU and system components and continuously evaluates their health while publishing results through APIs and metrics endpoints.</span>
+
+- [NVIDIA Fleet Intelligence Agent](https://docs.nvidia.com/fleet-intel/agent/llms.txt)
+
+<span class="code-line-hl">## NVIDIA HEAVY.AI</span>
+
+<span class="code-line-hl">&gt; Heavy.AI is a GPU-accelerated database and visualization platform that is optimized for interactive analytics of large-scale geospatial and time-series data.</span>
+
+- [NVIDIA HEAVY.AI](https://docs.nvidia.com/heavyai/llms.txt)
+
+<span class="code-line-hl">## NVIDIA Holoscan SDK User Guide</span>
+
+<span class="code-line-hl">&gt; Holoscan SDK is NVIDIA&#x27;s platform for building and deploying real-time, AI-enabled sensor processing applications across edge, embedded, and cloud environments.</span>
+
+- [NVIDIA Holoscan SDK User Guide](https://docs.nvidia.com/holoscan/sdk-user-guide/llms.txt)
+
+<span class="code-line-hl">## NVIDIA Holoscan Sensor Bridge</span>
+
+<span class="code-line-hl">&gt; NVIDIA Holoscan Sensor Bridge is a sensor-over-Ethernet streaming platform that simplifies high-speed sensor fusion by streaming sensor data directly to GPU memory for low-latency, real-time AI processing on NVIDIA edge-AI platforms.</span>
+
+- [NVIDIA Holoscan Sensor Bridge](https://docs.nvidia.com/holoscan/sensor-bridge/llms.txt)
+
+<span class="code-line-hl">## NVIDIA Holoscan Sensor Bridge Native Latency Measurement Tool</span>
+
+<span class="code-line-hl">&gt; A tool for measuring native end-to-end latency in NVIDIA Holoscan Sensor Bridge pipelines.</span>
+
+- [NVIDIA Holoscan Sensor Bridge Native Latency Measurement Tool](https://docs.nvidia.com/holoscan/sensor-bridge-e2e-latency-tool/llms.txt)
+
+<span class="code-line-hl">## NVIDIA JAX Toolbox</span>
+
+<span class="code-line-hl">&gt; JAX Toolbox provides public CI, optimized Docker images, and GPU-tuned examples for JAX development on NVIDIA GPUs, with support for frameworks like MaxText and Pallas and built-in profiling, resiliency, and regression-triage tooling.</span>
+
+- [NVIDIA JAX Toolbox](https://docs.nvidia.com/jax-toolbox/llms.txt)
+
+<span class="code-line-hl">## NVIDIA Jetson Software</span>
+
+<span class="code-line-hl">&gt; Edge software platform for real-time AI and robotics supporting all NVIDIA Jetson hardware.</span>
+
+- [NVIDIA Jetson Software](https://docs.nvidia.com/jetson/llms.txt)
+
+<span class="code-line-hl">## NVIDIA NeMo Agent Toolkit</span>
+
+<span class="code-line-hl">&gt; Open-source library that provides framework-agnostic profiling, evaluation, and optimization for AI agent systems.</span>
+
+- [NVIDIA NeMo Agent Toolkit](https://docs.nvidia.com/nemo/agent-toolkit/llms.txt)
+
+<span class="code-line-hl">## NVIDIA NeMo AutoModel</span>
+
+<span class="code-line-hl">&gt; PyTorch DTensor-native SPMD training library for scaling training and fine-tuning of LLMs, VLMs, diffusion models, and retrieval models, with Hugging Face integration.</span>
+
+- [NVIDIA NeMo AutoModel](https://docs.nvidia.com/nemo/automodel/llms.txt)
+
+<span class="code-line-hl">## NVIDIA NeMo Curator</span>
+
+<span class="code-line-hl">&gt; Open-source, enterprise-grade toolkit for scalable, privacy-aware data curation across text, image, video, and audio modalities.</span>
+
+- [NVIDIA NeMo Curator](https://docs.nvidia.com/nemo/curator/llms.txt)
+
+<span class="code-line-hl">## NVIDIA NeMo Data Designer</span>
+
+<span class="code-line-hl">&gt; Orchestration framework for generating high-quality synthetic datasets from scratch or seed data, with batching, parallelism, validation, and reproducible workflows.</span>
+
+- [NVIDIA NeMo Data Designer](https://docs.nvidia.com/nemo/datadesigner/llms.txt)
+
+<span class="code-line-hl">## NVIDIA NeMo Evaluator</span>
+
+<span class="code-line-hl">&gt; LLM evaluation framework with benchmark environments, pluggable solvers, composable interceptor proxy, and multi-format reporting.</span>
+
+- [NVIDIA NeMo Evaluator](https://docs.nvidia.com/nemo/evaluator/llms.txt)
+
+<span class="code-line-hl">## NVIDIA NeMo Framework</span>
+
+<span class="code-line-hl">&gt; Cloud-native framework to create, customize, and deploy new generative AI models by leveraging existing code and pretrained model checkpoints.</span>
+
+- [NVIDIA NeMo Framework](https://docs.nvidia.com/nemo-framework/llms.txt)
+
+<span class="code-line-hl">## NVIDIA NeMo Guardrails</span>
+
+<span class="code-line-hl">&gt; Open-source toolkit for easily adding programmable guardrails to LLM-based conversational systems.</span>
+
+- [NVIDIA NeMo Guardrails](https://docs.nvidia.com/nemo/guardrails/llms.txt)
+
+<span class="code-line-hl">## NVIDIA NeMo Gym</span>
+
+<span class="code-line-hl">&gt; Open-source library for evaluating and improving LLMs and agents with scalable RL environments, verified rollouts, and training-framework integrations.</span>
+
+- [NVIDIA NeMo Gym](https://docs.nvidia.com/nemo/gym/llms.txt)
+
+<span class="code-line-hl">## NVIDIA NeMo Microservices</span>
+
+<span class="code-line-hl">&gt; API-first modular set of tools to customize, evaluate, and secure large language and embedding models on-premise or in the cloud.</span>
+
+- [NVIDIA NeMo Microservices](https://docs.nvidia.com/nemo/microservices/llms.txt)
+
+<span class="code-line-hl">## NVIDIA NeMo Platform</span>
+
+<span class="code-line-hl">&gt; Platform that brings NVIDIA NeMo libraries together under one CLI, Python SDK, and web UI for hardening, evaluating, and tuning production AI agents.</span>
+
+- [NVIDIA NeMo Platform](https://docs.nvidia.com/nemo-platform/llms.txt)
+
+<span class="code-line-hl">## NVIDIA NeMo Relay</span>
+
+<span class="code-line-hl">&gt; Multi-language agent runtime that provides shared scopes, policy, plugins, lifecycle events, and middleware for tool and LLM calls across agent systems.</span>
+
+- [NVIDIA NeMo Relay](https://docs.nvidia.com/nemo/relay/llms.txt)
+
+<span class="code-line-hl">## NVIDIA NeMo Retriever</span>
+
+<span class="code-line-hl">&gt; Collection of microservices for building and scaling multimodal data extraction, embedding, and reranking pipelines.</span>
+
+- [NVIDIA NeMo Retriever](https://docs.nvidia.com/nemo/retriever/latest/llms.txt)
+
+<span class="code-line-hl">## NVIDIA NeMo RL</span>
+
+<span class="code-line-hl">&gt; Open-source post-training library to streamline and scale reinforcement learning methods for multimodal models (LLMs, VLMs etc).</span>
+
+- [NVIDIA NeMo RL](https://docs.nvidia.com/nemo/rl/llms.txt)
+
+<span class="code-line-hl">## NVIDIA NemoClaw</span>
+
+<span class="code-line-hl">&gt; Open source stack that simplifies running OpenClaw always-on assistants more safely, with a single command</span>
+
+- [NVIDIA NemoClaw](https://docs.nvidia.com/nemoclaw/llms.txt)
+
+<span class="code-line-hl">## NVIDIA Nemotron</span>
+
+<span class="code-line-hl">&gt; Family of open models with open weights, training data, and recipes for building specialized AI agents.</span>
+
+- [NVIDIA Nemotron Documentation on HuggingFace](https://huggingface.co/docs/transformers/en/model_doc/nemotron.md)
+
+<span class="code-line-hl">## NVIDIA NIM</span>
+
+<span class="code-line-hl">&gt; Containers to self-host GPU-accelerated inferencing microservices for pretrained and customized AI models.</span>
+
+- [NVIDIA NIM](https://docs.nvidia.com/nim/llms.txt)
+
+<span class="code-line-hl">## NVIDIA NVSentinel</span>
+
+<span class="code-line-hl">&gt; Kubernetes-native GPU cluster health monitoring and automated fault remediation framework.</span>
+
+- [NVIDIA NVSentinel](https://docs.nvidia.com/nvsentinel/llms.txt)
+
+<span class="code-line-hl">## NVIDIA OpenShell</span>
+
+<span class="code-line-hl">&gt; Open Source runtime for building and deploying autonomous, self-evolving agents more safely. safe, private runtime for autonomous AI agents with Sandboxes</span>
+
+- [NVIDIA OpenShell](https://docs.nvidia.com/openshell/llms.txt)
+
+<span class="code-line-hl">## NVIDIA Riva</span>
+
+<span class="code-line-hl">&gt; GPU-accelerated SDK for building Speech and Conversational AI applications.</span>
+
+- [NVIDIA Riva](https://docs.nvidia.com/deeplearning/riva/llms.txt)
+
+<span class="code-line-hl">## NVIDIA SDGM</span>
+
+<span class="code-line-hl">&gt; NVIDIA SDGM is a next-generation predictive AI platform for relational data that lets you generate high-quality predictions directly from your data warehouse without feature engineering.</span>
+
+- [NVIDIA SDGM](https://docs.nvidia.com/sdgm/llms.txt)
+
+<span class="code-line-hl">## NVIDIA Skill Documentation</span>
+
+<span class="code-line-hl">&gt; Capability governance for portable AI agent skills: what skills do, how to discover them, and how verification works.</span>
+
+- [NVIDIA Skill Documentation](https://docs.nvidia.com/skills/llms.txt)
+
+<span class="code-line-hl">## NVIDIA SkillEvaluator</span>
+
+<span class="code-line-hl">&gt; An open-source, multi-tier framework for evaluating AI agent artifacts, starting with agent skills.</span>
+
+- [NVIDIA SkillEvaluator](https://docs.nvidia.com/skills/skillevaluator/llms.txt)
+
+<span class="code-line-hl">## NVIDIA Topograph</span>
+
+<span class="code-line-hl">&gt; Discovers physical network topology of GPU clusters and exposes it to workload schedulers (Slurm, Kubernetes, Slinky).</span>
+
+- [NVIDIA Topograph](https://docs.nvidia.com/topograph/llms.txt)</code></pre>
+      </figure>
+      </div>
+
+      <div class="hop-panel" id="file-cuda" role="tabpanel" aria-labelledby="tab-file-cuda" hidden>
+      <h3 class="fn-h3">第 3 步 · 产品册</h3>
+      <p class="file-sample-note"><span class="code-pass code-pass--1">1</span> 绿底 = 第一次读。<span class="code-pass code-pass--2">2</span> 紫底 = 第二次读。<span class="code-pass code-pass--1">1</span><span class="code-pass code-pass--2">2</span> 并排 = 两次都读。橙底 + <span class="code-click">1 进入</span> = 第一次点进去的那条（Linux 安装）。<span class="code-click">2 进入</span> = 第二次点进去的那条（Programming Guide）。没涂色 = 没读。下面是 <code>cuda/llms.txt</code> 全文，未删节。</p>
+      <p class="file-sample-note">产品册很长，第一次不是读完就走。<strong>顺读</strong>页顶。<strong>读完</strong> Installation Guides 整节：quick start 排除，Linux 记下，Windows 也要看完才能确认不是它。<strong>再跳读</strong>后面各 <code>##</code> 节名（Programming / Architecture / API / Tools…），看到 Programming Guides 记下，但第一次不进节里的条目。排除完才打开 Linux。读完安装页发现组织方式不在这页，<strong>回到本产品册</strong>从页顶再扫到 Programming Guides（页顶、安装节、Programming 节名第二次也读，标 12），再进节里的条目。第二次不再往下扫 Architecture。<strong>没读</strong> Architecture / API / Tools 各页说明，也没打开那些页。</p>
+      <figure class="file-sample file-sample--wrap">
+        <figcaption><code>https://docs.nvidia.com/cuda/llms.txt</code></figcaption>
+        <pre><code><span class="code-line-hl code-line-hl2"><span class="code-pass code-pass--1">1</span><span class="code-pass code-pass--2">2</span># NVIDIA CUDA – Comprehensive Documentation for GPU Programming, Libraries, and Tooling</span>
+<span class="code-line-hl code-line-hl2"><span class="code-pass code-pass--1">1</span><span class="code-pass code-pass--2">2</span>This collection provides end-to-end documentation for NVIDIA CUDA, covering installation, programming models, architecture-specific tuning, runtime and driver APIs, math and utility libraries, compiler and PTX interfaces, debugging and profiling tools, platform integrations, numerical white papers, and legacy archives. It enables engineers to build, optimize, debug, and deploy high-performance GPU-accelerated applications across data center, workstation, cloud, and embedded environments.</span>
+<span class="code-line-hl code-line-hl2"><span class="code-pass code-pass--1">1</span><span class="code-pass code-pass--2">2</span>---</span>
+<span class="code-line-hl code-line-hl2"><span class="code-pass code-pass--1">1</span><span class="code-pass code-pass--2">2</span>## CUDA Installation Guides</span>
+<span class="code-line-hl code-line-hl2"><span class="code-pass code-pass--1">1</span><span class="code-pass code-pass--2">2</span>- [Use this guide when setting up CUDA for the first time or validating a basic environment to ensure the GPU, driver, compiler, and runtime are functioning correctly.](https://docs.nvidia.com/cuda/cuda-quick-start-guide/index.html.md)</span>
+<span class="code-line-hl code-line-hl2 code-line-go"><span class="code-pass code-pass--1">1</span><span class="code-pass code-pass--2">2</span><span class="code-click">1 进入</span>- [Consult this page when installing CUDA on Linux systems, including repository-based installs, runfile installs, driver compatibility, and common setup issues.](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html.md)</span>
+<span class="code-line-hl code-line-hl2"><span class="code-pass code-pass--1">1</span><span class="code-pass code-pass--2">2</span>- [Use this guide when installing CUDA on Windows, including Visual Studio integration and resolving OS, driver, and toolkit compatibility issues.](https://docs.nvidia.com/cuda/cuda-installation-guide-microsoft-windows/index.html.md)</span>
+<span class="code-line-hl code-line-hl2"><span class="code-pass code-pass--1">1</span><span class="code-pass code-pass--2">2</span>---</span>
+<span class="code-line-hl code-line-hl2"><span class="code-pass code-pass--1">1</span><span class="code-pass code-pass--2">2</span>## CUDA Programming Guides</span>
+<span class="code-line-hl2 code-line-go"><span class="code-pass code-pass--2">2</span><span class="code-click">2 进入</span>- [Read this when learning or revisiting the CUDA programming model, including threads, blocks, grids, memory hierarchy, streams, and concurrency.](https://docs.nvidia.com/cuda/cuda-programming-guide/index.html.md)</span>
+<span class="code-line-hl2"><span class="code-pass code-pass--2">2</span>- [Use this guide when optimizing CUDA C/C++ code for performance and correctness, covering memory access patterns, occupancy, and synchronization.](https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html.md)</span>
+<span class="code-line-hl2"><span class="code-pass code-pass--2">2</span>- [Consult this documentation when using CUDA utility helpers in Python workflows that interface with lower-level CUDA functionality.](https://docs.nvidia.com/cuda/cutile-python/index.html.md)</span>
+<span class="code-line-hl2"><span class="code-pass code-pass--2">2</span>- [Use this reference when inspecting, generating, or writing PTX directly, such as analyzing compiler output or using inline PTX.](https://docs.nvidia.com/cuda/parallel-thread-execution/index.html)</span>
+<span class="code-line-hl2"><span class="code-pass code-pass--2">2</span>- [Read this when working with Tile IR or other experimental compiler-internal representations for advanced code-generation or research use cases.](https://docs.nvidia.com/cuda/tile-ir/index.html.md)</span>
+<span class="code-line-hl2"><span class="code-pass code-pass--2">2</span>---</span>
+<span class="code-line-hl"><span class="code-pass code-pass--1">1</span>## CUDA Architecture Guides</span>
+- [Use this guide when validating CUDA applications on Ada Lovelace GPUs and understanding architectural compatibility considerations.](https://docs.nvidia.com/cuda/ada-compatibility-guide/index.html.md)
+- [Consult this page when tuning CUDA kernels specifically for Ada GPUs, including instruction behavior and memory throughput.](https://docs.nvidia.com/cuda/ada-tuning-guide/index.html.md)
+- [Read this guide when porting or validating CUDA applications on Ampere GPUs.](https://docs.nvidia.com/cuda/ampere-compatibility-guide/index.html.md)
+- [Use this guide when tuning CUDA kernels for performance on Ampere GPUs.](https://docs.nvidia.com/cuda/ampere-tuning-guide/index.html.md)
+- [Consult this guide when validating CUDA applications on Blackwell GPUs.](https://docs.nvidia.com/cuda/blackwell-compatibility-guide/index.html.md)
+- [Use this guide when tuning CUDA kernels for Blackwell GPU architectures.](https://docs.nvidia.com/cuda/blackwell-tuning-guide/index.html.md)
+- [Read this guide when validating CUDA applications on Hopper GPUs.](https://docs.nvidia.com/cuda/hopper-compatibility-guide/index.html.md)
+- [Use this guide when tuning CUDA kernels for Hopper GPUs and large-scale HPC or AI workloads.](https://docs.nvidia.com/cuda/hopper-tuning-guide/index.html.md)
+- [Consult this reference when embedding inline PTX assembly inside CUDA code.](https://docs.nvidia.com/cuda/inline-ptx-assembly/index.html.md)
+- [Use this guide when interoperating between PTX and other CUDA compilation stages.](https://docs.nvidia.com/cuda/ptx-writers-guide-to-interoperability/index.html)
+- [Read this guide when maintaining CUDA applications targeting Turing GPUs.](https://docs.nvidia.com/cuda/turing-compatibility-guide/index.html.md)
+- [Use this guide when tuning CUDA kernels for Turing GPU architectures.](https://docs.nvidia.com/cuda/turing-tuning-guide/index.html.md)
+- [Important: this Video Decoder page is legacy; modern NVDEC/NVCUVID documentation lives under the NVIDIA Video Codec SDK. Use this only for historical context.](https://docs.nvidia.com/video-technologies/video-codec-sdk/13.0/index.html)
+<span class="code-line-hl"><span class="code-pass code-pass--1">1</span>---</span>
+<span class="code-line-hl"><span class="code-pass code-pass--1">1</span>## CUDA API References</span>
+- [Use this reference when performing dense linear algebra operations on GPUs using cuBLAS.](https://docs.nvidia.com/cuda/cublas/index.html.md)
+- [Consult this page when using the cuDLA API to offload workloads to NVIDIA Deep Learning Accelerators.](https://docs.nvidia.com/cuda/cudla-api/index.html.md)
+- [Use this documentation when performing fast Fourier transforms on the GPU using cuFFT.](https://docs.nvidia.com/cuda/cufft/index.html.md)
+- [Read this guide when using cuFile APIs for GPU Direct Storage integration.](https://docs.nvidia.com/gpudirect-storage/api-reference-guide/index.html)
+- [Consult this reference when generating random numbers on the GPU using cuRAND.](https://docs.nvidia.com/cuda/curand/index.html.md)
+- [Use this guide when solving linear systems or eigenvalue problems with cuSOLVER.](https://docs.nvidia.com/cuda/cusolver/index.html.md)
+- [Read this reference when working with sparse matrix operations using cuSPARSE.](https://docs.nvidia.com/cuda/cusparse/index.html.md)
+- [Use this documentation when leveraging low-level CUDA primitives such as scans, reductions, and sorting via CUB.](https://nvlabs.github.io/cub/)
+- [Consult this reference when working directly with the CUDA Driver API for explicit context and module management.](https://docs.nvidia.com/cuda/cuda-driver-api/index.html.md)
+- [Use this guide when relying on CUDA math library functions and numerical primitives.](https://docs.nvidia.com/cuda/cuda-math-api/index.html.md)
+- [Read this documentation when using the CUDA Runtime API in standard CUDA applications.](https://docs.nvidia.com/cuda/cuda-runtime-api/index.html.md)
+- [Important: libcudacxx documentation may be superseded by CCCL/libcu++ documentation outside the CUDA doc tree.](https://nvidia.github.io/libcudacxx/)
+- [Use this reference when performing image and signal processing operations using NPP.](https://docs.nvidia.com/cuda/npp/index.html.md)
+- [Consult this page when using NVBLAS to transparently accelerate BLAS calls on GPUs.](https://docs.nvidia.com/cuda/nvblas/index.html.md)
+- [Use this guide when working with CUDA fatbinary formats via NVFATBIN.](https://docs.nvidia.com/cuda/nvfatbin/index.html.md)
+- [Read this reference when performing device-side or host-side JIT linking using NVJITLINK.](https://docs.nvidia.com/cuda/nvjitlink/index.html.md)
+- [Consult this page when accelerating JPEG encoding or decoding using NVJPEG.](https://docs.nvidia.com/cuda/nvjpeg/index.html.md)
+- [Use this guide when compiling CUDA code at runtime using NVRTC.](https://docs.nvidia.com/cuda/nvrtc/index.html.md)
+- [Read this documentation when using Thrust for high-level parallel algorithms in CUDA.](https://nvidia.github.io/cccl/thrust/)
+<span class="code-line-hl"><span class="code-pass code-pass--1">1</span>---</span>
+<span class="code-line-hl"><span class="code-pass code-pass--1">1</span>## PTX Compiler API References</span>
+- [Use this reference when interfacing programmatically with the PTX compiler to build custom compilation pipelines.](https://docs.nvidia.com/cuda/ptx-compiler-api/index.html.md)
+<span class="code-line-hl"><span class="code-pass code-pass--1">1</span>---</span>
+<span class="code-line-hl"><span class="code-pass code-pass--1">1</span>## Miscellaneous</span>
+- [Use CUPTI when collecting profiling and tracing data from CUDA applications.](https://docs.nvidia.com/cupti/index.html)
+- [Consult this guide to understand CUDA driver and runtime compatibility guarantees.](https://docs.nvidia.com/deploy/cuda-compatibility/index.html)
+- [Use this demo suite as reference implementations for validating CUDA installations and features.](https://docs.nvidia.com/cuda/demo-suite/index.html.md)
+- [Read this documentation when integrating CUDA debugging functionality into custom tools.](https://docs.nvidia.com/cuda/debugger-api/index.html.md)
+- [Consult this guide when working with EFLOW in embedded or specialized CUDA workflows.](https://docs.nvidia.com/cuda/eflow-users-guide/index.html.md)
+- [Use this guide when enabling GPUDirect RDMA for low-latency GPU-to-network or GPU-to-storage communication.](https://docs.nvidia.com/cuda/gpudirect-rdma/index.html.md)
+- [Consult this page when enabling GPUDirect Storage to bypass host memory for IO-heavy workloads.](https://docs.nvidia.com/gpudirect-storage/index.html)
+- [Important: MIG documentation is canonically maintained under NVIDIA Datacenter docs, not the CUDA doc tree.](https://docs.nvidia.com/datacenter/tesla/mig-user-guide/index.html)
+- [Use this guide when deploying CUDA applications in virtualized GPU environments.](https://docs.nvidia.com/cuda/vGPU/index.html)
+- [Consult this page when running CUDA under Windows Subsystem for Linux.](https://docs.nvidia.com/cuda/wsl-user-guide/index.html.md)
+<span class="code-line-hl"><span class="code-pass code-pass--1">1</span>---</span>
+<span class="code-line-hl"><span class="code-pass code-pass--1">1</span>## CUDA Tools</span>
+- [Use Compute Sanitizer to detect memory errors, race conditions, and undefined behavior in CUDA programs.](https://docs.nvidia.com/compute-sanitizer/index.html)
+- [Use this page when inspecting CUDA binaries, fatbins, and object files.](https://docs.nvidia.com/cuda/cuda-binary-utilities/index.html.md)
+- [Consult this guide when receiving compile-time optimization advice for CUDA code.](https://docs.nvidia.com/cuda/cuda-compile-time-advisor/index.html.md)
+- [Use this documentation when debugging CUDA applications with CUDA-GDB.](https://docs.nvidia.com/cuda/cuda-gdb/index.html.md)
+- [Read this reference when compiling CUDA code using the nvcc compiler driver.](https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html.md)
+- [Use this tool when performing kernel-level performance analysis with Nsight Compute.](https://docs.nvidia.com/nsight-compute/index.html)
+- [Consult this guide when tracing system-wide GPU activity using Nsight Systems.](https://docs.nvidia.com/nsight-systems/index.html)
+- [Use this documentation when developing CUDA applications with Nsight Visual Studio Edition.](https://docs.nvidia.com/nsight-visual-studio-edition/index.html)
+- [Read this guide when developing CUDA applications with Nsight Eclipse plugins.](https://docs.nvidia.com/cuda/nsight-eclipse-plugins-guide/index.html.md)
+- [Consult this page when installing Nsight Eclipse plugins.](https://docs.nvidia.com/cuda/nsightee-plugins-install-guide/index.html)
+<span class="code-line-hl"><span class="code-pass code-pass--1">1</span>---</span>
+<span class="code-line-hl"><span class="code-pass code-pass--1">1</span>## White Papers</span>
+- [Read this paper to understand floating-point precision, rounding, and IEEE-754 behavior on NVIDIA GPUs.](https://docs.nvidia.com/cuda/floating-point/index.html.md)
+- [Consult this document when studying incomplete LU and Cholesky factorization methods on GPUs.](https://docs.nvidia.com/cuda/incomplete-lu-cholesky/index.html.md)
+<span class="code-line-hl"><span class="code-pass code-pass--1">1</span>---</span>
+<span class="code-line-hl"><span class="code-pass code-pass--1">1</span>## Application Notes</span>
+- [Use this application note when developing CUDA applications for NVIDIA Tegra platforms.](https://docs.nvidia.com/cuda/cuda-for-tegra-appnote/index.html.md)
+<span class="code-line-hl"><span class="code-pass code-pass--1">1</span>---</span>
+<span class="code-line-hl"><span class="code-pass code-pass--1">1</span>## Compiler SDK</span>
+- [Consult this reference when using the NVVM compiler API.](https://docs.nvidia.com/cuda/libnvvm-api/index.html.md)
+- [Read this guide when working with the CUDA libdevice library.](https://docs.nvidia.com/cuda/libdevice-users-guide/index.html.md)
+- [Use this specification when working directly with NVVM IR.](https://docs.nvidia.com/cuda/nvvm-ir-spec/index.html.md)
+<span class="code-line-hl"><span class="code-pass code-pass--1">1</span>---</span>
+<span class="code-line-hl"><span class="code-pass code-pass--1">1</span>## CUDA Archives</span>
+- [Use this archive when maintaining legacy CUDA C programming models.](https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html.md)
+- [Consult this archive when comparing historical CUDA feature sets.](https://docs.nvidia.com/cuda/cuda-features-archive/index.html.md)
+<span class="code-line-hl"><span class="code-pass code-pass--1">1</span>---</span>
+<span class="code-line-hl"><span class="code-pass code-pass--1">1</span>## Legal Notices</span>
+- [Review this page for CUDA licensing terms and legal notices.](https://docs.nvidia.com/cuda/eula/index.html.md)</code></pre>
+      </figure>
+      </div>
+
+      <div class="hop-panel" id="file-install" role="tabpanel" aria-labelledby="tab-file-install" hidden>
+      <h3 class="fn-h3">第 4 步 · Linux 安装</h3>
+      <p class="file-sample-note">绿行 = 读过。这一页只回答「Linux 上怎么装」。thread / block / grid 不在这里，读完<strong>回到产品册</strong>，再跟 Programming Guides。现网 <code>.md</code> 平行稿为空，下面是同页 HTML 正文全文，未删节。</p>
+      <p class="file-sample-note"><strong>顺读</strong>标题和适用系统。<strong>没打开</strong>文末其它指南。</p>
+      <figure class="file-sample file-sample--wrap">
+        <figcaption><code>https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html.md</code></figcaption>
+        <pre><code><span class="code-line-hl"># CUDA Installation Guide for Linux</span>
+<span class="code-line-hl"># 1. Overview</span>
+<span class="code-line-hl">The NVIDIA CUDA Installation Guide for Linux provides comprehensive instructions for installing the CUDA Toolkit across multiple Linux distributions and architectures. CUDA® is NVIDIA’s parallel computing platform that enables dramatic performance increases by harnessing GPU power for computational workloads. This guide covers four primary installation methods: package manager installation (recommended for most users, supporting RPM and DEB packages with native package management integration), runfile installation (distribution-independent standalone installer), Conda installation (for environment management), and pip wheels (Python-focused runtime installation). The guide supports major Linux distributions including Ubuntu, Red Hat Enterprise Linux, SUSE, Debian, Fedora, and specialized distributions like Amazon Linux and Azure Linux, across x86_64, ARM64-SBSA, and ARM64-Jetson architectures. Each installation method includes detailed pre-installation requirements (CUDA-capable GPU, supported OS version, GCC compiler), step-by-step procedures, and post-installation configuration including environment setup, sample verification, and integration with development tools like Nsight and CUDA-GDB.</span>
+<span class="code-line-hl"># 2. Introduction</span>
+<span class="code-line-hl">CUDA® is a parallel computing platform and programming model invented by NVIDIA®. It enables dramatic increases in computing performance by harnessing the power of the graphics processing unit (GPU).</span>
+<span class="code-line-hl">CUDA was developed with several design goals in mind:</span>
+<span class="code-line-hl">Provide a small set of extensions to standard programming languages, like C, that enable a straightforward implementation of parallel algorithms. With CUDA C/C++, programmers can focus on the task of parallelization of the algorithms rather than spending time on their implementation.</span>
+<span class="code-line-hl">Support heterogeneous computation where applications use both the CPU and GPU. Serial portions of applications are run on the CPU, and parallel portions are offloaded to the GPU. As such, CUDA can be incrementally applied to existing applications. The CPU and GPU are treated as separate devices that have their own memory spaces. This configuration also allows simultaneous computation on the CPU and GPU without contention for memory resources.</span>
+<span class="code-line-hl">CUDA-capable GPUs have hundreds of cores that can collectively run thousands of computing threads. These cores have shared resources including a register file and a shared memory. The on-chip shared memory allows parallel tasks running on these cores to share data without sending it over the system memory bus.</span>
+<span class="code-line-hl">This guide will show you how to install and check the correct operation of the CUDA development tools.</span>
+<span class="code-line-hl">Note</span>
+<span class="code-line-hl">Instructions for installing NVIDIA Drivers are now in the Driver installation guide.</span>
+<span class="code-line-hl">## 2.1. System Requirements</span>
+<span class="code-line-hl">To use NVIDIA CUDA on your system, you will need the following installed:</span>
+<span class="code-line-hl">CUDA-capable GPU</span>
+<span class="code-line-hl">A supported version of Linux with a gcc compiler and toolchain</span>
+<span class="code-line-hl">CUDA Toolkit (available at https://developer.nvidia.com/cuda-downloads)</span>
+<span class="code-line-hl">The CUDA development environment relies on tight integration with the host development environment, including the host compiler and C runtime libraries, and is therefore only supported on distribution versions that have been qualified for this CUDA Toolkit release.</span>
+<span class="code-line-hl">The following tables list the supported Linux distributions:</span>
+<span class="code-line-hl">Note</span>
+<span class="code-line-hl">Distribution</span>
+<span class="code-line-hl">Codename</span>
+<span class="code-line-hl">Architecture</span>
+<span class="code-line-hl">amd64 systems (x86_64)</span>
+<span class="code-line-hl">Red Hat Enterprise Linux 10</span>
+<span class="code-line-hl">rhel10</span>
+<span class="code-line-hl">x86_64</span>
+<span class="code-line-hl">Red Hat Enterprise Linux 9</span>
+<span class="code-line-hl">rhel9</span>
+<span class="code-line-hl">x86_64</span>
+<span class="code-line-hl">Red Hat Enterprise Linux 8</span>
+<span class="code-line-hl">rhel8</span>
+<span class="code-line-hl">x86_64</span>
+<span class="code-line-hl">AlmaLinux 10</span>
+<span class="code-line-hl">rhel10</span>
+<span class="code-line-hl">x86_64</span>
+<span class="code-line-hl">AlmaLinux 9</span>
+<span class="code-line-hl">rhel9</span>
+<span class="code-line-hl">x86_64</span>
+<span class="code-line-hl">AlmaLinux 8</span>
+<span class="code-line-hl">rhel8</span>
+<span class="code-line-hl">x86_64</span>
+<span class="code-line-hl">openSUSE Leap 15 SP6</span>
+<span class="code-line-hl">opensuse15</span>
+<span class="code-line-hl">x86_64</span>
+<span class="code-line-hl">openSUSE Leap 16</span>
+<span class="code-line-hl">suse16</span>
+<span class="code-line-hl">x86_64</span>
+<span class="code-line-hl">Rocky Linux 10</span>
+<span class="code-line-hl">rhel10</span>
+<span class="code-line-hl">x86_64</span>
+<span class="code-line-hl">Rocky Linux 9</span>
+<span class="code-line-hl">rhel9</span>
+<span class="code-line-hl">x86_64</span>
+<span class="code-line-hl">Rocky Linux 8</span>
+<span class="code-line-hl">rhel8</span>
+<span class="code-line-hl">x86_64</span>
+<span class="code-line-hl">SUSE Linux Enterprise Server 15 SP6+</span>
+<span class="code-line-hl">sles15</span>
+<span class="code-line-hl">x86_64</span>
+<span class="code-line-hl">SUSE Linux Enterprise Server 16</span>
+<span class="code-line-hl">suse16</span>
+<span class="code-line-hl">x86_64</span>
+<span class="code-line-hl">Ubuntu 26.04 LTS</span>
+<span class="code-line-hl">ubuntu2604</span>
+<span class="code-line-hl">amd64</span>
+<span class="code-line-hl">Ubuntu 24.04 LTS</span>
+<span class="code-line-hl">ubuntu2404</span>
+<span class="code-line-hl">amd64</span>
+<span class="code-line-hl">Ubuntu 22.04 LTS</span>
+<span class="code-line-hl">ubuntu2204</span>
+<span class="code-line-hl">amd64</span>
+<span class="code-line-hl">Debian 12</span>
+<span class="code-line-hl">debian12</span>
+<span class="code-line-hl">amd64</span>
+<span class="code-line-hl">Debian 13</span>
+<span class="code-line-hl">debian13</span>
+<span class="code-line-hl">amd64</span>
+<span class="code-line-hl">Fedora 44</span>
+<span class="code-line-hl">fedora44</span>
+<span class="code-line-hl">x86_64</span>
+<span class="code-line-hl">KylinOS V11 2503</span>
+<span class="code-line-hl">kylin11</span>
+<span class="code-line-hl">x86_64</span>
+<span class="code-line-hl">Azure Linux 3.0</span>
+<span class="code-line-hl">azl3</span>
+<span class="code-line-hl">x86_64</span>
+<span class="code-line-hl">Amazon Linux 2023</span>
+<span class="code-line-hl">amzn2023</span>
+<span class="code-line-hl">x86_64</span>
+<span class="code-line-hl">Oracle Linux 9</span>
+<span class="code-line-hl">rhel9</span>
+<span class="code-line-hl">x86_64</span>
+<span class="code-line-hl">Oracle Linux 8</span>
+<span class="code-line-hl">rhel8</span>
+<span class="code-line-hl">x86_64</span>
+<span class="code-line-hl">arm64 systems (SBSA)</span>
+<span class="code-line-hl">Red Hat Enterprise Linux 10</span>
+<span class="code-line-hl">rhel10</span>
+<span class="code-line-hl">aarch64</span>
+<span class="code-line-hl">Red Hat Enterprise Linux 9</span>
+<span class="code-line-hl">rhel9</span>
+<span class="code-line-hl">aarch64</span>
+<span class="code-line-hl">Red Hat Enterprise Linux 8</span>
+<span class="code-line-hl">rhel8</span>
+<span class="code-line-hl">aarch64</span>
+<span class="code-line-hl">SUSE Linux Enterprise Server 15 SP6+</span>
+<span class="code-line-hl">sles15</span>
+<span class="code-line-hl">aarch64</span>
+<span class="code-line-hl">SUSE Linux Enterprise Server 16</span>
+<span class="code-line-hl">suse16</span>
+<span class="code-line-hl">aarch64</span>
+<span class="code-line-hl">KylinOS V11 2503</span>
+<span class="code-line-hl">kylin11</span>
+<span class="code-line-hl">aarch64</span>
+<span class="code-line-hl">Ubuntu 26.04 LTS</span>
+<span class="code-line-hl">ubuntu2604</span>
+<span class="code-line-hl">arm64</span>
+<span class="code-line-hl">Ubuntu 24.04 LTS</span>
+<span class="code-line-hl">ubuntu2404</span>
+<span class="code-line-hl">arm64</span>
+<span class="code-line-hl">Ubuntu 22.04 LTS</span>
+<span class="code-line-hl">ubuntu2204</span>
+<span class="code-line-hl">arm64</span>
+<span class="code-line-hl">Azure Linux 3.0</span>
+<span class="code-line-hl">azl3</span>
+<span class="code-line-hl">aarch64</span>
+<span class="code-line-hl">Amazon Linux 2023</span>
+<span class="code-line-hl">amzn2023</span>
+<span class="code-line-hl">aarch64</span>
+<span class="code-line-hl">Distribution</span>
+<span class="code-line-hl">OS Version</span>
+<span class="code-line-hl">Kernel</span>
+<span class="code-line-hl">Default GCC</span>
+<span class="code-line-hl">GLIBC</span>
+<span class="code-line-hl">x86_64</span>
+<span class="code-line-hl">RHEL 10</span>
+<span class="code-line-hl">10.2</span>
+<span class="code-line-hl">6.12.0-211</span>
+<span class="code-line-hl">14.3.1</span>
+<span class="code-line-hl">2.39</span>
+<span class="code-line-hl">RHEL 9</span>
+<span class="code-line-hl">9.8</span>
+<span class="code-line-hl">5.14.0-687.15</span>
+<span class="code-line-hl">11.5.0</span>
+<span class="code-line-hl">2.34</span>
+<span class="code-line-hl">RHEL 8</span>
+<span class="code-line-hl">8.10</span>
+<span class="code-line-hl">4.18.0-553</span>
+<span class="code-line-hl">8.5.0</span>
+<span class="code-line-hl">2.28</span>
+<span class="code-line-hl">Rocky Linux 10</span>
+<span class="code-line-hl">10.2</span>
+<span class="code-line-hl">6.12.0-211</span>
+<span class="code-line-hl">14.3.1</span>
+<span class="code-line-hl">2.39</span>
+<span class="code-line-hl">Rocky Linux 9</span>
+<span class="code-line-hl">9.8</span>
+<span class="code-line-hl">5.14.0-687.15</span>
+<span class="code-line-hl">11.5.0</span>
+<span class="code-line-hl">2.34</span>
+<span class="code-line-hl">Rocky Linux 8</span>
+<span class="code-line-hl">8.10</span>
+<span class="code-line-hl">4.18.0-553</span>
+<span class="code-line-hl">8.5.0</span>
+<span class="code-line-hl">2.28</span>
+<span class="code-line-hl">Oracle Linux 9</span>
+<span class="code-line-hl">9</span>
+<span class="code-line-hl">5.14.0-427</span>
+<span class="code-line-hl">11.4.1</span>
+<span class="code-line-hl">2.34</span>
+<span class="code-line-hl">Oracle Linux 8</span>
+<span class="code-line-hl">8</span>
+<span class="code-line-hl">4.18.0-553</span>
+<span class="code-line-hl">8.5.0</span>
+<span class="code-line-hl">2.28</span>
+<span class="code-line-hl">SUSE SLES 16</span>
+<span class="code-line-hl">16</span>
+<span class="code-line-hl">6.12.0-160000.5</span>
+<span class="code-line-hl">15.1.1</span>
+<span class="code-line-hl">2.40</span>
+<span class="code-line-hl">SUSE SLES 15</span>
+<span class="code-line-hl">15.7</span>
+<span class="code-line-hl">6.4.0-150600.21</span>
+<span class="code-line-hl">7.5.0</span>
+<span class="code-line-hl">2.38</span>
+<span class="code-line-hl">Ubuntu 26.04 LTS</span>
+<span class="code-line-hl">26.04</span>
+<span class="code-line-hl">7.0.0-14</span>
+<span class="code-line-hl">15.2.0</span>
+<span class="code-line-hl">2.43</span>
+<span class="code-line-hl">Ubuntu 24.04 LTS</span>
+<span class="code-line-hl">24.04.4</span>
+<span class="code-line-hl">6.17.0-19</span>
+<span class="code-line-hl">14.3.0</span>
+<span class="code-line-hl">2.39</span>
+<span class="code-line-hl">Ubuntu 22.04 LTS</span>
+<span class="code-line-hl">22.04.5</span>
+<span class="code-line-hl">6.5.0-45</span>
+<span class="code-line-hl">12.3.0</span>
+<span class="code-line-hl">2.35</span>
+<span class="code-line-hl">Debian 13</span>
+<span class="code-line-hl">13.5</span>
+<span class="code-line-hl">6.12.86</span>
+<span class="code-line-hl">14.2.0</span>
+<span class="code-line-hl">2.41</span>
+<span class="code-line-hl">Debian 12</span>
+<span class="code-line-hl">12.14</span>
+<span class="code-line-hl">6.1.0-170</span>
+<span class="code-line-hl">12.2.0</span>
+<span class="code-line-hl">2.36</span>
+<span class="code-line-hl">OpenSUSE Leap 15</span>
+<span class="code-line-hl">15.6</span>
+<span class="code-line-hl">6.4.0-150600.21</span>
+<span class="code-line-hl">7.5.0</span>
+<span class="code-line-hl">2.38</span>
+<span class="code-line-hl">Fedora 44</span>
+<span class="code-line-hl">44</span>
+<span class="code-line-hl">6.19.2-300</span>
+<span class="code-line-hl">16.0.1</span>
+<span class="code-line-hl">2.43</span>
+<span class="code-line-hl">KylinOS V11</span>
+<span class="code-line-hl">V11 2503</span>
+<span class="code-line-hl">6.6.0-32.7</span>
+<span class="code-line-hl">12.3.1</span>
+<span class="code-line-hl">2.38</span>
+<span class="code-line-hl">Amazon Linux 2023</span>
+<span class="code-line-hl">AL2023</span>
+<span class="code-line-hl">6.1.82-99.168</span>
+<span class="code-line-hl">11.4.1</span>
+<span class="code-line-hl">2.34</span>
+<span class="code-line-hl">MSFT Azure Linux</span>
+<span class="code-line-hl">3.0</span>
+<span class="code-line-hl">6.6.64.2-9.azl3</span>
+<span class="code-line-hl">13.2.0</span>
+<span class="code-line-hl">2.38-8</span>
+<span class="code-line-hl">Generic arm64 systems (sbsa)</span>
+<span class="code-line-hl">RHEL 10</span>
+<span class="code-line-hl">10.2</span>
+<span class="code-line-hl">6.12.0-211</span>
+<span class="code-line-hl">14.3.1</span>
+<span class="code-line-hl">2.39</span>
+<span class="code-line-hl">RHEL 9</span>
+<span class="code-line-hl">9.8</span>
+<span class="code-line-hl">5.14.0-687.15</span>
+<span class="code-line-hl">11.5.0</span>
+<span class="code-line-hl">2.34</span>
+<span class="code-line-hl">RHEL 8</span>
+<span class="code-line-hl">8.10</span>
+<span class="code-line-hl">4.18.0-553</span>
+<span class="code-line-hl">8.5.0</span>
+<span class="code-line-hl">2.28</span>
+<span class="code-line-hl">Ubuntu 22.04 LTS</span>
+<span class="code-line-hl">22.04.5</span>
+<span class="code-line-hl">6.5.0-1019</span>
+<span class="code-line-hl">11.4.0</span>
+<span class="code-line-hl">2.35</span>
+<span class="code-line-hl">Ubuntu 24.04 LTS</span>
+<span class="code-line-hl">24.04.4</span>
+<span class="code-line-hl">6.8.0-87</span>
+<span class="code-line-hl">13.4.0</span>
+<span class="code-line-hl">2.39</span>
+<span class="code-line-hl">Ubuntu 26.04 LTS</span>
+<span class="code-line-hl">26.04</span>
+<span class="code-line-hl">7.0.0-1004</span>
+<span class="code-line-hl">15.2.0</span>
+<span class="code-line-hl">2.43</span>
+<span class="code-line-hl">SUSE SLES 15</span>
+<span class="code-line-hl">15.7</span>
+<span class="code-line-hl">6.4.0-150700.51</span>
+<span class="code-line-hl">7.5.0</span>
+<span class="code-line-hl">2.38</span>
+<span class="code-line-hl">SUSE SLES 16</span>
+<span class="code-line-hl">16</span>
+<span class="code-line-hl">6.12.0</span>
+<span class="code-line-hl">15.1.1</span>
+<span class="code-line-hl">2.40</span>
+<span class="code-line-hl">KylinOS V11</span>
+<span class="code-line-hl">V11 2503</span>
+<span class="code-line-hl">6.6.0-32.7</span>
+<span class="code-line-hl">12.3.1</span>
+<span class="code-line-hl">2.38</span>
+<span class="code-line-hl">GRACE only arm64 systems (sbsa)</span>
+<span class="code-line-hl">Amazon Linux 2023</span>
+<span class="code-line-hl">AL2023</span>
+<span class="code-line-hl">6.12.16-18</span>
+<span class="code-line-hl">11.4.1</span>
+<span class="code-line-hl">2.34</span>
+<span class="code-line-hl">MSFT Azure Linux</span>
+<span class="code-line-hl">3.0</span>
+<span class="code-line-hl">6.6.64.2-9.azl3</span>
+<span class="code-line-hl">13.2.0</span>
+<span class="code-line-hl">2.38-8</span>
+<span class="code-line-hl">Ubuntu 22.04 LTS</span>
+<span class="code-line-hl">22.04.5</span>
+<span class="code-line-hl">6.8.0-90-generic</span>
+<span class="code-line-hl">11.4.0</span>
+<span class="code-line-hl">2.35</span>
+<span class="code-line-hl">Ubuntu 24.04 LTS</span>
+<span class="code-line-hl">24.04.4</span>
+<span class="code-line-hl">6.8.0-1049-nvidia-64k</span>
+<span class="code-line-hl">13.3.0</span>
+<span class="code-line-hl">2.39</span>
+<span class="code-line-hl">Ubuntu 26.04 LTS</span>
+<span class="code-line-hl">26.04</span>
+<span class="code-line-hl">7.0.0-1004</span>
+<span class="code-line-hl">15.2.0</span>
+<span class="code-line-hl">2.43</span>
+<span class="code-line-hl">RHEL 10</span>
+<span class="code-line-hl">10.2</span>
+<span class="code-line-hl">6.12.0-211.18.1</span>
+<span class="code-line-hl">14.3.1</span>
+<span class="code-line-hl">2.39</span>
+<span class="code-line-hl">RHEL 9</span>
+<span class="code-line-hl">9.8</span>
+<span class="code-line-hl">5.14.0-687.15.1</span>
+<span class="code-line-hl">11.5.0</span>
+<span class="code-line-hl">2.34</span>
+<span class="code-line-hl">SUSE SLES 15</span>
+<span class="code-line-hl">15.7</span>
+<span class="code-line-hl">6.4.0-150700.53.11.1</span>
+<span class="code-line-hl">7.5.0</span>
+<span class="code-line-hl">2.38</span>
+<span class="code-line-hl">SUSE SLES 16</span>
+<span class="code-line-hl">16</span>
+<span class="code-line-hl">6.12.0</span>
+<span class="code-line-hl">15.1.1</span>
+<span class="code-line-hl">2.40</span>
+<span class="code-line-hl">Debian 12</span>
+<span class="code-line-hl">12.14</span>
+<span class="code-line-hl">6.1.170</span>
+<span class="code-line-hl">12.2.0</span>
+<span class="code-line-hl">2.36</span>
+<span class="code-line-hl">Debian 13</span>
+<span class="code-line-hl">13.5</span>
+<span class="code-line-hl">6.12.86</span>
+<span class="code-line-hl">14.2.0</span>
+<span class="code-line-hl">2.41</span>
+<span class="code-line-hl">arm64 sbsa Jetson (dGPU + iGPU with OpenRM/nvgpu)</span>
+<span class="code-line-hl">Ubuntu 24.04 LTS Rel39 (JP7.2) native</span>
+<span class="code-line-hl">24.04</span>
+<span class="code-line-hl">6.14.0-33-generic</span>
+<span class="code-line-hl">13.3.0</span>
+<span class="code-line-hl">2.39</span>
+<span class="code-line-hl">Ubuntu 24.04 LTS Rel39 (JP7.2) cross</span>
+<span class="code-line-hl">24.04</span>
+<span class="code-line-hl">6.8.12-tegra</span>
+<span class="code-line-hl">13.3.0</span>
+<span class="code-line-hl">2.39</span>
+<span class="code-line-hl">Additional information on specific kernel versions supported:</span>
+<span class="code-line-hl">Red Hat Enterprise Linux (RHEL): https://access.redhat.com/articles/3078</span>
+<span class="code-line-hl">SUSE Linux Enterprise Server (SLES): https://www.suse.com/support/kb/doc/?id=000019587</span>
+<span class="code-line-hl">Oracle Linux: https://blogs.oracle.com/scoter/oracle-linux-and-unbreakable-enterprise-kernel-uek-releases</span>
+<span class="code-line-hl">## 2.2. OS Support Policy</span>
+<span class="code-line-hl">Support for the different operating systems will continue until the standard EOSS/EOL date as defined for each operating system.</span>
+<span class="code-line-hl">Refer to the support lifecycle for these operating systems to know their support timelines and plan to move to newer releases accordingly.</span>
+<span class="code-line-hl">## 2.3. Host Compiler Support Policy</span>
+<span class="code-line-hl">In order to compile the CPU “Host” code in the CUDA source, the CUDA compiler NVCC requires a compatible host compiler to be installed on the system. The version of the host compiler supported on Linux platforms is tabulated as below. NVCC performs a version check on the host compiler’s major version and so newer minor versions of the compilers listed below will be supported, but major versions falling outside the range will not be supported.</span>
+<span class="code-line-hl">Distribution</span>
+<span class="code-line-hl">GCC</span>
+<span class="code-line-hl">Clang</span>
+<span class="code-line-hl">Clang.grco</span>
+<span class="code-line-hl">NVHPC</span>
+<span class="code-line-hl">XLC</span>
+<span class="code-line-hl">ArmC/C++</span>
+<span class="code-line-hl">ICC</span>
+<span class="code-line-hl">x86_64</span>
+<span class="code-line-hl">6.x - 16.x</span>
+<span class="code-line-hl">7.x - 22.x</span>
+<span class="code-line-hl">No</span>
+<span class="code-line-hl">26.5</span>
+<span class="code-line-hl">No</span>
+<span class="code-line-hl">No</span>
+<span class="code-line-hl">No</span>
+<span class="code-line-hl">Arm64 sbsa</span>
+<span class="code-line-hl">6.x - 16.x</span>
+<span class="code-line-hl">7.x - 22.x</span>
+<span class="code-line-hl">16.x - 22.x</span>
+<span class="code-line-hl">26.5</span>
+<span class="code-line-hl">No</span>
+<span class="code-line-hl">24.10</span>
+<span class="code-line-hl">No</span>
+<span class="code-line-hl">For GCC and Clang, the preceding table indicates the minimum version and the latest version supported. The minimum recommended GCC version has been GCC 6 since CUDA 11.0. On Linux distributions that use an older default version of the GCC toolchain, it is recommended to upgrade to a newer toolchain. Newer GCC toolchains are available with the Red Hat Developer Toolset for example. For platforms that ship a compiler version older than GCC 6 by default, linking to static or dynamic libraries that are shipped with the CUDA Toolkit is not supported. We only support libstdc++ (GCC’s implementation) for all the supported host compilers for the platforms listed above.</span>
+<span class="code-line-hl">### 2.3.1. Host Compiler Compatibility Packages</span>
+<span class="code-line-hl">Really up to date distributions might ship with a newer compiler than what is covered by the Supported Compilers table above. Usually, those distribution also provide a GCC compatibility package that can be used instead of the default one.</span>
+<span class="code-line-hl">### 2.3.2. Supported C++ Dialects</span>
+<span class="code-line-hl">NVCC and NVRTC (CUDA Runtime Compiler) support the following C++ dialect: C++11, C++14, C++17, C++20, C++23 on supported host compilers. The default C++ dialect of NVCC is determined by the default dialect of the host compiler used for compilation. Refer to host compiler documentation and the CUDA Programming Guide for more details on language support.</span>
+<span class="code-line-hl">C++20 is supported with the following flavors of host compiler in both host and device code.</span>
+<span class="code-line-hl">GCC</span>
+<span class="code-line-hl">Clang</span>
+<span class="code-line-hl">NVHPC</span>
+<span class="code-line-hl">Arm C/C++</span>
+<span class="code-line-hl">&gt;=10.x</span>
+<span class="code-line-hl">&gt;=11.x</span>
+<span class="code-line-hl">&gt;=22.x</span>
+<span class="code-line-hl">&gt;=22.x</span>
+<span class="code-line-hl">## 2.4. About This Document</span>
+<span class="code-line-hl">This document is intended for readers familiar with the Linux environment and the compilation of C programs from the command line. You do not need previous experience with CUDA or experience with parallel computation.</span>
+<span class="code-line-hl">### 2.4.1. Administrative Privileges</span>
+<span class="code-line-hl"># 3. Pre-installation Actions</span>
+<span class="code-line-hl">Some actions must be taken before the CUDA Toolkit can be installed on Linux:</span>
+<span class="code-line-hl">Verify the system has a CUDA-capable GPU.</span>
+<span class="code-line-hl">Verify the system is running a supported version of Linux.</span>
+<span class="code-line-hl">Download the NVIDIA CUDA Toolkit.</span>
+<span class="code-line-hl">Handle conflicting installation methods.</span>
+<span class="code-line-hl">Note</span>
+<span class="code-line-hl">## 3.1. Verify You Have a CUDA-Capable GPU</span>
+<span class="code-line-hl">To verify that your GPU is CUDA-capable, go to your distribution’s equivalent of System Properties, or, from the command line, enter:</span>
+<span class="code-line-hl">$ lspci | grep -i nvidia</span>
+<span class="code-line-hl">If your graphics card is from NVIDIA and it is listed in https://developer.nvidia.com/cuda-gpus, your GPU is CUDA-capable. The Release Notes for the CUDA Toolkit also contain a list of supported products.</span>
+<span class="code-line-hl">## 3.2. Verify You Have a Supported Version of Linux</span>
+<span class="code-line-hl">The CUDA Development Tools are only supported on some specific distributions of Linux. These are listed in the CUDA Toolkit release notes.</span>
+<span class="code-line-hl">To determine which distribution and release number you’re running, type the following at the command line:</span>
+<span class="code-line-hl">$ hostnamectl</span>
+<span class="code-line-hl">## 3.3. Verify the System Has gcc Installed</span>
+<span class="code-line-hl">To verify the version of gcc installed on your system, type the following on the command line:</span>
+<span class="code-line-hl">gcc --version</span>
+<span class="code-line-hl">## 3.4. Choose an Installation Method</span>
+<span class="code-line-hl">The CUDA Toolkit can be installed using either of two different installation mechanisms: distribution-specific packages (RPM and Deb packages), or a distribution-independent package (runfile packages).</span>
+<span class="code-line-hl">The distribution-independent package has the advantage of working across a wider set of Linux distributions, but does not update the distribution’s native package management system. The distribution-specific packages interface with the distribution’s native package management system. It is recommended to use the distribution-specific packages, where possible.</span>
+<span class="code-line-hl">Note</span>
+<span class="code-line-hl">For both native as well as cross development, the toolkit must be installed using the distribution-specific installer. See the CUDA Cross-Platform Installation section for more details.</span>
+<span class="code-line-hl">## 3.5. Download the NVIDIA CUDA Toolkit</span>
+<span class="code-line-hl">The NVIDIA CUDA Toolkit is available at https://developer.nvidia.com/cuda-downloads.</span>
+<span class="code-line-hl">Choose the platform you are using and download the NVIDIA CUDA Toolkit. The CUDA Toolkit contains the tools needed to create, build and run a CUDA application as well as libraries, header files, and other resources.</span>
+<span class="code-line-hl">Download Verification</span>
+<span class="code-line-hl">If you are using the local standalone or runfile installer, the download can be verified by comparing the MD5 checksum posted at https://developer.download.nvidia.com/compute/cuda/13.4.1/docs/sidebar/md5sum.txt with that of the downloaded file. If either of the checksums differ, the downloaded file is corrupt and needs to be downloaded again.</span>
+<span class="code-line-hl">To calculate the MD5 checksum of the downloaded file, run the following:</span>
+<span class="code-line-hl">md5sum &lt;file&gt;</span>
+<span class="code-line-hl">## 3.6. Handle Conflicting Installation Methods</span>
+<span class="code-line-hl">Before installing CUDA, any previous installations that could conflict should be uninstalled. This will not affect systems which have not had CUDA installed previously, or systems where the installation method has been preserved (RPM/Deb vs. Runfile). See the following charts for specifics.</span>
+<span class="code-line-hl">Installed Toolkit Version == X.Y</span>
+<span class="code-line-hl">Installed Toolkit Version != X.Y</span>
+<span class="code-line-hl">RPM/deb</span>
+<span class="code-line-hl">run</span>
+<span class="code-line-hl">RPM/deb</span>
+<span class="code-line-hl">run</span>
+<span class="code-line-hl">Installing Toolkit Version X.Y</span>
+<span class="code-line-hl">RPM/deb</span>
+<span class="code-line-hl">No Action</span>
+<span class="code-line-hl">Uninstall Run</span>
+<span class="code-line-hl">No Action</span>
+<span class="code-line-hl">No Action</span>
+<span class="code-line-hl">run</span>
+<span class="code-line-hl">Uninstall RPM/deb</span>
+<span class="code-line-hl">Uninstall Run</span>
+<span class="code-line-hl">No Action</span>
+<span class="code-line-hl">No Action</span>
+<span class="code-line-hl">Use the following command to uninstall a Toolkit runfile installation:</span>
+<span class="code-line-hl"># /usr/local/cuda-X.Y/bin/cuda-uninstaller</span>
+<span class="code-line-hl">Use the following commands to uninstall an RPM/Deb installation:</span>
+<span class="code-line-hl">Red Hat Enterprise Linux, Rocky Linux, Oracle Linux, Fedora, KylinOS, Amazon Linux:</span>
+<span class="code-line-hl"># dnf remove &lt;package_name&gt;</span>
+<span class="code-line-hl">Azure Linux:</span>
+<span class="code-line-hl"># tdnf remove &lt;package_name&gt;</span>
+<span class="code-line-hl">OpenSUSE Leap, SUSE Linux Enterprise Server:</span>
+<span class="code-line-hl"># zypper remove &lt;package_name&gt;</span>
+<span class="code-line-hl">Debian / Ubuntu:</span>
+<span class="code-line-hl"># apt --purge remove &lt;package_name&gt;</span>
+<span class="code-line-hl"># 4. Package Manager Installation</span>
+<span class="code-line-hl">Basic instructions can be found in the Quick Start Guide. Read on for more detailed instructions.</span>
+<span class="code-line-hl">## 4.1. Overview</span>
+<span class="code-line-hl">Installation using RPM or Debian packages interfaces with your system’s package management system. When using RPM or Debian local repo installers, the downloaded package contains a repository snapshot stored on the local filesystem in /var/. Such a package only informs the package manager where to find the actual installation packages, but will not install them.</span>
+<span class="code-line-hl">If the online network repository is enabled, RPM or Debian packages will be automatically downloaded at installation time using the package manager: apt-get, dnf, tdnf, or zypper.</span>
+<span class="code-line-hl">Distribution-specific instructions detail how to install CUDA:</span>
+<span class="code-line-hl">Red Hat Enterprise Linux / AlmaLinux / Rocky Linux / Oracle Linux</span>
+<span class="code-line-hl">KylinOS</span>
+<span class="code-line-hl">Fedora</span>
+<span class="code-line-hl">SUSE Linux Enterprise Server</span>
+<span class="code-line-hl">OpenSUSE Leap</span>
+<span class="code-line-hl">Ubuntu</span>
+<span class="code-line-hl">Debian</span>
+<span class="code-line-hl">Amazon Linux</span>
+<span class="code-line-hl">Azure Linux</span>
+<span class="code-line-hl">Finally, some helpful package manager capabilities are detailed.</span>
+<span class="code-line-hl">These instructions are for native development only. For cross-platform development, see the CUDA Cross-Platform Environment section.</span>
+<span class="code-line-hl">Note</span>
+<span class="code-line-hl">## 4.2. Red Hat Enterprise Linux / AlmaLinux / Rocky Linux / Oracle Linux</span>
+<span class="code-line-hl">### 4.2.1. Preparation</span>
+<span class="code-line-hl">Perform the Pre-installation Actions.</span>
+<span class="code-line-hl">Satisfy third-party package dependencies by enabling optional repositories:</span>
+<span class="code-line-hl">Red Hat Enterprise Linux 9:</span>
+<span class="code-line-hl"># subscription-manager repos --enable=rhel-9-for-$arch-appstream-rpms # subscription-manager repos --enable=rhel-9-for-$arch-baseos-rpms # subscription-manager repos --enable=codeready-builder-for-rhel-9-$arch-rpms</span>
+<span class="code-line-hl">Red Hat Enterprise Linux 8:</span>
+<span class="code-line-hl"># subscription-manager repos --enable=rhel-8-for-$arch-appstream-rpms # subscription-manager repos --enable=rhel-8-for-$arch-baseos-rpms # subscription-manager repos --enable=codeready-builder-for-rhel-8-$arch-rpms</span>
+<span class="code-line-hl">AlmaLinux 9, Rocky Linux 9:</span>
+<span class="code-line-hl"># dnf config-manager --set-enabled crb</span>
+<span class="code-line-hl">AlmaLinux 8, Rocky Linux 8:</span>
+<span class="code-line-hl"># dnf config-manager --set-enabled powertools</span>
+<span class="code-line-hl">Oracle Linux 9:</span>
+<span class="code-line-hl"># dnf config-manager --set-enabled ol9_codeready_builder</span>
+<span class="code-line-hl">Oracle Linux 8:</span>
+<span class="code-line-hl"># dnf config-manager --set-enabled ol8_codeready_builder</span>
+<span class="code-line-hl">Choose an installation method: Local Repository Installation or Network Repository Installation.</span>
+<span class="code-line-hl">### 4.2.2. Local Repository Installation</span>
+<span class="code-line-hl">Install local repository on file system:</span>
+<span class="code-line-hl"># rpm --install cuda-repo-&lt;distro&gt;-X-Y-local-&lt;version&gt;*.&lt;arch&gt;.rpm</span>
+<span class="code-line-hl">### 4.2.3. Network Repository Installation</span>
+<span class="code-line-hl">Enable the network repository:</span>
+<span class="code-line-hl"># dnf config-manager --add-repo https://developer.download.nvidia.com/compute/cuda/repos/&lt;distro&gt;/&lt;arch&gt;/cuda-&lt;distro&gt;.repo</span>
+<span class="code-line-hl">### 4.2.4. Common Instructions</span>
+<span class="code-line-hl">These instructions apply to both local and network installations.</span>
+<span class="code-line-hl">Install CUDA SDK:</span>
+<span class="code-line-hl"># dnf install cuda-toolkit</span>
+<span class="code-line-hl">Perform the post-installation actions.</span>
+<span class="code-line-hl">## 4.3. KylinOS</span>
+<span class="code-line-hl">### 4.3.1. Preparation</span>
+<span class="code-line-hl">Perform the pre-installation actions.</span>
+<span class="code-line-hl">Choose an installation method: Local Repository Installation or Network Repository Installation.</span>
+<span class="code-line-hl">### 4.3.2. Local Repository Installation</span>
+<span class="code-line-hl">Install local repository on file system:</span>
+<span class="code-line-hl"># rpm --install cuda-repo-&lt;distro&gt;-X-Y-local-&lt;version&gt;*.&lt;arch&gt;.rpm</span>
+<span class="code-line-hl">### 4.3.3. Network Repository Installation</span>
+<span class="code-line-hl">Enable the network repository:</span>
+<span class="code-line-hl"># dnf config-manager --add-repo https://developer.download.nvidia.com/compute/cuda/repos/&lt;distro&gt;/&lt;arch&gt;/cuda-&lt;distro&gt;.repo</span>
+<span class="code-line-hl">### 4.3.4. Common Instructions</span>
+<span class="code-line-hl">These instructions apply to both local and network installation.</span>
+<span class="code-line-hl">Install CUDA SDK:</span>
+<span class="code-line-hl"># dnf install cuda-toolkit</span>
+<span class="code-line-hl">Perform the post-installation actions.</span>
+<span class="code-line-hl">## 4.4. Fedora</span>
+<span class="code-line-hl">### 4.4.1. Preparation</span>
+<span class="code-line-hl">Perform the pre-installation actions.</span>
+<span class="code-line-hl">Choose an installation method: Local Repository Installation or Network Repository Installation.</span>
+<span class="code-line-hl">### 4.4.2. Local Repository Installation</span>
+<span class="code-line-hl">Install local repository on file system:</span>
+<span class="code-line-hl"># rpm --install cuda-repo-&lt;distro&gt;-X-Y-local-&lt;version&gt;*.x86_64.rpm</span>
+<span class="code-line-hl">### 4.4.3. Network Repository Installation</span>
+<span class="code-line-hl">Enable the network repository:</span>
+<span class="code-line-hl"># dnf config-manager addrepo --from-repofile=https://developer.download.nvidia.com/compute/cuda/repos/&lt;distro&gt;/x86_64/cuda-&lt;distro&gt;.repo</span>
+<span class="code-line-hl">### 4.4.4. Common Installation Instructions</span>
+<span class="code-line-hl">These instructions apply to both local and network installation for Fedora.</span>
+<span class="code-line-hl">Install CUDA SDK:</span>
+<span class="code-line-hl"># dnf install cuda-toolkit</span>
+<span class="code-line-hl">Perform the Post-installation Actions.</span>
+<span class="code-line-hl">### 4.4.5. GCC Compatibility Package for Fedora</span>
+<span class="code-line-hl">The Fedora version supported might ship with a newer compiler than what is actually supported by NVCC. This can be overcome by installing the GCC compatibility package and setting a few environment variables.</span>
+<span class="code-line-hl">As an example, Fedora 41 ships with GCC 14 and also with a compatible GCC 13 version, which can be used for NVCC. To install and configure the local NVCC binary to use that version, proceed as follows.</span>
+<span class="code-line-hl">Install the packages required:</span>
+<span class="code-line-hl"># dnf install gcc13-c++</span>
+<span class="code-line-hl">The binaries then appear on the system in the following way:</span>
+<span class="code-line-hl">/usr/bin/gcc-13 /usr/bin/g++-13</span>
+<span class="code-line-hl">$ export NVCC_CCBIN=&#x27;g++-13&#x27;</span>
+<span class="code-line-hl">## 4.5. SUSE Linux Enterprise Server</span>
+<span class="code-line-hl">### 4.5.1. Preparation</span>
+<span class="code-line-hl">Perform the Pre-installation Actions.</span>
+<span class="code-line-hl">Choose an installation method: Local Repository Installation or Network Repository Installation.</span>
+<span class="code-line-hl">### 4.5.2. Local Repository Installation</span>
+<span class="code-line-hl">Install local repository on file system:</span>
+<span class="code-line-hl"># rpm --install cuda-repo-&lt;distro&gt;-X-Y-local-&lt;version&gt;*.&lt;arch&gt;.rpm</span>
+<span class="code-line-hl">### 4.5.3. Network Repository Installation</span>
+<span class="code-line-hl">Enable the network repository:</span>
+<span class="code-line-hl"># zypper addrepo https://developer.download.nvidia.com/compute/cuda/repos/&lt;distro&gt;/&lt;arch&gt;/cuda-&lt;distro&gt;.repo</span>
+<span class="code-line-hl">Refresh Zypper repository cache:</span>
+<span class="code-line-hl"># SUSEConnect --product PackageHub/&lt;SLES version number&gt;/&lt;arch&gt; # zypper refresh</span>
+<span class="code-line-hl">### 4.5.4. Common Installation Instructions</span>
+<span class="code-line-hl">These instructions apply to both local and network installation for SUSE Linux Enterprise Server.</span>
+<span class="code-line-hl">Install CUDA SDK:</span>
+<span class="code-line-hl"># zypper install cuda-toolkit</span>
+<span class="code-line-hl">Reboot the system:</span>
+<span class="code-line-hl"># reboot</span>
+<span class="code-line-hl">Perform the Post-installation Actions.</span>
+<span class="code-line-hl">## 4.6. OpenSUSE Leap</span>
+<span class="code-line-hl">### 4.6.1. Preparation</span>
+<span class="code-line-hl">Perform the Pre-installation Actions.</span>
+<span class="code-line-hl">Choose an installation method: Local Repository Installation or Network Repository Installation.</span>
+<span class="code-line-hl">### 4.6.2. Local Repository Installation</span>
+<span class="code-line-hl">Install local repository on file system:</span>
+<span class="code-line-hl"># rpm --install cuda-repo-&lt;distro&gt;-X-Y-local-&lt;version&gt;*.x86_64.rpm</span>
+<span class="code-line-hl">### 4.6.3. Network Repository Installation</span>
+<span class="code-line-hl">Enable the network repository:</span>
+<span class="code-line-hl"># zypper addrepo https://developer.download.nvidia.com/compute/cuda/repos/&lt;distro&gt;/x86_64/cuda-&lt;distro&gt;.repo</span>
+<span class="code-line-hl">Refresh Zypper repository cache:</span>
+<span class="code-line-hl"># zypper refresh</span>
+<span class="code-line-hl">### 4.6.4. Common Installation Instructions</span>
+<span class="code-line-hl">These instructions apply to both local and network installation for OpenSUSE Leap.</span>
+<span class="code-line-hl">Install CUDA SDK:</span>
+<span class="code-line-hl"># zypper install cuda-toolkit</span>
+<span class="code-line-hl">Reboot the system:</span>
+<span class="code-line-hl"># reboot</span>
+<span class="code-line-hl">Perform the Post-installation Actions.</span>
+<span class="code-line-hl">## 4.7. Ubuntu</span>
+<span class="code-line-hl">### 4.7.1. Prepare Ubuntu</span>
+<span class="code-line-hl">Perform the Pre-installation Actions.</span>
+<span class="code-line-hl">Choose an installation method: Local Repository Installation or Network Repository Installation.</span>
+<span class="code-line-hl">### 4.7.2. Local Repository Installation</span>
+<span class="code-line-hl">Install local repository on file system:</span>
+<span class="code-line-hl"># dpkg -i cuda-repo-&lt;distro&gt;-X-Y-local_&lt;version&gt;*_&lt;arch&gt;.deb</span>
+<span class="code-line-hl">Enroll ephemeral public GPG key:</span>
+<span class="code-line-hl"># cp /var/cuda-repo-&lt;distro&gt;-X-Y-local/cuda-*-keyring.gpg /usr/share/keyrings/</span>
+<span class="code-line-hl">Add pin file to prioritize CUDA repository:</span>
+<span class="code-line-hl">$ wget https://developer.download.nvidia.com/compute/cuda/repos/&lt;distro&gt;/&lt;arch&gt;/cuda-&lt;distro&gt;.pin # mv cuda-&lt;distro&gt;.pin /etc/apt/preferences.d/cuda-repository-pin-600</span>
+<span class="code-line-hl">### 4.7.3. Network Repository Installation</span>
+<span class="code-line-hl">$ wget https://developer.download.nvidia.com/compute/cuda/repos/&lt;distro&gt;/&lt;arch&gt;/cuda-keyring_1.1-1_all.deb # sudo dpkg -i cuda-keyring_1.1-1_all.deb</span>
+<span class="code-line-hl"># dpkg -i cuda-keyring_1.1-1_all.deb</span>
+<span class="code-line-hl">### 4.7.4. Common Installation Instructions</span>
+<span class="code-line-hl">These instructions apply to both local and network installation for Ubuntu.</span>
+<span class="code-line-hl">Update the APT repository cache:</span>
+<span class="code-line-hl"># apt update</span>
+<span class="code-line-hl">Install CUDA SDK:</span>
+<span class="code-line-hl">Note</span>
+<span class="code-line-hl">These two commands must be executed separately.</span>
+<span class="code-line-hl"># apt install cuda-toolkit</span>
+<span class="code-line-hl"># apt install cuda-compat</span>
+<span class="code-line-hl"># apt install cuda-compat-orin</span>
+<span class="code-line-hl">Perform the Post-installation Actions.</span>
+<span class="code-line-hl">## 4.8. Debian</span>
+<span class="code-line-hl">### 4.8.1. Preparation</span>
+<span class="code-line-hl">Perform the Pre-installation Actions.</span>
+<span class="code-line-hl"># add-apt-repository contrib</span>
+<span class="code-line-hl">Choose an installation method: Local Repository Installation or Network Repository Installation.</span>
+<span class="code-line-hl">### 4.8.2. Local Repository Installation</span>
+<span class="code-line-hl">Install local repository on file system:</span>
+<span class="code-line-hl"># dpkg -i cuda-repo-&lt;distro&gt;-X-Y-local_&lt;version&gt;*_amd64.deb</span>
+<span class="code-line-hl">Enroll public GPG key:</span>
+<span class="code-line-hl"># cp /var/cuda-repo-&lt;distro&gt;-X-Y-local/cuda-*-keyring.gpg /usr/share/keyrings/</span>
+<span class="code-line-hl">### 4.8.3. Network Repository Installation</span>
+<span class="code-line-hl">$ wget https://developer.download.nvidia.com/compute/cuda/repos/&lt;distro&gt;/&lt;arch&gt;/cuda-keyring_1.1-1_all.deb # dpkg -i cuda-keyring_1.1-1_all.deb</span>
+<span class="code-line-hl">### 4.8.4. Common Installation Instructions</span>
+<span class="code-line-hl">These instructions apply to both local and network installation for Debian.</span>
+<span class="code-line-hl">Update the APT repository cache:</span>
+<span class="code-line-hl"># apt update</span>
+<span class="code-line-hl">Install CUDA SDK:</span>
+<span class="code-line-hl"># apt install cuda-toolkit</span>
+<span class="code-line-hl">Reboot the system:</span>
+<span class="code-line-hl"># reboot</span>
+<span class="code-line-hl">Perform the Post-installation Actions.</span>
+<span class="code-line-hl">## 4.9. Amazon Linux</span>
+<span class="code-line-hl">### 4.9.1. Prepare Amazon Linux</span>
+<span class="code-line-hl">Perform the Pre-installation Actions.</span>
+<span class="code-line-hl">Choose an installation method: Local Repository Installation or Network Repository Installation.</span>
+<span class="code-line-hl">### 4.9.2. Local Repository Installation</span>
+<span class="code-line-hl">Install local repository on file system:</span>
+<span class="code-line-hl"># rpm --install cuda-repo-&lt;distro&gt;-X-Y-local-&lt;version&gt;*.x86_64.rpm</span>
+<span class="code-line-hl">### 4.9.3. Network Repository Installation</span>
+<span class="code-line-hl">Enable the network repository:</span>
+<span class="code-line-hl"># dnf config-manager --add-repo https://developer.download.nvidia.com/compute/cuda/repos/&lt;distro&gt;/x86_64/cuda-&lt;distro&gt;.repo</span>
+<span class="code-line-hl">### 4.9.4. Common Installation Instructions</span>
+<span class="code-line-hl">These instructions apply to both local and network installation for Amazon Linux.</span>
+<span class="code-line-hl">Install CUDA SDK:</span>
+<span class="code-line-hl"># dnf install cuda-toolkit</span>
+<span class="code-line-hl">Perform the post-installation actions.</span>
+<span class="code-line-hl">## 4.10. Azure Linux</span>
+<span class="code-line-hl">### 4.10.1. Prepare Azure Linux</span>
+<span class="code-line-hl">Perform the Pre-installation Actions.</span>
+<span class="code-line-hl">Choose an installation method: Local Repository Installation or Network Repository Installation.</span>
+<span class="code-line-hl">### 4.10.2. Local Repository Installation</span>
+<span class="code-line-hl">Install local repository on file system:</span>
+<span class="code-line-hl"># rpm --install cuda-repo-&lt;distro&gt;-X-Y-local-&lt;version&gt;*.x86_64.rpm</span>
+<span class="code-line-hl">### 4.10.3. Network Repository Installation</span>
+<span class="code-line-hl">Enable the network repository:</span>
+<span class="code-line-hl"># curl https://developer.download.nvidia.com/compute/cuda/repos/&lt;distro&gt;/x86_64/cuda-&lt;distro&gt;.repo -o /etc/yum.repos.d/cuda-&lt;distro&gt;.repo</span>
+<span class="code-line-hl">### 4.10.4. Common Installation Instructions</span>
+<span class="code-line-hl">These instructions apply to both local and network installation for Azure Linux.</span>
+<span class="code-line-hl">Install CUDA SDK:</span>
+<span class="code-line-hl"># tdnf install cuda-toolkit</span>
+<span class="code-line-hl">Perform the post-installation-actions.</span>
+<span class="code-line-hl">## 4.11. Additional Package Manager Capabilities</span>
+<span class="code-line-hl">Below are some additional capabilities of the package manager that users can take advantage of.</span>
+<span class="code-line-hl">### 4.11.1. Available Packages</span>
+<span class="code-line-hl">Note</span>
+<span class="code-line-hl">32-bit compilation native and cross-compilation is removed from CUDA 12.0 and later Toolkit. Use the CUDA Toolkit from earlier releases for 32-bit compilation. Hopper does not support 32-bit applications.</span>
+<span class="code-line-hl">The packages installed by the packages above can also be installed individually by specifying their names explicitly. The list of available packages can be obtained with:</span>
+<span class="code-line-hl">Amazon Linux / Fedora / KylinOS / Red Hat Enterprise Linux / AlmaLinux / Rocky Linux / Oracle Linux:</span>
+<span class="code-line-hl"># dnf --disablerepo=&quot;*&quot; --enablerepo=&quot;cuda*&quot; list</span>
+<span class="code-line-hl">Azure Linux:</span>
+<span class="code-line-hl"># tdnf --disablerepo=&quot;*&quot; --enablerepo=&quot;cuda-cm2-&lt;cuda X-Y version&gt;-local&quot; list</span>
+<span class="code-line-hl">SUSE Linux Enterprise Server / openSUSE Leap:</span>
+<span class="code-line-hl"># zypper packages -r cuda</span>
+<span class="code-line-hl">Debian / Ubuntu:</span>
+<span class="code-line-hl"># cat /var/lib/apt/lists/*cuda*Packages | grep &quot;Package:&quot;</span>
+<span class="code-line-hl">### 4.11.2. Meta Packages</span>
+<span class="code-line-hl">Meta packages are RPM/Deb/Conda packages which contain no (or few) files but have multiple dependencies. They are used to install many CUDA packages when you may not know the details of the packages you want. The following table lists the meta packages.</span>
+<span class="code-line-hl">Note</span>
+<span class="code-line-hl">Starting with CUDA 13.4, the CUDA Toolkit and the NVIDIA driver are versioned and installed independently. None of the meta packages below install or depend on the NVIDIA driver. Install the driver separately as described in Driver Installation.</span>
+<span class="code-line-hl">Meta Package</span>
+<span class="code-line-hl">Purpose</span>
+<span class="code-line-hl">cuda</span>
+<span class="code-line-hl">cuda-13-4</span>
+<span class="code-line-hl">Installs all CUDA Toolkit packages at the version specified until an additional version of CUDA is installed.</span>
+<span class="code-line-hl">cuda-toolkit</span>
+<span class="code-line-hl">cuda-toolkit-13</span>
+<span class="code-line-hl">Installs all CUDA Toolkit packages with a full desktop experience. Will not upgrade beyond the 13.x series toolkits.</span>
+<span class="code-line-hl">cuda-tools-13-4</span>
+<span class="code-line-hl">Installs all CUDA command line and visual tools. Will not upgrade beyond the 13.x series toolkits.</span>
+<span class="code-line-hl">cuda-runtime-13-4</span>
+<span class="code-line-hl">Installs all CUDA Toolkit packages required to run CUDA applications, without any desktop component. Specific for compute nodes</span>
+<span class="code-line-hl">cuda-compiler-13-4</span>
+<span class="code-line-hl">Installs all CUDA compiler packages.</span>
+<span class="code-line-hl">cuda-libraries-13-4</span>
+<span class="code-line-hl">Installs all runtime CUDA Library packages.</span>
+<span class="code-line-hl">cuda-libraries-dev-13-4</span>
+<span class="code-line-hl">Installs all development CUDA Library packages.</span>
+<span class="code-line-hl">Packages</span>
+<span class="code-line-hl">Released and Versioned With</span>
+<span class="code-line-hl">CUDA Toolkit (no driver dependency)</span>
+<span class="code-line-hl">NVIDIA driver</span>
+<span class="code-line-hl">NVIDIA driver (optional components, installed separately as needed)</span>
+<span class="code-line-hl">### 4.11.3. Package Upgrades</span>
+<span class="code-line-hl">#### 4.11.3.1. Amazon Linux</span>
+<span class="code-line-hl"># dnf install cuda-toolkit</span>
+<span class="code-line-hl">#### 4.11.3.2. Fedora</span>
+<span class="code-line-hl">When upgrading the toolkit to a new major branch:</span>
+<span class="code-line-hl"># dnf install cuda-toolkit</span>
+<span class="code-line-hl">When upgrading the toolkit to a new minor branch:</span>
+<span class="code-line-hl"># dnf upgrade cuda-toolkit</span>
+<span class="code-line-hl">#### 4.11.3.3. KylinOS / Red Hat Enterprise Linux / AlmaLinux / Rocky Linux / Oracle Linux</span>
+<span class="code-line-hl"># dnf install cuda-toolkit</span>
+<span class="code-line-hl">#### 4.11.3.4. Azure Linux</span>
+<span class="code-line-hl"># tdnf install cuda-toolkit</span>
+<span class="code-line-hl">#### 4.11.3.5. OpenSUSE / SUSE Linux Enterprise Server</span>
+<span class="code-line-hl"># zypper install cuda-toolkit</span>
+<span class="code-line-hl">#### 4.11.3.6. Debian / Ubuntu</span>
+<span class="code-line-hl"># apt install cuda-toolkit</span>
+<span class="code-line-hl">#### 4.11.3.7. Other Package Notes</span>
+<span class="code-line-hl">Side-by-side installations are supported. As described in the Meta Packages section, depending on the package you can avoid the upgrades or get the new version installed automatically.</span>
+<span class="code-line-hl"># 5. Driver Installation</span>
+<span class="code-line-hl">Note</span>
+<span class="code-line-hl">More information about driver installation can be found in the Driver Installation Guide for Linux</span>
+<span class="code-line-hl"># 6. Runfile Installation</span>
+<span class="code-line-hl">Basic instructions can be found in the Quick Start Guide. Read on for more detailed instructions.</span>
+<span class="code-line-hl">## 6.1. Runfile Overview</span>
+<span class="code-line-hl">The Runfile installation installs the CUDA Toolkit via an interactive ncurses-based interface.</span>
+<span class="code-line-hl">The installation steps are listed below.</span>
+<span class="code-line-hl">Finally, advanced options for the installer and uninstallation steps are detailed below.</span>
+<span class="code-line-hl">The Runfile installation does not include support for cross-platform development. For cross-platform development, see the CUDA Cross-Platform Environment section.</span>
+<span class="code-line-hl">## 6.2. Installation</span>
+<span class="code-line-hl">Perform the pre-installation actions.</span>
+<span class="code-line-hl">Run the installer and follow the on-screen prompts:</span>
+<span class="code-line-hl"># sh cuda_&lt;version&gt;_linux.run</span>
+<span class="code-line-hl">The installer will prompt for the following:</span>
+<span class="code-line-hl">EULA Acceptance</span>
+<span class="code-line-hl">The installer must be executed with sufficient privileges to perform some actions. When the current privileges are insufficient to perform an action, the installer will ask for the user’s password to attempt to install with root privileges. Actions that cause the installer to attempt to install with root privileges are:</span>
+<span class="code-line-hl">installing the CUDA Toolkit to a location the user does not have permission to write to</span>
+<span class="code-line-hl">Running the installer with sudo, as shown above, will give permission to install to directories that require root permissions. Directories and files created while running the installer with sudo will have root ownership.</span>
+<span class="code-line-hl">Reboot the system to reload the graphical interface:</span>
+<span class="code-line-hl"># reboot</span>
+<span class="code-line-hl">Perform the post-installation actions.</span>
+<span class="code-line-hl">## 6.3. Advanced Options</span>
+<span class="code-line-hl">Action</span>
+<span class="code-line-hl">Options Used</span>
+<span class="code-line-hl">Explanation</span>
+<span class="code-line-hl">Install the CUDA Toolkit.</span>
+<span class="code-line-hl">Install libraries to the &lt;path&gt; directory. If the &lt;path&gt; is not provided, then the default path of your distribution is used. This only applies to the libraries installed outside of the CUDA Toolkit path.</span>
+<span class="code-line-hl">Extraction</span>
+<span class="code-line-hl">Extracts the raw files of the toolkit to &lt;path&gt;.</span>
+<span class="code-line-hl">Overriding Installation Checks</span>
+<span class="code-line-hl">Ignores compiler, third-party library, and toolkit detection checks which would prevent the CUDA Toolkit from installing.</span>
+<span class="code-line-hl">No man pages</span>
+<span class="code-line-hl">Custom Temporary Directory Selection</span>
+<span class="code-line-hl">Show Installer Options</span>
+<span class="code-line-hl">Prints the list of command-line options to stdout.</span>
+<span class="code-line-hl">## 6.4. Uninstallation</span>
+<span class="code-line-hl"># /usr/local/cuda-13.4/bin/cuda-uninstaller</span>
+<span class="code-line-hl"># 7. Conda Installation</span>
+<span class="code-line-hl">This section describes the installation and configuration of CUDA when using the Conda installer. The Conda packages are available at https://anaconda.org/nvidia.</span>
+<span class="code-line-hl">## 7.1. Conda Overview</span>
+<span class="code-line-hl">The Conda installation installs the CUDA Toolkit. The installation steps are listed below.</span>
+<span class="code-line-hl">## 7.2. Installing CUDA Using Conda</span>
+<span class="code-line-hl">To perform a basic install of all CUDA Toolkit components using Conda, run the following command:</span>
+<span class="code-line-hl">$ conda install cuda -c nvidia</span>
+<span class="code-line-hl">Note</span>
+<span class="code-line-hl">Install CUDA in a dedicated Conda environment instead of the base environment to avoid installation issues.</span>
+<span class="code-line-hl">## 7.3. Uninstalling CUDA Using Conda</span>
+<span class="code-line-hl">To uninstall the CUDA Toolkit using Conda, run the following command:</span>
+<span class="code-line-hl">$ conda remove cuda</span>
+<span class="code-line-hl">## 7.4. Installing Previous CUDA Releases</span>
+<span class="code-line-hl">$ conda install cuda -c nvidia/label/cuda-12.4.0</span>
+<span class="code-line-hl">## 7.5. Upgrading from cudatoolkit Package</span>
+<span class="code-line-hl">Note</span>
+<span class="code-line-hl"># 8. Pip Wheels</span>
+<span class="code-line-hl">NVIDIA provides Python Wheels for installing CUDA through pip, primarily for using CUDA with Python. These packages are intended for runtime use and do not currently include developer tools (these can be installed separately).</span>
+<span class="code-line-hl">Please note that with this installation method, CUDA installation environment is managed via pip and additional care must be taken to set up your host environment to use CUDA outside the pip environment.</span>
+<span class="code-line-hl">## 8.1. Prerequisites</span>
+<span class="code-line-hl">CUDA Python Wheels are published to the public Python Package Index (PyPI), so no additional package index needs to be configured. If your pip and setuptools Python modules are not up-to-date, then use the following command to upgrade these Python modules. If these Python modules are out-of-date then the commands which follow later in this section may fail.</span>
+<span class="code-line-hl">$ python3 -m pip install --upgrade setuptools pip wheel</span>
+<span class="code-line-hl">## 8.2. Procedure</span>
+<span class="code-line-hl">Install the CUDA runtime package:</span>
+<span class="code-line-hl">$ python3 -m pip install nvidia-cuda-runtime</span>
+<span class="code-line-hl">Optionally, install additional packages as listed below using the following command:</span>
+<span class="code-line-hl">$ python3 -m pip install nvidia-&lt;library&gt;</span>
+<span class="code-line-hl">## 8.3. Packages</span>
+<span class="code-line-hl">The following packages will install the latest CUDA 13 version of the named component on Linux:</span>
+<span class="code-line-hl"># 9. CUDA Cross-Platform Environment</span>
+<span class="code-line-hl">## 9.1. CUDA Cross-Platform Installation</span>
+<span class="code-line-hl">Some of the following steps may have already been performed as part of the native installation sections. Such steps can safely be skipped.</span>
+<span class="code-line-hl">### 9.1.1. Ubuntu</span>
+<span class="code-line-hl">Perform the Pre-installation Actions.</span>
+<span class="code-line-hl">Choose an installation method: Local Cross Repository Installation or Network Cross Repository Installation.</span>
+<span class="code-line-hl">#### 9.1.1.1. Local Cross Repository Installation</span>
+<span class="code-line-hl">Install repository meta-data package with:</span>
+<span class="code-line-hl"># dpkg -i cuda-repo-cross-&lt;arch&gt;-&lt;distro&gt;-X-Y-local-&lt;version&gt;*_all.deb</span>
+<span class="code-line-hl">#### 9.1.1.2. Network Cross Repository Installation</span>
+<span class="code-line-hl">$ wget https://developer.download.nvidia.com/compute/cuda/repos/&lt;distro&gt;/cross-linux-&lt;arch&gt;/cuda-keyring_1.1-1_all.deb # dpkg -i cuda-keyring_1.1-1_all.deb</span>
+<span class="code-line-hl">#### 9.1.1.3. Common Installation Instructions</span>
+<span class="code-line-hl">Update the APT repository cache:</span>
+<span class="code-line-hl"># apt update</span>
+<span class="code-line-hl">Install the appropriate cross-platform CUDA Toolkit:</span>
+<span class="code-line-hl"># apt install cuda-cross-sbsa</span>
+<span class="code-line-hl">For QNX:</span>
+<span class="code-line-hl"># apt install cuda-cross-qnx</span>
+<span class="code-line-hl">Perform the Post-installation Actions.</span>
+<span class="code-line-hl">### 9.1.2. Red Hat Enterprise Linux / Rocky Linux / Oracle Linux</span>
+<span class="code-line-hl">Perform the Pre-installation Actions</span>
+<span class="code-line-hl">Choose an installation method: Local Cross Repository Installation or Network Cross Repository Installation.</span>
+<span class="code-line-hl">#### 9.1.2.1. Local Cross Repository Installation</span>
+<span class="code-line-hl">Install repository meta-data package with:</span>
+<span class="code-line-hl"># rpm -i cuda-repo-cross-&lt;arch&gt;-&lt;distro&gt;-X-Y-local-&lt;version&gt;*.noarch.rpm</span>
+<span class="code-line-hl">#### 9.1.2.2. Network Cross Repository Installation</span>
+<span class="code-line-hl">Enable the network repository:</span>
+<span class="code-line-hl"># dnf config-manager --add-repo https://developer.download.nvidia.com/compute/cuda/repos/&lt;distro&gt;/cross-linux-&lt;arch&gt;/cuda-&lt;distro&gt;-cross-linux-sbsa.repo</span>
+<span class="code-line-hl">#### 9.1.2.3. Common Installation Instructions</span>
+<span class="code-line-hl">Install the CUDA SDK:</span>
+<span class="code-line-hl"># dnf install cuda-cross-sbsa</span>
+<span class="code-line-hl">### 9.1.3. SUSE Linux Enterprise Server</span>
+<span class="code-line-hl">Perform the Pre-installation Actions</span>
+<span class="code-line-hl">Choose an installation method: Local Cross Repository Installation or Network Cross Repository Installation.</span>
+<span class="code-line-hl">#### 9.1.3.1. Local Cross Repository Installation</span>
+<span class="code-line-hl">Install repository meta-data package with:</span>
+<span class="code-line-hl"># rpm -i cuda-repo-cross-&lt;arch&gt;-&lt;distro&gt;-X-Y-local-&lt;version&gt;*.noarch.rpm</span>
+<span class="code-line-hl">#### 9.1.3.2. Network Cross Repository Installation</span>
+<span class="code-line-hl">Enable the network repo:</span>
+<span class="code-line-hl"># zypper addrepo https://developer.download.nvidia.com/compute/cuda/repos/&lt;distro&gt;/&lt;arch&gt;/cuda-&lt;distro&gt;-cross-linux-sbsa.repo</span>
+<span class="code-line-hl">#### 9.1.3.3. Common Installation Instructions</span>
+<span class="code-line-hl">Refresh Zypper repository cache:</span>
+<span class="code-line-hl"># zypper refresh</span>
+<span class="code-line-hl">Install CUDA SDK:</span>
+<span class="code-line-hl"># zypper install cuda-cross-sbsa</span>
+<span class="code-line-hl"># 10. Tarball and Zip Archive Deliverables</span>
+<span class="code-line-hl">In an effort to meet the needs of a growing customer base requiring alternative installer packaging formats, as well as a means of input into community CI/CD systems, tarball and zip archives are available for each component.</span>
+<span class="code-line-hl">These tarball and zip archives, known as binary archives, are provided at https://developer.download.nvidia.com/compute/cuda/redist/.</span>
+<span class="code-line-hl">These component .tar.xz and .zip binary archives do not replace existing packages such as .deb, .rpm, runfile, conda, etc. and are not meant for general consumption, as they are not installers. However this standardized approach will replace existing .txz archives.</span>
+<span class="code-line-hl">For each release, a JSON manifest is provided such as redistrib_13.4.1.json, which corresponds to the CUDA 13.4.1 release label (CUDA 13.4) which includes the release date, the name of each component, license name, relative URL for each platform and checksums.</span>
+<span class="code-line-hl">Package maintainers are advised to check the provided LICENSE for each component prior to redistribution. Instructions for developers using CMake and Bazel build systems are provided in the next sections.</span>
+<span class="code-line-hl">## 10.1. Parsing Redistrib JSON</span>
+<span class="code-line-hl">The following example of a JSON manifest contains keys for each component: name, license, version, and a platform array which includes relative_path, sha256, md5, and size (bytes) for each archive.</span>
+<span class="code-line-hl">{ &quot;release_date&quot;: &quot;2026-08-13&quot;, &quot;cuda_cudart&quot;: { &quot;name&quot;: &quot;CUDA Runtime (cudart)&quot;, &quot;license&quot;: &quot;CUDA Toolkit&quot;, &quot;version&quot;: &quot;13.4.1&quot;, &quot;linux-x86_64&quot;: { &quot;relative_path&quot;: &quot;cuda_cudart/linux-x86_64/cuda_cudart-linux-x86_64-13.4.1-archive.tar.xz&quot;, &quot;sha256&quot;: &quot;d08a1b731e5175aa3ae06a6d1c6b3059dd9ea13836d947018ea5e3ec2ca3d62b&quot;, &quot;md5&quot;: &quot;da198656b27a3559004c3b7f20e5d074&quot;, &quot;size&quot;: &quot;828300&quot; }, &quot;linux-sbsa&quot;: { &quot;relative_path&quot;: &quot;cuda_cudart/linux-sbsa/cuda_cudart-linux-sbsa-13.4.1-archive.tar.xz&quot;, &quot;sha256&quot;: &quot;2ab9599bbaebdcf59add73d1f1a352ae619f8cb5ccec254093c98efd4c14553c&quot;, &quot;md5&quot;: &quot;aeb5c19661f06b6398741015ba368102&quot;, &quot;size&quot;: &quot;782372&quot; }, &quot;windows-x86_64&quot;: { &quot;relative_path&quot;: &quot;cuda_cudart/windows-x86_64/cuda_cudart-windows-x86_64-13.4.1-archive.zip&quot;, &quot;sha256&quot;: &quot;b59756c27658d1ea87a17c06d064d1336576431cd64da5d1790d909e455d06d3&quot;, &quot;md5&quot;: &quot;7f6837a46b78198402429a3760ab28fc&quot;, &quot;size&quot;: &quot;2897751&quot; } } }</span>
+<span class="code-line-hl">A JSON schema is provided at https://developer.download.nvidia.com/compute/redist/redistrib-v2.schema.json.</span>
+<span class="code-line-hl">A sample script that parses these JSON manifests is available on GitHub:</span>
+<span class="code-line-hl">Downloads each archive</span>
+<span class="code-line-hl">Validates SHA256 checksums</span>
+<span class="code-line-hl">Extracts archives</span>
+<span class="code-line-hl">Flattens into a collapsed directory structure</span>
+<span class="code-line-hl">Product</span>
+<span class="code-line-hl">Example</span>
+<span class="code-line-hl">CUDA Toolkit</span>
+<span class="code-line-hl">cuBLASMp</span>
+<span class="code-line-hl">cuDNN</span>
+<span class="code-line-hl">cuDSS</span>
+<span class="code-line-hl">cuQuantum</span>
+<span class="code-line-hl">cuSPARSELt</span>
+<span class="code-line-hl">cuTENSOR</span>
+<span class="code-line-hl">NVIDIA driver</span>
+<span class="code-line-hl">nvJPEG2000</span>
+<span class="code-line-hl">NVPL</span>
+<span class="code-line-hl">nvTIFF</span>
+<span class="code-line-hl">## 10.2. Importing Tarballs into CMake</span>
+<span class="code-line-hl">The recommended module for importing these tarballs into the CMake build system is via FindCUDAToolkit (3.17 and newer).</span>
+<span class="code-line-hl">Note</span>
+<span class="code-line-hl">The FindCUDA module is deprecated.</span>
+<span class="code-line-hl">## 10.3. Importing Tarballs into Bazel</span>
+<span class="code-line-hl">The recommended method of importing these tarballs into the Bazel build system is using http_archive and pkg_tar.</span>
+<span class="code-line-hl">For an example, see bazel/1_pkg_tar/.</span>
+<span class="code-line-hl"># 11. Post-installation Actions</span>
+<span class="code-line-hl">The post-installation actions must be manually performed. These actions are split into mandatory, recommended, and optional sections.</span>
+<span class="code-line-hl">## 11.1. Mandatory Actions</span>
+<span class="code-line-hl">Some actions must be taken after the installation before the CUDA Toolkit can be used.</span>
+<span class="code-line-hl">### 11.1.1. Environment Setup</span>
+<span class="code-line-hl">$ export PATH=${PATH}:/usr/local/cuda-13.4/bin</span>
+<span class="code-line-hl">$ export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/cuda-13.4/lib64</span>
+<span class="code-line-hl">Note that the above paths change when using a custom install path with the runfile installation method.</span>
+<span class="code-line-hl">## 11.2. Recommended Actions</span>
+<span class="code-line-hl">Other actions are recommended to verify the integrity of the installation.</span>
+<span class="code-line-hl">### 11.2.1. Install Writable Samples</span>
+<span class="code-line-hl">CUDA Samples are now located in https://github.com/nvidia/cuda-samples, which includes instructions for obtaining, building, and running the samples.</span>
+<span class="code-line-hl">### 11.2.2. Verify the Installation</span>
+<span class="code-line-hl">Before continuing, it is important to verify that the CUDA toolkit can find and communicate correctly with the CUDA-capable hardware. To do this, you need to compile and run some of the sample programs, located in https://github.com/nvidia/cuda-samples.</span>
+<span class="code-line-hl">Note</span>
+<span class="code-line-hl">#### 11.2.2.1. Running the Binaries</span>
+<span class="code-line-hl">Figure 1 Valid Results from deviceQuery CUDA Sample</span>
+<span class="code-line-hl">The exact appearance and the output lines might be different on your system. The important outcomes are that a device was found (the first highlighted line), that the device matches the one on your system (the second highlighted line), and that the test passed (the final highlighted line).</span>
+<span class="code-line-hl">setenforce 0</span>
+<span class="code-line-hl">from the command line as the superuser.</span>
+<span class="code-line-hl">Figure 2 Valid Results from bandwidthTest CUDA Sample</span>
+<span class="code-line-hl">Note that the measurements for your CUDA-capable device description will vary from system to system. The important point is that you obtain measurements, and that the second-to-last line (in Figure 2) confirms that all necessary tests passed.</span>
+<span class="code-line-hl">Should the tests not pass, make sure you have a CUDA-capable NVIDIA GPU on your system and make sure it is properly installed.</span>
+<span class="code-line-hl">If you run into difficulties with the link step (such as libraries not being found), consult the Linux Release Notes found in https://github.com/nvidia/cuda-samples.</span>
+<span class="code-line-hl">### 11.2.3. Local Repo Removal</span>
+<span class="code-line-hl">Removal of the local repo installer is recommended after installation of CUDA SDK.</span>
+<span class="code-line-hl">Debian / Ubuntu</span>
+<span class="code-line-hl"># apt-get remove --purge &quot;cuda-repo-&lt;distro&gt;-X-Y-local*&quot;</span>
+<span class="code-line-hl">Amazon Linux / Fedora / KylinOS / RHEL / Rocky Linux / Oracle Linux</span>
+<span class="code-line-hl"># dnf remove &quot;cuda-repo-&lt;distro&gt;-X-Y-local*&quot;</span>
+<span class="code-line-hl">Azure Linux</span>
+<span class="code-line-hl"># tdnf remove &quot;cuda-repo-&lt;distro&gt;-X-Y-local*&quot;</span>
+<span class="code-line-hl">OpenSUSE / SLES</span>
+<span class="code-line-hl"># zypper remove &quot;cuda-repo-&lt;distro&gt;-X-Y-local*&quot;</span>
+<span class="code-line-hl">## 11.3. Optional Actions</span>
+<span class="code-line-hl">Other options are not necessary to use the CUDA Toolkit, but are available to provide additional features.</span>
+<span class="code-line-hl">### 11.3.1. Install Third-party Libraries</span>
+<span class="code-line-hl">Some CUDA samples use third-party libraries which may not be installed by default on your system. These samples attempt to detect any required libraries when building.</span>
+<span class="code-line-hl">If a library is not detected, it waives itself and warns you which library is missing. To build and run these samples, you must install the missing libraries. In cases where these dependencies are not installed, follow the instructions below.</span>
+<span class="code-line-hl">Amazon Linux / Fedora / KylinOS / RHEL / Rocky Linux / Oracle Linux</span>
+<span class="code-line-hl"># dnf install freeglut-devel libX11-devel libXi-devel libXmu-devel make mesa-libGLU-devel freeimage-devel libglfw3-devel</span>
+<span class="code-line-hl">SLES</span>
+<span class="code-line-hl"># zypper install libglut3 libX11-devel libXi6 libXmu6 libGLU1 make</span>
+<span class="code-line-hl">OpenSUSE</span>
+<span class="code-line-hl"># zypper install freeglut-devel libX11-devel libXi-devel libXmu-devel make Mesa-libGL-devel freeimage-devel</span>
+<span class="code-line-hl">Debian / Ubuntu</span>
+<span class="code-line-hl"># apt-get install g++ freeglut3-dev build-essential libx11-dev libxmu-dev libxi-dev libglu1-mesa-dev libfreeimage-dev libglfw3-dev</span>
+<span class="code-line-hl">### 11.3.2. Install the Source Code for cuda-gdb</span>
+<span class="code-line-hl">### 11.3.3. Select the Active Version of CUDA</span>
+<span class="code-line-hl">To show the active version of CUDA and all available versions:</span>
+<span class="code-line-hl">$ update-alternatives --display cuda</span>
+<span class="code-line-hl">To show the active minor version of a given major CUDA release:</span>
+<span class="code-line-hl">$ update-alternatives --display cuda-12</span>
+<span class="code-line-hl">To update the active version of CUDA:</span>
+<span class="code-line-hl"># update-alternatives --config cuda</span>
+<span class="code-line-hl"># 12. Removing CUDA Toolkit</span>
+<span class="code-line-hl">Follow the below steps to properly uninstall the CUDA Toolkit from your system. These steps will ensure that the uninstallation will be clean.</span>
+<span class="code-line-hl">Warning</span>
+<span class="code-line-hl">If you intend to keep the driver, use the following steps to mark it as explicitly installed before running any of the cleanup commands below.</span>
+<span class="code-line-hl">Amazon Linux / Fedora / Kylin OS / Red Hat Enterprise Linux / Rocky Linux / Oracle Linux:</span>
+<span class="code-line-hl"># Step 1: Check which driver meta-package is installed rpm -q nvidia-open cuda-drivers # Step 2: Mark the installed package as explicitly installed # On RHEL 10 (dnf5), use: sudo dnf mark user &lt;package&gt; sudo dnf mark install &lt;package&gt; # Step 3: Verify no driver packages are queued for removal sudo dnf autoremove --assumeno</span>
+<span class="code-line-hl">Azure Linux:</span>
+<span class="code-line-hl"># Step 1: Check which driver meta-package is installed rpm -q nvidia-open cuda-drivers # Step 2: Mark the installed package as explicitly installed sudo tdnf mark install &lt;package&gt; # Step 3: Verify no driver packages are queued for removal sudo tdnf autoremove --assumeno</span>
+<span class="code-line-hl">Debian / Ubuntu:</span>
+<span class="code-line-hl"># Step 1: Check which driver meta-package is installed dpkg -l nvidia-open cuda-drivers # Step 2: Mark the installed package as explicitly installed sudo apt-mark manual &lt;package&gt; # Step 3: Verify no driver packages are queued for removal sudo apt autoremove --dry-run</span>
+<span class="code-line-hl">Amazon Linux / Fedora / Kylin OS / Red Hat Enterprise Linux / Rocky Linux / Oracle Linux:</span>
+<span class="code-line-hl"># dnf remove &quot;cuda*&quot; &quot;*cublas*&quot; &quot;*cufft*&quot; &quot;*cufile*&quot; &quot;*curand*&quot; &quot;*cusolver*&quot; &quot;*cusparse*&quot; &quot;*gds-tools*&quot; &quot;*npp*&quot; &quot;*nvjpeg*&quot; &quot;nsight*&quot; &quot;*nvvm*&quot;</span>
+<span class="code-line-hl">Azure Linux:</span>
+<span class="code-line-hl"># tdnf remove &quot;cuda*&quot; &quot;*cublas*&quot; &quot;*cufft*&quot; &quot;*cufile*&quot; &quot;*curand*&quot; &quot;*cusolver*&quot; &quot;*cusparse*&quot; &quot;*gds-tools*&quot; &quot;*npp*&quot; &quot;*nvjpeg*&quot; &quot;nsight*&quot; &quot;*nvvm*&quot;</span>
+<span class="code-line-hl">And then to clean up the uninstall:</span>
+<span class="code-line-hl"># tdnf autoremove</span>
+<span class="code-line-hl">OpenSUSE / SUSE Linux Enterprise Server:</span>
+<span class="code-line-hl"># zypper remove &quot;cuda*&quot; &quot;*cublas*&quot; &quot;*cufft*&quot; &quot;*cufile*&quot; &quot;*curand*&quot; &quot;*cusolver*&quot; &quot;*cusparse*&quot; &quot;*gds-tools*&quot; &quot;*npp*&quot; &quot;*nvjpeg*&quot; &quot;nsight*&quot; &quot;*nvvm*&quot;</span>
+<span class="code-line-hl">Debian / Ubuntu:</span>
+<span class="code-line-hl"># apt remove --purge &quot;*cuda*&quot; &quot;*cublas*&quot; &quot;*cufft*&quot; &quot;*cufile*&quot; &quot;*curand*&quot; &quot;*cusolver*&quot; &quot;*cusparse*&quot; &quot;*gds-tools*&quot; &quot;*npp*&quot; &quot;*nvjpeg*&quot; &quot;nsight*&quot; &quot;*nvvm*&quot;</span>
+<span class="code-line-hl">And then to clean up the uninstall:</span>
+<span class="code-line-hl"># apt autoremove --purge</span>
+<span class="code-line-hl"># 13. Advanced Setup</span>
+<span class="code-line-hl">Below is information on some advanced setup scenarios which are not covered in the basic instructions above.</span>
+<span class="code-line-hl">Scenario</span>
+<span class="code-line-hl">Instructions</span>
+<span class="code-line-hl">Install GPUDirect Storage</span>
+<span class="code-line-hl">Refer to Installing GPUDirect Storage.</span>
+<span class="code-line-hl">GDS is supported in two different modes:</span>
+<span class="code-line-hl">GDS (default/full perf mode)</span>
+<span class="code-line-hl">Compatibility mode.</span>
+<span class="code-line-hl">Installation instructions for them differ slightly. Compatibility mode is the only mode that is supported on certain distributions due to software dependency limitations.</span>
+<span class="code-line-hl">Full GDS support is restricted to the following Linux distros:</span>
+<span class="code-line-hl">Ubuntu 22.04, Ubuntu 24.04, Ubuntu 26.04</span>
+<span class="code-line-hl">RHEL 8.y (y &lt;= 10), RHEL 9.y (y &lt;= 8), and RHEL 10.z (z &lt;= 2)</span>
+<span class="code-line-hl">Install CUDA to a specific directory using the Package Manager installation method.</span>
+<span class="code-line-hl">RPM</span>
+<span class="code-line-hl">sudo rpm --install --relocate /usr/local/cuda-13.4=/new/toolkit package.rpm</span>
+<span class="code-line-hl">You will need to install the packages in the correct dependency order; this task is normally taken care of by the package managers. For example, if package “foo” has a dependency on package “bar”, you should install package “bar” first, and package “foo” second. You can check the dependencies of a RPM package as follows:</span>
+<span class="code-line-hl">rpm -qRp package.rpm</span>
+<span class="code-line-hl">deb</span>
+<span class="code-line-hl">The Deb packages do not support custom install locations. It is however possible to extract the contents of the Deb packages and move the files to the desired install location. See the next scenario for more details on extracting Deb packages.</span>
+<span class="code-line-hl">Extract the contents of the installers.</span>
+<span class="code-line-hl">Runfile</span>
+<span class="code-line-hl">./runfile.run --tar mxvf</span>
+<span class="code-line-hl">./runfile.run -x</span>
+<span class="code-line-hl">RPM</span>
+<span class="code-line-hl">The RPM packages can be extracted by running:</span>
+<span class="code-line-hl">rpm2cpio package.rpm | cpio -idmv</span>
+<span class="code-line-hl">deb</span>
+<span class="code-line-hl">The Deb packages can be extracted by running:</span>
+<span class="code-line-hl">dpkg-deb -x package.deb output_dir</span>
+<span class="code-line-hl">Modify Ubuntu’s apt package manager to query specific architectures for specific repositories.</span>
+<span class="code-line-hl">This is useful when a foreign architecture has been added, causing “404 Not Found” errors to appear when the repository meta-data is updated.</span>
+<span class="code-line-hl">An architecture-restricted repository entry looks like:</span>
+<span class="code-line-hl">deb [arch=&lt;arch1&gt;,&lt;arch2&gt;] &lt;url&gt;</span>
+<span class="code-line-hl">For example, if you wanted to restrict a repository to only the amd64 and i386 architectures, it would look like:</span>
+<span class="code-line-hl">deb [arch=amd64,i386] &lt;url&gt;</span>
+<span class="code-line-hl">The runfile installer fails to extract due to limited space in the TMP directory.</span>
+<span class="code-line-hl">Debian and Ubuntu</span>
+<span class="code-line-hl">This can occur when installing CUDA after uninstalling a different version. Use the following command before installation:</span>
+<span class="code-line-hl">sudo rm -v /var/lib/apt/lists/*cuda* /var/lib/apt/lists/*nvidia*</span>
+<span class="code-line-hl">Verbose installation on Debian and Ubuntu</span>
+<span class="code-line-hl">sudo apt-get install --verbose-versions cuda</span>
+<span class="code-line-hl"># 14. Additional Considerations</span>
+<span class="code-line-hl">A number of helpful development tools are included in the CUDA Toolkit to assist you as you develop your CUDA programs, such as Nsight Visual Studio Code Edition, NVIDIA Visual Profiler, CUDA-GDB, and Compute Sanitizer.</span>
+<span class="code-line-hl">For technical support on programming questions, consult and participate in the developer forums at https://forums.developer.nvidia.com/c/accelerated-computing/cuda/206.</span>
+<span class="code-line-hl"># 15. Frequently Asked Questions</span>
+<span class="code-line-hl">## 15.1. How do I install the Toolkit in a different location?</span>
+<span class="code-line-hl"># ./runfile.run --silent --toolkit --toolkitpath=/my/new/toolkit</span>
+<span class="code-line-hl">The RPM and Deb packages cannot be installed to a custom install location directly using the package managers. See the “Install CUDA to a specific directory using the Package Manager installation method” scenario in the Advanced Setup section for more information.</span>
+<span class="code-line-hl">## 15.2. Why do I see “nvcc: No such file or directory” when I try to build a CUDA application?</span>
+<span class="code-line-hl">$ export PATH=/usr/local/cuda-13.4/bin${PATH:+:${PATH}}</span>
+<span class="code-line-hl">## 15.3. Why do I see “error while loading shared libraries: &lt;lib name&gt;: cannot open shared object file: No such file or directory” when I try to run a CUDA application that uses a CUDA library?</span>
+<span class="code-line-hl">$ export LD_LIBRARY_PATH=/usr/local/cuda-13.4/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}</span>
+<span class="code-line-hl">## 15.4. Why do I see multiple “404 Not Found” errors when updating my repository meta-data on Ubuntu?</span>
+<span class="code-line-hl">## 15.5. Why doesn’t the cuda-repo package install the CUDA Toolkit?</span>
+<span class="code-line-hl">When using RPM or Deb, the downloaded package is a repository package. Such a package only informs the package manager where to find the actual installation packages, but will not install them.</span>
+<span class="code-line-hl">See the Package Manager Installation section for more details.</span>
+<span class="code-line-hl">## 15.6. How do I install an older CUDA version using a network repo?</span>
+<span class="code-line-hl">Depending on your system configuration, you may not be able to install old versions of CUDA using the cuda metapackage. In order to install a specific version of CUDA, you may need to specify all of the packages that would normally be installed by the cuda metapackage at the version you want to install.</span>
+<span class="code-line-hl">## 15.7. How do I handle “Errors were encountered while processing: glx-diversions”?</span>
+<span class="code-line-hl">This sometimes occurs when trying to uninstall CUDA after a clean .deb installation. Run the following commands:</span>
+<span class="code-line-hl"># apt install glx-diversions --reinstall # apt remove nvidia-alternative</span>
+<span class="code-line-hl">Then re-run the commands from Removing CUDA Toolkit.</span>
+<span class="code-line-hl"># 16. Notices</span>
+<span class="code-line-hl">## 16.1. Notice</span>
+This document is provided for information purposes only and shall not be regarded as a warranty of a certain functionality, condition, or quality of a product. NVIDIA Corporation (“NVIDIA”) makes no representations or warranties, expressed or implied, as to the accuracy or completeness of the information contained in this document and assumes no responsibility for any errors contained herein. NVIDIA shall have no liability for the consequences or use of such information or for any infringement of patents or other rights of third parties that may result from its use. This document is not a commitment to develop, release, or deliver any Material (defined below), code, or functionality.
+NVIDIA reserves the right to make corrections, modifications, enhancements, improvements, and any other changes to this document, at any time without notice.
+Customer should obtain the latest relevant information before placing orders and should verify that such information is current and complete.
+NVIDIA products are sold subject to the NVIDIA standard terms and conditions of sale supplied at the time of order acknowledgement, unless otherwise agreed in an individual sales agreement signed by authorized representatives of NVIDIA and customer (“Terms of Sale”). NVIDIA hereby expressly objects to applying any customer general terms and conditions with regards to the purchase of the NVIDIA product referenced in this document. No contractual obligations are formed either directly or indirectly by this document.
+NVIDIA products are not designed, authorized, or warranted to be suitable for use in medical, military, aircraft, space, or life support equipment, nor in applications where failure or malfunction of the NVIDIA product can reasonably be expected to result in personal injury, death, or property or environmental damage. NVIDIA accepts no liability for inclusion and/or use of NVIDIA products in such equipment or applications and therefore such inclusion and/or use is at customer’s own risk.
+NVIDIA makes no representation or warranty that products based on this document will be suitable for any specified use. Testing of all parameters of each product is not necessarily performed by NVIDIA. It is customer’s sole responsibility to evaluate and determine the applicability of any information contained in this document, ensure the product is suitable and fit for the application planned by customer, and perform the necessary testing for the application in order to avoid a default of the application or the product. Weaknesses in customer’s product designs may affect the quality and reliability of the NVIDIA product and may result in additional or different conditions and/or requirements beyond those contained in this document. NVIDIA accepts no liability related to any default, damage, costs, or problem which may be based on or attributable to: (i) the use of the NVIDIA product in any manner that is contrary to this document or (ii) customer product designs.
+No license, either expressed or implied, is granted under any NVIDIA patent right, copyright, or other NVIDIA intellectual property right under this document. Information published by NVIDIA regarding third-party products or services does not constitute a license from NVIDIA to use such products or services or a warranty or endorsement thereof. Use of such information may require a license from a third party under the patents or other intellectual property rights of the third party, or a license from NVIDIA under the patents or other intellectual property rights of NVIDIA.
+Reproduction of information in this document is permissible only if approved in advance by NVIDIA in writing, reproduced without alteration and in full compliance with all applicable export laws and regulations, and accompanied by all associated conditions, limitations, and notices.
+THIS DOCUMENT AND ALL NVIDIA DESIGN SPECIFICATIONS, REFERENCE BOARDS, FILES, DRAWINGS, DIAGNOSTICS, LISTS, AND OTHER DOCUMENTS (TOGETHER AND SEPARATELY, “MATERIALS”) ARE BEING PROVIDED “AS IS.” NVIDIA MAKES NO WARRANTIES, EXPRESSED, IMPLIED, STATUTORY, OR OTHERWISE WITH RESPECT TO THE MATERIALS, AND EXPRESSLY DISCLAIMS ALL IMPLIED WARRANTIES OF NONINFRINGEMENT, MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE. TO THE EXTENT NOT PROHIBITED BY LAW, IN NO EVENT WILL NVIDIA BE LIABLE FOR ANY DAMAGES, INCLUDING WITHOUT LIMITATION ANY DIRECT, INDIRECT, SPECIAL, INCIDENTAL, PUNITIVE, OR CONSEQUENTIAL DAMAGES, HOWEVER CAUSED AND REGARDLESS OF THE THEORY OF LIABILITY, ARISING OUT OF ANY USE OF THIS DOCUMENT, EVEN IF NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. Notwithstanding any damages that customer might incur for any reason whatsoever, NVIDIA’s aggregate and cumulative liability towards customer for the products described herein shall be limited in accordance with the Terms of Sale for the product.
+<span class="code-line-hl">## 16.2. OpenCL</span>
+OpenCL is a trademark of Apple Inc. used under license to the Khronos Group Inc.
+<span class="code-line-hl">## 16.3. Trademarks</span>
+NVIDIA and the NVIDIA logo are trademarks or registered trademarks of NVIDIA Corporation in the U.S. and other countries. Other company and product names may be trademarks of the respective companies with which they are associated.
+<span class="code-line-hl"># 17. Copyright</span>
+© 2009-2026 NVIDIA Corporation &amp; affiliates. All rights reserved.
+This product includes software developed by the Syncro Soft SRL (http://www.sync.ro/).</code></pre>
+      </figure>
+      </div>
+
+      <div class="hop-panel" id="file-prog" role="tabpanel" aria-labelledby="tab-file-prog" hidden>
+      <h3 class="fn-h3">第 5 步 · 编程指南</h3>
+      <p class="file-sample-note">绿行 = 读过。从产品册第二条橙行进来。问句要的线程 / block / grid 在编程模型这一章。下面是该页 Markdown 全文，未删节。</p>
+      <p class="file-sample-note"><strong>顺读</strong>页顶和本指南如何组织。<strong>跳读</strong>Part 4 / Part 5 节名后停下。<strong>没打开</strong>附录里的其它页。答案和安装页拼在一起。</p>
+      <figure class="file-sample file-sample--wrap">
+        <figcaption><code>https://docs.nvidia.com/cuda/cuda-programming-guide/index.html.md</code></figcaption>
+        <pre><code><span class="code-line-hl"># CUDA Programming Guide [\#](https://docs.nvidia.com/cuda/cuda-programming-guide/index.html\#cuda-programming-guide &quot;Link to this heading&quot;)</span>
+
+<span class="code-line-hl">**CUDA and the CUDA Programming Guide**</span>
+
+<span class="code-line-hl">CUDA is a parallel computing platform and programming model developed by NVIDIA that enables dramatic increases in computing performance by harnessing the power of the GPU. It allows developers to accelerate compute-intensive applications and is widely used in fields such as deep learning, scientific computing, and high-performance computing (HPC).</span>
+
+<span class="code-line-hl">This CUDA Programming Guide is the official, comprehensive resource on the CUDA programming model and how to write code that executes on the GPU using the CUDA platform. This guide covers everything from the CUDA programming model and the CUDA platform to the details of language extensions and covers how to make use of specific hardware and software features. This guide provides a pathway for developers to learn CUDA if they are new, and also provides an essential resource for developers as they build applications using CUDA.</span>
+
+<span class="code-line-hl">**Organization of This Guide**</span>
+
+<span class="code-line-hl">Even for developers who primarily use libraries, frameworks, or DSLs, an understanding of the CUDA programming model and how GPUs execute code is valuable in knowing what is happening behind the layers of abstraction.</span>
+<span class="code-line-hl">This guide starts with a chapter on the [CUDA programming model](https://docs.nvidia.com/cuda/cuda-programming-guide/01-introduction/programming-model.html.md#programming-model) outside of any specific programming language which is applicable to anyone interested in understanding how CUDA works, even non-developers.</span>
+
+<span class="code-line-hl">The guide is broken down into five primary parts:</span>
+
+<span class="code-line-hl">- Part 1: Introduction and Programming Model Abstract</span>
+
+<span class="code-line-hl">  - A language agnostic overview of the CUDA programming model as well as a brief tour of the CUDA platform.</span>
+
+<span class="code-line-hl">  - This section is meant to be read by anyone wanting to understand GPUs and the concepts of executing code on GPUs, even if they are not developers.</span>
+<span class="code-line-hl">- Part 2: Programming GPUs in CUDA</span>
+
+<span class="code-line-hl">  - The basics of programming GPUs in C++ and Python.</span>
+
+<span class="code-line-hl">  - This section is meant to be read by anyone wanting to get started in GPU programming.</span>
+
+<span class="code-line-hl">  - This section is meant to be instructional, not complete, and teaches the most important and common parts of CUDA programming, including some common performance considerations.</span>
+<span class="code-line-hl">- Part 3: Advanced CUDA</span>
+
+<span class="code-line-hl">  - Introduces some more advance features of CUDA that enable both fine-grained control and more opportunities to maximize performance, including the use of multiple GPUs in a single application.</span>
+
+<span class="code-line-hl">  - This section concludes with a [tour of the features covered in part 4](https://docs.nvidia.com/cuda/cuda-programming-guide/03-advanced/feature-survey.html.md#tour-of-features) with a brief introduction to the purpose and function of each, sorted by when and why a developer may find each feature useful.</span>
+<span class="code-line-hl">- Part 4: CUDA Features</span>
+
+  - This section contains complete coverage of specific CUDA features such as CUDA graphs, dynamic parallelism, interoperability with graphics APIs, and unified memory.
+
+  - This section should be consulted when knowing the complete picture of a specific CUDA feature is needed. Where possible, care has been taken to introduce and motivate the features covered in this section in earlier sections.
+<span class="code-line-hl">- Part 5: Technical Appendices</span>
+
+  - The technical appendices provide some reference documentation on CUDA’s C++ high-level language support, hardware-specific specifications, and other technical specifications.
+
+  - This section is meant as technical reference for specific description of syntax, semantics, and technical behavior of elements of CUDA.
+
+<span class="code-line-hl">Parts 1-3 provide a guided learning experience for developers new to CUDA, though they also provide insight and updated information useful for CUDA developers of any experience level.</span>
+
+<span class="code-line-hl">Parts 4 and 5 provide a wealth of information about specific features and detailed topics, and are intended to provide a curated, well-organized reference for developers needing to know more details as they write CUDA applications.</span></code></pre>
+      </figure>
+      </div>
+    </section>
+
+    <section class="section" id="benefits">
+      <h2>这条路径说明什么</h2>
+      <ul class="bg-list">
+        <li><strong>问句跨任务就先后跟两条</strong>第一次把产品册从上扫到下：安装节读完，后面各章只扫节名，Programming Guides 记下但不进条目。打开是顺序的：先 Linux 安装，读完发现组织方式不在这页，回到产品册从页顶再扫到 Programming Guides（两次都读的行标 12），再进节里的条目。不是两页同时 GET。</li>
+        <li><strong>分叉发生在产品册，不在集团根</strong>根清单仍只进 Tech Docs；文档站仍只进 CUDA。真正要对照的两页，是同一本 <code>cuda/llms.txt</code> 里的两个任务面。</li>
+        <li><strong>这一问有三本 llms、两篇正文</strong>集团根 → 文档总册 → 产品册，然后才落到页。打开五份文件：三本 llms + 安装页 + 编程指南。</li>
+        <li><strong>两份叶子互相不能替代</strong>安装页不讲 thread / block / grid；编程指南不讲 Linux 包和驱动。答案拼自两页。</li>
+      </ul>
+    </section>
+
+  </main>
+</div>
+
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js"></script>
+<script src="assets/js/llms-parse-nav.js"></script>
+<script src="assets/js/wf-link-layout.js"></script>
+<script src="assets/js/module-sidebar.js"></script>
+<script>
+(function () {
+  var tabs = Array.prototype.slice.call(document.querySelectorAll(".wf-node[data-hop]"));
+  var panels = Array.prototype.slice.call(document.querySelectorAll(".hop-panel"));
+  if (!tabs.length) return;
+  function show(id, focusTab) {
+    tabs.forEach(function (tab) {
+      var on = tab.getAttribute("data-hop") === id;
+      tab.setAttribute("aria-selected", on ? "true" : "false");
+      tab.tabIndex = on ? 0 : -1;
+      if (on && focusTab) tab.focus();
+    });
+    panels.forEach(function (panel) {
+      panel.hidden = panel.id !== id;
+    });
+  }
+  tabs.forEach(function (tab) {
+    tab.addEventListener("click", function () {
+      show(tab.getAttribute("data-hop"), false);
+    });
+    tab.addEventListener("keydown", function (e) {
+      var i = tabs.indexOf(tab);
+      var next = -1;
+      if (e.key === "ArrowRight" || e.key === "ArrowDown") next = (i + 1) % tabs.length;
+      if (e.key === "ArrowLeft" || e.key === "ArrowUp") next = (i - 1 + tabs.length) % tabs.length;
+      if (e.key === "Home") next = 0;
+      if (e.key === "End") next = tabs.length - 1;
+      if (next < 0) return;
+      e.preventDefault();
+      show(tabs[next].getAttribute("data-hop"), true);
+    });
+  });
+})();
+</script>
+</body>
+</html>

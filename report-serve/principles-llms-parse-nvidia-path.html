@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>路径分析 · 编程模型 · 实测记录 · 昇腾社区 AI 亲和原则</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid var(--color-border);
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: 100%; max-width: none; margin: 0; padding: 0 24px; box-sizing: border-box;
+    height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: var(--color-text); text-decoration: none; white-space: nowrap; margin-right: 40px;
+  }
+  .topbar .brand span { color: var(--color-primary); }
+  .topbar .site-nav { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; flex-wrap: wrap; }
+  .topbar .site-nav > a {
+    text-decoration: none; color: var(--color-text-secondary); font-size: var(--text-body); font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .topbar .site-nav > a:hover { color: var(--color-primary); background: var(--color-bg); text-decoration: none; }
+  .topbar .site-nav > a.active { color: var(--color-primary); background: var(--color-bg); font-weight: 600; }
+  .nav-dd { position: relative; z-index: 210; display: inline-flex; align-items: center; }
+  .nav-dd-trigger {
+    appearance: none; border: 0; background: transparent; cursor: pointer; font: inherit;
+    text-decoration: none; color: var(--color-text-secondary); font-size: var(--text-body); font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+    display: inline-flex; align-items: center; gap: 12px;
+  }
+  .nav-dd-trigger::after {
+    content: ""; width: 6px; height: 6px;
+    border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg); opacity: .65; margin-top: -3px; flex-shrink: 0;
+  }
+  .nav-dd-trigger:hover, .nav-dd:hover .nav-dd-trigger, .nav-dd:focus-within .nav-dd-trigger {
+    color: var(--color-primary); background: var(--color-bg);
+  }
+  .nav-dd::before { content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 10px; }
+  .nav-dd-panel {
+    position: absolute; top: calc(100% + 4px); left: 0; min-width: 148px; padding: 6px;
+    background: #fff; border: 1px solid var(--color-border); border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(25, 25, 25, 0.08);
+    opacity: 0; visibility: hidden; transform: translateY(-4px);
+    transition: opacity .15s, transform .15s, visibility .15s; z-index: 210;
+  }
+  .nav-dd:hover .nav-dd-panel, .nav-dd:focus-within .nav-dd-panel {
+    opacity: 1; visibility: visible; transform: translateY(0);
+  }
+  .nav-dd-panel a {
+    display: block; padding: 8px 12px; border-radius: 6px; text-decoration: none;
+    color: var(--color-text-secondary); font-size: 13px; font-weight: 500; line-height: 1.4;
+  }
+  .nav-dd-panel a:hover { color: var(--color-primary); background: var(--color-bg); }
+  body.inner-page .page-wrapper { min-height: 100vh; }
+
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: var(--space-stack, 16px);
+  }
+  .page-header > h1 {
+    font-family: var(--font);
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1-weight, 600);
+    line-height: var(--text-h1-lh);
+    letter-spacing: -0.02em;
+    margin: 0;
+    padding-top: var(--space-h1-pad-y, 32px);
+    padding-bottom: var(--space-h1-pad-y, 32px);
+    color: var(--color-text);
+  }
+  .page-header .page-desc {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  body.inner-page[data-page="llms-parse-nvidia-path"]:has(#module-sidebar) .main-content {
+    padding-top: var(--content-main-pad-top, 16px);
+    padding-left: 0;
+    padding-right: 0;
+  }
+  body.inner-page[data-page="llms-parse-nvidia-path"]:has(#module-sidebar) .main-content > .page-header,
+  body.inner-page[data-page="llms-parse-nvidia-path"]:has(#module-sidebar) .main-content > .section,
+  body.inner-page[data-page="llms-parse-nvidia-path"]:has(#module-sidebar) .main-content > .surface-tabs {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page[data-page="llms-parse-nvidia-path"] .main-content .section > h2 {
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    letter-spacing: -0.01em;
+    margin-top: 0;
+    margin-bottom: var(--space-stack, 16px);
+    padding-top: var(--space-h2-pad-y, 16px);
+    padding-bottom: var(--space-h2-pad-y, 16px);
+    border-bottom: 2px solid var(--color-card-border);
+    color: var(--color-text, var(--color-text));
+  }
+  body.inner-page[data-page="llms-parse-nvidia-path"] .main-content > .section {
+    margin-bottom: var(--space-stack, 16px);
+  }
+  body.inner-page[data-page="llms-parse-nvidia-path"] .main-content .section > p {
+    margin: 0;
+  }
+  body.inner-page[data-page="llms-parse-nvidia-path"] .main-content .section h3 { height: auto; }
+  h3.fn-h3 {
+    margin: 0 0 var(--space-stack, 16px);
+    padding-top: var(--space-h3-pad-y, 16px);
+    padding-bottom: var(--space-h3-pad-y, 16px);
+    font-size: var(--text-h3, 18px);
+    line-height: var(--text-h3-lh, 28px);
+    font-weight: var(--text-h3-weight, 650);
+    color: var(--color-text, var(--color-text));
+    letter-spacing: -0.01em;
+  }
+  body.inner-page[data-page="llms-parse-nvidia-path"] .main-content .section h4 { height: auto; }
+  h4.fn-h4 {
+    margin: 0 0 var(--space-stack, 16px);
+    padding-top: var(--space-h4-pad-y, 16px);
+    padding-bottom: var(--space-h4-pad-y, 16px);
+    font-size: var(--text-h4, 14px);
+    line-height: var(--text-h4-lh, 22px);
+    font-weight: var(--text-h4-weight, 650);
+    color: var(--color-text, var(--color-text));
+    letter-spacing: -0.01em;
+  }
+  h3.fn-h3 + .principle-example > h4.fn-h4,
+  h3.fn-h3 + h4.fn-h4 { margin-top: 0; }
+  #practices .file-lead {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: 22px;
+    color: var(--color-text-secondary);
+  }
+  #practices .file-lead + h4.fn-h4,
+  #practices .file-sample + h4.fn-h4,
+  #practices .file-sample-note + h4.fn-h4,
+  #practices h2 + h4.fn-h4 {
+    margin-top: var(--space-stack, 16px);
+  }
+  #practices .bg-list + h2,
+  #practices .file-sample + h2 {
+    margin-top: var(--space-stack, 16px);
+  }
+  #practices .file-lead + .file-sample {
+    margin-top: var(--space-stack, 16px);
+  }
+  .practice-block {
+    margin: 0;
+    padding: 0;
+    border: none;
+  }
+  .practice-block + .practice-block {
+    margin-top: var(--space-stack, 16px);
+  }
+
+  body.inner-page[data-page="llms-parse-nvidia-path"] .main-content .section > p.flow-verify {
+    margin: var(--space-stack, 16px) 0 0;
+    font-size: var(--text-body);
+    line-height: 22px;
+  }
+  .flow-verify a {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 650;
+  }
+  .flow-verify a:hover {
+    text-decoration: underline;
+  }
+  body.inner-page[data-page="llms-parse-nvidia-path"] .main-content > .section:first-of-type > h2 {
+    margin-top: 0;
+  }
+  .bg-body {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: 22px;
+    color: var(--color-text, var(--color-text));
+  }
+  .bg-body:last-child { margin-bottom: 0; }
+  .bg-list {
+    margin: 0;
+    padding-left: 1.25em;
+    font-size: var(--text-body);
+    line-height: 22px;
+    color: var(--color-text, var(--color-text));
+  }
+  .bg-list li + li { margin-top: 6px; }
+  #principles .bg-list,
+  #practices .bg-list,
+  #benefits .bg-list {
+    list-style: disc;
+    padding-left: 1.25em;
+    margin: 0;
+  }
+  #principles .bg-list li + li,
+  #practices .bg-list li + li,
+  #benefits .bg-list li + li { margin-top: 16px; }
+  #principles .bg-list li strong,
+  #practices .bg-list li strong,
+  #benefits .bg-list li strong {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  /* 约定路径等短条目：题头与正文同一行 */
+  #practices .bg-list.-inline li strong {
+    display: inline;
+    margin-bottom: 0;
+  }
+  #practices .bg-list.-inline li strong::after {
+    content: "：";
+  }
+  #principles .bg-list li,
+  #practices .bg-list li,
+  #benefits .bg-list li {
+    color: var(--color-text-secondary);
+  }
+  .file-sample {
+    margin: 0;
+    padding: 0;
+    background: #1e1e1e;
+    border: 1px solid #111;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .file-sample figcaption {
+    margin: 0;
+    padding: 10px 14px;
+    font-size: var(--text-auxiliary);
+    font-weight: 650;
+    line-height: 22px;
+    color: #a3a3a3;
+    border-bottom: 1px solid #333;
+  }
+  .file-sample figcaption code {
+    font-size: inherit;
+    color: #e8e8e8;
+    background: none;
+  }
+  .file-sample pre {
+    margin: 0;
+    padding: 12px 14px 14px;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: var(--text-auxiliary);
+    line-height: 20px;
+    color: #e8e8e8;
+    background: transparent;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    overflow-x: hidden;
+  }
+  .file-sample pre code {
+    display: block;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    color: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    font-family: inherit;
+    white-space: inherit;
+  }
+  .file-sample .cmt { color: #737373; }
+  .file-sample-note {
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: 13px;
+    line-height: 22px;
+    color: #8c8c8c;
+  }
+  h3.fn-h3 + .file-sample { margin-top: 0; }
+  .file-sample + .bg-list,
+  .file-sample-note + .bg-list { margin-top: 0; }
+  .af-figure {
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: none;
+    overflow-x: auto;
+    border-radius: 8px;
+  }
+
+  .aj {
+    width: 100%;
+    min-width: 880px;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+    color: var(--color-text);
+  }
+  .aj caption {
+    caption-side: top;
+    text-align: left;
+    font-size: var(--text-body);
+    font-weight: 650;
+    line-height: var(--text-body-lh);
+    padding: 0 0 10px;
+    color: var(--color-text);
+  }
+  .aj .aj-col-mute { width: 76px; }
+  .aj td.is-mute {
+    color: #8c8c8c;
+  }
+  .aj th,
+  .aj td {
+    border: 1px solid #e8eef5;
+    border-top: none;
+    border-left: none;
+    vertical-align: top;
+    padding: 12px 12px;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+  }
+  .aj thead tr:first-child > th {
+    border-top: 1px solid #e8eef5;
+  }
+  .aj .aj-corner,
+  .aj .aj-label {
+    width: 92px;
+    background: #f5f6f8;
+    color: var(--color-text-secondary);
+    font-weight: 650;
+    vertical-align: middle;
+    text-align: left;
+    padding: 12px 12px;
+    border-left: 1px solid #e8eef5;
+  }
+  .aj thead th.aj-corner {
+    background: #f5f6f8;
+    color: var(--color-text-secondary);
+    padding: 12px 12px;
+    border-top-left-radius: 8px;
+  }
+  .aj thead tr.aj-group > th:last-child {
+    border-top-right-radius: 8px;
+  }
+  .aj tbody tr:last-child .aj-label {
+    border-bottom-left-radius: 8px;
+  }
+  .aj tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 8px;
+  }
+  .aj thead th {
+    background: #f5f6f8;
+    font-weight: 650;
+    text-align: left;
+    padding: 12px 12px;
+    color: var(--color-text);
+  }
+  .aj thead th.aj-group {
+    text-align: center;
+    vertical-align: middle;
+    font-weight: 650;
+    letter-spacing: 0;
+    background: #eceef1;
+    color: var(--color-text);
+    padding: 10px 12px;
+  }
+  .aj thead th.aj-span {
+    vertical-align: middle;
+  }
+  .aj thead .aj-stage-name {
+    display: block;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  .aj thead .aj-corner .aj-stage-name {
+    color: inherit;
+    margin-bottom: 2px;
+  }
+  .aj thead .aj-mute {
+    background: #f5f6f8;
+    color: var(--color-text-secondary);
+  }
+  .aj thead .aj-mute .aj-stage-name { color: var(--color-text-secondary); }
+  .aj thead .aj-pri,
+  .aj thead .aj-opt {
+    background: #f5f6f8;
+  }
+  .aj thead .aj-fb {
+    background: #f3f3f3;
+  }
+  .aj .aj-tag {
+    display: block;
+    width: fit-content;
+    margin: 0;
+    padding: 0 6px;
+    border-radius: 3px;
+    font-size: var(--text-micro);
+    font-weight: 700;
+    line-height: 18px;
+    color: var(--color-primary);
+  }
+  .aj-tag--must { background: rgba(20, 118, 255, .18); }
+  .aj-tag--pri  { background: rgba(20, 118, 255, .12); }
+  .aj-tag--opt  { background: rgba(20, 118, 255, .08); }
+  .aj-tag--fb   { background: rgba(20, 118, 255, .04); color: #3d7fd4; }
+  .aj tbody td:not(.is-mute):not(.is-fb):not(.is-pri):not(.aj-label) {
+    background: #fff;
+  }
+  .aj td.is-pri { background: #f7fbff; }
+  .aj td.is-fb { background: var(--color-card-bg); }
+  .aj td.is-mute { background: #f5f6f8 !important; color: #8c8c8c; }
+  .aj td .aj-subhead {
+    display: block;
+    font-weight: 650;
+    color: var(--color-text);
+    margin: 0 0 6px;
+  }
+  .aj-stack + .aj-stack { margin-top: 12px; }
+  .aj .aj-file {
+    display: block;
+    margin: 0 0 6px;
+    font-family: var(--font-mono, "SF Mono", monospace);
+    font-weight: 650;
+    color: var(--color-primary);
+  }
+  .aj ul {
+    margin: 0;
+    padding-left: 1.1em;
+  }
+  .aj li {
+    color: inherit;
+    margin-bottom: 0;
+  }
+  .aj li + li { margin-top: 8px; }
+  .aj code {
+    font-size: inherit;
+    line-height: inherit;
+  }
+
+  #scenarios .scene-def-table td .badge { border: none; }
+  .scene-def-table td .badge-optional {
+    background: var(--color-bg);
+    color: var(--color-text-secondary);
+  }
+  .scene-def-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--text-body);
+    line-height: 22px;
+    margin: 0 0 24px;
+    table-layout: fixed;
+  }
+  .scene-def-table th,
+  .scene-def-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: middle;
+    font-size: var(--text-body);
+    line-height: 22px;
+    font-weight: 400;
+  }
+  .scene-def-table tbody td {
+    height: auto;
+    min-height: 48px;
+  }
+  .scene-def-table th {
+    font-size: var(--text-auxiliary);
+    font-weight: 650;
+    color: var(--color-text-secondary);
+    background: var(--color-card-bg);
+    height: 40px;
+    box-sizing: border-box;
+  }
+  .scene-def-table .col-type { width: 18%; }
+  .scene-def-table .col-desc { width: 55%; }
+  .scene-def-table .col-place { width: 27%; }
+  #objects .scene-def-table .col-type,
+  #scenarios .scene-def-table .col-type { width: 22%; }
+  #objects .scene-def-table .col-desc { width: 78%; }
+  #scenarios .scene-def-table .col-place { width: 38%; }
+  #scenarios .scene-def-table .col-desc { width: 40%; }
+
+  .fn-ex-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr auto;
+    column-gap: 16px;
+    row-gap: 0;
+    align-items: stretch;
+    margin: 16px 0 0;
+  }
+  .fn-ex-row .fn-ex {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 1 / span 3;
+    margin: 0;
+    min-width: 0;
+  }
+  .fn-ex-row .fn-ex-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .fn-ex-row .fn-ex-head .fn-ex-label { margin: 0; }
+  .fn-ex-row .fn-ex-head .fn-ex-bar {
+    display: block; margin: 0; width: 100%; align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-body {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 2 / span 2;
+    min-height: 0;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .fn-ex-row .fn-ex-mock {
+    min-height: 0; height: 100%; box-sizing: border-box;
+    border: none; border-radius: 0; align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-mock:has(.site-foot) {
+    background: var(--color-bg);
+    padding: 12px;
+  }
+  .fn-ex-row .fn-ex-mock pre.st-code {
+    margin: 0;
+    padding: 14px 16px;
+    background: #1e1e1e;
+    border: 1px solid #111;
+    border-radius: 0;
+    font-size: var(--text-auxiliary);
+    line-height: 18px;
+    color: #e8e8e8;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow: auto;
+    box-sizing: border-box;
+    min-height: 100%;
+  }
+  .fn-ex-row .fn-ex-foot {
+    display: flex; flex-direction: column; gap: 8px;
+    padding: 12px 14px 14px; background: #fff;
+    border-top: 1px solid var(--color-border);
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-list { margin: 0; gap: 4px; }
+  .fn-ex-label {
+    display: inline-block; padding: 0 8px; border-radius: 4px;
+    font-size: var(--text-auxiliary); font-weight: 650; line-height: 20px;
+    color: #b42318; background: #fef3f2;
+  }
+  .fn-ex-label.is-good { color: #047857; background: #ecfdf5; }
+  .fn-ex-bar {
+    display: block; width: 100%; height: 3px;
+    background: #b42318; border-radius: 2px;
+  }
+  .fn-ex-bar.is-good { background: #047857; }
+  .fn-ex-list {
+    margin: 0; padding: 0 0 0 1.25em; list-style: disc;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .fn-ex-list li {
+    margin: 0; font-size: var(--text-body); line-height: 22px; color: var(--color-text);
+  }
+  .fn-ex-list strong { font-weight: 650; }
+  .site-foot {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 10px;
+    overflow: hidden;
+    font-family: var(--font);
+  }
+  .site-foot-body {
+    padding: 16px 14px 20px;
+    min-height: 52px;
+    background: linear-gradient(180deg, #fafbfc 0%, #fff 100%);
+  }
+  .site-foot-body p {
+    margin: 0;
+    font-size: var(--text-caption);
+    line-height: 16px;
+    color: #bfbfbf;
+  }
+  .site-foot-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 12px;
+    padding: 10px 14px;
+    border-top: 1px solid #eef1f5;
+    background: var(--color-card-bg);
+  }
+  .site-foot-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .site-foot-links a {
+    font-size: var(--text-caption);
+    line-height: 16px;
+    color: #8c8c8c;
+    text-decoration: none;
+  }
+  .site-foot-links a.is-machine {
+    color: var(--color-text-secondary);
+    font-variant-numeric: tabular-nums;
+  }
+  .site-foot-copy {
+    margin: 0;
+    font-size: var(--text-micro);
+    line-height: 14px;
+    color: #bfbfbf;
+  }
+  .principle-example + .principle-example { margin-top: var(--space-stack, 16px); }
+
+  #design-ui .principle-suggestions,
+  #content-adjust .principle-suggestions,
+  #frontend-adjust .principle-suggestions {
+    list-style: none;
+    margin: 0 0 32px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    counter-reset: sug;
+  }
+  #design-ui .principle-suggestions > li,
+  #content-adjust .principle-suggestions > li,
+  #frontend-adjust .principle-suggestions > li {
+    position: relative;
+    margin: 0;
+    padding: 0 0 0 36px;
+    color: var(--color-text-secondary);
+  }
+  #design-ui .principle-suggestions > li::before,
+  #content-adjust .principle-suggestions > li::before,
+  #frontend-adjust .principle-suggestions > li::before {
+    counter-increment: sug;
+    content: counter(sug);
+    position: absolute;
+    left: 0;
+    top: 2px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #eff6ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--text-auxiliary);
+    font-weight: 700;
+    line-height: 22px;
+    letter-spacing: 0.02em;
+    color: var(--color-primary);
+  }
+  #design-ui .principle-suggestions > li .sug-title,
+  #content-adjust .principle-suggestions > li .sug-title,
+  #frontend-adjust .principle-suggestions > li .sug-title {
+    display: block;
+    margin: 0 0 6px;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 24px;
+    color: var(--color-text);
+  }
+  #design-ui .principle-suggestions > li .sug-desc,
+  #content-adjust .principle-suggestions > li .sug-desc,
+  #frontend-adjust .principle-suggestions > li .sug-desc {
+    display: block;
+    margin: 0;
+    max-width: none;
+    width: 100%;
+    font-size: var(--text-body);
+    font-weight: 400;
+    line-height: 24px;
+    color: var(--color-text-secondary);
+  }
+
+  @media (max-width: 900px) {
+    .fn-ex-row {
+      grid-template-columns: 1fr;
+      grid-template-rows: none;
+    }
+    .fn-ex-row .fn-ex { display: block; grid-row: auto; }
+    .fn-ex-row .fn-ex-body {
+      display: flex; flex-direction: column; grid-row: auto;
+    }
+  }
+  #mechanism > p.page-lead {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  #mechanism > h2 + .page-lead { margin-top: 0; }
+  #problem > h2 + .wf { margin-top: 0; }
+  .wf {
+    margin: 0;
+    padding: var(--space-stack, 16px) 24px;
+    background-color: #f4f4f2;
+    background-image: radial-gradient(#d8d8d4 1.1px, transparent 1.1px);
+    background-size: 14px 14px;
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    overflow-x: auto;
+  }
+  .wf-track {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0;
+    width: 100%;
+    min-width: 872px;
+  }
+  .wf-step {
+    position: relative;
+    flex: 0 0 188px;
+    width: 188px;
+    padding-top: 32px;
+  }
+  .wf-node {
+    position: relative;
+    appearance: none;
+    display: block;
+    width: 100%;
+    margin: 0;
+    box-sizing: border-box;
+    padding-top: 0;
+    background: #fff;
+    border: 1px solid #e6e6e4;
+    border-radius: 14px;
+    box-shadow: 0 1px 2px rgba(17, 17, 17, 0.06), 0 8px 24px rgba(17, 17, 17, 0.04);
+    overflow: hidden;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .wf-node:hover {
+    border-color: #c8c8c4;
+    box-shadow: 0 1px 2px rgba(17, 17, 17, 0.08), 0 10px 28px rgba(17, 17, 17, 0.08);
+  }
+  .wf-node[aria-selected="true"] {
+    border-color: #191919;
+    box-shadow: 0 1px 2px rgba(17, 17, 17, 0.08), 0 10px 28px rgba(17, 17, 17, 0.08);
+  }
+  .wf-node:focus-visible {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--color-primary);
+  }
+  #practices .hop-panel { margin: 0; }
+  .wf-pill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: inline-block;
+    margin: 0;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: #fff;
+    border: 1px solid #e6e6e4;
+    font-size: 11px;
+    font-weight: 650;
+    line-height: 18px;
+    color: var(--color-text);
+  }
+  .wf-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 10px 12px;
+    font-size: 13px;
+    font-weight: 650;
+    line-height: 18px;
+    color: var(--color-text);
+    border-bottom: 1px solid #f0f0ee;
+  }
+  .wf-head svg { flex-shrink: 0; margin-top: 2px; }
+  .wf-head-text { min-width: 0; flex: 1; }
+  .wf-title { font-weight: 650; }
+  .wf-req {
+    margin-top: 2px;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 16px;
+    color: #8c8c8c;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .wf-rows { padding: 4px 0 8px; }
+  .wf-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 6px 12px;
+    font-size: 12px;
+    line-height: 18px;
+  }
+  .wf-row dt {
+    margin: 0;
+    color: #8c8c8c;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+  .wf-row dd {
+    margin: 0;
+    color: var(--color-text);
+    font-weight: 550;
+    text-align: right;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .wf-row--go dd { color: #b45309; }
+  .wf-link {
+    flex: 0 0 40px;
+    width: 40px;
+    height: 16px;
+    margin-top: 60px;
+    display: block;
+    overflow: visible;
+  }
+  @media (max-width: 900px) {
+    .wf-track { min-width: 0; flex-direction: column; }
+    .wf-link { width: 16px; height: 36px; flex-basis: 36px; margin-top: 0; }
+  }
+  #mechanism > p.page-lead strong {
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  #mechanism > .page-lead + .af-figure { margin-top: 0; }
+  #mechanism .aj,
+  #path .aj { min-width: 0; }
+  #mechanism .aj col.aj-rowhead,
+  #path .aj col.aj-rowhead { width: 136px; }
+  #mechanism .aj .aj-corner,
+  #mechanism .aj .aj-label,
+  #path .aj .aj-corner,
+  #path .aj .aj-label {
+    width: 136px;
+    white-space: nowrap;
+    color: var(--color-text);
+  }
+  #mechanism .aj thead th,
+  #path .aj thead th {
+    text-align: left;
+    vertical-align: bottom;
+  }
+  #core-principles > h2 + .bg-list,
+  #benefits > h2 + .bg-list { margin-top: 0; }
+  #core-principles .bg-list,
+  #benefits .bg-list {
+    list-style: disc;
+    padding-left: 1.25em;
+    margin: 0;
+  }
+  #core-principles .bg-list li + li,
+  #benefits .bg-list li + li { margin-top: 16px; }
+  #core-principles .bg-list li > strong:first-child,
+  #benefits .bg-list li > strong:first-child {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  #core-principles .bg-list li,
+  #benefits .bg-list li { color: var(--color-text-secondary); }
+  .file-sample-note {
+    font-size: 13px;
+    line-height: 22px;
+    color: #8c8c8c;
+  }
+  .file-sample .code-line-hl {
+    display: inline;
+    padding: 0;
+    margin: 0;
+    background: rgba(4, 120, 87, 0.28);
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+  .file-sample .code-line-go {
+    background: rgba(245, 158, 11, 0.42);
+  }
+  .file-sample--wrap pre,
+  .file-sample--wrap pre code {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  #practices figure.file-sample--wrap pre {
+    height: 420px;
+    max-height: 420px;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  #practices h2 + h3.fn-h3,
+  #practices h2 + .file-sample-note,
+  #practices .hop-panel > h3.fn-h3,
+  #practices h3.fn-h3 + .file-sample-note,
+  #practices .file-sample-note + .file-sample-note,
+  #practices .file-sample-note + .file-sample,
+  #practices .file-sample + .file-sample-note {
+    margin-top: 0;
+  }
+  #practices .hop-panel > .file-sample:last-child {
+    margin-bottom: 0;
+  }
+  #path h2 + h3.fn-h3,
+  #path h3.fn-h3 + .file-sample-note,
+  #path h3.fn-h3 + .af-figure,
+  #path h3.fn-h3 + .file-sample,
+  #path .file-sample + .file-sample-note,
+  #path .file-sample-note + .file-sample,
+  #path .file-sample-note + .af-figure {
+    margin-top: 0;
+  }
+  #path .file-sample-note + h3.fn-h3,
+  #path .af-figure + h3.fn-h3,
+  #path .file-sample + h3.fn-h3 {
+    margin-top: var(--space-stack, 16px);
+  }
+
+  /* 详情页壳：顶部只保留返回与当前位置，不带站点主导航与模块侧栏 */
+  .detail-bar { background: var(--color-surface); }
+  .detail-bar-inner { gap: 12px; }
+  .detail-back {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    margin-left: -6px;
+    border-radius: var(--radius);
+    color: var(--color-text);
+    text-decoration: none;
+    transition: background .15s, color .15s;
+  }
+  .detail-back:hover { background: var(--color-bg); color: var(--color-primary); }
+  .detail-back svg { width: 18px; height: 18px; display: block; }
+  .detail-divider {
+    flex-shrink: 0;
+    width: 1px;
+    height: 18px;
+    background: var(--color-border);
+  }
+  .detail-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+    color: var(--color-text-tertiary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .detail-title a { color: var(--color-text-secondary); text-decoration: none; }
+  .detail-title a:hover { color: var(--color-primary); }
+  .detail-title strong { color: var(--color-text); font-weight: 650; }
+  .detail-exit {
+    flex-shrink: 0;
+    margin-left: auto;
+    padding: 5px 14px;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    font-size: var(--code-copy-size);
+    line-height: var(--text-auxiliary-lh);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    transition: background .15s, color .15s, border-color .15s;
+  }
+  .detail-exit:hover { color: var(--color-primary); border-color: var(--color-primary); background: var(--color-primary-subtle); }
+  .detail-wrapper { display: flex; align-items: flex-start; background: var(--color-surface); }
+  .model-nav {
+    flex-shrink: 0;
+    width: var(--sidebar-width);
+    box-sizing: border-box;
+    position: sticky;
+    top: var(--header-height, 56px);
+    height: calc(100vh - var(--header-height, 56px));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: var(--color-card-bg);
+    border-right: 1px solid var(--color-border);
+  }
+  .model-nav-label {
+    font-size: var(--text-body);
+    font-weight: var(--text-h2-weight);
+    letter-spacing: .04em;
+    color: var(--color-text-tertiary);
+    padding: 4px 6px 2px;
+  }
+  .model-nav-label.is-sub {
+    margin-top: 8px;
+    padding-top: 12px;
+    border-top: 1px solid var(--color-border);
+  }
+  a.nav-vendor {
+    display: block;
+    padding: 6px 10px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+  }
+  a.nav-vendor:hover {
+    color: var(--color-primary);
+    background: var(--color-primary-subtle);
+    text-decoration: none;
+  }
+  a.nav-vendor.is-active {
+    color: var(--color-primary);
+    background: var(--color-primary-subtle);
+    font-weight: 650;
+  }
+  a.nav-model-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 10px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-surface);
+    font: inherit;
+    text-align: left;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition: border-color .15s, box-shadow .15s, background .15s;
+  }
+  a.nav-model-card:hover {
+    border-color: var(--color-primary-hover-border);
+    background: var(--color-primary-subtle);
+  }
+  a.nav-model-card.is-active {
+    border-color: var(--color-primary);
+    background: var(--color-primary-subtle);
+    box-shadow: inset 3px 0 0 var(--color-primary);
+  }
+  a.nav-model-card .idx {
+    font-size: var(--text-body);
+    font-weight: 600;
+    line-height: var(--text-body-lh);
+    color: var(--color-text-secondary);
+  }
+  a.nav-model-card.is-active .idx { color: var(--color-primary); }
+  a.nav-model-card .card-title {
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+    font-weight: 650;
+    color: var(--color-text);
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  @media (max-width: 900px) {
+    .detail-wrapper { flex-direction: column; }
+    .model-nav {
+      width: 100%;
+      position: static;
+      height: auto;
+      max-height: 36vh;
+      border-right: none;
+      border-bottom: 1px solid var(--color-border);
+    }
+  }
+  body.inner-page .detail-wrapper .main-content {
+    padding-top: var(--content-main-pad-top, 16px);
+    min-width: 0;
+    flex: 1;
+    background: var(--color-surface);
+    min-height: calc(100vh - var(--header-height, 56px));
+  }
+  body.inner-page .detail-wrapper .main-content > .page-header,
+  body.inner-page .detail-wrapper .main-content > .section {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin-inline: auto;
+    box-sizing: border-box;
+  }
+</style>
+</head>
+<body class="inner-page agent-entry-page" data-module="principles" data-page="llms-parse-nvidia-path" data-no-surface-tabs>
+
+<div class="topbar detail-bar">
+  <div class="topbar-inner detail-bar-inner">
+    <a class="detail-back" href="principles-llms-parse.html" aria-label="返回 根 llms 解析">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6L9 12l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <span class="detail-divider" aria-hidden="true"></span>
+    <div class="detail-title"><a href="principles-llms-parse.html">根 llms 解析</a><span aria-hidden="true">›</span>NVIDIA<span aria-hidden="true">›</span><strong>路径分析</strong></div>
+    <a class="detail-exit" href="principles-llms-parse.html">返回解析</a>
+  </div>
+</div>
+
+<div class="page-wrapper detail-wrapper">
+
+  <aside class="model-nav" id="llms-parse-nav" data-vendor="nvidia" data-layer="path" aria-label="解析导航"></aside>
+
+  <main class="main-content">
+
+    <div class="page-header">
+      <h1>路径分析</h1>
+    </div>
+
+    <section class="section" id="mechanism">
+      <h2>问句</h2>
+      <p class="page-lead">「帮我查看 CUDA 编程模型里线程、block、grid 是怎么组织的」</p>
+    </section>
+
+    <section class="section" id="problem">
+      <h2>路径一览</h2>
+      <div class="wf">
+        <div class="wf-track" role="tablist" aria-label="读取路径四步">
+          <div class="wf-step">
+            <span class="wf-pill">Start</span>
+            <button type="button" class="wf-node" role="tab" id="tab-file-root" aria-controls="file-root" aria-selected="true" tabindex="0" data-hop="file-root">
+            <div class="wf-head">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5.5 4 2 8l3.5 4M10.5 4 14 8l-3.5 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <div class="wf-head-text">
+                <div class="wf-title">集团根</div>
+                <div class="wf-req" title="https://www.nvidia.com/llms.txt">GET /llms.txt</div>
+              </div>
+            </div>
+            <dl class="wf-rows">
+              <div class="wf-row wf-row--go"><dt>进入</dt><dd>Tech Docs</dd></div>
+            </dl>
+            </button>
+          </div>
+          <svg class="wf-link" viewBox="0 0 40 16" fill="none" aria-hidden="true">
+            <path d="M2 8 H38" stroke="#191919" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="3" cy="8" r="3.5" fill="#fff" stroke="#191919" stroke-width="2.5"/>
+            <circle cx="37" cy="8" r="3.5" fill="#fff" stroke="#191919" stroke-width="2.5"/>
+          </svg>
+          <div class="wf-step">
+            <button type="button" class="wf-node" role="tab" id="tab-file-docs" aria-controls="file-docs" aria-selected="false" tabindex="-1" data-hop="file-docs">
+            <div class="wf-head">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5.5 4 2 8l3.5 4M10.5 4 14 8l-3.5 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <div class="wf-head-text">
+                <div class="wf-title">文档站</div>
+                <div class="wf-req" title="https://docs.nvidia.com/llms.txt">GET docs.nvidia.com/llms.txt</div>
+              </div>
+            </div>
+            <dl class="wf-rows">
+              <div class="wf-row wf-row--go"><dt>进入</dt><dd>CUDA Toolkit</dd></div>
+            </dl>
+            </button>
+          </div>
+          <svg class="wf-link" viewBox="0 0 40 16" fill="none" aria-hidden="true">
+            <path d="M2 8 H38" stroke="#191919" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="3" cy="8" r="3.5" fill="#fff" stroke="#191919" stroke-width="2.5"/>
+            <circle cx="37" cy="8" r="3.5" fill="#fff" stroke="#191919" stroke-width="2.5"/>
+          </svg>
+          <div class="wf-step">
+            <button type="button" class="wf-node" role="tab" id="tab-file-pages" aria-controls="file-pages" aria-selected="false" tabindex="-1" data-hop="file-pages">
+            <div class="wf-head">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5.5 4 2 8l3.5 4M10.5 4 14 8l-3.5 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <div class="wf-head-text">
+                <div class="wf-title">产品线</div>
+                <div class="wf-req" title="https://docs.nvidia.com/cuda/llms.txt">GET cuda/llms.txt</div>
+              </div>
+            </div>
+            <dl class="wf-rows">
+              <div class="wf-row wf-row--go"><dt>进入</dt><dd>Programming Guide</dd></div>
+            </dl>
+            </button>
+          </div>
+          <svg class="wf-link" viewBox="0 0 40 16" fill="none" aria-hidden="true">
+            <path d="M2 8 H38" stroke="#191919" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="3" cy="8" r="3.5" fill="#fff" stroke="#191919" stroke-width="2.5"/>
+            <circle cx="37" cy="8" r="3.5" fill="#fff" stroke="#191919" stroke-width="2.5"/>
+          </svg>
+          <div class="wf-step">
+            <span class="wf-pill">End</span>
+            <button type="button" class="wf-node" role="tab" id="tab-file-leaf" aria-controls="file-leaf" aria-selected="false" tabindex="-1" data-hop="file-leaf">
+            <div class="wf-head">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5.5 4 2 8l3.5 4M10.5 4 14 8l-3.5 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <div class="wf-head-text">
+                <div class="wf-title">编程指南</div>
+                <div class="wf-req" title="https://docs.nvidia.com/cuda/cuda-programming-guide/index.html.md">GET programming-guide.md</div>
+              </div>
+            </div>
+            <dl class="wf-rows">
+              <div class="wf-row"><dt>进入</dt><dd>—</dd></div>
+            </dl>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="practices">
+      <div class="hop-panel" id="file-root" role="tabpanel" aria-labelledby="tab-file-root">
+      <h3 class="fn-h3">第 1 步 · 集团根</h3>
+      <p class="file-sample-note">绿行 = 读过（顺读或跳读）。橙行 = 点进去、打开下一跳。没涂色 = 没读。</p>
+      <p class="file-sample-note">从上往下读。北美站先读过，确认是营销站不是编程文档。读到 Tech Docs 记下；这一节只有一条，后面没有同节条目。再跳读 Developer / GTC 节名排除。<strong>没读</strong>RSS 各条、中国站各条。然后打开黄行。</p>
+      <figure class="file-sample file-sample--wrap">
+        <figcaption><code>https://www.nvidia.com/llms.txt</code></figcaption>
+        <pre><code><span class="code-line-hl"># NVIDIA Corporation</span>
+
+<span class="code-line-hl">&gt; This file provides links to the llms.txt of NVIDIA's main and international websites…</span>
+
+<span class="code-line-hl">## The NVIDIA North America Websites</span>
+<span class="code-line-hl">- [NVIDIA U.S. Website](https://www.nvidia.com/en-us/llms.txt): Marketing, corporate, product information.</span>
+- [NVIDIA OpenSource Website] (https://opensource.nvidia.com/en-us/llms.txt)
+
+<span class="code-line-hl">## NVIDIA Technical Documentation Website</span>
+<span class="code-line-hl code-line-go">- [Tech Docs](https://docs.nvidia.com/llms.txt): Technical documentation for NVIDIA products.</span>
+
+<span class="code-line-hl">## NVIDIA Developer Websites</span>
+- [NVIDIA Developer](https://developer.nvidia.com/llms.txt): Downloads, SDKs, frameworks, libraries, forums.
+- [NVIDIA Technical Blog](https://developer.nvidia.com/blog/llms.txt): News and blog articles for developer community.
+
+<span class="code-line-hl">## NVIDIA GTC AI Conference Website</span>
+- [GTC](https://www.nvidia.com/gtc/llms.txt): Conference locations, sessions, speakers, venues.
+
+## NVIDIA Regional Blog RSS Feeds
+- [NVIDIA Corporate Blog RSS Feed](https://blogs.nvidia.com/feed/): Latest corporate blog posts.
+- [NVIDIA Developer Technical Blog RSS Feed](https://developer.nvidia.com/blog/feed/): Latest developer blog posts.
+
+### NVIDIA China Websites
+- [NVIDIA China](https://www.nvidia.cn/llms.txt): Content in Simplified Chinese.
+- [NVIDIA China Developer](https://developer.nvidia.cn/llms.txt): Developer site for China.</code></pre>
+      </figure>
+      </div>
+
+      <div class="hop-panel" id="file-docs" role="tabpanel" aria-labelledby="tab-file-docs" hidden>
+      <h3 class="fn-h3">第 2 步 · 文档站</h3>
+      <p class="file-sample-note">绿行 = 读过（顺读或跳读）。橙行 = 点进去、打开下一跳。没涂色 = 没读。</p>
+      <p class="file-sample-note"><strong>顺读</strong>页顶（英文、按字母序）。<strong>跳读</strong>各 <code>##</code> 产品名和一句说明。读到 CUDA Toolkit 记下；读完这一节的说明和链接。再看下一条 CUDA-Q，确认是量子平台不是编程模型。<strong>没读</strong>各产品分册地址（AICR、NIM 等）。然后打开黄行。</p>
+      <figure class="file-sample file-sample--wrap">
+        <figcaption><code>https://docs.nvidia.com/llms.txt</code></figcaption>
+        <pre><code><span class="code-line-hl"># NVIDIA Technical Product Documentation</span>
+
+<span class="code-line-hl">&gt; Collection of NVIDIA Technical Documentation llms.txt files for AI user agents. Content is in English and listed in alphabetical order. Last updated 9 September 2026</span>
+
+<span class="code-line-hl">## NVIDIA AI Cluster Runtime (AICR)</span>
+<span class="code-line-hl">&gt; Tooling for generating validated, optimized GPU-accelerated Kubernetes configurations…</span>
+- [NVIDIA AI Cluster Runtime](https://docs.nvidia.com/aicr/llms.txt)
+
+<span class="code-line-hl">## NVIDIA AIPerf</span>
+<span class="code-line-hl">&gt; AIPerf is a comprehensive CLI benchmarking tool…</span>
+- [NVIDIA AIPerf](https://docs.nvidia.com/aiperf/llms.txt)
+
+## NVIDIA AIStore
+## NVIDIA BioNeMo Inference Runtime
+## NVIDIA Cosmos
+
+<span class="code-line-hl">## NVIDIA CUDA Toolkit</span>
+<span class="code-line-hl">&gt; Development environment for creating high performance GPU-accelerated applications with libraries, compilers, and debugging tools.</span>
+<span class="code-line-hl code-line-go">- [NVIDIA CUDA Toolkit](https://docs.nvidia.com/cuda/llms.txt)</span>
+
+<span class="code-line-hl">## NVIDIA CUDA-Q</span>
+<span class="code-line-hl">&gt; A Platform for accelerated quantum supercomputing…</span>
+- [NVIDIA CUDA-Q documentation on GitHub](https://nvidia.github.io/cuda-quantum/latest/llms.txt)
+
+## NVIDIA cuVS
+## NVIDIA NIM</code></pre>
+      </figure>
+      </div>
+
+      <div class="hop-panel" id="file-pages" role="tabpanel" aria-labelledby="tab-file-pages" hidden>
+      <h3 class="fn-h3">第 3 步 · 产品线</h3>
+      <p class="file-sample-note">绿行 = 读过（顺读或跳读）。橙行 = 点进去、打开下一跳。没涂色 = 没读。</p>
+      <p class="file-sample-note"><strong>顺读</strong>页顶。<strong>跳读</strong>安装节名，读第一条确认是 setup，排除。进入 CUDA Programming Guides，读完这一节才能在 programming guide 和 best practices 之间选。<strong>没读</strong>Architecture / API / Tools 各页说明。然后打开黄行。</p>
+      <figure class="file-sample file-sample--wrap">
+        <figcaption><code>https://docs.nvidia.com/cuda/llms.txt</code></figcaption>
+        <pre><code><span class="code-line-hl"># NVIDIA CUDA – Comprehensive Documentation for GPU Programming, Libraries, and Tooling</span>
+<span class="code-line-hl">This collection provides end-to-end documentation for NVIDIA CUDA, covering installation, programming models, architecture-specific tuning, runtime and driver APIs…</span>
+
+<span class="code-line-hl">## CUDA Installation Guides</span>
+<span class="code-line-hl">- [Use this guide when setting up CUDA for the first time…](https://docs.nvidia.com/cuda/cuda-quick-start-guide/index.html.md)</span>
+- [Consult this page when installing CUDA on Linux systems…](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html.md)
+- [Use this guide when installing CUDA on Windows…](https://docs.nvidia.com/cuda/cuda-installation-guide-microsoft-windows/index.html.md)
+
+<span class="code-line-hl">## CUDA Programming Guides</span>
+<span class="code-line-hl code-line-go">- [Read this when learning or revisiting the CUDA programming model, including threads, blocks, grids, memory hierarchy, streams, and concurrency.](https://docs.nvidia.com/cuda/cuda-programming-guide/index.html.md)</span>
+<span class="code-line-hl">- [Use this guide when optimizing CUDA C/C++ code for performance and correctness…](https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html.md)</span>
+- [Consult this documentation when using CUDA utility helpers in Python…](https://docs.nvidia.com/cuda/cutile-python/index.html.md)
+- [Use this reference when inspecting, generating, or writing PTX directly…](https://docs.nvidia.com/cuda/parallel-thread-execution/index.html)
+
+<span class="code-line-hl">## CUDA Architecture Guides</span>
+## CUDA API References
+## CUDA Tools</code></pre>
+      </figure>
+      </div>
+
+      <div class="hop-panel" id="file-leaf" role="tabpanel" aria-labelledby="tab-file-leaf" hidden>
+      <h3 class="fn-h3">第 4 步 · 编程指南</h3>
+      <p class="file-sample-note">绿行 = 读过（顺读或跳读）。橙行 = 点进去、打开下一跳。没涂色 = 没读。</p>
+      <p class="file-sample-note"><strong>顺读</strong>页顶和本指南如何组织。问句要的线程 / block / grid 就在编程模型这一章的说明里。<strong>跳读</strong>后面 Part 4 / Part 5 节名后停下。<strong>没打开</strong>特性手册、附录里的其它页。答案就是这一页。</p>
+      <figure class="file-sample file-sample--wrap">
+        <figcaption><code>https://docs.nvidia.com/cuda/cuda-programming-guide/index.html.md</code></figcaption>
+        <pre><code><span class="code-line-hl"># CUDA Programming Guide</span>
+
+<span class="code-line-hl">**CUDA and the CUDA Programming Guide**</span>
+
+<span class="code-line-hl">CUDA is a parallel computing platform and programming model developed by NVIDIA that enables dramatic increases in computing performance by harnessing the power of the GPU…</span>
+
+<span class="code-line-hl">This CUDA Programming Guide is the official, comprehensive resource on the CUDA programming model and how to write code that executes on the GPU using the CUDA platform…</span>
+
+<span class="code-line-hl">**Organization of This Guide**</span>
+
+<span class="code-line-hl">This guide starts with a chapter on the CUDA programming model outside of any specific programming language which is applicable to anyone interested in understanding how CUDA works…</span>
+
+<span class="code-line-hl">The guide is broken down into five primary parts:</span>
+
+<span class="code-line-hl">- Part 1: Introduction and Programming Model Abstract</span>
+<span class="code-line-hl">  - A language agnostic overview of the CUDA programming model as well as a brief tour of the CUDA platform.</span>
+
+<span class="code-line-hl">- Part 2: Programming GPUs in CUDA</span>
+<span class="code-line-hl">  - The basics of programming GPUs in C++ and Python.</span>
+
+- Part 3: Advanced CUDA
+- Part 4: CUDA Features
+- Part 5: Technical Appendices</code></pre>
+      </figure>
+      </div>
+    </section>
+
+    <section class="section" id="benefits">
+      <h2>这条路径说明什么</h2>
+      <ul class="bg-list">
+        <li><strong>从上往下读，碰到候选先记下</strong>Agent 按文件顺序读，不是先把所有 URL 打开再挑。读到像入口的那条（橙行）先记下，不立刻跳走。</li>
+        <li><strong>候选所在的节要读完，后面几条也看</strong>同一节里，候选下面的条目仍会读，用来确认不是它们。产品线 Programming Guides 里，programming guide 后面的 best practices 就是这样。不是碰到黄行就走。</li>
+        <li><strong>其它章只扫标题和一句说明，再进下一层</strong>后面的 <code>##</code> 跳读节名和描述，排除北美站、CUDA-Q、安装指南、API 等。相关才进节里看第一条。排除完，再打开下一份。这一问每层跟一条；问句要对照两页时，同一层可以跟两条。</li>
+        <li><strong>答案在当前文件就停</strong>第四份已经是编程指南，Part 4 / 附录只扫节名，不再打开。打开几次由「问句还缺什么」决定，不由目录有几层决定。</li>
+        <li><strong>先分站，再选产品</strong>NVIDIA 不是一座站。根清单按站点切开：北美营销、技术文档、开发者、GTC、地区博客。这一问是编程文档，所以进 Tech Docs，不进北美站或开发者站。进了文档站还要再选产品（CUDA），产品册才列页。分站是因为集团多入口会撑爆一份根文件，不是把导航菜单原样搬家。</li>
+        <li><strong>这一问有三本 llms</strong>分站之后，文档站里产品线仍是目录，所以再套一本产品 <code>llms.txt</code>。打开四份文件：三本 llms + 一篇正文。官网、博客没有产品线这一刀，第 2 本就列页。</li>
+      </ul>
+    </section>
+
+    </main>
+
+</div>
+
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js"></script>
+<script src="assets/js/llms-parse-nav.js"></script>
+<script src="assets/js/wf-link-layout.js"></script>
+<script src="assets/js/module-sidebar.js"></script>
+<script>
+(function () {
+  var tabs = Array.prototype.slice.call(document.querySelectorAll(".wf-node[data-hop]"));
+  var panels = Array.prototype.slice.call(document.querySelectorAll(".hop-panel"));
+  if (!tabs.length) return;
+  function show(id, focusTab) {
+    tabs.forEach(function (tab) {
+      var on = tab.getAttribute("data-hop") === id;
+      tab.setAttribute("aria-selected", on ? "true" : "false");
+      tab.tabIndex = on ? 0 : -1;
+      if (on && focusTab) tab.focus();
+    });
+    panels.forEach(function (panel) {
+      panel.hidden = panel.id !== id;
+    });
+  }
+  tabs.forEach(function (tab) {
+    tab.addEventListener("click", function () {
+      show(tab.getAttribute("data-hop"), false);
+    });
+    tab.addEventListener("keydown", function (e) {
+      var i = tabs.indexOf(tab);
+      var next = -1;
+      if (e.key === "ArrowRight" || e.key === "ArrowDown") next = (i + 1) % tabs.length;
+      if (e.key === "ArrowLeft" || e.key === "ArrowUp") next = (i - 1 + tabs.length) % tabs.length;
+      if (e.key === "Home") next = 0;
+      if (e.key === "End") next = tabs.length - 1;
+      if (next < 0) return;
+      e.preventDefault();
+      show(tabs[next].getAttribute("data-hop"), true);
+    });
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-# 页面标题 Padding / 邻接 Margin
+# 页面标题 Padding / 邻接 Margin / 表格 Padding
 
 原则页与文档内页的排版间距。站点页：设计模式 → **UI 规范**（`docs/design-guide-ui.html`）。Token 写在 `docs/assets/css/tokens.css`。
 
@@ -31,3 +31,12 @@
 | 分组说明 → 下一 H4 盒子 | 16px | `.fn-h3-desc + h4.fn-h4 { margin-top: 16px }` |
 | 折叠按钮条 → 展开卡片 | 16px | `.ex-fold-panel { margin-top: 16px }`；`[hidden]` 不占位 |
 | 折叠按钮条 → 下一 H3 / H4 盒子 | 16px | `.ex-fold-bar { margin-bottom: 16px }`；示例组之间 `margin-top: 16px` |
+
+## 表格 Padding
+
+原则页对照表（`.aj`）。Padding 是单元格内部留白，与标题 `--space-hN-pad-y` 同一套量法。
+
+| 区域 | Token | 上 / 下 | 左 / 右 | 选择器 |
+|------|--------|---------|---------|--------|
+| 表体单元格 | `--table-cell-pad` | **16 / 16** | **16 / 16** | `.aj td`、`.aj .aj-label` |
+| 表头 | `--table-head-pad-y` / `--table-head-pad-x` | **12 / 12** | **16 / 16** | `.aj thead th` |
