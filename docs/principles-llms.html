@@ -720,16 +720,15 @@
     margin-bottom: 0;
   }
   #problem > p.page-lead,
-  #mechanism > p.page-lead,
-  #path > p.page-lead {
+  #mechanism > p.page-lead {
     margin: 0;
     font-size: var(--text-body);
     line-height: var(--text-body-lh, 22px);
     color: var(--color-text-secondary);
   }
   #problem > h2 + .page-lead,
-  #path > h2 + .page-lead,
   #mechanism > h2 + .page-lead { margin-top: 0; }
+  #mechanism > p.page-lead + p.page-lead { margin-top: var(--space-stack, 16px); }
   #mechanism > p.page-lead strong {
     font-weight: 650;
     color: var(--color-text);
@@ -739,6 +738,11 @@
   #path .aj { min-width: 0; }
   #mechanism .aj col.aj-rowhead,
   #path .aj col.aj-rowhead { width: 136px; }
+  #path .aj col.aj-url { width: 42%; }
+  #path .aj td {
+    vertical-align: middle;
+    white-space: nowrap;
+  }
   #mechanism .aj .aj-corner,
   #mechanism .aj .aj-label,
   #path .aj .aj-corner,
@@ -797,6 +801,7 @@
   #practices h2 + h3.fn-h3,
   #practices h2 + h4.fn-h4,
   #practices h2 + .file-sample-note,
+  #practices h2 + .file-sample,
   #practices h2 + .bg-list,
   #practices h3.fn-h3 + .file-sample-note,
   #practices h3.fn-h3 + .bg-list,
@@ -862,31 +867,30 @@
 
     <section class="section" id="mechanism">
       <h2>llms.txt 概述</h2>
-      <p class="page-lead">根 <code>llms.txt</code> 是站点入口给机器的知识面清单，既可包含分册 <code>llms.txt</code>，也可包含单页 <code>.md</code>，仅收主推知识面。它的目标是以极少 token 决定下一步打开谁；读完应能选定内容面、站点或产品分册，首份清单需足够小以完成该判断。</p>
+      <p class="page-lead"><code>llms.txt</code> 是一个放在网站根目录、专门给 AI 看的知识地图：它不列全站页面，只挑出真正有知识价值的 Markdown 内容（文档、教程、概念、API 参考等），整理成一份路径索引。</p>
+      <p class="page-lead">知识多时还能分册——根目录指向各子目录的分册，分册再列自己领域的条目，像一本书的目录分出章节。这样 AI 不必读完整个网站，而是先看总目录，再按需翻到某一册、某一节，精准取用所需知识。</p>
+      <p class="page-lead">它是自愿参考文件，AI 模型没有读取义务，与具备事实约束力的 <code>robots.txt</code> 有本质区别。</p>
     </section>
 
     <section class="section" id="problem">
       <h2>解决什么问题</h2>
-      <p class="page-lead">缺少入口清单时，Agent 只能猜测 URL 或检索人读页，容易落入营销页或空壳，无法稳定判定下一步打开谁。</p>
+      <p class="page-lead">AI 访问网站时难以判断哪些内容是有价值的知识，只能遍历全站、从杂乱 HTML 中提取，既耗费上下文又易遗漏重点。<code>llms.txt</code> 相当于网站主动提供的一份结构化知识清单，标明重点与层级，让 AI 以最低成本获取所需知识。</p>
     </section>
 
     <section class="section" id="core-principles">
       <h2>核心原则</h2>
       <ul class="bg-list">
-        <li><strong>约定路径可达</strong>文件放在站点根目录或对应子路径下，打开即可读取，不设跳转或登录门槛。一份 <code>llms.txt</code> 覆盖其路径下的所有页面。路径分册的地址，由更上层的清单显式写出。</li>
-        <li><strong>可发现性声明</strong>页面用 <code>rel="alternate" type="text/markdown"</code> 指向 Markdown 平行稿，用 <code>rel="describedby"</code> 指向覆盖该页的 <code>llms.txt</code>。可写在 HTML <code>&lt;link&gt;</code> 或 HTTP <code>Link:</code> 头（后者也适用于非 HTML）。</li>
-        <li><strong>结构固定可预期</strong>按标准 Markdown 顺序书写：<code>#</code> 站点或项目名（唯一必填），可选 <code>&gt;</code> 简述，随后是零个或多个 <code>##</code> 章节，每个章节挂一组链接列表。根清单按内容域或站点分节；页数多、仍需二次选择的面，写成子路径分册；一页可读完的，直接写 <code>.md</code>。分册内部同样按模块组织，只列目录，不写正文。</li>
-        <li><strong>链接指向可跟内容</strong>条目写成 <code>- [名称](地址)</code>，名称使用页面或分册的标题，而非 URL；其后可加冒号和一句说明，写清页面实际包含什么。地址优先指向 Markdown，便于 Agent 先扫描清单再跟链。次要条目可归入 <code>## Optional</code> 章节。</li>
-        <li><strong>控制 token 消耗</strong>首份清单需足够小，读完即可判定下一步打开谁。根文件只精选主推内容面，不堆砌全站链接。分册可以比根文件大，但仍需整份能扫完节名和条目；页数多到无法扫完时，用页名清单 <code>.md</code> 外包，不再为同一域套一层 <code>llms.txt</code>。全文拼接交由 <code>llms-full.txt</code> 承载，不替代精选索引。</li>
+        <li><strong>内容精选，不穷举</strong>仅保留最能代表本站的知识条目。上下文有限，条目过多反而会稀释重点。</li>
+        <li><strong>结构固定，按需分册</strong>1）按固定 Markdown 顺序书写：<code>#</code> 名称（唯一必填）、<code>&gt;</code> 简述（可选）、若干 <code>##</code> 章节，每节挂链接列表。<br>2）页数多、需二次选择的面，写成子路径分册；一页可读完的，直接给 <code>.md</code>。让 Agent 先看总览，再深入分册。</li>
+        <li><strong>路径自描述清晰</strong>条目写成 <code>- [标题](地址)</code>，后接一句说明该页实际包含的内容。阅读清单即可判断相关性，无需先打开页面。</li>
+        <li><strong>索引精简可决策</strong>1）首份清单需足够小，读完即可判定下一步读取哪一条目。<br>2）分册可以更大，但需整份可扫完；页数多到无法扫完时，用页名清单 <code>.md</code> 外包，不再为同一域叠加一层 <code>llms.txt</code>。<br>3）全文拼接交由 <code>llms-full.txt</code> 承载，不替代精选索引。</li>
       </ul>
     </section>
 
     <section class="section" id="practices">
       <h2>根 llms 交付示例</h2>
-      <p class="file-sample-note">这是 Mintlify 的<strong>站根目录</strong>：只挂入口，不写文章。现网约 5.6KB、75 行、8 个 <code>##</code>、三十余条链接（2026-09-10 实测 <a href="https://www.mintlify.com/llms.txt" target="_blank" rel="noopener">mintlify.com/llms.txt</a>）。Agent 可以整份读完，也可先扫节名再跟分册。文档、博客、资料库、客户案例链分册 <code>llms.txt</code>；首页、定价、法务等一页读完的链 <code>.md</code>。文档站每一页不在这里，见<a href="principles-llms-volume.html">分册llms</a>。</p>
-
       <figure class="file-sample file-sample--wrap">
-        <figcaption><code>https://www.mintlify.com/llms.txt</code></figcaption>
+        <figcaption>Mintlify llms.txt</figcaption>
         <pre><code># Mintlify
 
 &gt; Mintlify is the knowledge platform built for agents: self-updating documentation for startups, enterprises, and AI agents. This file indexes the markdown version of every page on www.mintlify.com. Append `.md` to any page URL (or send `Accept: text/markdown`) to get its markdown twin.
@@ -969,8 +973,8 @@ Security and disclosure policies.
 
       <h3 class="fn-h3">站点名与描述</h3>
       <ul class="bg-list -inline">
-        <li><strong>站点名</strong>用 <code>#</code> 写站点或项目名，提案里唯一必填。</li>
-        <li><strong>描述</strong>紧跟 <code>&gt;</code> 引用块：这份清单是什么、怎么取平行稿。可省略；有则 Agent 先读完再往下选模块。</li>
+        <li><strong>站点名</strong>用 <code>#</code> 写站点或项目名，是提案中唯一必填项。</li>
+        <li><strong>描述</strong>紧跟 <code>&gt;</code> 引用块，说明这份清单的用途及如何获取平行稿。该部分可省略；若存在，应先读完再继续选节。</li>
       </ul>
       <figure class="file-sample">
         <figcaption><code>https://www.mintlify.com/llms.txt</code></figcaption>
@@ -979,15 +983,15 @@ Security and disclosure policies.
 &gt; Mintlify is the knowledge platform built for agents: self-updating documentation for startups, enterprises, and AI agents. This file indexes the markdown version of every page on www.mintlify.com. Append `.md` to any page URL (or send `Accept: text/markdown`) to get its markdown twin.</code></pre>
       </figure>
 
-      <h3 class="fn-h3">模块名与描述</h3>
+      <h3 class="fn-h3">节名与描述</h3>
       <ul class="bg-list -inline">
-        <li><strong>模块名</strong>每个模块一行 <code>##</code> 标题。Agent 先扫这些名字，再决定进哪一节。</li>
-        <li><strong>怎么分</strong>按要找什么切块（文档、官网、博客等），不是把站点导航原样搬家。</li>
-        <li><strong>模块描述</strong><code>##</code> 和链接之间可以有一段纯文字。可省略：Mintlify 的 Docs、Pages 就直接挂链接。</li>
+        <li><strong>节名</strong>每节一行 <code>##</code> 标题。先扫这些名字，再决定进入哪一节。</li>
+        <li><strong>切分</strong>按内容面切块（文档、官网、博客等），而非照搬站点导航。</li>
+        <li><strong>节描述</strong><code>##</code> 与链接之间可有一段纯文字，可选。</li>
       </ul>
       <figure class="file-sample">
         <figcaption><code>https://www.mintlify.com/llms.txt</code> · 结构示意</figcaption>
-        <div class="llms-skel" aria-label="模块骨架：标题和描述为实文，灰条代表链接">
+        <div class="llms-skel" aria-label="节骨架：标题和描述为实文，灰条代表链接">
           <div class="llms-skel-mod">
             <div class="llms-skel-h">## Docs</div>
             <span class="llms-skel-bar" style="width:78%"></span>
@@ -1008,8 +1012,8 @@ Security and disclosure policies.
 
       <h3 class="fn-h3">链接</h3>
       <ul class="bg-list -inline">
-        <li><strong>怎么写</strong>挂在对应 <code>##</code> 下面，一条一行。格式是 <code>- [标题](地址)</code>，后面可以加 <code>: 一句说明</code>。标题用页面或分册名，不用 URL。</li>
-        <li><strong>写什么</strong>地址是下一步要打开的分册 <code>llms.txt</code> 或单页 Markdown。说明写清实际包含什么，宜短；可省略，如法务那条。</li>
+        <li><strong>链接格式</strong>挂在对应 <code>##</code> 下，一条一行，写作 <code>- [标题](地址)</code>，可后接 <code>:</code> 说明。标题用页面或分册名，不用 URL。</li>
+        <li><strong>链接指向</strong><code>.md</code> 为单页，<code>llms.txt</code> 为分册。说明宜短，可选。</li>
       </ul>
       <figure class="file-sample">
         <figcaption><code>https://www.mintlify.com/llms.txt</code></figcaption>
@@ -1022,70 +1026,84 @@ Security and disclosure policies.
     </section>
 
     <section class="section" id="path">
-      <h2>机器如何找到 llms 根目录</h2>
+      <h2>机器如何找到 llms</h2>
       <h3 class="fn-h3">方式一：试约定路径</h3>
-      <p class="file-sample-note">Agent 尚未落到单页、手里也没有清单地址时，会按行业惯例直接打开站点根 <code>/llms.txt</code>。v2 规定：文件也可放在子路径（如 <code>/docs/llms.txt</code>），覆盖该路径下的页面；多份并存时以最具体的为准。这一步不依赖 <code>robots.txt</code> 或 HTML 里先写过地址。</p>
+      <p class="file-sample-note">1）找根清单：手里没有地址时，直接打开站点根 <code>/llms.txt</code>。<br>2）找分册：打开根清单里写明的子路径（如 <code>/docs/llms.txt</code>），不要另猜。<br>3）两份都在时，用离当前页更近的那份：文档页用 <code>/docs/llms.txt</code>，官网页用站根。这一步不依赖 <code>robots.txt</code> 或 HTML 里先写过地址。</p>
       <figure class="af-figure">
         <table class="aj">
-          <caption>表1 根清单放在哪</caption>
+          <caption>表1 根清单与分册的约定路径</caption>
+          <colgroup>
+            <col class="aj-rowhead" />
+            <col class="aj-url" />
+            <col class="aj-url" />
+          </colgroup>
           <thead>
             <tr>
-              <th class="aj-corner" scope="col">部署</th>
-              <th scope="col">地址</th>
+              <th class="aj-corner" scope="col">场景</th>
+              <th scope="col">约定写法</th>
+              <th scope="col">示例</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <th class="aj-label" scope="row">站点根</th>
-              <td><a href="https://www.mintlify.com/llms.txt" target="_blank" rel="noopener">https://www.mintlify.com/llms.txt</a></td>
-            </tr>
-            <tr>
-              <th class="aj-label" scope="row">约定写法</th>
+              <th class="aj-label" scope="row">根清单</th>
               <td><code>https://{域名}/llms.txt</code></td>
+              <td><a href="https://www.mintlify.com/llms.txt" target="_blank" rel="noopener"><code>https://www.mintlify.com/llms.txt</code></a></td>
             </tr>
             <tr>
-              <th class="aj-label" scope="row">子路径分册</th>
-              <td><code>https://{域名}/{路径}/llms.txt</code>，覆盖该路径下的页面</td>
+              <th class="aj-label" scope="row">分册清单</th>
+              <td><code>https://{域名}/{路径}/llms.txt</code></td>
+              <td><a href="https://www.mintlify.com/docs/llms.txt" target="_blank" rel="noopener"><code>https://www.mintlify.com/docs/llms.txt</code></a></td>
             </tr>
           </tbody>
         </table>
       </figure>
 
       <h3 class="fn-h3">方式二：读 robots.txt</h3>
-      <p class="file-sample-note">Agent 进站常先读 <code>/robots.txt</code>。可在末尾仿 <code>Sitemap:</code> 加一行 <code>LLMs.txt:</code>，把根清单地址写死。该字段不是官方规范，只作路径不确定时的补充。Mintlify 本站未写这一行，根文件仍靠方式一找到。</p>
+      <p class="file-sample-note">1）可在 <code>/robots.txt</code> 末尾仿 <code>Sitemap:</code> 加一行 <code>LLMs.txt:</code>，指向根清单。<br>2）分册不必写在这里。该字段不是官方规范，只作路径补充；没有这一行时，仍按方式一打开 <code>/llms.txt</code>。</p>
       <figure class="file-sample">
         <figcaption><code>https://www.mintlify.com/robots.txt</code></figcaption>
         <pre><code>User-agent: *
 Allow: /
 
 Sitemap: https://www.mintlify.com/sitemap.xml
-<span class="cmt"># 进阶（非标准）：指向根清单；分册不必在此声明</span>
+<span class="cmt"># 进阶（非标准）：只指向根清单；分册写在根文件里</span>
 <span class="cmt"># LLMs.txt: https://www.mintlify.com/llms.txt</span></code></pre>
       </figure>
       <p class="file-sample-note">前四行是 Mintlify 实文件。注释里的 <code>LLMs.txt:</code> 是建议补上的声明，不是该站现网内容。</p>
 
       <h3 class="fn-h3">方式三：读 HTML 源码</h3>
-      <p class="file-sample-note">Agent 也会读人读页的 HTML 或响应头。v2 用标准链接关系声明：Markdown 平行稿与覆盖该页的 <code>llms.txt</code>，不必只靠猜 <code>/llms.txt</code>。</p>
+      <p class="file-sample-note">1）在 <code>&lt;head&gt;</code> 用 <code>&lt;link&gt;</code> 声明本页 Markdown，以及覆盖本页的清单。<br>2）Mintlify 官网首页 head 未写这两项，清单靠方式四。文档页有 Markdown 平行稿，仍无清单声明。</p>
       <figure class="file-sample">
-        <figcaption><code>index.html</code> · <code>&lt;head&gt;</code></figcaption>
+        <figcaption><code>https://www.mintlify.com/docs/quickstart</code></figcaption>
         <pre><code>&lt;head&gt;
-  &lt;link rel="canonical" href="https://www.mintlify.com"&gt;
-  &lt;link rel="alternate" type="text/markdown" href="https://www.mintlify.com/index.md"&gt;
-  &lt;link rel="describedby" href="https://www.mintlify.com/llms.txt"&gt;
+  &lt;link rel="canonical" href="https://www.mintlify.com/docs/quickstart"&gt;
+  &lt;link rel="alternate" type="text/markdown" href="/docs/quickstart.md"&gt;
+<span class="cmt">&lt;!-- 建议补上：覆盖本页的分册；现网没有这一行 --&gt;</span>
+<span class="cmt">&lt;!-- &lt;link rel="describedby" href="https://www.mintlify.com/docs/llms.txt"&gt; --&gt;</span>
 &lt;/head&gt;</code></pre>
       </figure>
-      <p class="file-sample-note"><code>rel="alternate" type="text/markdown"</code> 指向本页 Markdown；<code>rel="describedby"</code> 指向覆盖本页的清单（文档页应指向 <code>/docs/llms.txt</code>，而非一律写站根）。也可在 HTTP <code>Link:</code> 头声明，适用于非 HTML。这不能替代页内真链。</p>
+      <p class="file-sample-note">1）<code>rel="alternate"</code> 指向本页 Markdown（文档页现网已有）。<code>rel="describedby"</code> 指向覆盖本页的清单，建议补上。<br>2）官网首页应指向根清单，文档页指向分册。非 HTML 可改写在 HTTP <code>Link:</code> 头。不能替代页内真链。</p>
 
       <h3 class="fn-h3">方式四：跟页内入口</h3>
-      <p class="file-sample-note">HTML 正文中提供指向根 <code>llms.txt</code> 的真链，作为内容层兜底。细则见<a href="principles-machine-entry.html">站级导读</a>。Mintlify 文档页隐藏导读指向的是分册 <code>/docs/llms.txt</code>，根文件仍应在官网或文档入口另备一条。</p>
+      <p class="file-sample-note">1）在 <code>&lt;body&gt;</code> 最前放一条真 <code>&lt;a href&gt;</code>，指向覆盖本页的清单。可用 <code>sr-only</code> 对人隐藏，源码里仍能跟到。<br>2）官网链根清单，文档页链本面分册。</p>
+      <figure class="file-sample">
+        <figcaption><code>index.html</code></figcaption>
+        <pre><code>&lt;body&gt;
+  &lt;blockquote class="sr-only" aria-hidden="true"&gt;
+<span class="code-line-hl">    &lt;a href="/llms.txt" tabindex="-1"&gt;/llms.txt&lt;/a&gt;</span>
+  &lt;/blockquote&gt;</code></pre>
+      </figure>
+      <p class="file-sample-note">本例是 Mintlify 官网首页，链到根清单。文档页应改为 <code>/docs/llms.txt</code>。</p>
     </section>
 
     <section class="section" id="benefits">
       <h2>价值收益</h2>
       <ul class="bg-list">
-        <li><strong>先看该看的</strong>主推知识面写在前面，不必从全站 URL 里筛。</li>
-        <li><strong>能跟到正文</strong>Agent 先读或检索清单，再跟随指向 Markdown 的链接。</li>
-        <li><strong>读得完、套得住</strong>根只挂入口；列页不再套 <code>llms.txt</code>。全文拼接留给 <code>llms-full.txt</code>。</li>
+        <li><strong>进站更省</strong>先拿到短清单，不必遍历全站 HTML 再判断哪些值得读。</li>
+        <li><strong>选页更准</strong>主推面在前，每条有一句说明，减少误开营销页、漏掉文档。</li>
+        <li><strong>跟页更净</strong>下一跳是分册或单页 Markdown，不是带导航和楼层的渲染页。</li>
+        <li><strong>大站更全</strong>文档面走分册，根文件撑不爆；需要全文时用 <code>llms-full.txt</code>，不挤占精选索引。</li>
       </ul>
     </section>
 

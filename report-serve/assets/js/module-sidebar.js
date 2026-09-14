@@ -14,8 +14,7 @@
         group: "可达", id: "structure-llms", href: "principles-structure-llms.html", label: "发现层部署",
         pageIds: ["structure-llms", "page-discover", "machine-discover"]
       },
-      { group: null, id: "llms", href: "principles-llms.html", label: "根llms" },
-      { group: null, id: "llms-volume", href: "principles-llms-volume.html", label: "分册llms" },
+      { group: null, id: "llms", href: "principles-llms.html", label: "llms.txt", pageIds: ["llms", "llms-volume"] },
       {
         group: null, id: "machine-entry", href: "principles-machine-entry.html", label: "Agent 入口显化",
         pageIds: ["machine-entry", "page-md", "block-md"],
