@@ -1,0 +1,3903 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>路径分析 · 材料示例 · 实测记录 · 昇腾社区 AI 亲和原则</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid var(--color-border);
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: 100%; max-width: none; margin: 0; padding: 0 24px; box-sizing: border-box;
+    height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: var(--color-text); text-decoration: none; white-space: nowrap; margin-right: 40px;
+  }
+  .topbar .brand span { color: var(--color-primary); }
+  .topbar .site-nav { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; flex-wrap: wrap; }
+  .topbar .site-nav > a {
+    text-decoration: none; color: var(--color-text-secondary); font-size: var(--text-body); font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .topbar .site-nav > a:hover { color: var(--color-primary); background: var(--color-bg); text-decoration: none; }
+  .topbar .site-nav > a.active { color: var(--color-primary); background: var(--color-bg); font-weight: 600; }
+  .nav-dd { position: relative; z-index: 210; display: inline-flex; align-items: center; }
+  .nav-dd-trigger {
+    appearance: none; border: 0; background: transparent; cursor: pointer; font: inherit;
+    text-decoration: none; color: var(--color-text-secondary); font-size: var(--text-body); font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+    display: inline-flex; align-items: center; gap: 12px;
+  }
+  .nav-dd-trigger::after {
+    content: ""; width: 6px; height: 6px;
+    border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg); opacity: .65; margin-top: -3px; flex-shrink: 0;
+  }
+  .nav-dd-trigger:hover, .nav-dd:hover .nav-dd-trigger, .nav-dd:focus-within .nav-dd-trigger {
+    color: var(--color-primary); background: var(--color-bg);
+  }
+  .nav-dd::before { content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 10px; }
+  .nav-dd-panel {
+    position: absolute; top: calc(100% + 4px); left: 0; min-width: 148px; padding: 6px;
+    background: #fff; border: 1px solid var(--color-border); border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(25, 25, 25, 0.08);
+    opacity: 0; visibility: hidden; transform: translateY(-4px);
+    transition: opacity .15s, transform .15s, visibility .15s; z-index: 210;
+  }
+  .nav-dd:hover .nav-dd-panel, .nav-dd:focus-within .nav-dd-panel {
+    opacity: 1; visibility: visible; transform: translateY(0);
+  }
+  .nav-dd-panel a {
+    display: block; padding: 8px 12px; border-radius: 6px; text-decoration: none;
+    color: var(--color-text-secondary); font-size: 13px; font-weight: 500; line-height: 1.4;
+  }
+  .nav-dd-panel a:hover { color: var(--color-primary); background: var(--color-bg); }
+  body.inner-page .page-wrapper { min-height: 100vh; }
+
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: var(--space-stack, 16px);
+  }
+  .page-header > h1 {
+    font-family: var(--font);
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1-weight, 600);
+    line-height: var(--text-h1-lh);
+    letter-spacing: -0.02em;
+    margin: 0;
+    padding-top: var(--space-h1-pad-y, 32px);
+    padding-bottom: var(--space-h1-pad-y, 32px);
+    color: var(--color-text);
+  }
+  .page-header .page-desc {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  body.inner-page[data-page="llms-parse-nvidia-path-sample"]:has(#module-sidebar) .main-content {
+    padding-top: var(--content-main-pad-top, 16px);
+    padding-left: 0;
+    padding-right: 0;
+  }
+  body.inner-page[data-page="llms-parse-nvidia-path-sample"]:has(#module-sidebar) .main-content > .page-header,
+  body.inner-page[data-page="llms-parse-nvidia-path-sample"]:has(#module-sidebar) .main-content > .section,
+  body.inner-page[data-page="llms-parse-nvidia-path-sample"]:has(#module-sidebar) .main-content > .surface-tabs {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page[data-page="llms-parse-nvidia-path-sample"]:has(#module-sidebar) .main-content > #practices,
+  body.inner-page .detail-wrapper .main-content > #practices {
+    width: min(1920px, calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: 1920px;
+  }
+  body.inner-page[data-page="llms-parse-nvidia-path-sample"] .main-content .section > h2 {
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    letter-spacing: -0.01em;
+    margin-top: 0;
+    margin-bottom: var(--space-stack, 16px);
+    padding-top: var(--space-h2-pad-y, 16px);
+    padding-bottom: var(--space-h2-pad-y, 16px);
+    border-bottom: 2px solid var(--color-card-border);
+    color: var(--color-text, var(--color-text));
+  }
+  body.inner-page[data-page="llms-parse-nvidia-path-sample"] .main-content > .section {
+    margin-bottom: var(--space-stack, 16px);
+  }
+  body.inner-page[data-page="llms-parse-nvidia-path-sample"] .main-content .section > p {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  body.inner-page[data-page="llms-parse-nvidia-path-sample"] .main-content .section > p + p {
+    margin-top: 8px;
+  }
+  body.inner-page[data-page="llms-parse-nvidia-path-sample"] .main-content .section > p.page-lead strong {
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  body.inner-page[data-page="llms-parse-nvidia-path-sample"] .main-content .section h3 { height: auto; }
+  h3.fn-h3 {
+    margin: 0 0 var(--space-stack, 16px);
+    padding-top: var(--space-h3-pad-y, 16px);
+    padding-bottom: var(--space-h3-pad-y, 16px);
+    font-size: var(--text-h3, 18px);
+    line-height: var(--text-h3-lh, 28px);
+    font-weight: var(--text-h3-weight, 650);
+    color: var(--color-text, var(--color-text));
+    letter-spacing: -0.01em;
+  }
+  body.inner-page[data-page="llms-parse-nvidia-path-sample"] .main-content .section h4 { height: auto; }
+  h4.fn-h4 {
+    margin: 0 0 var(--space-stack, 16px);
+    padding-top: var(--space-h4-pad-y, 16px);
+    padding-bottom: var(--space-h4-pad-y, 16px);
+    font-size: var(--text-h4, 14px);
+    line-height: var(--text-h4-lh, 22px);
+    font-weight: var(--text-h4-weight, 650);
+    color: var(--color-text, var(--color-text));
+    letter-spacing: -0.01em;
+  }
+  h3.fn-h3 + .principle-example > h4.fn-h4,
+  h3.fn-h3 + h4.fn-h4 { margin-top: 0; }
+  #practices .file-lead {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: 22px;
+    color: var(--color-text-secondary);
+  }
+  #practices .file-lead + h4.fn-h4,
+  #practices .file-sample + h4.fn-h4,
+  #practices .file-sample-note + h4.fn-h4,
+  #practices h2 + h4.fn-h4 {
+    margin-top: var(--space-stack, 16px);
+  }
+  #practices .bg-list + h2,
+  #practices .bg-list + h3.fn-h3,
+  #practices .file-sample + h2 {
+    margin-top: var(--space-stack, 16px);
+  }
+  #practices .bg-list + h3.fn-h3 {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  #practices .hier-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(11, auto);
+    column-gap: 32px;
+    row-gap: 8px;
+    align-items: start;
+    margin: 16px 0 0;
+  }
+  #practices .hier-col {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 1 / -1;
+    min-width: 0;
+  }
+  #practices .hier-col > * {
+    min-width: 0;
+    margin: 0;
+  }
+  #practices .hier-col > h4.fn-h4 {
+    padding: 0;
+    align-self: end;
+  }
+  #practices .hier-desc {
+    font-size: var(--text-body);
+    line-height: 22px;
+    color: var(--color-text-secondary);
+  }
+  #practices .hier-label {
+    padding-top: 8px;
+    font-size: var(--text-body);
+    line-height: 22px;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  #practices .hier-card {
+    align-self: stretch;
+  }
+  #practices .hier-card .anchor-doc {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 16px 18px 18px;
+  }
+  #practices .hier-h2 {
+    font-size: 20px;
+    line-height: 26px;
+  }
+  #practices .hier-h3 {
+    font-size: 14px;
+    line-height: 20px;
+  }
+  #practices .hier-col .file-sample {
+    padding: 12px 14px 14px;
+    align-self: stretch;
+  }
+  #practices .hier-md {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  #practices .hier-md code {
+    display: block;
+    margin: 0;
+    padding: 0;
+    background: none;
+    color: #e8e8e8;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: var(--text-auxiliary);
+    line-height: 20px;
+    font-weight: 650;
+    overflow-wrap: anywhere;
+  }
+  #practices .hier-md .llms-skel {
+    margin-top: 6px;
+    gap: 6px;
+  }
+  #practices .hier-col .file-sample-note {
+    color: var(--color-text-secondary);
+  }
+  #practices .file-lead + .file-sample {
+    margin-top: var(--space-stack, 16px);
+  }
+  .practice-block {
+    margin: 0;
+    padding: 0;
+    border: none;
+  }
+  .practice-block + .practice-block {
+    margin-top: var(--space-stack, 16px);
+  }
+
+  body.inner-page[data-page="llms-parse-nvidia-path-sample"] .main-content .section > p.flow-verify {
+    margin: var(--space-stack, 16px) 0 0;
+    font-size: var(--text-body);
+    line-height: 22px;
+  }
+  .flow-verify a {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 650;
+  }
+  .flow-verify a:hover {
+    text-decoration: underline;
+  }
+  body.inner-page[data-page="llms-parse-nvidia-path-sample"] .main-content > .section:first-of-type > h2 {
+    margin-top: 0;
+  }
+  .bg-body {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: 22px;
+    color: var(--color-text, var(--color-text));
+  }
+  .bg-body:last-child { margin-bottom: 0; }
+  .bg-list {
+    margin: 0;
+    padding-left: 1.25em;
+    font-size: var(--text-body);
+    line-height: 22px;
+    color: var(--color-text, var(--color-text));
+  }
+  .bg-list li + li { margin-top: 6px; }
+  #principles .bg-list,
+  #practices .bg-list,
+  #benefits .bg-list {
+    list-style: disc;
+    padding-left: 1.25em;
+    margin: 0;
+  }
+  #principles .bg-list li + li,
+  #practices .bg-list li + li,
+  #benefits .bg-list li + li { margin-top: 16px; }
+  #principles .bg-list li strong,
+  #practices .bg-list li strong,
+  #benefits .bg-list li strong {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  /* 约定路径等短条目：题头与正文同一行 */
+  #practices .bg-list.-inline li strong {
+    display: inline;
+    margin-bottom: 0;
+  }
+  #practices .bg-list.-inline li strong::after {
+    content: "：";
+  }
+  #principles .bg-list li,
+  #practices .bg-list li,
+  #benefits .bg-list li {
+    color: var(--color-text-secondary);
+  }
+  .file-sample {
+    margin: 0;
+    padding: 0;
+    background: #1e1e1e;
+    border: 1px solid #111;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .file-sample figcaption {
+    margin: 0;
+    padding: 10px 14px;
+    font-size: var(--text-auxiliary);
+    font-weight: 650;
+    line-height: 22px;
+    color: #a3a3a3;
+    border-bottom: 1px solid #333;
+  }
+  .file-sample figcaption code {
+    font-size: inherit;
+    color: #e8e8e8;
+    background: none;
+  }
+  .file-sample pre {
+    margin: 0;
+    padding: 12px 14px 14px;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: var(--text-auxiliary);
+    line-height: 20px;
+    color: #e8e8e8;
+    background: transparent;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    overflow-x: hidden;
+  }
+  .file-sample pre code {
+    display: block;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    color: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    font-family: inherit;
+    white-space: inherit;
+  }
+  .file-sample .cmt { color: #737373; }
+  .file-sample:has(+ .file-sample-note) { margin-bottom: 8px; }
+  .file-sample-note {
+    margin: 0;
+    font-size: 13px;
+    line-height: 22px;
+    color: #8c8c8c;
+  }
+  h3.fn-h3 + .file-sample { margin-top: 0; }
+  .file-sample + .bg-list,
+  .file-sample-note + .bg-list { margin-top: 0; }
+  .af-figure {
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: none;
+    overflow-x: auto;
+    border-radius: 8px;
+  }
+
+  .aj {
+    width: 100%;
+    min-width: 880px;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+    color: var(--color-text);
+  }
+  .aj caption {
+    caption-side: top;
+    text-align: left;
+    font-size: var(--text-body);
+    font-weight: 650;
+    line-height: var(--text-body-lh);
+    padding: 0 0 10px;
+    color: var(--color-text);
+  }
+  .aj .aj-col-mute { width: 76px; }
+  .aj td.is-mute {
+    color: #8c8c8c;
+  }
+  .aj th,
+  .aj td {
+    border: 1px solid #e8eef5;
+    border-top: none;
+    border-left: none;
+    vertical-align: top;
+    padding: 12px 12px;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+  }
+  .aj thead tr:first-child > th {
+    border-top: 1px solid #e8eef5;
+  }
+  .aj .aj-corner,
+  .aj .aj-label {
+    width: 92px;
+    background: #f5f6f8;
+    color: var(--color-text-secondary);
+    font-weight: 650;
+    vertical-align: middle;
+    text-align: left;
+    padding: 12px 12px;
+    border-left: 1px solid #e8eef5;
+  }
+  .aj thead th.aj-corner {
+    background: #f5f6f8;
+    color: var(--color-text-secondary);
+    padding: 12px 12px;
+    border-top-left-radius: 8px;
+  }
+  .aj thead tr.aj-group > th:last-child {
+    border-top-right-radius: 8px;
+  }
+  .aj tbody tr:last-child .aj-label {
+    border-bottom-left-radius: 8px;
+  }
+  .aj tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 8px;
+  }
+  .aj thead th {
+    background: #f5f6f8;
+    font-weight: 650;
+    text-align: left;
+    padding: 12px 12px;
+    color: var(--color-text);
+  }
+  .aj thead th.aj-group {
+    text-align: center;
+    vertical-align: middle;
+    font-weight: 650;
+    letter-spacing: 0;
+    background: #eceef1;
+    color: var(--color-text);
+    padding: 10px 12px;
+  }
+  .aj thead th.aj-span {
+    vertical-align: middle;
+  }
+  .aj thead .aj-stage-name {
+    display: block;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  .aj thead .aj-corner .aj-stage-name {
+    color: inherit;
+    margin-bottom: 2px;
+  }
+  .aj thead .aj-mute {
+    background: #f5f6f8;
+    color: var(--color-text-secondary);
+  }
+  .aj thead .aj-mute .aj-stage-name { color: var(--color-text-secondary); }
+  .aj thead .aj-pri,
+  .aj thead .aj-opt {
+    background: #f5f6f8;
+  }
+  .aj thead .aj-fb {
+    background: #f3f3f3;
+  }
+  .aj .aj-tag {
+    display: block;
+    width: fit-content;
+    margin: 0;
+    padding: 0 6px;
+    border-radius: 3px;
+    font-size: var(--text-micro);
+    font-weight: 700;
+    line-height: 18px;
+    color: var(--color-primary);
+  }
+  .aj-tag--must { background: rgba(20, 118, 255, .18); }
+  .aj-tag--pri  { background: rgba(20, 118, 255, .12); }
+  .aj-tag--opt  { background: rgba(20, 118, 255, .08); }
+  .aj-tag--fb   { background: rgba(20, 118, 255, .04); color: #3d7fd4; }
+  .aj tbody td:not(.is-mute):not(.is-fb):not(.is-pri):not(.aj-label) {
+    background: #fff;
+  }
+  .aj td.is-pri { background: #f7fbff; }
+  .aj td.is-fb { background: var(--color-card-bg); }
+  .aj td.is-mute { background: #f5f6f8 !important; color: #8c8c8c; }
+  .aj td .aj-subhead {
+    display: block;
+    font-weight: 650;
+    color: var(--color-text);
+    margin: 0 0 6px;
+  }
+  .aj-stack + .aj-stack { margin-top: 12px; }
+  .aj .aj-file {
+    display: block;
+    margin: 0 0 6px;
+    font-family: var(--font-mono, "SF Mono", monospace);
+    font-weight: 650;
+    color: var(--color-primary);
+  }
+  .aj ul {
+    margin: 0;
+    padding-left: 1.1em;
+  }
+  .aj li {
+    color: inherit;
+    margin-bottom: 0;
+  }
+  .aj li + li { margin-top: 8px; }
+  .aj code {
+    font-size: inherit;
+    line-height: inherit;
+  }
+
+  #scenarios .scene-def-table td .badge { border: none; }
+  .scene-def-table td .badge-optional {
+    background: var(--color-bg);
+    color: var(--color-text-secondary);
+  }
+  .scene-def-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--text-body);
+    line-height: 22px;
+    margin: 0 0 24px;
+    table-layout: fixed;
+  }
+  .scene-def-table th,
+  .scene-def-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: middle;
+    font-size: var(--text-body);
+    line-height: 22px;
+    font-weight: 400;
+  }
+  .scene-def-table tbody td {
+    height: auto;
+    min-height: 48px;
+  }
+  .scene-def-table th {
+    font-size: var(--text-auxiliary);
+    font-weight: 650;
+    color: var(--color-text-secondary);
+    background: var(--color-card-bg);
+    height: 40px;
+    box-sizing: border-box;
+  }
+  .scene-def-table .col-type { width: 18%; }
+  .scene-def-table .col-desc { width: 55%; }
+  .scene-def-table .col-place { width: 27%; }
+  #objects .scene-def-table .col-type,
+  #scenarios .scene-def-table .col-type { width: 22%; }
+  #objects .scene-def-table .col-desc { width: 78%; }
+  #scenarios .scene-def-table .col-place { width: 38%; }
+  #scenarios .scene-def-table .col-desc { width: 40%; }
+
+  .fn-ex-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr auto;
+    column-gap: 16px;
+    row-gap: 0;
+    align-items: stretch;
+    margin: 16px 0 0;
+  }
+  .fn-ex-row .fn-ex {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 1 / span 3;
+    margin: 0;
+    min-width: 0;
+  }
+  .fn-ex-row .fn-ex-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .fn-ex-row .fn-ex-head .fn-ex-label { margin: 0; }
+  .fn-ex-row .fn-ex-head .fn-ex-bar {
+    display: block; margin: 0; width: 100%; align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-body {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 2 / span 2;
+    min-height: 0;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .fn-ex-row .fn-ex-mock {
+    min-height: 0; height: 100%; box-sizing: border-box;
+    border: none; border-radius: 0; align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-mock:has(.site-foot) {
+    background: var(--color-bg);
+    padding: 12px;
+  }
+  .fn-ex-row .fn-ex-mock pre.st-code {
+    margin: 0;
+    padding: 14px 16px;
+    background: #1e1e1e;
+    border: 1px solid #111;
+    border-radius: 0;
+    font-size: var(--text-auxiliary);
+    line-height: 18px;
+    color: #e8e8e8;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow: auto;
+    box-sizing: border-box;
+    min-height: 100%;
+  }
+  .fn-ex-row .fn-ex-foot {
+    display: flex; flex-direction: column; gap: 8px;
+    padding: 12px 14px 14px; background: #fff;
+    border-top: 1px solid var(--color-border);
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-list { margin: 0; gap: 4px; }
+  .fn-ex-label {
+    display: inline-block; padding: 0 8px; border-radius: 4px;
+    font-size: var(--text-auxiliary); font-weight: 650; line-height: 20px;
+    color: #b42318; background: #fef3f2;
+  }
+  .fn-ex-label.is-good { color: #047857; background: #ecfdf5; }
+  .fn-ex-bar {
+    display: block; width: 100%; height: 3px;
+    background: #b42318; border-radius: 2px;
+  }
+  .fn-ex-bar.is-good { background: #047857; }
+  .fn-ex-list {
+    margin: 0; padding: 0 0 0 1.25em; list-style: disc;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .fn-ex-list li {
+    margin: 0; font-size: var(--text-body); line-height: 22px; color: var(--color-text);
+  }
+  .fn-ex-list strong { font-weight: 650; }
+  .site-foot {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 10px;
+    overflow: hidden;
+    font-family: var(--font);
+  }
+  .site-foot-body {
+    padding: 16px 14px 20px;
+    min-height: 52px;
+    background: linear-gradient(180deg, #fafbfc 0%, #fff 100%);
+  }
+  .site-foot-body p {
+    margin: 0;
+    font-size: var(--text-caption);
+    line-height: 16px;
+    color: #bfbfbf;
+  }
+  .site-foot-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 12px;
+    padding: 10px 14px;
+    border-top: 1px solid #eef1f5;
+    background: var(--color-card-bg);
+  }
+  .site-foot-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .site-foot-links a {
+    font-size: var(--text-caption);
+    line-height: 16px;
+    color: #8c8c8c;
+    text-decoration: none;
+  }
+  .site-foot-links a.is-machine {
+    color: var(--color-text-secondary);
+    font-variant-numeric: tabular-nums;
+  }
+  .site-foot-copy {
+    margin: 0;
+    font-size: var(--text-micro);
+    line-height: 14px;
+    color: #bfbfbf;
+  }
+  .principle-example + .principle-example { margin-top: var(--space-stack, 16px); }
+
+  #design-ui .principle-suggestions,
+  #content-adjust .principle-suggestions,
+  #frontend-adjust .principle-suggestions {
+    list-style: none;
+    margin: 0 0 32px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    counter-reset: sug;
+  }
+  #design-ui .principle-suggestions > li,
+  #content-adjust .principle-suggestions > li,
+  #frontend-adjust .principle-suggestions > li {
+    position: relative;
+    margin: 0;
+    padding: 0 0 0 36px;
+    color: var(--color-text-secondary);
+  }
+  #design-ui .principle-suggestions > li::before,
+  #content-adjust .principle-suggestions > li::before,
+  #frontend-adjust .principle-suggestions > li::before {
+    counter-increment: sug;
+    content: counter(sug);
+    position: absolute;
+    left: 0;
+    top: 2px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #eff6ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--text-auxiliary);
+    font-weight: 700;
+    line-height: 22px;
+    letter-spacing: 0.02em;
+    color: var(--color-primary);
+  }
+  #design-ui .principle-suggestions > li .sug-title,
+  #content-adjust .principle-suggestions > li .sug-title,
+  #frontend-adjust .principle-suggestions > li .sug-title {
+    display: block;
+    margin: 0 0 6px;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 24px;
+    color: var(--color-text);
+  }
+  #design-ui .principle-suggestions > li .sug-desc,
+  #content-adjust .principle-suggestions > li .sug-desc,
+  #frontend-adjust .principle-suggestions > li .sug-desc {
+    display: block;
+    margin: 0;
+    max-width: none;
+    width: 100%;
+    font-size: var(--text-body);
+    font-weight: 400;
+    line-height: 24px;
+    color: var(--color-text-secondary);
+  }
+
+  @media (max-width: 900px) {
+    .fn-ex-row {
+      grid-template-columns: 1fr;
+      grid-template-rows: none;
+    }
+    .fn-ex-row .fn-ex { display: block; grid-row: auto; }
+    .fn-ex-row .fn-ex-body {
+      display: flex; flex-direction: column; grid-row: auto;
+    }
+  }
+  #problem > p.page-lead,
+  #mechanism > p.page-lead {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  #problem > h2 + .page-lead,
+  #mechanism > h2 + .page-lead { margin-top: 0; }
+  #mechanism > p.page-lead {
+    margin-bottom: var(--space-stack, 16px);
+  }
+  #mechanism > p.page-lead strong {
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  #mechanism > .page-lead + .af-figure { margin-top: 0; }
+  #mechanism .aj,
+  #path .aj { min-width: 0; }
+  #mechanism .aj col.aj-rowhead,
+  #path .aj col.aj-rowhead { width: 136px; }
+  #mechanism .aj .aj-corner,
+  #mechanism .aj .aj-label,
+  #path .aj .aj-corner,
+  #path .aj .aj-label {
+    width: 136px;
+    white-space: nowrap;
+    color: var(--color-text);
+  }
+  #mechanism .aj thead th,
+  #path .aj thead th {
+    text-align: left;
+    vertical-align: bottom;
+  }
+  #core-principles > h2 + .bg-list { margin-top: 0; }
+  #core-principles .bg-list,
+  #benefits .bg-list {
+    list-style: disc;
+    padding-left: 1.25em;
+    margin: 0;
+  }
+  #core-principles .bg-list li + li,
+  #benefits .bg-list li + li { margin-top: 16px; }
+  #core-principles .bg-list li > strong:first-child,
+  #benefits .bg-list li > strong:first-child {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  #core-principles .bg-list li,
+  #benefits .bg-list li { color: var(--color-text-secondary); }
+  .file-sample {
+    margin: 0 0 var(--space-stack, 16px);
+  }
+  .file-sample-note {
+    margin: 0 0 var(--space-stack, 16px);
+  }
+  .file-sample .code-line-hl {
+    display: block;
+    padding: 0 14px;
+    margin: 0 -14px;
+    background: rgba(4, 120, 87, 0.28);
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+  .file-sample--wrap pre,
+  .file-sample--wrap pre code {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  #practices .llms-skel {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  #practices .llms-secs {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    margin-top: 16px;
+    white-space: normal;
+  }
+  #practices .llms-sec .llms-skel {
+    margin-top: 4px;
+    gap: 6px;
+  }
+  #practices .llms-skel-bar {
+    display: block;
+    height: 8px;
+    border-radius: 2px;
+    background: #3f3f3f;
+  }
+  #practices .anchor-card {
+    margin: 0 0 12px;
+    background: #fff;
+    border: 1.5px solid #191919;
+    border-radius: 12px;
+    overflow: visible;
+  }
+  #practices .anchor-url {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    background: #e8e8e8;
+    border-radius: 10.5px 10.5px 0 0;
+    border-bottom: 1px solid #d4d4d4;
+  }
+  #practices .anchor-url .llms-row {
+    flex: 1;
+    min-width: 0;
+    display: block;
+  }
+  #practices .omnibox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    height: 28px;
+    padding: 0 12px;
+    background: #fff;
+    border: 1px solid #d0d0d0;
+    border-radius: 14px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  }
+  #practices .omnibox-lock {
+    flex-shrink: 0;
+    width: 12px;
+    height: 12px;
+    color: #737373;
+  }
+  #practices .omnibox-text {
+    display: flex;
+    align-items: baseline;
+    min-width: 0;
+    overflow: hidden;
+    font-family: system-ui, sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 28px;
+    color: #191919;
+  }
+  #practices .omnibox-path {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #191919;
+    border-bottom: 2px solid #b45309;
+    padding-bottom: 1px;
+  }
+  #practices .omnibox-hash {
+    flex-shrink: 0;
+    margin-left: 6px;
+    color: #191919;
+    font-weight: 650;
+    background: rgba(254, 243, 199, 0.55);
+    border-bottom: 2px solid #facc15;
+    border-radius: 2px;
+    padding: 1px 3px;
+  }
+  #practices .anchor-doc {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 14px 16px 16px;
+    color: #191919;
+    font-family: var(--font);
+    font-size: 13px;
+    line-height: 20px;
+    overflow: visible;
+  }
+  #practices .anchor-body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  #practices .anchor-toc {
+    width: 148px;
+    flex-shrink: 0;
+    padding-left: 12px;
+  }
+  #practices .anchor-toc-t {
+    margin: 0 0 8px;
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 650;
+    color: #191919;
+  }
+  #practices .anchor-toc ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 12px;
+    line-height: 20px;
+    color: #191919;
+  }
+  #practices .anchor-toc li {
+    margin: 0;
+    padding: 3px 0 3px 10px;
+    border-left: 2px solid #d4d4d4;
+  }
+  #practices .anchor-toc li.is-sub {
+    padding-left: 20px;
+  }
+  #practices .anchor-toc li:has(> a.is-current) {
+    border-left-color: #facc15;
+  }
+  #practices .anchor-toc a,
+  #practices .anchor-toc a:hover {
+    color: #191919;
+    font-weight: inherit;
+    text-decoration: none;
+  }
+  #practices .anchor-toc a.is-current {
+    font-weight: 650;
+  }
+  #practices .anchor-h1,
+  #practices .anchor-h {
+    margin: 0;
+    font: inherit;
+    font-weight: 650;
+    color: #191919;
+  }
+  #practices .hier-card .hier-h2 {
+    font-size: 20px;
+    line-height: 26px;
+  }
+  #practices .hier-card .hier-h3 {
+    font-size: 14px;
+    line-height: 20px;
+  }
+  #practices .anchor-sec .llms-skel {
+    margin-top: 6px;
+    gap: 6px;
+  }
+  #practices .anchor-card .llms-skel-bar {
+    background: #e4e4e4;
+  }
+  #practices .code-card {
+    width: calc((100% - 32px) / 2);
+    max-width: 491px;
+    margin: 0 0 12px;
+    overflow: hidden;
+  }
+  #practices .code-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 280px;
+    column-gap: 24px;
+    align-items: start;
+    margin-top: var(--space-stack, 16px);
+  }
+  #practices .code-layout-main.llms-anno {
+    padding: 0 72px 0 88px;
+    margin: 0;
+  }
+  #practices .code-layout-main .code-card.is-good {
+    width: 100%;
+    max-width: none;
+    overflow: visible;
+  }
+  #practices .code-side-label {
+    margin: 0 0 8px;
+    font-size: var(--text-body);
+    line-height: 22px;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  #practices .code-issues {
+    margin: 0 0 16px;
+    padding-left: 1.2em;
+    font-size: 13px;
+    line-height: 22px;
+    color: var(--color-text-secondary);
+  }
+  #practices .code-issues li + li {
+    margin-top: 6px;
+  }
+  #practices .code-card.is-compact {
+    width: 100%;
+    max-width: none;
+    margin: 0 0 16px;
+  }
+  #practices .code-card.is-compact .anchor-h1 {
+    font-size: 14px;
+  }
+  #practices .code-card.is-compact .code-caption {
+    font-size: 12px;
+  }
+  #practices .code-card.is-compact .code-bad pre {
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  #practices .code-principles {
+    padding: 16px;
+    background: #f4f4f5;
+    border-radius: 12px;
+  }
+  #practices .code-principles .bg-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  #practices .code-principles .bg-list li + li {
+    margin-top: 16px;
+  }
+  #practices .code-card.is-good .code-pane {
+    overflow: visible;
+  }
+  #practices .code-lang .llms-row {
+    display: flex;
+    align-items: center;
+  }
+  #practices .code-card .anchor-doc {
+    display: block;
+  }
+  #practices .code-caption {
+    margin: 12px 0 0;
+    font-size: 13px;
+    line-height: 20px;
+    color: #191919;
+  }
+  #practices .code-bad {
+    display: flex;
+    align-items: stretch;
+    margin-top: 12px;
+    background: #1e1e1e;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  #practices .code-bad .gutter {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 12px 0 12px 12px;
+    color: #737373;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: 12px;
+    line-height: 20px;
+    text-align: right;
+    user-select: none;
+    border-right: 1px solid #333;
+  }
+  #practices .code-bad .gutter span {
+    display: block;
+    padding-right: 10px;
+    min-width: 1.25em;
+  }
+  #practices .code-bad pre {
+    margin: 0;
+    padding: 12px 14px;
+    overflow-x: auto;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: 12px;
+    line-height: 20px;
+    color: #e8e8e8;
+    background: transparent;
+    white-space: pre;
+  }
+  #practices .code-bad pre code {
+    display: block;
+    margin: 0;
+    padding: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    white-space: inherit;
+  }
+  #practices .code-pane {
+    margin-top: 12px;
+    background: #1e1e1e;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  #practices .code-pane + .code-pane {
+    margin-top: 8px;
+  }
+  #practices .code-lang {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 0;
+    padding: 6px 10px 0 14px;
+    font-size: 11px;
+    line-height: 16px;
+    font-weight: 650;
+    color: #a3a3a3;
+  }
+  #practices .code-lang-acts {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+  #practices .code-act {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 0;
+    border-radius: 6px;
+    background: none;
+    color: #a3a3a3;
+    cursor: default;
+  }
+  #practices .code-act svg {
+    width: 16px;
+    height: 16px;
+  }
+  #practices .code-pane pre {
+    margin: 0;
+    padding: 8px 14px 12px;
+    overflow-x: auto;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: 12px;
+    line-height: 20px;
+    color: #e8e8e8;
+    background: transparent;
+    white-space: pre;
+  }
+  #practices .code-pane pre code {
+    display: block;
+    margin: 0;
+    padding: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    white-space: inherit;
+  }
+  #practices .code-card + .llms-anno-legend {
+    margin-bottom: 0;
+  }
+  #practices .code-layout + h3.fn-h3 {
+    margin-top: var(--space-stack, 16px);
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  #practices .img-eq {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 28px minmax(0, 1fr) 28px minmax(0, 1fr);
+    align-items: start;
+    column-gap: 8px;
+    margin-top: var(--space-stack, 16px);
+  }
+  #practices .img-eq-col {
+    min-width: 0;
+    margin: 0;
+  }
+  #practices .img-eq-col .hier-label {
+    margin: 0 0 8px;
+  }
+  #practices .img-eq-op {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: stretch;
+    height: auto;
+    margin-top: 38px;
+    font-size: 22px;
+    font-weight: 650;
+    line-height: 1;
+    color: var(--color-text);
+  }
+  #practices .img-eq-card {
+    position: relative;
+    height: auto;
+    aspect-ratio: 1024 / 273;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: #fff;
+  }
+  #practices .img-eq-card .obj-banner,
+  #practices .img-eq-card img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: right center;
+  }
+  #practices .img-eq-card .obj-banner {
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+  }
+  #practices .img-eq-card .obj-banner-copy {
+    position: absolute;
+    left: 4%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: auto;
+    max-width: 92%;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+  }
+  #practices .img-eq-card .obj-card-kicker.is-badge {
+    display: inline-block;
+    margin: 0;
+    padding: 0 5px;
+    height: 14px;
+    line-height: 14px;
+    border-radius: 2px;
+    background: #c7000b;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 650;
+    white-space: nowrap;
+  }
+  #practices .img-eq-card .obj-card-title {
+    margin: 0;
+    font-size: 11px;
+    line-height: 14px;
+    font-weight: 700;
+    font-style: italic;
+    color: var(--color-primary);
+    white-space: nowrap;
+  }
+  #practices .img-eq-card .obj-card-cta {
+    display: inline-flex;
+    align-items: center;
+    margin: 0;
+    height: 16px;
+    padding: 0 7px;
+    border-radius: 999px;
+    background: #4d4d4d;
+    color: #fff;
+    font-size: 9px;
+    line-height: 16px;
+    font-weight: 400;
+    white-space: nowrap;
+  }
+  #practices .img-eq-card.is-text {
+    background-color: #fff;
+    background-image:
+      linear-gradient(45deg, #f0f0ee 25%, transparent 25%),
+      linear-gradient(-45deg, #f0f0ee 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #f0f0ee 75%),
+      linear-gradient(-45deg, transparent 75%, #f0f0ee 75%);
+    background-size: 12px 12px;
+    background-position: 0 0, 0 6px, 6px -6px, -6px 0;
+  }
+  #practices .img-eq + .bg-list {
+    margin-top: var(--space-stack, 16px);
+  }
+  #practices .reach-stage-frame {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    margin-top: var(--space-stack, 16px);
+    overflow: hidden;
+    cursor: zoom-in;
+    position: relative;
+  }
+  body.reach-fs-open { overflow: hidden; }
+  #practices .reach-stage-frame.is-fs {
+    position: fixed;
+    inset: 0;
+    z-index: 400;
+    width: auto;
+    height: auto;
+    aspect-ratio: auto;
+    margin: 0;
+    background: #111;
+    cursor: zoom-out;
+    border-radius: 0;
+  }
+  #practices .reach-fs-close {
+    display: none;
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 2;
+    margin: 0;
+    padding: 6px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 6px;
+    background: rgba(17, 17, 17, 0.72);
+    color: #fff;
+    font: inherit;
+    font-size: 14px;
+    line-height: 22px;
+    cursor: pointer;
+  }
+  #practices .reach-stage-frame.is-fs .reach-fs-close {
+    display: block;
+  }
+  #practices .reach-stage {
+    width: 1920px;
+    height: 1080px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    padding: 32px 48px;
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    background: #fff;
+    overflow: hidden;
+    transform-origin: 0 0;
+  }
+  #practices .reach-stage-title {
+    flex-shrink: 0;
+    margin: 0 0 32px;
+    padding: 0;
+    font-size: 32px;
+    line-height: 40px;
+    font-weight: 650;
+    letter-spacing: -0.02em;
+    color: var(--color-text, #171717);
+  }
+  #practices .reach-board {
+    display: grid;
+    grid-template-columns: 1.5fr 2fr 6.5fr;
+    column-gap: 8px;
+    row-gap: 0;
+    align-items: stretch;
+    flex: 1;
+    min-height: 0;
+    height: auto;
+    margin: 0;
+  }
+  #practices .reach-col {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 24px 20px 20px 24px;
+    background: #f4f4f5;
+    border-radius: 12px;
+    position: relative;
+    overflow: visible;
+  }
+  #practices .reach-col.reach-agent {
+    background: transparent;
+    padding-left: 0;
+  }
+  #practices .reach-col.reach-theme {
+    padding: 24px;
+    overflow: visible;
+  }
+  #practices .reach-col.is-branch .reach-stack {
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+  }
+  #practices .reach-col .hier-label {
+    margin: 0 0 24px;
+    padding-top: 0;
+    font-size: 20px;
+    line-height: 28px;
+    text-align: left;
+  }
+  #practices .ppt-anchor {
+    min-height: 0;
+    overflow: hidden;
+  }
+  #practices .ppt-anchor .file-sample-note {
+    margin: 0 0 12px;
+    font-size: 16px;
+    line-height: 24px;
+  }
+  #practices .ppt-anchor .llms-anno {
+    flex: 1;
+    min-height: 0;
+    margin: 0;
+    padding: 0 100px 0 160px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  #practices .ppt-anchor .anchor-card {
+    flex: 1;
+    min-height: 0;
+    margin: 0 0 12px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  #practices .ppt-anchor .anchor-doc {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+  #practices .ppt-anchor .llms-anno-legend {
+    flex: 0 0 auto;
+    margin: 0;
+    font-size: 13px;
+  }
+  #practices .reach-theme .reach-file-intro {
+    margin: 0 0 16px;
+    font-size: 16px;
+    line-height: 24px;
+    color: #525252;
+  }
+  #practices .reach-theme .reach-file-intro p {
+    margin: 0 0 8px;
+  }
+  #practices .reach-theme .reach-file-intro p:last-child {
+    margin-bottom: 0;
+  }
+  #practices .reach-theme .reach-file-intro strong {
+    font-weight: 650;
+    color: #171717;
+  }
+  #practices .reach-theme .reach-file-intro code {
+    font-size: 15px;
+  }
+  #practices .reach-theme .reach-file-intro mark {
+    background: rgba(250, 204, 21, 0.48);
+    color: inherit;
+    font: inherit;
+    border-radius: 2px;
+    padding: 0 2px;
+  }
+  #practices .reach-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  #practices .reach-time {
+    position: relative;
+    padding: 0;
+  }
+  #practices .reach-time::before {
+    content: "";
+    position: absolute;
+    left: 6px;
+    top: 12px;
+    bottom: 8px;
+    width: 2px;
+    background: #dcdcdc;
+    z-index: 0;
+  }
+  #practices .reach-node {
+    display: grid;
+    grid-template-columns: 14px minmax(0, 1fr);
+    column-gap: 16px;
+    align-items: start;
+    width: 100%;
+    margin: 0;
+    padding: 0 0 32px;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    font: inherit;
+    text-align: left;
+    color: inherit;
+    cursor: default;
+    position: relative;
+    z-index: 1;
+  }
+  #practices .reach-node:last-child {
+    padding-bottom: 0;
+  }
+  #practices .reach-dot {
+    display: block;
+    width: 14px;
+    height: 14px;
+    margin-top: 8px;
+    box-sizing: border-box;
+    border: 2px solid #d0d0d0;
+    border-radius: 50%;
+    background: #f4f4f5;
+  }
+  #practices .reach-node.is-on .reach-dot {
+    width: 16px;
+    height: 16px;
+    margin-top: 7px;
+    margin-left: -1px;
+    border: 2px solid var(--color-primary);
+    background: #f4f4f5;
+  }
+  #practices .reach-node-title {
+    display: block;
+    font-size: 18px;
+    line-height: 26px;
+    font-weight: 650;
+    letter-spacing: 0.02em;
+    color: #c4c4c4;
+  }
+  #practices .reach-tag {
+    display: inline-block;
+    margin: 0 0 6px;
+    padding: 1px 8px;
+    border-radius: 4px;
+    font-size: 13px;
+    line-height: 20px;
+    font-weight: 650;
+    letter-spacing: 0.04em;
+    background: #ececee;
+    color: #737373;
+  }
+  #practices .reach-node.is-on .reach-tag {
+    background: var(--color-primary-tint, rgba(20, 118, 255, 0.1));
+    color: var(--color-primary);
+  }
+  #practices .reach-node.is-on .reach-node-title {
+    color: var(--color-text);
+  }
+  #practices .reach-node .reach-en {
+    display: block;
+    margin-top: 4px;
+    font-size: 18px;
+    line-height: 26px;
+    font-weight: 400;
+    color: #c4c4c4;
+  }
+  #practices .reach-node.is-on .reach-en {
+    color: var(--color-text-secondary);
+  }
+  #practices .reach-step {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 10px 12px;
+    text-align: left;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: #fff;
+    font: inherit;
+    font-size: 13px;
+    line-height: 18px;
+    font-weight: 500;
+    color: var(--color-text);
+    cursor: default;
+  }
+  #practices .reach-step .reach-en {
+    display: block;
+    margin-top: 2px;
+    font-size: 11px;
+    line-height: 16px;
+    font-weight: 400;
+    color: var(--color-text-secondary);
+  }
+  #practices .reach-step.is-on {
+    border-color: #191919;
+    background: #f4f4f5;
+    font-weight: 650;
+  }
+  #practices .reach-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 20px;
+    color: var(--color-text-secondary);
+    font-size: 12px;
+    line-height: 1;
+  }
+  #practices .reach-chart {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    flex: 1;
+    min-height: 0;
+    overflow: visible;
+  }
+  #practices .rc-flow {
+    position: static;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    gap: 20px;
+    padding: 16px 48px 8px 48px;
+  }
+  #practices .rc-fork {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  #practices .rc-flow > .rc-node,
+  #practices .rc-fork .rc-node,
+  #practices .rc-flow > .rc-leaf-stack {
+    width: 100%;
+  }
+  #practices .rc-leaf-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
+  #practices .rc-leaf-stack > .rc-node[data-rc="leaf"] {
+    min-height: 88px;
+  }
+  #practices .rc-sub-link {
+    display: block;
+    width: 1.5px;
+    height: 10px;
+    margin: 0 0 0 20px;
+    background: #191919;
+    flex-shrink: 0;
+  }
+  #practices .rc-frag-pill {
+    align-self: flex-start;
+    margin-left: 20px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1.5px solid var(--color-primary, #1476FF);
+    background: #fff;
+    box-shadow: 0 4px 14px rgba(20, 118, 255, 0.18);
+    font-size: 15px;
+    line-height: 22px;
+    font-weight: 650;
+    color: var(--color-text);
+    white-space: nowrap;
+  }
+  #practices .rc-wires {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+    z-index: 2;
+  }
+  #practices .rc-node {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    min-height: 120px;
+    height: auto;
+    padding: 0;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 12px;
+    text-align: left;
+    box-shadow: none;
+  }
+  #practices .rc-node.rc-node--sub {
+    min-height: 0;
+    height: auto;
+  }
+  #practices .rc-head {
+    margin: 0;
+    padding: 10px 12px;
+    font-size: 18px;
+    line-height: 26px;
+    overflow-wrap: anywhere;
+  }
+  #practices .rc-node .rc-head {
+    color: var(--color-text);
+    font-weight: 650;
+    background: #e8edfb;
+  }
+  #practices .rc-node .rc-body {
+    background: #fff;
+  }
+  #practices .rc-node .rc-file {
+    background: #eef6c8;
+    color: var(--color-text);
+  }
+  #practices .rc-node.is-on {
+    z-index: 2;
+    background: #fff;
+    border: 1.5px solid var(--color-primary, #1476FF);
+    box-shadow: 0 4px 14px rgba(20, 118, 255, 0.18);
+  }
+  #practices .rc-node.is-on .rc-head {
+    background: #e8edfb;
+    color: var(--color-text);
+    font-weight: 650;
+  }
+  #practices .rc-node.is-on .rc-body {
+    background: #fff;
+  }
+  #practices .rc-node.is-on .rc-file {
+    background: #eef6c8;
+    color: var(--color-text);
+    font-weight: 500;
+  }
+  #practices .rc-body {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 16px 16px 18px;
+    background: #fff;
+  }
+  #practices .rc-file {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: #eef6c8;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: 18px;
+    line-height: 24px;
+    font-weight: 500;
+    white-space: nowrap;
+    color: var(--color-text);
+  }
+  #practices .rc-file + .rc-file {
+    margin-left: 0;
+  }
+  #practices .rc-chip {
+    position: absolute;
+    z-index: 3;
+    margin: 0;
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: 16px;
+    line-height: 22px;
+    font-weight: 650;
+    white-space: nowrap;
+    background: #eef4ff;
+    color: var(--color-primary);
+    pointer-events: none;
+  }
+  #practices .rc-chip-yes {
+    background: #e8f6ee;
+    color: #0f7b4a;
+  }
+  #practices .rc-chip-no {
+    background: #f4f4f5;
+    color: #525252;
+  }
+  #practices .rc-chip-guess {
+    background: #fff4e5;
+    color: #b45309;
+  }
+  #practices .rc-drop {
+    display: none;
+  }
+  #practices .reach-theme .file-sample {
+    margin: 0;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  #practices .reach-theme .llms-anno {
+    flex: 1;
+    min-height: 0;
+    margin: 0;
+    padding: 0 0 0 188px;
+    display: flex;
+    flex-direction: column;
+  }
+  #practices .reach-theme .llms-anno .file-sample {
+    overflow: visible;
+  }
+  #practices .reach-theme .llms-anno .file-sample pre,
+  #practices .reach-theme .llms-anno .file-sample pre code {
+    overflow: visible;
+    font-size: 15px;
+    line-height: 26px;
+  }
+  #practices .reach-theme .llms-head {
+    gap: 16px;
+  }
+  #practices .reach-theme .llms-secs {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 20px;
+  }
+  #practices .reach-theme .llms-sec {
+    gap: 8px;
+    padding: 14px 56px 14px 12px;
+  }
+  #practices .reach-theme .llms-pin {
+    top: 4px;
+    gap: 8px;
+  }
+  #practices .reach-theme .llms-pin .anno-cap {
+    font-size: 14px;
+    line-height: 20px;
+    white-space: nowrap;
+    max-width: none;
+    text-align: right;
+  }
+  #practices .reach-theme .llms-pin .anno-name {
+    display: block;
+    font-size: 12px;
+    line-height: 16px;
+    margin-top: 2px;
+    white-space: nowrap;
+  }
+  #practices .reach-theme .llms-pin .anno-leader {
+    width: 28px;
+    flex-shrink: 0;
+  }
+  #practices .reach-theme .llms-part-lab {
+    font-size: 13px;
+    margin-top: 6px;
+  }
+  #practices .reach-theme .llms-parts {
+    margin-top: 4px;
+    column-gap: 8px;
+  }
+  #practices .reach-theme .llms-mod {
+    font-size: 13px;
+    top: 14px;
+    right: 12px;
+  }
+  #practices .ppt-stack {
+    padding: 0;
+    background: transparent;
+    gap: 8px;
+  }
+  #practices .ppt-nv,
+  #practices .ppt-as {
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    background: #f4f4f5;
+    border-radius: 12px;
+    padding: 16px 18px 14px;
+  }
+  #practices .ppt-nv {
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
+    padding-top: 24px;
+    padding-bottom: 16px;
+    background-color: #f4f4f2;
+    background-image: radial-gradient(#d8d8d4 1.1px, transparent 1.1px);
+    background-size: 14px 14px;
+    border: 1px solid var(--color-border);
+  }
+  #practices .ppt-as {
+    flex: 0 0 auto;
+    min-height: 0;
+    padding: 14px 18px 16px;
+  }
+  #practices .ppt-nv .ppt-brand {
+    height: 28px;
+    min-height: 28px;
+    margin: 0 0 8px;
+    padding: 0 200px 0 0;
+    font-size: 20px;
+    line-height: 28px;
+    font-weight: 700;
+    white-space: nowrap;
+    align-items: center;
+    box-sizing: border-box;
+  }
+  #practices .ppt-nv > .seq-legend {
+    position: absolute;
+    top: 24px;
+    right: 18px;
+    margin: 0;
+    z-index: 2;
+    height: 28px;
+    font-size: 14px;
+    line-height: 28px;
+    align-items: center;
+  }
+  #practices .ppt-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 8px;
+    font-size: 18px;
+    line-height: 24px;
+    font-weight: 650;
+  }
+  #practices .ppt-brand img {
+    height: 22.4px;
+    width: auto;
+    display: block;
+  }
+  #practices .ppt-as .ppt-brand img {
+    height: 33.6px;
+  }
+  #practices .ppt-nv .ppt-brand img {
+    height: 22.4px;
+  }
+  #practices .ppt-h {
+    margin: 0 0 6px;
+    font-size: 20px;
+    line-height: 28px;
+    font-weight: 700;
+  }
+  #practices .ppt-lead {
+    margin: 0 0 10px;
+    font-size: 15px;
+    line-height: 22px;
+    color: #404040;
+  }
+  #practices .ppt-nv-points {
+    list-style: none;
+    margin: 8px 0 0;
+    padding: 0;
+    padding-left: calc(10 / 1080 * 100%);
+    flex: 0 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 24px;
+    row-gap: 16px;
+  }
+  #practices .ppt-nv-points li {
+    min-width: 0;
+  }
+  #practices .ppt-nv-points .ppt-nv-pt-k {
+    margin: 0 0 4px;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 700;
+    color: #171717;
+  }
+  #practices .ppt-nv-points p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 22px;
+    color: #404040;
+  }
+  #practices .ppt-nv-points code {
+    padding: 1px 6px;
+    border-radius: 4px;
+    background: #e5e5e5;
+    font-size: 13px;
+  }
+  #practices .ppt-as-heads {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    column-gap: 24px;
+    align-items: center;
+    margin: 0 0 16px;
+  }
+  #practices .ppt-as-heads .ppt-lead {
+    margin: 0;
+    font-size: 14px;
+    line-height: 22px;
+  }
+  #practices .ppt-as-row {
+    flex: 0 0 auto;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    column-gap: 24px;
+    align-items: stretch;
+  }
+  #practices .ppt-as-row .file-sample,
+  #practices .ppt-as-row .ppt-as-side {
+    min-width: 0;
+    min-height: 0;
+    height: 100%;
+  }
+  #practices .ppt-as-row .ppt-as-side {
+    display: flex;
+  }
+  #practices .ppt-as-row .ppt-cmp {
+    flex: 1;
+    height: 100%;
+  }
+  #practices .ppt-nv-seq {
+    flex: 1 1 auto;
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
+  }
+  #practices .ppt-nv-seq .seq {
+    flex: 1;
+    min-height: 280px;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    background: transparent;
+    background-image: none;
+    border: 0;
+    border-radius: 0;
+  }
+  #practices .ppt-nv-seq .seq svg {
+    flex: 1 1 auto;
+    width: 100%;
+    height: auto;
+    min-height: 280px;
+    max-height: 100%;
+    padding-top: 8px;
+    box-sizing: border-box;
+  }
+  #practices .ppt-file {
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border: 1px solid #191919;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  #practices .ppt-file--tall {
+    grid-row: 1 / span 2;
+  }
+  #practices .ppt-file-cap {
+    margin: 0;
+    padding: 8px 10px;
+    font-size: 13px;
+    line-height: 18px;
+    font-weight: 650;
+    background: #f0f0f0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  #practices .ppt-file-body {
+    flex: 1;
+    min-height: 0;
+    margin: 0;
+    padding: 10px 10px 12px;
+    overflow: hidden;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: 11px;
+    line-height: 16px;
+    color: #171717;
+    white-space: pre-wrap;
+  }
+  #practices .ppt-file-body .is-read { background: #d1fae5; color: #047857; }
+  #practices .ppt-file-body .is-go {
+    display: block;
+    background: #fef3c7;
+    color: #b45309;
+    font-weight: 650;
+    border: 1px solid #b45309;
+    border-radius: 4px;
+    padding: 2px 4px;
+    margin: 2px 0;
+  }
+  #practices .ppt-file-body .is-mute { color: #8c8c8c; }
+  #practices .ppt-file-body .is-skel {
+    display: block;
+    height: 7px;
+    margin: 6px 0 0;
+    border-radius: 2px;
+    background: #e4e4e4;
+  }
+  #practices .ppt-as .ppt-h { font-size: 20px; line-height: 28px; }
+  #practices .ppt-as .ppt-brand {
+    margin-bottom: 16px;
+  }
+  #practices .ppt-as .ppt-lead { font-size: 15px; line-height: 22px; }
+  #practices .ppt-as mark {
+    background: #fecaca;
+    color: inherit;
+    font: inherit;
+    border-radius: 2px;
+    padding: 0 3px;
+  }
+  #practices .ppt-as .file-sample {
+    min-height: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  #practices .ppt-as .file-sample figcaption {
+    font-size: 13px;
+    padding: 8px 12px;
+  }
+  #practices .ppt-as .file-sample pre {
+    flex: 0 0 auto;
+    min-height: 72px;
+    max-height: 96px;
+    font-size: 11px;
+    line-height: 16px;
+    overflow: hidden;
+    position: relative;
+  }
+  #practices .ppt-as .file-sample pre::after {
+    content: "—— 截断 ——";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 28px 12px 10px;
+    background: linear-gradient(transparent, #1e1e1e 55%);
+    color: #fca5a5;
+    font-size: 12px;
+    font-weight: 650;
+    text-align: center;
+  }
+  #practices .ppt-cmp {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    line-height: 20px;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  #practices .ppt-as-row .ppt-cmp th,
+  #practices .ppt-as-row .ppt-cmp td {
+    height: 25%;
+  }
+  #practices .ppt-cmp th,
+  #practices .ppt-cmp td {
+    padding: 8px 10px;
+    border: 1px solid #e5e5e5;
+    text-align: left;
+  }
+  #practices .ppt-cmp th {
+    font-weight: 650;
+    background: #fafafa;
+  }
+  #practices .ppt-cmp .is-bad {
+    background: #fecaca;
+    font-weight: 650;
+  }
+  #practices .reach-theme .file-sample figcaption {
+    padding: 14px 18px;
+    font-size: 20px;
+    line-height: 30px;
+  }
+  #practices .reach-theme .file-sample pre {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    padding: 16px 18px 18px;
+    font-size: 16px;
+    line-height: 26px;
+  }
+  @media (max-width: 900px) {
+    #practices .reach-stage-frame {
+      aspect-ratio: 16 / 9;
+    }
+    #practices .reach-board {
+      grid-template-columns: 1fr;
+      height: auto;
+    }
+    #practices .ppt-as-row,
+    #practices .ppt-as-heads,
+    #practices .ppt-nv-points {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 900px) {
+    #practices .img-eq {
+      grid-template-columns: 1fr;
+    }
+    #practices .img-eq-op {
+      height: auto;
+      margin: 4px 0;
+    }
+  }
+  #practices .llms-anno-legend + .hier-label {
+    margin-top: var(--space-stack, 16px);
+  }
+  #practices .hier-label + .code-card,
+  #practices .hier-label + .llms-anno {
+    margin-top: 8px;
+  }
+  #practices .anchor-hash {
+    margin-left: 6px;
+    color: #b45309;
+    font-weight: 650;
+  }
+  #practices .anchor-card .an-h--with-toast {
+    position: relative;
+    display: inline-block;
+    max-width: 100%;
+  }
+  #practices .anchor-card .an-toast {
+    position: absolute;
+    left: calc(100% + 8px);
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: var(--text-auxiliary);
+    line-height: 18px;
+    font-weight: 500;
+    color: var(--color-text);
+    background: #fff;
+    border: 1px solid var(--color-border);
+    box-shadow: 0 6px 16px rgba(25, 25, 25, 0.1);
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  #practices .anchor-card .an-toast::before {
+    content: "";
+    position: absolute;
+    left: -5px;
+    top: 50%;
+    transform: translateY(-50%) rotate(45deg);
+    width: 8px;
+    height: 8px;
+    background: #fff;
+    border-left: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+  }
+  #practices .anchor-sec.is-hit {
+    position: relative;
+    padding: 8px 10px;
+    margin: 0 -10px;
+    border-radius: 4px;
+    background: #fef3c7;
+    overflow: visible;
+  }
+  #practices .llms-anno {
+    padding: 0 16px 0 196px;
+    margin: 0 0 var(--space-stack, 16px);
+  }
+  #practices .llms-anno:has(.anchor-card) {
+    padding-right: 120px;
+  }
+  #practices .llms-anno .file-sample,
+  #practices .llms-anno .anchor-card {
+    overflow: visible;
+    margin-bottom: var(--space-stack, 16px);
+  }
+  #practices .llms-anno .file-sample pre,
+  #practices .llms-anno .file-sample pre code {
+    overflow: visible;
+  }
+  #practices .llms-head {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    white-space: normal;
+  }
+  #practices .llms-sec {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px 56px 8px 10px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.06);
+    white-space: normal;
+  }
+  #practices .llms-sec-body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+  #practices .llms-mod {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    font-family: var(--font);
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 16px;
+    color: #8a8a8a;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  #practices .llms-sec .llms-row,
+  #practices .llms-sec .llms-line {
+    white-space: pre-wrap;
+  }
+  #practices .llms-row,
+  #practices .llms-line {
+    display: block;
+  }
+  #practices .llms-row {
+    position: relative;
+  }
+  #practices .llms-row mark {
+    color: inherit;
+    font: inherit;
+    border-radius: 2px;
+    padding: 0 3px;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+  #practices .llms-row .hl-1 { background: rgba(250, 204, 21, 0.48); }
+  #practices .llms-row .hl-2 { background: rgba(250, 204, 21, 0.22); }
+  #practices .llms-row .hl-3 { background: rgba(167, 139, 250, 0.42); }
+  #practices .llms-row .hl-4 { background: rgba(52, 211, 153, 0.36); }
+  #practices .hl-vol { background: rgba(167, 139, 250, 0.22); color: inherit; font: inherit; border-radius: 2px; padding: 0 2px; }
+  #practices .hl-md { background: rgba(244, 114, 182, 0.45); color: inherit; font: inherit; border-radius: 2px; padding: 0 2px; }
+  #practices .llms-sec .llms-row--parts {
+    white-space: normal;
+  }
+  #practices .llms-parts {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    column-gap: 0;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: #555 transparent;
+  }
+  #practices .llms-parts::-webkit-scrollbar {
+    height: 6px;
+  }
+  #practices .llms-parts::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 3px;
+  }
+  #practices .llms-part {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex: 0 0 auto;
+    width: max-content;
+  }
+  #practices .llms-part-txt {
+    border-bottom: 2px solid;
+    padding-bottom: 3px;
+    white-space: nowrap;
+    overflow-wrap: normal;
+    word-break: keep-all;
+  }
+  #practices .llms-part-txt .hl-md {
+    white-space: nowrap;
+  }
+  #practices .llms-part-lab {
+    margin-top: 5px;
+    font-family: var(--font);
+    font-size: 11px;
+    font-weight: 650;
+    line-height: 1.2;
+  }
+  #practices .llms-part--title .llms-part-txt { border-color: #34d399; }
+  #practices .llms-part--title .llms-part-lab { color: #34d399; }
+  #practices .llms-part--url .llms-part-txt { border-color: #38bdf8; }
+  #practices .llms-part--url .llms-part-lab { color: #38bdf8; }
+  #practices .llms-part--note .llms-part-txt { border-color: #fb923c; }
+  #practices .llms-part--note .llms-part-lab { color: #fb923c; }
+  #practices .llms-pin {
+    position: absolute;
+    top: 1px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    pointer-events: none;
+  }
+  #practices .llms-pin .anno-cap {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0;
+    font-family: var(--font);
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 14px;
+    color: #191919;
+    white-space: nowrap;
+  }
+  #practices .llms-pin .anno-name {
+    font-size: 11px;
+    font-weight: 500;
+    color: #737373;
+    line-height: 14px;
+  }
+  #practices .llms-pin--left {
+    right: 100%;
+    margin-right: 10px;
+  }
+  #practices .llms-pin--right {
+    left: 100%;
+    margin-left: 10px;
+    flex-direction: row-reverse;
+  }
+  #practices .llms-pin--right .anno-cap {
+    align-items: flex-start;
+  }
+  #practices h2 + .llms-anno {
+    margin-top: 0;
+  }
+  #practices .llms-anno .anno-num,
+  #practices .llms-anno-legend .anno-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #191919;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+    font-family: var(--font);
+  }
+  #practices .llms-pin .anno-leader {
+    width: 14px;
+    height: 1.5px;
+    background: #191919;
+  }
+  #practices .llms-pin .anno-tip {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #191919;
+  }
+  #practices .llms-anno-legend {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+  }
+  #practices .llms-anno-legend li {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 14px;
+    line-height: 22px;
+    color: var(--color-text-secondary);
+  }
+  #practices .llms-anno-legend strong {
+    color: var(--color-text);
+    font-weight: 650;
+  }
+  #practices h2 + .reach-stage-frame,
+  #practices h2 + h3.fn-h3,
+  #practices h2 + .file-sample-note,
+  #practices h2 + .file-sample,
+  #practices h2 + .llms-anno,
+  #practices h3.fn-h3 + .llms-anno,
+  #practices .file-sample-note + .file-sample,
+  #practices .file-sample + .file-sample-note {
+    margin-top: 0;
+  }
+  #practices .llms-anno + h3.fn-h3,
+  #practices .llms-anno-legend + h3.fn-h3 {
+    margin-top: var(--space-stack, 16px);
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  #practices h3.fn-h3 + .file-sample-note {
+    margin-top: 8px;
+    margin-bottom: 0;
+  }
+  #practices .file-sample-note + .llms-anno,
+  #practices .file-sample-note + .hier-pair,
+  #practices .file-sample-note + .code-card,
+  #practices .file-sample-note + .hier-label,
+  #practices .file-sample-note + .code-layout,
+  #practices .file-sample-note + .img-eq {
+    margin-top: var(--space-stack, 16px);
+  }
+  #practices .file-sample-note + h3.fn-h3,
+  #practices .file-sample-note + h2,
+  #practices .llms-anno + h2,
+  #practices .llms-anno + .bg-list,
+  #practices .hier-pair + .bg-list {
+    margin-top: var(--space-stack, 16px);
+  }
+  #path h2 + h3.fn-h3,
+  #path h3.fn-h3 + .file-sample-note,
+  #path h3.fn-h3 + .af-figure,
+  #path h3.fn-h3 + .file-sample,
+  #path .file-sample + .file-sample-note,
+  #path .file-sample-note + .file-sample,
+  #path .file-sample-note + .af-figure {
+    margin-top: 0;
+  }
+  #path .file-sample-note + h3.fn-h3,
+  #path .af-figure + h3.fn-h3,
+  #path .file-sample + h3.fn-h3 {
+    margin-top: var(--space-stack, 16px);
+  }
+
+  /* 详情页壳：顶部只保留返回与当前位置，不带站点主导航与模块侧栏 */
+  .detail-bar { background: var(--color-surface); }
+  .detail-bar-inner { gap: 12px; }
+  .detail-back {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    margin-left: -6px;
+    border-radius: var(--radius);
+    color: var(--color-text);
+    text-decoration: none;
+    transition: background .15s, color .15s;
+  }
+  .detail-back:hover { background: var(--color-bg); color: var(--color-primary); }
+  .detail-back svg { width: 18px; height: 18px; display: block; }
+  .detail-divider {
+    flex-shrink: 0;
+    width: 1px;
+    height: 18px;
+    background: var(--color-border);
+  }
+  .detail-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+    color: var(--color-text-tertiary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .detail-title a { color: var(--color-text-secondary); text-decoration: none; }
+  .detail-title a:hover { color: var(--color-primary); }
+  .detail-title strong { color: var(--color-text); font-weight: 650; }
+  .detail-exit {
+    flex-shrink: 0;
+    margin-left: auto;
+    padding: 5px 14px;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    font-size: var(--code-copy-size);
+    line-height: var(--text-auxiliary-lh);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    transition: background .15s, color .15s, border-color .15s;
+  }
+  .detail-exit:hover { color: var(--color-primary); border-color: var(--color-primary); background: var(--color-primary-subtle); }
+  .detail-wrapper { display: flex; align-items: flex-start; background: var(--color-surface); }
+  .model-nav {
+    flex-shrink: 0;
+    width: var(--sidebar-width);
+    box-sizing: border-box;
+    position: sticky;
+    top: var(--header-height, 56px);
+    height: calc(100vh - var(--header-height, 56px));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: var(--color-card-bg);
+    border-right: 1px solid var(--color-border);
+  }
+  .model-nav-label {
+    font-size: var(--text-body);
+    font-weight: var(--text-h2-weight);
+    letter-spacing: .04em;
+    color: var(--color-text-tertiary);
+    padding: 4px 6px 2px;
+  }
+  .model-nav-label.is-sub {
+    margin-top: 8px;
+    padding-top: 12px;
+    border-top: 1px solid var(--color-border);
+  }
+  a.nav-vendor {
+    display: block;
+    padding: 6px 10px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+  }
+  a.nav-vendor:hover {
+    color: var(--color-primary);
+    background: var(--color-primary-subtle);
+    text-decoration: none;
+  }
+  a.nav-vendor.is-active {
+    color: var(--color-primary);
+    background: var(--color-primary-subtle);
+    font-weight: 650;
+  }
+  a.nav-model-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 10px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-surface);
+    font: inherit;
+    text-align: left;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition: border-color .15s, box-shadow .15s, background .15s;
+  }
+  a.nav-model-card:hover {
+    border-color: var(--color-primary-hover-border);
+    background: var(--color-primary-subtle);
+  }
+  a.nav-model-card.is-active {
+    border-color: var(--color-primary);
+    background: var(--color-primary-subtle);
+    box-shadow: inset 3px 0 0 var(--color-primary);
+  }
+  a.nav-model-card .idx {
+    font-size: var(--text-body);
+    font-weight: 600;
+    line-height: var(--text-body-lh);
+    color: var(--color-text-secondary);
+  }
+  a.nav-model-card.is-active .idx { color: var(--color-primary); }
+  a.nav-model-card .card-title {
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+    font-weight: 650;
+    color: var(--color-text);
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  @media (max-width: 900px) {
+    .detail-wrapper { flex-direction: column; }
+    .model-nav {
+      width: 100%;
+      position: static;
+      height: auto;
+      max-height: 36vh;
+      border-right: none;
+      border-bottom: 1px solid var(--color-border);
+    }
+  }
+  body.inner-page .detail-wrapper .main-content {
+    padding-top: 40px;
+    min-width: 0;
+    flex: 1;
+    background: var(--color-surface);
+    min-height: calc(100vh - var(--header-height, 56px));
+  }
+  body.inner-page .detail-wrapper .main-content > .page-header,
+  body.inner-page .detail-wrapper .main-content > .section {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin-inline: auto;
+    box-sizing: border-box;
+  }
+  .seq {
+    margin: 0 0 var(--space-stack, 16px);
+    padding: 16px 20px 12px;
+    background-color: #f4f4f2;
+    background-image: radial-gradient(#d8d8d4 1.1px, transparent 1.1px);
+    background-size: 14px 14px;
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+  }
+  .seq svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    font-family: var(--font);
+  }
+  .seq-legend {
+    list-style: none;
+    margin: 12px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px 24px;
+    font-size: 13px;
+    line-height: 14px;
+    color: #191919;
+  }
+  .seq-legend li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .seq-legend .swatch {
+    width: 14px;
+    height: 14px;
+    border-radius: 2px;
+    flex-shrink: 0;
+    box-sizing: border-box;
+  }
+  .seq-legend .swatch-read { background: #d1fae5; }
+  .seq-legend .swatch-go { background: #fef3c7; }
+  .seq-legend .swatch-skel { background: #e4e4e4; }
+  #mechanism .seq { margin-top: 0; }
+</style>
+</head>
+<body class="inner-page agent-entry-page" data-module="principles" data-page="llms-parse-nvidia-path-sample" data-no-surface-tabs>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html">社区 <span>AI 亲和原则</span></a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="mintlify.html">友商对照</a>
+      <a href="reachability.html">社区诊断</a>
+      <a href="principles-overview.html">亲和原则</a>
+      <a href="community-ui.html">组件亲和</a>
+      <a href="design-guide-image-text.html">设计模式</a>
+      <a href="data-analysis.html">数据分析</a>
+      <a href="principles-llms-parse-nvidia-path-sample.html" class="active">材料准备</a>
+    </nav>
+  </div>
+</div>
+
+<div class="page-wrapper detail-wrapper">
+
+  <main class="main-content">
+
+    <div class="page-header">
+      <h1>材料示例</h1>
+    </div>
+
+    <section class="section" id="mechanism">
+      <h2>安装与编程模型</h2>
+      <p class="page-lead">Agent 回答问题时从根 llms 进：选站进文档分册，选产品进 CUDA 分册，再打开任务 <code>.md</code>。第二件事不在同一页，也不退回上一本 llms，只在产品分册里再开一页。两页 <code>.md</code> 拼齐后停。</p>
+      <p class="page-lead">本图问句：「Linux 上怎么装 CUDA，装完 thread、block、grid 怎么组织？」两件事不在同一页。</p>
+      <figure class="seq" id="nv-seq-src">
+        <svg viewBox="0 0 1080 424" role="img" aria-labelledby="mat-title mat-desc">
+          <title id="mat-title">NVIDIA CUDA 安装与编程模型：三本 llms 后先后打开两篇正文</title>
+          <desc id="mat-desc">绿底是读过的名称、描述和节名；黄底是跟进去的那一条。产品册有两条黄行：先 Linux 安装，再 Programming Guide。灰条是未读骨架。顶栏是栏名与文件地址。</desc>
+          <defs>
+            <marker id="mat-arr" viewBox="0 0 8 8" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+              <path d="M0 0.6 L8 4 L0 7.4 Z" fill="#b45309"/>
+            </marker>
+            <clipPath id="clip-a"><rect x="10" y="10" width="236" height="358" rx="12"/></clipPath>
+            <clipPath id="clip-b"><rect x="280" y="10" width="236" height="358" rx="12"/></clipPath>
+            <clipPath id="clip-c"><rect x="550" y="10" width="236" height="358" rx="12"/></clipPath>
+            <clipPath id="clip-d"><rect x="820" y="10" width="236" height="166" rx="12"/></clipPath>
+            <clipPath id="clip-e"><rect x="820" y="192" width="236" height="176" rx="12"/></clipPath>
+          </defs>
+
+          <rect x="10" y="6" width="210" height="20" rx="3" fill="#f0f0f0"/>
+          <text x="18" y="20" font-size="11" font-weight="650" fill="#191919" font-family="system-ui, sans-serif">根 llms : nvidia.com/llms.txt</text>
+          <rect x="280" y="6" width="248" height="20" rx="3" fill="#f0f0f0"/>
+          <text x="288" y="20" font-size="11" font-weight="650" fill="#191919" font-family="system-ui, sans-serif">文档分册 llms : docs.nvidia.com/llms.txt</text>
+          <rect x="550" y="6" width="260" height="20" rx="3" fill="#f0f0f0"/>
+          <text x="558" y="20" font-size="11" font-weight="650" fill="#191919" font-family="system-ui, sans-serif">文档分册 / CUDA 产品分册 llms : cuda/llms.txt</text>
+          <rect x="820" y="6" width="228" height="20" rx="3" fill="#f0f0f0"/>
+          <text x="828" y="20" font-size="11" font-weight="650" fill="#191919" font-family="system-ui, sans-serif">cuda-installation-guide-linux.md</text>
+
+          <g transform="translate(0,24)">
+          <rect x="10" y="10" width="236" height="358" rx="12" fill="#fff" stroke="#191919" stroke-width="1.5"/>
+          <g clip-path="url(#clip-a)" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">
+          <g transform="translate(0,-18)">
+
+            <rect x="18" y="38" width="216" height="11" fill="#d1fae5"/>
+            <text x="20" y="47" font-size="6.5" font-weight="650" fill="#047857"># NVIDIA Corporation</text>
+
+            <rect x="18" y="49" width="216" height="33" fill="#d1fae5"/>
+            <text x="20" y="58" font-size="6.5" fill="#047857">&gt; This file provides links to the llms.txt of</text>
+            <text x="20" y="67" font-size="6.5" fill="#047857">NVIDIA’s main and international websites,</text>
+            <text x="20" y="76" font-size="6.5" fill="#047857">helping LLMs understand each locale site…</text>
+
+            <rect x="18" y="84" width="216" height="11" fill="#d1fae5"/>
+            <text x="20" y="93" font-size="6.5" font-weight="650" fill="#047857">## The NVIDIA North America Websites</text>
+            <rect x="18" y="95" width="216" height="22" fill="#d1fae5"/>
+            <text x="20" y="104" font-size="6.5" fill="#047857">- [NVIDIA U.S. Website](https://www.nvidia.com/en-us/llms.txt)</text>
+            <text x="20" y="113" font-size="6.5" fill="#047857">: Marketing, corporate, product information.</text>
+            <rect x="18" y="117" width="216" height="20" fill="#d1fae5"/>
+            <text x="20" y="126" font-size="6.5" fill="#047857">- [NVIDIA OpenSource Website]</text>
+            <text x="20" y="135" font-size="6.5" fill="#047857">(https://opensource.nvidia.com/en-us/llms.txt)</text>
+
+            <rect x="18" y="139" width="216" height="11" fill="#d1fae5"/>
+            <text x="20" y="148" font-size="6.5" font-weight="650" fill="#047857">## NVIDIA Technical Documentation Website</text>
+            <rect x="18" y="151" width="216" height="28" rx="3" fill="#fef3c7" stroke="#b45309" stroke-width="1.25"/>
+            <text x="20" y="162" font-size="6.5" font-weight="650" fill="#b45309">- [Tech Docs](https://docs.nvidia.com/llms.txt)</text>
+            <text x="20" y="172" font-size="6.5" fill="#b45309">: Technical documentation for NVIDIA products.</text>
+
+            <rect x="18" y="181" width="216" height="11" fill="#d1fae5"/>
+            <text x="20" y="190" font-size="6.5" font-weight="650" fill="#047857">## NVIDIA Developer Websites</text>
+            <text x="20" y="201" font-size="6.5" fill="#8c8c8c">- [NVIDIA Developer](https://developer.nvidia.com/llms.txt)</text>
+            <text x="20" y="210" font-size="6.5" fill="#8c8c8c">: Downloads, SDKs, frameworks, libraries, forums.</text>
+            <text x="20" y="219" font-size="6.5" fill="#8c8c8c">- [NVIDIA Technical Blog](https://developer.nvidia.com/blog/llms.txt)</text>
+
+            <rect x="18" y="222" width="216" height="11" fill="#d1fae5"/>
+            <text x="20" y="231" font-size="6.5" font-weight="650" fill="#047857">## NVIDIA GTC AI Conference Website</text>
+            <text x="20" y="242" font-size="6.5" fill="#8c8c8c">- [GTC](https://www.nvidia.com/gtc/llms.txt)</text>
+            <text x="20" y="251" font-size="6.5" fill="#8c8c8c">: Conference locations, sessions, speakers, venues.</text>
+
+            <rect x="18" y="254" width="216" height="11" fill="#d1fae5"/>
+            <text x="20" y="263" font-size="6.5" font-weight="650" fill="#047857">## NVIDIA Regional Blog RSS Feeds</text>
+            <text x="20" y="274" font-size="6.5" fill="#8c8c8c">- [NVIDIA Corporate Blog RSS Feed](…/feed/)</text>
+            <text x="20" y="283" font-size="6.5" fill="#8c8c8c">- [NVIDIA Developer Technical Blog RSS Feed]</text>
+            <text x="20" y="292" font-size="6.5" fill="#8c8c8c">- [NVIDIA Newsroom RSS Feed](…releases.xml)</text>
+            <text x="20" y="301" font-size="6.5" fill="#8c8c8c">- [NVIDIA Germany Blog RSS Feed] …</text>
+            <text x="20" y="310" font-size="6.5" fill="#8c8c8c">- [NVIDIA France / China / Japan / Korea /</text>
+            <text x="20" y="319" font-size="6.5" fill="#8c8c8c">Taiwan / Brazil / Latin America Blog RSS]</text>
+
+            <rect x="18" y="322" width="216" height="11" fill="#d1fae5"/>
+            <text x="20" y="331" font-size="6.5" font-weight="650" fill="#047857">### NVIDIA China Websites</text>
+            <text x="20" y="342" font-size="6.5" fill="#8c8c8c">- [NVIDIA China](https://www.nvidia.cn/llms.txt)</text>
+            <text x="20" y="351" font-size="6.5" fill="#8c8c8c">- [NVIDIA China Developer](https://developer.nvidia.cn/llms.txt)</text>
+          </g>
+          </g>
+
+          <rect x="280" y="10" width="236" height="358" rx="12" fill="#fff" stroke="#191919" stroke-width="1.5"/>
+          <g clip-path="url(#clip-b)" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">
+          <g transform="translate(0,-18)">
+
+            <rect x="288" y="38" width="216" height="11" fill="#d1fae5"/>
+            <text x="290" y="47" font-size="6.5" font-weight="650" fill="#047857"># NVIDIA Technical Product Documentation</text>
+            <rect x="288" y="49" width="216" height="33" fill="#d1fae5"/>
+            <text x="290" y="58" font-size="6.5" fill="#047857">&gt; Collection of NVIDIA Technical Documentation</text>
+            <text x="290" y="67" font-size="6.5" fill="#047857">llms.txt files for AI user agents. Content is</text>
+            <text x="290" y="76" font-size="6.5" fill="#047857">in English and listed in alphabetical order…</text>
+
+            <rect x="288" y="84" width="216" height="11" fill="#d1fae5"/>
+            <text x="290" y="93" font-size="6.5" font-weight="650" fill="#047857">## NVIDIA AI Cluster Runtime (AICR)</text>
+            <rect x="288" y="95" width="216" height="20" fill="#d1fae5"/>
+            <text x="290" y="104" font-size="6.5" fill="#047857">&gt; Tooling for generating validated, optimized</text>
+            <text x="290" y="113" font-size="6.5" fill="#047857">GPU-accelerated Kubernetes configurations…</text>
+            <text x="290" y="125" font-size="6.5" fill="#8c8c8c">- [NVIDIA AI Cluster Runtime](https://docs.nvidia.com/aicr/llms.txt)</text>
+            <rect x="288" y="129" width="216" height="11" fill="#d1fae5"/>
+            <text x="290" y="138" font-size="6.5" font-weight="650" fill="#047857">## NVIDIA AIPerf</text>
+            <text x="290" y="149" font-size="6.5" fill="#8c8c8c">- [NVIDIA AIPerf](https://docs.nvidia.com/aiperf/llms.txt)</text>
+            <rect x="292" y="154" width="176" height="7" rx="2" fill="#e4e4e4"/>
+            <rect x="292" y="165" width="132" height="7" rx="2" fill="#e4e4e4"/>
+            <rect x="292" y="176" width="160" height="7" rx="2" fill="#e4e4e4"/>
+
+            <rect x="288" y="188" width="216" height="11" fill="#d1fae5"/>
+            <text x="290" y="197" font-size="6.5" font-weight="650" fill="#047857">## NVIDIA CUDA Toolkit</text>
+            <rect x="288" y="199" width="216" height="20" fill="#d1fae5"/>
+            <text x="290" y="208" font-size="6.5" fill="#047857">&gt; Development environment for creating high</text>
+            <text x="290" y="217" font-size="6.5" fill="#047857">performance GPU-accelerated applications…</text>
+            <rect x="288" y="221" width="216" height="28" rx="3" fill="#fef3c7" stroke="#b45309" stroke-width="1.25"/>
+            <text x="290" y="232" font-size="6.5" font-weight="650" fill="#b45309">- [NVIDIA CUDA Toolkit]</text>
+            <text x="290" y="242" font-size="6.5" fill="#b45309">(https://docs.nvidia.com/cuda/llms.txt)</text>
+
+            <rect x="288" y="252" width="216" height="11" fill="#d1fae5"/>
+            <text x="290" y="261" font-size="6.5" font-weight="650" fill="#047857">## NVIDIA CUDA-Q</text>
+            <rect x="288" y="263" width="216" height="20" fill="#d1fae5"/>
+            <text x="290" y="272" font-size="6.5" fill="#047857">&gt; A Platform for accelerated quantum</text>
+            <text x="290" y="281" font-size="6.5" fill="#047857">supercomputing that offers a hybrid model…</text>
+            <text x="290" y="293" font-size="6.5" fill="#8c8c8c">- [NVIDIA CUDA-Q documentation on GitHub]</text>
+            <text x="290" y="302" font-size="6.5" fill="#8c8c8c">(https://nvidia.github.io/cuda-quantum/…/llms.txt)</text>
+            <rect x="288" y="306" width="216" height="11" fill="#d1fae5"/>
+            <text x="290" y="315" font-size="6.5" font-weight="650" fill="#047857">## NVIDIA NIM</text>
+            <text x="290" y="326" font-size="6.5" fill="#8c8c8c">- [NVIDIA NIM](https://docs.nvidia.com/nim/llms.txt)</text>
+            <rect x="292" y="331" width="168" height="7" rx="2" fill="#e4e4e4"/>
+            <rect x="292" y="342" width="140" height="7" rx="2" fill="#e4e4e4"/>
+            <rect x="292" y="353" width="156" height="7" rx="2" fill="#e4e4e4"/>
+          </g>
+          </g>
+
+          <rect x="550" y="10" width="236" height="358" rx="12" fill="#fff" stroke="#191919" stroke-width="1.5"/>
+          <g clip-path="url(#clip-c)" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">
+          <g transform="translate(0,-18)">
+
+            <rect x="558" y="38" width="216" height="20" fill="#d1fae5"/>
+            <text x="560" y="47" font-size="6.5" font-weight="650" fill="#047857"># NVIDIA CUDA – Comprehensive Documentation</text>
+            <text x="560" y="56" font-size="6.5" font-weight="650" fill="#047857">for GPU Programming, Libraries, and Tooling</text>
+            <rect x="558" y="58" width="216" height="22" fill="#d1fae5"/>
+            <text x="560" y="67" font-size="6.5" fill="#047857">This collection provides end-to-end docs covering</text>
+            <text x="560" y="76" font-size="6.5" fill="#047857">installation, programming models, APIs, tools…</text>
+
+            <rect x="558" y="82" width="216" height="11" fill="#d1fae5"/>
+            <text x="560" y="91" font-size="6.5" font-weight="650" fill="#047857">## CUDA Installation Guides</text>
+            <rect x="558" y="93" width="216" height="20" fill="#d1fae5"/>
+            <text x="560" y="102" font-size="6.5" fill="#047857">- [Use this guide when setting up CUDA for the</text>
+            <text x="560" y="111" font-size="6.5" fill="#047857">first time…](…/cuda-quick-start-guide/index.html.md)</text>
+            <rect x="558" y="115" width="216" height="28" rx="3" fill="#fef3c7" stroke="#b45309" stroke-width="1.25"/>
+            <text x="560" y="126" font-size="6.5" font-weight="650" fill="#b45309">- [Consult this page when installing CUDA on Linux…]</text>
+            <text x="560" y="136" font-size="6.5" fill="#b45309">(…/cuda-installation-guide-linux/index.html.md)</text>
+            <rect x="558" y="145" width="216" height="20" fill="#d1fae5"/>
+            <text x="560" y="154" font-size="6.5" fill="#047857">- [Use this guide when installing CUDA on Windows…]</text>
+            <text x="560" y="163" font-size="6.5" fill="#047857">(…/cuda-installation-guide-microsoft-windows/…)</text>
+
+            <rect x="558" y="169" width="216" height="11" fill="#d1fae5"/>
+            <text x="560" y="178" font-size="6.5" font-weight="650" fill="#047857">## CUDA Programming Guides</text>
+            <rect x="558" y="182" width="216" height="28" rx="3" fill="#fef3c7" stroke="#b45309" stroke-width="1.25"/>
+            <text x="560" y="193" font-size="6.5" font-weight="650" fill="#b45309">- [Read this when learning … threads, blocks, grids…]</text>
+            <text x="560" y="203" font-size="6.5" fill="#b45309">(…/cuda-programming-guide/index.html.md)</text>
+            <rect x="558" y="212" width="216" height="20" fill="#d1fae5"/>
+            <text x="560" y="221" font-size="6.5" fill="#047857">- [Use this guide when optimizing CUDA C/C++…]</text>
+            <text x="560" y="230" font-size="6.5" fill="#047857">(…/cuda-c-best-practices-guide/index.html.md)</text>
+
+            <rect x="558" y="236" width="216" height="11" fill="#d1fae5"/>
+            <text x="560" y="245" font-size="6.5" font-weight="650" fill="#047857">## CUDA Architecture Guides</text>
+            <text x="560" y="257" font-size="6.5" fill="#8c8c8c">- [Use this guide when validating CUDA applications</text>
+            <text x="560" y="266" font-size="6.5" fill="#8c8c8c">on Ada Lovelace GPUs…](…/ada-compatibility-guide/…)</text>
+            <rect x="562" y="271" width="168" height="7" rx="2" fill="#e4e4e4"/>
+            <rect x="562" y="282" width="132" height="7" rx="2" fill="#e4e4e4"/>
+            <rect x="558" y="293" width="216" height="11" fill="#d1fae5"/>
+            <text x="560" y="302" font-size="6.5" font-weight="650" fill="#047857">## CUDA API References</text>
+            <text x="560" y="314" font-size="6.5" fill="#8c8c8c">- [Use this reference when performing dense linear</text>
+            <text x="560" y="323" font-size="6.5" fill="#8c8c8c">algebra … cuBLAS.](…/cublas/index.html.md)</text>
+            <rect x="562" y="328" width="176" height="7" rx="2" fill="#e4e4e4"/>
+            <rect x="562" y="339" width="140" height="7" rx="2" fill="#e4e4e4"/>
+            <rect x="562" y="350" width="156" height="7" rx="2" fill="#e4e4e4"/>
+          </g>
+          </g>
+
+          <rect x="820" y="10" width="236" height="166" rx="12" fill="#fff" stroke="#191919" stroke-width="1.5"/>
+          <g clip-path="url(#clip-d)" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">
+          <g transform="translate(0,-18)">
+            <rect x="832" y="38" width="216" height="11" fill="#d1fae5"/>
+            <text x="834" y="47" font-size="6.5" font-weight="650" fill="#047857"># CUDA Installation Guide for Linux</text>
+            <rect x="832" y="49" width="216" height="11" fill="#d1fae5"/>
+            <text x="834" y="58" font-size="6.5" font-weight="650" fill="#047857"># 1. Overview</text>
+            <rect x="832" y="60" width="216" height="22" fill="#d1fae5"/>
+            <text x="834" y="69" font-size="6.5" fill="#047857">Comprehensive instructions for installing the CUDA</text>
+            <text x="834" y="78" font-size="6.5" fill="#047857">Toolkit: package manager, runfile, Conda, pip wheels…</text>
+            <rect x="832" y="84" width="216" height="11" fill="#d1fae5"/>
+            <text x="834" y="93" font-size="6.5" font-weight="650" fill="#047857"># 2. Introduction</text>
+            <rect x="832" y="95" width="216" height="20" fill="#d1fae5"/>
+            <text x="834" y="104" font-size="6.5" fill="#047857">CUDA® is a parallel computing platform invented by</text>
+            <text x="834" y="113" font-size="6.5" fill="#047857">NVIDIA®. This guide shows how to install the tools.</text>
+            <rect x="832" y="117" width="216" height="28" fill="#d1fae5"/>
+            <text x="834" y="126" font-size="6.5" font-weight="650" fill="#047857">## 2.1. System Requirements</text>
+            <text x="834" y="137" font-size="6.5" fill="#047857">CUDA-capable GPU · supported Linux · gcc toolchain</text>
+            <rect x="834" y="154" width="160" height="7" rx="2" fill="#e4e4e4"/>
+            <rect x="834" y="165" width="200" height="7" rx="2" fill="#e4e4e4"/>
+            <rect x="834" y="176" width="132" height="7" rx="2" fill="#e4e4e4"/>
+          </g>
+          </g>
+
+          <line x1="246" y1="147" x2="272" y2="147" stroke="#b45309" stroke-width="1.75" marker-end="url(#mat-arr)"/>
+          <text x="259" y="139" text-anchor="middle" font-size="10" font-weight="650" fill="#b45309">②</text>
+
+          <line x1="516" y1="217" x2="542" y2="217" stroke="#b45309" stroke-width="1.75" marker-end="url(#mat-arr)"/>
+          <text x="529" y="209" text-anchor="middle" font-size="10" font-weight="650" fill="#b45309">③</text>
+
+          <line x1="786" y1="111" x2="812" y2="111" stroke="#b45309" stroke-width="1.75" marker-end="url(#mat-arr)"/>
+          <text x="799" y="103" text-anchor="middle" font-size="10" font-weight="650" fill="#b45309">④</text>
+
+          <line x1="812" y1="136" x2="786" y2="136" stroke="#b45309" stroke-width="1.75" stroke-dasharray="5 3" marker-end="url(#mat-arr)"/>
+          <text x="799" y="148" text-anchor="middle" font-size="10" font-weight="650" fill="#b45309">回</text>
+          </g>
+
+          <rect x="820" y="208" width="228" height="20" rx="3" fill="#f0f0f0"/>
+          <text x="828" y="222" font-size="11" font-weight="650" fill="#191919" font-family="system-ui, sans-serif">cuda-programming-guide.md</text>
+
+          <g transform="translate(0,44)">
+          <rect x="820" y="192" width="236" height="176" rx="12" fill="#fff" stroke="#191919" stroke-width="1.5"/>
+          <g clip-path="url(#clip-e)" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">
+          <g transform="translate(0,-18)">
+            <rect x="832" y="220" width="216" height="11" fill="#d1fae5"/>
+            <text x="834" y="229" font-size="6.5" font-weight="650" fill="#047857"># CUDA Programming Guide</text>
+            <rect x="832" y="231" width="216" height="11" fill="#d1fae5"/>
+            <text x="834" y="240" font-size="6.5" font-weight="650" fill="#047857">**CUDA and the CUDA Programming Guide**</text>
+            <rect x="832" y="242" width="216" height="20" fill="#d1fae5"/>
+            <text x="834" y="251" font-size="6.5" fill="#047857">CUDA is a parallel computing platform and programming</text>
+            <text x="834" y="260" font-size="6.5" fill="#047857">model … harnessing the power of the GPU.</text>
+            <rect x="832" y="264" width="216" height="11" fill="#d1fae5"/>
+            <text x="834" y="273" font-size="6.5" font-weight="650" fill="#047857">**Organization of This Guide**</text>
+            <rect x="832" y="275" width="216" height="20" fill="#d1fae5"/>
+            <text x="834" y="284" font-size="6.5" fill="#047857">This guide starts with a chapter on the CUDA</text>
+            <text x="834" y="293" font-size="6.5" fill="#047857">programming model (threads / blocks / grids)…</text>
+            <rect x="832" y="297" width="216" height="11" fill="#d1fae5"/>
+            <text x="834" y="306" font-size="6.5" fill="#047857">- Part 1: Introduction and Programming Model Abstract</text>
+            <rect x="832" y="310" width="216" height="11" fill="#d1fae5"/>
+            <text x="834" y="319" font-size="6.5" fill="#047857">- Part 4: CUDA Features</text>
+            <text x="834" y="330" font-size="6.5" fill="#8c8c8c">  - CUDA graphs, dynamic parallelism, unified memory…</text>
+            <rect x="834" y="336" width="180" height="7" rx="2" fill="#e4e4e4"/>
+            <rect x="834" y="347" width="140" height="7" rx="2" fill="#e4e4e4"/>
+            <rect x="834" y="358" width="200" height="7" rx="2" fill="#e4e4e4"/>
+          </g>
+          </g>
+          </g>
+
+          <polyline points="786,202 799,202 799,329 820,329" fill="none" stroke="#b45309" stroke-width="1.75" marker-end="url(#mat-arr)"/>
+          <text x="799" y="274" text-anchor="middle" font-size="10" font-weight="650" fill="#b45309">⑤</text>
+        </svg>
+        <ul class="seq-legend" aria-label="图例">
+          <li><span class="swatch swatch-read" aria-hidden="true"></span>读过</li>
+          <li><span class="swatch swatch-go" aria-hidden="true"></span>跟进去</li>
+          <li><span class="swatch swatch-skel" aria-hidden="true"></span>未读</li>
+        </ul>
+      </figure>
+    </section>
+
+    <section class="section" id="practices">
+      <h2>根 llms</h2>
+      <div class="llms-anno" aria-label="根 llms 结构标注">
+      <figure class="file-sample file-sample--wrap">
+        <figcaption>nvidia.com/llms.txt</figcaption>
+        <pre><code><span class="llms-head"><span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">集团名</span><span class="anno-num">1</span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-1"># NVIDIA Corporation</mark></span><span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">集团说明</span><span class="anno-num">2</span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-2">&gt; This file provides links to the llms.txt of NVIDIA's main and international websites, helping large language models (LLMs) better understand the content and structure of each of NVIDIA's locale-specific websites. Follow the links below to deeper llms.txt pages for each locale website. Each country may have more than one language that content is translated into.</mark></span></span>
+
+<span class="llms-secs"><span class="llms-sec"><span class="llms-mod">北美站</span><span class="llms-line">## The NVIDIA North America Websites</span><span class="llms-line">- [NVIDIA U.S. Website](https://www.nvidia.com/en-us/llms.txt): Marketing, corporate, product information.</span><span class="llms-line">- [NVIDIA OpenSource Website] (https://opensource.nvidia.com/en-us/llms.txt)</span></span><span class="llms-sec"><span class="llms-mod">文档站</span><span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">站点名</span><span class="anno-num">3</span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-3">## NVIDIA Technical Documentation Website</mark></span><span class="llms-row llms-row--parts"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">站点 llms 分册地址</span><span class="anno-num">4</span><span class="anno-leader"></span><span class="anno-tip"></span></span><span class="llms-parts"><span class="llms-part llms-part--title"><span class="llms-part-txt">- [Tech Docs]</span><span class="llms-part-lab">分册标题</span></span><span class="llms-part llms-part--url"><span class="llms-part-txt">(https://docs.nvidia.com/llms.txt)</span><span class="llms-part-lab">站点 llms 分册地址</span></span><span class="llms-part llms-part--note"><span class="llms-part-txt">: Technical documentation for NVIDIA products.</span><span class="llms-part-lab">分册说明</span></span></span></span></span><span class="llms-sec"><span class="llms-mod">开发者站</span><span class="llms-line">## NVIDIA Developer Websites</span><span class="llms-line">- [NVIDIA Developer](https://developer.nvidia.com/llms.txt): Downloads, SDKs, frameworks, libraries, forums.</span><span class="llms-line">- [NVIDIA Technical Blog](https://developer.nvidia.com/blog/llms.txt): News and blog articles for developer community.</span></span><span class="llms-sec"><span class="llms-mod">大会</span><span class="llms-line">## NVIDIA GTC AI Conference Website</span><span class="llms-line">- [GTC](https://www.nvidia.com/gtc/llms.txt): Conference locations, sessions, speakers, venues.</span></span></span></code></pre>
+      </figure>
+      <ol class="llms-anno-legend">
+        <li><span class="anno-num">1</span><span><strong>集团名</strong>用 <code>#</code> 写集团叫什么。</span></li>
+        <li><span class="anno-num">2</span><span><strong>集团说明</strong>用 <code>&gt;</code> 交代这份清单是什么、下一步跟哪。</span></li>
+        <li><span class="anno-num">3</span><span><strong>站点名</strong>用 <code>##</code> 按站点切块，先扫站名再进节。</span></li>
+        <li><span class="anno-num">4</span><span><strong>站点 llms 分册地址</strong>写成 <code>- [标题](地址): 说明</code>。本行链到下一本清单，不是正文。</span></li>
+      </ol>
+      </div>
+
+      <h2>文档站 llms 分册</h2>
+      <div class="llms-anno" aria-label="文档分册结构标注">
+      <figure class="file-sample file-sample--wrap">
+        <figcaption>docs.nvidia.com/llms.txt</figcaption>
+        <pre><code><span class="llms-head"><span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">站点分册名</span><span class="anno-num">1</span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-1"># NVIDIA Technical Product Documentation</mark></span><span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">站点分册说明</span><span class="anno-num">2</span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-2">&gt; Collection of NVIDIA Technical Documentation llms.txt files for AI user agents. Content is in English and listed in alphabetical order. Last updated 9 September 2026</mark></span></span>
+
+<span class="llms-secs"><span class="llms-sec"><span class="llms-mod">AICR</span><span class="llms-line">## NVIDIA AI Cluster Runtime (AICR)</span><span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:86%"></span><span class="llms-skel-bar" style="width:64%"></span></span></span><span class="llms-sec"><span class="llms-mod">CUDA</span><span class="llms-sec-body"><span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">产品名</span><span class="anno-num">3</span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-3">## NVIDIA CUDA Toolkit</mark></span><span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">产品说明</span><span class="anno-num">4</span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-3">&gt; Development environment for creating high performance GPU-accelerated applications with libraries, compilers, and debugging tools.</mark></span><span class="llms-row llms-row--parts"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">产品 llms 分册地址</span><span class="anno-num">5</span><span class="anno-leader"></span><span class="anno-tip"></span></span><span class="llms-parts"><span class="llms-part llms-part--title"><span class="llms-part-txt">- [NVIDIA CUDA Toolkit]</span><span class="llms-part-lab">分册标题</span></span><span class="llms-part llms-part--url"><span class="llms-part-txt">(https://docs.nvidia.com/cuda/llms.txt)</span><span class="llms-part-lab">产品 llms 分册地址</span></span></span></span></span></span><span class="llms-sec"><span class="llms-mod">CUDA-Q</span><span class="llms-line">## NVIDIA CUDA-Q</span><span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:80%"></span><span class="llms-skel-bar" style="width:54%"></span></span></span><span class="llms-sec"><span class="llms-mod">NIM</span><span class="llms-line">## NVIDIA NIM</span><span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:58%"></span><span class="llms-skel-bar" style="width:44%"></span></span></span></span></code></pre>
+      </figure>
+      <ol class="llms-anno-legend">
+        <li><span class="anno-num">1</span><span><strong>站点分册名</strong>用 <code>#</code> 写这份文档分册叫什么。</span></li>
+        <li><span class="anno-num">2</span><span><strong>站点分册说明</strong>用 <code>&gt;</code> 说明这是各产品 <code>llms.txt</code> 的总册。</span></li>
+        <li><span class="anno-num">3</span><span><strong>产品名</strong>用 <code>##</code> 按产品线切块，先扫产品名再进节。</span></li>
+        <li><span class="anno-num">4</span><span><strong>产品说明</strong>用 <code>&gt;</code> 写这一条产品线是什么。</span></li>
+        <li><span class="anno-num">5</span><span><strong>产品 llms 分册地址</strong>写成 <code>- [标题](地址)</code>。本行链到 CUDA 产品册，下一跳还是清单。</span></li>
+      </ol>
+      </div>
+
+      <h2>文档站下 CUDA 的 llms 分册</h2>
+      <div class="llms-anno" aria-label="分册 llms 中的页 URL">
+      <figure class="file-sample file-sample--wrap">
+        <figcaption>docs.nvidia.com/cuda/llms.txt</figcaption>
+        <pre><code><span class="llms-head"><span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">产品分册名称</span><span class="anno-num">1</span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-1"># NVIDIA CUDA – Comprehensive Documentation for GPU Programming, Libraries, and Tooling</mark></span><span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">产品分册说明</span><span class="anno-num">2</span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-2">This collection provides end-to-end documentation for NVIDIA CUDA, covering installation, programming models, architecture-specific tuning, runtime and driver APIs, math and utility libraries, compiler and PTX interfaces, debugging and profiling tools, platform integrations, numerical white papers, and legacy archives.</mark></span></span>
+
+<span class="llms-secs"><span class="llms-sec"><span class="llms-mod">安装</span><span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">节名</span><span class="anno-num">3</span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-3">## CUDA Installation Guides</mark></span><span class="llms-line">- [Use this guide when setting up CUDA for the first time…](https://docs.nvidia.com/cuda/cuda-quick-start-guide/index.html.md)</span><span class="llms-row llms-row--parts"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">文章</span><span class="anno-num">4</span><span class="anno-leader"></span><span class="anno-tip"></span></span><span class="llms-parts"><span class="llms-part llms-part--title"><span class="llms-part-txt">- [Consult this page when installing CUDA on Linux…]</span><span class="llms-part-lab">文章名称</span></span><span class="llms-part llms-part--url"><span class="llms-part-txt">(https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html.md)</span><span class="llms-part-lab">文章地址</span></span></span></span></span><span class="llms-sec"><span class="llms-mod">编程</span><span class="llms-line">## CUDA Programming Guides</span><span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:72%"></span><span class="llms-skel-bar" style="width:64%"></span></span></span><span class="llms-sec"><span class="llms-mod">架构</span><span class="llms-line">## CUDA Architecture Guides</span><span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:58%"></span></span></span><span class="llms-sec"><span class="llms-mod">工具</span><span class="llms-line">## CUDA Tools</span><span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:80%"></span><span class="llms-skel-bar" style="width:44%"></span></span></span></span></code></pre>
+      </figure>
+      <ol class="llms-anno-legend">
+        <li><span class="anno-num">1</span><span><strong>产品分册名称</strong>用 <code>#</code> 写本产品分册叫什么。</span></li>
+        <li><span class="anno-num">2</span><span><strong>产品分册说明</strong>交代这本产品分册覆盖哪些任务。</span></li>
+        <li><span class="anno-num">3</span><span><strong>节名</strong>用 <code>##</code> 按任务切块，先扫节名再进节。</span></li>
+        <li><span class="anno-num">4</span><span><strong>文章</strong>写成 <code>- [文章名称](文章地址)</code>，地址以 <code>.md</code> 结尾，下一跳才是正文。本例是 Linux 安装页。</span></li>
+      </ol>
+      </div>
+
+      <h3 class="fn-h3" id="section-anchor">打开后 · 节级锚点</h3>
+      <p class="file-sample-note">Agent 打开正文后，节级地址让引用落到哪一篇的哪一节，不必把整页当一条证据。</p>
+      <div class="llms-anno" aria-label="节级锚点标注">
+      <figure class="anchor-card">
+        <div class="anchor-url">
+          <span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">页地址</span><span class="anno-num">1</span><span class="anno-leader"></span><span class="anno-tip"></span></span><span class="omnibox"><svg class="omnibox-lock" viewBox="0 0 12 12" aria-hidden="true"><path fill="currentColor" d="M9.5 5.5V4a3.5 3.5 0 1 0-7 0v1.5H2A1 1 0 0 0 1 6.5v4A1 1 0 0 0 2 11.5h8a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1H9.5Zm-5.5 0V4a2 2 0 1 1 4 0v1.5H4Z"/></svg><span class="omnibox-text"><span class="omnibox-path">https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html</span><span class="omnibox-hash">#package-manager-installation</span></span></span><span class="llms-pin llms-pin--right" aria-hidden="true"><span class="anno-cap">节锚点</span><span class="anno-num">2</span><span class="anno-leader"></span><span class="anno-tip"></span></span></span>
+        </div>
+        <div class="anchor-doc">
+          <div class="anchor-body">
+          <p class="anchor-h1">CUDA Installation Guide for Linux</p>
+          <div class="anchor-sec" id="overview">
+            <p class="anchor-h">1. Overview</p>
+            <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:92%"></span><span class="llms-skel-bar" style="width:74%"></span></span>
+          </div>
+          <div class="anchor-sec" id="introduction">
+            <p class="anchor-h">2. Introduction</p>
+            <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:88%"></span><span class="llms-skel-bar" style="width:61%"></span></span>
+          </div>
+          <div class="anchor-sec" id="system-requirements">
+            <p class="anchor-h">2.1. System Requirements</p>
+            <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:70%"></span></span>
+          </div>
+          <div class="anchor-sec" id="pre-installation-actions">
+            <p class="anchor-h">3. Pre-installation Actions</p>
+            <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:80%"></span><span class="llms-skel-bar" style="width:54%"></span></span>
+          </div>
+          <div class="anchor-sec is-hit" id="package-manager-installation">
+            <p class="anchor-h llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">节名</span><span class="anno-num">3</span><span class="anno-leader"></span><span class="anno-tip"></span></span><span class="an-h--with-toast">4. Package Manager Installation<span class="anchor-hash">#</span><span class="an-toast" role="status"><span class="llms-pin llms-pin--right" aria-hidden="true"><span class="anno-cap">复制</span><span class="anno-num">4</span><span class="anno-leader"></span><span class="anno-tip"></span></span>已复制链接</span></span></p>
+            <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:86%"></span><span class="llms-skel-bar" style="width:68%"></span><span class="llms-skel-bar" style="width:47%"></span></span>
+          </div>
+          </div>
+          <nav class="anchor-toc" aria-label="页内锚点">
+            <p class="anchor-toc-t">页内导航</p>
+            <ul>
+              <li><a href="#overview">1. Overview</a></li>
+              <li><a href="#introduction">2. Introduction</a></li>
+              <li class="is-sub"><a href="#system-requirements">2.1. System Requirements</a></li>
+              <li><a href="#pre-installation-actions">3. Pre-installation Actions</a></li>
+              <li><a class="is-current" href="#package-manager-installation" aria-current="location">4. Package Manager Installation</a></li>
+            </ul>
+          </nav>
+        </div>
+      </figure>
+      <ol class="llms-anno-legend">
+        <li><span class="anno-num">1</span><span><strong>页地址</strong>到 <code>.html</code> 为止是整页，标明引用出自哪一篇。</span></li>
+        <li><span class="anno-num">2</span><span><strong>节锚点</strong>URL 里 <code>#</code> 之后是节 id，用来落到这一节。和 ③ 同节，通常不是同一串字。</span></li>
+        <li><span class="anno-num">3</span><span><strong>节名</strong>人看见的节标题。引用落到这一节，不是整页，也不是某一段落。</span></li>
+        <li><span class="anno-num">4</span><span><strong>复制</strong>点标题旁 <code>#</code>，把带节 id 的完整地址交出去，下一轮从这一节读起。「已复制链接」只告诉人已经进剪贴板。</span></li>
+      </ol>
+      </div>
+      <ul class="bg-list">
+        <li><strong>节不进 llms</strong><code>llms</code> 目录只列到页面，不铺到节。页内的节，打开后再认。</li>
+        <li><strong>打开后有节址</strong>一篇里常有前言和要做的步骤。有节级地址，才能引用要做的那一节，而不是整篇。</li>
+        <li><strong>三处同节</strong>节标题、标题旁链接、页内目录指向同一个节 id。人读标题与 <code>#</code> 后的 id 对应同一节，不必字面相同。</li>
+        <li><strong># 号可复制</strong>点井号复制带节 id 的完整地址，可贴进对话。下次从该节读起，而不只拿到整页。</li>
+      </ul>
+
+      <h3 class="fn-h3" id="content-hierarchy">内容层级结构化</h3>
+      <p class="file-sample-note">信息层级关系更易理解。Agent 无法仅凭字号、缩进或分割线理解章节的从属与并列关系。</p>
+      <div class="hier-pair">
+        <div class="hier-col">
+          <h4 class="fn-h4">方式一：文档源定义 H1–H5 标题</h4>
+          <p class="hier-desc">字号仅作视觉呈现，不承担结构语义。结构写在文档源里：Markdown 用 #，HTML 用 H1–H5。</p>
+          <p class="hier-label">主要场景</p>
+          <p class="hier-desc">文档站、产品说明。页内任务树写在标题级别里。</p>
+          <figure class="anchor-card hier-card" aria-label="标题级别标明从属">
+            <div class="anchor-doc">
+              <div class="anchor-body">
+                <p class="anchor-h1 hier-h2">安装</p>
+                <div class="anchor-sec">
+                  <p class="anchor-h hier-h3">准备环境</p>
+                  <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:88%"></span><span class="llms-skel-bar" style="width:62%"></span></span>
+                </div>
+                <div class="anchor-sec">
+                  <p class="anchor-h hier-h3">执行命令</p>
+                  <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:80%"></span><span class="llms-skel-bar" style="width:48%"></span></span>
+                </div>
+              </div>
+            </div>
+          </figure>
+          <p class="hier-label">Markdown 书写</p>
+          <figure class="file-sample hier-md" aria-label="Markdown 标题级别">
+            <div class="hier-md-sec">
+              <code># 安装指南</code>
+            </div>
+            <div class="hier-md-sec">
+              <code>## 安装</code>
+            </div>
+            <div class="hier-md-sec">
+              <code>### 准备环境</code>
+              <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:88%"></span><span class="llms-skel-bar" style="width:62%"></span></span>
+            </div>
+            <div class="hier-md-sec">
+              <code>### 执行命令</code>
+              <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:80%"></span><span class="llms-skel-bar" style="width:48%"></span></span>
+            </div>
+          </figure>
+          <p class="hier-label">HTML 书写</p>
+          <figure class="file-sample hier-md" aria-label="HTML 标题级别">
+            <div class="hier-md-sec">
+              <code>&lt;h2 id="install"&gt;安装&lt;/h2&gt;</code>
+            </div>
+            <div class="hier-md-sec">
+              <code>&lt;h3 id="prep"&gt;准备环境&lt;/h3&gt;</code>
+              <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:88%"></span><span class="llms-skel-bar" style="width:62%"></span></span>
+            </div>
+            <div class="hier-md-sec">
+              <code>&lt;h3 id="run"&gt;执行命令&lt;/h3&gt;</code>
+              <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:80%"></span><span class="llms-skel-bar" style="width:48%"></span></span>
+            </div>
+          </figure>
+          <p class="hier-label">原则</p>
+          <p class="file-sample-note">用连续的 <code>#</code> / <code>##</code> / <code>###</code>，或真实的 H2 / H3，标明从属。级别连续，不跳级；不与编号叠用。</p>
+        </div>
+        <div class="hier-col">
+          <h4 class="fn-h4">方式二：编号定义标题</h4>
+          <p class="hier-desc">结构由编号体现（1 / 1.1），不依赖缩进。</p>
+          <p class="hier-label">主要场景</p>
+          <p class="hier-desc">安装手册、操作规范等长文。标题里写出 1 / 1.1，人和机器都能直接看见从属。</p>
+          <figure class="anchor-card hier-card" aria-label="编号标明从属">
+            <div class="anchor-doc">
+              <div class="anchor-body">
+                <p class="anchor-h1 hier-h3">1 安装前准备</p>
+                <div class="anchor-sec">
+                  <p class="anchor-h hier-h3">1.1 开箱检查</p>
+                  <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:88%"></span><span class="llms-skel-bar" style="width:62%"></span></span>
+                </div>
+                <div class="anchor-sec">
+                  <p class="anchor-h hier-h3">1.2 环境确认</p>
+                  <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:80%"></span><span class="llms-skel-bar" style="width:48%"></span></span>
+                </div>
+              </div>
+            </div>
+          </figure>
+          <p class="hier-label">Markdown 书写</p>
+          <figure class="file-sample hier-md" aria-label="Markdown 编号标题">
+            <div class="hier-md-sec">
+              <code>1 安装前准备</code>
+            </div>
+            <div class="hier-md-sec">
+              <code>1.1 开箱检查</code>
+              <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:88%"></span><span class="llms-skel-bar" style="width:62%"></span></span>
+            </div>
+            <div class="hier-md-sec">
+              <code>1.2 环境确认</code>
+              <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:80%"></span><span class="llms-skel-bar" style="width:48%"></span></span>
+            </div>
+          </figure>
+          <p class="hier-label">HTML 书写</p>
+          <figure class="file-sample hier-md" aria-label="HTML 编号标题">
+            <div class="hier-md-sec">
+              <code>&lt;p&gt;1 安装前准备&lt;/p&gt;</code>
+            </div>
+            <div class="hier-md-sec">
+              <code>&lt;p&gt;1.1 开箱检查&lt;/p&gt;</code>
+              <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:88%"></span><span class="llms-skel-bar" style="width:62%"></span></span>
+            </div>
+            <div class="hier-md-sec">
+              <code>&lt;p&gt;1.2 环境确认&lt;/p&gt;</code>
+              <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:80%"></span><span class="llms-skel-bar" style="width:48%"></span></span>
+            </div>
+          </figure>
+          <p class="hier-label">原则</p>
+          <p class="file-sample-note">用 1 / 1.1 写出从属。1.1、1.2 同属「1 安装前准备」；不靠缩进，不与标题级别叠用。</p>
+        </div>
+      </div>
+      <ul class="bg-list">
+        <li><strong>源里写结构</strong>从属写在标题级别或编号上，不靠字号、缩进或分割线。</li>
+        <li><strong>级别或编号</strong>文档站用 H1–H5（或 <code>#</code>）；手册用 1 / 1.1。两种选其一。</li>
+        <li><strong>不叠用不跳级</strong>不在 H3 上再写 1.1。标题级别连续，不在 H1 下直接挂 H4。</li>
+      </ul>
+
+      <h3 class="fn-h3" id="code-semantic">代码块语义化</h3>
+      <p class="file-sample-note">执行类代码须标明语言、正文不含行号，并提供预期输出，以便识别、复制与核对。</p>
+      <div class="code-layout">
+        <div class="llms-anno code-layout-main" aria-label="正面代码块标注">
+          <figure class="anchor-card code-card is-good" aria-label="正面：有语言、无行号、有预期输出">
+            <div class="anchor-doc">
+              <p class="anchor-h1">环境准备</p>
+              <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:92%"></span><span class="llms-skel-bar" style="width:74%"></span></span>
+              <p class="code-caption">示例：安装 3.16.0 版本的 CMake（x86_64 架构）。</p>
+              <div class="code-pane">
+                <div class="code-lang">
+                  <span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">语言类型</span><span class="anno-num">1</span><span class="anno-leader"></span><span class="anno-tip"></span></span>Bash</span>
+                  <span class="code-lang-acts llms-row">
+                    <button type="button" class="code-act" aria-label="复制" tabindex="-1">
+                      <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M10.5 5.5V4A1.5 1.5 0 0 0 9 2.5H4A1.5 1.5 0 0 0 2.5 4v5A1.5 1.5 0 0 0 4 10.5h1.5" stroke="currentColor" stroke-width="1.2"/></svg>
+                    </button>
+                    <button type="button" class="code-act" aria-label="咨询智慧助手" tabindex="-1">
+                      <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2.2 9.15 6.1 13 7.2 9.15 8.3 8 12.2 6.85 8.3 3 7.2l3.85-1.1L8 2.2Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M12.4 3.2v1.6M13.2 4h-1.6M3.6 11.4v1.2M4.2 12h-1.2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+                    </button>
+                    <span class="llms-pin llms-pin--right" aria-hidden="true"><span class="anno-cap">操作</span><span class="anno-num">2</span><span class="anno-leader"></span><span class="anno-tip"></span></span>
+                  </span>
+                </div>
+                <pre><code>mkdir -p cmake-3.16 &amp;&amp; wget -qO- "https://cmake.org/files/v3.16/cmake-3.16.0-Linux-x86_64.tar.gz" | tar --strip-components=1 -xz -C cmake-3.16
+export PATH=`pwd`/cmake-3.16/bin:$PATH
+cmake --version</code></pre>
+              </div>
+              <p class="code-caption">执行后输出如下：</p>
+              <div class="code-pane">
+                <div class="code-lang">
+                  <span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">预期输出</span><span class="anno-num">3</span><span class="anno-leader"></span><span class="anno-tip"></span></span>Output</span>
+                  <span class="code-lang-acts">
+                    <button type="button" class="code-act" aria-label="复制" tabindex="-1">
+                      <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M10.5 5.5V4A1.5 1.5 0 0 0 9 2.5H4A1.5 1.5 0 0 0 2.5 4v5A1.5 1.5 0 0 0 4 10.5h1.5" stroke="currentColor" stroke-width="1.2"/></svg>
+                    </button>
+                    <button type="button" class="code-act" aria-label="咨询智慧助手" tabindex="-1">
+                      <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2.2 9.15 6.1 13 7.2 9.15 8.3 8 12.2 6.85 8.3 3 7.2l3.85-1.1L8 2.2Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M12.4 3.2v1.6M13.2 4h-1.6M3.6 11.4v1.2M4.2 12h-1.2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+                    </button>
+                  </span>
+                </div>
+                <pre><code>cmake version 3.16.0</code></pre>
+              </div>
+            </div>
+          </figure>
+          <ol class="llms-anno-legend">
+            <li><span class="anno-num">1</span><span><strong>语言类型</strong>标明代码语言，供人与 Agent 识别。</span></li>
+            <li><span class="anno-num">2</span><span><strong>操作</strong>提供复制，及「咨询智慧助手」以针对该段代码提问。</span></li>
+            <li><span class="anno-num">3</span><span><strong>预期输出</strong>给出执行成功后的可见结果，供核对。</span></li>
+            <li><span class="anno-num">4</span><span><strong>移除代码行号</strong>正文不含行号，复制与入库不被污染。</span></li>
+          </ol>
+        </div>
+        <div class="code-layout-side">
+          <p class="code-side-label">常见问题</p>
+          <ul class="code-issues">
+            <li>块顶未标明语言，识别语言额外消耗 token。</li>
+            <li>行号写入代码正文，抓取结果被污染。</li>
+          </ul>
+          <figure class="anchor-card code-card is-compact" aria-label="反面：无语言、有行号、无预期输出">
+            <div class="anchor-doc">
+              <p class="anchor-h1">环境准备</p>
+              <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:92%"></span><span class="llms-skel-bar" style="width:64%"></span></span>
+              <p class="code-caption">示例：安装 3.16.0 版本的 CMake（x86_64 架构）。</p>
+              <div class="code-bad">
+                <div class="gutter" aria-hidden="true"><span>1</span><span>2</span></div>
+                <pre><code>mkdir -p cmake-3.16 &amp;&amp; wget -qO- "https://cmake.org/files/v3.16/cmake-3.16.0-Linux-x86_64.tar.gz" | tar --strip-components=1 -xz -C cmake-3.16
+export PATH=`pwd`/cmake-3.16/bin:$PATH</code></pre>
+              </div>
+            </div>
+          </figure>
+          <div class="code-principles">
+            <p class="code-side-label">亲和原则</p>
+            <ul class="bg-list">
+              <li><strong>块顶标明语言</strong>写出 Bash 等语言名，避免额外推断。</li>
+              <li><strong>行号不进正文</strong>行号仅作对照，复制与入库不含行号。</li>
+              <li><strong>配预期输出</strong>写明执行成功后的可见结果。</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="fn-h3" id="image-semantic">图片语义理解</h3>
+      <p class="file-sample-note">信息型图片须拆成可检索文字层与背景图，图意不独自存在于像素。</p>
+      <div class="img-eq" aria-label="图片等于文字加背景图">
+        <figure class="img-eq-col">
+          <p class="hier-label">图片</p>
+          <div class="img-eq-card" aria-label="合成结果：文字叠在背景图上">
+            <div class="obj-banner">
+              <img src="assets/design-guide/kunpeng-hpc-challenge-bg.png?v=2" alt="">
+              <div class="obj-banner-copy">
+                <p class="obj-card-kicker is-badge">鲲鹏创新大赛</p>
+                <p class="obj-card-title">鲲鹏高性能计算全球挑战赛</p>
+                <span class="obj-card-cta">立即报名</span>
+              </div>
+            </div>
+          </div>
+        </figure>
+        <div class="img-eq-op" aria-hidden="true">=</div>
+        <figure class="img-eq-col">
+          <p class="hier-label">文字</p>
+          <div class="img-eq-card is-text" aria-label="独立文字层">
+            <div class="obj-banner-copy">
+              <p class="obj-card-kicker is-badge">鲲鹏创新大赛</p>
+              <p class="obj-card-title">鲲鹏高性能计算全球挑战赛</p>
+              <span class="obj-card-cta">立即报名</span>
+            </div>
+          </div>
+        </figure>
+        <div class="img-eq-op" aria-hidden="true">+</div>
+        <figure class="img-eq-col">
+          <p class="hier-label">背景图</p>
+          <div class="img-eq-card" aria-label="氛围背景，不承载活动名">
+            <img src="assets/design-guide/kunpeng-hpc-challenge-bg.png?v=2" alt="">
+          </div>
+        </figure>
+      </div>
+      <ul class="bg-list">
+        <li><strong>文案独立成层</strong>角标、标题、入口写在 DOM / Markdown 正文，不烧进 PNG。</li>
+        <li><strong>背景不承载事实</strong>氛围图可空 alt；活动名与入口以文字入库。</li>
+        <li><strong>合成只给人看</strong>视觉上叠在一起，抓取时按文字 + 图分开读取。</li>
+      </ul>
+
+      <h2 id="reach-flow">KEY 最新材料</h2>
+      <div class="reach-stage-frame" tabindex="0" aria-label="部署机器发现层，点击放大到全屏">
+      <button type="button" class="reach-fs-close" hidden>关闭</button>
+      <div class="reach-stage">
+      <p class="reach-stage-title">部署机器发现层</p>
+      <div class="reach-board" aria-label="部署机器发现层：Agent 工作流、Web Fetch、robots.txt">
+        <div class="reach-col reach-agent">
+          <p class="hier-label">Agent 工作流</p>
+          <div class="reach-stack reach-time">
+            <button type="button" class="reach-node is-on" aria-expanded="true" aria-controls="reach-branch">
+              <span class="reach-dot" aria-hidden="true"></span>
+              <span class="reach-node-body">
+                <span class="reach-tag">可达</span>
+                <span class="reach-node-title">网站搜索</span>
+                <span class="reach-en">web-fetch</span>
+              </span>
+            </button>
+            <button type="button" class="reach-node">
+              <span class="reach-dot" aria-hidden="true"></span>
+              <span class="reach-node-body">
+                <span class="reach-tag">可读</span>
+                <span class="reach-node-title">抓取网页内容</span>
+                <span class="reach-en">web search</span>
+              </span>
+            </button>
+            <button type="button" class="reach-node">
+              <span class="reach-dot" aria-hidden="true"></span>
+              <span class="reach-node-body">
+                <span class="reach-tag">可理解</span>
+                <span class="reach-node-title">内容注入到上下文</span>
+              </span>
+            </button>
+            <button type="button" class="reach-node">
+              <span class="reach-dot" aria-hidden="true"></span>
+              <span class="reach-node-body">
+                <span class="reach-tag">可验证</span>
+                <span class="reach-node-title">基于证据组织内容</span>
+              </span>
+            </button>
+            <button type="button" class="reach-node">
+              <span class="reach-dot" aria-hidden="true"></span>
+              <span class="reach-node-body">
+                <span class="reach-node-title">最终回答</span>
+              </span>
+            </button>
+          </div>
+        </div>
+        <div class="reach-col is-branch" id="reach-branch">
+          <p class="hier-label">Agent Web Fetch 流程</p>
+          <div class="reach-chart">
+            <svg class="rc-wires" viewBox="0 0 100 100" fill="none" aria-hidden="true" preserveAspectRatio="none"></svg>
+            <div class="rc-node is-on" data-rc="gate">
+              <p class="rc-head">读取许可声明</p>
+              <div class="rc-body"><span class="rc-file">robots.txt</span></div>
+            </div>
+            <div class="rc-flow">
+              <span class="rc-chip rc-chip-yes">有llms</span>
+              <span class="rc-chip rc-chip-no">无llms</span>
+              <span class="rc-chip rc-chip-guess">猜地址</span>
+              <div class="rc-node" data-rc="llms">
+                <p class="rc-head">查找索引目录</p>
+                <div class="rc-body"><span class="rc-file">llms.txt</span></div>
+              </div>
+              <div class="rc-node" data-rc="sitemap">
+                <p class="rc-head">查看兜底URL清单</p>
+                <div class="rc-body"><span class="rc-file">sitemap.xml</span></div>
+              </div>
+              <div class="rc-node" data-rc="leaf">
+                <p class="rc-head">打开正文</p>
+                <div class="rc-body"><span class="rc-file">.html</span><span class="rc-file">.md</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="reach-col reach-theme">
+          <p class="hier-label">robots.txt</p>
+          <div class="reach-file-intro">
+            <p>根路径的许可声明，用来划定知识面抓取边界：放行该抓的，拦截不该抓的。没有强制准入力，部分 Agent（如 GPTBot）根本不请求。</p>
+            <p><mark>遵循 RFC 9309：遵守该协议的爬虫进站直接请求根路径 <code>/robots.txt</code>，路径由协议固定</mark>，不靠站内链接或搜索。</p>
+          </div>
+          <figure class="file-sample" aria-label="robots.txt 最小合格示例">
+            <figcaption><code>https://{域名}/robots.txt</code></figcaption>
+            <pre><code class="language-robots"><span class="cmt"># 对遵守协议的爬虫生效；主流 Agent 也可能不请求此文件</span>
+User-agent: *
+
+<span class="cmt"># 放行知识面</span>
+Allow: /docs/
+Allow: /llms.txt
+Allow: /llms-full.txt
+<span class="cmt"># 如有分卷：统一放在 /llms/ 下，一条放行该目录即可</span>
+Allow: /llms/
+
+<span class="cmt"># 拦截噪声面</span>
+Disallow: /admin/
+Disallow: /staging/
+Disallow: /api/debug/
+
+<span class="cmt"># 声明清单完整地址；此文件公开可见，敏感内容须靠登录鉴权</span>
+Sitemap: https://example.com/sitemap.xml
+
+<span class="cmt"># 非标准、非必经：可指向根索引目录；分卷不必在此逐条声明</span>
+<span class="cmt"># LLMs.txt: https://example.com/llms.txt</span></code></pre>
+          </figure>
+        </div>
+      </div>
+      </div>
+      </div>
+      <div class="reach-stage-frame" tabindex="0" aria-label="索引目录，点击放大到全屏">
+      <button type="button" class="reach-fs-close" hidden>关闭</button>
+      <div class="reach-stage">
+      <p class="reach-stage-title">部署机器发现层</p>
+      <div class="reach-board" aria-label="部署机器发现层：Agent 工作流、Web Fetch、llms.txt">
+        <div class="reach-col reach-agent">
+          <p class="hier-label">Agent 工作流</p>
+          <div class="reach-stack reach-time">
+            <button type="button" class="reach-node is-on" aria-expanded="true">
+              <span class="reach-dot" aria-hidden="true"></span>
+              <span class="reach-node-body">
+                <span class="reach-tag">可达</span>
+                <span class="reach-node-title">网站搜索</span>
+                <span class="reach-en">web-fetch</span>
+              </span>
+            </button>
+            <button type="button" class="reach-node">
+              <span class="reach-dot" aria-hidden="true"></span>
+              <span class="reach-node-body">
+                <span class="reach-tag">可读</span>
+                <span class="reach-node-title">抓取网页内容</span>
+                <span class="reach-en">web search</span>
+              </span>
+            </button>
+            <button type="button" class="reach-node">
+              <span class="reach-dot" aria-hidden="true"></span>
+              <span class="reach-node-body">
+                <span class="reach-tag">可理解</span>
+                <span class="reach-node-title">内容注入到上下文</span>
+              </span>
+            </button>
+            <button type="button" class="reach-node">
+              <span class="reach-dot" aria-hidden="true"></span>
+              <span class="reach-node-body">
+                <span class="reach-tag">可验证</span>
+                <span class="reach-node-title">基于证据组织内容</span>
+              </span>
+            </button>
+            <button type="button" class="reach-node">
+              <span class="reach-dot" aria-hidden="true"></span>
+              <span class="reach-node-body">
+                <span class="reach-node-title">最终回答</span>
+              </span>
+            </button>
+          </div>
+        </div>
+        <div class="reach-col is-branch">
+          <p class="hier-label">Agent Web Fetch 流程</p>
+          <div class="reach-chart">
+            <svg class="rc-wires" viewBox="0 0 100 100" fill="none" aria-hidden="true" preserveAspectRatio="none"></svg>
+            <div class="rc-node" data-rc="gate">
+              <p class="rc-head">读取许可声明</p>
+              <div class="rc-body"><span class="rc-file">robots.txt</span></div>
+            </div>
+            <div class="rc-flow">
+              <span class="rc-chip rc-chip-yes">有llms</span>
+              <span class="rc-chip rc-chip-no">无llms</span>
+              <span class="rc-chip rc-chip-guess">猜地址</span>
+              <div class="rc-node is-on" data-rc="llms">
+                <p class="rc-head">查找索引目录</p>
+                <div class="rc-body"><span class="rc-file">llms.txt</span></div>
+              </div>
+              <div class="rc-node" data-rc="sitemap">
+                <p class="rc-head">查看兜底URL清单</p>
+                <div class="rc-body"><span class="rc-file">sitemap.xml</span></div>
+              </div>
+              <div class="rc-node" data-rc="leaf">
+                <p class="rc-head">打开正文</p>
+                <div class="rc-body"><span class="rc-file">.html</span><span class="rc-file">.md</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="reach-col reach-theme">
+          <p class="hier-label">llms.txt</p>
+          <div class="reach-file-intro">
+            <p>精选知识面的索引目录，提供明确的抓取顺序，直接指向主推文档，不是全站清单。</p>
+            <p>全站体量大时用“短索引 + 分册”，避免目录过长被截断。非必经：没有它也不阻断抓取。<mark>社区惯例（非强制协议）：部分 Agent 会请求根路径 <code>/llms.txt</code></mark>。</p>
+          </div>
+          <div class="llms-anno">
+          <figure class="file-sample" aria-label="nvidia.com/llms.txt 根索引目录">
+            <figcaption><code>nvidia.com/llms.txt</code></figcaption>
+            <pre><code><span class="llms-head"><span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">首页名称<span class="anno-name"># 后面跟随首页名称</span></span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-1"># NVIDIA Corporation</mark></span>
+<span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">首页描述<span class="anno-name">&gt; 后面跟随首页描述</span></span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-2">&gt; This file provides links to the llms.txt of NVIDIA's main and international websites, helping large language models (LLMs) better understand the content and structure of each of NVIDIA's locale-specific websites. Follow the links below to deeper llms.txt pages for each locale website. Each country may have more than one language that content is translated into.</mark></span></span>
+
+<span class="llms-secs"><span class="llms-sec"><span class="llms-mod">北美站</span><span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">北美模块<span class="anno-name">## 模块名 - [分册](地址)</span></span><span class="anno-leader"></span><span class="anno-tip"></span></span><span class="llms-line"><mark class="hl-3">## The NVIDIA North America Websites</mark></span></span><span class="llms-line">- [NVIDIA U.S. Website](https://www.nvidia.com/en-us/llms.txt): Marketing, corporate, product information.</span><span class="llms-line">- [NVIDIA OpenSource Website] (https://opensource.nvidia.com/en-us/llms.txt)</span></span><span class="llms-sec"><span class="llms-mod">文档站</span><span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">文档模块</span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-3">## NVIDIA Technical Documentation Website</mark></span><span class="llms-row llms-row--parts"><span class="llms-parts"><span class="llms-part llms-part--title"><span class="llms-part-txt">- [Tech Docs]</span><span class="llms-part-lab">分册标题</span></span><span class="llms-part llms-part--url"><span class="llms-part-txt">(https://docs.nvidia.com/llms.txt)</span><span class="llms-part-lab">站点 llms 分册地址</span></span><span class="llms-part llms-part--note"><span class="llms-part-txt">: Technical documentation for NVIDIA products.</span><span class="llms-part-lab">分册说明</span></span></span></span></span><span class="llms-sec"><span class="llms-mod">开发者站</span><span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">开发者模块</span><span class="anno-leader"></span><span class="anno-tip"></span></span><span class="llms-line"><mark class="hl-3">## NVIDIA Developer Websites</mark></span></span><span class="llms-line">- [NVIDIA Developer](https://developer.nvidia.com/llms.txt): Downloads, SDKs, frameworks, libraries, forums.</span><span class="llms-line">- [NVIDIA Technical Blog](https://developer.nvidia.com/blog/llms.txt): News and blog articles for developer community.</span></span></span></code></pre>
+          </figure>
+          </div>
+        </div>
+      </div>
+      </div>
+      </div>
+      <div class="reach-stage-frame" tabindex="0" aria-label="llms.txt，点击放大到全屏">
+      <button type="button" class="reach-fs-close" hidden>关闭</button>
+      <div class="reach-stage">
+      <p class="reach-stage-title">llms.txt ——让 Agent 用最少 token 找到下一步</p>
+      <div class="reach-board" aria-label="部署机器发现层：Agent 工作流、Web Fetch、NVIDIA 与 Ascend 对照">
+        <div class="reach-col reach-agent">
+          <p class="hier-label">Agent 工作流</p>
+          <div class="reach-stack reach-time">
+            <button type="button" class="reach-node is-on" aria-expanded="true">
+              <span class="reach-dot" aria-hidden="true"></span>
+              <span class="reach-node-body">
+                <span class="reach-tag">可达</span>
+                <span class="reach-node-title">网站搜索</span>
+                <span class="reach-en">web-fetch</span>
+              </span>
+            </button>
+            <button type="button" class="reach-node">
+              <span class="reach-dot" aria-hidden="true"></span>
+              <span class="reach-node-body">
+                <span class="reach-tag">可读</span>
+                <span class="reach-node-title">抓取网页内容</span>
+                <span class="reach-en">web search</span>
+              </span>
+            </button>
+            <button type="button" class="reach-node">
+              <span class="reach-dot" aria-hidden="true"></span>
+              <span class="reach-node-body">
+                <span class="reach-tag">可理解</span>
+                <span class="reach-node-title">内容注入到上下文</span>
+              </span>
+            </button>
+            <button type="button" class="reach-node">
+              <span class="reach-dot" aria-hidden="true"></span>
+              <span class="reach-node-body">
+                <span class="reach-tag">可验证</span>
+                <span class="reach-node-title">基于证据组织内容</span>
+              </span>
+            </button>
+            <button type="button" class="reach-node">
+              <span class="reach-dot" aria-hidden="true"></span>
+              <span class="reach-node-body">
+                <span class="reach-node-title">最终回答</span>
+              </span>
+            </button>
+          </div>
+        </div>
+        <div class="reach-col is-branch">
+          <p class="hier-label">Agent Web Fetch 流程</p>
+          <div class="reach-chart">
+            <svg class="rc-wires" viewBox="0 0 100 100" fill="none" aria-hidden="true" preserveAspectRatio="none"></svg>
+            <div class="rc-node" data-rc="gate">
+              <p class="rc-head">读取许可声明</p>
+              <div class="rc-body"><span class="rc-file">robots.txt</span></div>
+            </div>
+            <div class="rc-flow">
+              <span class="rc-chip rc-chip-yes">有llms</span>
+              <span class="rc-chip rc-chip-no">无llms</span>
+              <span class="rc-chip rc-chip-guess">猜地址</span>
+              <div class="rc-node is-on" data-rc="llms">
+                <p class="rc-head">查找索引目录</p>
+                <div class="rc-body"><span class="rc-file">llms.txt</span></div>
+              </div>
+              <div class="rc-node" data-rc="sitemap">
+                <p class="rc-head">查看兜底URL清单</p>
+                <div class="rc-body"><span class="rc-file">sitemap.xml</span></div>
+              </div>
+              <div class="rc-node" data-rc="leaf">
+                <p class="rc-head">打开正文</p>
+                <div class="rc-body"><span class="rc-file">.html</span><span class="rc-file">.md</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="reach-col ppt-stack">
+        <div class="ppt-nv">
+          <h3 class="ppt-brand"><img src="assets/nvidia.svg" alt="">Agent 回答流程机制图</h3>
+          <div class="ppt-nv-seq"></div>
+          <ol class="ppt-nv-points">
+            <li>
+              <p class="ppt-nv-pt-k">1. 逐层进入</p>
+              <p>先从根 <code>llms.txt</code> 进入，再按站点、产品逐层进入分册，最后打开具体 <code>.md</code>。</p>
+            </li>
+            <li>
+              <p class="ppt-nv-pt-k">2. 整篇拿全</p>
+              <p>读取时，一篇要一次拿全，不跳段、不截断。</p>
+            </li>
+            <li>
+              <p class="ppt-nv-pt-k">3. 索引跳读</p>
+              <p>在索引中跳读——只看模块标题和标题描述，对上的相关内容整段读取。</p>
+            </li>
+            <li>
+              <p class="ppt-nv-pt-k">4. 循环补齐</p>
+              <p>若回答不完整，回到 <code>llms</code> 索引找下一篇 <code>.md</code>，直到能完整回答为止。</p>
+            </li>
+          </ol>
+        </div>
+        <div class="ppt-as">
+          <p class="ppt-brand"><img src="assets/ascend.svg" alt="">当前 <code>llms.txt</code> 文件问题：</p>
+          <div class="ppt-as-heads">
+            <p class="ppt-lead">1. Agent <mark>一次扫不完，出现断档</mark>——截断点后面的条目等于没下载。</p>
+            <p class="ppt-lead">2. Ascend 站点根 llms <mark>文件篇幅大、行数多，Token 耗费多</mark>。</p>
+          </div>
+          <div class="ppt-as-row">
+          <figure class="file-sample" aria-label="hiascend.com/llms.txt 截断示意">
+            <figcaption><code>hiascend.com/llms.txt</code></figcaption>
+            <pre><code># 昇腾社区 llms.txt
+
+- [昇腾社区官网-昇腾万里 让智能无所不及](https://www.hiascend.com/): 昇腾社区是基于昇腾系列处理器和基础软件构建的全栈 AI计算基础设施…… → [详情](llms-content/index.md)
+- [Atlas 加速卡-昇腾社区](https://www.hiascend.com/hardware/accelerator-card): 昇腾社区是基于昇腾系列处理器和基础软件构建的全栈 AI计算基础设施…… → [详情](llms-content/hardware/zh_hardware_accelerator-card.md)
+- [/hardware/developer-kit-a2/resource](https://www.hiascend.com/hardware/developer-kit-a2/resource)
+- [pytorch](https://www.hiascend.com/software/ai-frameworks)
+- [模型详情-模型库-ModelZoo-昇腾社区](https://www.hiascend.com/software/modelzoo/models/detail/02513b11ea0843e5bb08cf1560c02b70): …… → [详情](llms-content/software/…md)
+- […… 后方还有两万多行，读不到]</code></pre>
+          </figure>
+          <div class="ppt-as-side">
+          <table class="ppt-cmp">
+            <thead>
+              <tr><th>对照项</th><th>nvidia.com/llms.txt</th><th>hiascend.com/llms.txt</th></tr>
+            </thead>
+            <tbody>
+              <tr><th>文件大小</th><td>2.6 KB</td><td class="is-bad">12.1 MB</td></tr>
+              <tr><th>文件行数</th><td>35</td><td class="is-bad">26,172</td></tr>
+              <tr><th>耗费 Token 数</th><td>0.6k</td><td class="is-bad">381 万</td></tr>
+            </tbody>
+          </table>
+          </div>
+          </div>
+        </div>
+        </div>
+      </div>
+      </div>
+      </div>
+      <div class="reach-stage-frame" tabindex="0" aria-label="节级锚点，点击放大到全屏">
+      <button type="button" class="reach-fs-close" hidden>关闭</button>
+      <div class="reach-stage">
+      <p class="reach-stage-title">打开后 · 节级锚点</p>
+      <div class="reach-board" aria-label="打开正文后的节级锚点">
+        <div class="reach-col reach-agent">
+          <p class="hier-label">Agent 工作流</p>
+          <div class="reach-stack reach-time">
+            <button type="button" class="reach-node">
+              <span class="reach-dot" aria-hidden="true"></span>
+              <span class="reach-node-body">
+                <span class="reach-tag">可达</span>
+                <span class="reach-node-title">网站搜索</span>
+                <span class="reach-en">web-fetch</span>
+              </span>
+            </button>
+            <button type="button" class="reach-node is-on" aria-expanded="true">
+              <span class="reach-dot" aria-hidden="true"></span>
+              <span class="reach-node-body">
+                <span class="reach-tag">可读</span>
+                <span class="reach-node-title">抓取网页内容</span>
+                <span class="reach-en">web search</span>
+              </span>
+            </button>
+            <button type="button" class="reach-node">
+              <span class="reach-dot" aria-hidden="true"></span>
+              <span class="reach-node-body">
+                <span class="reach-tag">可理解</span>
+                <span class="reach-node-title">内容注入到上下文</span>
+              </span>
+            </button>
+            <button type="button" class="reach-node">
+              <span class="reach-dot" aria-hidden="true"></span>
+              <span class="reach-node-body">
+                <span class="reach-tag">可验证</span>
+                <span class="reach-node-title">基于证据组织内容</span>
+              </span>
+            </button>
+            <button type="button" class="reach-node">
+              <span class="reach-dot" aria-hidden="true"></span>
+              <span class="reach-node-body">
+                <span class="reach-node-title">最终回答</span>
+              </span>
+            </button>
+          </div>
+        </div>
+        <div class="reach-col is-branch">
+          <p class="hier-label">Agent Web Fetch 流程</p>
+          <div class="reach-chart">
+            <svg class="rc-wires" viewBox="0 0 100 100" fill="none" aria-hidden="true" preserveAspectRatio="none"></svg>
+            <div class="rc-node" data-rc="gate">
+              <p class="rc-head">读取许可声明</p>
+              <div class="rc-body"><span class="rc-file">robots.txt</span></div>
+            </div>
+            <div class="rc-flow">
+              <span class="rc-chip rc-chip-yes">有llms</span>
+              <span class="rc-chip rc-chip-no">无llms</span>
+              <span class="rc-chip rc-chip-guess">猜地址</span>
+              <div class="rc-node" data-rc="llms">
+                <p class="rc-head">查找索引目录</p>
+                <div class="rc-body"><span class="rc-file">llms.txt</span></div>
+              </div>
+              <div class="rc-node" data-rc="sitemap">
+                <p class="rc-head">查看兜底URL清单</p>
+                <div class="rc-body"><span class="rc-file">sitemap.xml</span></div>
+              </div>
+              <div class="rc-leaf-stack">
+              <div class="rc-node is-on" data-rc="leaf">
+                <p class="rc-head">打开正文</p>
+                <div class="rc-body"><span class="rc-file">.html</span><span class="rc-file">.md</span></div>
+              </div>
+              <span class="rc-sub-link" aria-hidden="true"></span>
+              <span class="rc-frag-pill">定位段落</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="reach-col reach-theme ppt-anchor">
+          <p class="hier-label">打开后 · 节级锚点</p>
+          <p class="file-sample-note">Agent 打开正文后，节级地址让引用落到哪一篇的哪一节，不必把整页当一条证据。</p>
+          <div class="llms-anno" aria-label="节级锚点标注">
+      <figure class="anchor-card">
+        <div class="anchor-url">
+          <span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">页地址</span><span class="anno-num">1</span><span class="anno-leader"></span><span class="anno-tip"></span></span><span class="omnibox"><svg class="omnibox-lock" viewBox="0 0 12 12" aria-hidden="true"><path fill="currentColor" d="M9.5 5.5V4a3.5 3.5 0 1 0-7 0v1.5H2A1 1 0 0 0 1 6.5v4A1 1 0 0 0 2 11.5h8a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1H9.5Zm-5.5 0V4a2 2 0 1 1 4 0v1.5H4Z"/></svg><span class="omnibox-text"><span class="omnibox-path">https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html</span><span class="omnibox-hash">#package-manager-installation</span></span></span><span class="llms-pin llms-pin--right" aria-hidden="true"><span class="anno-cap">节锚点</span><span class="anno-num">2</span><span class="anno-leader"></span><span class="anno-tip"></span></span></span>
+        </div>
+        <div class="anchor-doc">
+          <div class="anchor-body">
+          <p class="anchor-h1">CUDA Installation Guide for Linux</p>
+          <div class="anchor-sec" id="ppt-an-overview">
+            <p class="anchor-h">1. Overview</p>
+            <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:92%"></span><span class="llms-skel-bar" style="width:74%"></span></span>
+          </div>
+          <div class="anchor-sec" id="ppt-an-introduction">
+            <p class="anchor-h">2. Introduction</p>
+            <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:88%"></span><span class="llms-skel-bar" style="width:61%"></span></span>
+          </div>
+          <div class="anchor-sec" id="ppt-an-system-requirements">
+            <p class="anchor-h">2.1. System Requirements</p>
+            <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:70%"></span></span>
+          </div>
+          <div class="anchor-sec" id="ppt-an-pre-installation-actions">
+            <p class="anchor-h">3. Pre-installation Actions</p>
+            <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:80%"></span><span class="llms-skel-bar" style="width:54%"></span></span>
+          </div>
+          <div class="anchor-sec is-hit" id="ppt-an-package-manager-installation">
+            <p class="anchor-h llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">节名</span><span class="anno-num">3</span><span class="anno-leader"></span><span class="anno-tip"></span></span><span class="an-h--with-toast">4. Package Manager Installation<span class="anchor-hash">#</span><span class="an-toast" role="status"><span class="llms-pin llms-pin--right" aria-hidden="true"><span class="anno-cap">复制</span><span class="anno-num">4</span><span class="anno-leader"></span><span class="anno-tip"></span></span>已复制链接</span></span></p>
+            <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:86%"></span><span class="llms-skel-bar" style="width:68%"></span><span class="llms-skel-bar" style="width:47%"></span></span>
+          </div>
+          </div>
+          <nav class="anchor-toc" aria-label="页内锚点">
+            <p class="anchor-toc-t">页内导航</p>
+            <ul>
+              <li><a href="#ppt-an-overview">1. Overview</a></li>
+              <li><a href="#ppt-an-introduction">2. Introduction</a></li>
+              <li class="is-sub"><a href="#ppt-an-system-requirements">2.1. System Requirements</a></li>
+              <li><a href="#ppt-an-pre-installation-actions">3. Pre-installation Actions</a></li>
+              <li><a class="is-current" href="#ppt-an-package-manager-installation" aria-current="location">4. Package Manager Installation</a></li>
+            </ul>
+          </nav>
+        </div>
+      </figure>
+      <ol class="llms-anno-legend">
+        <li><span class="anno-num">1</span><span><strong>页地址</strong>到 <code>.html</code> 为止是整页，标明引用出自哪一篇。</span></li>
+        <li><span class="anno-num">2</span><span><strong>节锚点</strong>URL 里 <code>#</code> 之后是节 id，用来落到这一节。和 ③ 同节，通常不是同一串字。</span></li>
+        <li><span class="anno-num">3</span><span><strong>节名</strong>人看见的节标题。引用落到这一节，不是整页，也不是某一段落。</span></li>
+        <li><span class="anno-num">4</span><span><strong>复制</strong>点标题旁 <code>#</code>，把带节 id 的完整地址交出去，下一轮从这一节读起。「已复制链接」只告诉人已经进剪贴板。</span></li>
+      </ol>
+          </div>
+        </div>
+      </div>
+      </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js"></script>
+<script src="assets/js/reach-wires.js"></script>
+</body>
+</html>

@@ -75,6 +75,18 @@
           idx: "路径分析",
           title: "洞察",
           href: "principles-llms-parse-nvidia-path-insight.html"
+        },
+        {
+          id: "hiascend",
+          idx: "对照",
+          title: "hiascend.com/llms.txt",
+          href: "principles-llms-parse-hiascend.html"
+        },
+        {
+          id: "root-compare",
+          idx: "对照",
+          title: "根清单体量",
+          href: "principles-llms-parse-root-compare.html"
         }
       ]
     }

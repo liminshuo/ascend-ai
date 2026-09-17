@@ -104,7 +104,7 @@
         pageIds: ["machine-entry-verify", "probe-discover"]
       },
       { group: null, id: "llms-parse", href: "principles-llms-parse.html", label: "根 llms 解析",
-        pageIds: ["llms-parse", "llms-parse-mintlify", "llms-parse-mintlify-path", "llms-parse-mintlify-path-cross", "llms-parse-mintlify-path-insight", "llms-parse-nvidia", "llms-parse-nvidia-path", "llms-parse-nvidia-path-cross", "llms-parse-nvidia-path-insight"] },
+        pageIds: ["llms-parse", "llms-parse-mintlify", "llms-parse-mintlify-path", "llms-parse-mintlify-path-cross", "llms-parse-mintlify-path-insight", "llms-parse-nvidia", "llms-parse-nvidia-path", "llms-parse-nvidia-path-cross", "llms-parse-nvidia-path-insight", "llms-parse-hiascend", "llms-parse-root-compare"] },
       { group: null, id: "llms-parse-book", href: "principles-llms-parse-book.html", label: "分册 llms 解析",
         pageIds: ["llms-parse-book", "llms-parse-mintlify-docs", "llms-parse-nvidia-docs", "llms-parse-nvidia-cuda"] }
     ]

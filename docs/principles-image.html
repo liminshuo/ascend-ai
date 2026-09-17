@@ -574,6 +574,7 @@
     flex-direction: column;
     gap: 10px;
     height: 100%;
+    margin: 0;
     padding: 12px;
     box-sizing: border-box;
     background: #fff;
@@ -990,6 +991,38 @@
   }
   .file-sample .code-line-hl.is-bad { background: rgba(180, 35, 24, 0.28); }
   .file-sample .code-line-hl.is-good { background: rgba(4, 120, 87, 0.28); }
+  .file-sample.hier-md {
+    padding: 12px 14px 14px;
+    gap: 10px;
+  }
+  .file-sample.hier-md code {
+    display: block;
+    margin: 0;
+    padding: 0;
+    background: none;
+    color: #e8e8e8;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: var(--text-auxiliary);
+    line-height: 20px;
+    font-weight: 650;
+    overflow-wrap: anywhere;
+  }
+  .file-sample.hier-md .code-line-hl {
+    margin: 0 -14px;
+    padding: 0 14px;
+  }
+  .file-sample .llms-skel {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 6px;
+  }
+  .file-sample .llms-skel-bar {
+    display: block;
+    height: 8px;
+    border-radius: 2px;
+    background: #3f3f3f;
+  }
   .ex-card-title {
     margin: 0;
     padding: 0;
@@ -1569,11 +1602,11 @@
     </div>
     <div class="fn-ex-body">
     <div class="fn-ex-mock" aria-label="正面：图注写出调度结论">
-      <div class="info-card">
+      <figure class="info-card">
         <p class="info-title">图 Kernel 调度示意图</p>
         <img src="assets/design-guide/ascend-cpu-npu-scheduler.png?v=3" alt="Host 进程在 CPU 发起任务，下发到 NPU 任务调度器后分到 AI Core 0…N-1 并行执行。">
-        <p class="info-cap">图注：Host 进程运行在 CPU，负责发起计算任务。任务下发到 NPU 后，先进入任务调度器，再由调度器分配到 AI Core 0、AI Core 1 … AI Core N-1；各核承接子任务并并行执行，核数可按 N 扩展。</p>
-      </div>
+        <figcaption class="info-cap">图注：Host 进程运行在 CPU，负责发起计算任务。任务下发到 NPU 后，先进入任务调度器，再由调度器分配到 AI Core 0、AI Core 1 … AI Core N-1；各核承接子任务并并行执行，核数可按 N 扩展。</figcaption>
+      </figure>
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
@@ -1614,12 +1647,18 @@
         <span class="fn-ex-label is-good">正面</span>
         <div class="fn-ex-bar is-good" aria-hidden="true"></div>
       </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-markdown">Host 进程在 CPU 发起任务，下发到 NPU 任务调度器后分到 AI Core 并行执行。
-
-![Host 进程在 CPU 发起任务，下发到 NPU 任务调度器后分到 AI Core 0…N-1 并行执行。](https://www.hiascend.com/assets/scheduler.png)
-
-*图注：Host 进程运行在 CPU……各核承接子任务并并行执行。*</code></pre>
+      <figure class="file-sample file-sample--compact hier-md" aria-label="正面：图题、alt、绝对地址与图注">
+        <div class="hier-md-sec">
+          <code>图 Kernel 调度示意图</code>
+        </div>
+        <div class="hier-md-sec">
+          <code>![Host 进程在 CPU 发起任务……](</code>
+          <code>https://www.hiascend.com/assets/scheduler.png)</code>
+        </div>
+        <div class="hier-md-sec">
+          <code>*图注：Host 进程运行在 CPU……*</code>
+          <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:80%"></span><span class="llms-skel-bar" style="width:48%"></span></span>
+        </div>
       </figure>
     </div>
         </div>
@@ -1629,8 +1668,8 @@
     <p class="ex-card-title">前端源码调整</p>
     <div class="ex-fold-intro">
       <ul class="fn-ex-list">
-        <li>1. 用 figure + figcaption 包裹信息图</li>
-        <li>2. img 填非空 alt，<code>src</code> 用绝对地址，图有稳定 id</li>
+        <li>1. 图题写在可见标题；图注用 <code>figcaption</code></li>
+        <li>2. <code>alt</code> 简述图意，不是图题；<code>src</code> 用绝对地址</li>
       </ul>
     </div>
     <div class="ex-card-pane">
@@ -1648,12 +1687,24 @@
         <span class="fn-ex-label is-good">正面</span>
         <div class="fn-ex-bar is-good" aria-hidden="true"></div>
       </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-html">&lt;figure id="fig-scheduler"&gt;
-<span class="code-line-hl is-good">  &lt;img src="https://www.hiascend.com/assets/scheduler.png"</span>
-<span class="code-line-hl is-good">       alt="Host 进程在 CPU 发起任务，下发到 NPU 任务调度器后分到 AI Core 并行执行。"&gt;</span>
-<span class="code-line-hl is-good">  &lt;figcaption&gt;图注：Host 进程运行在 CPU……&lt;/figcaption&gt;</span>
-&lt;/figure&gt;</code></pre>
+      <figure class="file-sample file-sample--compact hier-md" aria-label="正面：figure、绝对地址、alt 与图注">
+        <div class="hier-md-sec">
+          <code>&lt;figure id="fig-scheduler"&gt;</code>
+        </div>
+        <div class="hier-md-sec">
+          <code>&lt;p&gt;图 Kernel 调度示意图&lt;/p&gt;</code>
+        </div>
+        <div class="hier-md-sec">
+          <code>&lt;img src="https://www.hiascend.com/assets/scheduler.png"</code>
+          <code>     alt="Host 进程在 CPU 发起任务……"&gt;</code>
+        </div>
+        <div class="hier-md-sec">
+          <code>&lt;figcaption&gt;图注：Host 进程运行在 CPU……&lt;/figcaption&gt;</code>
+          <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:80%"></span><span class="llms-skel-bar" style="width:48%"></span></span>
+        </div>
+        <div class="hier-md-sec">
+          <code>&lt;/figure&gt;</code>
+        </div>
       </figure>
     </div>
         </div>
