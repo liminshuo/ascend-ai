@@ -92,7 +92,6 @@
     padding-left: 0;
     padding-right: 0;
   }
-  body.inner-page[data-page="llms-parse-nvidia-path-sample"]:has(#module-sidebar) .main-content > .page-header,
   body.inner-page[data-page="llms-parse-nvidia-path-sample"]:has(#module-sidebar) .main-content > .section,
   body.inner-page[data-page="llms-parse-nvidia-path-sample"]:has(#module-sidebar) .main-content > .surface-tabs {
     width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
@@ -102,6 +101,8 @@
     padding-right: 0;
     box-sizing: border-box;
   }
+  body.inner-page[data-page="llms-parse-nvidia-path-sample"]:has(#module-sidebar) .main-content > .page-header,
+  body.inner-page[data-page="llms-parse-nvidia-path-sample"] .detail-wrapper .main-content > .page-header,
   body.inner-page[data-page="llms-parse-nvidia-path-sample"]:has(#module-sidebar) .main-content > #practices,
   body.inner-page .detail-wrapper .main-content > #practices {
     width: min(1920px, calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
@@ -1362,6 +1363,9 @@
   #practices .img-eq + .bg-list {
     margin-top: var(--space-stack, 16px);
   }
+  #practices > .reach-stage-frame:first-child {
+    margin-top: 0;
+  }
   #practices .reach-stage-frame {
     width: 100%;
     aspect-ratio: 16 / 9;
@@ -1383,12 +1387,19 @@
     cursor: zoom-out;
     border-radius: 0;
   }
-  #practices .reach-fs-close {
+  #practices .reach-fs-bar {
     display: none;
     position: absolute;
     top: 16px;
     right: 16px;
     z-index: 2;
+    align-items: center;
+    gap: 8px;
+  }
+  #practices .reach-stage-frame.is-fs .reach-fs-bar {
+    display: flex;
+  }
+  #practices .reach-fs-bar button {
     margin: 0;
     padding: 6px 12px;
     border: 1px solid rgba(255, 255, 255, 0.35);
@@ -1400,8 +1411,9 @@
     line-height: 22px;
     cursor: pointer;
   }
-  #practices .reach-stage-frame.is-fs .reach-fs-close {
-    display: block;
+  #practices .reach-fs-bar button:disabled {
+    opacity: 0.4;
+    cursor: default;
   }
   #practices .reach-stage {
     width: 1920px;
@@ -3929,6 +3941,36 @@
   #practices .file-sample + .file-sample-note {
     margin-top: 0;
   }
+  #practices .archive-fold {
+    margin-top: 40px;
+  }
+  #practices .archive-fold > summary {
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  #practices .archive-fold > summary::-webkit-details-marker {
+    display: none;
+  }
+  #practices .archive-fold > summary::before {
+    content: "";
+    width: 0.45em;
+    height: 0.45em;
+    border-right: 2px solid var(--color-text-secondary);
+    border-bottom: 2px solid var(--color-text-secondary);
+    transform: rotate(-45deg);
+    flex-shrink: 0;
+  }
+  #practices .archive-fold[open] > summary::before {
+    transform: rotate(45deg);
+    margin-top: -0.15em;
+  }
+  #practices .archive-fold > summary h2 {
+    margin: 0;
+    padding: 0;
+  }
   #practices .llms-anno + h3.fn-h3,
   #practices .llms-anno-legend + h3.fn-h3 {
     margin-top: var(--space-stack, 16px);
@@ -4142,6 +4184,11 @@
     margin-inline: auto;
     box-sizing: border-box;
   }
+  body.inner-page[data-page="llms-parse-nvidia-path-sample"] .detail-wrapper .main-content > .page-header,
+  body.inner-page[data-page="llms-parse-nvidia-path-sample"] .detail-wrapper .main-content > #practices {
+    width: min(1920px, calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: 1920px;
+  }
   .seq {
     margin: 0 0 var(--space-stack, 16px);
     padding: 16px 20px 12px;
@@ -4186,6 +4233,15 @@
   .seq-legend .swatch-go { background: #fef3c7; }
   .seq-legend .swatch-skel { background: #e4e4e4; }
   #mechanism .seq { margin-top: 0; }
+  html body.inner-page[data-page="llms-parse-nvidia-path-sample"]:has(#module-sidebar) .main-content > .page-header,
+  html body.inner-page[data-page="llms-parse-nvidia-path-sample"] .main-content > .page-header {
+    width: min(1920px, calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: 1920px;
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
 </style>
 </head>
 <body class="inner-page agent-entry-page" data-module="principles" data-page="llms-parse-nvidia-path-sample" data-no-surface-tabs>
@@ -4215,58 +4271,12 @@
     </div>
 
     <section class="section" id="practices">
-      <h2>根 llms</h2>
-      <div class="llms-anno" aria-label="根 llms 结构标注">
-      <figure class="file-sample file-sample--wrap">
-        <figcaption>nvidia.com/llms.txt</figcaption>
-        <pre><code><span class="llms-head"><span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">集团名</span><span class="anno-num">1</span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-1"># NVIDIA Corporation</mark></span><span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">集团说明</span><span class="anno-num">2</span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-2">&gt; This file provides links to the llms.txt of NVIDIA's main and international websites, helping large language models (LLMs) better understand the content and structure of each of NVIDIA's locale-specific websites. Follow the links below to deeper llms.txt pages for each locale website. Each country may have more than one language that content is translated into.</mark></span></span>
-
-<span class="llms-secs"><span class="llms-sec"><span class="llms-mod">北美站</span><span class="llms-line">## The NVIDIA North America Websites</span><span class="llms-line">- [NVIDIA U.S. Website](https://www.nvidia.com/en-us/llms.txt): Marketing, corporate, product information.</span><span class="llms-line">- [NVIDIA OpenSource Website] (https://opensource.nvidia.com/en-us/llms.txt)</span></span><span class="llms-sec"><span class="llms-mod">文档站</span><span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">站点名</span><span class="anno-num">3</span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-3">## NVIDIA Technical Documentation Website</mark></span><span class="llms-row llms-row--parts"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">站点 llms 分册地址</span><span class="anno-num">4</span><span class="anno-leader"></span><span class="anno-tip"></span></span><span class="llms-parts"><span class="llms-part llms-part--title"><span class="llms-part-txt">- [Tech Docs]</span><span class="llms-part-lab">分册标题</span></span><span class="llms-part llms-part--url"><span class="llms-part-txt">(https://docs.nvidia.com/llms.txt)</span><span class="llms-part-lab">站点 llms 分册地址</span></span><span class="llms-part llms-part--note"><span class="llms-part-txt">: Technical documentation for NVIDIA products.</span><span class="llms-part-lab">分册说明</span></span></span></span></span><span class="llms-sec"><span class="llms-mod">开发者站</span><span class="llms-line">## NVIDIA Developer Websites</span><span class="llms-line">- [NVIDIA Developer](https://developer.nvidia.com/llms.txt): Downloads, SDKs, frameworks, libraries, forums.</span><span class="llms-line">- [NVIDIA Technical Blog](https://developer.nvidia.com/blog/llms.txt): News and blog articles for developer community.</span></span><span class="llms-sec"><span class="llms-mod">大会</span><span class="llms-line">## NVIDIA GTC AI Conference Website</span><span class="llms-line">- [GTC](https://www.nvidia.com/gtc/llms.txt): Conference locations, sessions, speakers, venues.</span></span></span></code></pre>
-      </figure>
-      <ol class="llms-anno-legend">
-        <li><span class="anno-num">1</span><span><strong>集团名</strong>用 <code>#</code> 写集团叫什么。</span></li>
-        <li><span class="anno-num">2</span><span><strong>集团说明</strong>用 <code>&gt;</code> 交代这份清单是什么、下一步跟哪。</span></li>
-        <li><span class="anno-num">3</span><span><strong>站点名</strong>用 <code>##</code> 按站点切块，先扫站名再进节。</span></li>
-        <li><span class="anno-num">4</span><span><strong>站点 llms 分册地址</strong>写成 <code>- [标题](地址): 说明</code>。本行链到下一本清单，不是正文。</span></li>
-      </ol>
-      </div>
-
-      <h2>文档站 llms 分册</h2>
-      <div class="llms-anno" aria-label="文档分册结构标注">
-      <figure class="file-sample file-sample--wrap">
-        <figcaption>docs.nvidia.com/llms.txt</figcaption>
-        <pre><code><span class="llms-head"><span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">站点分册名</span><span class="anno-num">1</span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-1"># NVIDIA Technical Product Documentation</mark></span><span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">站点分册说明</span><span class="anno-num">2</span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-2">&gt; Collection of NVIDIA Technical Documentation llms.txt files for AI user agents. Content is in English and listed in alphabetical order. Last updated 9 September 2026</mark></span></span>
-
-<span class="llms-secs"><span class="llms-sec"><span class="llms-mod">AICR</span><span class="llms-line">## NVIDIA AI Cluster Runtime (AICR)</span><span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:86%"></span><span class="llms-skel-bar" style="width:64%"></span></span></span><span class="llms-sec"><span class="llms-mod">CUDA</span><span class="llms-sec-body"><span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">产品名</span><span class="anno-num">3</span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-3">## NVIDIA CUDA Toolkit</mark></span><span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">产品说明</span><span class="anno-num">4</span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-3">&gt; Development environment for creating high performance GPU-accelerated applications with libraries, compilers, and debugging tools.</mark></span><span class="llms-row llms-row--parts"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">产品 llms 分册地址</span><span class="anno-num">5</span><span class="anno-leader"></span><span class="anno-tip"></span></span><span class="llms-parts"><span class="llms-part llms-part--title"><span class="llms-part-txt">- [NVIDIA CUDA Toolkit]</span><span class="llms-part-lab">分册标题</span></span><span class="llms-part llms-part--url"><span class="llms-part-txt">(https://docs.nvidia.com/cuda/llms.txt)</span><span class="llms-part-lab">产品 llms 分册地址</span></span></span></span></span></span><span class="llms-sec"><span class="llms-mod">CUDA-Q</span><span class="llms-line">## NVIDIA CUDA-Q</span><span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:80%"></span><span class="llms-skel-bar" style="width:54%"></span></span></span><span class="llms-sec"><span class="llms-mod">NIM</span><span class="llms-line">## NVIDIA NIM</span><span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:58%"></span><span class="llms-skel-bar" style="width:44%"></span></span></span></span></code></pre>
-      </figure>
-      <ol class="llms-anno-legend">
-        <li><span class="anno-num">1</span><span><strong>站点分册名</strong>用 <code>#</code> 写这份文档分册叫什么。</span></li>
-        <li><span class="anno-num">2</span><span><strong>站点分册说明</strong>用 <code>&gt;</code> 说明这是各产品 <code>llms.txt</code> 的总册。</span></li>
-        <li><span class="anno-num">3</span><span><strong>产品名</strong>用 <code>##</code> 按产品线切块，先扫产品名再进节。</span></li>
-        <li><span class="anno-num">4</span><span><strong>产品说明</strong>用 <code>&gt;</code> 写这一条产品线是什么。</span></li>
-        <li><span class="anno-num">5</span><span><strong>产品 llms 分册地址</strong>写成 <code>- [标题](地址)</code>。本行链到 CUDA 产品册，下一跳还是清单。</span></li>
-      </ol>
-      </div>
-
-      <h2>文档站下 CUDA 的 llms 分册</h2>
-      <div class="llms-anno" aria-label="分册 llms 中的页 URL">
-      <figure class="file-sample file-sample--wrap">
-        <figcaption>docs.nvidia.com/cuda/llms.txt</figcaption>
-        <pre><code><span class="llms-head"><span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">产品分册名称</span><span class="anno-num">1</span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-1"># NVIDIA CUDA – Comprehensive Documentation for GPU Programming, Libraries, and Tooling</mark></span><span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">产品分册说明</span><span class="anno-num">2</span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-2">This collection provides end-to-end documentation for NVIDIA CUDA, covering installation, programming models, architecture-specific tuning, runtime and driver APIs, math and utility libraries, compiler and PTX interfaces, debugging and profiling tools, platform integrations, numerical white papers, and legacy archives.</mark></span></span>
-
-<span class="llms-secs"><span class="llms-sec"><span class="llms-mod">安装</span><span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">节名</span><span class="anno-num">3</span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-3">## CUDA Installation Guides</mark></span><span class="llms-line">- [Use this guide when setting up CUDA for the first time…](https://docs.nvidia.com/cuda/cuda-quick-start-guide/index.html.md)</span><span class="llms-row llms-row--parts"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">文章</span><span class="anno-num">4</span><span class="anno-leader"></span><span class="anno-tip"></span></span><span class="llms-parts"><span class="llms-part llms-part--title"><span class="llms-part-txt">- [Consult this page when installing CUDA on Linux…]</span><span class="llms-part-lab">文章名称</span></span><span class="llms-part llms-part--url"><span class="llms-part-txt">(https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html.md)</span><span class="llms-part-lab">文章地址</span></span></span></span></span><span class="llms-sec"><span class="llms-mod">编程</span><span class="llms-line">## CUDA Programming Guides</span><span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:72%"></span><span class="llms-skel-bar" style="width:64%"></span></span></span><span class="llms-sec"><span class="llms-mod">架构</span><span class="llms-line">## CUDA Architecture Guides</span><span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:58%"></span></span></span><span class="llms-sec"><span class="llms-mod">工具</span><span class="llms-line">## CUDA Tools</span><span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:80%"></span><span class="llms-skel-bar" style="width:44%"></span></span></span></span></code></pre>
-      </figure>
-      <ol class="llms-anno-legend">
-        <li><span class="anno-num">1</span><span><strong>产品分册名称</strong>用 <code>#</code> 写本产品分册叫什么。</span></li>
-        <li><span class="anno-num">2</span><span><strong>产品分册说明</strong>交代这本产品分册覆盖哪些任务。</span></li>
-        <li><span class="anno-num">3</span><span><strong>节名</strong>用 <code>##</code> 按任务切块，先扫节名再进节。</span></li>
-        <li><span class="anno-num">4</span><span><strong>文章</strong>写成 <code>- [文章名称](文章地址)</code>，地址以 <code>.md</code> 结尾，下一跳才是正文。本例是 Linux 安装页。</span></li>
-      </ol>
-      </div>
-
-      <h2 id="reach-flow">KEY 最新材料</h2>
       <div class="reach-stage-frame" tabindex="0" aria-label="部署机器发现层，点击放大到全屏">
-      <button type="button" class="reach-fs-close" hidden>关闭</button>
+      <div class="reach-fs-bar" hidden>
+      <button type="button" class="reach-fs-prev">上一页</button>
+      <button type="button" class="reach-fs-next">下一页</button>
+      <button type="button" class="reach-fs-close">关闭</button>
+      </div>
       <div class="reach-stage">
       <p class="reach-stage-title">部署机器发现层</p>
       <div class="reach-board" aria-label="部署机器发现层：Agent 工作流、Web Fetch、robots.txt">
@@ -4372,7 +4382,11 @@ Sitemap: https://example.com/sitemap.xml
       </div>
       </div>
       <div class="reach-stage-frame" tabindex="0" aria-label="索引目录，点击放大到全屏">
-      <button type="button" class="reach-fs-close" hidden>关闭</button>
+      <div class="reach-fs-bar" hidden>
+      <button type="button" class="reach-fs-prev">上一页</button>
+      <button type="button" class="reach-fs-next">下一页</button>
+      <button type="button" class="reach-fs-close">关闭</button>
+      </div>
       <div class="reach-stage">
       <p class="reach-stage-title">部署机器发现层</p>
       <div class="reach-board" aria-label="部署机器发现层：Agent 工作流、Web Fetch、llms.txt">
@@ -4464,7 +4478,11 @@ Sitemap: https://example.com/sitemap.xml
       </div>
       </div>
       <div class="reach-stage-frame" tabindex="0" aria-label="llms.txt，点击放大到全屏">
-      <button type="button" class="reach-fs-close" hidden>关闭</button>
+      <div class="reach-fs-bar" hidden>
+      <button type="button" class="reach-fs-prev">上一页</button>
+      <button type="button" class="reach-fs-next">下一页</button>
+      <button type="button" class="reach-fs-close">关闭</button>
+      </div>
       <div class="reach-stage">
       <p class="reach-stage-title">llms.txt ——让 Agent 用最少 token 找到下一步</p>
       <div class="reach-board" aria-label="部署机器发现层：Agent 工作流、Web Fetch、NVIDIA 与 Ascend 对照">
@@ -4850,7 +4868,11 @@ Sitemap: https://example.com/sitemap.xml
       </div>
       </div>
       <div class="reach-stage-frame" tabindex="0" aria-label="双轨交付，点击放大到全屏">
-      <button type="button" class="reach-fs-close" hidden>关闭</button>
+      <div class="reach-fs-bar" hidden>
+      <button type="button" class="reach-fs-prev">上一页</button>
+      <button type="button" class="reach-fs-next">下一页</button>
+      <button type="button" class="reach-fs-close">关闭</button>
+      </div>
       <div class="reach-stage">
       <p class="reach-stage-title">双轨交付</p>
       <div class="reach-board" aria-label="双轨交付：Agent 工作流、Web Fetch、人读与机器轨">
@@ -4976,7 +4998,11 @@ The editor loads by default when you open your [dashboard](https://app.mintlify.
       </div>
       </div>
       <div class="reach-stage-frame" tabindex="0" aria-label="节级锚点精准定位，点击放大到全屏">
-      <button type="button" class="reach-fs-close" hidden>关闭</button>
+      <div class="reach-fs-bar" hidden>
+      <button type="button" class="reach-fs-prev">上一页</button>
+      <button type="button" class="reach-fs-next">下一页</button>
+      <button type="button" class="reach-fs-close">关闭</button>
+      </div>
       <div class="reach-stage">
       <p class="reach-stage-title">节级锚点精准定位</p>
       <div class="reach-board" aria-label="节级锚点精准定位">
@@ -5101,7 +5127,11 @@ The editor loads by default when you open your [dashboard](https://app.mintlify.
       </div>
       </div>
       <div class="reach-stage-frame" tabindex="0" aria-label="内容层级结构化，点击放大到全屏">
-      <button type="button" class="reach-fs-close" hidden>关闭</button>
+      <div class="reach-fs-bar" hidden>
+      <button type="button" class="reach-fs-prev">上一页</button>
+      <button type="button" class="reach-fs-next">下一页</button>
+      <button type="button" class="reach-fs-close">关闭</button>
+      </div>
       <div class="reach-stage">
       <p class="reach-stage-title">内容层级结构化 - 信息层级关系更易理解</p>
       <div class="reach-board" aria-label="内容层级结构化：Agent 工作流、Web Fetch、标题层级">
@@ -5264,7 +5294,11 @@ The editor loads by default when you open your [dashboard](https://app.mintlify.
       </div>
       </div>
       <div class="reach-stage-frame" tabindex="0" aria-label="可理解-图片语义，点击放大到全屏">
-      <button type="button" class="reach-fs-close" hidden>关闭</button>
+      <div class="reach-fs-bar" hidden>
+      <button type="button" class="reach-fs-prev">上一页</button>
+      <button type="button" class="reach-fs-next">下一页</button>
+      <button type="button" class="reach-fs-close">关闭</button>
+      </div>
       <div class="reach-stage">
       <p class="reach-stage-title">可理解-图片语义</p>
       <div class="reach-board" aria-label="图片理解：Agent 工作流、Web Fetch、文档图与营销图">
@@ -5395,7 +5429,11 @@ The editor loads by default when you open your [dashboard](https://app.mintlify.
       </div>
       </div>
       <div class="reach-stage-frame" tabindex="0" aria-label="可理解-颜色与图标语义，点击放大到全屏">
-      <button type="button" class="reach-fs-close" hidden>关闭</button>
+      <div class="reach-fs-bar" hidden>
+      <button type="button" class="reach-fs-prev">上一页</button>
+      <button type="button" class="reach-fs-next">下一页</button>
+      <button type="button" class="reach-fs-close">关闭</button>
+      </div>
       <div class="reach-stage">
       <p class="reach-stage-title">可理解-颜色与图标语义</p>
       <div class="reach-board" aria-label="颜色与图标：Agent 工作流、Web Fetch、视觉语义">
@@ -5535,7 +5573,11 @@ The editor loads by default when you open your [dashboard](https://app.mintlify.
       </div>
       </div>
       <div class="reach-stage-frame" tabindex="0" aria-label="可验证 - 执行结果可验证，点击放大到全屏">
-      <button type="button" class="reach-fs-close" hidden>关闭</button>
+      <div class="reach-fs-bar" hidden>
+      <button type="button" class="reach-fs-prev">上一页</button>
+      <button type="button" class="reach-fs-next">下一页</button>
+      <button type="button" class="reach-fs-close">关闭</button>
+      </div>
       <div class="reach-stage">
       <p class="reach-stage-title">可验证 - 执行结果可验证</p>
       <div class="reach-board reach-board--wide" aria-label="代码块可验证：Agent 工作流、代码块">
@@ -5668,6 +5710,59 @@ export PATH=`pwd`/cmake-3.16/bin:$PATH</code></pre>
       </div>
       </div>
 
+
+      <details class="archive-fold" id="archive">
+        <summary><h2>历史素材</h2></summary>
+      <h2>根 llms</h2>
+      <div class="llms-anno" aria-label="根 llms 结构标注">
+      <figure class="file-sample file-sample--wrap">
+        <figcaption>nvidia.com/llms.txt</figcaption>
+        <pre><code><span class="llms-head"><span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">集团名</span><span class="anno-num">1</span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-1"># NVIDIA Corporation</mark></span><span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">集团说明</span><span class="anno-num">2</span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-2">&gt; This file provides links to the llms.txt of NVIDIA's main and international websites, helping large language models (LLMs) better understand the content and structure of each of NVIDIA's locale-specific websites. Follow the links below to deeper llms.txt pages for each locale website. Each country may have more than one language that content is translated into.</mark></span></span>
+
+<span class="llms-secs"><span class="llms-sec"><span class="llms-mod">北美站</span><span class="llms-line">## The NVIDIA North America Websites</span><span class="llms-line">- [NVIDIA U.S. Website](https://www.nvidia.com/en-us/llms.txt): Marketing, corporate, product information.</span><span class="llms-line">- [NVIDIA OpenSource Website] (https://opensource.nvidia.com/en-us/llms.txt)</span></span><span class="llms-sec"><span class="llms-mod">文档站</span><span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">站点名</span><span class="anno-num">3</span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-3">## NVIDIA Technical Documentation Website</mark></span><span class="llms-row llms-row--parts"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">站点 llms 分册地址</span><span class="anno-num">4</span><span class="anno-leader"></span><span class="anno-tip"></span></span><span class="llms-parts"><span class="llms-part llms-part--title"><span class="llms-part-txt">- [Tech Docs]</span><span class="llms-part-lab">分册标题</span></span><span class="llms-part llms-part--url"><span class="llms-part-txt">(https://docs.nvidia.com/llms.txt)</span><span class="llms-part-lab">站点 llms 分册地址</span></span><span class="llms-part llms-part--note"><span class="llms-part-txt">: Technical documentation for NVIDIA products.</span><span class="llms-part-lab">分册说明</span></span></span></span></span><span class="llms-sec"><span class="llms-mod">开发者站</span><span class="llms-line">## NVIDIA Developer Websites</span><span class="llms-line">- [NVIDIA Developer](https://developer.nvidia.com/llms.txt): Downloads, SDKs, frameworks, libraries, forums.</span><span class="llms-line">- [NVIDIA Technical Blog](https://developer.nvidia.com/blog/llms.txt): News and blog articles for developer community.</span></span><span class="llms-sec"><span class="llms-mod">大会</span><span class="llms-line">## NVIDIA GTC AI Conference Website</span><span class="llms-line">- [GTC](https://www.nvidia.com/gtc/llms.txt): Conference locations, sessions, speakers, venues.</span></span></span></code></pre>
+      </figure>
+      <ol class="llms-anno-legend">
+        <li><span class="anno-num">1</span><span><strong>集团名</strong>用 <code>#</code> 写集团叫什么。</span></li>
+        <li><span class="anno-num">2</span><span><strong>集团说明</strong>用 <code>&gt;</code> 交代这份清单是什么、下一步跟哪。</span></li>
+        <li><span class="anno-num">3</span><span><strong>站点名</strong>用 <code>##</code> 按站点切块，先扫站名再进节。</span></li>
+        <li><span class="anno-num">4</span><span><strong>站点 llms 分册地址</strong>写成 <code>- [标题](地址): 说明</code>。本行链到下一本清单，不是正文。</span></li>
+      </ol>
+      </div>
+
+      <h2>文档站 llms 分册</h2>
+      <div class="llms-anno" aria-label="文档分册结构标注">
+      <figure class="file-sample file-sample--wrap">
+        <figcaption>docs.nvidia.com/llms.txt</figcaption>
+        <pre><code><span class="llms-head"><span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">站点分册名</span><span class="anno-num">1</span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-1"># NVIDIA Technical Product Documentation</mark></span><span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">站点分册说明</span><span class="anno-num">2</span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-2">&gt; Collection of NVIDIA Technical Documentation llms.txt files for AI user agents. Content is in English and listed in alphabetical order. Last updated 9 September 2026</mark></span></span>
+
+<span class="llms-secs"><span class="llms-sec"><span class="llms-mod">AICR</span><span class="llms-line">## NVIDIA AI Cluster Runtime (AICR)</span><span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:86%"></span><span class="llms-skel-bar" style="width:64%"></span></span></span><span class="llms-sec"><span class="llms-mod">CUDA</span><span class="llms-sec-body"><span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">产品名</span><span class="anno-num">3</span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-3">## NVIDIA CUDA Toolkit</mark></span><span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">产品说明</span><span class="anno-num">4</span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-3">&gt; Development environment for creating high performance GPU-accelerated applications with libraries, compilers, and debugging tools.</mark></span><span class="llms-row llms-row--parts"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">产品 llms 分册地址</span><span class="anno-num">5</span><span class="anno-leader"></span><span class="anno-tip"></span></span><span class="llms-parts"><span class="llms-part llms-part--title"><span class="llms-part-txt">- [NVIDIA CUDA Toolkit]</span><span class="llms-part-lab">分册标题</span></span><span class="llms-part llms-part--url"><span class="llms-part-txt">(https://docs.nvidia.com/cuda/llms.txt)</span><span class="llms-part-lab">产品 llms 分册地址</span></span></span></span></span></span><span class="llms-sec"><span class="llms-mod">CUDA-Q</span><span class="llms-line">## NVIDIA CUDA-Q</span><span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:80%"></span><span class="llms-skel-bar" style="width:54%"></span></span></span><span class="llms-sec"><span class="llms-mod">NIM</span><span class="llms-line">## NVIDIA NIM</span><span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:58%"></span><span class="llms-skel-bar" style="width:44%"></span></span></span></span></code></pre>
+      </figure>
+      <ol class="llms-anno-legend">
+        <li><span class="anno-num">1</span><span><strong>站点分册名</strong>用 <code>#</code> 写这份文档分册叫什么。</span></li>
+        <li><span class="anno-num">2</span><span><strong>站点分册说明</strong>用 <code>&gt;</code> 说明这是各产品 <code>llms.txt</code> 的总册。</span></li>
+        <li><span class="anno-num">3</span><span><strong>产品名</strong>用 <code>##</code> 按产品线切块，先扫产品名再进节。</span></li>
+        <li><span class="anno-num">4</span><span><strong>产品说明</strong>用 <code>&gt;</code> 写这一条产品线是什么。</span></li>
+        <li><span class="anno-num">5</span><span><strong>产品 llms 分册地址</strong>写成 <code>- [标题](地址)</code>。本行链到 CUDA 产品册，下一跳还是清单。</span></li>
+      </ol>
+      </div>
+
+      <h2>文档站下 CUDA 的 llms 分册</h2>
+      <div class="llms-anno" aria-label="分册 llms 中的页 URL">
+      <figure class="file-sample file-sample--wrap">
+        <figcaption>docs.nvidia.com/cuda/llms.txt</figcaption>
+        <pre><code><span class="llms-head"><span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">产品分册名称</span><span class="anno-num">1</span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-1"># NVIDIA CUDA – Comprehensive Documentation for GPU Programming, Libraries, and Tooling</mark></span><span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">产品分册说明</span><span class="anno-num">2</span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-2">This collection provides end-to-end documentation for NVIDIA CUDA, covering installation, programming models, architecture-specific tuning, runtime and driver APIs, math and utility libraries, compiler and PTX interfaces, debugging and profiling tools, platform integrations, numerical white papers, and legacy archives.</mark></span></span>
+
+<span class="llms-secs"><span class="llms-sec"><span class="llms-mod">安装</span><span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">节名</span><span class="anno-num">3</span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-3">## CUDA Installation Guides</mark></span><span class="llms-line">- [Use this guide when setting up CUDA for the first time…](https://docs.nvidia.com/cuda/cuda-quick-start-guide/index.html.md)</span><span class="llms-row llms-row--parts"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">文章</span><span class="anno-num">4</span><span class="anno-leader"></span><span class="anno-tip"></span></span><span class="llms-parts"><span class="llms-part llms-part--title"><span class="llms-part-txt">- [Consult this page when installing CUDA on Linux…]</span><span class="llms-part-lab">文章名称</span></span><span class="llms-part llms-part--url"><span class="llms-part-txt">(https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html.md)</span><span class="llms-part-lab">文章地址</span></span></span></span></span><span class="llms-sec"><span class="llms-mod">编程</span><span class="llms-line">## CUDA Programming Guides</span><span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:72%"></span><span class="llms-skel-bar" style="width:64%"></span></span></span><span class="llms-sec"><span class="llms-mod">架构</span><span class="llms-line">## CUDA Architecture Guides</span><span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:58%"></span></span></span><span class="llms-sec"><span class="llms-mod">工具</span><span class="llms-line">## CUDA Tools</span><span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:80%"></span><span class="llms-skel-bar" style="width:44%"></span></span></span></span></code></pre>
+      </figure>
+      <ol class="llms-anno-legend">
+        <li><span class="anno-num">1</span><span><strong>产品分册名称</strong>用 <code>#</code> 写本产品分册叫什么。</span></li>
+        <li><span class="anno-num">2</span><span><strong>产品分册说明</strong>交代这本产品分册覆盖哪些任务。</span></li>
+        <li><span class="anno-num">3</span><span><strong>节名</strong>用 <code>##</code> 按任务切块，先扫节名再进节。</span></li>
+        <li><span class="anno-num">4</span><span><strong>文章</strong>写成 <code>- [文章名称](文章地址)</code>，地址以 <code>.md</code> 结尾，下一跳才是正文。本例是 Linux 安装页。</span></li>
+      </ol>
+      </div>
+      </details>
+
     </section>
 
   </main>
@@ -5675,6 +5770,6 @@ export PATH=`pwd`/cmake-3.16/bin:$PATH</code></pre>
 
 <script src="assets/js/site-config.js"></script>
 <script src="assets/js/site-init.js"></script>
-<script src="assets/js/reach-wires.js?v=dual7"></script>
+<script src="assets/js/reach-wires.js?v=dual8"></script>
 </body>
 </html>

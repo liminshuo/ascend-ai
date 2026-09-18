@@ -334,34 +334,55 @@
     var openLabel = "点击放大到全屏";
     var closeLabel = "全屏，按 Esc 或点关闭退出";
 
+    function frameIndex(frame) {
+      return Array.prototype.indexOf.call(frames, frame);
+    }
+    function syncNav(frame) {
+      var i = frameIndex(frame);
+      var prevBtn = frame.querySelector(".reach-fs-prev");
+      var nextBtn = frame.querySelector(".reach-fs-next");
+      if (prevBtn) prevBtn.disabled = i <= 0;
+      if (nextBtn) nextBtn.disabled = i < 0 || i >= frames.length - 1;
+    }
     function openFs(frame) {
       frames.forEach(function (other) {
         if (other !== frame) closeFs(other);
       });
       frame.classList.add("is-fs");
       document.body.classList.add("reach-fs-open");
-      var closeBtn = frame.querySelector(".reach-fs-close");
-      if (closeBtn) closeBtn.hidden = false;
+      var bar = frame.querySelector(".reach-fs-bar");
+      if (bar) bar.hidden = false;
+      syncNav(frame);
       frame.setAttribute("aria-label", closeLabel);
       layout();
     }
     function closeFs(frame) {
       if (!frame) return;
       frame.classList.remove("is-fs");
-      var closeBtn = frame.querySelector(".reach-fs-close");
-      if (closeBtn) closeBtn.hidden = true;
+      var bar = frame.querySelector(".reach-fs-bar");
+      if (bar) bar.hidden = true;
       frame.setAttribute("aria-label", frame.dataset.fsIdle || openLabel);
       if (!document.querySelector("#practices .reach-stage-frame.is-fs")) {
         document.body.classList.remove("reach-fs-open");
       }
       layout();
     }
+    function stepFs(delta) {
+      var current = document.querySelector("#practices .reach-stage-frame.is-fs");
+      if (!current) return;
+      var n = frameIndex(current) + delta;
+      if (n < 0 || n >= frames.length) return;
+      openFs(frames[n]);
+    }
 
     frames.forEach(function (frame) {
       frame.dataset.fsIdle = frame.getAttribute("aria-label") || openLabel;
+      var bar = frame.querySelector(".reach-fs-bar");
       var closeBtn = frame.querySelector(".reach-fs-close");
+      var prevBtn = frame.querySelector(".reach-fs-prev");
+      var nextBtn = frame.querySelector(".reach-fs-next");
       frame.addEventListener("click", function (e) {
-        if (e.target.closest(".reach-fs-close")) return;
+        if (e.target.closest(".reach-fs-bar")) return;
         if (isFs(frame)) {
           if (e.target.closest(".reach-stage")) return;
           closeFs(frame);
@@ -375,6 +396,18 @@
           closeFs(frame);
         });
       }
+      if (prevBtn) {
+        prevBtn.addEventListener("click", function (e) {
+          e.stopPropagation();
+          stepFs(-1);
+        });
+      }
+      if (nextBtn) {
+        nextBtn.addEventListener("click", function (e) {
+          e.stopPropagation();
+          stepFs(1);
+        });
+      }
       frame.addEventListener("keydown", function (e) {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
@@ -384,8 +417,12 @@
       });
     });
     document.addEventListener("keydown", function (e) {
-      if (e.key !== "Escape") return;
-      document.querySelectorAll("#practices .reach-stage-frame.is-fs").forEach(closeFs);
+      if (e.key === "Escape") {
+        document.querySelectorAll("#practices .reach-stage-frame.is-fs").forEach(closeFs);
+        return;
+      }
+      if (e.key === "ArrowLeft") stepFs(-1);
+      if (e.key === "ArrowRight") stepFs(1);
     });
   })();
 
