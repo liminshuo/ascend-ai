@@ -160,11 +160,156 @@
     placeChip(chart.querySelector(".rc-chip-guess"), 4, (b.y + b.h + y3) / 2);
   }
 
+  function layoutReadChart(chart, markerId) {
+    var svg = chart.querySelector(".rc-wires");
+    var htmlN = chart.querySelector('[data-rc="html"]');
+    var mdN = chart.querySelector('[data-rc="md"]');
+    var secN = chart.querySelector('[data-rc="sec"]');
+    if (!svg || !htmlN || !mdN || !secN) return;
+
+    var w = Math.max(1, chart.offsetWidth);
+    var h = Math.max(1, chart.offsetHeight);
+    svg.setAttribute("viewBox", "0 0 " + w + " " + h);
+    svg.setAttribute("width", w);
+    svg.setAttribute("height", h);
+
+    var htmlB = localBox(htmlN, chart);
+    var mdB = localBox(mdN, chart);
+    var secB = localBox(secN, chart);
+
+    var sx = 18;
+    var sy = 16;
+    var hx = htmlB.x + htmlB.w / 2;
+    var mx = mdB.x + mdB.w / 2;
+    var xRail = Math.min(w - 10, Math.max(htmlB.x + htmlB.w, mdB.x + mdB.w, secB.x + secB.w) + 36);
+    var y3 = secB.y + secB.h / 2;
+    var rad = 28;
+    var guessY = htmlB.y + htmlB.h / 2;
+    var llmsY = mdB.y + mdB.h / 2;
+
+    var dGuess = roundPoly(
+      [
+        [sx, sy],
+        [sx, guessY],
+        [htmlB.x - 2, guessY]
+      ],
+      rad
+    );
+    var dLlms = roundPoly(
+      [
+        [sx, sy],
+        [sx, llmsY],
+        [mdB.x - 2, llmsY]
+      ],
+      rad
+    );
+    var dMirror = "M" + hx + " " + (htmlB.y + htmlB.h + 2) + " L" + mx + " " + (mdB.y - 4);
+    if (Math.abs(hx - mx) < 2) {
+      dMirror = "M" + mx + " " + (htmlB.y + htmlB.h + 2) + " L" + mx + " " + (mdB.y - 4);
+    }
+    var dMdSec = "M" + mx + " " + (mdB.y + mdB.h + 2) + " L" + mx + " " + (secB.y - 4);
+    var dNoMirror = roundPoly(
+      [
+        [htmlB.x + htmlB.w, htmlB.y + htmlB.h / 2],
+        [xRail, htmlB.y + htmlB.h / 2],
+        [xRail, y3],
+        [secB.x + secB.w + 2, y3]
+      ],
+      rad
+    );
+
+    svg.innerHTML =
+      "<defs>" +
+      '<marker id="' +
+      markerId +
+      '" viewBox="0 0 8 8" markerWidth="8" markerHeight="8" refX="6.2" refY="4" orient="auto" markerUnits="userSpaceOnUse">' +
+      '<path d="M0 0.6 L8 4 L0 7.4 Z" fill="#191919"/>' +
+      "</marker>" +
+      "</defs>" +
+      '<circle cx="' + sx + '" cy="' + sy + '" r="2.2" fill="#fff" stroke="#191919" stroke-width="1.5"/>' +
+      arm(dGuess, true, false, markerId) +
+      arm(dLlms, true, false, markerId) +
+      arm(dMirror, true, false, markerId) +
+      arm(dMdSec, true, true, markerId) +
+      arm(dNoMirror, true, true, markerId);
+
+    placeChip(chart.querySelector(".rc-chip-guess"), sx + 6, (sy + htmlB.y) / 2);
+    placeChip(chart.querySelector(".rc-chip-yes"), sx + 6, (htmlB.y + htmlB.h + mdB.y) / 2);
+    placeChip(chart.querySelector(".rc-chip-mirror"), hx + 10, (htmlB.y + htmlB.h + mdB.y) / 2);
+    placeChip(chart.querySelector(".rc-chip-no"), mx + 10, (mdB.y + mdB.h + secB.y) / 2);
+  }
+
+  function dualPath(x1, y1, x2, y2) {
+    var mx = (x1 + x2) / 2;
+    if (Math.abs(y2 - y1) < 6) {
+      return "M" + x1 + " " + y1 + " L" + x2 + " " + y2;
+    }
+    return roundPoly(
+      [
+        [x1, y1],
+        [mx, y1],
+        [mx, y2],
+        [x2, y2]
+      ],
+      10
+    );
+  }
+
+  function layoutDual(root) {
+    var svg = root.querySelector(".ppt-dual-wires");
+    var heroMask = root.querySelector(".ppt-dual-mask--hero");
+    var bodyMask = root.querySelector(".ppt-dual-mask--body");
+    var moreMask = root.querySelector(".ppt-dual-mask--more");
+    var heroMd = root.querySelector(".ppt-dual-block--hero");
+    var bodyMd = root.querySelector(".ppt-dual-block--body");
+    var moreMd = root.querySelector(".ppt-dual-block--more");
+    var heroLab = root.querySelector(".ppt-dual-link--hero");
+    var bodyLab = root.querySelector(".ppt-dual-link--body");
+    var moreLab = root.querySelector(".ppt-dual-link--more");
+    if (!svg || !heroMask || !bodyMask || !moreMask || !heroMd || !bodyMd || !moreMd) return;
+
+    var w = Math.max(1, root.offsetWidth);
+    var h = Math.max(1, root.offsetHeight);
+    svg.setAttribute("viewBox", "0 0 " + w + " " + h);
+    svg.setAttribute("width", w);
+    svg.setAttribute("height", h);
+
+    function wire(mask, block, color, label) {
+      var a = localBox(mask, root);
+      var b = localBox(block, root);
+      var x1 = a.x + a.w;
+      var y1 = a.y + a.h / 2;
+      var x2 = b.x;
+      var y2 = b.y + b.h / 2;
+      var d = dualPath(x1, y1, x2, y2);
+      if (label) {
+        label.style.left = (x1 + x2) / 2 + "px";
+        label.style.top = (y1 + y2) / 2 + "px";
+      }
+      return (
+        '<path d="' +
+        d +
+        '" stroke="' +
+        color +
+        '" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>' +
+        '<circle cx="' + x1 + '" cy="' + y1 + '" r="3" fill="' + color + '"/>' +
+        '<circle cx="' + x2 + '" cy="' + y2 + '" r="3" fill="' + color + '"/>'
+      );
+    }
+
+    svg.innerHTML =
+      wire(heroMask, heroMd, "#3b6fd8", heroLab) +
+      wire(bodyMask, bodyMd, "#c43d6e", bodyLab) +
+      wire(moreMask, moreMd, "#1a9b8e", moreLab);
+  }
+
   function layout() {
     scaleStage();
     document.querySelectorAll("#practices .reach-chart").forEach(function (chart, i) {
-      layoutChart(chart, "rc-arr-" + i);
+      if (chart.querySelector('[data-rc="html"]')) layoutReadChart(chart, "rc-arr-r-" + i);
+      else layoutChart(chart, "rc-arr-" + i);
     });
+    document.querySelectorAll("#practices .ppt-dual").forEach(layoutDual);
   }
 
   var t;
