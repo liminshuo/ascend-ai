@@ -256,6 +256,20 @@
     );
   }
 
+  function dropPath(x1, y1, x2, y2) {
+    if (Math.abs(x2 - x1) < 6) {
+      return "M" + x1 + " " + y1 + " L" + x2 + " " + y2;
+    }
+    return roundPoly(
+      [
+        [x1, y1],
+        [x1, y2],
+        [x2, y2]
+      ],
+      14
+    );
+  }
+
   function layoutDual(root) {
     var svg = root.querySelector(".ppt-dual-wires");
     var heroMask = root.querySelector(".ppt-dual-mask--hero");
@@ -343,6 +357,66 @@
       wire(0.951, hideLab, "#e11d48");
   }
 
+  function alignSsrDeckRows() {
+    var deck = document.querySelector("#practices .ssr-deck");
+    if (!deck) return;
+    var left = deck.querySelector(".ssr-deck-card:not(.ssr-deck-card--hits)");
+    var right = deck.querySelector(".ssr-deck-card--hits");
+    if (!left || !right) return;
+    var link = left.querySelector(".ssr-loss-note--link");
+    var hide = left.querySelector(".ssr-loss-note--hide");
+    var color = right.querySelector(".ssr-deck-point--color");
+    var icon = right.querySelector(".ssr-deck-point--icon");
+    if (!link || !hide || !color || !icon) return;
+
+    color.style.marginTop = "0px";
+    icon.style.marginTop = "16px";
+
+    var scale = right.getBoundingClientRect().width / (right.offsetWidth || 1) || 1;
+    function gap(fromEl, toEl) {
+      return (toEl.getBoundingClientRect().top - fromEl.getBoundingClientRect().top) / scale;
+    }
+    color.style.marginTop = gap(color, link) + "px";
+    icon.style.marginTop = 16 + gap(icon, hide) + "px";
+  }
+
+  function layoutSsrDeck(root) {
+    var svg = root.querySelector(".ssr-deck-wires");
+    var warn = root.querySelector(".ssr-deck-hit--warn");
+    var mark = root.querySelector(".ssr-deck-hit--mark");
+    var colorLab = root.querySelector(".ssr-deck-point--color h3");
+    var iconLab = root.querySelector(".ssr-deck-point--icon h3");
+    if (!svg || !warn || !mark || !colorLab || !iconLab) return;
+
+    var w = Math.max(1, root.offsetWidth);
+    var h = Math.max(1, root.offsetHeight);
+    svg.setAttribute("viewBox", "0 0 " + w + " " + h);
+    svg.setAttribute("width", w);
+    svg.setAttribute("height", h);
+
+    function wire(hit, target, color) {
+      var a = localBox(hit, root);
+      var b = localBox(target, root);
+      var x1 = a.x + a.w;
+      var y1 = a.y + a.h / 2;
+      var x2 = b.x + b.w + 16 + 3.5;
+      var y2 = b.y + b.h / 2;
+      var d = dropPath(x1, y1, x2, y2);
+      return (
+        '<path d="' +
+        d +
+        '" stroke="' +
+        color +
+        '" stroke-width="1.75" fill="none" stroke-linecap="round" stroke-linejoin="round"/>' +
+        '<circle cx="' + x2 + '" cy="' + y2 + '" r="3.5" fill="' + color + '"/>'
+      );
+    }
+
+    svg.innerHTML =
+      wire(warn, colorLab, "#f97316") +
+      wire(mark, iconLab, "#6366f1");
+  }
+
   function layout() {
     scaleStage();
     document.querySelectorAll("#practices .reach-chart").forEach(function (chart, i) {
@@ -351,6 +425,8 @@
     });
     document.querySelectorAll("#practices .ppt-dual").forEach(layoutDual);
     document.querySelectorAll("#practices .ssr-loss").forEach(layoutSsrLoss);
+    alignSsrDeckRows();
+    document.querySelectorAll("#practices .ssr-deck-card--hits").forEach(layoutSsrDeck);
   }
 
   var t;
