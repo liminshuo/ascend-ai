@@ -240,7 +240,8 @@
   }
 
   function dualPath(x1, y1, x2, y2) {
-    var mx = (x1 + x2) / 2;
+    var mx = x2 - 36;
+    if (mx < x1 + 16) mx = (x1 + x2) / 2;
     if (Math.abs(y2 - y1) < 6) {
       return "M" + x1 + " " + y1 + " L" + x2 + " " + y2;
     }
@@ -251,7 +252,7 @@
         [mx, y2],
         [x2, y2]
       ],
-      10
+      14
     );
   }
 
@@ -281,9 +282,11 @@
       var y1 = a.y + a.h / 2;
       var x2 = b.x;
       var y2 = b.y + b.h / 2;
+      var mx = x2 - 36;
+      if (mx < x1 + 16) mx = (x1 + x2) / 2;
       var d = dualPath(x1, y1, x2, y2);
       if (label) {
-        label.style.left = (x1 + x2) / 2 + "px";
+        label.style.left = mx + "px";
         label.style.top = (y1 + y2) / 2 + "px";
       }
       return (
@@ -291,9 +294,8 @@
         d +
         '" stroke="' +
         color +
-        '" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>' +
-        '<circle cx="' + x1 + '" cy="' + y1 + '" r="3" fill="' + color + '"/>' +
-        '<circle cx="' + x2 + '" cy="' + y2 + '" r="3" fill="' + color + '"/>'
+        '" stroke-width="1.75" fill="none" stroke-linecap="round" stroke-linejoin="round"/>' +
+        '<circle cx="' + x2 + '" cy="' + y2 + '" r="3.5" fill="' + color + '"/>'
       );
     }
 
@@ -303,6 +305,44 @@
       wire(moreMask, moreMd, "#1a9b8e", moreLab);
   }
 
+  function layoutSsrLoss(root) {
+    var svg = root.querySelector(".ssr-loss-wires");
+    var shot = root.querySelector(".ssr-loss-frame");
+    var mapLab = root.querySelector(".ssr-loss-note--map h3");
+    var linkLab = root.querySelector(".ssr-loss-note--link h3");
+    var hideLab = root.querySelector(".ssr-loss-note--hide h3");
+    if (!svg || !shot || !mapLab || !linkLab || !hideLab) return;
+
+    var w = Math.max(1, root.offsetWidth);
+    var h = Math.max(1, root.offsetHeight);
+    svg.setAttribute("viewBox", "0 0 " + w + " " + h);
+    svg.setAttribute("width", w);
+    svg.setAttribute("height", h);
+
+    function wire(yFrac, target, color) {
+      var a = localBox(shot, root);
+      var b = localBox(target, root);
+      var x1 = a.x + a.w;
+      var y1 = a.y + a.h * yFrac;
+      var x2 = b.x - 16 - 3.5;
+      var y2 = b.y + b.h / 2;
+      var d = dualPath(x1, y1, x2, y2);
+      return (
+        '<path d="' +
+        d +
+        '" stroke="' +
+        color +
+        '" stroke-width="1.75" fill="none" stroke-linecap="round" stroke-linejoin="round"/>' +
+        '<circle cx="' + x2 + '" cy="' + y2 + '" r="3.5" fill="' + color + '"/>'
+      );
+    }
+
+    svg.innerHTML =
+      wire(0.271, mapLab, "#ec4899") +
+      wire(0.393, linkLab, "#f97316") +
+      wire(0.951, hideLab, "#e11d48");
+  }
+
   function layout() {
     scaleStage();
     document.querySelectorAll("#practices .reach-chart").forEach(function (chart, i) {
@@ -310,6 +350,7 @@
       else layoutChart(chart, "rc-arr-" + i);
     });
     document.querySelectorAll("#practices .ppt-dual").forEach(layoutDual);
+    document.querySelectorAll("#practices .ssr-loss").forEach(layoutSsrLoss);
   }
 
   var t;
