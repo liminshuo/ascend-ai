@@ -270,6 +270,85 @@
     );
   }
 
+  function layoutLlmsJump(root) {
+    var svg = root.querySelector(".llms-dual-wires");
+    if (!svg) return;
+
+    var w = Math.max(1, root.offsetWidth);
+    var h = Math.max(1, root.offsetHeight);
+    svg.setAttribute("viewBox", "0 0 " + w + " " + h);
+    svg.setAttribute("width", w);
+    svg.setAttribute("height", h);
+
+    var defs = "";
+    var paths = "";
+    var markers = {};
+    var uid = "w" + Math.round(root.getBoundingClientRect().left) + "-" + Math.round(root.getBoundingClientRect().top);
+
+    function addMarker(id, color) {
+      id = uid + "-" + id;
+      if (markers[id]) return id;
+      markers[id] = true;
+      defs +=
+        '<marker id="' +
+        id +
+        '" viewBox="0 0 8 8" markerWidth="8" markerHeight="8" refX="6.2" refY="4" orient="auto" markerUnits="userSpaceOnUse">' +
+        '<path d="M0 0.6 L8 4 L0 7.4 Z" fill="' +
+        color +
+        '"/>' +
+        "</marker>";
+      return id;
+    }
+
+    function wire(from, to, color, markerId, y2mode) {
+      if (!from || !to) return;
+      var mid = addMarker(markerId, color);
+      var a = localBox(from, root);
+      var b = localBox(to, root);
+      var x1 = a.x + a.w + 4;
+      var y1 = a.y + a.h / 2;
+      var x2 = b.x - 8;
+      var y2 = y2mode === "top" ? b.y + 16 : b.y + b.h / 2;
+      var d = dualPath(x1, y1, x2, y2);
+      paths +=
+        '<path d="' +
+        d +
+        '" stroke="' +
+        color +
+        '" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#' +
+        mid +
+        ')"/>' +
+        '<circle cx="' +
+        x1 +
+        '" cy="' +
+        y1 +
+        '" r="3.5" fill="' +
+        color +
+        '"/>';
+    }
+
+    var cannFrom = root.querySelector(".llms-line.is-jump");
+    var cannTo = root.querySelector(".llms-jump-to");
+    if (cannFrom && cannTo) {
+      wire(cannFrom, cannTo.querySelector("pre") || cannTo, "#047857", "jump", "top");
+    }
+    wire(
+      root.querySelector(".llms-sec--ops"),
+      root.querySelector(".llms-sec--ops-after"),
+      "#0369a1",
+      "ops",
+      "mid"
+    );
+    wire(
+      root.querySelector(".llms-sec--doc"),
+      root.querySelector(".llms-sec--doc-after"),
+      "#047857",
+      "doc",
+      "mid"
+    );
+    svg.innerHTML = paths ? "<defs>" + defs + "</defs>" + paths : "";
+  }
+
   function layoutDual(root) {
     var svg = root.querySelector(".ppt-dual-wires");
     var heroMask = root.querySelector(".ppt-dual-mask--hero");
@@ -424,6 +503,7 @@
       else layoutChart(chart, "rc-arr-" + i);
     });
     document.querySelectorAll("#practices .ppt-dual").forEach(layoutDual);
+    document.querySelectorAll("#practices .llms-dual").forEach(layoutLlmsJump);
     document.querySelectorAll("#practices .ssr-loss").forEach(layoutSsrLoss);
     alignSsrDeckRows();
     document.querySelectorAll("#practices .ssr-deck-card--hits").forEach(layoutSsrDeck);
