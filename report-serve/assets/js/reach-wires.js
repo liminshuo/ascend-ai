@@ -354,13 +354,16 @@
     var heroMask = root.querySelector(".ppt-dual-mask--hero");
     var bodyMask = root.querySelector(".ppt-dual-mask--body");
     var moreMask = root.querySelector(".ppt-dual-mask--more");
+    var mapMask = root.querySelector(".ppt-dual-mask--map");
     var heroMd = root.querySelector(".ppt-dual-block--hero");
     var bodyMd = root.querySelector(".ppt-dual-block--body");
     var moreMd = root.querySelector(".ppt-dual-block--more");
+    var mapMd = root.querySelector(".ppt-dual-block--map");
     var heroLab = root.querySelector(".ppt-dual-link--hero");
     var bodyLab = root.querySelector(".ppt-dual-link--body");
     var moreLab = root.querySelector(".ppt-dual-link--more");
-    if (!svg || !heroMask || !bodyMask || !moreMask || !heroMd || !bodyMd || !moreMd) return;
+    if (!svg) return;
+    if (root.classList.contains("ppt-dual--ascend-heading")) return;
 
     var w = Math.max(1, root.offsetWidth);
     var h = Math.max(1, root.offsetHeight);
@@ -369,6 +372,7 @@
     svg.setAttribute("height", h);
 
     function wire(mask, block, color, label) {
+      if (!mask || !block) return "";
       var a = localBox(mask, root);
       var b = localBox(block, root);
       var x1 = a.x + a.w;
@@ -388,10 +392,62 @@
         '" stroke="' +
         color +
         '" stroke-width="1.75" fill="none" stroke-linecap="round" stroke-linejoin="round"/>' +
-        '<circle cx="' + x2 + '" cy="' + y2 + '" r="3.5" fill="' + color + '"/>'
+        '<circle cx="' +
+        x2 +
+        '" cy="' +
+        y2 +
+        '" r="3.5" fill="' +
+        color +
+        '"/>'
       );
     }
 
+    var pane = root.querySelector(".ppt-dual-md");
+    var pbox = pane ? localBox(pane, root) : null;
+    function wireVis(mask, block, color, yFrac) {
+      if (!mask || !block) return "";
+      var a = localBox(mask, root);
+      var b = localBox(block, root);
+      var x1 = a.x + a.w;
+      var y1 = a.y + a.h * (yFrac == null ? 0.5 : yFrac);
+      var x2 = b.x;
+      var y2 = b.y + b.h / 2;
+      if (pbox) {
+        var iy0 = Math.max(b.y, pbox.y);
+        var iy1 = Math.min(b.y + b.h, pbox.y + pbox.h);
+        if (iy1 > iy0) y2 = (iy0 + iy1) / 2;
+      }
+      var d = dualPath(x1, y1, x2, y2);
+      return (
+        '<path d="' +
+        d +
+        '" stroke="' +
+        color +
+        '" stroke-width="1.75" fill="none" stroke-linecap="round" stroke-linejoin="round"/>' +
+        '<circle cx="' +
+        x2 +
+        '" cy="' +
+        y2 +
+        '" r="3.5" fill="' +
+        color +
+        '"/>'
+      );
+    }
+
+    if (root.classList.contains("ppt-dual--ascend-link")) {
+      svg.innerHTML = wireVis(mapMask, mapMd, "#0369a1", 0.5);
+      return;
+    }
+    if (!heroMask || !moreMask || !heroMd || !moreMd) return;
+
+    if (root.classList.contains("ppt-dual--ascend") && mapMask && mapMd) {
+      svg.innerHTML =
+        wireVis(heroMask, heroMd, "#0369a1", 0.18) +
+        wireVis(moreMask, moreMd, "#7c3aed", 0.5) +
+        wireVis(mapMask, mapMd, "#7c3aed", 0.12);
+      return;
+    }
+    if (!bodyMask || !bodyMd) return;
     svg.innerHTML =
       wire(heroMask, heroMd, "#3b6fd8", heroLab) +
       wire(bodyMask, bodyMd, "#c43d6e", bodyLab) +
