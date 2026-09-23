@@ -2498,6 +2498,10 @@
     background: #fff;
     box-sizing: border-box;
   }
+  #practices .ppt-ver-card:has(.ppt-ver-table) {
+    padding: 0;
+    overflow: hidden;
+  }
   #practices .ppt-ver-note {
     margin: 0;
     font-size: 13px;
@@ -2518,7 +2522,8 @@
     color: #171717;
   }
   #practices .ppt-ver-card + .ppt-ver-cap {
-    margin-top: 24px;
+    margin-top: -8px;
+    padding-top: 24px;
   }
   #practices .ppt-ver-table {
     width: 100%;
@@ -2542,6 +2547,29 @@
   }
   #practices .ppt-ver-table tr.is-live td {
     background: #ecfdf5;
+  }
+  #practices .ppt-ver-tag {
+    display: inline-flex;
+    align-items: center;
+    height: 18px;
+    padding: 0 6px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 650;
+    line-height: 18px;
+    white-space: nowrap;
+  }
+  #practices .ppt-ver-tag.is-live {
+    color: #15803d;
+    background: #dcfce7;
+  }
+  #practices .ppt-ver-tag.is-sunset {
+    color: #c2410c;
+    background: #ffedd5;
+  }
+  #practices .ppt-ver-tag.is-eol {
+    color: #525252;
+    background: #e5e5e5;
   }
   #practices .ppt-ver-list {
     display: flex;
@@ -3585,10 +3613,23 @@
     margin: 0;
   }
   #practices .ppt-theme-hier.ppt-theme-imgdoc .ppt-hier {
+    position: relative;
     grid-template-rows: none;
     grid-auto-flow: row;
     align-items: stretch;
     column-gap: 64px;
+    overflow: visible;
+  }
+  #practices .ppt-theme-hier.ppt-theme-imgdoc .ppt-imgdoc-wire {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 6;
+    overflow: visible;
+    grid-column: 1 / -1;
+    grid-row: 1 / -1;
   }
   #practices .ppt-theme-hier.ppt-theme-imgdoc .ppt-hier-col {
     display: flex;
@@ -3607,7 +3648,7 @@
     min-height: 0;
     overflow: hidden;
   }
-  #practices .ppt-theme-hier.ppt-theme-imgdoc .ppt-hier-col:first-child > .ppt-hier-lead {
+  #practices .ppt-theme-hier.ppt-theme-imgdoc .ppt-hier-col:first-of-type > .ppt-hier-lead {
     margin: 0;
     width: 100%;
     flex: 0 0 auto;
@@ -3631,28 +3672,28 @@
     height: 3px;
     width: 100%;
   }
-  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:first-child .ssr-deck-src-title {
+  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:first-of-type .ssr-deck-src-title {
     font-size: 16px;
     line-height: 22px;
     font-weight: 700;
     color: #171717;
   }
-  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:last-child > .ppt-hier-apply .hier-label,
-  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:last-child > .hier-label {
+  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:last-of-type > .ppt-hier-apply .hier-label,
+  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:last-of-type > .hier-label {
     font-size: 16px;
     line-height: 22px;
     font-weight: 700;
     color: #171717;
     padding-top: 0;
   }
-  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:last-child > .hier-label {
+  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:last-of-type > .hier-label {
     margin-top: 16px;
   }
-  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:last-child > .ppt-hier-apply {
+  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:last-of-type > .ppt-hier-apply {
     min-height: 22px;
     justify-content: center;
   }
-  #practices .ppt-theme-hier.ppt-theme-imgdoc .ppt-hier-col:first-child .ppt-sem-fig--shot {
+  #practices .ppt-theme-hier.ppt-theme-imgdoc .ppt-hier-col:first-of-type .ppt-sem-fig--shot {
     flex: 1 1 auto;
     max-height: none;
     display: flex;
@@ -3669,6 +3710,7 @@
     border: 1px solid #e5e5e5;
     border-radius: 16px;
     overflow: hidden;
+    clip-path: inset(0 round 16px);
     background: #f4f4f5;
   }
   #practices .ppt-theme-hier.ppt-theme-imgdoc .ppt-sem-fig img {
@@ -3679,15 +3721,28 @@
     object-fit: contain;
     object-position: center top;
   }
-  #practices .ppt-theme-hier.ppt-theme-imgdoc .ppt-hier-col:first-child .ppt-sem-fig--shot img {
+  #practices .ppt-theme-hier.ppt-theme-imgdoc .ppt-hier-col:first-of-type .ppt-sem-fig--shot img {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
+    max-width: 100%;
     max-height: none;
     object-fit: cover;
-    object-position: 78% 0;
+    object-position: 0 0;
     transform: none;
+  }
+  #practices .ppt-theme-hier.ppt-theme-imgdoc .ppt-dual-shot--vecprog .ppt-shot-dash {
+    position: absolute;
+    left: calc(21% - 24px);
+    top: 36.9%;
+    width: calc(62% + 48px);
+    height: 21.3%;
+    box-sizing: border-box;
+    border: 2px dashed #dc2626;
+    border-radius: 10px;
+    pointer-events: none;
+    z-index: 2;
   }
   #practices .ppt-theme-hier.ppt-theme-imgdoc .ppt-sem-figcap {
     margin-top: 8px;
@@ -3698,7 +3753,7 @@
     white-space: pre-wrap;
     overflow-wrap: anywhere;
   }
-  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:last-child .hier-md {
+  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:last-of-type .hier-md {
     background: #fff;
     border: 1px solid #e5e5e5;
     border-radius: 16px;
@@ -3710,7 +3765,7 @@
     min-height: 0;
     overflow: auto;
   }
-  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:last-child .ppt-sem-fig {
+  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:last-of-type .ppt-sem-fig {
     flex: 1.55 1 0%;
     max-height: none;
     border: 1px solid #e5e5e5;
@@ -3721,21 +3776,21 @@
     flex-direction: column;
     box-sizing: border-box;
   }
-  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:last-child .ppt-sem-fig img {
+  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:last-of-type .ppt-sem-fig img {
     flex: 1 1 auto;
     height: 100%;
     max-height: none;
     min-height: 168px;
     object-fit: contain;
   }
-  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:last-child .ppt-sem-fig-title {
+  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:last-of-type .ppt-sem-fig-title {
     margin: 0;
     padding: 6px 10px;
     border-radius: 8px;
     background: rgba(14, 165, 233, 0.07);
     color: #191919;
   }
-  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:last-child .ppt-sem-figcap {
+  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:last-of-type .ppt-sem-figcap {
     position: relative;
     margin-top: 8px;
     padding: 6px 10px;
@@ -3747,7 +3802,7 @@
     line-height: 22px;
     font-weight: 400;
   }
-  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:last-child .ppt-sem-figcap .llms-mod {
+  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:last-of-type .ppt-sem-figcap .llms-mod {
     top: 6px;
     right: 8px;
     display: inline-flex;
@@ -3761,24 +3816,24 @@
     color: #6d28d9;
     background: rgba(167, 139, 250, 0.16);
   }
-  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:last-child .hier-md code {
+  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:last-of-type .hier-md code {
     color: #191919;
     font-size: 14px;
     line-height: 22px;
     font-weight: 400;
   }
-  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:last-child > .hier-note {
+  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:last-of-type > .hier-note {
     margin: 0;
     font-size: 12px;
     line-height: 18px;
     color: #737373;
     flex: 0 0 auto;
   }
-  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:last-child > .hier-note code {
+  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:last-of-type > .hier-note code {
     font-size: 12px;
     color: #525252;
   }
-  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:last-child .hier-md .llms-sec {
+  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:last-of-type .hier-md .llms-sec {
     flex: 0 0 auto;
     gap: 4px;
     margin: 0;
@@ -3787,17 +3842,17 @@
     border-radius: 8px;
     background: transparent;
   }
-  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:last-child .hier-md .llms-sec--fig {
+  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:last-of-type .hier-md .llms-sec--fig {
     background: rgba(52, 211, 153, 0.07);
   }
-  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:last-child .hier-md .llms-sec--copy {
+  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:last-of-type .hier-md .llms-sec--copy {
     background: rgba(14, 165, 233, 0.07);
   }
-  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:last-child .hier-md .llms-sec--cta {
+  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:last-of-type .hier-md .llms-sec--cta {
     background: rgba(167, 139, 250, 0.07);
     padding-right: 88px;
   }
-  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:last-child .hier-md .llms-mod {
+  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:last-of-type .hier-md .llms-mod {
     top: 6px;
     right: 8px;
     display: inline-flex;
@@ -3811,15 +3866,15 @@
     color: #525252;
     background: rgba(25, 25, 25, 0.08);
   }
-  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:last-child .hier-md .llms-sec--fig .llms-mod {
+  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:last-of-type .hier-md .llms-sec--fig .llms-mod {
     color: #047857;
     background: rgba(52, 211, 153, 0.16);
   }
-  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:last-child .hier-md .llms-sec--copy .llms-mod {
+  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:last-of-type .hier-md .llms-sec--copy .llms-mod {
     color: #0369a1;
     background: rgba(14, 165, 233, 0.16);
   }
-  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:last-child .hier-md .llms-sec--cta .llms-mod {
+  #practices .ppt-theme-imgdoc:has(.ppt-sem-fig--shot) .ppt-hier-col:last-of-type .hier-md .llms-sec--cta .llms-mod {
     color: #6d28d9;
     background: rgba(167, 139, 250, 0.16);
   }
@@ -4124,6 +4179,142 @@
     align-self: stretch;
     gap: 8px;
   }
+  #practices .ppt-theme-sem .ppt-sem--ba:has(.ppt-dual-shot--papers) > .ppt-sem-col:last-child .ppt-sem-block,
+  #practices .ppt-theme-sem .ppt-sem--ba:has(.code-card) > .ppt-sem-col:last-child .ppt-sem-block {
+    gap: 8px;
+  }
+  #practices .ppt-theme-sem .ppt-sem--ba:has(.ppt-dual-shot--papers) > .ppt-sem-col:last-child .ppt-sem-head h3.ppt-sem-h,
+  #practices .ppt-theme-sem .ppt-sem--ba:has(.code-card) > .ppt-sem-col:last-child .ppt-sem-head h3.ppt-sem-h {
+    margin: 0;
+  }
+  #practices .ppt-theme-sem .ppt-sem--ba:has(.ppt-dual-shot--papers) > .ppt-sem-col:last-child .ppt-sem-head + .ppt-sem-ui,
+  #practices .ppt-theme-sem .ppt-sem--ba:has(.code-card) > .ppt-sem-col:last-child .ppt-sem-head + .ppt-sem-ui {
+    margin-top: 0;
+  }
+  #practices .ppt-theme-sem .ppt-sem--pair.ppt-sem--ba.ppt-sem--hovershot {
+    grid-template-columns: 1.2fr 0.8fr;
+    min-height: 0;
+  }
+  #practices .ppt-theme-sem .ppt-sem--hovershot > .ppt-sem-col:first-child {
+    min-height: 0;
+    height: 100%;
+  }
+  #practices .ppt-theme-sem .ppt-sem--hovershot > .ppt-sem-col:first-child .ppt-sem-head {
+    flex: 0 0 auto;
+    margin: 0 0 8px;
+  }
+  #practices .ppt-theme-sem .ppt-sem--hovershot > .ppt-sem-col:first-child .ppt-sem-head h3.ppt-sem-h {
+    margin: 0;
+  }
+  #practices .ppt-theme-sem .ppt-sem--hovershot > .ppt-sem-col:first-child .ppt-sem-fig--shot + .ppt-sem-head {
+    margin-top: 8px;
+  }
+  #practices .ppt-theme-sem .ppt-sem--hovershot .ppt-sem-fig--shot {
+    container-type: size;
+    flex: 1 1 0;
+    min-height: 0;
+    width: 100%;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+  }
+  #practices .ppt-theme-sem .ppt-sem--hovershot .ppt-dual-shot--research,
+  #practices .ppt-theme-sem .ppt-sem--hovershot .ppt-dual-shot--inference {
+    position: relative;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100cqh;
+    border: 1px solid #e5e5e5;
+    border-radius: 16px;
+    overflow: hidden;
+    clip-path: inset(0 round 16px);
+    background: #f4f4f5;
+  }
+  #practices .ppt-theme-sem .ppt-sem--hovershot > .ppt-sem-col:last-child .hier-md {
+    position: relative;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 16px;
+    padding: 16px;
+    gap: 8px;
+  }
+  #practices .ppt-theme-sem .ppt-sem--hovershot > .ppt-sem-col:last-child .hier-md::after {
+    content: "…";
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 0;
+    padding: 28px 10px 12px;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #fff 55%);
+    color: #191919;
+    font-size: 12px;
+    line-height: 20px;
+    font-weight: 700;
+    pointer-events: none;
+  }
+  #practices .ppt-theme-sem .ppt-sem--hovershot > .ppt-sem-col:last-child .hier-md code {
+    color: #191919;
+    font-size: 12px;
+    line-height: 20px;
+    font-weight: 400;
+    padding: 0;
+  }
+  #practices .ppt-theme-sem .ppt-sem--hovershot > .ppt-sem-col:last-child .hier-md .llms-sec {
+    padding: 0;
+    padding-right: 0;
+    width: 100%;
+    align-self: stretch;
+    background: transparent;
+  }
+  #practices .ppt-theme-sem .ppt-sem--hovershot > .ppt-sem-col:last-child .hier-md .ppt-dual-block {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    flex: 0 0 auto;
+    align-self: stretch;
+    margin: 0;
+    padding: 6px 10px;
+    border-radius: 8px;
+    color: #191919;
+    font-size: 12px;
+    line-height: 20px;
+    font-weight: 400;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+  #practices .ppt-theme-sem .ppt-sem--hovershot > .ppt-sem-col:last-child .hier-md .ppt-dual-block--idx {
+    background: #f4f4f5;
+    padding-right: 10px;
+  }
+  #practices .ppt-theme-sem .ppt-sem--hovershot > .ppt-sem-col:last-child .hier-md .ppt-dual-block--hero {
+    background: rgba(14, 165, 233, 0.07);
+  }
+  #practices .ppt-theme-sem .ppt-sem--hovershot > .ppt-sem-col:last-child .hier-md .ppt-dual-block--more {
+    background: rgba(167, 139, 250, 0.07);
+  }
+  #practices .ppt-theme-sem .ppt-sem--hovershot > .ppt-sem-col:last-child .hier-md .ppt-dual-block--map {
+    background: #f4f4f5;
+  }
+  #practices .ppt-theme-sem .ppt-sem--hovershot .ppt-dual-shot--research img,
+  #practices .ppt-theme-sem .ppt-sem--hovershot .ppt-dual-shot--inference img {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    object-fit: cover;
+    object-position: 0 0;
+  }
   #practices .ppt-theme-sem .ppt-sem--ba .ppt-sem-block:not(.ppt-sem-block--iconshot) .hier-md {
     flex: 1 1 0;
     min-height: 0;
@@ -4139,6 +4330,9 @@
   }
   #practices .ppt-theme-sem .ppt-sem--ba > .ppt-sem-col:last-child .ppt-sem-block > .hier-label {
     padding-top: 16px;
+  }
+  #practices .ppt-theme-sem .ppt-sem--hovershot > .ppt-sem-col:last-child .ppt-sem-block > .hier-label:first-child {
+    padding-top: 0;
   }
   #practices .ppt-theme-sem .ppt-sem--ba > .ppt-sem-col:last-child .ppt-sem-ui > .hier-label + .hier-desc {
     margin: 8px 0 0;
@@ -4186,12 +4380,14 @@
     gap: 8px;
   }
   #practices .ppt-theme-sem .ppt-sem--img .ppt-sem-ui > .hier-label,
-  #practices .ppt-theme-sem .ppt-sem--img .ppt-sem-codes > .hier-label:first-of-type {
+  #practices .ppt-theme-sem .ppt-sem--img .ppt-sem-codes > .hier-label {
     margin: 0;
     padding: 0;
-    min-height: 20px;
-    font-size: 14px;
-    line-height: 20px;
+    min-height: 22px;
+    font-size: 16px;
+    line-height: 22px;
+    font-weight: 700;
+    color: #171717;
     display: flex;
     align-items: center;
   }
@@ -4307,9 +4503,65 @@
   #practices .ppt-theme-sem .ppt-sem-ui + .hier-label,
   #practices .ppt-theme-sem .ppt-sem-notes + .hier-label,
   #practices .ppt-theme-sem .paper-card + .hier-label,
+  #practices .ppt-theme-sem .code-card + .hier-label,
   #practices .ppt-theme-sem .hier-md + .hier-label,
   #practices .ppt-theme-sem .img-eq + .hier-label {
     padding-top: 16px;
+  }
+  #practices .ppt-theme-code .ppt-sem--ba .code-card {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    overflow: hidden;
+    border: 1px solid #e5e5e5;
+    border-radius: 16px;
+  }
+  #practices .ppt-theme-code .ppt-sem--ba .code-card .anchor-doc {
+    padding: 12px 14px 14px;
+  }
+  #practices .ppt-theme-code .ppt-sem--ba .anchor-h1 {
+    font-size: 14px;
+    line-height: 20px;
+  }
+  #practices .ppt-theme-code .ppt-sem--ba .code-caption {
+    margin-top: 8px;
+    font-size: 12px;
+    line-height: 18px;
+  }
+  #practices .ppt-theme-code .ppt-sem--ba .code-pane,
+  #practices .ppt-theme-code .ppt-sem--ba .code-bad {
+    margin-top: 8px;
+  }
+  #practices .ppt-theme-code .ppt-sem--ba .code-pane pre,
+  #practices .ppt-theme-code .ppt-sem--ba .code-bad pre {
+    font-size: 11px;
+    line-height: 18px;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  #practices .ppt-theme-code .ppt-sem--ba .code-lang {
+    font-size: 11px;
+    line-height: 16px;
+    color: #737373;
+  }
+  #practices .ppt-theme-code .ppt-sem--ba .code-pane {
+    background: #f4f4f5;
+  }
+  #practices .ppt-theme-code .ppt-sem--ba .code-pane pre,
+  #practices .ppt-theme-code .ppt-sem--ba .code-pane pre code {
+    color: #191919;
+  }
+  #practices .ppt-theme-code .ppt-sem--ba .code-act {
+    color: #737373;
+  }
+  #practices .ppt-theme-code .ppt-sem--ba .ppt-sem-block:not(.ppt-sem-block--iconshot) .hier-md {
+    overflow: auto;
+    flex: 1 1 auto;
+    min-height: 220px;
+  }
+  #practices .ppt-theme-code .ppt-sem--ba .ppt-sem-block:not(.ppt-sem-block--iconshot) .hier-md code {
+    font-size: 12px;
+    line-height: 20px;
   }
   #practices .ppt-theme-sem .img-eq {
     margin: 0;
@@ -4438,8 +4690,14 @@
   }
   #practices .ppt-theme-sem .ppt-sem--pair .ppt-sem-fig--iconshot .ppt-dual-shot--hetero,
   #practices .ppt-theme-sem .ppt-sem--pair .ppt-sem-fig--iconshot .ppt-dual-shot--ascendc,
-  #practices .ppt-theme-sem .ppt-sem--pair .ppt-sem-fig--iconshot .ppt-dual-shot--papers {
+  #practices .ppt-theme-sem .ppt-sem--pair .ppt-sem-fig--iconshot .ppt-dual-shot--papers,
+  #practices .ppt-theme-sem .ppt-sem--pair .ppt-sem-fig--iconshot .ppt-dual-shot--envsetup {
     aspect-ratio: auto;
+  }
+  #practices .ppt-theme-sem .ppt-sem--pair .ppt-sem-fig--iconshot .ppt-dual-shot--hetero,
+  #practices .ppt-theme-sem .ppt-sem--pair .ppt-sem-fig--iconshot .ppt-dual-shot--ascendc {
+    padding: 0 24px;
+    box-sizing: border-box;
   }
   #practices .ppt-theme-sem .ppt-sem--pair .ppt-sem-fig--iconshot img {
     max-height: none;
@@ -4448,6 +4706,33 @@
     object-fit: contain;
     object-position: 50% 0;
     transform: none;
+  }
+  #practices .ppt-theme-sem .ppt-sem--pair .ppt-sem-fig--iconshot .ppt-dual-shot--hetero img,
+  #practices .ppt-theme-sem .ppt-sem--pair .ppt-sem-fig--iconshot .ppt-dual-shot--ascendc img {
+    width: 106.4%;
+    max-width: none;
+    height: 100%;
+    margin-left: -3.2%;
+    object-fit: cover;
+    object-position: 50% 0;
+  }
+  #practices .ppt-theme-sem .ppt-sem--pair .ppt-sem-block--iconshot .ppt-sem-ui > .ppt-sem-fig--iconshot:has(.ppt-dual-shot--papers),
+  #practices .ppt-theme-sem .ppt-sem--pair .ppt-sem-block--iconshot .ppt-sem-ui > .ppt-sem-fig--iconshot:has(.ppt-dual-shot--envsetup) {
+    flex: 1 1 auto;
+    min-height: 0;
+    height: auto;
+  }
+  #practices .ppt-theme-sem .ppt-sem--pair .ppt-sem-fig--iconshot .ppt-dual-shot--papers,
+  #practices .ppt-theme-sem .ppt-sem--pair .ppt-sem-fig--iconshot .ppt-dual-shot--envsetup {
+    height: 100%;
+    flex: 1 1 auto;
+  }
+  #practices .ppt-theme-sem .ppt-sem--pair .ppt-sem-fig--iconshot .ppt-dual-shot--papers img,
+  #practices .ppt-theme-sem .ppt-sem--pair .ppt-sem-fig--iconshot .ppt-dual-shot--envsetup img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 0;
   }
   #practices .ppt-theme-sem .ppt-sem-fig img {
     width: 100%;
@@ -4603,6 +4888,20 @@
     border-radius: 8px;
     background: transparent;
   }
+  #practices .ppt-theme-sem .ppt-sem--ba.ppt-sem--hovershot .hier-md .llms-sec {
+    padding: 0;
+    width: 100%;
+  }
+  #practices .ppt-theme-sem .ppt-sem--ba.ppt-sem--hovershot .hier-md .ppt-dual-block {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    padding: 6px 10px;
+    font-size: 12px;
+    line-height: 20px;
+  }
   #practices .ppt-theme-sem .ppt-sem--ba .ppt-sem-block:not(.ppt-sem-block--iconshot) .hier-md .llms-sec--warn {
     background: rgba(220, 38, 38, 0.025);
   }
@@ -4611,6 +4910,12 @@
   }
   #practices .ppt-theme-sem .ppt-sem--ba .ppt-sem-block:not(.ppt-sem-block--iconshot) .hier-md .llms-sec--tip {
     background: rgba(37, 99, 235, 0.025);
+  }
+  #practices .ppt-theme-sem .ppt-sem--ba .ppt-sem-block:not(.ppt-sem-block--iconshot) .hier-md .llms-sec--hero {
+    background: rgba(14, 165, 233, 0.07);
+  }
+  #practices .ppt-theme-sem .ppt-sem--ba .ppt-sem-block:not(.ppt-sem-block--iconshot) .hier-md .llms-sec--more {
+    background: rgba(167, 139, 250, 0.07);
   }
   #practices .ppt-theme-sem .ppt-sem--ba .ppt-sem-block:not(.ppt-sem-block--iconshot) .hier-md .llms-mod {
     position: absolute;
@@ -4639,6 +4944,14 @@
     color: #1d4ed8;
     background: rgba(37, 99, 235, 0.05);
   }
+  #practices .ppt-theme-sem .ppt-sem--ba .ppt-sem-block:not(.ppt-sem-block--iconshot) .hier-md .llms-sec--hero .llms-mod {
+    color: #0369a1;
+    background: rgba(14, 165, 233, 0.16);
+  }
+  #practices .ppt-theme-sem .ppt-sem--ba .ppt-sem-block:not(.ppt-sem-block--iconshot) .hier-md .llms-sec--more .llms-mod {
+    color: #6d28d9;
+    background: rgba(167, 139, 250, 0.16);
+  }
   #practices .ppt-theme-sem .ppt-sem-block .hier-md .llms-skel-bar {
     background: #3f3f3f;
   }
@@ -4651,13 +4964,77 @@
   #practices .ppt-theme-sem .ppt-sem-paper {
     padding: 12px 14px;
   }
+  #practices .ppt-theme-sem .ppt-sem--ba .ppt-sem-block:has(.paper-card) .hier-md {
+    flex: 0 0 auto;
+  }
+  #practices .ppt-theme-sem .ppt-sem--pair:has(.paper-card) {
+    grid-auto-flow: row;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: minmax(0, 1fr);
+    column-gap: 64px;
+    align-items: stretch;
+  }
+  #practices .ppt-theme-sem .ppt-sem--pair:has(.paper-card) .ppt-sem-block:has(.paper-card) {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+  }
+  #practices .ppt-theme-sem .ppt-sem-block:has(.paper-card) {
+    --paper-card-h: 206px;
+  }
   #practices .ppt-theme-sem .paper-card {
     flex: 0 0 auto;
+    box-sizing: border-box;
+    min-height: var(--paper-card-h);
     margin: 0;
     padding: 20px 22px 18px;
     background: #fff;
+    border: 1px solid #e5e5e5;
     border-radius: 8px;
     color: var(--color-text, #171717);
+  }
+  #practices .ppt-theme-sem .ppt-sem--pair:has(.paper-card) .ppt-sem-block:has(.paper-card) .hier-label {
+    margin: 0;
+    padding: 0;
+    font-size: 16px;
+    line-height: 22px;
+    font-weight: 700;
+    color: #171717;
+  }
+  #practices .ppt-theme-sem .ppt-sem--pair:has(.paper-card) .ppt-sem-ui:has(.paper-card) ~ .hier-label {
+    padding-top: 16px;
+  }
+  #practices .ppt-theme-sem .ppt-sem--pair:has(.paper-card) .ppt-sem-ui:has(.paper-card) ~ .hier-md {
+    height: auto;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 16px;
+    padding: 16px;
+    gap: 8px;
+  }
+  #practices .ppt-theme-sem .ppt-sem--pair:has(.paper-card) .ppt-sem-ui:has(.paper-card) ~ .hier-md code {
+    color: #191919;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 400;
+    padding: 0;
+  }
+  #practices .ppt-theme-sem .ppt-sem--pair:has(.paper-card) .ppt-sem-ui:has(.paper-card) ~ .hier-md .llms-skel {
+    box-sizing: border-box;
+    height: auto;
+    min-height: 0;
+    margin-top: 8px;
+    gap: 8px;
+  }
+  #practices .ppt-theme-sem .ppt-sem-block:has(.paper-card) .hier-md .llms-skel-bar {
+    height: 12px;
+    border-radius: 4px;
+    background: #ececec;
+  }
+  #practices .ppt-theme-sem .ppt-sem-block:has(.paper-card) .hier-md .llms-skel-bar:first-child {
+    height: 16px;
   }
   #practices .ppt-theme-sem .paper-card-title {
     margin: 0 0 10px;
@@ -4670,6 +5047,13 @@
     flex-direction: column;
     gap: 8px;
     margin: 0 0 16px;
+  }
+  #practices .ppt-theme-sem mark.ppt-icon-kw {
+    background: rgba(250, 204, 21, 0.2);
+    color: inherit;
+    padding: 0 3px;
+    border-radius: 3px;
+    font-weight: inherit;
   }
   #practices .ppt-theme-sem .paper-card-row {
     display: flex;
@@ -5745,7 +6129,10 @@
   #practices .reach-col.reach-theme.ppt-theme-sem:has(.ppt-sem--img),
   #practices .reach-col.reach-theme.ppt-theme-imgdoc:has(.ppt-sem-fig--shot),
   #practices .reach-col.reach-theme.ppt-theme-sem:has(.ppt-sem-note.is-warn),
-  #practices .reach-col.reach-theme.ppt-theme-sem:has(.ppt-dual-shot--papers) {
+  #practices .reach-col.reach-theme.ppt-theme-sem:has(.ppt-dual-shot--papers),
+  #practices .reach-col.reach-theme.ppt-theme-sem:has(.ppt-dual-shot--research),
+  #practices .reach-col.reach-theme.ppt-theme-sem:has(.ppt-ver-ba),
+  #practices .reach-col.reach-theme.ppt-theme-code {
     background: #fff;
     box-shadow: 0 6px 20px rgba(25, 25, 25, 0.06);
     overflow: visible;
@@ -5758,7 +6145,11 @@
   #practices .reach-stage:has(.ppt-sem--img),
   #practices .reach-stage:has(.ppt-sem-fig--shot),
   #practices .reach-stage:has(.ppt-sem-note.is-warn),
-  #practices .reach-stage:has(.ppt-dual-shot--papers) {
+  #practices .reach-stage:has(.ppt-dual-shot--papers),
+  #practices .reach-stage:has(.ppt-dual-shot--research),
+  #practices .reach-stage:has(.ppt-theme-code),
+  #practices .reach-stage:has(.ppt-ver-ba),
+  #practices .reach-stage.reach-stage--soft {
     background: #f4f3f9;
   }
   #practices .reach-theme.reach-theme--now .file-sample {
@@ -6119,6 +6510,15 @@
     padding: 16px 18px 18px;
     font-size: 16px;
     line-height: 26px;
+  }
+  #practices .reach-theme .ppt-sem--hovershot .file-sample.hier-md > pre {
+    width: 100%;
+    min-width: 0;
+    flex: 0 0 auto;
+    overflow: hidden;
+    padding: 6px 10px;
+    font-size: 12px;
+    line-height: 20px;
   }
   #practices .reach-theme.reach-theme--now .llms-dual .file-sample pre,
   #practices .reach-theme.reach-theme--now .llms-dual .file-sample pre code,
@@ -8874,13 +9274,10 @@ __vector__ __global__ void add_custom(__gm__ float* x, __gm__ float* y, __gm__ f
         </div>
         <div class="reach-col reach-theme ppt-theme-sem">
       <p class="hier-label">图片示例</p>
-      <div class="reach-file-intro">
-        <p>营销图把字写进 HTML，不需要 Markdown 镜像。</p>
-      </div>
       <div class="ppt-sem ppt-sem--img">
             <div class="ppt-sem-mkt">
               <div class="ppt-sem-ui">
-              <p class="hier-label">· UI 展示</p>
+              <p class="hier-label">UI 展示</p>
               <div class="img-eq" aria-label="Banner 等于文字加背景图">
                 <figure class="img-eq-col">
                   <div class="img-eq-card" aria-label="合成结果：文字叠在背景图上">
@@ -8913,7 +9310,7 @@ __vector__ __global__ void add_custom(__gm__ float* x, __gm__ float* y, __gm__ f
               </div>
               </div>
               <div class="ppt-sem-codes">
-              <p class="hier-label">· Markdown 书写</p>
+              <p class="hier-label">Markdown 书写</p>
               <figure class="file-sample hier-md" aria-label="营销图 Markdown">
                 <div class="llms-sec llms-sec--copy">
                   <span class="llms-mod">文字</span>
@@ -8928,7 +9325,7 @@ __vector__ __global__ void add_custom(__gm__ float* x, __gm__ float* y, __gm__ f
                   <div class="hier-md-sec"><code>[月度热榜](https://www.hiascend.com/rankings)</code></div>
                 </div>
               </figure>
-              <p class="hier-label">· 源码书写</p>
+              <p class="hier-label">源码书写</p>
               <figure class="file-sample hier-md" aria-label="营销图 HTML">
                 <div class="llms-sec llms-sec--copy">
                   <span class="llms-mod">文字</span>
@@ -9036,6 +9433,7 @@ __vector__ __global__ void add_custom(__gm__ float* x, __gm__ float* y, __gm__ f
         <div class="reach-col reach-theme ppt-theme-hier ppt-theme-imgdoc">
       <p class="hier-label">文档说明类图片</p>
       <div class="ppt-hier">
+        <svg class="ppt-imgdoc-wire" aria-hidden="true"></svg>
         <div class="ppt-hier-col">
           <div class="fn-ex-head">
             <span class="fn-ex-label">Before</span>
@@ -9045,8 +9443,9 @@ __vector__ __global__ void add_custom(__gm__ float* x, __gm__ float* y, __gm__ f
             <span class="ssr-deck-src-title">矢量编程范式</span>
           </p>
           <figure class="ppt-sem-fig ppt-sem-fig--shot" aria-label="无 Markdown：页面展示图注">
-            <div class="ppt-dual-shot">
+            <div class="ppt-dual-shot ppt-dual-shot--vecprog">
               <img src="assets/cases-html/vector-programming-page.png?v=1" alt="矢量编程范式页上的 CopyIn / Compute / CopyOut 与 VECIN / VECOUT 示意图">
+              <span class="ppt-shot-dash" aria-hidden="true"></span>
             </div>
           </figure>
         </div>
@@ -9331,30 +9730,39 @@ __vector__ __global__ void add_custom(__gm__ float* x, __gm__ float* y, __gm__ f
           </section>
         </div>
         <div class="reach-col reach-theme ppt-theme-sem">
-      <p class="hier-label">颜色与图标示例</p>
+      <p class="hier-label">图标语义化</p>
       <div class="reach-file-intro">
-        <p>色块和图标给人看，含义写进文字给机器读。</p>
+        <p>图标给人看，含义写进文字给机器读。</p>
       </div>
-      <div class="ppt-sem ppt-sem--pair">
+      <div class="ppt-sem ppt-sem--pair ppt-sem--ba">
+          <div class="ppt-sem-col">
+          <div class="fn-ex-head">
+            <span class="fn-ex-label">Before</span>
+            <div class="fn-ex-bar" aria-hidden="true"></div>
+          </div>
           <div class="ppt-sem-block ppt-sem-block--iconshot">
             <div class="ppt-sem-head">
-            <h3 class="ppt-sem-h">学术论文</h3>
+            <h3 class="ppt-sem-h">图标卡片示例</h3>
             </div>
             <div class="ppt-sem-ui">
             <figure class="ppt-sem-fig ppt-sem-fig--iconshot" aria-label="MindSpore 学术论文页">
               <div class="ppt-dual-shot ppt-dual-shot--papers">
-                <img src="assets/cases-html/mindspore-papers-page.png?v=1" alt="昇思学术论文页：热门论文精讲、领域筛选与论文卡片">
+                <img src="assets/cases-html/mindspore-papers-page.png?v=4" alt="昇思学术论文页：导航、热门论文横幅、领域筛选与论文卡片列表">
               </div>
             </figure>
             </div>
           </div>
+          </div>
+          <div class="ppt-sem-col">
+          <div class="fn-ex-head">
+            <span class="fn-ex-label is-good">After</span>
+            <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+          </div>
           <div class="ppt-sem-block">
             <div class="ppt-sem-head">
-            <h3 class="ppt-sem-h">图标理解</h3>
-            <p class="hier-desc">把图标的意义写成文字，不靠图形表意。</p>
+            <h3 class="ppt-sem-h">UI 展示</h3>
             </div>
             <div class="ppt-sem-ui">
-            <p class="hier-label">· UI 展示</p>
             <div class="paper-card" aria-label="作者与发布时间">
               <p class="paper-card-title sk" aria-hidden="true"></p>
               <p class="paper-card-desc sk" aria-hidden="true"></p>
@@ -9364,13 +9772,13 @@ __vector__ __global__ void add_custom(__gm__ float* x, __gm__ float* y, __gm__ f
                   <span class="mi" aria-hidden="true">
                     <svg viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                   </span>
-                  <span>作者 Shiyue Xu, Fu Zhang, Jingwei Cheng, Linfeng Zhou</span>
+                  <span><mark class="ppt-icon-kw">作者</mark> Shiyue Xu, Fu Zhang, Jingwei Cheng, Linfeng Zhou</span>
                 </div>
                 <div class="paper-card-row">
                   <span class="mi" aria-hidden="true">
                     <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v5l3 2"/></svg>
                   </span>
-                  <span>发布时间 2025年7月</span>
+                  <span><mark class="ppt-icon-kw">发布时间</mark> 2025年7月</span>
                 </div>
               </div>
               <div class="paper-card-actions">
@@ -9379,20 +9787,25 @@ __vector__ __global__ void add_custom(__gm__ float* x, __gm__ float* y, __gm__ f
               </div>
             </div>
             </div>
-            <p class="hier-label">· Markdown 书写</p>
+            <p class="hier-label">Markdown 书写</p>
             <figure class="file-sample hier-md" aria-label="图标语义 Markdown">
               <div class="hier-md-sec">
                 <code># MWPO: …</code>
-                <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:88%"></span><span class="llms-skel-bar" style="width:64%"></span></span>
+                <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:92%"></span><span class="llms-skel-bar" style="width:100%"></span><span class="llms-skel-bar" style="width:64%"></span></span>
               </div>
-              <div class="hier-md-sec"><code>**作者** Shiyue Xu, Fu Zhang, Jingwei Cheng, Linfeng Zhou</code></div>
-              <div class="hier-md-sec"><code>**发布时间** 2025年7月</code></div>
+              <div class="hier-md-sec"><code>**<mark class="ppt-icon-kw">作者</mark>** Shiyue Xu, Fu Zhang, Jingwei Cheng, Linfeng Zhou</code></div>
+              <div class="hier-md-sec"><code>**<mark class="ppt-icon-kw">发布时间</mark>** 2025年7月</code></div>
             </figure>
-            <p class="hier-label">· HTML 书写</p>
-            <figure class="file-sample hier-md" aria-label="图标语义 HTML">
-              <div class="hier-md-sec"><code>&lt;span&gt;作者 Shiyue Xu, Fu Zhang, Jingwei Cheng, Linfeng Zhou&lt;/span&gt;</code></div>
-              <div class="hier-md-sec"><code>&lt;time datetime="2025-07"&gt;发布时间 2025年7月&lt;/time&gt;</code></div>
+            <p class="hier-label">源码书写</p>
+            <figure class="file-sample hier-md" aria-label="图标语义源码">
+              <div class="hier-md-sec">
+                <code>&lt;h1&gt;MWPO: …&lt;/h1&gt;</code>
+                <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:92%"></span><span class="llms-skel-bar" style="width:100%"></span><span class="llms-skel-bar" style="width:64%"></span></span>
+              </div>
+              <div class="hier-md-sec"><code>&lt;span&gt;<mark class="ppt-icon-kw">作者</mark> Shiyue Xu, Fu Zhang, Jingwei Cheng, Linfeng Zhou&lt;/span&gt;</code></div>
+              <div class="hier-md-sec"><code>&lt;time datetime="2025-07"&gt;<mark class="ppt-icon-kw">发布时间</mark> 2025年7月&lt;/time&gt;</code></div>
             </figure>
+          </div>
           </div>
       </div>
         </div>
@@ -9483,90 +9896,58 @@ __vector__ __global__ void add_custom(__gm__ float* x, __gm__ float* y, __gm__ f
           </section>
         </div>
         <div class="reach-col reach-theme ppt-theme-sem">
-      <p class="hier-label">交互示例</p>
-      <div class="reach-file-intro">
-        <p>悬停与 Tab 给人点，含义写进文字给机器读。</p>
-      </div>
-      <div class="ppt-sem ppt-sem--pair">
-          <div class="ppt-sem-block">
+      <p class="hier-label">交互语义化</p>
+      <div class="ppt-sem ppt-sem--pair ppt-sem--ba ppt-sem--hovershot">
+          <div class="ppt-sem-col">
+          <div class="fn-ex-head">
+            <span class="fn-ex-label">Before</span>
+            <div class="fn-ex-bar" aria-hidden="true"></div>
+          </div>
             <div class="ppt-sem-head">
-            <h3 class="ppt-sem-h">悬停</h3>
-            <p class="hier-desc">定义写在词条旁，不把含义只放在气泡里。</p>
+            <h3 class="ppt-sem-h">教育科研</h3>
             </div>
-            <div class="ppt-sem-ui">
-            <p class="hier-label">· UI 展示</p>
-            <div class="ppt-sem-hover" aria-label="术语定义写在正文">
-              <p>请先完成 <span class="ppt-sem-term" title="昇腾异构计算架构">CANN</span> 再继续。</p>
-              <p class="ppt-sem-hover-def"><strong>CANN：</strong>昇腾异构计算架构，提供驱动、编译与运行时。</p>
-            </div>
-            </div>
-            <p class="hier-label">· Markdown 书写</p>
-            <figure class="file-sample hier-md" aria-label="悬停 Markdown">
-              <div class="hier-md-sec"><code>请先完成 CANN 再继续。</code></div>
-              <div class="hier-md-sec"><code>CANN：昇腾异构计算架构，提供驱动、编译与运行时。</code></div>
+            <figure class="ppt-sem-fig ppt-sem-fig--shot" aria-label="鲲鹏昇腾科研创新页">
+              <div class="ppt-dual-shot ppt-dual-shot--research">
+                <img src="assets/cases-html/kunpeng-research-tabs.png?v=2" alt="了解与鲲鹏昇腾合作的科研成果：计算系统平台 Tab 下的计算机体系统结构、模型/算法、训推加速、算子/加速库卡片">
+              </div>
             </figure>
-            <p class="hier-label">· HTML 书写</p>
-            <figure class="file-sample hier-md" aria-label="悬停 HTML">
-              <div class="hier-md-sec"><code>请先完成 CANN 再继续。</code></div>
-              <div class="hier-md-sec"><code>&lt;p&gt;&lt;strong&gt;CANN：&lt;/strong&gt;昇腾异构计算架构，提供驱动、编译与运行时。&lt;/p&gt;</code></div>
+            <div class="ppt-sem-head">
+            <h3 class="ppt-sem-h">推理开发</h3>
+            </div>
+            <figure class="ppt-sem-fig ppt-sem-fig--shot" aria-label="昇腾推理开发页">
+              <div class="ppt-dual-shot ppt-dual-shot--inference">
+                <img src="assets/cases-html/hiascend-inference-dev.png?v=1" alt="推理开发：vLLM、SGLang、MindIE 三个 Tab 与 vLLM 推理开发内容">
+              </div>
             </figure>
           </div>
+          <div class="ppt-sem-col">
+          <div class="fn-ex-head">
+            <span class="fn-ex-label is-good">After</span>
+            <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+          </div>
           <div class="ppt-sem-block">
-            <div class="ppt-sem-head">
-            <h3 class="ppt-sem-h">Tab</h3>
-            <p class="hier-desc">各栏目标题与卡片写入稿面，Tab 只改激活态。</p>
-            </div>
-            <div class="ppt-sem-ui">
-            <p class="hier-label">· UI 展示</p>
-            <div class="ppt-sem-tabs" aria-label="昇腾首页资讯 Tab">
-              <p class="ppt-sem-tabs-title">昇腾万里，让智能无所不及</p>
-              <div class="ppt-sem-tabs-nav" role="tablist" aria-label="资讯栏目">
-                <button type="button" class="ppt-sem-tab is-on" role="tab" aria-selected="true">最新发布</button>
-                <button type="button" class="ppt-sem-tab" role="tab" aria-selected="false">产业资讯</button>
-                <button type="button" class="ppt-sem-tab" role="tab" aria-selected="false">精彩活动</button>
-                <button type="button" class="ppt-sem-tab" role="tab" aria-selected="false">官方技术文章</button>
-              </div>
-              <div class="ppt-sem-tabs-panel" role="tabpanel">
-                <article class="ppt-sem-tab-card"><a href="https://www.hiascend.com/zh/activities/dynamic-news/775?id=775" target="_blank" rel="noopener">代码侦探挑战赛（第五期）开启</a></article>
-                <article class="ppt-sem-tab-card"><a href="https://www.hiascend.com/zh/activities/dynamic-news/774?id=774" target="_blank" rel="noopener">昇腾“淬火行动”广州专场——破局昇腾落地最后一公里</a></article>
-                <article class="ppt-sem-tab-card"><a href="https://www.hiascend.com/zh/activities/dynamic-news/773?id=773" target="_blank" rel="noopener">2026昇腾软件焕新体验：效率升级！昇腾资料4大新优化上线，一站式获取所需资料</a></article>
-              </div>
-            </div>
-            </div>
-            <p class="hier-label">· Markdown 书写</p>
-            <figure class="file-sample hier-md" aria-label="Tab Markdown">
-              <div class="hier-md-sec"><code>## 最新发布</code></div>
-              <div class="hier-md-sec"><code>- [代码侦探挑战赛（第五期）开启](https://www.hiascend.com/zh/activities/dynamic-news/775?id=775)</code></div>
-              <div class="hier-md-sec"><code>…</code></div>
-              <div class="hier-md-sec"><code>## 产业资讯</code></div>
-              <div class="hier-md-sec"><code>- [淬火至蓉城 · 昇腾「淬火行动」成都专场圆满收官](https://mp.weixin.qq.com/s/UE1xxWeHRuEmUP6gkm7N4A)</code></div>
-              <div class="hier-md-sec"><code>…</code></div>
-              <div class="hier-md-sec"><code>## 精彩活动</code></div>
-              <div class="hier-md-sec"><code>- [鲲鹏昇腾开发者大会2026](https://www.hiascend.com/ascend-2026KADC)</code></div>
-              <div class="hier-md-sec"><code>…</code></div>
-              <div class="hier-md-sec"><code>## 官方技术文章</code></div>
-              <div class="hier-md-sec"><code>- vLLM 流式 Function Call 工具调用内容缺失问题排查与解决</code></div>
-              <div class="hier-md-sec"><code>…</code></div>
+            <p class="hier-label">Markdown 书写</p>
+            <figure class="file-sample hier-md" aria-label="科研创新 Tab Markdown">
+              <pre class="ppt-dual-block ppt-dual-block--idx"># [了解与鲲鹏昇腾合作的科研成果](https://edu.hicomputing.huawei.com/researchers)</pre>
+              <pre class="ppt-dual-block ppt-dual-block--hero">## 计算系统平台
+- [计算机体系统结构](https://edu.hicomputing.huawei.com/researchers)：从芯片到集群的全栈体系结构创新，构筑高效算力底座。
+- [模型/算法](https://edu.hicomputing.huawei.com/researchers)：面向鲲鹏昇腾的模型创新与算法研究，探索AI计算新边界。
+- [训推加速](https://edu.hicomputing.huawei.com/researchers)：全流程训推加速/优化技术，让AI模型训练推理更高效。
+- [算子/加速库](https://edu.hicomputing.huawei.com/researchers)：底层算子与加速库深度优化，释放硬件极致性能。
+- [编程框架](https://edu.hicomputing.huawei.com/researchers)：编程框架与编译技术，简化异构计算开发部署。</pre>
+              <pre class="ppt-dual-block ppt-dual-block--more">## 通用应用技术
+- [通用智能体](https://edu.hicomputing.huawei.com/researchers)：具备自主感知、规划与决策能力的通用智能实体，拓展AI应用边界。
+- [推荐/检索技术](https://edu.hicomputing.huawei.com/researchers)：智能推荐与向量检索技术，实现精准高效的信息匹配。
+- [生成式AI](https://edu.hicomputing.huawei.com/researchers)：文本、图像、语音、代码生成，赋能内容创作与人机交互创新。
+- [具身智能](https://edu.hicomputing.huawei.com/researchers)：智能体与物理环境交互的感知决策技术，赋能机器人及自主系统。
+- [空间智能](https://edu.hicomputing.huawei.com/researchers)：三维重建与跨模态空间智能，拓展虚实融合的感知与生成能力。</pre>
+              <pre class="ppt-dual-block ppt-dual-block--map">## 科学/行业应用
+- [工业智能](https://edu.hicomputing.huawei.com/researchers)：工业仿真、智能运维与优化决策，加速工业数字化升级。
+- [物质科学](https://edu.hicomputing.huawei.com/researchers)：物质模拟与材料设计，探索材料与分子的微观奥秘。
+- [生命科学](https://edu.hicomputing.huawei.com/researchers)：生命系统与健康技术研究，助力基因、蛋白与药物等方向的探索。
+- [地球科学](https://edu.hicomputing.huawei.com/researchers)：地球系统模拟与预测，探索大气、海洋、地质的演化规律。</pre>
             </figure>
-            <p class="hier-label">· HTML 书写</p>
-            <figure class="file-sample hier-md" aria-label="Tab HTML">
-              <div class="hier-md-sec"><code>&lt;div class="tab-panel" data-active="true"&gt;</code></div>
-              <div class="hier-md-sec"><code>  &lt;a href="https://www.hiascend.com/zh/activities/dynamic-news/775?id=775"&gt;代码侦探挑战赛（第五期）开启&lt;/a&gt;</code></div>
-              <div class="hier-md-sec"><code>  …</code></div>
-              <div class="hier-md-sec"><code>&lt;/div&gt;</code></div>
-              <div class="hier-md-sec"><code>&lt;div class="tab-panel"&gt;</code></div>
-              <div class="hier-md-sec"><code>  &lt;a href="https://mp.weixin.qq.com/s/UE1xxWeHRuEmUP6gkm7N4A"&gt;淬火至蓉城 · 昇腾「淬火行动」成都专场圆满收官&lt;/a&gt;</code></div>
-              <div class="hier-md-sec"><code>  …</code></div>
-              <div class="hier-md-sec"><code>&lt;/div&gt;</code></div>
-              <div class="hier-md-sec"><code>&lt;div class="tab-panel"&gt;</code></div>
-              <div class="hier-md-sec"><code>  &lt;a href="https://www.hiascend.com/ascend-2026KADC"&gt;鲲鹏昇腾开发者大会2026&lt;/a&gt;</code></div>
-              <div class="hier-md-sec"><code>  …</code></div>
-              <div class="hier-md-sec"><code>&lt;/div&gt;</code></div>
-              <div class="hier-md-sec"><code>&lt;div class="tab-panel"&gt;</code></div>
-              <div class="hier-md-sec"><code>  &lt;p&gt;vLLM 流式 Function Call 工具调用内容缺失问题排查与解决&lt;/p&gt;</code></div>
-              <div class="hier-md-sec"><code>  …</code></div>
-              <div class="hier-md-sec"><code>&lt;/div&gt;</code></div>
-            </figure>
+          </div>
           </div>
       </div>
         </div>
@@ -9793,7 +10174,7 @@ __vector__ __global__ void add_custom(__gm__ float* x, __gm__ float* y, __gm__ f
       <button type="button" class="reach-fs-next">下一页</button>
       <button type="button" class="reach-fs-close">关闭</button>
       </div>
-      <div class="reach-stage">
+      <div class="reach-stage reach-stage--soft">
       <div class="reach-stage-head">
       <div class="reach-stage-head-copy">
       <p class="reach-stage-title">适用版本与更新日期可区分</p>
@@ -9869,10 +10250,7 @@ __vector__ __global__ void add_custom(__gm__ float* x, __gm__ float* y, __gm__ f
           </section>
         </div>
         <div class="reach-col reach-theme ppt-theme-sem">
-      <p class="hier-label">版本时效示例</p>
-      <div class="reach-file-intro">
-        <p>来源：<a href="https://www.hiascend.com/document/detail/zh/MindSpeed/latest/releasenote/docs/zh/release_notes_llm.md" target="_blank" rel="noopener">版本说明 · 配套表</a>；<a href="https://www.hiascend.com/document/detail/zh/MindSpeed/latest/LLM/MindSpeed_LLM/docs/zh/introduction.md" target="_blank" rel="noopener">简介 · 详情页头</a></p>
-      </div>
+      <p class="hier-label">版本时效语义化</p>
       <div class="ppt-ver-ba">
           <div class="ppt-ver-col">
             <div class="fn-ex-head">
@@ -9885,26 +10263,40 @@ __vector__ __global__ void add_custom(__gm__ float* x, __gm__ float* y, __gm__ f
               <thead>
                 <tr>
                   <th>MindSpeed LLM版本</th>
-                  <th>MindSpeed Core代码分支名称</th>
-                  <th>Megatron版本</th>
-                  <th>PyTorch版本</th>
-                  <th>TorchNPU版本</th>
+                  <th>维护策略</th>
+                  <th>版本状态</th>
+                  <th>更新时间</th>
+                  <th>后续状态</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
                   <td>26.1.0</td>
-                  <td>26.1.0_core_r0.12.1</td>
-                  <td>core_v0.12.1</td>
-                  <td>2.7.1</td>
-                  <td>26.1.0</td>
+                  <td>常规版本</td>
+                  <td>开发</td>
+                  <td>预计2026/6/30发布</td>
+                  <td>预计2026/12/30起无维护</td>
                 </tr>
                 <tr>
                   <td>26.0.0</td>
-                  <td>26.0.0_core_r0.12.1</td>
-                  <td>core_v0.12.1</td>
-                  <td>2.7.1</td>
-                  <td>26.0.0</td>
+                  <td>常规版本</td>
+                  <td>维护</td>
+                  <td>2026/3/30</td>
+                  <td>预计2026/9/30起无维护</td>
+                </tr>
+                <tr>
+                  <td>2.3.0</td>
+                  <td>常规版本</td>
+                  <td>维护</td>
+                  <td>2025/12/30</td>
+                  <td>生命周期终止</td>
+                </tr>
+                <tr>
+                  <td>2.2.0</td>
+                  <td>常规版本</td>
+                  <td>EOL</td>
+                  <td>2025/9/30</td>
+                  <td>生命周期终止</td>
                 </tr>
               </tbody>
             </table>
@@ -9921,7 +10313,7 @@ __vector__ __global__ void add_custom(__gm__ float* x, __gm__ float* y, __gm__ f
               </div>
             </div>
             </div>
-            <p class="ppt-ver-note">配套表无 v 前缀、无独立更新日期；详情页头只有标题。</p>
+            <p class="ppt-ver-note">版本列无 v 前缀。详情页头只有标题。</p>
           </div>
           <div class="ppt-ver-col">
             <div class="fn-ex-head">
@@ -9934,32 +10326,40 @@ __vector__ __global__ void add_custom(__gm__ float* x, __gm__ float* y, __gm__ f
               <thead>
                 <tr>
                   <th>MindSpeed LLM版本</th>
-                  <th>更新时间</th>
+                  <th>维护策略</th>
                   <th>版本状态</th>
-                  <th>MindSpeed Core代码分支名称</th>
-                  <th>Megatron版本</th>
-                  <th>PyTorch版本</th>
-                  <th>TorchNPU版本</th>
+                  <th>更新时间</th>
+                  <th>后续状态</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
                   <td>v26.1.0</td>
-                  <td><time datetime="2026-06-30">2026/06/30</time></td>
-                  <td>当前维护</td>
-                  <td>26.1.0_core_r0.12.1</td>
-                  <td>core_v0.12.1</td>
-                  <td>2.7.1</td>
-                  <td>26.1.0</td>
+                  <td>常规版本</td>
+                  <td><span class="ppt-ver-tag is-live">维护中</span></td>
+                  <td>预计<time datetime="2026-06-30">2026/6/30</time>发布</td>
+                  <td>预计<time datetime="2026-12-30">2026/12/30</time>起无维护</td>
                 </tr>
                 <tr>
                   <td>v26.0.0</td>
-                  <td><time datetime="2026-03-30">2026/03/30</time></td>
-                  <td>维护</td>
-                  <td>26.0.0_core_r0.12.1</td>
-                  <td>core_v0.12.1</td>
-                  <td>2.7.1</td>
-                  <td>26.0.0</td>
+                  <td>常规版本</td>
+                  <td><span class="ppt-ver-tag is-sunset">日落</span></td>
+                  <td><time datetime="2026-03-30">2026/3/30</time></td>
+                  <td>预计<time datetime="2026-09-30">2026/9/30</time>起无维护</td>
+                </tr>
+                <tr>
+                  <td>v2.3.0</td>
+                  <td>常规版本</td>
+                  <td><span class="ppt-ver-tag is-eol">已废弃</span></td>
+                  <td><time datetime="2025-12-30">2025/12/30</time></td>
+                  <td>生命周期终止</td>
+                </tr>
+                <tr>
+                  <td>v2.2.0</td>
+                  <td>常规版本</td>
+                  <td><span class="ppt-ver-tag is-eol">已废弃</span></td>
+                  <td><time datetime="2025-09-30">2025/9/30</time></td>
+                  <td>生命周期终止</td>
                 </tr>
               </tbody>
             </table>
@@ -10091,13 +10491,37 @@ __vector__ __global__ void add_custom(__gm__ float* x, __gm__ float* y, __gm__ f
             <p>把可执行代码变成可识别、可复制、可核对的证据——让机器跑得动、对得上、不误判。</p>
           </section>
         </div>
-        <div class="reach-col reach-theme ppt-theme-code">
-      <p class="hier-label">代码块示例</p>
-      <div class="reach-file-intro">
-        <p>语言、复制和预期输出给人核对，干净正文给机器执行。</p>
-      </div>
-      <div class="ppt-code">
-        <div class="llms-anno code-layout-main" aria-label="正面代码块标注">
+        <div class="reach-col reach-theme ppt-theme-sem ppt-theme-code">
+      <p class="hier-label">代码语义化</p>
+      <div class="ppt-sem ppt-sem--pair ppt-sem--ba">
+          <div class="ppt-sem-col">
+          <div class="fn-ex-head">
+            <span class="fn-ex-label">Before</span>
+            <div class="fn-ex-bar" aria-hidden="true"></div>
+          </div>
+          <div class="ppt-sem-block ppt-sem-block--iconshot">
+            <div class="ppt-sem-head">
+            <h3 class="ppt-sem-h">代码块示例</h3>
+            </div>
+            <div class="ppt-sem-ui">
+            <figure class="ppt-sem-fig ppt-sem-fig--iconshot" aria-label="环境准备页代码块">
+              <div class="ppt-dual-shot ppt-dual-shot--envsetup">
+                <img src="assets/cases-html/environment-setup-page.png?v=1" alt="环境准备页：安装 CMake 示例代码块">
+              </div>
+            </figure>
+            </div>
+          </div>
+          </div>
+          <div class="ppt-sem-col">
+          <div class="fn-ex-head">
+            <span class="fn-ex-label is-good">After</span>
+            <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+          </div>
+          <div class="ppt-sem-block">
+            <div class="ppt-sem-head">
+            <h3 class="ppt-sem-h">UI 展示</h3>
+            </div>
+            <div class="ppt-sem-ui">
           <figure class="anchor-card code-card is-good" aria-label="正面：有语言、无行号、有预期输出">
             <div class="anchor-doc">
               <p class="anchor-h1">环境准备</p>
@@ -10105,15 +10529,14 @@ __vector__ __global__ void add_custom(__gm__ float* x, __gm__ float* y, __gm__ f
               <p class="code-caption">示例：安装 3.16.0 版本的 CMake（x86_64 架构）。</p>
               <div class="code-pane">
                 <div class="code-lang">
-                  <span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">语言类型</span><span class="anno-num">1</span><span class="anno-leader"></span><span class="anno-tip"></span></span>Bash</span>
-                  <span class="code-lang-acts llms-row">
+                  <span>Bash</span>
+                  <span class="code-lang-acts">
                     <button type="button" class="code-act" aria-label="复制" tabindex="-1">
                       <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M10.5 5.5V4A1.5 1.5 0 0 0 9 2.5H4A1.5 1.5 0 0 0 2.5 4v5A1.5 1.5 0 0 0 4 10.5h1.5" stroke="currentColor" stroke-width="1.2"/></svg>
                     </button>
                     <button type="button" class="code-act" aria-label="咨询智慧助手" tabindex="-1">
                       <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2.2 9.15 6.1 13 7.2 9.15 8.3 8 12.2 6.85 8.3 3 7.2l3.85-1.1L8 2.2Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M12.4 3.2v1.6M13.2 4h-1.6M3.6 11.4v1.2M4.2 12h-1.2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
                     </button>
-                    <span class="llms-pin llms-pin--right" aria-hidden="true"><span class="anno-cap">操作</span><span class="anno-num">2</span><span class="anno-leader"></span><span class="anno-tip"></span></span>
                   </span>
                 </div>
                 <pre><code>mkdir -p cmake-3.16 &amp;&amp; wget -qO- "https://cmake.org/files/v3.16/cmake-3.16.0-Linux-x86_64.tar.gz" | tar --strip-components=1 -xz -C cmake-3.16
@@ -10123,7 +10546,7 @@ cmake --version</code></pre>
               <p class="code-caption">执行后输出如下：</p>
               <div class="code-pane">
                 <div class="code-lang">
-                  <span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">预期输出</span><span class="anno-num">3</span><span class="anno-leader"></span><span class="anno-tip"></span></span>Output</span>
+                  <span>Output</span>
                   <span class="code-lang-acts">
                     <button type="button" class="code-act" aria-label="复制" tabindex="-1">
                       <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M10.5 5.5V4A1.5 1.5 0 0 0 9 2.5H4A1.5 1.5 0 0 0 2.5 4v5A1.5 1.5 0 0 0 4 10.5h1.5" stroke="currentColor" stroke-width="1.2"/></svg>
@@ -10137,44 +10560,29 @@ cmake --version</code></pre>
               </div>
             </div>
           </figure>
-        </div>
-          <div class="ppt-code-notes">
-            <ol class="llms-anno-legend">
-            <li><span class="anno-num">1</span><span><strong>语言类型</strong>标明代码语言，供人与 Agent 识别。</span></li>
-            <li><span class="anno-num">2</span><span><strong>操作</strong>提供复制，及「咨询智慧助手」以针对该段代码提问。</span></li>
-            <li><span class="anno-num">3</span><span><strong>预期输出</strong>给出执行成功后的可见结果，供核对。</span></li>
-            <li><span class="anno-num">4</span><span><strong>代码行</strong>行号写进代码正文，复制与入库被污染。</span></li>
-            </ol>
-          </div>
-        <div class="ppt-code-side">
-          <div class="fn-ex-head">
-            <span class="fn-ex-label">常见问题</span>
-            <div class="fn-ex-bar" aria-hidden="true"></div>
-          </div>
-          <div class="ppt-code-side-body">
-          <ul class="code-issues">
-            <li>代码块顶未标明语言，Agent 查询语言耗费 token</li>
-            <li>代码行有数字标记，导致代码抓取混乱</li>
-          </ul>
-          <div class="llms-anno ppt-code-bad-anno" aria-label="反面代码行号标注">
-          <figure class="anchor-card code-card is-compact" aria-label="反面：无语言、有行号、无预期输出">
-            <div class="anchor-doc">
-              <p class="anchor-h1">环境准备</p>
-              <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:92%"></span><span class="llms-skel-bar" style="width:64%"></span></span>
-              <p class="code-caption">示例：安装 3.16.0 版本的 CMake（x86_64 架构）。</p>
-              <div class="code-bad">
-                <div class="gutter llms-row" aria-hidden="true">
-                  <span class="llms-pin llms-pin--left"><span class="anno-cap">代码行</span><span class="anno-num">4</span><span class="anno-leader"></span><span class="anno-tip"></span></span>
-                  <span>1</span><span>2</span>
-                </div>
-                <pre><code>mkdir -p cmake-3.16 &amp;&amp; wget -qO- "https://cmake.org/files/v3.16/cmake-3.16.0-Linux-x86_64.tar.gz" | tar --strip-components=1 -xz -C cmake-3.16
-export PATH=`pwd`/cmake-3.16/bin:$PATH</code></pre>
-              </div>
             </div>
-          </figure>
+            <p class="hier-label">Markdown 书写</p>
+            <figure class="file-sample hier-md" aria-label="代码块 Markdown">
+              <div class="hier-md-sec"><code># 环境准备</code></div>
+              <div class="hier-md-sec"><code>示例：安装 3.16.0 版本的 CMake（x86_64 架构）。</code></div>
+              <div class="llms-sec llms-sec--hero">
+                <span class="llms-mod">Bash</span>
+                <div class="hier-md-sec"><code>```bash
+mkdir -p cmake-3.16 &amp;&amp; wget -qO- "https://cmake.org/files/v3.16/cmake-3.16.0-Linux-x86_64.tar.gz" | tar --strip-components=1 -xz -C cmake-3.16
+export PATH=`pwd`/cmake-3.16/bin:$PATH
+cmake --version
+```</code></div>
+              </div>
+              <div class="hier-md-sec"><code>执行后输出如下：</code></div>
+              <div class="llms-sec llms-sec--more">
+                <span class="llms-mod">Output</span>
+                <div class="hier-md-sec"><code>```text
+cmake version 3.16.0
+```</code></div>
+              </div>
+            </figure>
           </div>
           </div>
-        </div>
       </div>
         </div>
       </div>
@@ -10241,6 +10649,6 @@ export PATH=`pwd`/cmake-3.16/bin:$PATH</code></pre>
 
 <script src="assets/js/site-config.js"></script>
 <script src="assets/js/site-init.js"></script>
-<script src="assets/js/reach-wires.js?v=dual23"></script>
+<script src="assets/js/reach-wires.js?v=dual26"></script>
 </body>
 </html>

@@ -552,6 +552,37 @@
       wire(mark, iconLab, "#6366f1");
   }
 
+  function layoutImgdocCallout(hier) {
+    var svg = hier.querySelector(".ppt-imgdoc-wire");
+    var from = hier.querySelector(".ppt-shot-dash");
+    var cols = hier.querySelectorAll(".ppt-hier-col");
+    var to = cols.length > 1 ? cols[1].querySelector(".ppt-sem-fig") : null;
+    if (!svg || !from || !to) return;
+
+    var w = Math.max(1, hier.offsetWidth);
+    var h = Math.max(1, hier.offsetHeight);
+    svg.setAttribute("viewBox", "0 0 " + w + " " + h);
+    svg.setAttribute("width", w);
+    svg.setAttribute("height", h);
+
+    var a = localBox(from, hier);
+    var b = localBox(to, hier);
+    var x1 = a.x + a.w;
+    var y1 = a.y + a.h / 2;
+    var x2 = b.x - 16 - 3.5;
+    var y2 = b.y + b.h / 2;
+    var d = dualPath(x1, y1, x2, y2);
+    svg.innerHTML =
+      '<path d="' +
+      d +
+      '" stroke="#191919" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>' +
+      '<circle cx="' +
+      x2 +
+      '" cy="' +
+      y2 +
+      '" r="3.5" fill="#191919"/>';
+  }
+
   function layout() {
     scaleStage();
     document.querySelectorAll("#practices .reach-chart").forEach(function (chart, i) {
@@ -559,6 +590,7 @@
       else layoutChart(chart, "rc-arr-" + i);
     });
     document.querySelectorAll("#practices .ppt-dual").forEach(layoutDual);
+    document.querySelectorAll("#practices .ppt-hier:has(.ppt-dual-shot--vecprog)").forEach(layoutImgdocCallout);
     document.querySelectorAll("#practices .llms-dual").forEach(layoutLlmsJump);
     document.querySelectorAll("#practices .ssr-loss").forEach(layoutSsrLoss);
     alignSsrDeckRows();
