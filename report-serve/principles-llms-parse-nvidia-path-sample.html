@@ -1923,17 +1923,22 @@
   #practices .reach-agent--bar.reach-agent--tight .reach-node-title {
     white-space: nowrap;
   }
-  #practices .reach-stage:has(#reach-branch-dup) .reach-stage-head-copy {
+  #practices .reach-stage:has(#reach-branch-dup) .reach-stage-head-copy,
+  #practices .reach-stage:has(#reach-branch-llms) .reach-stage-head-copy {
     flex: 1 1 auto;
     max-width: none;
   }
   #practices .reach-stage:has(#reach-branch-path) .reach-stage-head {
+    margin-bottom: 32px;
     padding: 0;
-    align-items: center;
   }
   #practices .reach-stage:has(#reach-branch-path) .reach-stage-head-copy {
     flex: 1 1 auto;
     max-width: none;
+  }
+  #practices .reach-board.reach-board--pair:has(#reach-branch-path) {
+    grid-template-columns: 2.3fr 7.7fr;
+    column-gap: 64px;
   }
   #practices .reach-agent--bar .reach-stack {
     flex-direction: row;
@@ -2828,8 +2833,8 @@
   }
   #practices .ppt-copy-ba .ppt-faq-h1 {
     margin: 0;
-    font-size: 15px;
-    line-height: 22px;
+    font-size: 12px;
+    line-height: 18px;
     font-weight: 750;
     color: #171717;
   }
@@ -2837,8 +2842,8 @@
     margin: 8px 0 4px;
     padding: 0;
     border: none;
-    font-size: 13px;
-    line-height: 20px;
+    font-size: 12px;
+    line-height: 18px;
     font-weight: 700;
     color: #171717;
   }
@@ -2851,16 +2856,16 @@
   }
   #practices .ppt-copy-ba .ppt-faq-p {
     margin: 0 0 5px;
-    font-size: 11px;
-    line-height: 16px;
+    font-size: 12px;
+    line-height: 18px;
     color: #404040;
   }
   #practices .ppt-copy-ba .ppt-faq-p:last-child { margin-bottom: 0; }
   #practices .ppt-copy-ba .ppt-faq-list {
     margin: 0 0 5px;
     padding: 0 0 0 16px;
-    font-size: 11px;
-    line-height: 16px;
+    font-size: 12px;
+    line-height: 18px;
     color: #404040;
   }
   #practices .ppt-copy-ba .ppt-faq-k {
@@ -2911,8 +2916,8 @@
     color: inherit;
   }
   #practices .ppt-copy-ba .ppt-copy-hl--lead {
-    background: #dcfce7;
-    color: #166534;
+    background: #f3e8ff;
+    color: #7e22ce;
   }
   #practices .ppt-copy-ba .ppt-copy-hl--name {
     background: #dbeafe;
@@ -2925,6 +2930,15 @@
   #practices .ppt-copy-ba .ppt-copy-hl--title {
     background: #f3e8ff;
     color: #7e22ce;
+  }
+  #practices .ppt-copy-ba .ppt-copy-hl--flow {
+    background: #fce7f3;
+    color: #9d174d;
+  }
+  #practices .ppt-copy-ba .ppt-copy-hl--conn {
+    background: #f472b6;
+    color: #831843;
+    font-weight: 700;
   }
   #practices .ppt-copy-ba .ppt-sem-col .ppt-sem-block {
     gap: 8px;
@@ -2954,10 +2968,88 @@
     margin-top: 4px;
     border-radius: 2px;
   }
-  #practices .ppt-copy-ba .ppt-copy-swatch--lead { background: #16a34a; }
+  #practices .ppt-copy-ba .ppt-copy-swatch--lead { background: #9333ea; }
   #practices .ppt-copy-ba .ppt-copy-swatch--name { background: #2563eb; }
   #practices .ppt-copy-ba .ppt-copy-swatch--term { background: #ea580c; }
   #practices .ppt-copy-ba .ppt-copy-swatch--title { background: #9333ea; }
+  #practices .ppt-copy-ba .ppt-copy-swatch--flow { background: #db2777; }
+
+  #practices .ppt-g31 {
+    min-width: 0;
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  #practices .ppt-g31 .ppt-copy-ba {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+  #practices .ppt-theme-sem:has(.ppt-g31) > .hier-label {
+    margin-bottom: 12px;
+  }
+  #practices .ppt-g31-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  #practices .ppt-g31-nav {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 16px;
+    margin: 0 0 12px;
+    padding: 0;
+    border-bottom: 1px solid #e5e5e5;
+    min-width: 0;
+  }
+  #practices .ppt-g31-nav label {
+    appearance: none;
+    flex: 0 1 auto;
+    min-width: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    font: inherit;
+    padding: 0 0 6px;
+    margin-bottom: -1px;
+    font-size: 14px;
+    line-height: 18px;
+    color: #8c8c8c;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+  }
+  #practices .ppt-g31:has(#g31-lead:checked) label[for="g31-lead"],
+  #practices .ppt-g31:has(#g31-name:checked) label[for="g31-name"],
+  #practices .ppt-g31:has(#g31-flow:checked) label[for="g31-flow"],
+  #practices .ppt-g31:has(#g31-term:checked) label[for="g31-term"] {
+    color: #191919;
+    font-weight: 650;
+    border-bottom-color: #191919;
+  }
+  #practices .ppt-g31:has(#g31-lead:checked) .ppt-copy-ba mark.ppt-copy-hl:not([data-g31="lead"]),
+  #practices .ppt-g31:has(#g31-name:checked) .ppt-copy-ba mark.ppt-copy-hl:not([data-g31="name"]),
+  #practices .ppt-g31:has(#g31-flow:checked) .ppt-copy-ba mark.ppt-copy-hl:not([data-g31="flow"]),
+  #practices .ppt-g31:has(#g31-term:checked) .ppt-copy-ba mark.ppt-copy-hl:not([data-g31="term"]) {
+    background: transparent;
+    color: inherit;
+    font-weight: inherit;
+    padding: 0;
+  }
+  #practices .ppt-g31:has(#g31-lead:checked) .ppt-copy-legend li:not([data-g31="lead"]),
+  #practices .ppt-g31:has(#g31-name:checked) .ppt-copy-legend li:not([data-g31="name"]),
+  #practices .ppt-g31:has(#g31-flow:checked) .ppt-copy-legend li:not([data-g31="flow"]),
+  #practices .ppt-g31:has(#g31-term:checked) .ppt-copy-legend li:not([data-g31="term"]) {
+    display: none;
+  }
+  #practices .ppt-g31 .ppt-copy-legend {
+    grid-template-columns: 1fr;
+  }
   #practices .ppt-ver-list {
     display: flex;
     flex-direction: column;
@@ -4554,6 +4646,26 @@
     height: 3px;
     width: 100%;
   }
+  #practices .ppt-copy-ba > .ppt-sem-col:first-child > .fn-ex-head {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    column-gap: 8px;
+  }
+  #practices .ppt-copy-ba > .ppt-sem-col:first-child > .fn-ex-head .fn-ex-bar {
+    grid-column: 1 / -1;
+  }
+  #practices .ppt-copy-ba > .ppt-sem-col:first-child > .fn-ex-head .fn-ex-label:not(.is-good) {
+    justify-self: start;
+  }
+  #practices .ppt-copy-ba > .ppt-sem-col:first-child > .fn-ex-head .fn-ex-more {
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 400;
+    color: #171717;
+    text-decoration: none;
+    white-space: nowrap;
+  }
   #practices .ppt-theme-sem .ppt-sem--ba .ppt-sem-block {
     display: flex;
     flex-direction: column;
@@ -5537,9 +5649,14 @@
   #practices .reach-board.reach-board--pair:has(.is-branch):not(:has(.reach-brief)) {
     grid-template-columns: 2fr 7.7fr;
   }
-  #practices .reach-board.reach-board--pair:has(#reach-branch-dup) {
+  #practices .reach-board.reach-board--pair:has(#reach-branch-dup),
+  #practices .reach-board.reach-board--pair:has(#reach-branch-llms),
+  #practices .reach-board.reach-board--pair:has(.llms-jump-to) {
     grid-template-columns: 2.3fr 7.7fr;
     column-gap: 64px;
+  }
+  #practices .reach-board.reach-board--pair:has(.llms-jump-to) .reach-brief {
+    margin-right: 0;
   }
   #practices .reach-board.reach-board--sitemap {
     grid-template-columns: 2fr 7.7fr;
@@ -5681,7 +5798,9 @@
     border: 0;
     border-radius: 0;
   }
-  #practices #reach-branch-dup {
+  #practices #reach-branch-dup,
+  #practices #reach-branch-llms,
+  #practices #reach-branch-path {
     background: transparent;
     padding: 0;
     border-radius: 0;
@@ -6253,6 +6372,108 @@
     margin-top: 2px;
     white-space: nowrap;
   }
+  #practices .reach-board:has(#reach-branch-dup) .reach-col.reach-theme:has(.language-robots) .llms-anno {
+    padding-left: 256px;
+  }
+  #practices .reach-board:has(#reach-branch-dup) .reach-col.reach-theme:has(.language-robots) .file-sample--robots-full pre {
+    padding-top: 16px;
+  }
+  #practices .reach-board:has(#reach-branch-dup) .reach-col.reach-theme:has(.language-robots) .file-sample--robots-full .llms-secs {
+    gap: 14px;
+    margin-top: 0;
+  }
+  #practices .reach-board:has(#reach-branch-dup) .reach-col.reach-theme:has(.language-robots) .file-sample--robots-full .llms-sec {
+    padding: 12px 12px;
+  }
+  #practices .reach-board:has(#reach-branch-dup) .reach-col.reach-theme:has(.language-robots) .file-sample--robots-full pre,
+  #practices .reach-board:has(#reach-branch-dup) .reach-col.reach-theme:has(.language-robots) .file-sample--robots-full pre code,
+  #practices .reach-board:has(#reach-branch-dup) .reach-col.reach-theme:has(.language-robots) .file-sample--robots-full .llms-row {
+    font-size: 12px;
+    line-height: 20px;
+  }
+  #practices .reach-board:has(#reach-branch-dup) .reach-col.reach-theme:has(.language-robots) .file-sample--robots-full .llms-row mark {
+    display: inline-block;
+    font: inherit;
+    line-height: 20px;
+    padding: 0 3px;
+    vertical-align: top;
+  }
+  #practices .reach-board:has(#reach-branch-dup) .reach-col.reach-theme:has(.language-robots) .llms-pin {
+    align-items: flex-start;
+    gap: 8px;
+    top: 2px;
+  }
+  #practices .reach-board:has(#reach-branch-dup) .reach-col.reach-theme:has(.language-robots) .llms-pin .anno-leader,
+  #practices .reach-board:has(#reach-branch-dup) .reach-col.reach-theme:has(.language-robots) .llms-pin .anno-tip {
+    margin-top: 9px;
+  }
+  #practices .reach-board:has(#reach-branch-dup) .reach-col.reach-theme:has(.language-robots) .llms-pin .anno-leader {
+    flex: 1 1 auto;
+    width: auto;
+    min-width: 24px;
+    flex-shrink: 1;
+  }
+  #practices .reach-board:has(#reach-branch-dup) .reach-col.reach-theme:has(.language-robots) .llms-pin--left {
+    box-sizing: border-box;
+    width: 256px;
+    max-width: 256px;
+    margin-right: 8px;
+  }
+  #practices .reach-board:has(#reach-branch-dup) .reach-col.reach-theme:has(.language-robots) .llms-pin .anno-cap {
+    flex: 0 1 auto;
+    min-width: 0;
+    white-space: nowrap;
+    max-width: none;
+    text-align: left;
+    align-items: flex-start;
+  }
+  #practices .reach-board:has(#reach-branch-dup) .reach-col.reach-theme:has(.language-robots) .llms-pin .anno-name {
+    white-space: normal;
+    max-width: none;
+    line-height: 16px;
+    text-align: left;
+  }
+  #practices .reach-board:has(#reach-branch-llms) .reach-col.reach-theme .llms-anno {
+    padding-left: 256px;
+  }
+  #practices .reach-board:has(#reach-branch-llms) .reach-col.reach-theme .file-sample pre {
+    padding-top: 16px;
+  }
+  #practices .reach-board:has(#reach-branch-llms) .reach-col.reach-theme .llms-pin {
+    align-items: flex-start;
+    gap: 8px;
+    top: 2px;
+  }
+  #practices .reach-board:has(#reach-branch-llms) .reach-col.reach-theme .llms-pin .anno-leader,
+  #practices .reach-board:has(#reach-branch-llms) .reach-col.reach-theme .llms-pin .anno-tip {
+    margin-top: 9px;
+  }
+  #practices .reach-board:has(#reach-branch-llms) .reach-col.reach-theme .llms-pin .anno-leader {
+    flex: 1 1 auto;
+    width: auto;
+    min-width: 24px;
+    flex-shrink: 1;
+  }
+  #practices .reach-board:has(#reach-branch-llms) .reach-col.reach-theme .llms-pin--left {
+    box-sizing: border-box;
+    width: 256px;
+    max-width: 256px;
+    margin-right: 8px;
+  }
+  #practices .reach-board:has(#reach-branch-llms) .reach-col.reach-theme .llms-pin .anno-cap {
+    flex: 0 1 auto;
+    min-width: 0;
+    white-space: nowrap;
+    max-width: none;
+    text-align: left;
+    align-items: flex-start;
+  }
+  #practices .reach-board:has(#reach-branch-llms) .reach-col.reach-theme .llms-pin .anno-name {
+    white-space: normal;
+    max-width: none;
+    line-height: 16px;
+    text-align: left;
+  }
   #practices .reach-theme .llms-pin .anno-leader {
     width: 28px;
     flex-shrink: 0;
@@ -6302,6 +6523,17 @@
     min-height: 0;
     padding: 14px 18px 16px;
   }
+  #practices .reach-board:has(#reach-branch-path) .ppt-nv,
+  #practices .reach-board:has(#reach-branch-path) .ppt-as {
+    background-color: #fff;
+    box-shadow: 0 6px 20px rgba(25, 25, 25, 0.06);
+    overflow: visible;
+  }
+  #practices .reach-board:has(#reach-branch-path) .ppt-nv {
+    background-image: radial-gradient(#d8d8d4 1.1px, transparent 1.1px);
+    background-size: 14px 14px;
+    border-color: transparent;
+  }
   #practices .ppt-nv .ppt-brand {
     height: 28px;
     min-height: 28px;
@@ -6313,6 +6545,9 @@
     white-space: nowrap;
     align-items: center;
     box-sizing: border-box;
+  }
+  #practices .reach-board:has(#reach-branch-path) .ppt-nv .ppt-brand {
+    margin-bottom: 12px;
   }
   #practices .ppt-nv > .seq-legend {
     position: absolute;
@@ -6428,6 +6663,33 @@
     min-height: 280px;
     display: flex;
     flex-direction: column;
+  }
+  #practices .reach-board:has(#reach-branch-path) .ppt-nv-seq {
+    display: grid;
+    grid-template-columns: 10fr 236fr 34fr 236fr 34fr 236fr 34fr 236fr 24fr;
+    align-items: stretch;
+  }
+  #practices .reach-board:has(#reach-branch-path) .ppt-nv-col-cap {
+    grid-row: 1;
+    align-self: end;
+    margin: 0 0 4px;
+    min-width: 0;
+    font-size: 16px;
+    line-height: 22px;
+    font-weight: 700;
+    color: #191919;
+    white-space: nowrap;
+  }
+  #practices .reach-board:has(#reach-branch-path) .ppt-nv-col-cap:nth-child(1) { grid-column: 2; }
+  #practices .reach-board:has(#reach-branch-path) .ppt-nv-col-cap:nth-child(2) { grid-column: 4; }
+  #practices .reach-board:has(#reach-branch-path) .ppt-nv-col-cap:nth-child(3) { grid-column: 6; }
+  #practices .reach-board:has(#reach-branch-path) .ppt-nv-col-cap:nth-child(4) { grid-column: 8; }
+  #practices .reach-board:has(#reach-branch-path) .ppt-nv-seq .seq {
+    grid-row: 2;
+    grid-column: 1 / -1;
+  }
+  #practices .reach-board:has(#reach-branch-path) .ppt-nv-seq .seq svg {
+    padding-top: 0;
   }
   #practices .ppt-nv-seq .seq {
     flex: 1;
@@ -6602,6 +6864,8 @@
   #practices .reach-theme--now {
     min-width: 0;
   }
+  #practices .reach-board:has(#reach-branch-dup) .reach-col.reach-theme:has(.language-robots),
+  #practices .reach-board:has(#reach-branch-llms) .reach-col.reach-theme,
   #practices .reach-col.reach-theme.reach-theme--now:has(.llms-dual-wires),
   #practices .reach-col.reach-theme.reach-theme--now:has(.language-robots),
   #practices .reach-col.reach-theme.ppt-theme-ssr:has(.ssr-pair),
@@ -8057,57 +8321,105 @@ Sitemap: https://example.com/sitemap.xml
 <span class="llms-row"># GF Forums</span>
 <span class="llms-row">Disallow: /*?topicPage=</span>
 <span class="llms-row">Disallow: /*&amp;topicPage=</span>
-<span class="llms-row">Disallow: /*?commentPage=</span>
-<span class="llms-row">Disallow: /*&amp;commentPage=</span>
-<span class="llms-row"># Account &amp; Authentication</span>
-<span class="llms-row">Disallow: /*/training/academy/auth/</span>
-<span class="llms-row">Disallow: /*/training/academy/login/</span>
-<span class="llms-row">Disallow: /admin/</span>
-<span class="llms-row">Disallow: /attach/</span>
-<span class="llms-row">Disallow: /content/experience-fragments/*</span>
-<span class="llms-row">Disallow: /content/forms/</span>
-<span class="llms-row">Disallow: /content/license/driver_license.aspx</span>
-<span class="llms-row">Disallow: /content/nvidiaGDC.*\.(?!png|jpg|svg).+$</span>
-<span class="llms-row">Disallow: /content/temp/*</span>
-<span class="llms-row">Disallow: /ddl2*</span>
-<span class="llms-row">Disallow: /email-verify/*</span>
-<span class="llms-row">Disallow: /forms/*</span>
-<span class="llms-row">Disallow: /*/geforce/release-notes/GFE/Rich/*</span>
-<span class="llms-row">Disallow: /*/geforce/release-notes/GFN/Rich/*</span>
-<span class="llms-row">Disallow: /*/geforce/release-notes/GFNB/Rich/*</span>
-<span class="llms-row">Disallow: /*/geforce/comparisons/*</span>
-<span class="llms-row">Disallow: /*/geforce/billboards/*</span>
-<span class="llms-row">Disallow: /*/geforce/news/gfecnt/*</span>
-<span class="llms-row">Disallow: /processFind*</span>
-<span class="llms-row">Disallow: /props/</span>
-<span class="llms-row">Disallow: /*.swf$</span>
-<span class="llms-row"># Parameters</span>
-<span class="llms-row">Disallow: /*accessToken=*</span>
-<span class="llms-row">Disallow: /*cid=*</span>
-<span class="llms-row">Disallow: /*eid=*</span>
-<span class="llms-row">Disallow: /*hstc=*</span>
-<span class="llms-row">Disallow: /*jso=*</span>
-<span class="llms-row">Disallow: /*link=*</span>
-<span class="llms-row">Disallow: /*lx=*</span>
-<span class="llms-row">Disallow: /*ncid=*</span>
-<span class="llms-row">Disallow: /*nv_excludes=*</span>
-<span class="llms-row">Disallow: /*nvid=*</span>
-<span class="llms-row">Disallow: /*page=*</span>
-<span class="llms-row">Disallow: /*ref=*</span>
-<span class="llms-row">Disallow: /*srsltid=*</span>
-<span class="llms-row">Disallow: /*section=*</span>
-<span class="llms-row">Disallow: /*target=*</span>
-<span class="llms-row">Disallow: /*topicpage=*</span>
-<span class="llms-row">Disallow: /*utm*</span>
-<span class="llms-row">Disallow: /*search.industrysegment=*</span>
-<span class="llms-row">Disallow: /*search.keytheme=*</span>
-<span class="llms-row">Disallow: /*search.sessiontype=*</span>
-<span class="llms-row">Disallow: /*search.technicallevel=*</span>
-<span class="llms-row">Disallow: /*search.productstechnology=*</span>
-<span class="llms-row"># GTC Fixes</span>
-<span class="llms-row">Disallow: /*[?&amp;]regcode=*</span>
-<span class="llms-row">Disallow: /*[?&amp;]wcmmode=*</span>
-<span class="llms-row">Disallow: /*/gtc/gtc-chatbot/*</span></span></span></code></pre>
+<span class="llms-row">Disallow: /*?commentPage=</span></span></span></code></pre>
+          </figure>
+          </div>
+        </div>
+      </div>
+      </div>
+      </div>
+      <div class="reach-stage-frame" tabindex="0" aria-label="AI 网站搜索 2：从索引 llms.txt 中获取内容，点击放大到全屏">
+      <div class="reach-fs-bar" hidden>
+      <button type="button" class="reach-fs-prev">上一页</button>
+      <button type="button" class="reach-fs-next">下一页</button>
+      <button type="button" class="reach-fs-close">关闭</button>
+      </div>
+      <div class="reach-stage reach-stage--soft">
+      <div class="reach-stage-head">
+      <div class="reach-stage-head-copy">
+      <p class="reach-stage-title">AI 网站搜索 2：从索引 llms.txt 中获取内容</p>
+      </div>
+      <div class="reach-agent reach-agent--bar reach-agent--tight">
+          <div class="reach-stack reach-time">
+            <button type="button" class="reach-node is-on" aria-expanded="true" aria-controls="reach-branch-llms">
+              <span class="reach-dot" aria-hidden="true"></span>
+              <span class="reach-node-body">
+                <span class="reach-tag">可达</span>
+                <span class="reach-caption">
+                  <span class="reach-node-title">网站搜索</span>
+                </span>
+              </span>
+            </button>
+            <button type="button" class="reach-node">
+              <span class="reach-dot" aria-hidden="true"></span>
+              <span class="reach-node-body">
+                <span class="reach-tag">可读</span>
+                <span class="reach-caption">
+                  <span class="reach-node-title">抓取网页内容</span>
+                </span>
+              </span>
+            </button>
+            <button type="button" class="reach-node">
+              <span class="reach-dot" aria-hidden="true"></span>
+              <span class="reach-node-body">
+                <span class="reach-tag">可理解</span>
+                <span class="reach-caption">
+                  <span class="reach-node-title">内容注入到上下文</span>
+                </span>
+              </span>
+            </button>
+            <button type="button" class="reach-node">
+              <span class="reach-dot" aria-hidden="true"></span>
+              <span class="reach-node-body">
+                <span class="reach-tag">可验证</span>
+                <span class="reach-caption">
+                  <span class="reach-node-title">基于证据组织内容</span>
+                </span>
+              </span>
+            </button>
+          </div>
+      </div>
+      </div>
+      <div class="reach-board reach-board--pair" aria-label="AI 网站搜索 2：从索引 llms.txt 中获取内容：Web Fetch、示例">
+        <div class="reach-col is-branch" id="reach-branch-llms">
+          <p class="hier-label">Agent Web Fetch 流程</p>
+          <div class="reach-chart">
+            <svg class="rc-wires" viewBox="0 0 100 100" fill="none" aria-hidden="true" preserveAspectRatio="none"></svg>
+            <div class="rc-node" data-rc="gate">
+              <p class="rc-head">读取许可声明</p>
+              <div class="rc-body"><span class="rc-file">robots.txt</span></div>
+            </div>
+            <div class="rc-flow">
+              <span class="rc-chip rc-chip-yes">有llms</span>
+              <span class="rc-chip rc-chip-no">无llms</span>
+              <span class="rc-chip rc-chip-guess">猜地址</span>
+              <div class="rc-node is-on" data-rc="llms">
+                <p class="rc-head">查找索引目录</p>
+                <div class="rc-body"><span class="rc-file">llms.txt</span></div>
+              </div>
+              <div class="rc-node" data-rc="sitemap">
+                <p class="rc-head">查看兜底URL清单</p>
+                <div class="rc-body"><span class="rc-file">sitemap.xml</span></div>
+              </div>
+              <div class="rc-node" data-rc="leaf">
+                <p class="rc-head">打开正文URL</p>
+                <div class="rc-body"><span class="rc-file">.html</span><span class="rc-file">.md</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="reach-col reach-theme">
+          <p class="hier-label">NVIDIA llms.txt</p>
+          <div class="reach-file-intro">
+            <p>2024 年社区惯例（非强制协议），默认放在根路径 <code>/llms.txt</code>。</p>
+          </div>
+          <div class="llms-anno">
+          <figure class="file-sample" aria-label="nvidia.com/llms.txt 根索引目录">
+            <figcaption><code>nvidia.com/llms.txt</code></figcaption>
+            <pre><code><span class="llms-head"><span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">首页名称<span class="anno-name"># 后面跟随首页名称</span></span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-1"># NVIDIA Corporation</mark></span>
+<span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">首页描述<span class="anno-name">&gt; 后面跟随首页描述</span></span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-2">&gt; This file provides links to the llms.txt of NVIDIA's main and international websites, helping large language models (LLMs) better understand the content and structure of each of NVIDIA's locale-specific websites. Follow the links below to deeper llms.txt pages for each locale website. Each country may have more than one language that content is translated into.</mark></span></span>
+
+<span class="llms-secs"><span class="llms-sec"><span class="llms-mod">北美站</span><span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">北美模块<span class="anno-name">## 模块名 - [分册](地址)</span></span><span class="anno-leader"></span><span class="anno-tip"></span></span><span class="llms-line"><mark class="hl-3">## The NVIDIA North America Websites</mark></span></span><span class="llms-line">- [NVIDIA U.S. Website](https://www.nvidia.com/en-us/llms.txt): Marketing, corporate, product information.</span><span class="llms-line">- [NVIDIA OpenSource Website] (https://opensource.nvidia.com/en-us/llms.txt)</span></span><span class="llms-sec"><span class="llms-mod">文档站</span><span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">文档模块</span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-3">## NVIDIA Technical Documentation Website</mark></span><span class="llms-row llms-row--parts"><span class="llms-parts"><span class="llms-part llms-part--title"><span class="llms-part-txt">- [Tech Docs]</span><span class="llms-part-lab">分册标题</span></span><span class="llms-part llms-part--url"><span class="llms-part-txt">(https://docs.nvidia.com/llms.txt)</span><span class="llms-part-lab">站点 llms 分册地址</span></span><span class="llms-part llms-part--note"><span class="llms-part-txt">: Technical documentation for NVIDIA products.</span><span class="llms-part-lab">分册说明</span></span></span></span></span><span class="llms-sec"><span class="llms-mod">开发者站</span><span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">开发者模块</span><span class="anno-leader"></span><span class="anno-tip"></span></span><span class="llms-line"><mark class="hl-3">## NVIDIA Developer Websites</mark></span></span><span class="llms-line">- [NVIDIA Developer](https://developer.nvidia.com/llms.txt): Downloads, SDKs, frameworks, libraries, forums.</span></span></span></code></pre>
           </figure>
           </div>
         </div>
@@ -8194,191 +8506,20 @@ Sitemap: https://example.com/sitemap.xml
       </div>
       </div>
       </div>
-      <div class="reach-stage-frame" tabindex="0" aria-label="补充索引目录 llms.txt，让 Agent 找到选页入口，点击放大到全屏">
-      <div class="reach-fs-bar" hidden>
-      <button type="button" class="reach-fs-prev">上一页</button>
-      <button type="button" class="reach-fs-next">下一页</button>
-      <button type="button" class="reach-fs-close">关闭</button>
-      </div>
-      <div class="reach-stage">
-      <div class="reach-stage-head">
-      <div class="reach-stage-head-copy">
-      <p class="reach-stage-title">补充索引目录 llms.txt，让 Agent 找到选页入口</p>
-      </div>
-      <div class="reach-agent reach-agent--bar reach-agent--tight">
-          <div class="reach-stack reach-time">
-            <button type="button" class="reach-node is-on" aria-expanded="true" aria-controls="reach-branch-llms">
-              <span class="reach-dot" aria-hidden="true"></span>
-              <span class="reach-node-body">
-                <span class="reach-tag">可达</span>
-                <span class="reach-caption">
-                  <span class="reach-node-title">网站搜索</span>
-                </span>
-              </span>
-            </button>
-            <button type="button" class="reach-node">
-              <span class="reach-dot" aria-hidden="true"></span>
-              <span class="reach-node-body">
-                <span class="reach-tag">可读</span>
-                <span class="reach-caption">
-                  <span class="reach-node-title">抓取网页内容</span>
-                </span>
-              </span>
-            </button>
-            <button type="button" class="reach-node">
-              <span class="reach-dot" aria-hidden="true"></span>
-              <span class="reach-node-body">
-                <span class="reach-tag">可理解</span>
-                <span class="reach-caption">
-                  <span class="reach-node-title">内容注入到上下文</span>
-                </span>
-              </span>
-            </button>
-            <button type="button" class="reach-node">
-              <span class="reach-dot" aria-hidden="true"></span>
-              <span class="reach-node-body">
-                <span class="reach-tag">可验证</span>
-                <span class="reach-caption">
-                  <span class="reach-node-title">基于证据组织内容</span>
-                </span>
-              </span>
-            </button>
-          </div>
-      </div>
-      </div>
-      <div class="reach-board reach-board--pair" aria-label="补充索引目录 llms.txt，让 Agent 找到选页入口：场景原则、Web Fetch、示例">
-        <div class="reach-brief">
-          <section class="reach-brief-block">
-            <h3>场景</h3>
-            <p>Agent 读取 <code>/llms.txt</code> 索引目录，根据每条目录「是什么 + 何时用」判断相关性，直接选定下一步打开的目标页面，无需逐页试抓。</p>
-          </section>
-          <section class="reach-brief-block">
-            <h3>具体原则</h3>
-            <ol>
-              <li>索引文件收录并指向知识面路径。</li>
-              <li>索引条目写清名称、描述和路径。</li>
-            </ol>
-          </section>
-          <section class="reach-brief-block">
-            <h3>核心价值</h3>
-            <p>llms.txt 是 Agent 的网站的知识面导航：帮 Agent 选对入口、选到该读的那一页。</p>
-          </section>
-        </div>
-        <div class="reach-col is-branch" id="reach-branch-llms">
-          <p class="hier-label">Agent Web Fetch 流程</p>
-          <div class="reach-chart">
-            <svg class="rc-wires" viewBox="0 0 100 100" fill="none" aria-hidden="true" preserveAspectRatio="none"></svg>
-            <div class="rc-node" data-rc="gate">
-              <p class="rc-head">读取许可声明</p>
-              <div class="rc-body"><span class="rc-file">robots.txt</span></div>
-            </div>
-            <div class="rc-flow">
-              <span class="rc-chip rc-chip-yes">有llms</span>
-              <span class="rc-chip rc-chip-no">无llms</span>
-              <span class="rc-chip rc-chip-guess">猜地址</span>
-              <div class="rc-node is-on" data-rc="llms">
-                <p class="rc-head">查找索引目录</p>
-                <div class="rc-body"><span class="rc-file">llms.txt</span></div>
-              </div>
-              <div class="rc-node" data-rc="sitemap">
-                <p class="rc-head">查看兜底URL清单</p>
-                <div class="rc-body"><span class="rc-file">sitemap.xml</span></div>
-              </div>
-              <div class="rc-node" data-rc="leaf">
-                <p class="rc-head">打开正文URL</p>
-                <div class="rc-body"><span class="rc-file">.html</span><span class="rc-file">.md</span></div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="reach-col reach-theme">
-          <p class="hier-label">llms.txt 示例</p>
-          <div class="reach-file-intro">
-            <p>2024 年社区惯例（非强制协议），默认放在根路径 <code>/llms.txt</code>。</p>
-          </div>
-          <div class="llms-anno">
-          <figure class="file-sample" aria-label="nvidia.com/llms.txt 根索引目录">
-            <figcaption><code>nvidia.com/llms.txt</code></figcaption>
-            <pre><code><span class="llms-head"><span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">首页名称<span class="anno-name"># 后面跟随首页名称</span></span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-1"># NVIDIA Corporation</mark></span>
-<span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">首页描述<span class="anno-name">&gt; 后面跟随首页描述</span></span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-2">&gt; This file provides links to the llms.txt of NVIDIA's main and international websites, helping large language models (LLMs) better understand the content and structure of each of NVIDIA's locale-specific websites. Follow the links below to deeper llms.txt pages for each locale website. Each country may have more than one language that content is translated into.</mark></span></span>
-
-<span class="llms-secs"><span class="llms-sec"><span class="llms-mod">北美站</span><span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">北美模块<span class="anno-name">## 模块名 - [分册](地址)</span></span><span class="anno-leader"></span><span class="anno-tip"></span></span><span class="llms-line"><mark class="hl-3">## The NVIDIA North America Websites</mark></span></span><span class="llms-line">- [NVIDIA U.S. Website](https://www.nvidia.com/en-us/llms.txt): Marketing, corporate, product information.</span><span class="llms-line">- [NVIDIA OpenSource Website] (https://opensource.nvidia.com/en-us/llms.txt)</span></span><span class="llms-sec"><span class="llms-mod">文档站</span><span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">文档模块</span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-3">## NVIDIA Technical Documentation Website</mark></span><span class="llms-row llms-row--parts"><span class="llms-parts"><span class="llms-part llms-part--title"><span class="llms-part-txt">- [Tech Docs]</span><span class="llms-part-lab">分册标题</span></span><span class="llms-part llms-part--url"><span class="llms-part-txt">(https://docs.nvidia.com/llms.txt)</span><span class="llms-part-lab">站点 llms 分册地址</span></span><span class="llms-part llms-part--note"><span class="llms-part-txt">: Technical documentation for NVIDIA products.</span><span class="llms-part-lab">分册说明</span></span></span></span></span><span class="llms-sec"><span class="llms-mod">开发者站</span><span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">开发者模块</span><span class="anno-leader"></span><span class="anno-tip"></span></span><span class="llms-line"><mark class="hl-3">## NVIDIA Developer Websites</mark></span></span><span class="llms-line">- [NVIDIA Developer](https://developer.nvidia.com/llms.txt): Downloads, SDKs, frameworks, libraries, forums.</span></span></span></code></pre>
-          </figure>
-          </div>
-        </div>
-      </div>
-      </div>
-      </div>
       <div class="reach-stage-frame" tabindex="0" aria-label="优化 llms.txt 结构，提升 Agent 选页效率，点击放大到全屏">
       <div class="reach-fs-bar" hidden>
       <button type="button" class="reach-fs-prev">上一页</button>
       <button type="button" class="reach-fs-next">下一页</button>
       <button type="button" class="reach-fs-close">关闭</button>
       </div>
-      <div class="reach-stage">
+      <div class="reach-stage reach-stage--soft">
       <div class="reach-stage-head">
       <div class="reach-stage-head-copy">
       <p class="reach-stage-title">优化 llms.txt 结构，提升 Agent 选页效率</p>
-      </div>
-      <div class="reach-agent reach-agent--bar reach-agent--tight">
-          <div class="reach-stack reach-time">
-            <button type="button" class="reach-node is-on" aria-expanded="true" aria-controls="reach-branch-path">
-              <span class="reach-dot" aria-hidden="true"></span>
-              <span class="reach-node-body">
-                <span class="reach-tag">可达</span>
-                <span class="reach-caption">
-                  <span class="reach-node-title">网站搜索</span>
-                </span>
-              </span>
-            </button>
-            <button type="button" class="reach-node">
-              <span class="reach-dot" aria-hidden="true"></span>
-              <span class="reach-node-body">
-                <span class="reach-tag">可读</span>
-                <span class="reach-caption">
-                  <span class="reach-node-title">抓取网页内容</span>
-                </span>
-              </span>
-            </button>
-            <button type="button" class="reach-node">
-              <span class="reach-dot" aria-hidden="true"></span>
-              <span class="reach-node-body">
-                <span class="reach-tag">可理解</span>
-                <span class="reach-caption">
-                  <span class="reach-node-title">内容注入到上下文</span>
-                </span>
-              </span>
-            </button>
-            <button type="button" class="reach-node">
-              <span class="reach-dot" aria-hidden="true"></span>
-              <span class="reach-node-body">
-                <span class="reach-tag">可验证</span>
-                <span class="reach-caption">
-                  <span class="reach-node-title">基于证据组织内容</span>
-                </span>
-              </span>
-            </button>
-          </div>
+      <p class="reach-stage-lead">索引轻量、分册拆分，让 Agent 一次读全，用更少 token 选到正确页面。</p>
       </div>
       </div>
-      <div class="reach-board reach-board--pair" aria-label="优化 llms.txt 结构，提升 Agent 选页效率：场景原则、Web Fetch、NVIDIA 路径示例">
-        <div class="reach-brief">
-          <section class="reach-brief-block">
-            <h3>上线后问题</h3>
-            <p>9 月上线后，根路径 <code>llms.txt</code> 文件过大，Agent 一次扫不完；截断点后的条目等于没下载，选页耗费 token 过高。</p>
-          </section>
-          <section class="reach-brief-block">
-            <h3>优化原则</h3>
-            <ol>
-              <li>索引轻量，让大模型一次能读全。</li>
-              <li>网站多层级时，llms 用分册拆分。</li>
-            </ol>
-          </section>
-          <section class="reach-brief-block">
-            <h3>优化后价值</h3>
-            <p>索引轻量 + 分册拆分，让 Agent 用更少 token、更少中断，选到正确的页面。</p>
-          </section>
-        </div>
+      <div class="reach-board reach-board--pair" aria-label="优化 llms.txt 结构，提升 Agent 选页效率：Web Fetch、NVIDIA 路径示例">
         <div class="reach-col is-branch" id="reach-branch-path">
           <p class="hier-label">Agent Web Fetch 流程</p>
           <div class="reach-chart">
@@ -8408,13 +8549,17 @@ Sitemap: https://example.com/sitemap.xml
         </div>
         <div class="reach-col ppt-stack">
         <div class="ppt-nv">
-          <h3 class="ppt-brand"><img src="assets/nvidia.svg" alt="">Agent 回答流程机制图</h3>
+          <h3 class="ppt-brand"><img src="assets/nvidia.svg" alt="">AI 读 NVIDIA 内容的行为路径</h3>
           <ul class="seq-legend" aria-label="图例">
             <li><span class="swatch swatch-read" aria-hidden="true"></span>读过</li>
             <li><span class="swatch swatch-go" aria-hidden="true"></span>跟进去</li>
             <li><span class="swatch swatch-skel" aria-hidden="true"></span>未读</li>
           </ul>
           <div class="ppt-nv-seq">
+            <p class="ppt-nv-col-cap">网站总llms.txt (精选)</p>
+            <p class="ppt-nv-col-cap">文档分册 llms.txt</p>
+            <p class="ppt-nv-col-cap">产品概述 llms.txt</p>
+            <p class="ppt-nv-col-cap">产品页</p>
             <figure class="seq">
                     <svg viewBox="0 0 1080 424" role="img" aria-labelledby="ppt-mat-title ppt-mat-desc">
                       <title id="ppt-mat-title">NVIDIA CUDA 安装与编程模型：三本 llms 后先后打开两篇正文</title>
@@ -11232,7 +11377,7 @@ extern "C" __global__ __aicore__ void add_custom(GM_ADDR x, GM_ADDR y, GM_ADDR z
       </div>
       </div>
       </div>
-      <div class="reach-stage-frame" tabindex="0" aria-label="结论前置、短语一致、结构清晰、指代写全，点击放大到全屏">
+      <div class="reach-stage-frame" tabindex="0" aria-label="原则3.2：前置核心结论，统一术语并明确指代，帮助 AI 快速识别要点、准确理解内容，点击放大到全屏">
       <div class="reach-fs-bar" hidden>
       <button type="button" class="reach-fs-prev">上一页</button>
       <button type="button" class="reach-fs-next">下一页</button>
@@ -11241,85 +11386,68 @@ extern "C" __global__ __aicore__ void add_custom(GM_ADDR x, GM_ADDR y, GM_ADDR z
       <div class="reach-stage reach-stage--soft">
       <div class="reach-stage-head">
       <div class="reach-stage-head-copy">
-      <p class="reach-stage-title">结论前置、短语一致、结构清晰、指代写全</p>
-      </div>
-      <div class="reach-agent reach-agent--bar reach-agent--tight">
-          <div class="reach-stack reach-time">
-            <button type="button" class="reach-node">
-              <span class="reach-dot" aria-hidden="true"></span>
-              <span class="reach-node-body">
-                <span class="reach-tag">可达</span>
-                <span class="reach-caption">
-                  <span class="reach-node-title">网站搜索</span>
-                </span>
-              </span>
-            </button>
-            <button type="button" class="reach-node">
-              <span class="reach-dot" aria-hidden="true"></span>
-              <span class="reach-node-body">
-                <span class="reach-tag">可读</span>
-                <span class="reach-caption">
-                  <span class="reach-node-title">抓取网页内容</span>
-                </span>
-              </span>
-            </button>
-            <button type="button" class="reach-node is-on">
-              <span class="reach-dot" aria-hidden="true"></span>
-              <span class="reach-node-body">
-                <span class="reach-tag">可理解</span>
-                <span class="reach-caption">
-                  <span class="reach-node-title">内容注入到上下文</span>
-                </span>
-              </span>
-            </button>
-            <button type="button" class="reach-node">
-              <span class="reach-dot" aria-hidden="true"></span>
-              <span class="reach-node-body">
-                <span class="reach-tag">可验证</span>
-                <span class="reach-caption">
-                  <span class="reach-node-title">基于证据组织内容</span>
-                </span>
-              </span>
-            </button>
-          </div>
+      <p class="reach-stage-title">原则3.2：前置核心结论，统一术语并明确指代，帮助 AI 快速识别要点、准确理解内容</p>
+      <p class="reach-stage-lead">段首给出结论，指代写全，短句用连接词，同一概念只用一个术语。</p>
       </div>
       </div>
-      <div class="reach-board reach-board--pair" aria-label="结论前置、短语一致、结构清晰、指代写全：场景原则、示例">
-        <div class="reach-brief">
+      <div class="reach-board reach-board--pair" aria-label="原则3.2：前置核心结论，统一术语并明确指代：场景原则、示例">
+        <div class="reach-brief reach-brief--g11">
           <section class="reach-brief-block">
             <h3>场景</h3>
-            <p>Agent 只切进一段时，要立刻读出结论、同一术语和章节骨架。先铺垫、术语乱换、写「它」「上述」，机器会对错对象或臆造。</p>
+            <ol>
+              <li>铺垫过长、结论靠后，或段落会被单独检索、需要脱离前文仍能读懂时。</li>
+              <li>同一概念有多种名称，或「它」「这个」「这些」容易指错对象时。</li>
+              <li>句子偏长、只用逗号串联，因果、条件或时序看不清时。</li>
+            </ol>
           </section>
           <section class="reach-brief-block">
             <h3>具体原则</h3>
-            <h4>UI设计原则</h4>
-            <p>段首写结论；同一概念只用一个短语；小节用固定骨架；指代写成全称。</p>
-            <h4>Markdown 书写原则</h4>
-            <p>段首写结论；术语不换词；H2/H3 下用同一组小标题；不用「它」「上述」。</p>
-            <h4>源码书写原则</h4>
-            <p>结论写在可见正文段首；术语与标题写入源码，不靠版式暗示从属或对象。</p>
+            <ol>
+              <li>先给结论，再作解释：在段落开头明确主要结论、建议或操作要求，再补充原因、依据和具体步骤。</li>
+              <li>短句标明关系：单句尽量控制在 20–25 词；用因为、所以、如果…那么标明因果、条件、转折和时序，不用逗号串成流水句。</li>
+              <li>同一概念统一命名：产品名、功能名和专业术语保持一致；需要使用缩写或别名时，首次出现明确对应关系。</li>
+              <li>关键对象直接点名：在多对象、跨段落或易独立引用的位置，使用具体名称替代含义不清的代词。</li>
+              <li>集合范围明确列出：使用「这些配置」「上述条件」等表述时，明确所指范围，必要时列出具体项。</li>
+            </ol>
           </section>
           <section class="reach-brief-block">
-            <h3>核心价值</h3>
-            <p>切出来的一小段仍能独立读懂——结论在前、词不换、结构可扫、指代不空。</p>
+            <h3>预期效果</h3>
+            <ol>
+              <li>帮助 AI 快速识别内容重点，减少遗漏核心结论。</li>
+              <li>避免将同一概念拆分为多个对象，或将不同对象错误合并。</li>
+              <li>降低分段读取时因指代缺失、上下文断裂造成的误解。</li>
+              <li>帮助 AI 抓住句间的因果与条件，减少把多件事读成一句。</li>
+            </ol>
           </section>
         </div>
         <div class="reach-col reach-theme ppt-theme-sem">
       <p class="hier-label">编程模型概述</p>
+      <div class="ppt-g31">
+      <input class="ppt-g31-input" type="radio" name="g31-tab" id="g31-lead" checked>
+      <input class="ppt-g31-input" type="radio" name="g31-tab" id="g31-name">
+      <input class="ppt-g31-input" type="radio" name="g31-tab" id="g31-flow">
+      <input class="ppt-g31-input" type="radio" name="g31-tab" id="g31-term">
+      <div class="ppt-g31-nav" role="tablist" aria-label="写作原则">
+        <label class="ppt-g31-tab" for="g31-lead">结论前置</label>
+        <label class="ppt-g31-tab" for="g31-name">消除模糊指代</label>
+        <label class="ppt-g31-tab" for="g31-flow">短语与连接词</label>
+        <label class="ppt-g31-tab" for="g31-term">术语一致</label>
+      </div>
       <div class="ppt-sem ppt-sem--pair ppt-sem--ba ppt-copy-ba">
           <div class="ppt-sem-col">
           <div class="fn-ex-head">
             <span class="fn-ex-label">Before</span>
+            <a class="fn-ex-more" href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/920beta2/programug/Ascendcopdevg/docs/zh/guide/programming_guide/programming_model/programming_model_overview.md" target="_blank" rel="noopener">查看详情</a>
             <div class="fn-ex-bar" aria-hidden="true"></div>
           </div>
           <div class="ppt-sem-block">
                         <article class="ppt-faq-page" aria-label="编程模型概述 原文">
               <header class="ppt-faq-hero">
-              <h1 class="ppt-faq-h1"><mark class="ppt-copy-hl ppt-copy-hl--title">编程模型概述</mark></h1>
+              <h1 class="ppt-faq-h1">编程模型概述</h1>
               </header>
-              <p class="ppt-faq-p"><mark class="ppt-copy-hl ppt-copy-hl--lead">如<a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/920beta2/programug/Ascendcopdevg/docs/zh/guide/programming_guide/programming_model/heterogeneous_system.md">异构系统</a>章节所述，</mark>基于昇腾处理器的应用程序通常分为两部分：<mark class="ppt-copy-hl ppt-copy-hl--term">Host代码</mark>与<mark class="ppt-copy-hl ppt-copy-hl--term">Device代码</mark>。其中，Host代码运行在CPU上，负责设备资源管理、Host Memory与Device Memory数据搬运及任务调度等；Device代码运行在NPU上，专门执行实际的计算任务。<mark class="ppt-copy-hl ppt-copy-hl--lead">本编程指南重点讲解如何基于Ascend C编程语言编写Device代码。</mark></p>
+              <p class="ppt-faq-p"><mark class="ppt-copy-hl ppt-copy-hl--lead" data-g31="lead">如<a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/920beta2/programug/Ascendcopdevg/docs/zh/guide/programming_guide/programming_model/heterogeneous_system.md">异构系统</a>章节所述，</mark>基于昇腾处理器的应用程序通常分为两部分：Host代码与<mark class="ppt-copy-hl ppt-copy-hl--term" data-g31="term">Device代码</mark>。其中，Host代码运行在CPU上，负责设备资源管理、Host Memory与Device Memory数据搬运及任务调度等；Device代码运行在NPU上，专门执行实际的计算任务。本编程指南重点讲解如何基于Ascend C编程语言编写Device代码，以及如何通过Host代码完成Device代码的调度与执行。</p>
               <h2 class="ppt-faq-h2">并行执行模型：SIMD与SIMT</h2>
-              <p class="ppt-faq-p"><mark class="ppt-copy-hl ppt-copy-hl--lead">为编写高性能的Device端代码，首先需要理解底层的并行计算原理。</mark>SIMD和SIMT是两种主流的并行执行模型，<mark class="ppt-copy-hl ppt-copy-hl--name">它们</mark>定义了指令驱动多计算单元协同工作的核心机制。</p>
+              <p class="ppt-faq-p"><mark class="ppt-copy-hl ppt-copy-hl--lead" data-g31="lead">为编写高性能的<mark class="ppt-copy-hl ppt-copy-hl--term" data-g31="term">Device端</mark>代码，首先需要理解底层的并行计算原理。</mark><mark class="ppt-copy-hl ppt-copy-hl--flow" data-g31="flow">在高性能并行编程领域，SIMD和SIMT是两种主流的并行执行模型，<mark class="ppt-copy-hl ppt-copy-hl--name" data-g31="name">它们</mark>定义了指令驱动多计算单元协同工作的核心机制，是提升程序数据吞吐量、优化计算性能的关键技术，也是学习Ascend C编程的核心内容。</mark></p>
               <h3 class="ppt-faq-h3">SIMD（单指令多数据流）</h3>
               <p class="ppt-faq-p"><strong>核心概念</strong>：SIMD是一种 <strong>数据并行</strong> 模型：一条指令在同一个时钟周期内，对多个数据元素执行完全相同的操作。</p>
               <p class="ppt-faq-p"><strong>核心特征</strong>：</p>
@@ -11335,13 +11463,13 @@ extern "C" __global__ __aicore__ void add_custom(GM_ADDR x, GM_ADDR y, GM_ADDR z
               <p class="ppt-faq-p"><strong>核心特征</strong>：单指令控制多线程、线程独立、硬件自动调度与掩蔽。</p>
               <p class="ppt-faq-p"><strong>适用场景</strong>：不规则数据访问、分支密集、稀疏计算。</p>
               <h2 class="ppt-faq-h2">AI Core硬件基础</h2>
-              <p class="ppt-faq-p"><mark class="ppt-copy-hl ppt-copy-hl--name">上述两类抽象的并行执行模型</mark>，在昇腾AI处理器中都有着清晰的物理硬件对应。<mark class="ppt-copy-hl ppt-copy-hl--lead">Device端的核心计算单元为AI Core。</mark>向量处理单元是SIMD、SIMT两种并行执行模型的主要硬件载体。</p>
+              <p class="ppt-faq-p"><mark class="ppt-copy-hl ppt-copy-hl--lead" data-g31="lead"><mark class="ppt-copy-hl ppt-copy-hl--name" data-g31="name">上述两类抽象的并行执行模型</mark>，在昇腾AI处理器中都有着清晰的物理硬件对应。</mark><mark class="ppt-copy-hl ppt-copy-hl--term" data-g31="term">Device端</mark>的核心计算单元为AI Core。向量处理单元是SIMD、SIMT两种并行执行模型的主要硬件载体。</p>
             </article>
             <ul class="ppt-copy-legend" aria-label="原文高亮说明">
-              <li><span class="ppt-copy-swatch ppt-copy-swatch--title" aria-hidden="true"></span><span>紫：标题只写「概述」，看不出这一页讲 SIMD 与 SIMT。</span></li>
-              <li><span class="ppt-copy-swatch ppt-copy-swatch--lead" aria-hidden="true"></span><span>绿：段首先铺垫，「如章节所述」「首先需要理解」，结论压在后面。</span></li>
-              <li><span class="ppt-copy-swatch ppt-copy-swatch--name" aria-hidden="true"></span><span>蓝：「它们」「上述两类」切出去就不知道指谁。</span></li>
-              <li><span class="ppt-copy-swatch ppt-copy-swatch--term" aria-hidden="true"></span><span>橙：Host代码、Device代码、Device端混用。</span></li>
+              <li data-g31="lead"><span class="ppt-copy-swatch ppt-copy-swatch--lead" aria-hidden="true"></span><span>紫：段首是「如章节所述」「首先需要理解」「上述两类」，结论压在后面。</span></li>
+              <li data-g31="name"><span class="ppt-copy-swatch ppt-copy-swatch--name" aria-hidden="true"></span><span>蓝：「它们」「上述两类」切出去不知道指 SIMD 与 SIMT。</span></li>
+              <li data-g31="flow"><span class="ppt-copy-swatch ppt-copy-swatch--flow" aria-hidden="true"></span><span>粉：SIMD 导语一句里叠定义、机制、价值，缺少因为/所以。</span></li>
+              <li data-g31="term"><span class="ppt-copy-swatch ppt-copy-swatch--term" aria-hidden="true"></span><span>橙：同一对象写成 Device代码、又写成 Device端。</span></li>
             </ul>
           </div>
           </div>
@@ -11353,13 +11481,13 @@ extern "C" __global__ __aicore__ void add_custom(GM_ADDR x, GM_ADDR y, GM_ADDR z
           <div class="ppt-sem-block">
                         <article class="ppt-faq-page" aria-label="编程模型概述 改写">
               <header class="ppt-faq-hero">
-              <h1 class="ppt-faq-h1"><mark class="ppt-copy-hl ppt-copy-hl--title">Ascend C 编程模型：SIMD 与 SIMT</mark></h1>
+              <h1 class="ppt-faq-h1">编程模型概述</h1>
               </header>
-              <p class="ppt-faq-p"><mark class="ppt-copy-hl ppt-copy-hl--lead">基于昇腾处理器的应用程序分为 Host 代码与 Device 代码。</mark><mark class="ppt-copy-hl ppt-copy-hl--term">Host 代码</mark>运行在 CPU 上，负责设备资源管理、Host Memory 与 Device Memory 数据搬运及任务调度；<mark class="ppt-copy-hl ppt-copy-hl--term">Device 代码</mark>运行在 NPU 上，执行计算任务。<mark class="ppt-copy-hl ppt-copy-hl--lead">本页讲解如何基于 Ascend C 编程语言编写 Device 代码。</mark></p>
+              <p class="ppt-faq-p"><mark class="ppt-copy-hl ppt-copy-hl--lead" data-g31="lead">基于昇腾处理器的应用程序分为 Host代码与 <mark class="ppt-copy-hl ppt-copy-hl--term" data-g31="term">Device代码</mark>。</mark>如<a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/920beta2/programug/Ascendcopdevg/docs/zh/guide/programming_guide/programming_model/heterogeneous_system.md">异构系统</a>章节所述，Host代码运行在CPU上，负责设备资源管理、Host Memory与Device Memory数据搬运及任务调度。Device代码运行在NPU上，专门执行实际的计算任务。本编程指南重点讲解如何基于Ascend C编程语言编写Device代码，以及如何通过Host代码完成Device代码的调度与执行。</p>
               <h2 class="ppt-faq-h2">并行执行模型：SIMD与SIMT</h2>
-              <p class="ppt-faq-p"><mark class="ppt-copy-hl ppt-copy-hl--lead">SIMD 与 SIMT 是两种主流并行执行模型：一条指令驱动多个计算单元协同工作。</mark>编写高性能 Device 代码需要先理解 <mark class="ppt-copy-hl ppt-copy-hl--name">SIMD 与 SIMT</mark>。</p>
+              <p class="ppt-faq-p"><mark class="ppt-copy-hl ppt-copy-hl--lead" data-g31="lead">SIMD和SIMT是两种主流的并行执行模型。</mark><mark class="ppt-copy-hl ppt-copy-hl--flow" data-g31="flow"><mark class="ppt-copy-hl ppt-copy-hl--conn" data-g31="flow">因为</mark><mark class="ppt-copy-hl ppt-copy-hl--name" data-g31="name">SIMD与SIMT</mark>定义了指令驱动多计算单元协同工作的核心机制，<mark class="ppt-copy-hl ppt-copy-hl--conn" data-g31="flow">所以</mark>能提升程序数据吞吐量并优化计算性能。</mark>为编写高性能的<mark class="ppt-copy-hl ppt-copy-hl--term" data-g31="term">Device代码</mark>，需要理解底层的并行计算原理。这也是学习Ascend C编程的核心内容。</p>
               <h3 class="ppt-faq-h3">SIMD（单指令多数据流）</h3>
-              <p class="ppt-faq-p"><strong>核心概念</strong>：SIMD 是一种 <strong>数据并行</strong> 模型：一条指令在同一个时钟周期内，对多个数据元素执行完全相同的操作。</p>
+              <p class="ppt-faq-p"><strong>核心概念</strong>：SIMD是一种 <strong>数据并行</strong> 模型：一条指令在同一个时钟周期内，对多个数据元素执行完全相同的操作。</p>
               <p class="ppt-faq-p"><strong>核心特征</strong>：</p>
               <ul class="ppt-faq-list">
               <li>单指令驱动：所有并行计算单元同步执行同一条指令</li>
@@ -11367,22 +11495,23 @@ extern "C" __global__ __aicore__ void add_custom(GM_ADDR x, GM_ADDR y, GM_ADDR z
               <li>同步执行：所有数据的操作在同一个指令周期内完成</li>
               </ul>
               <p class="ppt-faq-p"><strong>适用场景</strong>：数据密集、操作规整、无分支或分支极少，如图像像素处理、矩阵乘法、卷积。</p>
-              <p class="ppt-faq-p"><strong><mark class="ppt-copy-hl ppt-copy-hl--term">SIMD 核函数（Kernel）</mark>编程四步法</strong>：Tiling（分块）设计 → 数据搬入 → 数据计算 → 数据搬出。</p>
+              <p class="ppt-faq-p"><strong>SIMD核函数（Kernel）编程四步法</strong>：Tiling（分块）设计 → 数据搬入 → 数据计算 → 数据搬出。</p>
               <h3 class="ppt-faq-h3">SIMT（单指令多线程）</h3>
-              <p class="ppt-faq-p"><strong>核心概念</strong>：SIMT 是一种 <strong>线程并行</strong> 模型：一条指令同时驱动多个独立线程，每个线程仅处理一个数据元素。</p>
+              <p class="ppt-faq-p"><strong>核心概念</strong>：SIMT是一种 <strong>线程并行</strong> 模型：一条指令同时驱动多个独立线程，每个线程仅处理一个数据元素。</p>
               <p class="ppt-faq-p"><strong>核心特征</strong>：单指令控制多线程、线程独立、硬件自动调度与掩蔽。</p>
               <p class="ppt-faq-p"><strong>适用场景</strong>：不规则数据访问、分支密集、稀疏计算。</p>
               <h2 class="ppt-faq-h2">AI Core硬件基础</h2>
-              <p class="ppt-faq-p"><mark class="ppt-copy-hl ppt-copy-hl--lead">Device 端的核心计算单元是 AI Core。</mark><mark class="ppt-copy-hl ppt-copy-hl--name">SIMD 与 SIMT 两种并行执行模型</mark>在 AI Core 上都有硬件对应。<mark class="ppt-copy-hl ppt-copy-hl--term">向量处理单元</mark>是 SIMD、SIMT 两种并行执行模型的主要硬件载体。</p>
+              <p class="ppt-faq-p"><mark class="ppt-copy-hl ppt-copy-hl--lead" data-g31="lead"><mark class="ppt-copy-hl ppt-copy-hl--term" data-g31="term">Device代码</mark>的核心计算单元为AI Core。</mark><mark class="ppt-copy-hl ppt-copy-hl--name" data-g31="name">SIMD与SIMT两种并行执行模型</mark>，在昇腾AI处理器中都有着清晰的物理硬件对应。向量处理单元是SIMD、SIMT两种并行执行模型的主要硬件载体。</p>
             </article>
             <ul class="ppt-copy-legend" aria-label="改写高亮说明">
-              <li><span class="ppt-copy-swatch ppt-copy-swatch--title" aria-hidden="true"></span><span>紫：标题写出这一页讲 SIMD 与 SIMT，不写空的「概述」。</span></li>
-              <li><span class="ppt-copy-swatch ppt-copy-swatch--lead" aria-hidden="true"></span><span>绿：段首直接写结论，去掉「如章节所述」「首先需要理解」这类铺垫。</span></li>
-              <li><span class="ppt-copy-swatch ppt-copy-swatch--name" aria-hidden="true"></span><span>蓝：对象写成 SIMD、SIMT、AI Core，不用「它们」「上述两类」。</span></li>
-              <li><span class="ppt-copy-swatch ppt-copy-swatch--term" aria-hidden="true"></span><span>橙：全程用 Host 代码、Device 代码、核函数（Kernel）、向量处理单元，不换称呼。</span></li>
+              <li data-g31="lead"><span class="ppt-copy-swatch ppt-copy-swatch--lead" aria-hidden="true"></span><span>紫：第一句写出划分结论、SIMD/SIMT 定义、AI Core 是核心计算单元，再展开。</span></li>
+              <li data-g31="name"><span class="ppt-copy-swatch ppt-copy-swatch--name" aria-hidden="true"></span><span>蓝：对象写成 SIMD 与 SIMT，不用「它们」「上述」。</span></li>
+              <li data-g31="flow"><span class="ppt-copy-swatch ppt-copy-swatch--flow" aria-hidden="true"></span><span>粉：拆成短句，用「因为…所以」连接因果。</span></li>
+              <li data-g31="term"><span class="ppt-copy-swatch ppt-copy-swatch--term" aria-hidden="true"></span><span>橙：同一对象一律写成 Device代码，不再换成 Device端。</span></li>
             </ul>
           </div>
           </div>
+      </div>
       </div>
         </div>
       </div>
