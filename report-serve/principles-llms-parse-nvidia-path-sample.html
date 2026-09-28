@@ -2803,6 +2803,22 @@
   }
   #practices .ppt-theme-sem .ppt-sem--ba.ppt-copy-ba {
     grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    align-items: stretch;
+  }
+  #practices .ppt-theme-sem .ppt-sem--ba.ppt-copy-ba > .ppt-sem-col,
+  #practices .ppt-theme-sem .ppt-sem--ba.ppt-copy-ba > .ppt-sem-col > .ppt-sem-block {
+    display: contents;
+  }
+  #practices .ppt-copy-ba > .ppt-sem-col:first-child > .fn-ex-head,
+  #practices .ppt-copy-ba > .ppt-sem-col:first-child .ppt-faq-page,
+  #practices .ppt-copy-ba > .ppt-sem-col:first-child .ppt-copy-legend {
+    grid-column: 1;
+  }
+  #practices .ppt-copy-ba > .ppt-sem-col:last-child > .fn-ex-head,
+  #practices .ppt-copy-ba > .ppt-sem-col:last-child .ppt-faq-page,
+  #practices .ppt-copy-ba > .ppt-sem-col:last-child .ppt-copy-legend {
+    grid-column: 2;
   }
   #practices .ppt-theme-sem .ppt-sem--ba.ppt-copy-ba > .ppt-sem-col .ppt-sem-block {
     gap: 8px;
@@ -2945,7 +2961,7 @@
   }
   #practices .ppt-copy-ba .ppt-copy-legend {
     flex: 0 0 auto;
-    margin: 0;
+    margin: 8px 0 0;
     padding: 0;
     list-style: none;
     display: grid;
@@ -2984,71 +3000,6 @@
   #practices .ppt-g31 .ppt-copy-ba {
     flex: 1 1 auto;
     min-height: 0;
-  }
-  #practices .ppt-theme-sem:has(.ppt-g31) > .hier-label {
-    margin-bottom: 12px;
-  }
-  #practices .ppt-g31-input {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
-  }
-  #practices .ppt-g31-nav {
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 16px;
-    margin: 0 0 12px;
-    padding: 0;
-    border-bottom: 1px solid #e5e5e5;
-    min-width: 0;
-  }
-  #practices .ppt-g31-nav label {
-    appearance: none;
-    flex: 0 1 auto;
-    min-width: 0;
-    border: 0;
-    background: transparent;
-    cursor: pointer;
-    font: inherit;
-    padding: 0 0 6px;
-    margin-bottom: -1px;
-    font-size: 14px;
-    line-height: 18px;
-    color: #8c8c8c;
-    border-bottom: 2px solid transparent;
-    white-space: nowrap;
-  }
-  #practices .ppt-g31:has(#g31-lead:checked) label[for="g31-lead"],
-  #practices .ppt-g31:has(#g31-name:checked) label[for="g31-name"],
-  #practices .ppt-g31:has(#g31-flow:checked) label[for="g31-flow"],
-  #practices .ppt-g31:has(#g31-term:checked) label[for="g31-term"] {
-    color: #191919;
-    font-weight: 650;
-    border-bottom-color: #191919;
-  }
-  #practices .ppt-g31:has(#g31-lead:checked) .ppt-copy-ba mark.ppt-copy-hl:not([data-g31="lead"]),
-  #practices .ppt-g31:has(#g31-name:checked) .ppt-copy-ba mark.ppt-copy-hl:not([data-g31="name"]),
-  #practices .ppt-g31:has(#g31-flow:checked) .ppt-copy-ba mark.ppt-copy-hl:not([data-g31="flow"]),
-  #practices .ppt-g31:has(#g31-term:checked) .ppt-copy-ba mark.ppt-copy-hl:not([data-g31="term"]) {
-    background: transparent;
-    color: inherit;
-    font-weight: inherit;
-    padding: 0;
-  }
-  #practices .ppt-g31:has(#g31-lead:checked) .ppt-copy-legend li:not([data-g31="lead"]),
-  #practices .ppt-g31:has(#g31-name:checked) .ppt-copy-legend li:not([data-g31="name"]),
-  #practices .ppt-g31:has(#g31-flow:checked) .ppt-copy-legend li:not([data-g31="flow"]),
-  #practices .ppt-g31:has(#g31-term:checked) .ppt-copy-legend li:not([data-g31="term"]) {
-    display: none;
-  }
-  #practices .ppt-g31 .ppt-copy-legend {
-    grid-template-columns: 1fr;
   }
   #practices .ppt-ver-list {
     display: flex;
@@ -11407,32 +11358,12 @@ extern "C" __global__ __aicore__ void add_custom(GM_ADDR x, GM_ADDR y, GM_ADDR z
               <li>短句标明关系：单句尽量控制在 20–25 词；用因为、所以、如果…那么标明因果、条件、转折和时序，不用逗号串成流水句。</li>
               <li>同一概念统一命名：产品名、功能名和专业术语保持一致；需要使用缩写或别名时，首次出现明确对应关系。</li>
               <li>关键对象直接点名：在多对象、跨段落或易独立引用的位置，使用具体名称替代含义不清的代词。</li>
-              <li>集合范围明确列出：使用「这些配置」「上述条件」等表述时，明确所指范围，必要时列出具体项。</li>
-            </ol>
-          </section>
-          <section class="reach-brief-block">
-            <h3>预期效果</h3>
-            <ol>
-              <li>帮助 AI 快速识别内容重点，减少遗漏核心结论。</li>
-              <li>避免将同一概念拆分为多个对象，或将不同对象错误合并。</li>
-              <li>降低分段读取时因指代缺失、上下文断裂造成的误解。</li>
-              <li>帮助 AI 抓住句间的因果与条件，减少把多件事读成一句。</li>
             </ol>
           </section>
         </div>
         <div class="reach-col reach-theme ppt-theme-sem">
       <p class="hier-label">编程模型概述</p>
       <div class="ppt-g31">
-      <input class="ppt-g31-input" type="radio" name="g31-tab" id="g31-lead" checked>
-      <input class="ppt-g31-input" type="radio" name="g31-tab" id="g31-name">
-      <input class="ppt-g31-input" type="radio" name="g31-tab" id="g31-flow">
-      <input class="ppt-g31-input" type="radio" name="g31-tab" id="g31-term">
-      <div class="ppt-g31-nav" role="tablist" aria-label="写作原则">
-        <label class="ppt-g31-tab" for="g31-lead">结论前置</label>
-        <label class="ppt-g31-tab" for="g31-name">消除模糊指代</label>
-        <label class="ppt-g31-tab" for="g31-flow">短语与连接词</label>
-        <label class="ppt-g31-tab" for="g31-term">术语一致</label>
-      </div>
       <div class="ppt-sem ppt-sem--pair ppt-sem--ba ppt-copy-ba">
           <div class="ppt-sem-col">
           <div class="fn-ex-head">
@@ -11445,9 +11376,9 @@ extern "C" __global__ __aicore__ void add_custom(GM_ADDR x, GM_ADDR y, GM_ADDR z
               <header class="ppt-faq-hero">
               <h1 class="ppt-faq-h1">编程模型概述</h1>
               </header>
-              <p class="ppt-faq-p"><mark class="ppt-copy-hl ppt-copy-hl--lead" data-g31="lead">如<a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/920beta2/programug/Ascendcopdevg/docs/zh/guide/programming_guide/programming_model/heterogeneous_system.md">异构系统</a>章节所述，</mark>基于昇腾处理器的应用程序通常分为两部分：Host代码与<mark class="ppt-copy-hl ppt-copy-hl--term" data-g31="term">Device代码</mark>。其中，Host代码运行在CPU上，负责设备资源管理、Host Memory与Device Memory数据搬运及任务调度等；Device代码运行在NPU上，专门执行实际的计算任务。本编程指南重点讲解如何基于Ascend C编程语言编写Device代码，以及如何通过Host代码完成Device代码的调度与执行。</p>
+              <p class="ppt-faq-p"><mark class="ppt-copy-hl ppt-copy-hl--lead" data-g31="lead">如<a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/920beta2/programug/Ascendcopdevg/docs/zh/guide/programming_guide/programming_model/heterogeneous_system.md">异构系统</a>章节所述，</mark>基于昇腾处理器的应用程序通常分为两部分：Host代码与Device代码。其中，Host代码运行在CPU上，负责设备资源管理、Host Memory与Device Memory数据搬运及任务调度等；Device代码运行在NPU上，专门执行实际的计算任务。本编程指南重点讲解如何基于Ascend C编程语言编写Device代码，以及如何通过Host代码完成Device代码的调度与执行。</p>
               <h2 class="ppt-faq-h2">并行执行模型：SIMD与SIMT</h2>
-              <p class="ppt-faq-p"><mark class="ppt-copy-hl ppt-copy-hl--lead" data-g31="lead">为编写高性能的<mark class="ppt-copy-hl ppt-copy-hl--term" data-g31="term">Device端</mark>代码，首先需要理解底层的并行计算原理。</mark><mark class="ppt-copy-hl ppt-copy-hl--flow" data-g31="flow">在高性能并行编程领域，SIMD和SIMT是两种主流的并行执行模型，<mark class="ppt-copy-hl ppt-copy-hl--name" data-g31="name">它们</mark>定义了指令驱动多计算单元协同工作的核心机制，是提升程序数据吞吐量、优化计算性能的关键技术，也是学习Ascend C编程的核心内容。</mark></p>
+              <p class="ppt-faq-p">为编写高性能的Device端代码，首先需要理解底层的并行计算原理。<mark class="ppt-copy-hl ppt-copy-hl--flow" data-g31="flow">在高性能并行编程领域，SIMD和SIMT是两种主流的并行执行模型，<mark class="ppt-copy-hl ppt-copy-hl--name" data-g31="name">它们</mark>定义了指令驱动多计算单元协同工作的核心机制，是提升程序数据吞吐量、优化计算性能的关键技术，也是学习Ascend C编程的核心内容。</mark></p>
               <h3 class="ppt-faq-h3">SIMD（单指令多数据流）</h3>
               <p class="ppt-faq-p"><strong>核心概念</strong>：SIMD是一种 <strong>数据并行</strong> 模型：一条指令在同一个时钟周期内，对多个数据元素执行完全相同的操作。</p>
               <p class="ppt-faq-p"><strong>核心特征</strong>：</p>
@@ -11463,13 +11394,12 @@ extern "C" __global__ __aicore__ void add_custom(GM_ADDR x, GM_ADDR y, GM_ADDR z
               <p class="ppt-faq-p"><strong>核心特征</strong>：单指令控制多线程、线程独立、硬件自动调度与掩蔽。</p>
               <p class="ppt-faq-p"><strong>适用场景</strong>：不规则数据访问、分支密集、稀疏计算。</p>
               <h2 class="ppt-faq-h2">AI Core硬件基础</h2>
-              <p class="ppt-faq-p"><mark class="ppt-copy-hl ppt-copy-hl--lead" data-g31="lead"><mark class="ppt-copy-hl ppt-copy-hl--name" data-g31="name">上述两类抽象的并行执行模型</mark>，在昇腾AI处理器中都有着清晰的物理硬件对应。</mark><mark class="ppt-copy-hl ppt-copy-hl--term" data-g31="term">Device端</mark>的核心计算单元为AI Core。向量处理单元是SIMD、SIMT两种并行执行模型的主要硬件载体。</p>
+              <p class="ppt-faq-p"><mark class="ppt-copy-hl ppt-copy-hl--lead" data-g31="lead"><mark class="ppt-copy-hl ppt-copy-hl--name" data-g31="name">上述两类抽象的并行执行模型</mark>，在昇腾AI处理器中都有着清晰的物理硬件对应。</mark>Device端的核心计算单元为AI Core。向量处理单元是SIMD、SIMT两种并行执行模型的主要硬件载体。</p>
             </article>
             <ul class="ppt-copy-legend" aria-label="原文高亮说明">
-              <li data-g31="lead"><span class="ppt-copy-swatch ppt-copy-swatch--lead" aria-hidden="true"></span><span>紫：段首是「如章节所述」「首先需要理解」「上述两类」，结论压在后面。</span></li>
+              <li data-g31="lead"><span class="ppt-copy-swatch ppt-copy-swatch--lead" aria-hidden="true"></span><span>紫：段首是「如章节所述」「上述两类」，结论压在后面。</span></li>
               <li data-g31="name"><span class="ppt-copy-swatch ppt-copy-swatch--name" aria-hidden="true"></span><span>蓝：「它们」「上述两类」切出去不知道指 SIMD 与 SIMT。</span></li>
               <li data-g31="flow"><span class="ppt-copy-swatch ppt-copy-swatch--flow" aria-hidden="true"></span><span>粉：SIMD 导语一句里叠定义、机制、价值，缺少因为/所以。</span></li>
-              <li data-g31="term"><span class="ppt-copy-swatch ppt-copy-swatch--term" aria-hidden="true"></span><span>橙：同一对象写成 Device代码、又写成 Device端。</span></li>
             </ul>
           </div>
           </div>
@@ -11483,9 +11413,9 @@ extern "C" __global__ __aicore__ void add_custom(GM_ADDR x, GM_ADDR y, GM_ADDR z
               <header class="ppt-faq-hero">
               <h1 class="ppt-faq-h1">编程模型概述</h1>
               </header>
-              <p class="ppt-faq-p"><mark class="ppt-copy-hl ppt-copy-hl--lead" data-g31="lead">基于昇腾处理器的应用程序分为 Host代码与 <mark class="ppt-copy-hl ppt-copy-hl--term" data-g31="term">Device代码</mark>。</mark>如<a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/920beta2/programug/Ascendcopdevg/docs/zh/guide/programming_guide/programming_model/heterogeneous_system.md">异构系统</a>章节所述，Host代码运行在CPU上，负责设备资源管理、Host Memory与Device Memory数据搬运及任务调度。Device代码运行在NPU上，专门执行实际的计算任务。本编程指南重点讲解如何基于Ascend C编程语言编写Device代码，以及如何通过Host代码完成Device代码的调度与执行。</p>
+              <p class="ppt-faq-p"><mark class="ppt-copy-hl ppt-copy-hl--lead" data-g31="lead">基于昇腾处理器的应用程序分为 Host代码与 Device代码。</mark>如<a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/920beta2/programug/Ascendcopdevg/docs/zh/guide/programming_guide/programming_model/heterogeneous_system.md">异构系统</a>章节所述，Host代码运行在CPU上，负责设备资源管理、Host Memory与Device Memory数据搬运及任务调度。Device代码运行在NPU上，专门执行实际的计算任务。本编程指南重点讲解如何基于Ascend C编程语言编写Device代码，以及如何通过Host代码完成Device代码的调度与执行。</p>
               <h2 class="ppt-faq-h2">并行执行模型：SIMD与SIMT</h2>
-              <p class="ppt-faq-p"><mark class="ppt-copy-hl ppt-copy-hl--lead" data-g31="lead">SIMD和SIMT是两种主流的并行执行模型。</mark><mark class="ppt-copy-hl ppt-copy-hl--flow" data-g31="flow"><mark class="ppt-copy-hl ppt-copy-hl--conn" data-g31="flow">因为</mark><mark class="ppt-copy-hl ppt-copy-hl--name" data-g31="name">SIMD与SIMT</mark>定义了指令驱动多计算单元协同工作的核心机制，<mark class="ppt-copy-hl ppt-copy-hl--conn" data-g31="flow">所以</mark>能提升程序数据吞吐量并优化计算性能。</mark>为编写高性能的<mark class="ppt-copy-hl ppt-copy-hl--term" data-g31="term">Device代码</mark>，需要理解底层的并行计算原理。这也是学习Ascend C编程的核心内容。</p>
+              <p class="ppt-faq-p">SIMD和SIMT是两种主流的并行执行模型。<mark class="ppt-copy-hl ppt-copy-hl--flow" data-g31="flow"><mark class="ppt-copy-hl ppt-copy-hl--conn" data-g31="flow">因为</mark><mark class="ppt-copy-hl ppt-copy-hl--name" data-g31="name">SIMD与SIMT</mark>定义了指令驱动多计算单元协同工作的核心机制，<mark class="ppt-copy-hl ppt-copy-hl--conn" data-g31="flow">所以</mark>能提升程序数据吞吐量并优化计算性能。</mark>为编写高性能的Device代码，需要理解底层的并行计算原理。这也是学习Ascend C编程的核心内容。</p>
               <h3 class="ppt-faq-h3">SIMD（单指令多数据流）</h3>
               <p class="ppt-faq-p"><strong>核心概念</strong>：SIMD是一种 <strong>数据并行</strong> 模型：一条指令在同一个时钟周期内，对多个数据元素执行完全相同的操作。</p>
               <p class="ppt-faq-p"><strong>核心特征</strong>：</p>
@@ -11501,13 +11431,12 @@ extern "C" __global__ __aicore__ void add_custom(GM_ADDR x, GM_ADDR y, GM_ADDR z
               <p class="ppt-faq-p"><strong>核心特征</strong>：单指令控制多线程、线程独立、硬件自动调度与掩蔽。</p>
               <p class="ppt-faq-p"><strong>适用场景</strong>：不规则数据访问、分支密集、稀疏计算。</p>
               <h2 class="ppt-faq-h2">AI Core硬件基础</h2>
-              <p class="ppt-faq-p"><mark class="ppt-copy-hl ppt-copy-hl--lead" data-g31="lead"><mark class="ppt-copy-hl ppt-copy-hl--term" data-g31="term">Device代码</mark>的核心计算单元为AI Core。</mark><mark class="ppt-copy-hl ppt-copy-hl--name" data-g31="name">SIMD与SIMT两种并行执行模型</mark>，在昇腾AI处理器中都有着清晰的物理硬件对应。向量处理单元是SIMD、SIMT两种并行执行模型的主要硬件载体。</p>
+              <p class="ppt-faq-p"><mark class="ppt-copy-hl ppt-copy-hl--lead" data-g31="lead">Device代码的核心计算单元为AI Core。</mark><mark class="ppt-copy-hl ppt-copy-hl--name" data-g31="name">SIMD与SIMT两种并行执行模型</mark>，在昇腾AI处理器中都有着清晰的物理硬件对应。向量处理单元是SIMD、SIMT两种并行执行模型的主要硬件载体。</p>
             </article>
             <ul class="ppt-copy-legend" aria-label="改写高亮说明">
-              <li data-g31="lead"><span class="ppt-copy-swatch ppt-copy-swatch--lead" aria-hidden="true"></span><span>紫：第一句写出划分结论、SIMD/SIMT 定义、AI Core 是核心计算单元，再展开。</span></li>
+              <li data-g31="lead"><span class="ppt-copy-swatch ppt-copy-swatch--lead" aria-hidden="true"></span><span>紫：第一句写出划分结论、AI Core 是核心计算单元，再展开。</span></li>
               <li data-g31="name"><span class="ppt-copy-swatch ppt-copy-swatch--name" aria-hidden="true"></span><span>蓝：对象写成 SIMD 与 SIMT，不用「它们」「上述」。</span></li>
               <li data-g31="flow"><span class="ppt-copy-swatch ppt-copy-swatch--flow" aria-hidden="true"></span><span>粉：拆成短句，用「因为…所以」连接因果。</span></li>
-              <li data-g31="term"><span class="ppt-copy-swatch ppt-copy-swatch--term" aria-hidden="true"></span><span>橙：同一对象一律写成 Device代码，不再换成 Device端。</span></li>
             </ul>
           </div>
           </div>
