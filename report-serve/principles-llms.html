@@ -110,12 +110,12 @@
     margin-top: 0;
     margin-bottom: var(--space-stack, 16px);
     padding-top: var(--space-h2-pad-y, 16px);
-    padding-bottom: var(--space-h2-pad-y, 16px);
-    border-bottom: 2px solid var(--color-card-border);
+    padding-bottom: 0;
+    border-bottom: none;
     color: var(--color-text, var(--color-text));
   }
   body.inner-page[data-page="llms"] .main-content > .section {
-    margin-bottom: var(--space-stack, 16px);
+    margin-bottom: 32px;
   }
   body.inner-page[data-page="llms"] .main-content .section > p {
     margin: 0;
@@ -125,7 +125,7 @@
   }
   body.inner-page[data-page="llms"] .main-content .section h3 { height: auto; }
   h3.fn-h3 {
-    margin: 0 0 var(--space-stack, 16px);
+    margin: 0;
     padding-top: var(--space-h3-pad-y, 16px);
     padding-bottom: var(--space-h3-pad-y, 16px);
     font-size: var(--text-h3, 18px);
@@ -133,14 +133,6 @@
     font-weight: var(--text-h3-weight, 650);
     color: var(--color-text, var(--color-text));
     letter-spacing: -0.01em;
-  }
-  #vendor-analysis > h2 + h3.fn-h3 {
-    margin-top: 0;
-    padding-top: 0;
-  }
-  #vendor-analysis .reach-theme + h3.fn-h3 {
-    margin-top: 16px;
-    padding-top: 16px;
   }
   #vendor-analysis .ppt-nv {
     position: relative;
@@ -152,9 +144,9 @@
     background-color: #fff;
     background-image: radial-gradient(#d8d8d4 1.1px, transparent 1.1px);
     background-size: 14px 14px;
-    border: 1px solid transparent;
-    border-radius: 12px;
-    box-shadow: 0 6px 20px rgba(25, 25, 25, 0.06);
+    border: 1px solid #e5e5e5;
+    border-radius: 16px;
+    box-shadow: none;
     overflow: visible;
   }
   #vendor-analysis .ppt-nv > .seq-legend {
@@ -240,7 +232,7 @@
   }
   body.inner-page[data-page="llms"] .main-content .section h4 { height: auto; }
   h4.fn-h4 {
-    margin: 0 0 var(--space-stack, 16px);
+    margin: 0;
     padding-top: var(--space-h4-pad-y, 16px);
     padding-bottom: var(--space-h4-pad-y, 16px);
     font-size: var(--text-h4, 14px);
@@ -299,6 +291,7 @@
   .bg-list li + li { margin-top: 6px; }
   #principles .bg-list,
   #practices .bg-list,
+  #path .bg-list,
   #notes .bg-list {
     list-style: disc;
     padding-left: 1.25em;
@@ -306,9 +299,11 @@
   }
   #principles .bg-list li + li,
   #practices .bg-list li + li,
+  #path .bg-list li + li,
   #notes .bg-list li + li { margin-top: 16px; }
   #principles .bg-list li strong,
   #practices .bg-list li strong,
+  #path .bg-list li strong,
   #notes .bg-list li strong {
     display: block;
     margin-bottom: 4px;
@@ -316,15 +311,18 @@
     color: var(--color-text);
   }
   /* 约定路径等短条目：题头与正文同一行 */
-  #practices .bg-list.-inline li strong {
+  #practices .bg-list.-inline li strong,
+  #path .bg-list.-inline li strong {
     display: inline;
     margin-bottom: 0;
   }
-  #practices .bg-list.-inline li strong::after {
+  #practices .bg-list.-inline li strong::after,
+  #path .bg-list.-inline li strong::after {
     content: "：";
   }
   #principles .bg-list li,
   #practices .bg-list li,
+  #path .bg-list li,
   #notes .bg-list li {
     color: var(--color-text-secondary);
   }
@@ -338,15 +336,17 @@
   }
   .file-sample figcaption {
     margin: 0;
-    padding: 10px 14px;
-    font-size: var(--text-auxiliary);
+    padding: 12px 14px;
+    font-size: 14px;
     font-weight: 650;
     line-height: 22px;
     color: #a3a3a3;
     border-bottom: 1px solid #333;
   }
-  .file-sample figcaption code {
-    font-size: inherit;
+  .file-sample figcaption code,
+  .file-sample figcaption a {
+    font-size: 14px;
+    line-height: 22px;
     color: #e8e8e8;
     background: none;
   }
@@ -425,7 +425,9 @@
     line-height: var(--text-body-lh);
     color: var(--color-text);
   }
-  .aj caption {
+  .aj caption,
+  #vendor-analysis > .aj-caption,
+  #practices .aj-caption {
     caption-side: top;
     text-align: left;
     font-size: var(--text-body);
@@ -845,25 +847,19 @@
     color: var(--color-text);
   }
   #mechanism > .page-lead + .af-figure { margin-top: 0; }
-  #mechanism .aj,
-  #path .aj { min-width: 0; }
-  #mechanism .aj col.aj-rowhead,
-  #path .aj col.aj-rowhead { width: 136px; }
+  #mechanism .aj { min-width: 0; }
+  #mechanism .aj col.aj-rowhead { width: 136px; }
   #path .aj col.aj-url { width: 42%; }
   #path .aj td {
     vertical-align: middle;
-    white-space: nowrap;
   }
   #mechanism .aj .aj-corner,
-  #mechanism .aj .aj-label,
-  #path .aj .aj-corner,
-  #path .aj .aj-label {
+  #mechanism .aj .aj-label {
     width: 136px;
     white-space: nowrap;
     color: var(--color-text);
   }
-  #mechanism .aj thead th,
-  #path .aj thead th {
+  #mechanism .aj thead th {
     text-align: left;
     vertical-align: bottom;
   }
@@ -881,7 +877,9 @@
   }
   #detail-principles ol.bg-list,
   #expected-effect ol.bg-list,
-  #notes ol.bg-list {
+  #notes ol.bg-list,
+  #practices ol.bg-list,
+  #path ol.bg-list {
     list-style: decimal;
   }
   #notes .bg-list li + li,
@@ -911,8 +909,11 @@
   }
   #practices h2 + h3.fn-h3,
   #practices h2 + h4.fn-h4,
+  #practices h2 + .aj-caption,
   #practices h2 + .file-sample-note,
   #practices h2 + .file-sample,
+  #practices h2 + .llms-dual,
+  #practices h2 + .llms-break,
   #practices h2 + .bg-list,
   #practices h3.fn-h3 + .file-sample-note,
   #practices h3.fn-h3 + .bg-list,
@@ -928,20 +929,60 @@
   #practices .file-lead + .file-sample,
   #practices .file-lead + h4.fn-h4,
   #practices .file-sample + h4.fn-h4,
-  #practices .file-sample-note + h4.fn-h4 {
+  #practices .file-sample-note + h4.fn-h4,
+  #practices .bg-list + .af-figure,
+  #practices .file-sample + .af-figure,
+  #practices .llms-dual + h2,
+  #practices .af-figure + h2 {
     margin-top: 0;
   }
   #path h2 + h3.fn-h3,
   #path h3.fn-h3 + .file-sample-note,
+  #path h3.fn-h3 + .bg-list,
   #path h3.fn-h3 + .af-figure,
   #path h3.fn-h3 + .file-sample,
   #path .file-sample-note + .file-sample,
   #path .file-sample + .file-sample-note,
   #path .file-sample-note + .af-figure,
   #path .file-sample-note + h3.fn-h3,
+  #path .bg-list + .file-sample,
+  #path .bg-list + .af-figure,
   #path .af-figure + h3.fn-h3,
   #path .file-sample + h3.fn-h3 {
     margin-top: 0;
+  }
+  #path .file-sample {
+    border-radius: 16px;
+    background: #fafafa;
+    border: 1px solid #e5e5e5;
+    color-scheme: light;
+  }
+  #path .file-sample figcaption {
+    border-radius: 16px 16px 0 0;
+    color: #525252;
+    background: #fafafa;
+    border-bottom-color: #e5e5e5;
+  }
+  #path .file-sample figcaption code {
+    color: #191919;
+  }
+  #path .file-sample pre {
+    border-radius: 0 0 16px 16px;
+    color: #191919;
+    background: #fafafa;
+  }
+  #path .file-sample .cmt { color: #737373; }
+  #path .file-sample .code-line-hl {
+    position: relative;
+    display: block;
+    padding: 0 4px;
+    margin: 0 -4px;
+    background: rgba(52, 211, 153, 0.34);
+    border-radius: 4px;
+    box-shadow: inset 0 0 0 1.5px rgba(4, 120, 87, 0.38);
+  }
+  #vendor-analysis .reach-theme {
+    margin-bottom: 32px;
   }
   #vendor-analysis .llms-anno {
     --vendor-anno-col: 220px;
@@ -1169,29 +1210,256 @@
     margin: 0;
   }
 
+  #practices .llms-bad-sample {
+    margin: 0 0 32px;
+    display: flex;
+    flex-direction: column;
+    height: 477px;
+    max-height: 477px;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #1e1e1e;
+    border: 1px solid #111;
+    box-shadow: none;
+  }
+  #practices .llms-bad-sample figcaption {
+    flex: 0 0 auto;
+    border-radius: 16px 16px 0 0;
+    padding: 12px 14px;
+    font-size: 14px;
+    line-height: 22px;
+    color: #a3a3a3;
+    background: #1e1e1e;
+    border-bottom-color: #333;
+  }
+  #practices .llms-bad-sample figcaption code,
+  #practices .llms-bad-sample figcaption a {
+    font-size: 14px;
+    line-height: 22px;
+    color: #e8e8e8;
+    text-decoration: none;
+  }
+  #practices .llms-bad-sample figcaption a:hover { text-decoration: underline; }
+  #practices .llms-bad-sample pre {
+    flex: 1 1 0;
+    min-height: 0;
+    height: 0;
+    margin: 0;
+    padding: 12px 14px 14px;
+    overflow: auto;
+    border-radius: 0 0 16px 16px;
+    background: #1e1e1e;
+    color: #e8e8e8;
+    font-size: 12px;
+    line-height: 18px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  #practices .llms-bad-sample pre code {
+    display: block;
+    color: #e8e8e8;
+    font-size: 12px;
+    line-height: 18px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  #practices .aj--llms-size,
+  #path .aj--llms-size {
+    min-width: 0;
+    font-size: 14px;
+    line-height: 22px;
+  }
+  #practices .aj--llms-size caption,
+  #path .aj--llms-size caption,
+  #vendor-analysis > .aj-caption,
+  #practices .aj-caption {
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 650;
+    padding: 0 0 16px;
+  }
+  #practices .aj--llms-size col.aj-rowhead,
+  #path .aj--llms-size col.aj-rowhead {
+    width: 160px;
+  }
+  #practices .aj--llms-size th,
+  #practices .aj--llms-size td,
+  #practices .aj--llms-size .aj-corner,
+  #practices .aj--llms-size .aj-label,
+  #practices .aj--llms-size thead th,
+  #practices .aj--llms-size code,
+  #path .aj--llms-size th,
+  #path .aj--llms-size td,
+  #path .aj--llms-size .aj-corner,
+  #path .aj--llms-size .aj-label,
+  #path .aj--llms-size thead th,
+  #path .aj--llms-size code {
+    font-size: 14px;
+    line-height: 22px;
+  }
+  #practices .aj--llms-size tbody th,
+  #practices .aj--llms-size tbody td,
+  #path .aj--llms-size tbody th,
+  #path .aj--llms-size tbody td {
+    padding: 8px 16px;
+  }
+  #practices .aj--llms-size thead th,
+  #path .aj--llms-size thead th {
+    padding: 8px 16px;
+  }
+  #practices .aj--llms-size .aj-corner,
+  #practices .aj--llms-size .aj-label,
+  #path .aj--llms-size .aj-corner,
+  #path .aj--llms-size .aj-label {
+    width: 160px;
+    white-space: nowrap;
+  }
+  #path .aj--llms-size col.aj-rowhead,
+  #path .aj--llms-size .aj-corner,
+  #path .aj--llms-size .aj-label {
+    width: 176px;
+  }
+  #practices .aj--llms-size td.is-warn {
+    background: #fde8e8;
+    color: #9b1c1c;
+  }
+  #practices .af-figure--problems .bg-list {
+    margin-bottom: 32px;
+  }
+  #practices .aj-caption + .af-figure {
+    margin-top: 0;
+  }
+  #practices .af-figure--problems {
+    margin-bottom: 32px;
+  }
+  #practices .af-figure--problems .aj-caption {
+    margin: 0;
+  }
+  #practices .af-figure--problems .aj-caption + .aj {
+    margin-top: 0;
+  }
+  #practices .llms-break .bg-list li strong {
+    display: inline;
+    margin-bottom: 0;
+  }
+  #practices .llms-break .file-sample {
+    border-radius: 16px;
+    background: #fafafa;
+    border: 1px solid #e5e5e5;
+    color-scheme: light;
+  }
+  #practices .llms-break .file-sample figcaption {
+    border-radius: 16px 16px 0 0;
+    font-size: 14px;
+    line-height: 22px;
+    padding: 12px 14px;
+    color: #525252;
+    background: #fafafa;
+    border-bottom-color: #e5e5e5;
+  }
+  #practices .llms-break .file-sample figcaption code,
+  #practices .llms-break .file-sample figcaption a {
+    font-size: 14px;
+    line-height: 22px;
+    color: #191919;
+    text-decoration: none;
+  }
+  #practices .llms-break .file-sample figcaption a:hover { text-decoration: underline; }
+  #practices .llms-break .file-sample pre {
+    border-radius: 0 0 16px 16px;
+    padding: 12px 14px;
+    font-size: 12px;
+    line-height: 20px;
+    color: #191919;
+    background: #fafafa;
+  }
+  #practices .llms-break .file-sample pre code {
+    font-size: 12px;
+    line-height: 20px;
+    color: #191919;
+  }
+  #practices .llms-break .file-sample .llms-skel-bar {
+    height: 6px;
+    margin-top: 4px;
+    background: #e4e4e4;
+  }
+  #practices .llms-break .file-sample .llms-col {
+    display: block;
+  }
+  #practices .llms-break .file-sample .llms-col + .llms-col {
+    margin-top: 8px;
+  }
+  #practices .llms-break .file-sample .llms-skel {
+    display: block;
+    padding: 2px 0 0;
+  }
+  #practices .llms-break .file-sample .llms-skel-bar:first-child {
+    margin-top: 0;
+  }
+  #practices .llms-break .llms-parts {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    column-gap: 12px;
+    row-gap: 8px;
+    margin: 0;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: 14px;
+    line-height: 22px;
+    color: #191919;
+  }
+  #practices .llms-break .llms-part {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex: 0 1 auto;
+  }
+  #practices .llms-break .llms-part-txt {
+    border-bottom: 2px solid;
+    padding-bottom: 3px;
+  }
+  #practices .llms-break .llms-part-lab {
+    margin-top: 5px;
+    font-family: var(--font);
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 1.2;
+  }
+  #practices .llms-break .llms-part--title .llms-part-txt { border-color: #059669; }
+  #practices .llms-break .llms-part--title .llms-part-lab { color: #047857; }
+  #practices .llms-break .llms-part--url .llms-part-txt { border-color: #0284c7; }
+  #practices .llms-break .llms-part--url .llms-part-lab { color: #0369a1; }
+  #practices .llms-break .llms-part--note .llms-part-txt { border-color: #ea580c; }
+  #practices .llms-break .llms-part--note .llms-part-lab { color: #c2410c; }
+
   #practices .llms-dual {
     position: relative;
     display: grid;
     grid-template-columns: 1fr;
     gap: 32px;
     margin: 0 0 32px;
-    padding-right: 28px;
+    padding-right: 36px;
     min-height: 0;
     align-items: stretch;
     overflow: visible;
   }
   #practices .llms-dual-wires {
     position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    grid-column: 1 / -1;
+    left: 0;
+    top: 0;
+    margin: 0;
+    padding: 0;
+    grid-column: 1;
     grid-row: 1;
+    justify-self: start;
+    align-self: start;
     pointer-events: none;
     overflow: visible;
     z-index: 6;
   }
   #practices .llms-dual .llms-line.is-jump {
+    position: relative;
+    display: block;
     background: rgba(52, 211, 153, 0.34);
     border-radius: 4px;
     box-shadow: inset 0 0 0 1.5px rgba(4, 120, 87, 0.38);
@@ -1222,6 +1490,13 @@
     color: #6d28d9;
     background: rgba(167, 139, 250, 0.34);
     box-shadow: inset 0 0 0 1px rgba(109, 40, 217, 0.38);
+  }
+  #practices .llms-dual .aj-caption {
+    margin: 0;
+    padding: 0 0 16px;
+  }
+  #practices .llms-dual .aj-caption + .file-sample {
+    margin-top: 0;
   }
   #practices .llms-dual .llms-anno {
     min-width: 0;
@@ -1258,11 +1533,15 @@
   #practices .llms-dual .file-sample figcaption {
     border-radius: 16px 16px 0 0;
     padding: 12px 14px;
+    font-size: 14px;
+    line-height: 22px;
     color: #525252;
     background: #fafafa;
     border-bottom-color: #e5e5e5;
   }
   #practices .llms-dual .file-sample figcaption code {
+    font-size: 14px;
+    line-height: 22px;
     color: #191919;
   }
   #practices .llms-dual .file-sample pre {
@@ -1465,17 +1744,17 @@
     <section class="section" id="detail-principles">
       <h2>具体原则</h2>
       <ol class="bg-list">
-        <li>在网站根目录或文档根目录提供可访问的 <code>llms.txt</code>，作为 AI Agent 发现和理解网站知识内容的机器可读入口。</li>
+        <li>在网站根目录或文档根目录提供可访问的 <code>llms.txt</code>，作为 AI Agent 发现、理解和访问网站知识内容的机器可读入口。</li>
         <li>根据知识内容组织索引结构，精选核心文档、资源和使用说明，避免简单罗列全站 URL。</li>
-        <li>保持根索引轻量可扫描；当内容规模较大或包含多个内容模块、产品线、业务板块时，采用分册方式组织，由根目录 <code>llms.txt</code> 指向各主题分册，避免单文件过长导致关键信息被稀释。</li>
-        <li>索引条目采用 <code>- [标题](地址)</code> 格式，并补充内容范围和适用任务说明；各级 <code>llms.txt</code> 保留必要背景信息，帮助 AI Agent 无需打开页面即可判断内容相关性和访问路径。</li>
-        <li>随网站结构和内容变化同步维护 <code>llms.txt</code> 索引关系，确保入口有效、链接可访问、描述一致。</li>
+        <li>保持根索引轻量可扫描；当内容规模较大或覆盖多个内容模块、产品线、业务板块时，采用分册方式组织，由根目录 <code>llms.txt</code> 指向各主题分册，避免单文件过长导致关键信息分散。</li>
+        <li>索引条目采用 <code>- [标题](地址)</code> 格式，并补充内容范围和适用任务说明；各级 <code>llms.txt</code> 保留必要上下文，帮助 AI Agent 无需打开页面即可判断内容相关性和访问路径。</li>
+        <li>随网站结构和内容变化同步维护 <code>llms.txt</code> 索引关系，确保入口有效、链接可访问、内容描述一致。</li>
       </ol>
     </section>
 
     <section class="section" id="vendor-analysis">
       <h2>友商分析</h2>
-      <h3 class="fn-h3">NVIDIA 的 llms.txt</h3>
+      <p class="aj-caption">NVIDIA 的 llms.txt</p>
       <div class="reach-theme">
           <div class="llms-anno">
           <figure class="file-sample" aria-label="nvidia.com/llms.txt 根索引目录">
@@ -1485,7 +1764,7 @@
           </figure>
           </div>
       </div>
-      <h3 class="fn-h3">AI Agent 读 NVIDIA 内容的行为路径</h3>
+      <p class="aj-caption">AI Agent 读 NVIDIA 内容的行为路径</p>
       <div class="ppt-nv">
         <ul class="seq-legend" aria-label="图例">
           <li><span class="swatch swatch-read" aria-hidden="true"></span>读过</li>
@@ -1745,11 +2024,57 @@
     </section>
 
     <section class="section" id="practices">
-      <h2>llms.txt 示例</h2>
+      <h2>llms.txt 错误示例</h2>
+      <p class="aj-caption">昇腾社区 llms.txt</p>
+      <figure class="file-sample llms-bad-sample" aria-label="现网昇腾社区根索引目录，全站 URL 罗列">
+        <figcaption><a href="https://www.hiascend.com/llms.txt" target="_blank" rel="noopener"><code>https://www.hiascend.com/llms.txt</code></a></figcaption>
+        <pre><code data-llms-bad>正在加载…</code></pre>
+      </figure>
+      <p class="aj-caption">当前问题</p>
+      <figure class="af-figure af-figure--problems">
+        <ol class="bg-list">
+          <li>AI Agent 一次扫不完，出现断档——截断点后面的条目等于没下载。</li>
+          <li>站点根 <code>llms.txt</code> 篇幅大、行数多，Token 耗费多。</li>
+        </ol>
+        <p class="aj-caption">与 NVIDIA 的 llms 对比</p>
+        <table class="aj aj--llms-size">
+          <colgroup>
+            <col class="aj-rowhead" />
+            <col />
+            <col />
+          </colgroup>
+          <thead>
+            <tr>
+              <th class="aj-corner" scope="col">对照项</th>
+              <th scope="col"><code>hiascend.com/llms.txt</code></th>
+              <th scope="col"><code>nvidia.com/llms.txt</code></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th class="aj-label" scope="row">文件大小</th>
+              <td class="is-warn">12.1 MB</td>
+              <td>2.6 KB</td>
+            </tr>
+            <tr>
+              <th class="aj-label" scope="row">文件行数</th>
+              <td class="is-warn">26,172</td>
+              <td>35</td>
+            </tr>
+            <tr>
+              <th class="aj-label" scope="row">耗费 Token 数</th>
+              <td class="is-warn">381 万</td>
+              <td>0.6k</td>
+            </tr>
+          </tbody>
+        </table>
+      </figure>
+      <h2>llms.txt 建议示例</h2>
       <div class="llms-dual llms-dual--stack">
       <div class="llms-anno">
+      <p class="aj-caption">网站总 llms.txt</p>
       <figure class="file-sample" aria-label="优化后的昇腾社区根索引目录">
-        <figcaption><code>hiascend.com/llms.txt</code> 根索引</figcaption>
+        <figcaption><code>https://{域名}/llms.txt</code></figcaption>
         <pre><code><span class="llms-head"><span class="llms-row"># 昇腾社区</span>
 <span class="llms-row">&gt; 根索引只指向分册，不枚举单页。按任务打开对应分册，再选定目标页。</span></span>
 <span class="llms-secs"><span class="llms-sec"><span class="llms-mod">文档分册</span><span class="llms-line">## 技术文档</span><span class="llms-line">- [产品文档](https://www.hiascend.com/document/llms.txt): 查某款产品怎么用时打开。</span><span class="llms-line">- [案例库](https://www.hiascend.com/document/caselibrary/llms.txt): 找对标实现时打开。</span></span>
@@ -1761,8 +2086,9 @@
       </figure>
       </div>
       <div class="llms-anno">
+      <p class="aj-caption">分册 llms.txt</p>
       <figure class="file-sample llms-jump-to" aria-label="优化后的 CANN 基础分册">
-        <figcaption><code>cann/llms.txt</code> 分册</figcaption>
+        <figcaption><code>https://{域名}/cann/llms.txt</code></figcaption>
         <pre><code><span class="llms-head"><span class="llms-row"># CANN</span>
 <span class="llms-row">&gt; 从根索引「CANN」进入。昇腾异构计算架构：安装、文档与编程接口。</span></span>
 <span class="llms-secs"><span class="llms-sec"><span class="llms-mod">入门</span><span class="llms-line">## 入门</span><span class="llms-line">- [CANN 概述](https://www.hiascend.com/cann): 了解异构计算架构时打开。</span><span class="llms-line">- [安装部署](https://www.hiascend.com/cann/download): 下载、安装 CANN 时打开。</span></span>
@@ -1775,15 +2101,60 @@
       </div>
       <svg class="llms-dual-wires" aria-hidden="true"></svg>
       </div>
+      <h2>元素拆解</h2>
+      <div class="llms-break">
+        <h3 class="fn-h3">网站名与描述</h3>
+        <ol class="bg-list -inline">
+          <li><strong>网站名</strong>用 <code>#</code> 写网站或项目名，是必填项。</li>
+          <li><strong>描述</strong>紧跟 <code>&gt;</code> 引用块，说明这份清单的用途及如何按任务打开分册。该部分可选；若存在，AI Agent 会先读完再继续选栏目。</li>
+        </ol>
+        <figure class="file-sample" aria-label="建议示例的网站名与描述">
+          <figcaption><code>https://{域名}/llms.txt</code></figcaption>
+          <pre><code># 昇腾社区
+&gt; 根索引只指向分册，不枚举单页。按任务打开对应分册，再选定目标页。</code></pre>
+        </figure>
+        <h3 class="fn-h3">栏目名与描述</h3>
+        <ol class="bg-list -inline">
+          <li><strong>栏目名</strong>每个栏目一行 <code>##</code> 标题。AI Agent 先扫这些名字，再决定进入哪一栏目。</li>
+          <li><strong>切分</strong>按内容面切块（技术文档、开发者、软件与 CANN 等），而非照搬网站导航。</li>
+          <li><strong>栏目描述</strong><code>##</code> 与链接之间可有一段纯文字，可选。</li>
+        </ol>
+        <figure class="file-sample" aria-label="建议示例的栏目名">
+          <figcaption><code>https://{域名}/llms.txt</code></figcaption>
+          <pre><code><span class="llms-col">## 技术文档
+<span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:86%"></span><span class="llms-skel-bar" style="width:54%"></span></span></span><span class="llms-col">## 开发者
+<span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:72%"></span></span></span><span class="llms-col">## 软件与 CANN
+<span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:80%"></span><span class="llms-skel-bar" style="width:48%"></span></span></span></code></pre>
+        </figure>
+        <h3 class="fn-h3">链接</h3>
+        <ol class="bg-list -inline">
+          <li><strong>链接格式</strong>挂在对应 <code>##</code> 下，一条一行，写作 <code>- [标题](地址)</code>，可后接 <code>:</code> 说明。标题用页面或分册名，不用 URL。</li>
+          <li><strong>链接指向</strong><code>llms.txt</code> 为分册，页面地址为单页。说明宜短，可选。</li>
+        </ol>
+        <figure class="file-sample" aria-label="建议示例的链接写法">
+          <figcaption><code>https://{域名}/llms.txt</code> · <code>https://{域名}/cann/llms.txt</code></figcaption>
+          <pre><code><span class="llms-col">## 软件与 CANN
+- [CANN](https://www.hiascend.com/cann/llms.txt): 选软件栈、安装或写算子时打开。</span><span class="llms-col">## 入门
+- [CANN 概述](https://www.hiascend.com/cann): 了解异构计算架构时打开。</span></code></pre>
+        </figure>
+        <p class="llms-parts" aria-label="链接组成">
+          <span class="llms-part llms-part--title"><span class="llms-part-txt">- [CANN 概述]</span><span class="llms-part-lab">标题</span></span>
+          <span class="llms-part llms-part--url"><span class="llms-part-txt">(https://www.hiascend.com/cann)</span><span class="llms-part-lab">地址</span></span>
+          <span class="llms-part llms-part--note"><span class="llms-part-txt">: 了解异构计算架构时打开。</span><span class="llms-part-lab">任务说明</span></span>
+        </p>
+      </div>
     </section>
 
     <section class="section" id="path">
-      <h2>机器如何找到 llms</h2>
+      <h2>机器如何发现 llms.txt</h2>
       <h3 class="fn-h3">方式一：试约定路径</h3>
-      <p class="file-sample-note">1）找根清单：手里没有地址时，直接打开站点根 <code>/llms.txt</code>。<br>2）找分册：打开根清单里写明的子路径（如 <code>/docs/llms.txt</code>），不要另猜。<br>3）两份都在时，用离当前页更近的那份：文档页用 <code>/docs/llms.txt</code>，官网页用站根。这一步不依赖 <code>robots.txt</code> 或 HTML 里先写过地址。</p>
+      <ol class="bg-list -inline">
+        <li>AI Agent 按照约定路径，直接打开 <code>/llms.txt</code>。</li>
+        <li>AI Agent 打开网站根清单里写明的子路径（如 <code>/cann/llms.txt</code>）。</li>
+      </ol>
       <figure class="af-figure">
-        <table class="aj">
-          <caption>表1 根清单与分册的约定路径</caption>
+        <table class="aj aj--llms-size">
+          <caption>表1 网站根与分册的约定路径</caption>
           <colgroup>
             <col class="aj-rowhead" />
             <col class="aj-url" />
@@ -1798,62 +2169,69 @@
           </thead>
           <tbody>
             <tr>
-              <th class="aj-label" scope="row">根清单</th>
+              <th class="aj-label" scope="row">网站根 llms.txt</th>
               <td><code>https://{域名}/llms.txt</code></td>
-              <td><a href="https://www.mintlify.com/llms.txt" target="_blank" rel="noopener"><code>https://www.mintlify.com/llms.txt</code></a></td>
+              <td><code>https://www.hiascend.com/llms.txt</code></td>
             </tr>
             <tr>
-              <th class="aj-label" scope="row">分册清单</th>
+              <th class="aj-label" scope="row">分册 llms.txt</th>
               <td><code>https://{域名}/{路径}/llms.txt</code></td>
-              <td><a href="https://www.mintlify.com/docs/llms.txt" target="_blank" rel="noopener"><code>https://www.mintlify.com/docs/llms.txt</code></a></td>
+              <td><code>https://www.hiascend.com/cann/llms.txt</code></td>
             </tr>
           </tbody>
         </table>
       </figure>
 
       <h3 class="fn-h3">方式二：读 robots.txt</h3>
-      <p class="file-sample-note">1）可在 <code>/robots.txt</code> 末尾仿 <code>Sitemap:</code> 加一行 <code>LLMs.txt:</code>，指向根清单。<br>2）分册不必写在这里。该字段不是官方规范，只作路径补充；没有这一行时，仍按方式一打开 <code>/llms.txt</code>。</p>
+      <ol class="bg-list -inline">
+        <li>在 <code>/robots.txt</code> 末尾仿 <code>Sitemap:</code> 加一行 <code>LLMs.txt:</code>，指向网站根 <code>llms.txt</code>。</li>
+        <li>分册不必写在这里。该字段不是官方规范，只作路径补充。</li>
+      </ol>
       <figure class="file-sample">
-        <figcaption><code>https://www.mintlify.com/robots.txt</code></figcaption>
+        <figcaption><code>https://{域名}/robots.txt</code></figcaption>
         <pre><code>User-agent: *
 Allow: /
 
-Sitemap: https://www.mintlify.com/sitemap.xml
-<span class="cmt"># 进阶（非标准）：只指向根清单；分册写在根文件里</span>
-<span class="cmt"># LLMs.txt: https://www.mintlify.com/llms.txt</span></code></pre>
+Sitemap: https://{域名}/sitemap.xml
+<span class="cmt"># 进阶（非标准）：只指向网站根；分册写在根 llms.txt 里</span>
+<span class="code-line-hl">LLMs.txt: https://{域名}/llms.txt</span></code></pre>
       </figure>
-      <p class="file-sample-note">前四行是 Mintlify 实文件。注释里的 <code>LLMs.txt:</code> 是建议补上的声明，不是该站现网内容。</p>
 
       <h3 class="fn-h3">方式三：读 HTML 源码</h3>
-      <p class="file-sample-note">1）在 <code>&lt;head&gt;</code> 用 <code>&lt;link&gt;</code> 声明本页 Markdown，以及覆盖本页的清单。<br>2）Mintlify 官网首页 head 未写这两项，清单靠方式四。文档页有 Markdown 平行稿，仍无清单声明。</p>
+      <ol class="bg-list -inline">
+        <li>在 <code>&lt;head&gt;</code> 用 <code>&lt;link&gt;</code> 声明本页 Markdown，以及覆盖本页的清单。</li>
+        <li><code>rel="alternate"</code> 指向本页 Markdown；<code>rel="describedby"</code> 指向覆盖本页的 <code>llms.txt</code>。</li>
+        <li>官网首页指向网站根清单，栏目页指向分册。非 HTML 可改写在 HTTP <code>Link:</code> 头。</li>
+      </ol>
       <figure class="file-sample">
-        <figcaption><code>https://www.mintlify.com/docs/quickstart</code></figcaption>
+        <figcaption><code>https://{域名}/cann</code></figcaption>
         <pre><code>&lt;head&gt;
-  &lt;link rel="canonical" href="https://www.mintlify.com/docs/quickstart"&gt;
-  &lt;link rel="alternate" type="text/markdown" href="/docs/quickstart.md"&gt;
-<span class="cmt">&lt;!-- 建议补上：覆盖本页的分册；现网没有这一行 --&gt;</span>
-<span class="cmt">&lt;!-- &lt;link rel="describedby" href="https://www.mintlify.com/docs/llms.txt"&gt; --&gt;</span>
+  &lt;link rel="canonical" href="https://{域名}/cann"&gt;
+  &lt;link rel="alternate" type="text/markdown" href="/cann.md"&gt;
+<span class="code-line-hl">  &lt;link rel="describedby" href="https://{域名}/cann/llms.txt"&gt;</span>
 &lt;/head&gt;</code></pre>
       </figure>
-      <p class="file-sample-note">1）<code>rel="alternate"</code> 指向本页 Markdown（文档页现网已有）。<code>rel="describedby"</code> 指向覆盖本页的清单，建议补上。<br>2）官网首页应指向根清单，文档页指向分册。非 HTML 可改写在 HTTP <code>Link:</code> 头。不能替代页内真链。</p>
 
       <h3 class="fn-h3">方式四：跟页内入口</h3>
-      <p class="file-sample-note">1）在 <code>&lt;body&gt;</code> 最前放一条真 <code>&lt;a href&gt;</code>，指向覆盖本页的清单。可用 <code>sr-only</code> 对人隐藏，源码里仍能跟到。<br>2）官网链根清单，文档页链本面分册。</p>
+      <ol class="bg-list -inline">
+        <li>在 <code>&lt;body&gt;</code> 最前放一条真 <code>&lt;a href&gt;</code>，指向覆盖本页的清单。可用 <code>sr-only</code> 对人隐藏，源码里 AI Agent 仍能跟到。</li>
+      </ol>
       <figure class="file-sample">
-        <figcaption><code>index.html</code></figcaption>
+        <figcaption><code>https://{域名}/</code> · <code>https://{域名}/cann</code></figcaption>
         <pre><code>&lt;body&gt;
   &lt;blockquote class="sr-only" aria-hidden="true"&gt;
 <span class="code-line-hl">    &lt;a href="/llms.txt" tabindex="-1"&gt;/llms.txt&lt;/a&gt;</span>
+<span class="cmt">    &lt;!-- 栏目页改为 /cann/llms.txt --&gt;</span>
   &lt;/blockquote&gt;</code></pre>
       </figure>
-      <p class="file-sample-note">本例是 Mintlify 官网首页，链到根清单。文档页应改为 <code>/docs/llms.txt</code>。</p>
     </section>
 
     <section class="section" id="expected-effect">
       <h2>预期效果</h2>
       <ol class="bg-list">
-        <li>帮助 AI 理解网站的内容分布，更快找到与任务相关的板块。</li>
-        <li>支持按需读取内容，减少一次性加载大量无关信息。</li>
+        <li>帮助 AI 理解网站内容分布，更快定位与任务相关的板块和知识入口。</li>
+        <li>支持按需读取索引和分册内容，减少一次性加载大量无关信息。</li>
+        <li>帮助 AI 判断内容相关性，减少访问无关页面。</li>
         <li>便于各子站或栏目独立维护内容，同时保持统一的发现入口。</li>
       </ol>
     </section>
@@ -1861,10 +2239,11 @@ Sitemap: https://www.mintlify.com/sitemap.xml
     <section class="section" id="notes">
       <h2>注意事项</h2>
       <ol class="bg-list">
-        <li>避免机械照搬网站全部层级；仅在内容规模或主题差异需要时增加子级，减少不必要的跳转。</li>
-        <li>避免循环引用、失效链接，以及上下级内容重复或描述冲突。</li>
-        <li>核心、高频内容应在顶层保留直达入口，避免必须经过多层索引才能获取。</li>
-        <li>不应假设所有 AI 工具都会自动发现并逐层读取 <code>llms.txt</code>；应通过目标工具验证实际访问路径。<code>llms.txt</code> 目前仍是提案，具体读取行为取决于工具实现。</li>
+        <li>避免将 <code>llms.txt</code> 设计为全站 URL 列表，应聚焦核心知识内容和高价值入口。</li>
+        <li>控制索引规模，内容较多时通过分册组织，避免单文件过长。</li>
+        <li>保持索引描述与实际内容一致，确保 AI Agent 正确理解内容范围。</li>
+        <li>确保索引链接公开可访问，避免引用受限或无效资源。</li>
+        <li>明确 <code>llms.txt</code> 与 <code>robots.txt</code>、Sitemap 的职责边界，避免混用。</li>
       </ol>
     </section>
 

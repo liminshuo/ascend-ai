@@ -277,8 +277,11 @@
     var w = Math.max(1, root.offsetWidth);
     var h = Math.max(1, root.offsetHeight);
     svg.setAttribute("viewBox", "0 0 " + w + " " + h);
-    svg.setAttribute("width", w);
-    svg.setAttribute("height", h);
+    svg.removeAttribute("width");
+    svg.removeAttribute("height");
+    svg.setAttribute("preserveAspectRatio", "none");
+    svg.style.width = w + "px";
+    svg.style.height = h + "px";
 
     var defs = "";
     var paths = "";
@@ -307,11 +310,11 @@
       var b = localBox(to, root);
       var x1, y1, x2, y2, d;
       if (root.classList.contains("llms-dual--stack")) {
-        x1 = a.x + a.w + 4;
+        x1 = a.x + a.w;
         y1 = a.y + a.h / 2;
-        x2 = b.x + 16;
-        y2 = b.y + 12;
-        var rail = Math.max(x1 + 20, w - 14);
+        y2 = b.y + b.h / 2;
+        x2 = b.x + b.w;
+        var rail = Math.min(w - 8, Math.max(x1, x2) + 28);
         d = roundPoly(
           [
             [x1, y1],
@@ -345,10 +348,10 @@
         '"/>';
     }
 
-    var cannFrom = root.querySelector(".llms-line.is-jump");
-    var cannTo = root.querySelector(".llms-jump-to");
-    if (cannFrom && cannTo) {
-      wire(cannFrom, cannTo.querySelector("pre") || cannTo, "#047857", "jump", "top");
+    var cannFrom = root.querySelector(".llms-anno:first-child .llms-line.is-jump");
+    var cannCap = root.querySelector(".llms-jump-to > figcaption");
+    if (cannFrom && cannCap) {
+      wire(cannFrom, cannCap, "#047857", "jump", "top");
     }
     wire(
       root.querySelector(".llms-sec--ops"),
@@ -671,8 +674,28 @@
   }
 
   window.addEventListener("resize", onResize);
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", layout);
-  else layout();
+  function loadLlmsBadSample() {
+    var code = document.querySelector("#practices .llms-bad-sample [data-llms-bad]");
+    if (!code || code.getAttribute("data-loaded") === "1") return;
+    fetch("assets/samples/hiascend-llms.txt")
+      .then(function (r) {
+        if (!r.ok) throw new Error(String(r.status));
+        return r.text();
+      })
+      .then(function (t) {
+        code.textContent = t.replace(/^([^\n]+)\n+/, "$1\n");
+        code.setAttribute("data-loaded", "1");
+      })
+      .catch(function () {
+        code.textContent = "无法加载现网 llms.txt 示例。";
+      });
+  }
+  function boot() {
+    layout();
+    loadLlmsBadSample();
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
+  else boot();
   window.addEventListener("load", layout);
   if (typeof ResizeObserver !== "undefined") {
     document.querySelectorAll("#practices .reach-stage-frame").forEach(function (frame) {
