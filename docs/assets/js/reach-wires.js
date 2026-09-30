@@ -305,11 +305,29 @@
       var mid = addMarker(markerId, color);
       var a = localBox(from, root);
       var b = localBox(to, root);
-      var x1 = a.x + a.w + 4;
-      var y1 = a.y + a.h / 2;
-      var x2 = b.x - 8;
-      var y2 = y2mode === "top" ? b.y + 16 : b.y + b.h / 2;
-      var d = dualPath(x1, y1, x2, y2);
+      var x1, y1, x2, y2, d;
+      if (root.classList.contains("llms-dual--stack")) {
+        x1 = a.x + a.w + 4;
+        y1 = a.y + a.h / 2;
+        x2 = b.x + 16;
+        y2 = b.y + 12;
+        var rail = Math.max(x1 + 20, w - 14);
+        d = roundPoly(
+          [
+            [x1, y1],
+            [rail, y1],
+            [rail, y2],
+            [x2, y2]
+          ],
+          14
+        );
+      } else {
+        x1 = a.x + a.w + 4;
+        y1 = a.y + a.h / 2;
+        x2 = b.x - 8;
+        y2 = y2mode === "top" ? b.y + 16 : b.y + b.h / 2;
+        d = dualPath(x1, y1, x2, y2);
+      }
       paths +=
         '<path d="' +
         d +
@@ -347,6 +365,54 @@
       "mid"
     );
     svg.innerHTML = paths ? "<defs>" + defs + "</defs>" + paths : "";
+  }
+
+  function layoutSsrPair(root) {
+    var svg = root.querySelector(".ssr-pair-wires");
+    var from = root.querySelector(".ssr-pair-mask--table");
+    var to = root.querySelector("mark.ssr-ok");
+    if (!svg || !from || !to) return;
+
+    var w = Math.max(1, root.offsetWidth);
+    var h = Math.max(1, root.offsetHeight);
+    svg.setAttribute("viewBox", "0 0 " + w + " " + h);
+    svg.setAttribute("width", w);
+    svg.setAttribute("height", h);
+
+    var color = "#047857";
+    var uid = "sp" + Math.round(root.getBoundingClientRect().left) + "-" + Math.round(root.getBoundingClientRect().top);
+    var mid = uid + "-ok";
+    var a = localBox(from, root);
+    var b = localBox(to, root);
+    var x1 = a.x + a.w + 4;
+    var y1 = a.y + a.h / 2;
+    var x2 = b.x - 8;
+    var y2 = b.y + b.h / 2;
+    var d = dualPath(x1, y1, x2, y2);
+    svg.innerHTML =
+      "<defs>" +
+      '<marker id="' +
+      mid +
+      '" viewBox="0 0 8 8" markerWidth="8" markerHeight="8" refX="6.2" refY="4" orient="auto" markerUnits="userSpaceOnUse">' +
+      '<path d="M0 0.6 L8 4 L0 7.4 Z" fill="' +
+      color +
+      '"/>' +
+      "</marker>" +
+      "</defs>" +
+      '<path d="' +
+      d +
+      '" stroke="' +
+      color +
+      '" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#' +
+      mid +
+      ')"/>' +
+      '<circle cx="' +
+      x1 +
+      '" cy="' +
+      y1 +
+      '" r="3.5" fill="' +
+      color +
+      '"/>';
   }
 
   function layoutDual(root) {
@@ -592,6 +658,7 @@
     document.querySelectorAll("#practices .ppt-dual").forEach(layoutDual);
     document.querySelectorAll("#practices .ppt-hier:has(.ppt-dual-shot--vecprog)").forEach(layoutImgdocCallout);
     document.querySelectorAll("#practices .llms-dual").forEach(layoutLlmsJump);
+    document.querySelectorAll("#practices .ssr-pair").forEach(layoutSsrPair);
     document.querySelectorAll("#practices .ssr-loss").forEach(layoutSsrLoss);
     alignSsrDeckRows();
     document.querySelectorAll("#practices .ssr-deck-card--hits").forEach(layoutSsrDeck);
@@ -611,10 +678,13 @@
     document.querySelectorAll("#practices .reach-stage-frame").forEach(function (frame) {
       new ResizeObserver(layout).observe(frame);
     });
+    document.querySelectorAll("#practices .llms-dual").forEach(function (el) {
+      new ResizeObserver(layout).observe(el);
+    });
   }
 
   (function bindFs() {
-    var frames = document.querySelectorAll("#practices .reach-stage-frame");
+    var frames = document.querySelectorAll("#practices > .reach-stage-frame");
     if (!frames.length) return;
     var openLabel = "点击放大到全屏";
     var closeLabel = "全屏，按 Esc 或点关闭退出";

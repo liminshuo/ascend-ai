@@ -442,6 +442,12 @@
     font-size: inherit;
     line-height: inherit;
   }
+  .aj a {
+    color: var(--color-primary);
+    font-weight: 650;
+    text-decoration: none;
+  }
+  .aj a:hover { text-decoration: underline; }
 
   #scenarios .scene-def-table td .badge { border: none; }
   .scene-def-table td .badge-optional {
@@ -705,7 +711,7 @@
 
 <div class="topbar">
   <div class="topbar-inner">
-    <a class="brand" href="index.html">社区 <span>AI 亲和原则</span></a>
+    <a class="brand" href="index.html"><span>AI 亲和原则</span></a>
     <nav class="site-nav" aria-label="主导航">
       <a href="index.html">首页</a>
       <a href="mintlify.html">友商对照</a>
@@ -775,10 +781,10 @@
             <tr>
               <th class="aj-label" scope="row">触点文件</th>
               <td class="is-mute">—</td>
-              <td><span class="aj-file">robots.txt</span><span class="aj-tag aj-tag--must">必经准入文件</span></td>
-              <td class="is-pri"><span class="aj-file">llms.txt</span><span class="aj-tag aj-tag--pri">优先导读文件</span></td>
-              <td class="is-pri"><span class="aj-file">llms-full.txt</span><span class="aj-tag aj-tag--opt">导读配套正文包</span></td>
-              <td class="is-fb"><span class="aj-file">sitemap.xml</span><span class="aj-tag aj-tag--fb">无导读时兜底清单</span></td>
+              <td><a href="principles-robots.html"><span class="aj-file">robots.txt</span></a><span class="aj-tag aj-tag--must">必经准入文件</span></td>
+              <td class="is-pri"><a href="principles-llms.html"><span class="aj-file">llms.txt</span></a><span class="aj-tag aj-tag--pri">优先导读文件</span></td>
+              <td class="is-pri"><a href="principles-llms-full.html"><span class="aj-file">llms-full.txt</span></a><span class="aj-tag aj-tag--opt">导读配套正文包</span></td>
+              <td class="is-fb"><a href="principles-sitemap.html"><span class="aj-file">sitemap.xml</span></a><span class="aj-tag aj-tag--fb">无导读时兜底清单</span></td>
               <td class="is-mute">—</td>
             </tr>
             <tr>
@@ -817,133 +823,47 @@
     </section>
 
     <section class="section" id="practices">
-      <h2>典型做法</h2>
-
-      <div class="practice-block">
-      <h3 class="fn-h3" id="practice-robots">robots.txt：准入门禁</h3>
-      <p class="file-lead">进站时优先读取的准入文件，用于界定知识面的合法抓取边界。</p>
-      <h4 class="fn-h4">约定路径</h4>
-      <p class="file-lead"><code>https://{域名}/robots.txt</code>（该路径由协议固定，站点需按此约定放置）。</p>
-      <h4 class="fn-h4">最小合格示例</h4>
-      <figure class="file-sample">
-        <figcaption><code>robots.txt</code></figcaption>
-        <pre><code class="language-robots"><span class="cmt"># 对全体爬虫生效；勿单独误挡主流 Agent</span>
-User-agent: *
-
-<span class="cmt"># 放行知识面</span>
-Allow: /docs/
-Allow: /llms.txt
-Allow: /llms-full.txt
-<span class="cmt"># 如有分卷：统一放在 /llms/ 下，一条放行该目录即可</span>
-Allow: /llms/
-
-<span class="cmt"># 拦截噪声面</span>
-Disallow: /admin/
-Disallow: /staging/
-Disallow: /api/debug/
-
-<span class="cmt"># 声明清单完整地址；此文件公开可见，敏感内容须靠登录鉴权</span>
-Sitemap: https://docs.example.com/sitemap.xml
-
-<span class="cmt"># 进阶（非标准）：LLMs.txt 只指向根导读；分卷不必在此逐条声明，由根文件内链接发现</span>
-<span class="cmt"># LLMs.txt: https://docs.example.com/llms.txt</span></code></pre>
+      <h2>交付入口</h2>
+      <p class="file-lead">四份发现层文件各自成页：许可声明、索引目录、正文包、路径清单。本页只讲分工；写法和示例到专页查看。</p>
+      <figure class="af-figure">
+        <table class="aj">
+          <caption>表2 发现层文件专页</caption>
+          <colgroup>
+            <col class="aj-col-mute" />
+            <col />
+            <col />
+          </colgroup>
+          <thead>
+            <tr>
+              <th class="aj-corner" scope="col">文件</th>
+              <th scope="col"><span class="aj-stage-name">专页</span></th>
+              <th scope="col"><span class="aj-stage-name">这一页讲什么</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th class="aj-label" scope="row"><code>robots.txt</code></th>
+              <td><a href="principles-robots.html">配置 robots.txt 许可声明</a></td>
+              <td>根路径许可声明：放行知识面、拦截噪声面、声明 Sitemap 与索引路径。</td>
+            </tr>
+            <tr>
+              <th class="aj-label" scope="row"><code>llms.txt</code></th>
+              <td><a href="principles-llms.html">部署 llms.txt 索引目录</a></td>
+              <td>轻量索引：只收录知识面，条目写清是什么、何时用；多层用分册。</td>
+            </tr>
+            <tr>
+              <th class="aj-label" scope="row"><code>llms-full.txt</code></th>
+              <td><a href="principles-llms-full.html">部署 llms-full.txt 正文包</a></td>
+              <td>索引配套的聚合纯净正文；地址写在索引里，体量大时按分册拆包。</td>
+            </tr>
+            <tr>
+              <th class="aj-label" scope="row"><code>sitemap.xml</code></th>
+              <td><a href="principles-sitemap.html">Sitemap 路径清单语义化</a></td>
+              <td>公开知识面 URL 清单；在 robots.txt 用 Sitemap 行声明绝对地址。</td>
+            </tr>
+          </tbody>
+        </table>
       </figure>
-      <h4 class="fn-h4">执行要点</h4>
-      <ul class="bg-list">
-        <li><strong>放行知识面</strong>文档站、官网知识页、根导读 <code>/llms.txt</code> 及配套正文包 <code>/llms-full.txt</code> 保持可访问（不设 Disallow）；如有分卷，建议统一放在 <code>/llms/</code> 目录下并对其放行，避免误挡主流 Agent。</li>
-        <li><strong>拦截噪声面</strong>后台、测试环境、调试接口等非公开路径，通常需要设置 Disallow，避免占用抓取额度。</li>
-        <li><strong>声明清单地址</strong>在文件末尾通过 <code>Sitemap:</code> 字段列出 <code>sitemap.xml</code> 的完整地址，为 Agent 提供后续的发现入口。</li>
-        <li><strong>进阶声明（非标准）</strong>部分厂商会仿照 <code>Sitemap:</code> 的写法，在 <code>robots.txt</code> 中额外声明 <code>LLMs.txt:</code> 指向根导读。该字段并非官方规范，仅作为路径不确定时的补充信号；若有分卷，无需在此列出，由根文件内的链接发现即可。</li>
-      </ul>
-      </div>
-
-      <div class="practice-block">
-      <h3 class="fn-h3" id="practice-llms">llms.txt：优先导读</h3>
-      <p class="file-lead">面向 Agent 的精选导读，只收录主推知识面，并非全站清单。根文件尽量精简；若产品线较多，采用“短索引 + 分卷导读”的结构，避免单文件过大影响读取。</p>
-      <h4 class="fn-h4">约定路径</h4>
-      <ul class="bg-list -inline">
-        <li><strong>根导读路径</strong>默认位于站点根目录：<code>https://{域名}/llms.txt</code>。若文档站部署在子路径下（例如 <code>example.com/docs</code>），对应路径则为 <code>https://example.com/docs/llms.txt</code>。</li>
-        <li><strong>分卷导读路径（多产品线 / 多文档站并存时）</strong>多条产品线或独立知识面并存（如 CANN 与 Ascend C），且根文件放不下时，建议统一放到 <code>/llms/</code> 子目录下，保持结构清爽。具体路径由根文件显式声明，如 <code>/llms/cann.txt</code>、<code>/llms/ascend-c.txt</code>。单产品站条目少，直接写在根文件即可，不用分卷。</li>
-      </ul>
-      <h4 class="fn-h4">最小合格示例</h4>
-      <figure class="file-sample">
-        <figcaption><code>llms.txt</code>（根索引，宜短）</figcaption>
-        <pre><code class="language-markdown"># Product X 文档
-
-&gt; 主推版本：Product X 2.0。只收官方文档，不含活动页。
-&gt; 体量大时本文件只做总索引；详细条目见分卷导读。
-
-## 入门
-
-- [安装指南](https://docs.example.com/docs/product-x/2.0/install)
-- [快速入门](https://docs.example.com/docs/product-x/2.0/quickstart)
-- [HelloWorld](https://docs.example.com/docs/product-x/2.0/helloworld)
-
-## 分卷导读
-
-- [CANN 文档导读](https://docs.example.com/llms/cann.txt)
-- [Ascend C 导读](https://docs.example.com/llms/ascend-c.txt)
-- [配套正文包（按卷）](https://docs.example.com/llms/full-cann.txt)</code></pre>
-      </figure>
-      <h4 class="fn-h4">执行要点</h4>
-      <ul class="bg-list">
-        <li><strong>直接可达</strong>根路径 <code>/llms.txt</code> 直接返回内容，不设置跳转或登录拦截。</li>
-        <li><strong>结构与收录</strong>H1 标站点名；<code>&gt;</code> 标明主推版本与分卷策略（多版本需显式写出主推）。链接文案与页面 H1 一致；仅收知识面，不收营销页。</li>
-        <li><strong>控制体量</strong>根文件保持精简；避免数万行或数 MB 的索引堆砌（过大文件会中途截断，导致后方入门条目无法获取）。</li>
-        <li><strong>分卷挂接</strong>多产品线并存时，根文件只做总索引并链向分卷；分卷按产品或文档站一层拆分，不再嵌套。分卷链接可直接 GET，并在 <code>robots.txt</code> 放行。单产品站条目少时，可直接写在根文件，无需分卷。</li>
-      </ul>
-      </div>
-
-      <div class="practice-block">
-      <h3 class="fn-h3" id="practice-llms-full">llms-full.txt：配套正文包</h3>
-      <p class="file-lead">导读的配套正文包。由导读触发，用于一次性提取纯净正文。导读分卷时，正文包按同卷切分，避免单包过大导致超时或截断。</p>
-      <h4 class="fn-h4">约定路径</h4>
-      <p class="file-lead">默认遵循同目录惯例：<code>https://{域名}/llms-full.txt</code>。分卷时，正文包与导读成对出现在 <code>/llms/</code> 下（如 <code>/llms/full-cann.txt</code> 对应 <code>/llms/cann.txt</code>），链接在根导读或分卷导读中显式写明。</p>
-      <h4 class="fn-h4">最小合格示例</h4>
-      <figure class="file-sample">
-        <figcaption><code>/llms/full-cann.txt</code>（节选，按卷）</figcaption>
-        <pre><code class="language-markdown"># 安装指南
-
-本文说明如何安装 Product X 2.0。系统要求如下。……
-
-# API 参考
-
-本文说明 Product X 2.0 的接口约定。……</code></pre>
-      </figure>
-      <h4 class="fn-h4">执行要点</h4>
-      <ul class="bg-list">
-        <li><strong>入口限制</strong>入口依赖导读里的链接或同目录惯例，不脱离导读单独配置。</li>
-        <li><strong>按卷拆分</strong>导读分卷时，正文包也跟着分卷，不用把全站正文打成单一超大文件（实测中这种文件容易超时，也很难完整取回）。</li>
-        <li><strong>构建同步</strong>随文档发布自动生成，不依赖人工维护，也不会单独发布空文件。</li>
-        <li><strong>结构对齐</strong>篇目和顺序跟着对应导读（根或分卷）保持一致。</li>
-        <li><strong>正文纯净</strong>只保留可引用正文，导航、页脚和侧栏都不含。</li>
-      </ul>
-      </div>
-
-      <div class="practice-block">
-      <h3 class="fn-h3" id="practice-sitemap">sitemap.xml：无导读兜底</h3>
-      <p class="file-lead">公开知识页的 URL 清单，作为导读缺失时的兜底入口。</p>
-      <h4 class="fn-h4">约定路径</h4>
-      <p class="file-lead">该文件的地址不能像前三个文件那样直接按根路径访问，需通过 <code>robots.txt</code> 中的 <code>Sitemap:</code> 字段显式声明完整地址，才能被 Agent 找到。</p>
-      <h4 class="fn-h4">最小合格示例</h4>
-      <figure class="file-sample">
-        <figcaption><code>sitemap.xml</code></figcaption>
-        <pre><code class="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"&gt;
-  <span class="cmt">&lt;!-- 只收知识面；路径含产品名、文档名、版本 --&gt;</span>
-  &lt;url&gt;&lt;loc&gt;https://docs.example.com/docs/product-x/2.0/install&lt;/loc&gt;&lt;/url&gt;
-  &lt;url&gt;&lt;loc&gt;https://docs.example.com/docs/product-x/2.0/api&lt;/loc&gt;&lt;/url&gt;
-  <span class="cmt">&lt;!-- 不收录 /admin、重复参数 URL、活动专题 --&gt;</span>
-&lt;/urlset&gt;</code></pre>
-      </figure>
-      <h4 class="fn-h4">执行要点</h4>
-      <ul class="bg-list">
-        <li><strong>收录范围</strong>面向应被公开索引的知识面页面，后台和重复 URL 不纳入。</li>
-        <li><strong>语义化 URL</strong>路径与文件名带上明确的业务语义（如产品名、版本号），避免无意义参数和会话 ID。</li>
-        <li><strong>地址声明</strong>完整地址写在 <code>robots.txt</code> 的 <code>Sitemap:</code> 行，声明为绝对地址。</li>
-        <li><strong>动态维护</strong>页面增删或迁移后，清单跟着更新。</li>
-      </ul>
-      </div>
     </section>
 
     <section class="section" id="benefits">
@@ -959,6 +879,17 @@ Sitemap: https://docs.example.com/sitemap.xml
   </main>
 </div>
 
+<script>
+(function () {
+  var map = {
+    "#practice-robots": "principles-robots.html",
+    "#practice-llms": "principles-llms.html",
+    "#practice-llms-full": "principles-llms-full.html",
+    "#practice-sitemap": "principles-sitemap.html"
+  };
+  if (map[location.hash]) location.replace(map[location.hash]);
+})();
+</script>
 <script src="assets/js/site-config.js"></script>
 <script src="assets/js/site-init.js"></script>
 <script src="assets/js/module-sidebar.js"></script>

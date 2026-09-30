@@ -11,30 +11,30 @@
     ],
     principles: [
       {
-        group: "可达", id: "structure-llms", href: "principles-structure-llms.html", label: "发现层部署",
+        group: "可达", id: "structure-llms", href: "principles-structure-llms.html", label: "打通发现入口",
         pageIds: ["structure-llms", "page-discover", "machine-discover"]
       },
-      { group: null, id: "llms", href: "principles-llms.html", label: "llms.txt", pageIds: ["llms", "llms-volume"] },
+      { group: null, id: "robots", href: "principles-robots.html", label: "配置 robots.txt 许可声明" },
+      { group: null, id: "llms", href: "principles-llms.html", label: "部署 llms.txt 索引目录", pageIds: ["llms", "llms-volume"] },
+      { group: null, id: "llms-full", href: "principles-llms-full.html", label: "部署 llms-full.txt 正文包" },
+      { group: null, id: "sitemap", href: "principles-sitemap.html", label: "Sitemap 路径清单语义化" },
       {
         group: null, id: "machine-entry", href: "principles-machine-entry.html", label: "Agent 入口显化",
-        pageIds: ["machine-entry", "page-md", "block-md"],
-        children: [
-          { id: "machine-entry", href: "principles-machine-entry.html", label: "站级导读" },
-          { id: "page-md", href: "principles-page-md.html", label: "页级 Markdown" },
-          { id: "block-md", href: "principles-block-md.html", label: "块级 Markdown" }
-        ]
-      },
-      {
-        group: null, id: "site-locate", href: "principles-breadcrumb.html", label: "站内可定位",
-        pageIds: ["site-locate", "page-context", "breadcrumb", "neighbor", "section-locate", "section-anchor"]
+        pageIds: ["machine-entry"]
       },
       {
         group: "可读", id: "format", href: "principles-format.html", label: "双轨交付",
         pageIds: ["machine-track", "format", "dual-track"]
       },
+      { group: null, id: "page-md", href: "principles-page-md.html", label: "页级 Markdown" },
+      { group: null, id: "block-md", href: "principles-block-md.html", label: "块级 Markdown" },
       {
         group: null, id: "content-retrievable", href: "principles-content-retrievable.html", label: "页面 HTML 可读",
         pageIds: ["page-readable", "content-retrievable"]
+      },
+      {
+        group: null, id: "site-locate", href: "principles-breadcrumb.html", label: "站内可定位",
+        pageIds: ["site-locate", "page-context", "breadcrumb", "neighbor", "section-locate", "section-anchor"]
       },
       {
         group: null, id: "carrier", href: "principles-image.html", label: "载体信息可转写",
@@ -339,6 +339,11 @@
       var path = location.pathname || "";
       var onFile = !file || path === file || path.endsWith("/" + file) || path.endsWith(file);
       a.classList.toggle("active", onFile && location.hash === hash);
+    });
+    var path = location.pathname || "";
+    var onStructure = path === "principles-structure-llms.html" || path.endsWith("/principles-structure-llms.html") || path.endsWith("principles-structure-llms.html");
+    aside.querySelectorAll(".sidebar-phase-nav:not(.sidebar-module-title) a[href='principles-structure-llms.html']").forEach(function (a) {
+      a.classList.toggle("active", onStructure);
     });
     aside.querySelectorAll(".nav-item.has-children").forEach(function (li) {
       var link = li.querySelector(".nav-link");

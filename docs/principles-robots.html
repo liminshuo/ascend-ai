@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>配置 robots.txt 许可声明 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid var(--color-border);
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: 100%; max-width: none; margin: 0; padding: 0 24px; box-sizing: border-box;
+    height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: var(--color-text); text-decoration: none; white-space: nowrap; margin-right: 40px;
+  }
+  .topbar .brand span { color: var(--color-primary); }
+  .topbar .site-nav { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; flex-wrap: wrap; }
+  .topbar .site-nav > a {
+    text-decoration: none; color: var(--color-text-secondary); font-size: var(--text-body); font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .topbar .site-nav > a:hover { color: var(--color-primary); background: var(--color-bg); text-decoration: none; }
+  .topbar .site-nav > a.active { color: var(--color-primary); background: var(--color-bg); font-weight: 600; }
+  body.inner-page .page-wrapper { min-height: 100vh; }
+
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: var(--space-stack, 16px);
+  }
+  .page-header > h1 {
+    font-family: var(--font);
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1-weight, 600);
+    line-height: var(--text-h1-lh);
+    letter-spacing: -0.02em;
+    margin: 0;
+    padding-top: var(--space-h1-pad-y, 32px);
+    padding-bottom: var(--space-h1-pad-y, 32px);
+    color: var(--color-text, var(--color-text));
+  }
+  #problem > p.page-lead,
+  #mechanism > p.page-lead {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  #problem > h2 + .page-lead,
+  #mechanism > h2 + .page-lead { margin-top: 0; }
+  #mechanism > p.page-lead {
+    margin-bottom: var(--space-stack, 16px);
+  }
+  #mechanism > p.page-lead + p.page-lead {
+    margin-top: 0;
+  }
+  #mechanism > .page-lead + .af-figure { margin-top: 0; }
+  #mechanism > .page-lead + h3.fn-h3,
+  #mechanism h3.fn-h3 + .af-figure { margin-top: 0; }
+  body.inner-page.agent-entry-page:has(#module-sidebar) .main-content {
+    padding-top: var(--content-main-pad-top, 16px);
+    padding-left: 0;
+    padding-right: 0;
+  }
+  body.inner-page.agent-entry-page:has(#module-sidebar) .main-content > .page-header,
+  body.inner-page.agent-entry-page:has(#module-sidebar) .main-content > .section{
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page.agent-entry-page .main-content .section > h2 {
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    letter-spacing: -0.01em;
+    margin-top: 0;
+    margin-bottom: var(--space-stack, 16px);
+    padding-top: var(--space-h2-pad-y, 16px);
+    padding-bottom: 0;
+    border-bottom: none;
+    color: var(--color-text, var(--color-text));
+  }
+  body.inner-page.agent-entry-page .main-content > .section:first-of-type > h2 {
+    margin-top: 0;
+  }
+  body.inner-page.agent-entry-page .main-content > .section {
+    margin-bottom: 32px;
+  }
+  body.inner-page.agent-entry-page .main-content .section h3 { height: auto; }
+  h3.fn-h3 {
+    margin: 0;
+    padding-top: var(--space-h3-pad-y, 16px);
+    padding-bottom: var(--space-h3-pad-y, 16px);
+    font-size: var(--text-h3, 18px);
+    line-height: var(--text-h3-lh, 28px);
+    font-weight: var(--text-h3-weight, 650);
+    color: var(--color-text, var(--color-text));
+    letter-spacing: -0.01em;
+  }
+  body.inner-page.agent-entry-page .main-content .section h4 { height: auto; }
+  h4.fn-h4 {
+    margin: 0;
+    padding-top: var(--space-h4-pad-y, 16px);
+    padding-bottom: var(--space-h4-pad-y, 16px);
+    font-size: var(--text-h4, 14px);
+    line-height: var(--text-h4-lh, 22px);
+    font-weight: var(--text-h4-weight, 650);
+    color: var(--color-text, var(--color-text));
+    letter-spacing: -0.01em;
+  }
+  h3.fn-h3 + h4.fn-h4 { margin-top: 0; }
+  #mechanism > p.bg-body + h3.fn-h3,
+  #mechanism > p.bg-body + h4.fn-h4 { margin-top: var(--space-stack, 16px); }
+  #mechanism h3.fn-h3 + p.bg-body,
+  #mechanism h4.fn-h4 + p.bg-body,
+  #mechanism h4.fn-h4 + p.aj-takeaway,
+  #practices h3.fn-h3 + p.bg-body,
+  #practices h2 + h3.fn-h3,
+  #mechanism h2 + h3.fn-h3 {
+    margin-top: 0;
+  }
+
+  .af-figure + .af-figure {
+    margin-top: var(--space-stack, 16px);
+  }
+  .aj {
+    width: 100%;
+    min-width: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+    color: var(--color-text);
+  }
+  .aj caption {
+    caption-side: top;
+    text-align: left;
+    font-size: var(--text-body);
+    font-weight: 650;
+    line-height: var(--text-body-lh);
+    padding: 0 0 10px;
+    color: var(--color-text);
+  }
+  .af-figure + .bg-body { margin-top: var(--space-stack, 16px); }
+  .aj-takeaway {
+    margin: var(--space-stack, 16px) 0 0;
+    font-size: 13px;
+    line-height: 22px;
+    color: var(--color-text-secondary);
+  }
+  .aj-takeaway strong {
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  .aj th,
+  .aj td {
+    border: 1px solid #e8eef5;
+    border-top: none;
+    border-left: none;
+    vertical-align: top;
+    padding: var(--table-cell-pad);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+  }
+  .aj thead tr:first-child > th {
+    border-top: 1px solid #e8eef5;
+  }
+  .aj th:first-child,
+  .aj td:first-child {
+    border-left: 1px solid #e8eef5;
+  }
+  .aj .aj-corner,
+  .aj .aj-label {
+    width: 148px;
+    background: #f5f6f8;
+    color: var(--color-text);
+    font-weight: 650;
+    vertical-align: middle;
+    text-align: left;
+    padding: var(--table-cell-pad);
+    border-left: 1px solid #e8eef5;
+  }
+  .aj thead th.aj-corner {
+    background: #f5f6f8;
+    color: var(--color-text);
+    padding: var(--table-head-pad-y) var(--table-head-pad-x);
+    border-top-left-radius: 8px;
+  }
+  .aj tbody tr:last-child .aj-label {
+    border-bottom-left-radius: 8px;
+  }
+  .aj thead tr:first-child > th:first-child {
+    border-top-left-radius: 8px;
+  }
+  .aj thead tr:first-child > th:last-child {
+    border-top-right-radius: 8px;
+  }
+  .aj tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 8px;
+  }
+  .aj thead th {
+    background: #f5f6f8;
+    font-weight: 650;
+    text-align: left;
+    padding: var(--table-head-pad-y) var(--table-head-pad-x);
+    color: var(--color-text);
+  }
+  .aj thead .aj-who,
+  .aj thead .aj-stage-name {
+    display: inline;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  .aj thead .aj-who + .aj-stage-name::before {
+    content: "：";
+  }
+  .aj thead .aj-corner .aj-stage-name {
+    color: inherit;
+    margin-bottom: 0;
+  }
+  .aj thead .aj-pri{
+    background: #f5f6f8;
+  }
+  .aj .aj-file {
+    display: block;
+    margin: 0 0 6px;
+    font-family: var(--font-mono, "SF Mono", monospace);
+    font-weight: 650;
+    color: var(--color-primary);
+  }
+  .aj ul {
+    margin: 0;
+    padding-left: 1.1em;
+  }
+  .aj li {
+    color: inherit;
+    margin-bottom: 0;
+  }
+  .aj li + li { margin-top: 12px; }
+  #mechanism .aj li strong {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  #mechanism .aj tbody td[rowspan] {
+    vertical-align: middle;
+  }
+  #mechanism .aj thead th {
+    text-align: left;
+    vertical-align: bottom;
+    height: auto;
+    min-height: 0;
+    box-sizing: border-box;
+    padding: var(--table-head-pad-y) var(--table-head-pad-x);
+  }
+  #mechanism .aj thead th.aj-corner {
+    text-align: left;
+    vertical-align: middle;
+    white-space: normal;
+    height: auto;
+    line-height: 18px;
+  }
+  #mechanism .aj thead .aj-corner .aj-stage-name,
+  #mechanism .aj thead .aj-who,
+  #mechanism .aj thead .aj-stage-name {
+    display: inline;
+    margin: 0;
+    font-size: inherit;
+    font-weight: 650;
+    color: inherit;
+  }
+  #mechanism .aj tbody td {
+    vertical-align: top;
+  }
+  #mechanism .aj tbody .aj-label {
+    vertical-align: middle;
+  }
+  #mechanism .aj .aj-file {
+    margin-bottom: 6px;
+    font-family: inherit;
+  }
+  #mechanism .aj col.aj-rowhead {
+    width: 136px;
+  }
+  #mechanism .aj .aj-corner,
+  #mechanism .aj .aj-label {
+    width: 136px;
+    white-space: nowrap;
+  }
+  .bg-body {
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: 22px;
+    color: var(--color-text, var(--color-text));
+  }
+  #mechanism > p.bg-body {
+    margin-bottom: var(--space-stack, 16px);
+  }
+  #mechanism > p.bg-body > strong {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 650;
+  }
+  #core-principles > h2 + p.aj-takeaway,
+  #core-principles > h2 + .bg-list {
+    margin-top: 0;
+  }
+  #core-principles > p.aj-takeaway + p.aj-takeaway {
+    margin-top: var(--space-stack, 16px);
+  }
+  #mechanism .aj-takeaway + h3.fn-h3,
+  #mechanism .af-figure + h3.fn-h3 {
+    margin-top: var(--space-stack, 16px);
+  }
+  .bg-list {
+    margin: 0;
+    padding-left: 1.25em;
+    font-size: var(--text-body);
+    line-height: 22px;
+    list-style: disc;
+    color: var(--color-text-secondary);
+  }
+  #practices .bg-list li + li,
+  #core-principles .bg-list li + li,
+  #detail-principles .bg-list li + li,
+  #expected-effect .bg-list li + li,
+  #notes .bg-list li + li,
+  #find-md .bg-list li + li,
+  #mechanism .bg-list li + li{ margin-top: 16px; }
+  #practices .bg-list li > strong:first-child,
+  #core-principles .bg-list li > strong:first-child,
+  #find-md .bg-list li > strong:first-child,
+  #mechanism .bg-list li > strong:first-child{
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  #core-principles .bg-list li strong {
+    color: var(--color-text);
+    font-weight: 650;
+  }
+  #practices .bg-list,
+  #core-principles .bg-list,
+  #detail-principles .bg-list,
+  #expected-effect .bg-list,
+  #notes .bg-list,
+  #mechanism .bg-list {
+    margin: 0;
+  }
+  #detail-principles > h2 + .bg-list,
+  #expected-effect > h2 + .bg-list,
+  #notes > h2 + .bg-list {
+    margin-top: 0;
+  }
+  #detail-principles ol.bg-list,
+  #expected-effect ol.bg-list,
+  #notes ol.bg-list {
+    list-style: decimal;
+  }
+  #practices .file-sample-note + h4.fn-h4,
+  #practices .practice-shot + h4.fn-h4,
+  #practices .file-sample + h4.fn-h4,
+  #practices .practice-pair + h4.fn-h4,
+  #practices .bg-list + h4.fn-h4,
+  #practices .bg-list + h3.fn-h3,
+  #practices .file-sample + h3.fn-h3,
+  #practices .file-sample-note + h3.fn-h3,
+  #practices .practice-shot + h3.fn-h3,
+  #practices .practice-pair + h3.fn-h3,
+  #practices .track-compare + h4.fn-h4,
+  #practices .track-compare + h3.fn-h3,
+  #practices .track-compare + h2 {
+    margin-top: var(--space-stack, 16px);
+  }
+  #practices h3.fn-h3 + .fn-h3-desc,
+  #practices h4.fn-h4 + .fn-h3-desc {
+    margin-top: 0;
+  }
+  #practices .fn-h3-desc {
+    margin: 0 0 10px;
+    font-size: var(--text-body);
+    font-weight: 650;
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text);
+  }
+  #practices h4.fn-h4 + .practice-pair,
+  #practices h3.fn-h3 + .practice-pair,
+  #practices .file-sample + .file-sample-note,
+  #practices .practice-pair + .file-sample-note,
+  #practices h4.fn-h4 + .file-sample,
+  #practices h3.fn-h3 + .file-sample,
+  #practices h4.fn-h4 + .practice-shot,
+  #practices .fn-h3-desc + .file-sample,
+  #practices .fn-h3-desc + .practice-shot,
+  #practices .fn-h3-desc + .sample-pair,
+  #practices .fn-h3-desc + .practice-pair,
+  #practices h4.fn-h4 + .bg-list,
+  #practices h4.fn-h4 + .track-compare,
+  #practices h3.fn-h3 + .track-compare,
+  #practices h2 + .track-compare,
+  #practices h3.fn-h3 + .bg-list,
+  #practices h3.fn-h3 + h4.fn-h4,
+  #practices h3.fn-h3 + .file-sample-note,
+  #practices h2 + .file-sample-note,
+  #practices h4.fn-h4 + .af-figure {
+    margin-top: 0;
+  }
+  #find-md h2 + h3.fn-h3,
+  #find-md h3.fn-h3 + .file-sample-note,
+  #find-md h3.fn-h3 + h4.fn-h4,
+  #find-md h3.fn-h3 + .af-figure,
+  #find-md h3.fn-h3 + .file-sample,
+  #find-md h4.fn-h4 + .af-figure,
+  #find-md h4.fn-h4 + .file-sample,
+  #find-md h4.fn-h4 + .bg-list,
+  #find-md .file-sample + .file-sample-note,
+  #find-md .file-sample-note + h4.fn-h4,
+  #find-md .file-sample-note + .file-sample,
+  #find-md .file-sample-note + .af-figure,
+  #find-md .file-sample-note + .bg-list {
+    margin-top: 0;
+  }
+  #find-md .file-sample-note + h3.fn-h3,
+  #find-md .af-figure + h3.fn-h3,
+  #find-md .file-sample + h3.fn-h3 {
+    margin-top: var(--space-stack, 16px);
+  }
+  .practice-shot {
+    margin: 0 0 var(--space-stack, 16px);
+    padding: 0;
+    background: none;
+    border: none;
+  }
+  .practice-shot > figcaption {
+    margin: 0;
+    text-align: left;
+    font-size: var(--text-auxiliary);
+    font-weight: 650;
+    line-height: 22px;
+    padding: 0 0 10px;
+    color: var(--color-text);
+  }
+  .practice-shot .practice-sample {
+    margin: 0;
+  }
+  .practice-shot img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid #e8ecf1;
+    border-radius: 8px;
+  }
+  .practice-sample {
+    margin: 0;
+    padding: 16px;
+    background: var(--color-bg);
+    border: 1px solid #e8ecf1;
+    border-radius: 8px;
+  }
+  .file-sample {
+    margin: 0 0 var(--space-stack, 16px);
+    padding: 0;
+    background: #1e1e1e;
+    border: 1px solid #111;
+    border-radius: 16px;
+    overflow: hidden;
+    color-scheme: dark;
+    scrollbar-color: #5c5c5c #1e1e1e;
+  }
+  .file-sample::-webkit-scrollbar,
+  .file-sample pre::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  .file-sample::-webkit-scrollbar-track,
+  .file-sample pre::-webkit-scrollbar-track {
+    background: #1e1e1e;
+  }
+  .file-sample::-webkit-scrollbar-thumb,
+  .file-sample pre::-webkit-scrollbar-thumb {
+    background: #5c5c5c;
+    border-radius: 4px;
+  }
+  .file-sample figcaption {
+    margin: 0;
+    padding: 10px 14px;
+    font-size: var(--text-auxiliary);
+    font-weight: 650;
+    line-height: 22px;
+    color: #a3a3a3;
+    border-bottom: 1px solid #333;
+  }
+  .file-sample figcaption code {
+    font-size: inherit;
+    color: #e8e8e8;
+    background: none;
+  }
+  .file-sample pre {
+    margin: 0;
+    padding: 12px 14px 14px;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: var(--text-auxiliary);
+    line-height: 20px;
+    color: #e8e8e8;
+    background: transparent;
+    white-space: pre;
+    overflow-x: auto;
+    color-scheme: dark;
+    scrollbar-color: #5c5c5c #1e1e1e;
+  }
+  .file-sample pre code {
+    display: block;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    color: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    font-family: inherit;
+    white-space: inherit;
+  }
+  .file-sample .code-line-hl {
+    display: block;
+    margin: 0 -14px;
+    padding: 2px 14px;
+    background: rgba(4, 120, 87, 0.28);
+  }
+  .file-sample--wrap pre,
+  .file-sample--wrap pre code {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  .file-sample-note {
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: 13px;
+    line-height: 22px;
+    color: #8c8c8c;
+  }
+  .sg-bee {
+    display: block;
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+  }
+  .hub-shot {
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    background: #fff;
+  }
+  .hub-shot img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .hub-shot-llms {
+    position: absolute;
+    top: 7.5%;
+    left: 18.1%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    text-decoration: none;
+    background: none;
+    line-height: 0;
+  }
+  .hub-shot-llms .sg-bee {
+    width: 20px;
+    height: 20px;
+  }
+
+  @media (max-width: 900px) {
+    .fn-ex-row {
+      grid-template-columns: 1fr;
+      grid-template-rows: none;
+    }
+    .fn-ex-row .fn-ex { display: block; grid-row: auto; }
+    .fn-ex-row .fn-ex-body {
+      display: flex; flex-direction: column; grid-row: auto;
+    }
+  }
+
+  .dual-map {
+    list-style: none;
+    margin: 0;
+    padding: 12px 14px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: #fff;
+  }
+  .dual-map .dual-map-kicker {
+    margin: 0 0 10px;
+    font-size: var(--text-caption);
+    font-weight: 650;
+    color: var(--color-text-secondary);
+  }
+  .dual-map .dual-map-row {
+    display: grid;
+    grid-template-columns: 88px 1fr;
+    gap: 4px 12px;
+    padding: 8px 0;
+    border-top: 1px solid #eef1f5;
+    font-size: var(--text-body);
+    line-height: 22px;
+  }
+  .dual-map .dual-map-row.is-miss { color: #8c8c8c; }
+  .dual-map .dual-map-row strong { font-weight: 650; color: var(--color-text); }
+  .dual-map code {
+    font-size: var(--text-auxiliary);
+    word-break: break-all;
+  }
+  .dual-map .dual-map-row span {
+    grid-column: 2;
+    font-size: var(--text-auxiliary);
+    color: var(--color-text-secondary);
+  }
+  .practice-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-stack, 16px);
+    margin: 0 0 var(--space-stack, 16px);
+    align-items: start;
+  }
+  .practice-pair > .file-sample,
+  .practice-pair > .practice-shot {
+    margin-bottom: 0;
+    min-width: 0;
+  }
+  .practice-pair > .practice-shot {
+    display: flex;
+    flex-direction: column;
+  }
+  .practice-pair > .practice-shot img {
+    flex: none;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    object-position: top left;
+  }
+  .practice-pair > .practice-shot .file-sample {
+    flex: none;
+    margin: 0;
+    overflow: hidden;
+  }
+  .practice-pair > .practice-shot .file-sample pre {
+    box-sizing: border-box;
+    margin: 0;
+    min-height: 0;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  @media (max-width: 800px) {
+    .practice-pair { grid-template-columns: 1fr; }
+  }
+  .track-compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-stack, 16px);
+    margin: 0 0 var(--space-stack, 16px);
+    align-items: stretch;
+  }
+  @media (max-width: 800px) {
+    .track-compare { grid-template-columns: 1fr; }
+  }
+  .track-pane {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: none;
+  }
+  .track-pane > figcaption {
+    margin: 0;
+    text-align: left;
+    font-size: var(--text-auxiliary);
+    font-weight: 650;
+    line-height: 22px;
+    padding: 0 0 10px;
+    color: var(--color-text);
+  }
+  .track-pane > figcaption .track-pane-url {
+    display: block;
+    margin-top: 2px;
+    font-size: 10px;
+    font-weight: 400;
+    line-height: 14px;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+  }
+  .track-pane > figcaption .track-pane-url:hover {
+    color: var(--color-primary);
+    text-decoration: underline;
+  }
+  .track-pane-scroll {
+    height: 480px;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 8px;
+  }
+  .track-pane-scroll--shot {
+    background: #0b0c0e;
+  }
+  .track-pane-scroll--md {
+    background: #0b0c0e;
+    border-color: #0b0c0e;
+    color-scheme: dark;
+    scrollbar-color: #5c5c5c #0b0c0e;
+  }
+  .track-pane-scroll--shot img {
+    display: block;
+    width: 100%;
+    height: auto;
+    vertical-align: top;
+  }
+  .track-md-source {
+    margin: 0;
+    padding: 16px 18px;
+    min-height: 100%;
+    box-sizing: border-box;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: var(--text-auxiliary);
+    line-height: 20px;
+    color: #e8e8e8;
+    background: #0b0c0e;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .file-sample .cmt { color: #737373; }
+
+  #vendor-analysis > h2 + .reach-theme { margin-top: 0; }
+  #vendor-analysis .reach-theme { overflow: visible; }
+  #vendor-analysis .hier-label {
+    margin: 0;
+    padding-top: 0;
+    font-size: var(--text-body);
+    line-height: 22px;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  #vendor-analysis .reach-file-intro {
+    margin: 8px 0 16px;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  #vendor-analysis .reach-file-intro p { margin: 0; }
+  #vendor-analysis .reach-file-intro code { font-size: inherit; }
+  #vendor-analysis .llms-anno {
+    --vendor-anno-col: 220px;
+    --vendor-anno-inset: 14px; /* pre padding; pin 相对 .llms-sec */
+    padding: 0;
+    margin: 0;
+    overflow: visible;
+  }
+  #vendor-analysis .llms-anno .file-sample {
+    overflow: visible;
+    margin: 0 var(--vendor-anno-col) 0 0;
+    border-radius: 16px;
+  }
+  #vendor-analysis .llms-anno .file-sample figcaption {
+    border-radius: 16px 16px 0 0;
+  }
+  #vendor-analysis .llms-anno .file-sample pre,
+  #vendor-analysis .llms-anno .file-sample pre code,
+  #vendor-analysis .llms-anno .file-sample pre .llms-row {
+    overflow: visible;
+    font-size: 12px;
+    line-height: 20px;
+  }
+  #vendor-analysis .llms-anno .file-sample pre {
+    padding-top: 16px;
+    border-radius: 0 0 16px 16px;
+  }
+  #vendor-analysis .file-sample figcaption a {
+    color: #e8e8e8;
+    text-decoration: none;
+  }
+  #vendor-analysis .file-sample figcaption a:hover { text-decoration: underline; }
+  #vendor-analysis .file-sample figcaption,
+  #vendor-analysis .file-sample figcaption code,
+  #vendor-analysis .file-sample figcaption a,
+  #practices .file-sample figcaption,
+  #practices .file-sample figcaption code {
+    font-size: 14px;
+    line-height: 22px;
+  }
+  #vendor-analysis .file-sample figcaption {
+    padding: 12px 14px;
+  }
+  #practices > .file-sample figcaption {
+    padding: 12px 14px;
+    color: #525252;
+    background: #fafafa;
+    border-bottom-color: #e5e5e5;
+  }
+  #practices > .file-sample {
+    margin-right: var(--vendor-anno-col, 220px);
+    background: #fafafa;
+    border: 1px solid #e5e5e5;
+    border-radius: 16px;
+    color-scheme: light;
+    scrollbar-color: #c4c4c4 #fafafa;
+  }
+  #practices > .file-sample figcaption code {
+    color: #191919;
+  }
+  #practices > .file-sample pre,
+  #practices > .file-sample pre code {
+    color: #191919;
+    background: #fafafa;
+  }
+  #practices > .file-sample .cmt {
+    color: #737373;
+  }
+  #vendor-analysis .llms-secs {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 0;
+    white-space: normal;
+  }
+  #vendor-analysis .llms-sec {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px 12px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.06);
+    white-space: normal;
+  }
+  #vendor-analysis .llms-mod {
+    display: none;
+  }
+  #vendor-analysis .llms-sec .llms-row,
+  #vendor-analysis .llms-sec .llms-line { white-space: pre-wrap; }
+  #vendor-analysis .llms-row {
+    display: block;
+    position: static;
+  }
+  #vendor-analysis .llms-pin {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    pointer-events: none;
+  }
+  #vendor-analysis .llms-row mark {
+    color: inherit;
+    font: inherit;
+    border-radius: 2px;
+    padding: 0 3px;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+  #vendor-analysis .llms-row .hl-1 { background: rgba(250, 204, 21, 0.48); }
+  #vendor-analysis .llms-row .hl-2 { background: rgba(250, 204, 21, 0.22); }
+  #vendor-analysis .llms-row .hl-3 { background: rgba(167, 139, 250, 0.42); }
+  #vendor-analysis .llms-pin .anno-cap {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    flex: 0 0 auto;
+    width: max-content;
+    min-width: 0;
+    max-width: 168px;
+    gap: 0;
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 650;
+    line-height: 20px;
+    color: #191919;
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    text-align: right;
+  }
+  #vendor-analysis .llms-pin .anno-name {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 16px;
+    margin-top: 2px;
+    color: #737373;
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    text-align: right;
+  }
+  #vendor-analysis .llms-pin--right {
+    box-sizing: border-box;
+    left: 100%;
+    right: auto;
+    width: var(--vendor-anno-col);
+    max-width: none;
+    margin-left: var(--vendor-anno-inset);
+    padding-left: 4px;
+    flex-direction: row-reverse;
+  }
+  #vendor-analysis .llms-pin .anno-leader {
+    flex: 1 1 auto;
+    width: auto;
+    min-width: 16px;
+    height: 1.5px;
+    margin-top: 0;
+    background: #191919;
+  }
+  #vendor-analysis .llms-pin .anno-tip {
+    flex: 0 0 auto;
+    width: 5px;
+    height: 5px;
+    margin-top: 0;
+    border-radius: 50%;
+    background: #191919;
+  }
+</style>
+</head>
+<body class="inner-page agent-entry-page" data-module="principles" data-page="robots" data-no-surface-tabs>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span>AI 亲和原则</span></a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="mintlify.html">友商对照</a>
+      <a href="reachability.html">社区诊断</a>
+      <a href="principles-overview.html" class="active">亲和原则</a>
+      <a href="community-ui.html">组件亲和</a>
+      <a href="design-guide-image-text.html">设计模式</a>
+      <a href="data-analysis.html">数据分析</a>
+    </nav>
+  </div>
+</div>
+
+<div class="page-wrapper">
+
+  <aside id="module-sidebar"></aside>
+  
+  <main class="main-content">
+    <div class="page-header">
+      <h1>配置 robots.txt 许可声明</h1>
+    </div>
+
+    <section class="section" id="mechanism">
+      <h2 id="mech-access">robots.txt 概述</h2>
+      <p class="page-lead">robots.txt 是网站根目录下的一个纯文本文件，用于告诉爬虫（crawler / bot）哪些页面可以抓取，哪些页面不要抓取。</p>
+      <p class="page-lead">基于 RFC 9309（Robots Exclusion Protocol）的约定，robots.txt 入口固定为网站根路径 <code>https://{域名}/robots.txt</code>。遵循协议的 Agent 会主动读取该文件，并依据其中规则决定抓取范围；未遵循协议的 Agent 不受其约束。</p>
+    </section>
+
+    <section class="section" id="detail-principles">
+      <h2>具体原则</h2>
+      <ol class="bg-list">
+        <li>在网站根目录提供可访问的 robots.txt 文件，确保抓取规则可被爬虫识别。</li>
+        <li>根据内容开放范围配置 Allow 与 Disallow 规则，放行公开知识内容，限制非公开资源，避免误将需发现内容设置为禁止抓取。</li>
+        <li>在 robots.txt 中声明站点地图（Sitemap）地址，为搜索引擎爬虫提供公开 URL 发现入口。</li>
+        <li>在 robots.txt 中声明机器可读的 llms 访问路径，为 AI Agent 提供知识内容发现与获取入口。</li>
+      </ol>
+    </section>
+
+    <section class="section" id="vendor-analysis">
+      <h2>友商分析</h2>
+      <div class="reach-theme">
+          <div class="llms-anno">
+          <figure class="file-sample file-sample--robots-full" aria-label="nvidia.com/robots.txt 许可声明">
+            <figcaption><a href="https://www.nvidia.com/robots.txt" target="_blank" rel="noopener"><code>https://www.nvidia.com/robots.txt</code></a></figcaption>
+            <pre><code class="language-robots"><span class="llms-secs"><span class="llms-sec"><span class="llms-mod">文件头</span><span class="llms-row"><span class="llms-pin llms-pin--right" aria-hidden="true"><span class="anno-cap">网站说明<span class="anno-name"># 欢迎与更新日期</span></span><span class="anno-leader"></span><span class="anno-tip"></span></span># Welcome to NVIDIA</span>
+<span class="llms-row"># We dig it when people read our code! Check out the jobs while you're here.</span>
+<span class="llms-row"># https://www.nvidia.com/en-us/about-nvidia/careers/</span>
+<span class="llms-row"># Or check out our YouTube channel for our latest</span>
+<span class="llms-row"># https://www.youtube.com/user/nvidia</span>
+<span class="llms-row"># Last updated 11 Aug 2026 by RR</span></span>
+<span class="llms-sec"><span class="llms-mod">路径清单</span><span class="llms-row"><span class="llms-pin llms-pin--right" aria-hidden="true"><span class="anno-cap">Sitemap<span class="anno-name">声明公开网址清单</span></span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-1">Sitemap: https://www.nvidia.com/sitemap_index.xml</mark></span></span>
+<span class="llms-sec"><span class="llms-mod">索引目录</span><span class="llms-row"><span class="llms-pin llms-pin--right" aria-hidden="true"><span class="anno-cap">LLMs.txt<span class="anno-name">声明机器亲和入口</span></span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-2">LLMs.txt: https://www.nvidia.com/llms.txt</mark></span></span>
+<span class="llms-sec"><span class="llms-mod">放行 Agent</span><span class="llms-row"><span class="llms-pin llms-pin--right" aria-hidden="true"><span class="anno-cap">放行规则<span class="anno-name">User-agent *、Content-Signal、Allow</span></span><span class="anno-leader"></span><span class="anno-tip"></span></span># AI / LLM crawlers &amp; fetchers</span>
+<span class="llms-row">User-agent: *</span>
+<span class="llms-row">Content-Signal: ai-train=yes, search=yes, ai-input=yes</span>
+<span class="llms-row"><mark class="hl-3">Allow: /</mark></span></span>
+<span class="llms-sec"><span class="llms-mod">禁止路径</span><span class="llms-row"><span class="llms-pin llms-pin--right" aria-hidden="true"><span class="anno-cap">禁止规则<span class="anno-name">User-agent * 与 Disallow</span></span><span class="anno-leader"></span><span class="anno-tip"></span></span># Disallow Rules</span>
+<span class="llms-row">User-agent: *</span>
+<span class="llms-row"># Gated Content</span>
+<span class="llms-row">Disallow: /content/g/*</span>
+<span class="llms-row">Disallow: /content/gated-pdfs/*</span>
+<span class="llms-row">Disallow: /content/*/gated-resources/*</span>
+<span class="llms-row">Disallow: /content/*/gated-pdfs/*</span>
+<span class="llms-row">Disallow: /gated-resources/*</span>
+<span class="llms-row"># GF Forums</span>
+<span class="llms-row">Disallow: /*?topicPage=</span>
+<span class="llms-row">Disallow: /*&amp;topicPage=</span>
+<span class="llms-row">Disallow: /*?commentPage=</span></span></span></code></pre>
+          </figure>
+          </div>
+      </div>
+    </section>
+
+    <section class="section" id="practices">
+      <h2>robots.txt 示例</h2>
+      <figure class="file-sample">
+        <figcaption><code>https://{域名}/robots.txt</code></figcaption>
+        <pre><code class="language-robots"><span class="cmt"># 必选 对全体爬虫生效；勿单独误挡主流 Agent</span>
+User-agent: *
+<span class="cmt"># 可选 内容用途信号</span>
+Content-Signal: ai-train=yes,search=yes,ai-input=yes
+
+<span class="cmt"># 必选 放行知识面</span>
+Allow: /docs/
+
+<span class="cmt"># 必选 拦截噪声面</span>
+Disallow: /admin/
+Disallow: /staging/
+Disallow: /api/debug/
+
+<span class="cmt"># 必选 声明 Sitemap 地址</span>
+Sitemap: https://docs.example.com/sitemap.xml
+
+<span class="cmt"># 可选 声明 llms 索引（非标准字段）</span>
+LLMs.txt: https://docs.example.com/llms.txt</code></pre>
+      </figure>
+    </section>
+
+    <section class="section" id="expected-effect">
+      <h2>预期效果</h2>
+      <ol class="bg-list">
+        <li>帮助 AI 爬虫发现公开内容，并识别允许抓取的范围。</li>
+        <li>减少因入口缺失、链接失效或规则误设导致的内容遗漏，为后续检索和引用提供基础。</li>
+      </ol>
+    </section>
+
+    <section class="section" id="notes">
+      <h2>注意事项</h2>
+      <ol class="bg-list">
+        <li>robots.txt 用于声明抓取规则，不能代替身份验证和访问权限控制，也不能保证所有爬虫遵守。</li>
+        <li>允许抓取不等于一定会被索引或引用；站点地图也不保证内容被收录。</li>
+        <li>开放范围应与内容权限保持一致，避免为了提升可发现性而开放敏感或非公开内容。</li>
+      </ol>
+    </section>
+
+  </main>
+</div>
+
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js"></script>
+<script src="assets/js/module-sidebar.js"></script>
+</body>
+</html>
