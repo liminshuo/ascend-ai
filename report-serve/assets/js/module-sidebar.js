@@ -10,11 +10,7 @@
       { group: null, id: "content-collapse", href: "problems-content-collapse.html", label: "折叠隐藏语义", pageIds: ["content-collapse", "content-tab"] }
     ],
     principles: [
-      {
-        group: "可达", id: "structure-llms", href: "principles-structure-llms.html", label: "打通发现入口",
-        pageIds: ["structure-llms", "page-discover", "machine-discover"]
-      },
-      { group: null, id: "robots", href: "principles-robots.html", label: "配置 robots.txt 许可声明" },
+      { group: "可达", id: "robots", href: "principles-robots.html", label: "配置 robots.txt 许可声明" },
       { group: null, id: "llms", href: "principles-llms.html", label: "部署 llms.txt 索引目录", pageIds: ["llms", "llms-volume"] },
       { group: null, id: "llms-full", href: "principles-llms-full.html", label: "部署 llms-full.txt 正文包" },
       { group: null, id: "sitemap", href: "principles-sitemap.html", label: "Sitemap 路径清单语义化" },
@@ -339,11 +335,6 @@
       var path = location.pathname || "";
       var onFile = !file || path === file || path.endsWith("/" + file) || path.endsWith(file);
       a.classList.toggle("active", onFile && location.hash === hash);
-    });
-    var path = location.pathname || "";
-    var onStructure = path === "principles-structure-llms.html" || path.endsWith("/principles-structure-llms.html") || path.endsWith("principles-structure-llms.html");
-    aside.querySelectorAll(".sidebar-phase-nav:not(.sidebar-module-title) a[href='principles-structure-llms.html']").forEach(function (a) {
-      a.classList.toggle("active", onStructure);
     });
     aside.querySelectorAll(".nav-item.has-children").forEach(function (li) {
       var link = li.querySelector(".nav-link");

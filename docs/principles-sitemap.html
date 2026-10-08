@@ -62,6 +62,9 @@
   #mechanism > p.page-lead {
     margin-bottom: var(--space-stack, 16px);
   }
+  #mechanism > p.page-lead + p.page-lead {
+    margin-top: 0;
+  }
   #mechanism > p.page-lead strong {
     font-weight: 650;
     color: var(--color-text);
@@ -89,15 +92,15 @@
     margin-top: 0;
     margin-bottom: var(--space-stack, 16px);
     padding-top: var(--space-h2-pad-y, 16px);
-    padding-bottom: var(--space-h2-pad-y, 16px);
-    border-bottom: 2px solid var(--color-card-border);
+    padding-bottom: 0;
+    border-bottom: none;
     color: var(--color-text, var(--color-text));
   }
   body.inner-page.agent-entry-page .main-content > .section:first-of-type > h2 {
     margin-top: 0;
   }
   body.inner-page.agent-entry-page .main-content > .section {
-    margin-bottom: var(--space-stack, 16px);
+    margin-bottom: 32px;
   }
   body.inner-page.agent-entry-page .main-content .section h3 { height: auto; }
   h3.fn-h3 {
@@ -146,14 +149,42 @@
     line-height: var(--text-body-lh);
     color: var(--color-text);
   }
-  .aj caption {
+  .aj caption,
+  #vendor-analysis > .aj-caption,
+  #practices .aj-caption {
     caption-side: top;
     text-align: left;
-    font-size: var(--text-body);
+    font-size: 14px;
+    line-height: 22px;
     font-weight: 650;
-    line-height: var(--text-body-lh);
-    padding: 0 0 10px;
+    padding: 0 0 16px;
     color: var(--color-text);
+    margin: 0;
+  }
+  #vendor-analysis > h2 + .page-lead,
+  #vendor-analysis > h2 + .aj-caption,
+  #vendor-analysis > .page-lead + .aj-caption,
+  #vendor-analysis > .aj-caption + .file-sample,
+  #vendor-analysis > .aj-caption + .reach-theme,
+  #practices h2 + .aj-caption,
+  #practices .aj-caption + .file-sample,
+  #practices .aj-caption + .af-figure,
+  #practices .file-sample + .aj-caption,
+  #practices .file-sample + h2,
+  #practices .af-figure + h2 {
+    margin-top: 0;
+  }
+  #practices .af-figure--problems {
+    margin: 0 0 32px;
+  }
+  #vendor-analysis > p.page-lead {
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  #vendor-analysis > p.page-lead + p.page-lead {
+    margin-top: 0;
   }
   .af-figure + .bg-body { margin-top: var(--space-stack, 16px); }
   .aj-takeaway {
@@ -317,7 +348,10 @@
     font-weight: 650;
   }
   #core-principles > h2 + p.aj-takeaway,
-  #core-principles > h2 + .bg-list {
+  #core-principles > h2 + .bg-list,
+  #detail-principles > h2 + .bg-list,
+  #expected-effect > h2 + .bg-list,
+  #notes > h2 + .bg-list {
     margin-top: 0;
   }
   #core-principles > p.aj-takeaway + p.aj-takeaway {
@@ -338,6 +372,9 @@
   #practices .bg-list li + li,
   #benefits .bg-list li + li,
   #core-principles .bg-list li + li,
+  #detail-principles .bg-list li + li,
+  #expected-effect .bg-list li + li,
+  #notes .bg-list li + li,
   #find-md .bg-list li + li,
   #mechanism .bg-list li + li{ margin-top: 16px; }
   #practices .bg-list li > strong:first-child,
@@ -357,8 +394,22 @@
   #practices .bg-list,
   #benefits .bg-list,
   #core-principles .bg-list,
+  #detail-principles .bg-list,
+  #expected-effect .bg-list,
+  #notes .bg-list,
   #mechanism .bg-list {
     margin: 0;
+  }
+  #detail-principles ol.bg-list,
+  #expected-effect ol.bg-list,
+  #notes ol.bg-list {
+    list-style: decimal;
+    padding-left: 1.25em;
+  }
+  #detail-principles .bg-list li,
+  #expected-effect .bg-list li,
+  #notes .bg-list li {
+    color: var(--color-text-secondary);
   }
   #practices .file-sample-note + h4.fn-h4,
   #practices .practice-shot + h4.fn-h4,
@@ -498,6 +549,11 @@
     color: #e8e8e8;
     background: none;
   }
+  .file-sample figcaption a {
+    color: #e8e8e8;
+    text-decoration: none;
+  }
+  .file-sample figcaption a:hover { text-decoration: underline; }
   .file-sample pre {
     margin: 0;
     padding: 12px 14px 14px;
@@ -740,6 +796,333 @@
   }
 
   .file-sample .cmt { color: #737373; }
+
+  #vendor-analysis .reach-theme { overflow: visible; margin-bottom: 0; }
+  #vendor-analysis .llms-anno {
+    --vendor-anno-col: 280px;
+    --vendor-anno-inset: 14px;
+    padding: 0;
+    margin: 0;
+    overflow: visible;
+  }
+  #vendor-analysis .llms-anno .file-sample {
+    overflow: visible;
+    margin: 0 calc(var(--vendor-anno-col) + var(--vendor-anno-inset)) 0 0;
+    border-radius: 16px;
+  }
+  #vendor-analysis .llms-anno .file-sample figcaption {
+    border-radius: 16px 16px 0 0;
+    padding: 12px 14px;
+  }
+  #vendor-analysis .llms-anno .file-sample pre,
+  #vendor-analysis .llms-anno .file-sample pre code,
+  #vendor-analysis .llms-anno .file-sample pre .llms-row {
+    overflow: visible;
+    overflow-x: visible;
+    overflow-y: visible;
+    font-size: 12px;
+    line-height: 20px;
+  }
+  #vendor-analysis .llms-anno .file-sample pre {
+    padding-top: 16px;
+    border-radius: 0 0 16px 16px;
+  }
+  #vendor-analysis .llms-secs {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 0;
+    white-space: normal;
+  }
+  #vendor-analysis .llms-unit {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 28px 8px 8px;
+    border-radius: 6px;
+    background: rgba(167, 139, 250, 0.07);
+    overflow: visible;
+  }
+  #vendor-analysis .llms-pin--unit {
+    top: 8px;
+    left: auto;
+    right: 10px;
+    width: auto;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    transform: none;
+    flex-direction: row;
+    gap: 0;
+    z-index: 3;
+  }
+  #vendor-analysis .llms-pin--unit .anno-leader,
+  #vendor-analysis .llms-pin--unit .anno-tip {
+    display: none;
+  }
+  #vendor-analysis .llms-pin--unit .anno-cap {
+    flex: 0 0 auto;
+    width: auto;
+    max-width: none;
+    align-items: center;
+    padding: 0;
+    border-radius: 0;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 400;
+    color: #a3a3a3;
+    background: transparent;
+    box-shadow: none;
+  }
+  #vendor-analysis .llms-pin--child .anno-cap {
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 600;
+    padding-right: 0;
+    max-width: none;
+    width: auto;
+    align-items: flex-end;
+    text-align: right;
+  }
+  #vendor-analysis .llms-pin--child .anno-name {
+    font-size: 11px;
+    line-height: 15px;
+  }
+  #vendor-analysis .llms-pin--child .anno-leader {
+    background: #a3a3a3;
+  }
+  #vendor-analysis .llms-pin--child .anno-tip {
+    width: 5px;
+    height: 5px;
+    background: #737373;
+  }
+  #vendor-analysis .llms-sec {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px 12px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.06);
+    white-space: normal;
+  }
+  #vendor-analysis .llms-mod { display: none; }
+  #vendor-analysis .llms-sec .llms-row { white-space: pre-wrap; }
+  #vendor-analysis .llms-row { display: block; position: static; }
+  #vendor-analysis .llms-pin {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    pointer-events: none;
+    white-space: normal;
+    overflow: visible;
+  }
+  #vendor-analysis .llms-row mark {
+    color: inherit;
+    font: inherit;
+    border-radius: 2px;
+    padding: 0 3px;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+  #vendor-analysis .llms-row .hl-1 { background: rgba(250, 204, 21, 0.48); }
+  #vendor-analysis .llms-row .hl-2 { background: rgba(52, 211, 153, 0.28); }
+  #vendor-analysis .llms-row .hl-3 { background: rgba(167, 139, 250, 0.42); }
+  #vendor-analysis .llms-pin .anno-cap {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    box-sizing: border-box;
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
+    max-width: none;
+    gap: 0;
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 650;
+    line-height: 20px;
+    color: #191919;
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    text-align: right;
+  }
+  #vendor-analysis .llms-pin .anno-name {
+    display: block;
+    width: 100%;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 16px;
+    margin-top: 2px;
+    color: #737373;
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    text-align: right;
+  }
+  #vendor-analysis .llms-pin--right {
+    box-sizing: border-box;
+    left: 100%;
+    right: auto;
+    width: var(--vendor-anno-col);
+    max-width: none;
+    margin-left: var(--vendor-anno-inset);
+    padding-left: 4px;
+    flex-direction: row-reverse;
+    justify-content: flex-start;
+  }
+  #vendor-analysis .llms-unit .llms-pin--right {
+    margin-left: calc(var(--vendor-anno-inset) + 8px);
+    width: calc(var(--vendor-anno-col) - 8px);
+  }
+  #vendor-analysis .llms-unit .llms-pin--unit {
+    top: 8px;
+    left: auto;
+    right: 10px;
+    width: auto;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    transform: none;
+    flex-direction: row;
+  }
+  #vendor-analysis .llms-pin--unit .anno-cap {
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 400;
+    color: #a3a3a3;
+  }
+  #vendor-analysis .llms-pin .anno-leader {
+    flex: 0 0 16px;
+    width: 16px;
+    min-width: 16px;
+    height: 1.5px;
+    margin-top: 0;
+    background: #191919;
+  }
+  #vendor-analysis .llms-pin .anno-tip {
+    flex: 0 0 auto;
+    width: 5px;
+    height: 5px;
+    margin-top: 0;
+    border-radius: 50%;
+    background: #191919;
+  }
+  #practices .file-sample--skel-clip pre,
+  #practices .file-sample--skel-clip pre code {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    white-space: normal;
+  }
+  #practices .file-sample--skel-clip .llms-robots-clip {
+    display: block;
+    margin: 0;
+    white-space: pre;
+  }
+  #practices .file-sample pre .llms-skel {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 0;
+    white-space: normal;
+  }
+  #practices .file-sample pre .llms-skel-bar {
+    display: block;
+    height: 8px;
+    border-radius: 4px;
+    background: #3f3f3f;
+  }
+  #practices .file-sample .llms-path {
+    display: inline;
+    padding: 0 3px;
+    border-radius: 3px;
+    font: inherit;
+    font-weight: 650;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+  #practices .file-sample--skel-clip .llms-path {
+    color: #fed7aa;
+    background: rgba(251, 146, 60, 0.42);
+  }
+  #practices .file-sample--light,
+  #path .file-sample--light {
+    border-radius: 16px;
+    overflow: hidden;
+    background: #fafafa;
+    border: 1px solid #e5e5e5;
+    color-scheme: light;
+    scrollbar-color: #c4c4c4 #fafafa;
+  }
+  #practices .file-sample--light figcaption,
+  #path .file-sample--light figcaption {
+    border-radius: 16px 16px 0 0;
+    padding: 12px 14px;
+    font-size: 14px;
+    line-height: 22px;
+    color: #525252;
+    background: #fafafa;
+    border-bottom-color: #e5e5e5;
+  }
+  #practices .file-sample--light figcaption code,
+  #practices .file-sample--light figcaption a,
+  #path .file-sample--light figcaption code,
+  #path .file-sample--light figcaption a {
+    font-size: 14px;
+    line-height: 22px;
+    color: #191919;
+  }
+  #practices .file-sample--light pre,
+  #practices .file-sample--light pre code,
+  #path .file-sample--light pre,
+  #path .file-sample--light pre code {
+    color: #191919;
+    background: #fafafa;
+    font-size: 12px;
+    line-height: 20px;
+  }
+  #practices .file-sample--light pre,
+  #path .file-sample--light pre {
+    border-radius: 0 0 16px 16px;
+    padding: 12px 14px 14px;
+  }
+  #practices .file-sample--light .cmt,
+  #path .file-sample--light .cmt {
+    color: #737373;
+  }
+  #practices .file-sample--light .llms-path--good {
+    color: #047857;
+    background: rgba(52, 211, 153, 0.34);
+    box-shadow: inset 0 0 0 1px rgba(4, 120, 87, 0.38);
+  }
+  #path .file-sample--light .code-line-hl {
+    position: relative;
+    display: block;
+    padding: 0 4px;
+    margin: 0 -4px;
+    background: rgba(52, 211, 153, 0.34);
+    border-radius: 4px;
+    box-shadow: inset 0 0 0 1.5px rgba(4, 120, 87, 0.38);
+  }
+  #path h2 + h3.fn-h3,
+  #path h3.fn-h3 + .file-lead,
+  #path h3.fn-h3 + .file-sample,
+  #path .file-lead + .file-sample,
+  #path .file-sample + h3.fn-h3 {
+    margin-top: 0;
+  }
+  #path .file-lead {
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: 22px;
+    color: var(--color-text-secondary);
+  }
 </style>
 </head>
 <body class="inner-page agent-entry-page" data-module="principles" data-page="sitemap" data-no-surface-tabs>
@@ -769,90 +1152,131 @@
     </div>
 
     <section class="section" id="mechanism">
-      <h2 id="mech-access">什么是语义化 Sitemap</h2>
-      <p class="page-lead">面向应被公开索引的知识面，把<strong>完整网址列成一张清单</strong>。地址写进 <code>robots.txt</code> 的 <code>Sitemap:</code> 行。有 <code>llms.txt</code> 时，它是补漏与覆盖深层页的清单，不替代索引目录的「先读哪篇」。</p>
-      <figure class="af-figure">
-        <table class="aj">
-          <caption>表1 路径清单与索引目录对照</caption>
-          <colgroup>
-            <col class="aj-rowhead" />
-            <col />
-            <col />
-          </colgroup>
-          <thead>
-            <tr>
-              <th class="aj-corner" scope="col">对照项</th>
-              <th scope="col"><span class="aj-who">索引目录</span><span class="aj-stage-name">llms.txt</span></th>
-              <th class="aj-pri" scope="col"><span class="aj-who">路径清单</span><span class="aj-stage-name">sitemap.xml</span></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th class="aj-label" scope="row">场景</th>
-              <td>Agent 按条目说明判断相关性，选定下一跳文档。</td>
-              <td class="is-pri">索引缺失、截断或未覆盖新页时，仍能枚举知识面的公开 URL。</td>
-            </tr>
-            <tr>
-              <th class="aj-label" scope="row">信息表现特点</th>
-              <td>
-                <ul>
-                  <li><strong>给人读说明</strong>每条带标题与「何时用」，决策不依赖打开页面。</li>
-                  <li><strong>只收有背书的知识面</strong>列表页、纯导航页不进索引。</li>
-                </ul>
-              </td>
-              <td class="is-pri">
-                <ul>
-                  <li><strong>URL 自带语义</strong>路径含产品、文档名、版本，避免会话 ID 与无意义参数。</li>
-                  <li><strong>范围是公开知识面</strong>后台、重复参数 URL、活动专题不收录。</li>
-                </ul>
-              </td>
-            </tr>
-            <tr>
-              <th class="aj-label" scope="row">解决的问题</th>
-              <td>解决选篇与优先级：先看哪本、哪一版、哪一节。</td>
-              <td class="is-pri">解决覆盖：深层页和新增页仍有完整地址可被发现，而不靠猜路径。</td>
-            </tr>
-          </tbody>
-        </table>
-      </figure>
+      <h2 id="mech-access">sitemap.xml 概述</h2>
+      <p class="page-lead"><code>sitemap.xml</code> 是用于列出网站公开 URL 的 XML 文件，为搜索引擎提供 URL 发现入口，帮助其发现网站中的公开页面。</p>
+      <p class="page-lead">基于 Google Sitemaps 协议（2005 年），常见入口为 <code>https://{域名}/sitemap.xml</code>，也可以使用 Sitemap 索引文件组织多份 Sitemap。文件地址可通过 <code>robots.txt</code> 的 <code>Sitemap:</code> 指令声明，并使用绝对 URL。</p>
     </section>
 
-    <section class="section" id="problem">
-      <h2>解决什么问题</h2>
-      <p class="page-lead">只有索引时，未写入 <code>llms.txt</code> 的深层页和新页容易漏抓；清单若塞满后台、重复 URL 或无语义参数，额度被噪声占满。语义化 Sitemap 只列该被公开索引的知识面地址，并在许可声明里给出绝对地址。</p>
+    <section class="section" id="detail-principles">
+      <h2>具体原则</h2>
+      <ol class="bg-list">
+        <li>提供可访问的 <code>sitemap.xml</code> 或 Sitemap 索引文件，并可通过 <code>robots.txt</code> 中的 <code>Sitemap:</code> 指令声明其地址。</li>
+        <li>仅收录希望搜索引擎发现的公开 URL，避免纳入后台页面、重复参数 URL 及与网站内容无关的临时页面。</li>
+        <li>保持 URL 语义清晰，路径尽量体现产品、文档、版本等内容信息，避免使用会话 ID 和无意义参数。</li>
+        <li>页面新增、删除或迁移后及时更新 Sitemap，避免清单中保留失效或已不存在的 URL。</li>
+      </ol>
     </section>
 
-    <section class="section" id="core-principles">
-      <h2>核心原则</h2>
-      <ul class="bg-list">
-        <li><strong>收录范围</strong>面向应被公开索引的知识面页面，后台和重复 URL 不纳入。</li>
-        <li><strong>语义化 URL</strong>路径与文件名带上产品名、文档名、版本号，避免无意义参数和会话 ID。</li>
-        <li><strong>地址声明</strong>完整地址写在 <code>robots.txt</code> 的 <code>Sitemap:</code> 行，使用绝对地址。</li>
-        <li><strong>动态维护</strong>页面增删或迁移后，清单跟着更新。</li>
-      </ul>
+    <section class="section" id="vendor-analysis">
+      <h2>友商分析</h2>
+      <p class="page-lead">NVIDIA 使用 Sitemap 索引文件组织多份 Sitemap，并按语言、地区等维度拆分 URL。入口为 <a href="https://www.nvidia.com/sitemap_index.xml" target="_blank" rel="noopener"><code>https://www.nvidia.com/sitemap_index.xml</code></a>，每个 Sitemap 通过绝对 <code>&lt;loc&gt;</code> 指定，并提供 <code>&lt;lastmod&gt;</code>。</p>
+      <p class="aj-caption">NVIDIA 的 sitemap_index.xml（部分）</p>
+      <div class="reach-theme">
+        <div class="llms-anno">
+          <figure class="file-sample" aria-label="www.nvidia.com/sitemap_index.xml">
+            <figcaption><a href="https://www.nvidia.com/sitemap_index.xml" target="_blank" rel="noopener"><code>https://www.nvidia.com/sitemap_index.xml</code></a></figcaption>
+            <pre><code class="language-xml"><span class="llms-secs"><span class="llms-sec"><span class="llms-mod">Sitemap 索引</span><span class="llms-row"><span class="llms-pin llms-pin--right" aria-hidden="true"><span class="anno-cap">Sitemap 索引<span class="anno-name">根元素 sitemapindex，表示当前文件用于索引多个 Sitemap 文件</span></span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-1">&lt;sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"&gt;</mark></span></span>
+<span class="llms-unit"><span class="llms-pin llms-pin--right llms-pin--unit" aria-hidden="true"><span class="anno-cap">子清单 1</span><span class="anno-leader"></span><span class="anno-tip"></span></span><span class="llms-sec"><span class="llms-mod">子清单地址</span><span class="llms-row">&lt;sitemap&gt;</span>
+<span class="llms-row"><span class="llms-pin llms-pin--right llms-pin--child" aria-hidden="true"><span class="anno-cap">子清单地址<span class="anno-name">绝对 URL，路径含语言地区</span></span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-2">&lt;loc&gt;https://www.nvidia.com/en-gb/en-gb.sitemap.xml&lt;/loc&gt;</mark></span></span>
+<span class="llms-sec"><span class="llms-mod">更新日期</span><span class="llms-row"><span class="llms-pin llms-pin--right llms-pin--child" aria-hidden="true"><span class="anno-cap">更新日期<span class="anno-name">子清单 lastmod</span></span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-3">&lt;lastmod&gt;2024-08-23&lt;/lastmod&gt;</mark></span>
+<span class="llms-row">&lt;/sitemap&gt;</span></span></span>
+<span class="llms-unit"><span class="llms-pin llms-pin--right llms-pin--unit" aria-hidden="true"><span class="anno-cap">子清单 2</span><span class="anno-leader"></span><span class="anno-tip"></span></span><span class="llms-sec"><span class="llms-mod">子清单地址</span><span class="llms-row">&lt;sitemap&gt;</span>
+<span class="llms-row">&lt;loc&gt;https://www.nvidia.com/en-us/en-us.sitemap.xml&lt;/loc&gt;</span>
+<span class="llms-row">&lt;lastmod&gt;2024-08-23&lt;/lastmod&gt;</span>
+<span class="llms-row">&lt;/sitemap&gt;</span></span></span>
+<span class="llms-row">...</span>
+<span class="llms-unit"><span class="llms-pin llms-pin--right llms-pin--unit" aria-hidden="true"><span class="anno-cap">子清单 3</span><span class="anno-leader"></span><span class="anno-tip"></span></span><span class="llms-sec"><span class="llms-mod">子清单地址</span><span class="llms-row">&lt;sitemap&gt;</span>
+<span class="llms-row">&lt;loc&gt;https://www.nvidia.cn/zh-cn.sitemap.xml&lt;/loc&gt;</span>
+<span class="llms-row">&lt;lastmod&gt;2024-08-23&lt;/lastmod&gt;</span>
+<span class="llms-row">&lt;/sitemap&gt;</span></span></span>
+<span class="llms-row">&lt;/sitemapindex&gt;</span></span></code></pre>
+          </figure>
+        </div>
+      </div>
     </section>
 
     <section class="section" id="practices">
-      <h2>路径清单示例</h2>
-      <p class="file-sample-note">基于 Sitemaps 协议。站点须在 <code>robots.txt</code> 中用 <code>Sitemap:</code> 声明本文件地址。</p>
-      <figure class="file-sample">
-        <figcaption><code>sitemap.xml</code></figcaption>
-        <pre><code class="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"&gt;
-  <span class="cmt">&lt;!-- 只收知识面；路径含产品名、文档名、版本 --&gt;</span>
-  &lt;url&gt;&lt;loc&gt;https://docs.example.com/docs/product-x/2.0/install&lt;/loc&gt;&lt;/url&gt;
-  &lt;url&gt;&lt;loc&gt;https://docs.example.com/docs/product-x/2.0/api&lt;/loc&gt;&lt;/url&gt;
-  <span class="cmt">&lt;!-- 不收录 /admin、重复参数 URL、活动专题 --&gt;</span>
-&lt;/urlset&gt;</code></pre>
+      <h2>sitemap.xml 错误示例</h2>
+      <p class="aj-caption">昇腾社区 robots.txt 中的 Sitemap 声明</p>
+      <figure class="file-sample file-sample--skel-clip" aria-label="现网 robots.txt 中的 Sitemap 文件名无语义">
+        <figcaption><a href="https://www.hiascend.com/robots.txt" target="_blank" rel="noopener"><code>https://www.hiascend.com/robots.txt</code></a></figcaption>
+        <pre><code class="language-robots"><span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:86%"></span><span class="llms-skel-bar" style="width:54%"></span></span><span class="llms-robots-clip">Sitemap: https://www.hiascend.com/sitemap.xml
+Sitemap: https://www.hiascend.com/cn/sitemap-zh-CN.xml
+Sitemap: https://www.hiascend.com/eng/sitemap-en-GB.xml
+Sitemap: https://www.hiascend.com/sitemap/<span class="llms-path">sitemapdata1</span>.xml
+Sitemap: https://www.hiascend.com/sitemap/<span class="llms-path">sitemapdata2</span>.xml
+Sitemap: https://www.hiascend.com/sitemap/<span class="llms-path">sitemapdoc1</span>.xml
+Sitemap: https://www.hiascend.com/sitemap/<span class="llms-path">sitemapdoc2</span>.xml
+Sitemap: …</span><span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:90%"></span><span class="llms-skel-bar" style="width:72%"></span><span class="llms-skel-bar" style="width:58%"></span></span></code></pre>
+      </figure>
+      <p class="aj-caption">当前问题</p>
+      <figure class="af-figure af-figure--problems">
+        <ol class="bg-list">
+          <li>子清单文件名语义较弱，如 <code>sitemapdata1</code>、<code>sitemapdoc1</code>，难以从路径判断语言、栏目或内容范围。</li>
+          <li>多份 Sitemap 直接平铺在 <code>robots.txt</code> 的 <code>Sitemap:</code> 声明中，随着文件数量增加，维护和理解成本较高；内容规模较大时可通过 Sitemap 索引文件统一组织。</li>
+        </ol>
+      </figure>
+      <h2>sitemap.xml 建议示例</h2>
+      <p class="aj-caption">网站 sitemap.xml 清单索引</p>
+      <figure class="file-sample file-sample--light" aria-label="语义化的 sitemap 清单索引">
+        <figcaption><code>https://{域名}/sitemap.xml</code></figcaption>
+        <pre><code class="language-xml">&lt;sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"&gt;
+  &lt;sitemap&gt;
+    &lt;loc&gt;https://{域名}/sitemap/zh-CN.xml&lt;/loc&gt;
+    &lt;lastmod&gt;2026-09-10&lt;/lastmod&gt;
+  &lt;/sitemap&gt;
+  &lt;sitemap&gt;
+    &lt;loc&gt;https://{域名}/sitemap/en-GB.xml&lt;/loc&gt;
+    &lt;lastmod&gt;2026-09-10&lt;/lastmod&gt;
+  &lt;/sitemap&gt;
+  &lt;sitemap&gt;
+    &lt;loc&gt;https://{域名}/sitemap/<span class="llms-path llms-path--good">site</span>.xml&lt;/loc&gt;
+    &lt;lastmod&gt;2026-09-10&lt;/lastmod&gt;
+  &lt;/sitemap&gt;
+  &lt;sitemap&gt;
+    &lt;loc&gt;https://{域名}/sitemap/<span class="llms-path llms-path--good">marketplace</span>.xml&lt;/loc&gt;
+    &lt;lastmod&gt;2026-09-10&lt;/lastmod&gt;
+  &lt;/sitemap&gt;
+  &lt;sitemap&gt;
+    &lt;loc&gt;https://{域名}/sitemap/<span class="llms-path llms-path--good">developer</span>.xml&lt;/loc&gt;
+    &lt;lastmod&gt;2026-09-10&lt;/lastmod&gt;
+  &lt;/sitemap&gt;
+&lt;/sitemapindex&gt;</code></pre>
       </figure>
     </section>
 
-    <section class="section" id="benefits">
-      <h2>价值收益</h2>
-      <ul class="bg-list">
-        <li><strong>覆盖可核对</strong>公开知识面 URL 有一份可机读清单，新增与迁移有处可查。</li>
-        <li><strong>与索引分工</strong>选篇看 <code>llms.txt</code>，补漏看 Sitemap，两份文件职责不混用。</li>
-      </ul>
+    <section class="section" id="path">
+      <h2>机器如何发现 sitemap.xml</h2>
+      <h3 class="fn-h3">方式一：约定路径</h3>
+      <p class="file-lead">网站通常可在根目录提供 <code>/sitemap.xml</code> 作为常见入口，搜索引擎可尝试访问该路径。</p>
+      <figure class="file-sample file-sample--light">
+        <figcaption>约定路径</figcaption>
+        <pre><code>https://{域名}/sitemap.xml</code></pre>
+      </figure>
+      <h3 class="fn-h3">方式二：读 robots.txt</h3>
+      <p class="file-lead">搜索引擎会读取 <code>robots.txt</code> 中的 <code>Sitemap:</code> 指令，获取 Sitemap 或 Sitemap 索引地址。</p>
+      <figure class="file-sample file-sample--light" aria-label="robots.txt 推荐声明一份 Sitemap 索引">
+        <figcaption><code>https://{域名}/robots.txt</code></figcaption>
+        <pre><code class="language-robots"><span class="cmt"># 推荐：统一声明 Sitemap 索引入口，由索引文件组织各子 Sitemap</span>
+<span class="code-line-hl">Sitemap: https://{域名}/sitemap.xml</span></code></pre>
+      </figure>
+    </section>
+
+    <section class="section" id="expected-effect">
+      <h2>预期效果</h2>
+      <ol class="bg-list">
+        <li>帮助搜索引擎更高效地发现网站公开 URL，减少新增或深层页面因缺少发现入口而被遗漏。</li>
+        <li>与 <code>llms.txt</code> 分工：Sitemap 提供公开 URL 发现入口，<code>llms.txt</code> 提供知识内容索引和理解入口。</li>
+      </ol>
+    </section>
+
+    <section class="section" id="notes">
+      <h2>注意事项</h2>
+      <ol class="bg-list">
+        <li>Sitemap 用于提供公开 URL 的发现线索，不代表页面一定会被搜索引擎抓取或索引。</li>
+        <li>收录范围应与页面实际公开状态保持一致，避免列入后台、受限或不应公开的页面。</li>
+        <li><code>lastmod</code> 应反映 Sitemap 或页面的实际更新时间，避免填写不准确的时间信息。</li>
+      </ol>
     </section>
 
   </main>
