@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>部署 llms-full.txt 正文包 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
+  <title>部署 llms-full.txt 完整正文 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
   <link rel="stylesheet" href="assets/css/style.css">
 <style>
 
@@ -437,6 +437,7 @@
   }
   #practices .llms-break .file-sample {
     border-radius: 16px;
+    overflow: hidden;
     background: #fafafa;
     border: 1px solid #e5e5e5;
     color-scheme: light;
@@ -466,6 +467,10 @@
     line-height: 20px;
     color: #191919;
     background: #fafafa;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    overflow-x: hidden;
   }
   #practices .file-sample-note + h4.fn-h4,
   #practices .practice-shot + h4.fn-h4,
@@ -853,7 +858,7 @@
     overflow: visible;
   }
   #vendor-analysis .llms-anno {
-    --vendor-anno-col: 280px;
+    --vendor-anno-col: 220px;
     --vendor-anno-inset: 14px;
     padding: 0;
     margin: 0;
@@ -861,7 +866,7 @@
   }
   #vendor-analysis .llms-anno .file-sample {
     overflow: visible;
-    margin: 0 calc(var(--vendor-anno-col) + var(--vendor-anno-inset)) 0 0;
+    margin: 0 var(--vendor-anno-col) 0 0;
     border-radius: 16px;
   }
   #vendor-analysis .llms-anno .file-sample figcaption {
@@ -904,66 +909,13 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    padding: 28px 8px 8px;
+    padding: 8px;
     border-radius: 6px;
     background: rgba(167, 139, 250, 0.07);
     overflow: visible;
   }
-  #vendor-analysis .llms-pin--unit {
-    top: 8px;
-    left: auto;
-    right: 10px;
-    width: auto;
-    max-width: none;
-    margin: 0;
-    padding: 0;
-    transform: none;
-    flex-direction: row;
-    gap: 0;
-    z-index: 3;
-  }
-  #vendor-analysis .llms-unit .llms-pin--unit {
-    margin-left: 0;
-  }
-  #vendor-analysis .llms-pin--unit .anno-leader,
-  #vendor-analysis .llms-pin--unit .anno-tip {
+  #vendor-analysis .llms-pin--child {
     display: none;
-  }
-  #vendor-analysis .llms-pin--unit .anno-cap {
-    flex: 0 0 auto;
-    width: auto;
-    max-width: none;
-    align-items: center;
-    padding: 0;
-    border-radius: 0;
-    font-size: 12px;
-    line-height: 16px;
-    font-weight: 400;
-    color: #a3a3a3;
-    background: transparent;
-    box-shadow: none;
-  }
-  #vendor-analysis .llms-pin--child .anno-cap {
-    font-size: 12px;
-    line-height: 18px;
-    font-weight: 600;
-    padding-right: 0;
-    max-width: none;
-    width: auto;
-    align-items: flex-end;
-    text-align: right;
-  }
-  #vendor-analysis .llms-pin--child .anno-name {
-    font-size: 11px;
-    line-height: 15px;
-  }
-  #vendor-analysis .llms-pin--child .anno-leader {
-    background: #a3a3a3;
-  }
-  #vendor-analysis .llms-pin--child .anno-tip {
-    width: 5px;
-    height: 5px;
-    background: #737373;
   }
   #vendor-analysis .llms-sec {
     position: relative;
@@ -976,6 +928,31 @@
     white-space: normal;
   }
   #vendor-analysis .llms-mod { display: none; }
+  #vendor-analysis .llms-unit .llms-mod {
+    display: block;
+    position: absolute;
+    top: 6px;
+    right: 10px;
+    left: auto;
+    margin: 0;
+    padding: 0;
+    height: auto;
+    border-radius: 0;
+    max-width: 46%;
+    text-align: right;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 500;
+    color: #a3a3a3;
+    background: none;
+    white-space: nowrap;
+    z-index: 2;
+  }
+  #vendor-analysis .llms-unit .llms-sec {
+    padding: 8px 88px 8px 10px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.06);
+  }
   #vendor-analysis .llms-sec .llms-row,
   #vendor-analysis .llms-sec .llms-line { white-space: pre-wrap; }
   #vendor-analysis .llms-row {
@@ -1010,10 +987,10 @@
     flex-direction: column;
     align-items: flex-end;
     box-sizing: border-box;
-    flex: 1 1 0;
-    width: auto;
+    flex: 0 0 auto;
+    width: max-content;
     min-width: 0;
-    max-width: none;
+    max-width: 168px;
     gap: 0;
     font-family: var(--font);
     font-size: 14px;
@@ -1049,30 +1026,31 @@
     flex-direction: row-reverse;
     justify-content: flex-start;
   }
-  #vendor-analysis .llms-unit .llms-pin--right {
-    margin-left: calc(var(--vendor-anno-inset) + 8px);
-    width: calc(var(--vendor-anno-col) - 8px);
-  }
-  #vendor-analysis .llms-unit .llms-pin--unit {
-    top: 8px;
-    left: auto;
-    right: 10px;
-    width: auto;
+  #vendor-analysis .llms-unit > .llms-pin--unit {
+    top: 50%;
+    left: 100%;
+    right: auto;
+    transform: translateY(-50%);
+    width: var(--vendor-anno-col);
     max-width: none;
-    margin: 0;
-    padding: 0;
-    transform: none;
-    flex-direction: row;
+    margin-left: var(--vendor-anno-inset);
+    padding-left: 4px;
+    flex-direction: row-reverse;
+    justify-content: flex-start;
+    z-index: 3;
   }
   #vendor-analysis .llms-pin--unit .anno-cap {
-    font-size: 12px;
-    line-height: 16px;
-    font-weight: 400;
-    color: #a3a3a3;
+    flex: 0 0 auto;
+    align-items: flex-end;
+    text-align: right;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 650;
+    color: #191919;
   }
   #vendor-analysis .llms-pin .anno-leader {
-    flex: 0 0 16px;
-    width: 16px;
+    flex: 1 1 auto;
+    width: auto;
     min-width: 16px;
     height: 1.5px;
     margin-top: 0;
@@ -1203,7 +1181,7 @@
   
   <main class="main-content">
     <div class="page-header">
-      <h1>部署 llms-full.txt 正文包</h1>
+      <h1>部署 llms-full.txt 完整正文</h1>
     </div>
 
     <section class="section" id="mechanism">
@@ -1235,9 +1213,9 @@
             <pre><code><span class="llms-secs"><span class="llms-sec"><span class="llms-mod">文件标题</span><span class="llms-row"><span class="llms-pin llms-pin--right" aria-hidden="true"><span class="anno-cap">文件标题<span class="anno-name">标识网站名称和文件用途</span></span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-1"># Mintlify — full site corpus</mark></span></span>
 <span class="llms-sec"><span class="llms-mod">文件级上下文</span><span class="llms-row"><span class="llms-pin llms-pin--right" aria-hidden="true"><span class="anno-cap">文件级上下文<span class="anno-name">说明文件内容范围及相关知识入口</span></span><span class="anno-leader"></span><span class="anno-tip"></span></span>&gt; [llms.txt](https://www.mintlify.com/llms.txt)</span>
 <span class="llms-row"><mark class="hl-2">&gt; This file contains the full text of every marketing page on www.mintlify.com. Product documentation lives at https://www.mintlify.com/docs (index: https://www.mintlify.com/docs/llms.txt).</mark></span></span>
-<span class="llms-unit"><span class="llms-pin llms-pin--right llms-pin--unit" aria-hidden="true"><span class="anno-cap">页面单元 1</span><span class="anno-leader"></span><span class="anno-tip"></span></span><span class="llms-sec"><span class="llms-mod">页面标题</span><span class="llms-row"><span class="llms-pin llms-pin--right llms-pin--child" aria-hidden="true"><span class="anno-cap">页面标题</span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-3">## The documentation platform for agents</mark></span></span>
-<span class="llms-sec"><span class="llms-mod">页面地址</span><span class="llms-row"><span class="llms-pin llms-pin--right llms-pin--child" aria-hidden="true"><span class="anno-cap">页面地址</span><span class="anno-leader"></span><span class="anno-tip"></span></span>URL: https://www.mintlify.com</span></span>
-<span class="llms-sec"><span class="llms-mod">页面正文</span><span class="llms-row"><span class="llms-pin llms-pin--right llms-pin--child" aria-hidden="true"><span class="anno-cap">页面正文<span class="anno-name">保留页面正文及必要的 Markdown 结构</span></span><span class="anno-leader"></span><span class="anno-tip"></span></span>Self-updating documentation for startups, enterprises, and agents.</span>
+<span class="llms-unit"><span class="llms-pin llms-pin--right llms-pin--unit" aria-hidden="true"><span class="anno-cap">页面单元 1</span><span class="anno-leader"></span><span class="anno-tip"></span></span><span class="llms-sec"><span class="llms-mod">页面标题</span><span class="llms-row"><mark class="hl-3">## The documentation platform for agents</mark></span></span>
+<span class="llms-sec"><span class="llms-mod">页面地址</span><span class="llms-row">URL: https://www.mintlify.com</span></span>
+<span class="llms-sec"><span class="llms-mod">页面正文</span><span class="llms-row">Self-updating documentation for startups, enterprises, and agents.</span>
 <span class="llms-row">The intelligent documentation platform. Self-updating documentation for startups, enterprises, and agents.</span>
 <span class="llms-row">...</span></span></span>
 <span class="llms-unit"><span class="llms-pin llms-pin--right llms-pin--unit" aria-hidden="true"><span class="anno-cap">页面单元 2</span><span class="anno-leader"></span><span class="anno-tip"></span></span><span class="llms-sec"><span class="llms-mod">页面标题</span><span class="llms-row"><mark class="hl-3">## Pricing</mark></span></span>

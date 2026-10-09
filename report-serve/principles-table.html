@@ -110,8 +110,8 @@
     margin-top: 0;
     margin-bottom: var(--space-stack, 16px);
     padding-top: var(--space-h2-pad-y, 16px);
-    padding-bottom: var(--space-h2-pad-y, 16px);
-    border-bottom: 2px solid var(--color-card-border);
+    padding-bottom: 0;
+    border-bottom: none;
     color: var(--color-text, var(--color-text));
   }
   body.inner-page[data-page="table"] .main-content .section h3 { height: auto; }
@@ -427,6 +427,7 @@
     padding-top: var(--space-h4-pad-y, 16px);
     border-top: none;
   }
+  #mechanism > p.page-lead,
   #problem > p.page-lead,
   #practices > p.page-lead,
   #core-principles > p.page-lead {
@@ -435,14 +436,26 @@
     line-height: var(--text-body-lh, 22px);
     color: var(--color-text-secondary);
   }
+  #mechanism > h2 + .page-lead,
   #problem > h2 + .page-lead,
+  #detail-principles > h2 + .bg-list,
+  #expected-effect > h2 + .bg-list,
+  #notes > h2 + .bg-list,
   #core-principles > h2 + .principle-body {
     margin-top: 0;
   }
-  #problem,
-  #core-principles,
-  #practices {
+  #mechanism > p.page-lead {
     margin-bottom: var(--space-stack, 16px);
+  }
+  #mechanism > p.page-lead + p.page-lead {
+    margin-top: 0;
+  }
+  #mechanism,
+  #detail-principles,
+  #practices,
+  #expected-effect,
+  #notes {
+    margin-bottom: 32px;
   }
   #core-principles .principle-body { margin: 0; }
   #core-principles .principle-body p {
@@ -465,7 +478,18 @@
     list-style: disc;
     color: var(--color-text-secondary);
   }
+  #detail-principles .bg-list li + li,
+  #expected-effect .bg-list li + li,
+  #notes .bg-list li + li,
   #benefits .bg-list li + li { margin-top: 16px; }
+  #detail-principles .bg-list,
+  #expected-effect .bg-list,
+  #notes .bg-list {
+    margin: 0;
+    list-style: decimal;
+  }
+  #expected-effect .bg-list li strong,
+  #notes .bg-list li strong,
   #benefits .bg-list li strong {
     display: block;
     margin-bottom: 4px;
@@ -813,27 +837,84 @@
       <h1>表格语义可结构化</h1>
     </div>
 
-    <section class="section" id="problem">
-      <h2>解决什么问题</h2>
-      <p class="page-lead">Agent 切片后拿不到可查询的表结构，只能看到打散、互不相属的单元格。</p>
+    <section class="section" id="mechanism">
+      <h2>概述</h2>
+      <p class="page-lead">表格是网页表达规格、能力、场景和对照关系的结构化载体，但视觉表格不一定等于机器可还原的行列关系。</p>
+      <p class="page-lead">表格语义可结构化原则旨在降低表格切片后的理解障碍，使表题、表头、行列归属、合并关系和能力值能够被 AI Agent 准确读取和查询。</p>
     </section>
 
-    <section class="section" id="core-principles">
-      <h2>核心原则</h2>
-      <div class="principle-body">
-        <strong>表骨架可机读</strong>
-        <p>表头由表格组件给出。须写出能点名的表题，并用合法合并表达行列归属；格内列表独立成结构。能力格须写成「支持 / 不支持」，禁止只靠对号或空格。</p>
-      </div>
+    <section class="section" id="detail-principles">
+      <h2>具体原则</h2>
+<ol class="bg-list">
+        <li>为表格提供能点名主题的表题，避免只写「见下表」或无标题表格。</li>
+        <li>使用表头、行头和合法合并表达行列归属；HTML 使用 <code>th</code>、<code>scope</code>、<code>rowspan</code> 等结构，Markdown 无合并能力时逐行写全场景名。</li>
+        <li>格内列表应保留独立结构，避免将多个条件、限制或说明压成不可拆分的一句。</li>
+        <li>能力值应写成「支持 / 不支持 / 待支持」等明确文本，避免只靠对号、叉号、空格或颜色表达。</li>
+        <li>表格、正文说明和平行 Markdown 应保持同一套行列事实。</li>
+      </ol>
     </section>
-
     <section class="section" id="practices">
       <h2>典型示例</h2>
       <div class="principle-example">
-        <h3 class="fn-h3">合并与分组可还原</h3>
+        <h3 class="fn-h3">表格结构可还原</h3>
         <p class="fn-h3-desc">合并后每格仍能还原行名 × 列名；Markdown 无 rowspan 时逐行写全场景名，HTML 用 rowspan + scope 呈现合并。</p>
         <h4 class="fn-h4">示例 1 · 场景合并</h4>
 <div class="fn-ex-row" id="table-rowspan">
           <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label">反面</span>
+              <div class="fn-ex-bar" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="反面：空白单元格模拟合并，行归属丢失">
+                <div class="ex-table-wrap">
+                  <table class="ex-table">
+                    <caption>表2 场景 × 芯片能力矩阵</caption>
+                    <thead>
+                      <tr>
+                        <th scope="col">场景</th>
+                        <th scope="col">模型</th>
+                        <th scope="col">A2</th>
+                        <th scope="col">A3</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>预训练</td>
+                        <td>DeepSeek V3</td>
+                        <td>支持</td>
+                        <td>支持</td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td>DeepSeek-Janus-Pro</td>
+                        <td>不支持</td>
+                        <td>支持</td>
+                      </tr>
+                      <tr>
+                        <td>推理</td>
+                        <td>Qwen2</td>
+                        <td>支持</td>
+                        <td>支持</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="fn-ex-foot">
+                    <ul class="fn-ex-list">
+      <li><strong>常见疏漏：</strong></li>
+      <li>1. 用空白单元格模拟合并，切片后丢失「预训练」行头</li>
+      <li>2. 第二行无法还原为「预训练 × DeepSeek-Janus-Pro」</li>
+    </ul>
+              </div>
+            </div>
+          </div>
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label is-good">正面</span>
+              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+            </div>
             <div class="fn-ex-body">
               <div class="fn-ex-mock" aria-label="正面：rowspan 行头 + scope">
                 <div class="ex-table-wrap">
@@ -1336,15 +1417,23 @@
       </div>
     </section>
 
-    <section class="section" id="benefits">
-      <h2>价值收益</h2>
-      <ul class="bg-list">
-        <li><strong>行列可切片还原</strong>入库后仍能回答「某场景 × 某芯片是否支持」，而不是丢了行头的碎片。</li>
-        <li><strong>主题可点名</strong>描述性 caption 让引用能落到具体规格表，而不是「见上表」。</li>
-        <li><strong>能力可点名</strong>格子里能读出「支持 / 不支持」，而不是对号或空白。</li>
-      </ul>
+    <section class="section" id="expected-effect">
+      <h2>预期效果</h2>
+<ol class="bg-list">
+        <li>帮助 AI Agent 在切片后仍能还原「行名 × 列名 × 单元格值」的关系，准确回答规格和能力问题。</li>
+        <li>减少行头丢失、合并关系断裂或符号值误读，使表格内容可查询、可引用。</li>
+      </ol>
     </section>
-  </main>
+
+    <section class="section" id="notes">
+      <h2>注意事项</h2>
+<ol class="bg-list">
+        <li>视觉合并不能替代源码中的表头、行头和 scope。</li>
+        <li>Markdown 表无法表达 rowspan 时，应重复写全场景名，不要用空单元格模拟合并。</li>
+        <li>对号、空白和颜色不应作为能力结论的唯一表达。</li>
+      </ol>
+    </section>
+</main>
 
 </div>
 

@@ -16,6 +16,6 @@ python3 docs/serve.py -p 8080
 
 ## 在线
 
-GitHub Pages：https://liminshuo.github.io/ascend-ai/
+GitHub Pages：https://liminshuo.github.io/geo-affinity-principles/
 
 源码目录：`report-serve/`（发布副本：`docs/`）。Pages 使用分支 `main` / 目录 `/docs`。

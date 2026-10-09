@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>页面 HTML 可读 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
+  <title>页面 HTML 可读性 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
   <link rel="stylesheet" href="assets/css/style.css">
 <style>
   .topbar {
@@ -81,22 +81,31 @@
     padding-bottom: var(--space-h1-pad-y, 32px);
     color: var(--color-text, var(--color-text));
   }
-  #problem > p.page-lead {
+  #mechanism > p.page-lead {
     margin: 0;
     font-size: var(--text-body);
     line-height: var(--text-body-lh, 22px);
     color: var(--color-text-secondary);
   }
-  #problem > h2 + .page-lead,
-  #core-principles > h2 + .principle-body {
+  #mechanism > h2 + .page-lead,
+  #detail-principles > h2 + .bg-list,
+  #expected-effect > h2 + .bg-list,
+  #notes > h2 + .bg-list {
     margin-top: 0;
   }
-  #problem,
-  #core-principles,
-  #mechanism,
-  #practices,
-  #benefits {
+  #mechanism > p.page-lead {
     margin-bottom: var(--space-stack, 16px);
+  }
+  #mechanism > p.page-lead + p.page-lead {
+    margin-top: 0;
+  }
+  #mechanism,
+  #detail-principles,
+  #stages,
+  #practices,
+  #expected-effect,
+  #notes {
+    margin-bottom: 32px;
   }
   #core-principles .principle-body {
     margin: 0;
@@ -122,14 +131,13 @@
     line-height: 1.75;
     color: var(--text, var(--color-text));
   }
-  body.inner-page[data-page="content-retrievable"]:has(#module-sidebar) .main-content {
+  body.inner-page.agent-entry-page:has(#module-sidebar) .main-content {
     padding-top: var(--content-main-pad-top, 16px);
     padding-left: 0;
     padding-right: 0;
   }
-  body.inner-page[data-page="content-retrievable"]:has(#module-sidebar) .main-content > .page-header,
-  body.inner-page[data-page="content-retrievable"]:has(#module-sidebar) .main-content > .section,
-  body.inner-page[data-page="content-retrievable"]:has(#module-sidebar) .main-content > .surface-tabs {
+  body.inner-page.agent-entry-page:has(#module-sidebar) .main-content > .page-header,
+  body.inner-page.agent-entry-page:has(#module-sidebar) .main-content > .section {
     width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
     max-width: var(--content-max-width, 1000px);
     margin-inline: auto;
@@ -137,7 +145,7 @@
     padding-right: 0;
     box-sizing: border-box;
   }
-  body.inner-page[data-page="content-retrievable"] .main-content .section > h2 {
+  body.inner-page.agent-entry-page .main-content .section > h2 {
     font-size: var(--text-h2, 24px);
     font-weight: 700;
     line-height: var(--text-h2-lh, 36px);
@@ -145,11 +153,14 @@
     margin-top: 0;
     margin-bottom: var(--space-stack, 16px);
     padding-top: var(--space-h2-pad-y, 16px);
-    padding-bottom: var(--space-h2-pad-y, 16px);
-    border-bottom: 2px solid var(--color-card-border);
+    padding-bottom: 0;
+    border-bottom: none;
     color: var(--color-text, var(--color-text));
   }
-  body.inner-page[data-page="content-retrievable"] .main-content .section h3 { height: auto; }
+  body.inner-page.agent-entry-page .main-content > .section {
+    margin-bottom: 32px;
+  }
+  body.inner-page.agent-entry-page .main-content .section h3 { height: auto; }
   h3.fn-h3 {
     margin: 0;
     padding-top: var(--space-h3-pad-y, 16px);
@@ -160,7 +171,7 @@
     color: var(--color-text, var(--color-text));
     letter-spacing: -0.01em;
   }
-  body.inner-page[data-page="content-retrievable"] .main-content .section h4 { height: auto; }
+  body.inner-page.agent-entry-page .main-content .section h4 { height: auto; }
   h4.fn-h4 {
     margin: 0;
     padding-top: var(--space-h4-pad-y, 16px);
@@ -173,8 +184,16 @@
   }
   h3.fn-h3 + .principle-example > h4.fn-h4,
   h3.fn-h3 + h4.fn-h4 { margin-top: 0; }
+  #practices h2 + .principle-example > h3.fn-h3,
+  #practices h3.fn-h3 + .fn-ex-row,
+  #stages h2 + h3.fn-h3,
+  #stages h3.fn-h3 + .aj-caption,
+  #stages h3.fn-h3 + .fn-ex-row { margin-top: 0; }
+  #stages .fn-ex-row + h3.fn-h3 {
+    margin-top: var(--space-stack, 16px);
+  }
   .fn-h3-desc + h4.fn-h4 { margin-top: var(--space-stack, 16px); }
-  body.inner-page[data-page="content-retrievable"] .main-content > .section:first-of-type > h2 {
+  body.inner-page.agent-entry-page .main-content > .section:first-of-type > h2 {
     margin-top: 0;
   }
 
@@ -270,21 +289,188 @@
     background: #1e1e1e;
     border: 1px solid #111;
     border-radius: 0;
-    font-size: var(--text-auxiliary);
+    font-size: 12px;
     line-height: 18px;
     color: #e8e8e8;
     white-space: pre-wrap;
     word-break: break-word;
     overflow: auto;
     box-sizing: border-box;
-    min-height: 100%;
+    min-height: 360px;
+  }
+  .fn-ex-row .fn-ex-mock pre.st-code code {
+    font: inherit;
+    color: inherit;
+  }
+  #stages > h2 + .aj-caption {
+    margin-top: 0;
+  }
+  #stages > .aj-caption {
+    caption-side: top;
+    text-align: left;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 650;
+    padding: 0 0 16px;
+    color: var(--color-text);
+    margin: 0;
+  }
+  #stages > .aj-caption + .ssr-page-shot {
+    margin: 0 0 16px;
+  }
+  #stages .ssr-page-shot .ssr-loss-frame {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    height: auto;
+    padding: 0 88px;
+    box-sizing: border-box;
+    background: #f4f5f7;
+    border: 1px solid #e5e5e5;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  #stages .ssr-page-shot .ssr-shot-fit {
+    position: relative;
+    width: 100%;
+    height: auto;
+    margin: 0;
+  }
+  #stages .ssr-page-shot .ssr-shot-fit img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    object-position: top center;
+  }
+  #stages .ssr-page-shot .ssr-pair-mask {
+    position: absolute;
+    border-radius: 10px;
+    pointer-events: none;
+  }
+  #stages .ssr-page-shot .ssr-pair-mask--table {
+    top: 50%;
+    left: 6.8%;
+    width: 86.4%;
+    height: 50%;
+    background: rgba(250, 204, 21, 0.14);
+    z-index: 2;
+    box-sizing: border-box;
+  }
+  #stages .ssr-page-shot .ssr-pair-mask--list {
+    top: 10.8%;
+    left: 6.8%;
+    width: 62.4%;
+    height: 89.2%;
+    background: rgba(250, 204, 21, 0.14);
+    z-index: 2;
+    box-sizing: border-box;
+  }
+  #stages .ssr-page-shot .llms-mod {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    display: inline-flex;
+    align-items: center;
+    height: 20px;
+    padding: 0 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    line-height: 20px;
+    font-weight: 650;
+    white-space: nowrap;
+    z-index: 3;
+    color: #b45309;
+    background: rgba(245, 158, 11, 0.28);
+  }
+  #stages > .ssr-page-shot + .fn-ex-row {
+    margin-top: var(--space-stack, 16px);
+  }
+  #stages .fn-ex-row:not(#retrievable-design-scroll) .fn-ex-mock {
+    padding: 0;
+    height: 360px;
+  }
+  #stages .fn-ex-row:not(#retrievable-design-scroll) .fn-ex-mock pre.st-code {
+    min-height: 0;
+    height: 360px;
+    max-height: 360px;
+    overflow: auto;
+    border: none;
+    padding: 16px;
+  }
+  #stages .fn-ex-row .fn-ex:last-child .fn-ex-mock pre.st-code {
+    background: #fff;
+    color: #171717;
+  }
+  #stages .fn-ex-row .ssr-src mark.ssr-js,
+  #stages .fn-ex-row .ssr-src mark.ssr-ok {
+    position: relative;
+    isolation: isolate;
+    display: inline-block;
+    width: 100%;
+    vertical-align: top;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0 10px;
+    background: none;
+    color: inherit;
+    font: inherit;
+    border-radius: 8px;
+  }
+  #stages .fn-ex-row .ssr-src mark.ssr-js::before,
+  #stages .fn-ex-row .ssr-src mark.ssr-ok::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: 8px;
+    pointer-events: none;
+  }
+  #stages .fn-ex-row .ssr-src mark.ssr-js::before {
+    background: rgba(250, 204, 21, 0.32);
+  }
+  #stages .fn-ex-row .ssr-src mark.ssr-ok::before {
+    background: rgba(52, 211, 153, 0.12);
+  }
+  #stages .fn-ex-row .ssr-src .llms-mod {
+    position: absolute;
+    top: 0;
+    right: 8px;
+    display: inline-flex;
+    align-items: center;
+    height: 20px;
+    padding: 0 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    line-height: 20px;
+    font-weight: 650;
+    white-space: nowrap;
+    z-index: 3;
+  }
+  #stages .fn-ex-row .ssr-src mark.ssr-js > .llms-mod {
+    color: #fde68a;
+    background: rgba(245, 158, 11, 0.42);
+  }
+  #stages .fn-ex-row .ssr-src mark.ssr-ok > .llms-mod {
+    color: #047857;
+    background: rgba(52, 211, 153, 0.28);
   }
   .fn-ex-row .fn-ex-foot {
     display: flex; flex-direction: column; gap: 8px;
     padding: 12px 14px 14px; background: #fff;
     border-top: 1px solid var(--color-border);
   }
-  .fn-ex-row .fn-ex-foot .fn-ex-list { margin: 0; gap: 4px; }
+  .fn-ex-row .fn-ex-foot .fn-ex-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    gap: 4px;
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-list li {
+    font-size: 14px;
+    line-height: 22px;
+  }
   .fn-ex-label {
     display: inline-block; padding: 0 8px; border-radius: 4px;
     font-size: var(--text-auxiliary); font-weight: 650; line-height: 20px;
@@ -362,6 +548,31 @@
     font-weight: 650;
     background: var(--color-primary);
     border-color: var(--color-primary);
+  }
+  #retrievable-design-scroll .vis-card {
+    padding: 12px 14px 10px;
+    overflow: hidden;
+  }
+  #retrievable-design-scroll .vis-blog-bar {
+    margin: 0 0 8px;
+    font-size: 12px;
+    line-height: 18px;
+    color: #8c8c8c;
+  }
+  #retrievable-design-scroll .vis-feed-title {
+    font-weight: 650;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  #retrievable-design-scroll .vis-feed-row.is-ghost {
+    opacity: 0.34;
+  }
+  #retrievable-design-scroll .vis-more {
+    margin-top: 8px;
+  }
+  #retrievable-design-scroll .vis-page {
+    margin-top: 8px;
   }
   .principle-example + .principle-example { margin-top: var(--space-stack, 16px); }
 
@@ -441,27 +652,6 @@
     font-size: 13px;
     word-break: break-word;
   }
-  #mechanism .aj col.aj-rowhead { width: 108px; }
-  #mechanism .aj .aj-corner,
-  #mechanism .aj .aj-label {
-    width: 108px;
-    white-space: nowrap;
-  }
-  #mechanism .af-figure + .af-figure { margin-top: var(--space-stack, 16px); }
-  #mechanism .af-figure + .aj-takeaway + .af-figure { margin-top: var(--space-stack, 16px); }
-  #mechanism .aj .aj-label a {
-    color: inherit;
-    font-weight: 650;
-    text-decoration: none;
-  }
-  #mechanism .aj .aj-label a:hover { color: var(--color-primary); text-decoration: underline; }
-  #mechanism .af-figure:last-of-type .aj .aj-label {
-    width: 148px;
-    white-space: normal;
-  }
-  #mechanism .aj th,
-  #mechanism .aj td { padding: 10px 10px; }
-  #mechanism .af-figure + .aj-takeaway { margin-top: var(--space-stack, 16px); }
   .aj-takeaway {
     margin: var(--space-stack, 16px) 0 0;
     font-size: 13px;
@@ -475,11 +665,22 @@
     line-height: 22px;
     color: var(--color-text);
   }
-  #mechanism > p.bg-body { margin-bottom: var(--space-stack, 16px); }
-  #mechanism > p.bg-body:last-of-type { margin-bottom: var(--space-stack, 16px); }
-  #mechanism > h2 + h3.fn-h3,
-  #mechanism > p.bg-body + h3.fn-h3 { margin-top: 0; }
-  #mechanism .af-figure + h3.fn-h3 { margin-top: var(--space-stack, 16px); }
+  #detail-principles .bg-list,
+  #expected-effect .bg-list,
+  #notes .bg-list {
+    list-style: decimal;
+    padding-left: 1.25em;
+    margin: 0;
+  }
+  #detail-principles .bg-list li,
+  #expected-effect .bg-list li,
+  #notes .bg-list li {
+    color: var(--color-text-secondary);
+  }
+  #expected-effect > h2 + .bg-list,
+  #notes > h2 + .bg-list {
+    margin-top: 0;
+  }
   .bg-list {
     margin: 0;
     padding-left: 1.25em;
@@ -489,13 +690,13 @@
     color: var(--color-text-secondary);
   }
   #practices .bg-list li + li,
-  #benefits .bg-list li + li,
-  #core-principles .bg-list li + li,
-  #mechanism .bg-list li + li { margin-top: 16px; }
+  #detail-principles .bg-list li + li,
+  #expected-effect .bg-list li + li,
+  #notes .bg-list li + li { margin-top: 16px; }
   #practices .bg-list li strong,
-  #benefits .bg-list li strong,
-  #core-principles .bg-list li strong,
-  #mechanism .bg-list li strong {
+  #detail-principles .bg-list li strong,
+  #expected-effect .bg-list li strong,
+  #notes .bg-list li strong {
     display: block;
     margin-bottom: 4px;
     font-weight: 650;
@@ -564,18 +765,257 @@
     }
   }
 
-  #mechanism .aj td.aj-merge {
-    background: #f0f4f8;
-    vertical-align: middle;
+  #stages,
+  #practices { overflow: visible; }
+  .aj-caption,
+  #stages .ppt-theme-ssr .ssr-pane figcaption,
+  #practices .ppt-theme-ssr .ssr-pane figcaption {
+    caption-side: top;
     text-align: left;
-  }
-  #mechanism .aj .aj-merge-kicker {
-    display: block;
-    margin: 0 0 4px;
-    font-size: var(--text-caption);
+    font-size: 14px;
+    line-height: 22px;
     font-weight: 650;
+    padding: 0 0 16px;
+    color: var(--color-text);
+    margin: 0;
+  }
+  #stages .ppt-theme-ssr .ssr-pane figcaption span,
+  #practices .ppt-theme-ssr .ssr-pane figcaption span {
+    font: inherit;
+    color: inherit;
+  }
+  #stages > h2 + .ppt-theme-ssr,
+  #practices > h2 + .ppt-theme-ssr { margin-top: 0; }
+  #practices > h2 { margin-top: 0; }
+  #stages .ppt-theme-ssr,
+  #practices .ppt-theme-ssr {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    height: 600px;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    overflow: visible;
+  }
+  #stages .ppt-theme-ssr .ssr-src mark.ssr-ok,
+  #practices .ppt-theme-ssr .ssr-src mark.ssr-ok {
+    position: relative;
+    isolation: isolate;
+    display: inline-block;
+    width: 100%;
+    vertical-align: top;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0 10px;
+    background: none;
+    color: inherit;
+    font: inherit;
+    border-radius: 8px;
+    box-shadow: none;
+  }
+  #stages .ppt-theme-ssr .ssr-src mark.ssr-ok::before,
+  #practices .ppt-theme-ssr .ssr-src mark.ssr-ok::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: 8px;
+    background: rgba(52, 211, 153, 0.12);
+    pointer-events: none;
+  }
+  #stages .ppt-theme-ssr .ssr-pane,
+  #practices .ppt-theme-ssr .ssr-pane {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
+    margin: 0;
+  }
+  #stages .ppt-theme-ssr .ssr-loss-frame {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: auto;
+    height: 100%;
+    box-sizing: border-box;
+    background: #f4f5f7;
+    border: 1px solid #e5e5e5;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  #stages .ppt-theme-ssr .ssr-shot-fit {
+    position: relative;
+    height: 100%;
+    width: auto;
+    aspect-ratio: 2880 / 1992;
+  }
+  #stages .ppt-theme-ssr .ssr-shot-fit img,
+  #stages .ppt-theme-ssr .ssr-loss-frame img {
+    display: block;
+    height: 100%;
+    width: auto;
+    max-width: none;
+    min-width: 0;
+    object-fit: contain;
+    object-position: top center;
+    border-radius: 0;
+  }
+  #stages .ppt-theme-ssr .ssr-pair-mask {
+    position: absolute;
+    border-radius: 10px;
+    pointer-events: none;
+    box-shadow: none;
+  }
+  #stages .ppt-theme-ssr .ssr-pair-mask--table {
+    top: 50%;
+    left: 6.8%;
+    width: 86.4%;
+    height: 50%;
+    background: rgba(250, 204, 21, 0.14);
+    z-index: 2;
+    box-sizing: border-box;
+  }
+  #stages .ppt-theme-ssr .ssr-pair-mask--list {
+    top: 10.8%;
+    left: 6.8%;
+    width: 62.4%;
+    height: 89.2%;
+    background: rgba(250, 204, 21, 0.14);
+    z-index: 2;
+    box-sizing: border-box;
+  }
+  #stages .ppt-theme-ssr .llms-mod,
+  #practices .ppt-theme-ssr .llms-mod {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    bottom: auto;
+    max-width: none;
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+    height: 20px;
+    padding: 0 8px;
+    border-radius: 999px;
+    text-align: center;
+    font-size: 11px;
+    line-height: 20px;
+    font-weight: 650;
+    letter-spacing: 0;
+    white-space: nowrap;
+    z-index: 3;
+  }
+  #stages .ppt-theme-ssr .ssr-pair-mask--table .llms-mod {
+    color: #b45309;
+    background: rgba(245, 158, 11, 0.28);
+  }
+  #practices .ppt-theme-ssr .ssr-src mark.ssr-ok > .llms-mod {
+    color: #047857;
+    background: rgba(52, 211, 153, 0.28);
+  }
+  #stages .ppt-theme-ssr .ssr-pair {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: 24px;
+    flex: 1;
+    min-height: 0;
+    align-items: stretch;
+    width: 100%;
+  }
+  #stages .ppt-theme-ssr .ssr-loss-shot {
+    display: flex;
+    justify-content: flex-start;
+    min-width: 0;
+    min-height: 0;
+    width: auto;
+    height: 100%;
+  }
+  #stages .ppt-theme-ssr .ssr-src,
+  #practices .ppt-theme-ssr .ssr-src {
+    flex: 1;
+    min-height: 0;
+    margin: 0;
+    padding: 16px 18px;
+    border-radius: 16px;
+    font-size: 12px;
     line-height: 18px;
-    color: var(--color-text-secondary);
+    overflow: auto;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  #stages .ppt-theme-ssr .ssr-src {
+    border: 1px solid #111;
+    background: #1e1e1e;
+    color: #e8e8e8;
+  }
+  #practices .ppt-theme-ssr .ssr-src {
+    border: 1px solid #e5e5e5;
+    background: #fff;
+    color: #171717;
+  }
+  #stages .ppt-theme-ssr .ssr-src code,
+  #practices .ppt-theme-ssr .ssr-src code {
+    font: inherit;
+    color: inherit;
+  }
+  #stages .ppt-theme-ssr .ssr-src mark.ssr-js {
+    position: relative;
+    isolation: isolate;
+    display: inline-block;
+    width: 100%;
+    vertical-align: top;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0 10px;
+    background: none;
+    color: inherit;
+    font: inherit;
+    border-radius: 8px;
+  }
+  #stages .ppt-theme-ssr .ssr-src mark.ssr-js::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: 8px;
+    background: rgba(250, 204, 21, 0.32);
+    pointer-events: none;
+  }
+  #stages .ppt-theme-ssr .ssr-src mark.ssr-js > .llms-mod {
+    color: #fde68a;
+    background: rgba(245, 158, 11, 0.42);
+  }
+  @media (max-width: 900px) {
+    #stages .ppt-theme-ssr,
+    #practices .ppt-theme-ssr {
+      height: auto;
+    }
+    #stages .ppt-theme-ssr .ssr-pair {
+      grid-template-columns: 1fr;
+      row-gap: 24px;
+    }
+    #stages .ppt-theme-ssr .ssr-loss-shot,
+    #stages .ppt-theme-ssr .ssr-loss-frame {
+      width: 100%;
+    }
+    #stages .ppt-theme-ssr .ssr-shot-fit {
+      max-width: 100%;
+    }
+    #stages .ppt-theme-ssr .ssr-shot-fit img {
+      width: 100%;
+      height: auto;
+    }
+    #stages .ppt-theme-ssr .ssr-loss-shot,
+    #stages .ppt-theme-ssr .ssr-src,
+    #practices .ppt-theme-ssr .ssr-src {
+      min-height: 280px;
+    }
   }
 </style>
 </head>
@@ -602,143 +1042,124 @@
 
   <main class="main-content">
     <div class="page-header">
-      <h1>页面 HTML 可读</h1>
+      <h1>页面 HTML 可读性</h1>
     </div>
 
-    <section class="section" id="problem">
-      <h2>解决什么问题</h2>
-      <p class="page-lead">Agent 拿到 HTML，不等于读到正文：页面打不开、字靠 JS 后出现、事实在图或 iframe 里、页面太大被截断。任一处失败，就只能退回搜索摘要。平行 Markdown 见 <a href="principles-format.html">双轨交付</a>。</p>
-    </section>
-
-    <section class="section" id="core-principles">
-      <h2>核心原则</h2>
-      <div class="principle-body">
-        <strong>打得开</strong>
-        <p>匿名打开返回正文，不因浏览器标识或登录跳走。</p>
-      </div>
-      <div class="principle-body">
-        <strong>首包就有字</strong>
-        <p>关掉 JavaScript 仍能读到标题、正文、步骤、表格和代码。</p>
-      </div>
-      <div class="principle-body">
-        <strong>字在主文档里</strong>
-        <p>事实写在页面文字里，不藏在 iframe、画布或纯图片中。</p>
-      </div>
-      <div class="principle-body">
-        <strong>字符集清楚、篇幅可控</strong>
-        <p>写明字符集和语言；长文拆篇，避免中途截断。</p>
-      </div>
-    </section>
-
     <section class="section" id="mechanism">
-      <h2 id="mech-access">四个环节</h2>
-      <figure class="af-figure">
-        <table class="aj">
-          <caption>四个环节：哪里会断、怎样算过</caption>
-          <colgroup>
-            <col class="aj-rowhead" />
-            <col />
-            <col />
-            <col />
-            <col />
-          </colgroup>
-          <thead>
-            <tr>
-              <th class="aj-corner" scope="col">对照项</th>
-              <th scope="col"><span class="aj-who">环节 1</span><span class="aj-stage-name">取得到</span></th>
-              <th class="aj-pri" scope="col"><span class="aj-who">环节 2</span><span class="aj-stage-name">首包直出</span></th>
-              <th scope="col"><span class="aj-who">环节 3</span><span class="aj-stage-name">承载可抓</span></th>
-              <th scope="col"><span class="aj-who">环节 4</span><span class="aj-stage-name">完整可解析</span></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th class="aj-label" scope="row">触点</th>
-              <td>HTTP 响应：状态码、鉴权、重定向与收录策略</td>
-              <td class="is-pri">首包 HTML 的 <code>body</code></td>
-              <td>承载正文的 DOM 容器</td>
-              <td>字符集、语言与整页体量</td>
-            </tr>
-            <tr>
-              <th class="aj-label" scope="row">常见失败</th>
-              <td>对机器 UA 返回 403 或跳登录；<code>robots.txt</code> / <code>noindex</code> 误伤正文页</td>
-              <td class="is-pri">空壳 <code>#app</code>；文字懒加载；条目要滚到底才出现</td>
-              <td>正文在 <code>iframe</code> / <code>canvas</code> / 未挂载 Shadow DOM；规格做成图片</td>
-              <td>未声明字符集乱码；单页过大截断；同意弹层把正文置 <code>hidden</code></td>
-            </tr>
-            <tr>
-              <th class="aj-label" scope="row">合格判定</th>
-              <td>匿名 GET 返回 200 且正文可见，不因 UA / 地域 / Cookie 变脸</td>
-              <td class="is-pri">禁用 JS 仍含 H1、正文、步骤、表格全部行与代码块</td>
-              <td>正文在主文档 HTML 文本节点内，可选中、可提取</td>
-              <td><code>charset</code> / <code>lang</code> 明确；长文分篇；正文不被遮挡层隐藏</td>
-            </tr>
-            <tr>
-              <th class="aj-label" scope="row">相关原则</th>
-              <td><a href="principles-robots.html">发现层部署</a>（收录划界）</td>
-              <td class="is-pri"><a href="principles-hidden.html">交互不藏关键正文</a> · <a href="principles-table.html">表格语义化</a> · <a href="principles-code.html">代码块语义化</a></td>
-              <td><a href="principles-image.html">图片内容转译</a> · <a href="principles-icon-text.html">图标语义锚定</a> · <a href="principles-style-semantic.html">颜色语义转写</a> · <a href="principles-media.html">音视频要点伴随</a> · <a href="principles-control-label.html">控件标签与数值可读取</a></td>
-              <td><a href="principles-hidden.html#mask">蒙版不遮挡</a> · <a href="principles-robots.html">发现层部署</a>（体量）</td>
-            </tr>
-            <tr>
-              <th class="aj-label" scope="row">要点</th>
-              <td colspan="4" class="aj-merge">前一环不过，后面再好也读不到。HTML 读不到时，用 Markdown 兜底见 <a href="principles-format.html">双轨交付</a>。</td>
-            </tr>
-          </tbody>
-        </table>
-      </figure>
+      <h2>页面 HTML 可读性概述</h2>
+      <p class="page-lead">AI Agent 获取网页 HTML 后，需要能够直接从页面源码中读取标题、正文、步骤、表格和代码等核心知识内容。若关键信息依赖 JavaScript 渲染、隐藏在 iframe 或图片中，或页面内容过大导致截断，Agent 可能无法完整获取和理解页面内容。因此，应确保核心知识内容在 HTML 中可直接访问，并保持结构清晰、内容完整。</p>
+      <p class="page-lead">不是要求页面没有 JavaScript，而是要求 AI Agent 无需执行复杂交互，就能从 HTML 中直接获取核心知识内容。</p>
     </section>
 
-    <section class="section" id="practices">
-      <h2>典型示例</h2>
+    <section class="section" id="detail-principles">
+      <h2>具体原则</h2>
+      <ol class="bg-list">
+        <li>确保页面 HTML 可直接访问，避免依赖登录、强制跳转或其他前置条件才能获取核心内容。</li>
+        <li>在首屏 HTML 中直接提供页面标题、正文、步骤、表格和代码等核心知识内容，避免依赖 JavaScript 执行后才能生成。</li>
+        <li>将核心知识内容放在页面主文档中，避免隐藏在 iframe、Canvas 或图片等不可直接解析的载体中。</li>
+        <li>使用明确的字符集和合理的页面结构，控制页面内容规模，避免因字符编码错误或内容过长导致信息截断。</li>
+      </ol>
+    </section>
 
-      <h3 class="fn-h3">正文随 HTML 直出</h3>
-      <div class="principle-example">
-        <h4 class="fn-h4">示例 1 · 空壳 vs 首包正文</h4>
-        <div class="fn-ex-row" id="retrievable-frontend-ssr">
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label">反面</span>
-              <div class="fn-ex-bar" aria-hidden="true"></div>
+    <section class="section" id="stages">
+      <h2>HTML 可读典型示例</h2>
+      <h3 class="fn-h3">示例 1</h3>
+      <p class="aj-caption">昇腾模型查询助手 https://www.hiascend.com/developer/models</p>
+      <figure class="ssr-page-shot">
+        <div class="ssr-loss-frame">
+          <div class="ssr-shot-fit">
+            <img src="assets/cases-html/hiascend-developer-models.png?v=3" alt="昇腾模型查询助手人读页">
+            <span class="ssr-pair-mask ssr-pair-mask--table"></span>
+          </div>
+        </div>
+      </figure>
+      <div class="fn-ex-row">
+        <div class="fn-ex">
+          <div class="fn-ex-head">
+            <span class="fn-ex-label">反面</span>
+            <div class="fn-ex-bar" aria-hidden="true"></div>
+          </div>
+          <div class="fn-ex-body">
+            <div class="fn-ex-mock" aria-label="反面：首包只有空壳，表格依赖脚本注入">
+              <pre class="st-code ssr-src" tabindex="0"><code>&lt;body&gt;
+  &lt;header&gt;…导航、壳…&lt;/header&gt;
+  &lt;main&gt;
+    &lt;h1&gt;昇腾模型查询助手&lt;/h1&gt;
+    &lt;p&gt;训练引擎：MindSpeed LLM　版本：26.1.0&lt;/p&gt;
+<mark class="ssr-js">    &lt;div id="app"&gt;&lt;/div&gt;
+    &lt;script src="/static/js/models.js"&gt;&lt;/script&gt;<span class="llms-mod">初始 HTML 获取不到正文内容</span></mark>
+  &lt;/main&gt;
+&lt;/body&gt;</code></pre>
             </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="反面：空壳依赖 JS">
-                <pre class="st-code">&lt;body&gt;
-  &lt;div id="app"&gt;&lt;/div&gt;
-  &lt;script src="/bundle.js"&gt;&lt;/script&gt;
-&lt;/body&gt;</pre>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>常见疏漏：</strong>正文由 JS 注入，静态抓取拿到空壳。</li>
-                </ul>
-              </div>
+            <div class="fn-ex-foot">
+              <ul class="fn-ex-list">
+                <li><strong>常见疏漏：</strong></li>
+                <li>1. 表格等正文依赖 JavaScript 注入，首包只有空壳</li>
+                <li>2. 初始 HTML 获取不到查询结果</li>
+              </ul>
             </div>
           </div>
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label is-good">正面</span>
-              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+        </div>
+        <div class="fn-ex">
+          <div class="fn-ex-head">
+            <span class="fn-ex-label is-good">正面</span>
+            <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+          </div>
+          <div class="fn-ex-body">
+            <div class="fn-ex-mock" aria-label="正面：查询结果写进首次 HTML">
+              <pre class="st-code ssr-src" tabindex="0"><code>&lt;body&gt;
+  &lt;header&gt;…导航、壳…&lt;/header&gt;
+  &lt;main&gt;
+    &lt;h1&gt;昇腾模型查询助手&lt;/h1&gt;
+    &lt;p&gt;训练引擎：MindSpeed LLM　版本：26.1.0&lt;/p&gt;
+<mark class="ssr-ok">    &lt;table&gt;
+      &lt;tr&gt;&lt;th&gt;模型名称&lt;/th&gt;&lt;th&gt;训练引擎&lt;/th&gt;&lt;th&gt;版本&lt;/th&gt;
+          &lt;th&gt;硬件规格&lt;/th&gt;&lt;th&gt;任务&lt;/th&gt;&lt;th&gt;脚本链接&lt;/th&gt;&lt;/tr&gt;
+      &lt;tr&gt;&lt;td&gt;LLaMA2-13B&lt;/td&gt;&lt;td&gt;MindSpeed LLM&lt;/td&gt;&lt;td&gt;26.1.0&lt;/td&gt;
+          &lt;td&gt;Atlas A2 / A3，Ascend 950&lt;/td&gt;&lt;td&gt;预训练&lt;/td&gt;
+          &lt;td&gt;&lt;a href="https://gitcode.com/Ascend/MindSpeed-LLM/tree/26.1.0/examples/mcore/llama2"&gt;获取链接&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+      &lt;tr&gt;&lt;td&gt;Qwen2.5-72B&lt;/td&gt;&lt;td&gt;MindSpeed LLM&lt;/td&gt;&lt;td&gt;26.1.0&lt;/td&gt;
+          &lt;td&gt;Atlas A2 / A3，Ascend 950&lt;/td&gt;
+          &lt;td&gt;预训练，全参微调，LoRA微调&lt;/td&gt;
+          &lt;td&gt;&lt;a href="https://gitcode.com/Ascend/MindSpeed-LLM/tree/26.1.0/examples/mcore/qwen25"&gt;获取链接&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+      &lt;tr&gt;&lt;td&gt;Qwen3-8B&lt;/td&gt;&lt;td&gt;MindSpeed LLM&lt;/td&gt;&lt;td&gt;26.1.0&lt;/td&gt;
+          &lt;td&gt;Atlas A2 / A3，Ascend 950&lt;/td&gt;
+          &lt;td&gt;预训练，全参微调，LoRA微调&lt;/td&gt;
+          &lt;td&gt;&lt;a href="https://gitcode.com/Ascend/MindSpeed-LLM/tree/26.1.0/examples/mcore/qwen3"&gt;获取链接&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+      &lt;tr&gt;&lt;td&gt;Qwen3-14B&lt;/td&gt;&lt;td&gt;MindSpeed LLM&lt;/td&gt;&lt;td&gt;26.1.0&lt;/td&gt;
+          &lt;td&gt;Atlas A2 / A3&lt;/td&gt;
+          &lt;td&gt;预训练，全参微调，LoRA微调&lt;/td&gt;
+          &lt;td&gt;&lt;a href="https://gitcode.com/Ascend/MindSpeed-LLM/tree/26.1.0/examples/mcore/qwen3"&gt;获取链接&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+      &lt;tr&gt;&lt;td&gt;Gemma2-9B&lt;/td&gt;&lt;td&gt;MindSpeed LLM&lt;/td&gt;&lt;td&gt;26.1.0&lt;/td&gt;
+          &lt;td&gt;Atlas A2 / A3，Ascend 950&lt;/td&gt;
+          &lt;td&gt;预训练，全参微调&lt;/td&gt;
+          &lt;td&gt;&lt;a href="https://gitcode.com/Ascend/MindSpeed-LLM/tree/26.1.0/examples/mcore/gemma2"&gt;获取链接&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+    &lt;/table&gt;
+    …<span class="llms-mod">不依赖客户端渲染</span></mark>
+  &lt;/main&gt;
+&lt;/body&gt;</code></pre>
             </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="正面：SSR 完整正文">
-                <pre class="st-code">&lt;body&gt;
-  &lt;h1&gt;Ascend C 算子开发&lt;/h1&gt;
-  &lt;p&gt;本文介绍算子开发基本流程…&lt;/p&gt;
-  &lt;pre&gt;&lt;code&gt;…&lt;/code&gt;&lt;/pre&gt;
-&lt;/body&gt;</pre>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>正确做法：</strong>标题、正文、代码块均在首包，无需执行 JS。</li>
-                </ul>
-              </div>
+            <div class="fn-ex-foot">
+              <ul class="fn-ex-list">
+                <li><strong>正确做法：</strong></li>
+                <li>1. 查询结果写进首次 HTML</li>
+                <li>2. 不依赖客户端渲染即可读取表格</li>
+              </ul>
             </div>
           </div>
         </div>
       </div>
-      <div class="principle-example">
-        <h4 class="fn-h4">示例 2 · 深页用分页</h4>
+
+      <h3 class="fn-h3">示例 2</h3>
+      <p class="aj-caption">昇腾博客 https://www.hiascend.com/developer/blog</p>
+      <figure class="ssr-page-shot">
+        <div class="ssr-loss-frame">
+          <div class="ssr-shot-fit">
+            <img src="assets/cases-html/hiascend-developer-blog.png?v=1" alt="昇腾博客人读页">
+            <span class="ssr-pair-mask ssr-pair-mask--list"></span>
+          </div>
+        </div>
+      </figure>
         <div class="fn-ex-row" id="retrievable-design-scroll">
           <div class="fn-ex">
             <div class="fn-ex-head">
@@ -746,17 +1167,22 @@
               <div class="fn-ex-bar" aria-hidden="true"></div>
             </div>
             <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="无限滚动反面：首包条目不足">
+              <div class="fn-ex-mock" aria-label="反面：博客左侧列表后续帖子依赖滚动加载">
                 <div class="vis-card">
-                  <div class="vis-feed-row">MindSpore Transformers<div class="vis-feed-meta">大模型套件</div></div>
-                  <div class="vis-feed-row">CANN<div class="vis-feed-meta">异构计算架构</div></div>
-                  <div class="vis-feed-row">ATC 模型转换<div class="vis-feed-meta">工具</div></div>
+                  <p class="vis-blog-bar">全部类型 · 最新发布</p>
+                  <div class="vis-feed-row"><div class="vis-feed-title">昇腾精选博客 · 8月刊</div><div class="vis-feed-meta">MindSpore · Ascend C</div></div>
+                  <div class="vis-feed-row"><div class="vis-feed-title">vLLM-Ascend安装部署类问题踩坑分享</div><div class="vis-feed-meta">环境部署 · 模型推理</div></div>
+                  <div class="vis-feed-row"><div class="vis-feed-title">昇腾产品模型配套指南</div><div class="vis-feed-meta">PyTorch · 模型推理</div></div>
+                  <div class="vis-feed-row is-ghost"><div class="vis-feed-title">【重要公告】博客编辑器改版上线</div><div class="vis-feed-meta">热门活动</div></div>
+                  <div class="vis-feed-row is-ghost"><div class="vis-feed-title">昇腾社区内容发布规范</div><div class="vis-feed-meta">AI</div></div>
                   <p class="vis-more">向下滚动加载更多</p>
                 </div>
               </div>
               <div class="fn-ex-foot">
                 <ul class="fn-ex-list">
-                  <li><strong>常见疏漏：</strong>后面条目要滚到底才注入，或只挂视口里那几行，首包枚举不全。</li>
+                  <li><strong>常见疏漏：</strong></li>
+                  <li>1. 左侧博文列表后续条目依赖滚动加载</li>
+                  <li>2. 首包 HTML 只有少量帖子标题</li>
                 </ul>
               </div>
             </div>
@@ -767,32 +1193,45 @@
               <div class="fn-ex-bar is-good" aria-hidden="true"></div>
             </div>
             <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="列表正面：首包已有条目，深页分页">
+              <div class="fn-ex-mock" aria-label="正面：首包给出一批博文，并用分页访问后续列表">
                 <div class="vis-card">
-                  <div class="vis-feed-row">MindSpore Transformers<div class="vis-feed-meta">大模型套件</div></div>
-                  <div class="vis-feed-row">CANN<div class="vis-feed-meta">异构计算架构</div></div>
-                  <div class="vis-feed-row">ATC 模型转换<div class="vis-feed-meta">工具</div></div>
+                  <p class="vis-blog-bar">全部类型 · 最新发布</p>
+                  <div class="vis-feed-row"><div class="vis-feed-title">昇腾精选博客 · 8月刊</div><div class="vis-feed-meta">MindSpore · Ascend C</div></div>
+                  <div class="vis-feed-row"><div class="vis-feed-title">vLLM-Ascend安装部署类问题踩坑分享</div><div class="vis-feed-meta">环境部署 · 模型推理</div></div>
+                  <div class="vis-feed-row"><div class="vis-feed-title">昇腾产品模型配套指南</div><div class="vis-feed-meta">PyTorch · 模型推理</div></div>
+                  <div class="vis-feed-row"><div class="vis-feed-title">【重要公告】博客编辑器改版上线</div><div class="vis-feed-meta">热门活动</div></div>
+                  <div class="vis-feed-row"><div class="vis-feed-title">昇腾社区内容发布规范</div><div class="vis-feed-meta">AI</div></div>
                   <div class="vis-page"><span class="is-on">1</span><span>2</span><span>3</span></div>
                 </div>
               </div>
               <div class="fn-ex-foot">
                 <ul class="fn-ex-list">
-                  <li><strong>正确做法：</strong>首包给出一批完整条目；更深的用可抓分页，不靠滚动才挂节点。</li>
+                  <li><strong>正确做法：</strong></li>
+                  <li>1. 首包给出一批完整博文条目</li>
+                  <li>2. 用分页入口访问后续列表，不依赖滚动加载</li>
                 </ul>
               </div>
             </div>
           </div>
         </div>
-      </div>
-
     </section>
 
-    <section class="section" id="benefits">
-      <h2>价值收益</h2>
-      <ul class="bg-list">
-        <li><strong>正文可被完整入库</strong>禁用 JS 也能读到标题、步骤与表格全部行，抽取结果与页面一致。</li>
-        <li><strong>抓取一次到位</strong>不必等渲染、滚动或点开，单次请求即可取全，漏抓与超时风险下降。</li>
-      </ul>
+    <section class="section" id="expected-effect">
+      <h2>预期效果</h2>
+      <ol class="bg-list">
+        <li>提高不同 AI Agent 获取正文的兼容性与稳定性。</li>
+        <li>减少脚本执行失败、接口超时或交互未触发造成的内容遗漏。</li>
+      </ol>
+    </section>
+
+    <section class="section" id="notes">
+      <h2>注意事项</h2>
+      <ol class="bg-list">
+        <li>HTML 可读不等于禁止使用 JavaScript，重点是核心知识内容不应依赖 JavaScript 执行才能获取。</li>
+        <li>页面可以使用图片、Canvas 或 iframe，但标题、正文、步骤、参数等核心知识内容不应仅存在于这些载体中。</li>
+        <li>页面内容较多时应合理分页或拆分，避免单页内容过长导致抓取和解析成本过高。</li>
+        <li>对于需要交互才能展开的内容，应提供可直接访问的文本或独立页面入口，避免关键信息仅通过交互操作才能获取。</li>
+      </ol>
     </section>
   </main>
 </div>
@@ -800,5 +1239,6 @@
 <script src="assets/js/site-config.js"></script>
 <script src="assets/js/site-init.js"></script>
 <script src="assets/js/module-sidebar.js"></script>
+<script src="assets/js/reach-wires.js"></script>
 </body>
 </html>

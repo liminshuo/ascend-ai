@@ -110,8 +110,8 @@
     margin-top: 0;
     margin-bottom: var(--space-stack, 16px);
     padding-top: var(--space-h2-pad-y, 16px);
-    padding-bottom: var(--space-h2-pad-y, 16px);
-    border-bottom: 2px solid var(--color-card-border);
+    padding-bottom: 0;
+    border-bottom: none;
     color: var(--color-text, var(--color-text));
   }
   body.inner-page[data-page="control-label"] .main-content .section h3 { height: auto; }
@@ -577,6 +577,7 @@
     padding-top: var(--space-h4-pad-y, 16px);
     border-top: none;
   }
+  #mechanism > p.page-lead,
   #problem > p.page-lead,
   #practices > p.page-lead,
   #core-principles > p.page-lead {
@@ -585,14 +586,26 @@
     line-height: var(--text-body-lh, 22px);
     color: var(--color-text-secondary);
   }
+  #mechanism > h2 + .page-lead,
   #problem > h2 + .page-lead,
+  #detail-principles > h2 + .bg-list,
+  #expected-effect > h2 + .bg-list,
+  #notes > h2 + .bg-list,
   #core-principles > h2 + .principle-body {
     margin-top: 0;
   }
-  #problem,
-  #core-principles,
-  #practices {
+  #mechanism > p.page-lead {
     margin-bottom: var(--space-stack, 16px);
+  }
+  #mechanism > p.page-lead + p.page-lead {
+    margin-top: 0;
+  }
+  #mechanism,
+  #detail-principles,
+  #practices,
+  #expected-effect,
+  #notes {
+    margin-bottom: 32px;
   }
   #core-principles .principle-body { margin: 0; }
   #core-principles .principle-body p {
@@ -615,7 +628,15 @@
     list-style: disc;
     color: var(--color-text-secondary);
   }
+  #detail-principles .bg-list li + li,
+  #expected-effect .bg-list li + li,
+  #notes .bg-list li + li,
   #benefits .bg-list li + li { margin-top: 16px; }
+  #detail-principles ol.bg-list,
+  #expected-effect ol.bg-list,
+  #notes ol.bg-list { list-style: decimal; }
+  #expected-effect .bg-list li strong,
+  #notes .bg-list li strong,
   #benefits .bg-list li strong {
     display: block;
     margin-bottom: 4px;
@@ -811,21 +832,23 @@
       <h1>控件标签与数值可读取</h1>
     </div>
 
-    <section class="section" id="problem">
-      <h2>解决什么问题</h2>
-      <p class="page-lead">Agent 无法判断控件用途，也读不出当前值（如：只有占位符、拆框共用总标签、进度只靠条长、评分只靠星星）。</p>
+    <section class="section" id="mechanism">
+      <h2>控件概述</h2>
+      <p class="page-lead">搜索框、拆分输入、滑杆、进度与评分是页面上的操作控件。</p>
+      <p class="page-lead">Agent 须能点名用途并读出当前值。源码用 label / aria-label，占位符不能当唯一出处；拆成多框时每框须有独立可见标签；当前值与单位须写成可见文字。</p>
     </section>
 
-    <section class="section" id="core-principles">
-      <h2>核心原则</h2>
-      <div class="principle-body">
-        <strong>控件须有可读标签与数值</strong>
-        <p>每个输入须能点名用途：源码用 <code>label</code> / <code>aria-label</code>，占位符不能当唯一出处。搜索框界面不必另加「关键词」标题，按钮「搜索」即可。拆成多框时每框须有独立可见标签。滑杆、进度、评分的当前值与单位须写成可见文字。图形只作辅助。空列表与「-」见 <a href="principles-exception.html#empty">失败状态可处理</a>。</p>
-      </div>
+    <section class="section" id="detail-principles">
+      <h2>具体原则</h2>
+      <ol class="bg-list">
+        <li>每个输入须能点名用途：源码用 label / aria-label，占位符不能当唯一出处。</li>
+        <li>搜索框界面不必另加「关键词」标题，按钮「搜索」即可。</li>
+        <li>拆成多框时每框须有独立可见标签。</li>
+        <li>滑杆、进度、评分的当前值与单位须写成可见文字，图形只作辅助。</li>
+      </ol>
     </section>
-
     <section class="section" id="practices">
-      <h2>典型示例</h2>
+      <h2>控件标签与数值可读取建议示例</h2>
       <div class="principle-example" id="label">
         <h3 class="fn-h3">标签 · 用途可点名</h3>
         <p class="fn-h3-desc">搜索框不必在界面上再写「关键词」；源码须有 label 或 aria-label。拆成多框时，每框仍须独立可见标签。</p>
@@ -1397,14 +1420,23 @@
       </div>
     </section>
 
-    <section class="section" id="benefits">
-      <h2>价值收益</h2>
-      <ul class="bg-list">
-        <li><strong>用途可点名</strong>Agent 能说出要搜、要填软件包还是版本号，再选择操作。</li>
-        <li><strong>当前值可引用</strong>进度、配额、评分能写成带单位的证据，而不靠条长、星数。</li>
-      </ul>
+    <section class="section" id="expected-effect">
+      <h2>预期效果</h2>
+      <ol class="bg-list">
+        <li>帮助 AI Agent 说出要搜、要填软件包还是版本号，再选择操作。</li>
+        <li>减少只靠条长、星数或占位符猜测当前值，使进度、配额与评分可写成带单位的证据。</li>
+      </ol>
     </section>
-  </main>
+
+    <section class="section" id="notes">
+      <h2>注意事项</h2>
+      <ol class="bg-list">
+        <li>可见标签与源码 label 须一致，不能只写给读屏、不写给人读流。</li>
+        <li>空列表与「-」等失败态见失败状态可处理，不在本页展开。</li>
+        <li>装饰性控件不承载事实时，不必硬加数值。</li>
+      </ol>
+    </section>
+</main>
 
 
 </div>

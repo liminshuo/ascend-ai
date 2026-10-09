@@ -31,13 +31,13 @@
         "<defs>" +
         '<marker id="' +
         fwd +
-        '" viewBox="0 0 8 8" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto" markerUnits="userSpaceOnUse">' +
-        '<path d="M0 0.6 L8 4 L0 7.4 Z" fill="#191919"/>' +
+        '" viewBox="0 0 6 6" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto" markerUnits="userSpaceOnUse">' +
+        '<path d="M0 0.5 L6 3 L0 5.5 Z" fill="#191919"/>' +
         "</marker>" +
         '<marker id="' +
         back +
-        '" viewBox="0 0 8 8" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto" markerUnits="userSpaceOnUse">' +
-        '<path d="M0 0.6 L8 4 L0 7.4 Z" fill="#737373"/>' +
+        '" viewBox="0 0 6 6" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto" markerUnits="userSpaceOnUse">' +
+        '<path d="M0 0.5 L6 3 L0 5.5 Z" fill="#737373"/>' +
         "</marker>" +
         "</defs>"
     };

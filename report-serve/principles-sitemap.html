@@ -799,7 +799,7 @@
 
   #vendor-analysis .reach-theme { overflow: visible; margin-bottom: 0; }
   #vendor-analysis .llms-anno {
-    --vendor-anno-col: 280px;
+    --vendor-anno-col: 220px;
     --vendor-anno-inset: 14px;
     padding: 0;
     margin: 0;
@@ -807,7 +807,7 @@
   }
   #vendor-analysis .llms-anno .file-sample {
     overflow: visible;
-    margin: 0 calc(var(--vendor-anno-col) + var(--vendor-anno-inset)) 0 0;
+    margin: 0 var(--vendor-anno-col) 0 0;
     border-radius: 16px;
   }
   #vendor-analysis .llms-anno .file-sample figcaption {
@@ -839,63 +839,13 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    padding: 28px 8px 8px;
+    padding: 8px;
     border-radius: 6px;
     background: rgba(167, 139, 250, 0.07);
     overflow: visible;
   }
-  #vendor-analysis .llms-pin--unit {
-    top: 8px;
-    left: auto;
-    right: 10px;
-    width: auto;
-    max-width: none;
-    margin: 0;
-    padding: 0;
-    transform: none;
-    flex-direction: row;
-    gap: 0;
-    z-index: 3;
-  }
-  #vendor-analysis .llms-pin--unit .anno-leader,
-  #vendor-analysis .llms-pin--unit .anno-tip {
+  #vendor-analysis .llms-pin--child {
     display: none;
-  }
-  #vendor-analysis .llms-pin--unit .anno-cap {
-    flex: 0 0 auto;
-    width: auto;
-    max-width: none;
-    align-items: center;
-    padding: 0;
-    border-radius: 0;
-    font-size: 12px;
-    line-height: 16px;
-    font-weight: 400;
-    color: #a3a3a3;
-    background: transparent;
-    box-shadow: none;
-  }
-  #vendor-analysis .llms-pin--child .anno-cap {
-    font-size: 12px;
-    line-height: 18px;
-    font-weight: 600;
-    padding-right: 0;
-    max-width: none;
-    width: auto;
-    align-items: flex-end;
-    text-align: right;
-  }
-  #vendor-analysis .llms-pin--child .anno-name {
-    font-size: 11px;
-    line-height: 15px;
-  }
-  #vendor-analysis .llms-pin--child .anno-leader {
-    background: #a3a3a3;
-  }
-  #vendor-analysis .llms-pin--child .anno-tip {
-    width: 5px;
-    height: 5px;
-    background: #737373;
   }
   #vendor-analysis .llms-sec {
     position: relative;
@@ -908,6 +858,31 @@
     white-space: normal;
   }
   #vendor-analysis .llms-mod { display: none; }
+  #vendor-analysis .llms-unit .llms-mod {
+    display: block;
+    position: absolute;
+    top: 6px;
+    right: 10px;
+    left: auto;
+    margin: 0;
+    padding: 0;
+    height: auto;
+    border-radius: 0;
+    max-width: 46%;
+    text-align: right;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 500;
+    color: #a3a3a3;
+    background: none;
+    white-space: nowrap;
+    z-index: 2;
+  }
+  #vendor-analysis .llms-unit .llms-sec {
+    padding: 8px 88px 8px 10px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.06);
+  }
   #vendor-analysis .llms-sec .llms-row { white-space: pre-wrap; }
   #vendor-analysis .llms-row { display: block; position: static; }
   #vendor-analysis .llms-pin {
@@ -918,6 +893,7 @@
     align-items: center;
     gap: 4px;
     pointer-events: none;
+    z-index: 2;
     white-space: normal;
     overflow: visible;
   }
@@ -937,10 +913,10 @@
     flex-direction: column;
     align-items: flex-end;
     box-sizing: border-box;
-    flex: 1 1 0;
-    width: auto;
+    flex: 0 0 auto;
+    width: max-content;
     min-width: 0;
-    max-width: none;
+    max-width: 168px;
     gap: 0;
     font-family: var(--font);
     font-size: 14px;
@@ -976,30 +952,31 @@
     flex-direction: row-reverse;
     justify-content: flex-start;
   }
-  #vendor-analysis .llms-unit .llms-pin--right {
-    margin-left: calc(var(--vendor-anno-inset) + 8px);
-    width: calc(var(--vendor-anno-col) - 8px);
-  }
-  #vendor-analysis .llms-unit .llms-pin--unit {
-    top: 8px;
-    left: auto;
-    right: 10px;
-    width: auto;
+  #vendor-analysis .llms-unit > .llms-pin--unit {
+    top: 50%;
+    left: 100%;
+    right: auto;
+    transform: translateY(-50%);
+    width: var(--vendor-anno-col);
     max-width: none;
-    margin: 0;
-    padding: 0;
-    transform: none;
-    flex-direction: row;
+    margin-left: var(--vendor-anno-inset);
+    padding-left: 4px;
+    flex-direction: row-reverse;
+    justify-content: flex-start;
+    z-index: 3;
   }
   #vendor-analysis .llms-pin--unit .anno-cap {
-    font-size: 12px;
-    line-height: 16px;
-    font-weight: 400;
-    color: #a3a3a3;
+    flex: 0 0 auto;
+    align-items: flex-end;
+    text-align: right;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 650;
+    color: #191919;
   }
   #vendor-analysis .llms-pin .anno-leader {
-    flex: 0 0 16px;
-    width: 16px;
+    flex: 1 1 auto;
+    width: auto;
     min-width: 16px;
     height: 1.5px;
     margin-top: 0;
@@ -1007,8 +984,9 @@
   }
   #vendor-analysis .llms-pin .anno-tip {
     flex: 0 0 auto;
-    width: 5px;
-    height: 5px;
+    flex-shrink: 0;
+    width: 6px;
+    height: 6px;
     margin-top: 0;
     border-radius: 50%;
     background: #191919;
@@ -1176,18 +1154,18 @@
           <figure class="file-sample" aria-label="www.nvidia.com/sitemap_index.xml">
             <figcaption><a href="https://www.nvidia.com/sitemap_index.xml" target="_blank" rel="noopener"><code>https://www.nvidia.com/sitemap_index.xml</code></a></figcaption>
             <pre><code class="language-xml"><span class="llms-secs"><span class="llms-sec"><span class="llms-mod">Sitemap 索引</span><span class="llms-row"><span class="llms-pin llms-pin--right" aria-hidden="true"><span class="anno-cap">Sitemap 索引<span class="anno-name">根元素 sitemapindex，表示当前文件用于索引多个 Sitemap 文件</span></span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-1">&lt;sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"&gt;</mark></span></span>
-<span class="llms-unit"><span class="llms-pin llms-pin--right llms-pin--unit" aria-hidden="true"><span class="anno-cap">子清单 1</span><span class="anno-leader"></span><span class="anno-tip"></span></span><span class="llms-sec"><span class="llms-mod">子清单地址</span><span class="llms-row">&lt;sitemap&gt;</span>
-<span class="llms-row"><span class="llms-pin llms-pin--right llms-pin--child" aria-hidden="true"><span class="anno-cap">子清单地址<span class="anno-name">绝对 URL，路径含语言地区</span></span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-2">&lt;loc&gt;https://www.nvidia.com/en-gb/en-gb.sitemap.xml&lt;/loc&gt;</mark></span></span>
-<span class="llms-sec"><span class="llms-mod">更新日期</span><span class="llms-row"><span class="llms-pin llms-pin--right llms-pin--child" aria-hidden="true"><span class="anno-cap">更新日期<span class="anno-name">子清单 lastmod</span></span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-3">&lt;lastmod&gt;2024-08-23&lt;/lastmod&gt;</mark></span>
+<span class="llms-unit"><span class="llms-pin llms-pin--right llms-pin--unit" aria-hidden="true"><span class="anno-cap">子 Sitemap 1</span><span class="anno-leader"></span><span class="anno-tip"></span></span><span class="llms-sec"><span class="llms-mod">sitemap 地址</span><span class="llms-row">&lt;sitemap&gt;</span>
+<span class="llms-row"><mark class="hl-2">&lt;loc&gt;https://www.nvidia.com/en-gb/en-gb.sitemap.xml&lt;/loc&gt;</mark></span></span>
+<span class="llms-sec"><span class="llms-mod">更新日期</span><span class="llms-row"><mark class="hl-3">&lt;lastmod&gt;2024-08-23&lt;/lastmod&gt;</mark></span>
 <span class="llms-row">&lt;/sitemap&gt;</span></span></span>
-<span class="llms-unit"><span class="llms-pin llms-pin--right llms-pin--unit" aria-hidden="true"><span class="anno-cap">子清单 2</span><span class="anno-leader"></span><span class="anno-tip"></span></span><span class="llms-sec"><span class="llms-mod">子清单地址</span><span class="llms-row">&lt;sitemap&gt;</span>
-<span class="llms-row">&lt;loc&gt;https://www.nvidia.com/en-us/en-us.sitemap.xml&lt;/loc&gt;</span>
-<span class="llms-row">&lt;lastmod&gt;2024-08-23&lt;/lastmod&gt;</span>
+<span class="llms-unit"><span class="llms-pin llms-pin--right llms-pin--unit" aria-hidden="true"><span class="anno-cap">子 Sitemap 2</span><span class="anno-leader"></span><span class="anno-tip"></span></span><span class="llms-sec"><span class="llms-mod">sitemap 地址</span><span class="llms-row">&lt;sitemap&gt;</span>
+<span class="llms-row">&lt;loc&gt;https://www.nvidia.com/en-us/en-us.sitemap.xml&lt;/loc&gt;</span></span>
+<span class="llms-sec"><span class="llms-mod">更新日期</span><span class="llms-row">&lt;lastmod&gt;2024-08-23&lt;/lastmod&gt;</span>
 <span class="llms-row">&lt;/sitemap&gt;</span></span></span>
 <span class="llms-row">...</span>
-<span class="llms-unit"><span class="llms-pin llms-pin--right llms-pin--unit" aria-hidden="true"><span class="anno-cap">子清单 3</span><span class="anno-leader"></span><span class="anno-tip"></span></span><span class="llms-sec"><span class="llms-mod">子清单地址</span><span class="llms-row">&lt;sitemap&gt;</span>
-<span class="llms-row">&lt;loc&gt;https://www.nvidia.cn/zh-cn.sitemap.xml&lt;/loc&gt;</span>
-<span class="llms-row">&lt;lastmod&gt;2024-08-23&lt;/lastmod&gt;</span>
+<span class="llms-unit"><span class="llms-pin llms-pin--right llms-pin--unit" aria-hidden="true"><span class="anno-cap">子 Sitemap 3</span><span class="anno-leader"></span><span class="anno-tip"></span></span><span class="llms-sec"><span class="llms-mod">sitemap 地址</span><span class="llms-row">&lt;sitemap&gt;</span>
+<span class="llms-row">&lt;loc&gt;https://www.nvidia.cn/zh-cn.sitemap.xml&lt;/loc&gt;</span></span>
+<span class="llms-sec"><span class="llms-mod">更新日期</span><span class="llms-row">&lt;lastmod&gt;2024-08-23&lt;/lastmod&gt;</span>
 <span class="llms-row">&lt;/sitemap&gt;</span></span></span>
 <span class="llms-row">&lt;/sitemapindex&gt;</span></span></code></pre>
           </figure>

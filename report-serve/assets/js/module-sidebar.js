@@ -12,33 +12,23 @@
     principles: [
       { group: "可达", id: "robots", href: "principles-robots.html", label: "配置 robots.txt 许可声明" },
       { group: null, id: "llms", href: "principles-llms.html", label: "部署 llms.txt 索引目录", pageIds: ["llms", "llms-volume"] },
-      { group: null, id: "llms-full", href: "principles-llms-full.html", label: "部署 llms-full.txt 正文包" },
+      { group: null, id: "llms-full", href: "principles-llms-full.html", label: "部署 llms-full.txt 完整正文" },
       { group: null, id: "sitemap", href: "principles-sitemap.html", label: "Sitemap 路径清单语义化" },
       {
-        group: null, id: "machine-entry", href: "principles-machine-entry.html", label: "Agent 入口显化",
-        pageIds: ["machine-entry"]
-      },
-      {
-        group: "可读", id: "format", href: "principles-format.html", label: "双轨交付",
-        pageIds: ["machine-track", "format", "dual-track"]
-      },
-      { group: null, id: "page-md", href: "principles-page-md.html", label: "页级 Markdown" },
-      { group: null, id: "block-md", href: "principles-block-md.html", label: "块级 Markdown" },
-      {
-        group: null, id: "content-retrievable", href: "principles-content-retrievable.html", label: "页面 HTML 可读",
+        group: "可读", id: "content-retrievable", href: "principles-content-retrievable.html", label: "页面 HTML 可读性",
         pageIds: ["page-readable", "content-retrievable"]
       },
       {
-        group: null, id: "site-locate", href: "principles-breadcrumb.html", label: "站内可定位",
-        pageIds: ["site-locate", "page-context", "breadcrumb", "neighbor", "section-locate", "section-anchor"]
+        group: null, id: "format", href: "principles-format.html", label: "Markdown 正文可直取",
+        pageIds: ["machine-track", "format", "dual-track", "page-md", "block-md"]
       },
       {
         group: null, id: "carrier", href: "principles-image.html", label: "载体信息可转写",
         pageIds: ["carrier", "nontext", "image", "icon-text", "style-semantic", "media", "structured", "table", "code"],
         children: [
           { id: "image", href: "principles-image.html", label: "图片内容转译" },
-          { id: "media", href: "principles-media.html", label: "音视频要点伴随" },
-          { id: "icon-text", href: "principles-icon-text.html", label: "图标语义锚定" },
+          { id: "media", href: "principles-media.html", label: "音视频内容可转译" },
+          { id: "icon-text", href: "principles-icon-text.html", label: "图标语义可识别" },
           { id: "style-semantic", href: "principles-style-semantic.html", label: "颜色语义转写" },
           { id: "table", href: "principles-table.html", label: "表格语义化" },
           { id: "code", href: "principles-code.html", label: "代码块语义化" }

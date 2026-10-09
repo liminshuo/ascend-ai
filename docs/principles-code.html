@@ -110,8 +110,8 @@
     margin-top: 0;
     margin-bottom: var(--space-stack, 16px);
     padding-top: var(--space-h2-pad-y, 16px);
-    padding-bottom: var(--space-h2-pad-y, 16px);
-    border-bottom: 2px solid var(--color-card-border);
+    padding-bottom: 0;
+    border-bottom: none;
     color: var(--color-text, var(--color-text));
   }
   body.inner-page[data-page="code"] .main-content .section h3 { height: auto; }
@@ -404,6 +404,7 @@
     padding-top: var(--space-h4-pad-y, 16px);
     border-top: none;
   }
+  #mechanism > p.page-lead,
   #problem > p.page-lead,
   #practices > p.page-lead,
   #core-principles > p.page-lead {
@@ -412,14 +413,26 @@
     line-height: var(--text-body-lh, 22px);
     color: var(--color-text-secondary);
   }
+  #mechanism > h2 + .page-lead,
   #problem > h2 + .page-lead,
+  #detail-principles > h2 + .bg-list,
+  #expected-effect > h2 + .bg-list,
+  #notes > h2 + .bg-list,
   #core-principles > h2 + .principle-body {
     margin-top: 0;
   }
-  #problem,
-  #core-principles,
-  #practices {
+  #mechanism > p.page-lead {
     margin-bottom: var(--space-stack, 16px);
+  }
+  #mechanism > p.page-lead + p.page-lead {
+    margin-top: 0;
+  }
+  #mechanism,
+  #detail-principles,
+  #practices,
+  #expected-effect,
+  #notes {
+    margin-bottom: 32px;
   }
   #core-principles .principle-body { margin: 0; }
   #core-principles .principle-body p {
@@ -442,7 +455,18 @@
     list-style: disc;
     color: var(--color-text-secondary);
   }
+  #detail-principles .bg-list li + li,
+  #expected-effect .bg-list li + li,
+  #notes .bg-list li + li,
   #benefits .bg-list li + li { margin-top: 16px; }
+  #detail-principles .bg-list,
+  #expected-effect .bg-list,
+  #notes .bg-list {
+    margin: 0;
+    list-style: decimal;
+  }
+  #expected-effect .bg-list li strong,
+  #notes .bg-list li strong,
   #benefits .bg-list li strong {
     display: block;
     margin-bottom: 4px;
@@ -639,22 +663,27 @@
       <h1>代码源码可复用</h1>
     </div>
 
-    <section class="section" id="problem">
-      <h2>解决什么问题</h2>
-      <p class="page-lead">Agent 拿不到可执行的源码，只能看到被污染或残缺的示意。</p>
+    <section class="section" id="mechanism">
+      <h2>概述</h2>
+      <p class="page-lead">代码块是网页提供命令、配置和示例程序的主要载体，但展示效果不等于可复用源码。</p>
+      <p class="page-lead">代码源码可复用原则旨在降低代码示例的执行障碍，使语言、场景、源码、行号和预期输出能够被 AI Agent 准确区分，并生成可复制、可运行的回答。</p>
     </section>
 
-    <section class="section" id="core-principles">
-      <h2>核心原则</h2>
-      <div class="principle-body">
-        <strong>源码须干净可运行</strong>
-        <p>代码块须标注语言与场景、分离行号、还原 HTML 实体；执行类示例配预期输出。装饰性伪代码且正文已覆盖同一事实时，可只作示意。</p>
-      </div>
+    <section class="section" id="detail-principles">
+      <h2>具体原则</h2>
+<ol class="bg-list">
+        <li>为代码块标注语言和使用场景，避免无语言围栏或仅靠高亮样式猜测代码类型。</li>
+        <li>将行号、复制按钮、提示标记等展示元素与源码分离，避免入库文本夹杂行号或 UI 文案。</li>
+        <li>还原 HTML 实体和转义内容，确保复制后的命令、配置或程序可以直接运行。</li>
+        <li>执行类示例应配套预期输出或校验方式，便于判断命令是否执行成功。</li>
+        <li>装饰性伪代码且正文已覆盖同一事实时，可只作示意，不必当作可执行源码入库。</li>
+      </ol>
     </section>
-
     <section class="section" id="practices">
-      <h2>典型示例</h2>      <div class="principle-example">
-        <h3 class="fn-h3">语言、输出与行号分开</h3>
+      <h2>典型示例</h2>
+      <div class="principle-example">
+        <h3 class="fn-h3">代码源码保持可复制</h3>
+        <p class="fn-h3-desc">代码块要让 Agent 能区分语言、源码、行号和输出；复制出来的内容应当可以直接执行或用于核对。</p>
         <h4 class="fn-h4">示例 1 · 语言标注</h4>
 <div class="fn-ex-row" id="code-lang-label">
           <div class="fn-ex">
@@ -1020,14 +1049,23 @@ ascend-dmi -a
       </div>
     </section>
 
-    <section class="section" id="benefits">
-      <h2>价值收益</h2>
-      <ul class="bg-list">
-        <li><strong>命令可复制执行</strong>入库文本是干净源码，回答里的命令不会夹行号或未知语言。</li>
-        <li><strong>成功可核对</strong>预期输出写成文字后，Agent 能引用「成功时长什么样」。</li>
-      </ul>
+    <section class="section" id="expected-effect">
+      <h2>预期效果</h2>
+<ol class="bg-list">
+        <li>帮助 AI Agent 获取干净、可复制、可运行的源码，减少回答中夹带行号、错误实体或未知语言的情况。</li>
+        <li>通过预期输出和校验方式，让命令类回答能够说明执行成功的判断依据。</li>
+      </ol>
     </section>
-  </main>
+
+    <section class="section" id="notes">
+      <h2>注意事项</h2>
+<ol class="bg-list">
+        <li>截图形式的代码不能替代可复制源码。</li>
+        <li>行号可以用于人读定位，但不得进入复制内容或机器入库正文。</li>
+        <li>高亮样式不能替代语言标注；代码语言应写在围栏或 <code>code</code> class 中。</li>
+      </ol>
+    </section>
+</main>
 
 </div>
 

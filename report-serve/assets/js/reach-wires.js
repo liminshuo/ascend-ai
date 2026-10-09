@@ -517,6 +517,13 @@
       return;
     }
     if (!bodyMask || !bodyMd) return;
+    if (root.closest("#vendor-analysis")) {
+      svg.innerHTML =
+        wire(heroMask, heroMd, "#0369a1", heroLab) +
+        wire(bodyMask, bodyMd, "#db2777", bodyLab) +
+        wire(moreMask, moreMd, "#7c3aed", moreLab);
+      return;
+    }
     svg.innerHTML =
       wire(heroMask, heroMd, "#3b6fd8", heroLab) +
       wire(bodyMask, bodyMd, "#c43d6e", bodyLab) +
@@ -658,10 +665,10 @@
       if (chart.querySelector('[data-rc="html"]')) layoutReadChart(chart, "rc-arr-r-" + i);
       else layoutChart(chart, "rc-arr-" + i);
     });
-    document.querySelectorAll("#practices .ppt-dual").forEach(layoutDual);
+    document.querySelectorAll("#practices .ppt-dual, #vendor-analysis .ppt-dual").forEach(layoutDual);
     document.querySelectorAll("#practices .ppt-hier:has(.ppt-dual-shot--vecprog)").forEach(layoutImgdocCallout);
     document.querySelectorAll("#practices .llms-dual").forEach(layoutLlmsJump);
-    document.querySelectorAll("#practices .ssr-pair").forEach(layoutSsrPair);
+    document.querySelectorAll("#practices .ssr-pair, #stages .ssr-pair").forEach(layoutSsrPair);
     document.querySelectorAll("#practices .ssr-loss").forEach(layoutSsrLoss);
     alignSsrDeckRows();
     document.querySelectorAll("#practices .ssr-deck-card--hits").forEach(layoutSsrDeck);
@@ -683,7 +690,7 @@
         return r.text();
       })
       .then(function (t) {
-        code.textContent = t;
+        code.textContent = t.replace(/^([^\n]+)\n+/, "$1\n");
         code.setAttribute("data-loaded", "1");
       })
       .catch(function () {
@@ -702,6 +709,12 @@
       new ResizeObserver(layout).observe(frame);
     });
     document.querySelectorAll("#practices .llms-dual").forEach(function (el) {
+      new ResizeObserver(layout).observe(el);
+    });
+    document.querySelectorAll("#stages .ssr-pair").forEach(function (el) {
+      new ResizeObserver(layout).observe(el);
+    });
+    document.querySelectorAll("#vendor-analysis .ppt-dual, #practices .ppt-dual").forEach(function (el) {
       new ResizeObserver(layout).observe(el);
     });
   }

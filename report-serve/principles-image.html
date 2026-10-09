@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>图片图意可转译 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
+  <title>图片内容可转译 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
   <link rel="stylesheet" href="assets/css/style.css">
 <style>
 
@@ -112,9 +112,12 @@
     margin-top: 0;
     margin-bottom: var(--space-stack, 16px);
     padding-top: var(--space-h2-pad-y, 16px);
-    padding-bottom: var(--space-h2-pad-y, 16px);
-    border-bottom: 2px solid var(--color-card-border);
+    padding-bottom: 0;
+    border-bottom: none;
     color: var(--color-text, var(--color-text));
+  }
+  body.inner-page.agent-entry-page .main-content > .section {
+    margin-bottom: 32px;
   }
   body.inner-page[data-page="image"] .main-content .section h3 { height: auto; }
   h3.fn-h3 {
@@ -500,11 +503,26 @@
     height: 149px;
     overflow: hidden;
   }
-  .obj-banner img {
+  .obj-banner img,
+  .obj-banner > img.obj-banner-bg {
     display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: 72% center;
+  }
+  .obj-banner > img.obj-banner-bg {
+    position: absolute;
+    inset: 0;
+  }
+  .obj-banner > img.obj-banner-bg:only-child {
+    object-position: left center;
+  }
+  .obj-banner img.obj-banner-fg {
+    width: 100%;
+    height: auto;
+    max-height: 52px;
+    object-fit: contain;
     object-position: left center;
   }
   .obj-banner-copy {
@@ -512,62 +530,91 @@
     left: 4.5%;
     top: 50%;
     transform: translateY(-50%);
-    width: 48%;
+    width: 58%;
     padding: 0;
     background: none;
   }
-  .obj-banner-copy .obj-card-kicker {
+  .obj-banner-heading {
+    display: flex;
+    align-items: center;
+    gap: 6px;
     margin: 0 0 4px;
+  }
+  .obj-banner-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 0;
+  }
+  .obj-banner-copy .obj-card-kicker {
+    margin: 0;
     font-size: var(--text-micro);
     line-height: 14px;
     font-weight: 500;
     color: var(--color-text-secondary);
   }
   .obj-banner-copy .obj-card-title {
-    margin: 0 0 4px;
+    margin: 0;
     font-size: var(--text-h3);
     line-height: 24px;
     font-weight: 700;
     color: var(--color-primary);
+    white-space: nowrap;
   }
   .obj-banner-copy .obj-card-desc {
-    margin: 0;
-    font-size: var(--text-auxiliary);
-    line-height: 18px;
+    margin: 0 0 8px;
+    font-size: 8px;
+    line-height: 12px;
+    letter-spacing: 0.12em;
+    font-weight: 700;
     color: var(--color-text);
   }
   .obj-banner-copy .obj-card-cta {
     display: inline-flex;
     align-items: center;
     margin-top: 8px;
-    height: 22px;
-    padding: 0 10px;
+    height: 16px;
+    padding: 0 7px;
     border-radius: 999px;
     background: var(--color-primary);
     color: #fff;
-    font-size: var(--text-micro);
-    line-height: 22px;
+    font-size: 8px;
+    line-height: 16px;
     font-weight: 400;
   }
+  .obj-banner-copy .obj-banner-actions .obj-card-cta {
+    margin-top: 0;
+  }
   .obj-banner-copy .obj-card-kicker.is-badge {
-    display: inline-block;
-    margin: 0 0 8px;
-    padding: 0 8px;
-    height: 18px;
-    line-height: 18px;
-    border-radius: 3px;
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    margin: 0;
+    padding: 0 5px;
+    height: 14px;
+    line-height: 14px;
+    border-radius: 2px;
     background: #c7000b;
     color: #fff;
-    font-size: var(--text-micro);
+    font-size: 8px;
     font-weight: 650;
   }
   .obj-banner-copy .obj-card-cta.is-dark {
     background: #4d4d4d;
   }
+  .obj-banner-copy .obj-card-cta.is-outline {
+    background: #fff;
+    border: 1px solid #171717;
+    color: #171717;
+  }
   a.obj-card-cta,
   a.obj-card-cta:visited {
     color: #fff;
     text-decoration: none;
+  }
+  a.obj-card-cta.is-outline,
+  a.obj-card-cta.is-outline:visited {
+    color: #171717;
   }
   .info-card {
     display: flex;
@@ -600,7 +647,10 @@
     display: block;
     width: 100%;
     height: auto;
+    padding: 16px 0;
+    box-sizing: border-box;
     background: #fff;
+    border: 1px solid #e5e5e5;
     border-radius: 4px;
   }
   .info-cap {
@@ -899,35 +949,24 @@
     padding-top: var(--space-h4-pad-y, 16px);
     border-top: none;
   }
-  #problem > p.page-lead,
-  #practices > p.page-lead,
-  #core-principles > p.page-lead {
+  #mechanism > p.page-lead,
+  #practices > p.page-lead {
     margin: 0;
     font-size: var(--text-body);
     line-height: var(--text-body-lh, 22px);
     color: var(--color-text-secondary);
   }
-  #problem > h2 + .page-lead,
-  #core-principles > h2 + .principle-body {
+  #mechanism > h2 + .page-lead,
+  #detail-principles > h2 + .bg-list,
+  #expected-effect > h2 + .bg-list,
+  #notes > h2 + .bg-list {
     margin-top: 0;
   }
-  #problem,
-  #core-principles,
-  #practices {
+  #mechanism > p.page-lead {
     margin-bottom: var(--space-stack, 16px);
   }
-  #core-principles .principle-body { margin: 0; }
-  #core-principles .principle-body p {
-    margin: 0;
-    font-size: var(--text-body);
-    line-height: 22px;
-    color: var(--color-text-secondary);
-  }
-  #core-principles .principle-body strong {
-    display: block;
-    margin-bottom: 4px;
-    font-weight: 650;
-    color: var(--color-text);
+  #mechanism > p.page-lead + p.page-lead {
+    margin-top: 0;
   }
   .bg-list {
     margin: 0;
@@ -937,12 +976,16 @@
     list-style: disc;
     color: var(--color-text-secondary);
   }
-  #benefits .bg-list li + li { margin-top: 16px; }
-  #benefits .bg-list li strong {
-    display: block;
-    margin-bottom: 4px;
-    font-weight: 650;
-    color: var(--color-text);
+  #detail-principles .bg-list,
+  #expected-effect .bg-list,
+  #notes .bg-list {
+    margin: 0;
+    list-style: decimal;
+  }
+  #detail-principles .bg-list li + li,
+  #expected-effect .bg-list li + li,
+  #notes .bg-list li + li {
+    margin-top: 16px;
   }
   .fn-ex-row .fn-ex-foot .fn-ex-list {
     margin: 0;
@@ -1010,6 +1053,95 @@
   .file-sample.hier-md .code-line-hl {
     margin: 0 -14px;
     padding: 0 14px;
+  }
+  #practices .file-sample.file-sample--paper {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 0;
+    padding: 16px;
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  #practices .file-sample--paper .llms-sec {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 0;
+    padding: 6px 10px;
+    padding-right: 52px;
+    border-radius: 8px;
+  }
+  #practices .file-sample--paper .llms-sec--copy {
+    background: rgba(14, 165, 233, 0.07);
+  }
+  #practices .file-sample--paper .llms-sec--cta {
+    background: rgba(52, 211, 153, 0.07);
+  }
+  #practices .file-sample--paper .llms-sec--fig {
+    background: rgba(52, 211, 153, 0.07);
+  }
+  #practices .file-sample--paper .llms-sec--cap {
+    background: rgba(167, 139, 250, 0.07);
+    padding-right: 88px;
+  }
+  #practices .file-sample--paper .llms-mod {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    display: inline-flex;
+    align-items: center;
+    height: 20px;
+    padding: 0 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    line-height: 20px;
+    font-weight: 650;
+    color: #525252;
+    background: rgba(25, 25, 25, 0.08);
+  }
+  #practices .file-sample--paper .llms-sec--copy .llms-mod {
+    color: #0369a1;
+    background: rgba(14, 165, 233, 0.16);
+  }
+  #practices .file-sample--paper .llms-sec--cta .llms-mod {
+    color: #047857;
+    background: rgba(52, 211, 153, 0.16);
+  }
+  #practices .file-sample--paper .llms-sec--fig .llms-mod {
+    color: #047857;
+    background: rgba(52, 211, 153, 0.16);
+  }
+  #practices .file-sample--paper .llms-sec--cap .llms-mod {
+    color: #6d28d9;
+    background: rgba(167, 139, 250, 0.16);
+  }
+  #practices .file-sample--paper .hier-md-sec {
+    margin: 0;
+  }
+  #practices .file-sample--paper .hier-md-sec code {
+    display: block;
+    margin: 0;
+    padding: 0;
+    background: none;
+    color: #191919;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 400;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+  }
+  #ex1-md .ex-card-pane:last-child .file-sample,
+  #ex1-html .ex-card-pane:last-child .file-sample,
+  #ex3-md .ex-card-pane:last-child .file-sample,
+  #ex3-html .ex-card-pane:last-child .file-sample,
+  #ex4-md .ex-card-pane:last-child .file-sample,
+  #ex4-html .ex-card-pane:last-child .file-sample {
+    max-height: none;
   }
   .file-sample .llms-skel {
     display: flex;
@@ -1134,6 +1266,37 @@
     overflow: auto;
     margin: 0;
   }
+  #ex1-md .file-sample--compact pre,
+  #ex1-html .file-sample--compact pre,
+  #ex3-md .file-sample--compact pre,
+  #ex3-html .file-sample--compact pre,
+  #ex4-md .file-sample--compact pre,
+  #ex4-html .file-sample--compact pre,
+  #ex1-md .file-sample--compact pre code,
+  #ex1-html .file-sample--compact pre code,
+  #ex3-md .file-sample--compact pre code,
+  #ex3-html .file-sample--compact pre code,
+  #ex4-md .file-sample--compact pre code,
+  #ex4-html .file-sample--compact pre code,
+  #ex1-md .file-sample--paper .hier-md-sec code,
+  #ex1-html .file-sample--paper .hier-md-sec code,
+  #ex3-md .file-sample--paper .hier-md-sec code,
+  #ex3-html .file-sample--paper .hier-md-sec code,
+  #ex4-md .file-sample--paper .hier-md-sec code,
+  #ex4-html .file-sample--paper .hier-md-sec code {
+    font-size: 10px;
+    line-height: 16px;
+  }
+  #ex1-md .file-sample--paper .llms-mod,
+  #ex1-html .file-sample--paper .llms-mod,
+  #ex3-md .file-sample--paper .llms-mod,
+  #ex3-html .file-sample--paper .llms-mod,
+  #ex4-md .file-sample--paper .llms-mod,
+  #ex4-html .file-sample--paper .llms-mod {
+    font-size: 10px;
+    line-height: 16px;
+    height: 16px;
+  }
   @media (max-width: 900px) {
     .ex-card-pair { grid-template-columns: 1fr; }
   }
@@ -1163,27 +1326,30 @@
 
   <main class="main-content">
     <div class="page-header">
-      <h1>图片图意可转译</h1>
+      <h1>图片内容可转译</h1>
     </div>
 
-    <section class="section" id="problem">
-      <h2>解决什么问题</h2>
-      <p class="page-lead">Agent 无法仅凭像素读出图中的结构与结论（如：活动名烧进海报，架构关系只画在图里，训练指标只出现在截图中）。</p>
+    <section class="section" id="mechanism">
+      <h2>概述</h2>
+      <p class="page-lead">图片是网页传递信息的重要载体，但其承载的信息与网页文本不同，不能始终被 AI Agent 完整、准确地获取和理解。</p>
+      <p class="page-lead">图片内容可转译原则旨在降低图片信息的理解障碍，使图片所表达的关键内容、语义关系和知识结论能够被 AI Agent 有效获取和使用。</p>
     </section>
 
-    <section class="section" id="core-principles">
-      <h2>核心原则</h2>
-      <div class="principle-body">
-        <strong>图意不独自存在于像素</strong>
-        <p>信息型图片须转写为可检索正文（独立文案层、alt、figcaption、内容转写或平行 Markdown）。<code>src</code> 与 Markdown 图链须写成可抓取的绝对地址，便于多模态 Agent 取图；但不能用「能读图」代替正文转写。装饰图不承载事实，可用空 alt，无需硬写转写，地址仍宜可抓。</p>
-      </div>
+    <section class="section" id="detail-principles">
+      <h2>具体原则</h2>
+      <ol class="bg-list">
+        <li>将图片中的关键文案、技术参数、操作步骤和重要数据写成可直接读取的 HTML 文本，避免关键信息只存在于图片中。</li>
+        <li>对于流程图、架构图、关系图和数据图表，通过正文、列表或表格说明关键节点、层级关系、数据含义、处理流程及主要结论。</li>
+        <li>根据图片的内容和用途提供准确的 <code>alt</code> 文本，描述图片主要内容或功能；纯装饰性图片使用空 <code>alt</code>（<code>alt=""</code>），避免引入无意义信息。</li>
+        <li>保持图片、替代文本、图注和正文语义一致。图片内容发生变化时，同步检查并更新相关文字，避免遗漏、不准确或相互矛盾。</li>
+      </ol>
     </section>
 
     <section class="section" id="practices">
       <h2>典型示例</h2>
       <div class="principle-example">
-        <h3 class="fn-h3">关键文案不烧图</h3>
-        <h4 class="fn-h4">示例 1 · 官网展示图 <a class="fn-h3-link" href="https://www.hikunpeng.com/zh" target="_blank" rel="noopener">查看示例来源</a></h4>
+        <h3 class="fn-h3">关键信息写成可读文字</h3>
+        <h4 class="fn-h4">示例 1 · 官网展示图 <a class="fn-h3-link" href="https://www.hiascend.com/developer-program" target="_blank" rel="noopener">查看示例来源</a></h4>
       <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
@@ -1194,15 +1360,15 @@
     <div class="fn-ex-mock" aria-label="反面：活动名烧进海报，无独立文案层">
       <div class="obj-card">
         <div class="obj-banner">
-          <img src="assets/design-guide/kunpeng-hpc-challenge.png?v=2" alt="">
+          <img class="obj-banner-bg" src="assets/design-guide/ascend-developer-2026-banner.jpg" alt="">
         </div>
       </div>
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
       <li><strong>常见疏漏：</strong></li>
-      <li>1. 标题与角标烧入海报</li>
-      <li>2. 无独立文案层，读不到活动名与入口</li>
+      <li>1. 活动名、角标和入口只存在于海报像素中</li>
+      <li>2. 页面没有独立文案层，读不到活动名与入口</li>
     </ul>
     </div>
     </div>
@@ -1216,11 +1382,17 @@
     <div class="fn-ex-mock" aria-label="正面：文案叠在 Banner 上，为独立文字层">
       <div class="obj-card">
         <div class="obj-banner">
-          <img src="assets/design-guide/kunpeng-hpc-challenge-bg.png?v=2" alt="">
+          <img class="obj-banner-bg" src="assets/design-guide/dev-run-ribbon-bg.png" alt="">
           <div class="obj-banner-copy">
-            <p class="obj-card-kicker is-badge">鲲鹏创新大赛</p>
-            <p class="obj-card-title">鲲鹏高性能计算全球挑战赛</p>
-            <a class="obj-card-cta is-dark" href="https://www.hikunpeng.com/zh">立即报名</a>
+            <div class="obj-banner-heading">
+              <p class="obj-card-title">昇腾开发者计划2026</p>
+              <p class="obj-card-kicker is-badge">重磅升级</p>
+            </div>
+            <p class="obj-card-desc">加入我们，加速 AI 梦想落地</p>
+            <div class="obj-banner-actions">
+              <a class="obj-card-cta is-dark" href="https://www.hiascend.com/developer-program">积分明细</a>
+              <a class="obj-card-cta is-outline" href="https://www.hiascend.com/rankings">月度热榜</a>
+            </div>
           </div>
         </div>
       </div>
@@ -1228,8 +1400,8 @@
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
       <li><strong>正确做法：</strong></li>
-      <li>1. 标题与报名入口为独立文字层</li>
-      <li>2. 角标「鲲鹏创新大赛」也独立成文</li>
+      <li>1. 活动名、说明和入口写成独立文字层</li>
+      <li>2. 背景图只作装饰，使用空 alt</li>
     </ul>
     </div>
     </div>
@@ -1244,8 +1416,8 @@
     <p class="ex-card-title">Markdown 书写</p>
     <div class="ex-fold-intro">
       <ul class="fn-ex-list">
-        <li>1. 活动名、角标与入口写成正文，不要只插一张海报</li>
-        <li>2. 氛围图可空 alt，但图链仍用绝对地址，信息不靠像素承载</li>
+        <li>1. 活动名、角标、说明和入口写成 Markdown 文本。</li>
+        <li>2. 图片只作展示；关键事实不依赖像素识别。</li>
       </ul>
     </div>
     <div class="ex-card-pane">
@@ -1262,25 +1434,30 @@
         <span class="fn-ex-label is-good">正面</span>
         <div class="fn-ex-bar is-good" aria-hidden="true"></div>
       </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-markdown">**鲲鹏创新大赛**
-
-# 鲲鹏高性能计算全球挑战赛
-
-[立即报名](https://www.hikunpeng.com/zh)
-
-<span class="code-line-hl is-good">![](https://www.hikunpeng.com/assets/banner-bg.png)</span></code></pre>
+      <figure class="file-sample hier-md file-sample--paper" aria-label="营销图 Markdown">
+        <div class="llms-sec llms-sec--copy">
+          <span class="llms-mod">文字</span>
+          <div class="hier-md-sec"><code>昇腾开发者计划2026</code></div>
+          <div class="hier-md-sec"><code>重磅升级</code></div>
+          <div class="hier-md-sec"><code>加入我们，加速AI梦想落地</code></div>
+          <div class="hier-md-sec"><code>开发者计划升级！-聚焦贡献，新增月度热榜，享大额积分</code></div>
+        </div>
+        <div class="llms-sec llms-sec--cta">
+          <span class="llms-mod">按钮</span>
+          <div class="hier-md-sec"><code>[积分明细](https://www.hiascend.com/developer-program)</code></div>
+          <div class="hier-md-sec"><code>[月度热榜](https://www.hiascend.com/rankings)</code></div>
+        </div>
       </figure>
     </div>
         </div>
       </div>
       <div class="ex-fold-panel" id="ex1-html" hidden>
         <div class="ex-card-pair">
-    <p class="ex-card-title">前端源码调整</p>
+    <p class="ex-card-title">源码书写</p>
     <div class="ex-fold-intro">
       <ul class="fn-ex-list">
-        <li>1. 标题、角标、入口写在 DOM 文本节点里</li>
-        <li>2. 图作背景时用空 alt；<code>src</code> 用绝对地址，勿把文案烧进 PNG</li>
+        <li>1. 活动名、角标、说明和入口写在 DOM 文本节点里。</li>
+        <li>2. 背景图使用空 <code>alt</code>；不要把关键文案烧进图片。</li>
       </ul>
     </div>
     <div class="ex-card-pane">
@@ -1297,141 +1474,19 @@
         <span class="fn-ex-label is-good">正面</span>
         <div class="fn-ex-bar is-good" aria-hidden="true"></div>
       </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-html">&lt;section class="banner"&gt;
-<span class="code-line-hl is-good">  &lt;p&gt;鲲鹏创新大赛&lt;/p&gt;</span>
-<span class="code-line-hl is-good">  &lt;h2&gt;鲲鹏高性能计算全球挑战赛&lt;/h2&gt;</span>
-<span class="code-line-hl is-good">  &lt;a href="https://www.hikunpeng.com/zh"&gt;立即报名&lt;/a&gt;</span>
-<span class="code-line-hl is-good">  &lt;img src="https://www.hikunpeng.com/assets/banner-bg.png" alt=""&gt;</span>
-&lt;/section&gt;</code></pre>
-      </figure>
-    </div>
+      <figure class="file-sample hier-md file-sample--paper" aria-label="营销图 HTML">
+        <div class="llms-sec llms-sec--copy">
+          <span class="llms-mod">文字</span>
+          <div class="hier-md-sec"><code>&lt;p&gt;昇腾开发者计划2026&lt;/p&gt;</code></div>
+          <div class="hier-md-sec"><code>&lt;p&gt;重磅升级&lt;/p&gt;</code></div>
+          <div class="hier-md-sec"><code>&lt;p&gt;加入我们，加速AI梦想落地&lt;/p&gt;</code></div>
+          <div class="hier-md-sec"><code>&lt;p&gt;开发者计划升级！-聚焦贡献，新增月度热榜，享大额积分&lt;/p&gt;</code></div>
         </div>
-      </div>
-
-        <h4 class="fn-h4">示例 2 · Logo 墙 <a class="fn-h3-link" href="https://www.hiascend.com/cann" target="_blank" rel="noopener">查看示例来源</a></h4>
-      <div class="fn-ex-row">
-  <div class="fn-ex">
-    <div class="fn-ex-head">
-    <span class="fn-ex-label">反面</span>
-    <div class="fn-ex-bar" aria-hidden="true"></div>
-    </div>
-    <div class="fn-ex-body">
-    <div class="fn-ex-mock" aria-label="反面：友好社区 Logo 墙，名称烧进图片">
-      <div class="logo-wall">
-        <img src="assets/design-guide/cann-friendly-community.png" alt="">
-      </div>
-    </div>
-    <div class="fn-ex-foot">
-    <ul class="fn-ex-list">
-      <li><strong>常见疏漏：</strong></li>
-      <li>1. 多个 Logo 合成一张图，名字只画在图上</li>
-      <li>2. Markdown 和 HTML 里都没有项目名</li>
-    </ul>
-    </div>
-    </div>
-  </div>
-  <div class="fn-ex">
-    <div class="fn-ex-head">
-    <span class="fn-ex-label is-good">正面</span>
-    <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-    </div>
-    <div class="fn-ex-body">
-    <div class="fn-ex-mock" aria-label="正面：各 Logo 在源码中带项目名，画面上名称可选">
-      <div class="logo-wall">
-        <p class="logo-wall-title">友好社区</p>
-        <div class="logo-wall-grid">
-          <a href="https://github.com/volcengine/verl"><img src="assets/design-guide/cann-logo-verl.png" alt="verl"><span>verl</span></a>
-          <a href="https://github.com/vllm-project/vllm"><img src="assets/design-guide/cann-logo-vllm.png" alt="vLLM"><span>vLLM</span></a>
-          <a href="https://github.com/sgl-project/sglang"><img src="assets/design-guide/cann-logo-sgl.png" alt="SGL"><span>SGL</span></a>
-          <a href="https://www.hiascend.com/cann"><img src="assets/design-guide/cann-logo-xllm.png" alt="xLLM"><span>xLLM</span></a>
-          <a href="https://www.mindspore.cn"><img src="assets/design-guide/cann-logo-mindspore.png" alt="MindSpore"><span>MindSpore</span></a>
-          <a href="https://github.com/kvcache-ai/Mooncake"><img src="assets/design-guide/cann-logo-mooncake.png" alt="Mooncake"><span>Mooncake</span></a>
-          <a href="https://pytorch.org"><img src="assets/design-guide/cann-logo-pytorch.png" alt="PyTorch"><span>PyTorch</span></a>
-          <a href="https://www.hiascend.com/cann"><img src="assets/design-guide/cann-logo-unknown.png" alt="须写名称"><span>须写名称</span></a>
-          <a href="https://github.com/tile-ai/tilelang"><img src="assets/design-guide/cann-logo-tilelang.png" alt="TileLang"><span>TileLang</span></a>
-          <a href="https://www.tensorflow.org"><img src="assets/design-guide/cann-logo-tensorflow.png" alt="TensorFlow"><span>TensorFlow</span></a>
+        <div class="llms-sec llms-sec--cta">
+          <span class="llms-mod">按钮</span>
+          <div class="hier-md-sec"><code>&lt;a href="https://www.hiascend.com/developer-program"&gt;积分明细&lt;/a&gt;</code></div>
+          <div class="hier-md-sec"><code>&lt;a href="https://www.hiascend.com/rankings"&gt;月度热榜&lt;/a&gt;</code></div>
         </div>
-      </div>
-    </div>
-    <div class="fn-ex-foot">
-    <ul class="fn-ex-list">
-      <li><strong>正确做法：</strong></li>
-      <li>1. Markdown 写成项目名列表；HTML 的 alt 或旁边文字写出同一名称</li>
-      <li>2. Logo 下面出不出字都可以，名称不能只存在图片像素里</li>
-    </ul>
-    </div>
-    </div>
-  </div>
-</div>
-      <div class="ex-fold-bar">
-        <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex2-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
-        <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex2-html" aria-label="前端源码调整"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
-      </div>
-      <div class="ex-fold-panel" id="ex2-md" hidden>
-        <div class="ex-card-pair">
-    <p class="ex-card-title">Markdown 书写</p>
-    <div class="ex-fold-intro">
-      <ul class="fn-ex-list">
-        <li>1. 区块标题与品牌名写成列表，不要只贴整墙图</li>
-        <li>2. 项目名写在 Markdown 正文里；图链可另附</li>
-      </ul>
-    </div>
-    <div class="ex-card-pane">
-      <div class="ex-card-pane-head">
-        <span class="fn-ex-label">反面</span>
-        <div class="fn-ex-bar" aria-hidden="true"></div>
-      </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-markdown"><span class="code-line-hl is-bad">![](friendly-community.png)</span></code></pre>
-      </figure>
-    </div>
-    <div class="ex-card-pane">
-      <div class="ex-card-pane-head">
-        <span class="fn-ex-label is-good">正面</span>
-        <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-      </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-markdown">## 友好社区
-
-- [verl](https://github.com/volcengine/verl)
-- [vLLM](https://github.com/vllm-project/vllm)
-- [SGL](https://github.com/sgl-project/sglang)</code></pre>
-      </figure>
-    </div>
-        </div>
-      </div>
-      <div class="ex-fold-panel" id="ex2-html" hidden>
-        <div class="ex-card-pair">
-    <p class="ex-card-title">前端源码调整</p>
-    <div class="ex-fold-intro">
-      <ul class="fn-ex-list">
-        <li>1. 拆成逐个 Logo，名称写在 alt 或相邻文本节点</li>
-        <li>2. 画面上名称可省略，源码里不能省略</li>
-      </ul>
-    </div>
-    <div class="ex-card-pane">
-      <div class="ex-card-pane-head">
-        <span class="fn-ex-label">反面</span>
-        <div class="fn-ex-bar" aria-hidden="true"></div>
-      </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-html"><span class="code-line-hl is-bad">&lt;img src="friendly-community.png"&gt;</span></code></pre>
-      </figure>
-    </div>
-    <div class="ex-card-pane">
-      <div class="ex-card-pane-head">
-        <span class="fn-ex-label is-good">正面</span>
-        <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-      </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-html">&lt;h2&gt;友好社区&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;
-<span class="code-line-hl is-good">    &lt;img src="https://www.hiascend.com/assets/verl.png" alt="verl"&gt;</span>
-<span class="code-line-hl is-good">    &lt;span&gt;verl&lt;/span&gt;</span>
-  &lt;/li&gt;
-&lt;/ul&gt;</code></pre>
       </figure>
     </div>
         </div>
@@ -1439,9 +1494,9 @@
       </div>
 
       <div class="principle-example">
-        <h3 class="fn-h3">结构与结论写成文字</h3>
-        <p class="fn-h3-desc">架构图、调度图与终端截图中的层名、关系与指标须以图注、正文或平行 Markdown 交付；图仅作对照。</p>
-        <h4 class="fn-h4">示例 3 · 官网架构图 <a class="fn-h3-link" href="https://www.hiascend.com/industries/internet" target="_blank" rel="noopener">查看示例来源</a></h4>
+        <h3 class="fn-h3">图表结构写成文字</h3>
+        <p class="fn-h3-desc">流程图、架构图和关系图中的节点、层级与结论须以正文、列表、表格或平行 Markdown 交付；图仅作对照。</p>
+        <h4 class="fn-h4">示例 2 · 官网架构图 <a class="fn-h3-link" href="https://www.hiascend.com/industries/internet" target="_blank" rel="noopener">查看示例来源</a></h4>
       <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
@@ -1483,15 +1538,15 @@
           </a>
         </div>
         <div class="stack-shot-frame">
-          <img src="assets/design-guide/ascend-platform-stack-solutions.png" alt="昇腾解决方案楼层：应用使能、AI 框架、硬件使能与昇腾系列硬件">
+          <img src="assets/design-guide/ascend-platform-stack-solutions.png" alt="昇腾解决方案楼层从上到下包括应用使能、AI 框架、硬件使能和昇腾系列硬件，右侧由 MindStudio 全流程工具链和 CCAE 集群自智引擎支撑。">
         </div>
       </div>
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
       <li><strong>正确做法：</strong></li>
-      <li>1. Markdown 写成层级列表；HTML 的 alt 或旁边文字写出同一套关系</li>
-      <li>2. 页面上可以不追加说明，关系不能只存在图片像素里</li>
+      <li>1. 用文字写出层级列表，让结构可检索</li>
+      <li>2. 图片可保留展示效果，但关系不能只存在于像素中</li>
     </ul>
     </div>
     </div>
@@ -1506,8 +1561,8 @@
     <p class="ex-card-title">Markdown 书写</p>
     <div class="ex-fold-intro">
       <ul class="fn-ex-list">
-        <li>1. 用列表或 Mermaid 写出层级与产品关系</li>
-        <li>2. 页面上可以只留图；层名必须以文字为准</li>
+        <li>1. 节点、层级和支撑关系写成 Markdown 列表。</li>
+        <li>2. 图片只作展示；结构事实不依赖像素识别。</li>
       </ul>
     </div>
     <div class="ex-card-pane">
@@ -1526,15 +1581,20 @@
         <span class="fn-ex-label is-good">正面</span>
         <div class="fn-ex-bar is-good" aria-hidden="true"></div>
       </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-markdown">## 解决方案
-
-<span class="code-line-hl is-good">- 应用使能</span>
-<span class="code-line-hl is-good">- AI 框架</span>
-<span class="code-line-hl is-good">- 硬件使能</span>
-<span class="code-line-hl is-good">- 昇腾系列硬件</span>
-
-![昇腾解决方案楼层](https://www.hiascend.com/assets/platform-stack.png)</code></pre>
+      <figure class="file-sample hier-md file-sample--paper" aria-label="架构图 Markdown">
+        <div class="llms-sec llms-sec--copy">
+          <span class="llms-mod">结构</span>
+          <div class="hier-md-sec"><code>## 解决方案</code></div>
+          <div class="hier-md-sec"><code>- 应用使能：ModelArts、HiAI Service、第三方平台&服务；MindSDK AI 应用软件开发套件；MindCluster、MindEdge、MindSpeed、MindIE。</code></div>
+          <div class="hier-md-sec"><code>- AI 框架：MindSpore 昇思，以及 PyTorch、TensorFlow、PP飞桨。</code></div>
+          <div class="hier-md-sec"><code>- 硬件使能：CANN 异构计算架构，覆盖 Ascend C 算子编程语言、高性能融合算子、通信算法等。</code></div>
+          <div class="hier-md-sec"><code>- 昇腾系列硬件：集群、服务器、标卡、小站、模组等形态。</code></div>
+          <div class="hier-md-sec"><code>- 侧向支撑：MindStudio 全流程工具链与 CCAE 集群自智引擎。</code></div>
+        </div>
+        <div class="llms-sec llms-sec--fig">
+          <span class="llms-mod">图</span>
+          <div class="hier-md-sec"><code>![昇腾解决方案楼层](https://www.hiascend.com/assets/platform-stack.png)</code></div>
+        </div>
       </figure>
     </div>
         </div>
@@ -1544,8 +1604,8 @@
     <p class="ex-card-title">前端源码调整</p>
     <div class="ex-fold-intro">
       <ul class="fn-ex-list">
-        <li>1. 层名写进 alt 或相邻文本，不要只靠图片</li>
-        <li>2. 页面上可以不另加说明列表</li>
+        <li>1. 标题、节点、层级和支撑关系写在相邻 DOM 文本中。</li>
+        <li>2. 图片保留展示效果；<code>alt</code> 简述图片用途即可。</li>
       </ul>
     </div>
     <div class="ex-card-pane">
@@ -1563,16 +1623,36 @@
         <span class="fn-ex-label is-good">正面</span>
         <div class="fn-ex-bar is-good" aria-hidden="true"></div>
       </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-html">&lt;h2&gt;解决方案&lt;/h2&gt;
-<span class="code-line-hl is-good">&lt;img src="https://www.hiascend.com/assets/platform-stack.png"</span>
-<span class="code-line-hl is-good">     alt="昇腾解决方案楼层：应用使能、AI 框架、硬件使能与昇腾系列硬件"&gt;</span></code></pre>
+      <figure class="file-sample hier-md file-sample--paper" aria-label="架构图 HTML">
+        <div class="llms-sec llms-sec--copy">
+          <span class="llms-mod">标题</span>
+          <div class="hier-md-sec"><code>&lt;h2&gt;解决方案&lt;/h2&gt;</code></div>
+        </div>
+        <div class="llms-sec llms-sec--copy">
+          <span class="llms-mod">结构</span>
+          <div class="hier-md-sec"><code>&lt;ul&gt;</code></div>
+          <div class="hier-md-sec"><code>  &lt;li&gt;应用使能：MindSDK、MindCluster、MindEdge、MindSpeed、MindIE。&lt;/li&gt;</code></div>
+          <div class="hier-md-sec"><code>  &lt;li&gt;AI 框架：MindSpore 昇思、PyTorch、TensorFlow、PP飞桨。&lt;/li&gt;</code></div>
+          <div class="hier-md-sec"><code>  &lt;li&gt;硬件使能：CANN 异构计算架构。&lt;/li&gt;</code></div>
+          <div class="hier-md-sec"><code>  &lt;li&gt;昇腾系列硬件：集群、服务器、标卡、小站、模组。&lt;/li&gt;</code></div>
+          <div class="hier-md-sec"><code>  &lt;li&gt;支撑能力：MindStudio 全流程工具链、CCAE 集群自智引擎。&lt;/li&gt;</code></div>
+          <div class="hier-md-sec"><code>&lt;/ul&gt;</code></div>
+        </div>
+        <div class="llms-sec llms-sec--fig">
+          <span class="llms-mod">图</span>
+          <div class="hier-md-sec"><code>&lt;img src="https://www.hiascend.com/assets/platform-stack.png" alt="昇腾解决方案结构图"&gt;</code></div>
+        </div>
       </figure>
     </div>
         </div>
       </div>
 
-        <h4 class="fn-h4">示例 4 · 文档架构图</h4>
+      </div>
+
+      <div class="principle-example">
+        <h3 class="fn-h3">替代文本、图注与正文保持一致</h3>
+        <p class="fn-h3-desc"><code>alt</code> 简述图片主要内容或功能，图注补充关键结论；图片、图注与正文描述应表达同一事实。</p>
+        <h4 class="fn-h4">示例 3 · 文档说明图</h4>
       <div class="fn-ex-row">
   <div class="fn-ex">
     <div class="fn-ex-head">
@@ -1580,17 +1660,17 @@
     <div class="fn-ex-bar" aria-hidden="true"></div>
     </div>
     <div class="fn-ex-body">
-    <div class="fn-ex-mock" aria-label="反面：仅有架构图，无图注">
+    <div class="fn-ex-mock" aria-label="反面：仅有图题，无图注">
       <div class="info-card">
-        <p class="info-title">图 Kernel 调度示意图</p>
-        <img src="assets/design-guide/ascend-cpu-npu-scheduler.png?v=3" alt="">
+        <p class="info-title">图 VECIN / VECOUT 数据流示意图</p>
+        <img src="assets/design-guide/vecin-vecout-dataflow.png" alt="">
       </div>
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
       <li><strong>常见疏漏：</strong></li>
-      <li>1. 仅有图题，调度结论未写成图注</li>
-      <li>2. alt 为空，读不到 Host / NPU 关系</li>
+      <li>1. 只有图题，没有写出数据流结论</li>
+      <li>2. alt 为空，读不到 VECIN / VECOUT 的关系</li>
     </ul>
     </div>
     </div>
@@ -1601,18 +1681,18 @@
     <div class="fn-ex-bar is-good" aria-hidden="true"></div>
     </div>
     <div class="fn-ex-body">
-    <div class="fn-ex-mock" aria-label="正面：图注写出调度结论">
+    <div class="fn-ex-mock" aria-label="正面：图注写出数据流结论">
       <figure class="info-card">
-        <p class="info-title">图 Kernel 调度示意图</p>
-        <img src="assets/design-guide/ascend-cpu-npu-scheduler.png?v=3" alt="Host 进程在 CPU 发起任务，下发到 NPU 任务调度器后分到 AI Core 0…N-1 并行执行。">
-        <figcaption class="info-cap">图注：Host 进程运行在 CPU，负责发起计算任务。任务下发到 NPU 后，先进入任务调度器，再由调度器分配到 AI Core 0、AI Core 1 … AI Core N-1；各核承接子任务并并行执行，核数可按 N 扩展。</figcaption>
+        <p class="info-title">图 VECIN / VECOUT 数据流示意图</p>
+        <img src="assets/design-guide/vecin-vecout-dataflow.png" alt="全局输入张量经 AllocTensor 与 DataCopy 进入本地输入张量，EnQue 到 VECIN，计算后经 VECOUT 写出到全局输出张量。">
+        <figcaption class="info-cap">图注：数据从 Global Input Tensor 经 AllocTensor、DataCopy 进入 Local Input Tensor，再 EnQue 到 VECIN；出队后在本地 Compute，结果 EnQue 到 VECOUT，最后 DataCopy 回 Global Output Tensor，并 FreeTensor。</figcaption>
       </figure>
     </div>
     <div class="fn-ex-foot">
     <ul class="fn-ex-list">
       <li><strong>正确做法：</strong></li>
-      <li>1. 图题保留，图下以图注交付结论</li>
-      <li>2. alt 简述图意，正文禁止只写「如图所示」</li>
+      <li>1. alt 概括图意，图注写出关键结论</li>
+      <li>2. 图题、alt、图注与正文保持同一语义</li>
     </ul>
     </div>
     </div>
@@ -1627,8 +1707,8 @@
     <p class="ex-card-title">Markdown 书写</p>
     <div class="ex-fold-intro">
       <ul class="fn-ex-list">
-        <li>1. 正文复述结论，禁止只写「如图所示」</li>
-        <li>2. alt + 图注完整转写图意</li>
+        <li>1. 图题、图意和图注写成 Markdown 文本。</li>
+        <li>2. 图片只作对照；结论不依赖「如图所示」。</li>
       </ul>
     </div>
     <div class="ex-card-pane">
@@ -1637,9 +1717,9 @@
         <div class="fn-ex-bar" aria-hidden="true"></div>
       </div>
       <figure class="file-sample file-sample--compact">
-        <pre><code class="language-markdown"><span class="code-line-hl is-bad">如图所示，Kernel 调度如下：</span>
+        <pre><code class="language-markdown"><span class="code-line-hl is-bad">如图所示：</span>
 
-<span class="code-line-hl is-bad">![](scheduler.png)</span></code></pre>
+<span class="code-line-hl is-bad">![](vecin-vecout.png)</span></code></pre>
       </figure>
     </div>
     <div class="ex-card-pane">
@@ -1647,17 +1727,18 @@
         <span class="fn-ex-label is-good">正面</span>
         <div class="fn-ex-bar is-good" aria-hidden="true"></div>
       </div>
-      <figure class="file-sample file-sample--compact hier-md" aria-label="正面：图题、alt、绝对地址与图注">
-        <div class="hier-md-sec">
-          <code>图 Kernel 调度示意图</code>
+      <figure class="file-sample hier-md file-sample--paper" aria-label="营销图 Markdown">
+        <div class="llms-sec llms-sec--copy">
+          <span class="llms-mod">图题</span>
+          <div class="hier-md-sec"><code>图 VECIN / VECOUT 数据流示意图</code></div>
         </div>
-        <div class="hier-md-sec">
-          <code>![Host 进程在 CPU 发起任务……](</code>
-          <code>https://www.hiascend.com/assets/scheduler.png)</code>
+        <div class="llms-sec llms-sec--fig">
+          <span class="llms-mod">图</span>
+          <div class="hier-md-sec"><code>![全局输入张量经 AllocTensor 与 DataCopy 进入本地输入张量，EnQue 到 VECIN，计算后经 VECOUT 写出到全局输出张量。](https://www.hiascend.com/assets/vecin-vecout-dataflow.png)</code></div>
         </div>
-        <div class="hier-md-sec">
-          <code class="code-line-hl is-good">*图注：Host 进程运行在 CPU……*</code>
-          <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:80%"></span><span class="llms-skel-bar" style="width:48%"></span></span>
+        <div class="llms-sec llms-sec--cap">
+          <span class="llms-mod">图注·可选</span>
+          <div class="hier-md-sec"><code>*图注：数据从 Global Input Tensor 经 AllocTensor、DataCopy 进入 Local Input Tensor，再 EnQue 到 VECIN；出队后在本地 Compute，结果 EnQue 到 VECOUT，最后 DataCopy 回 Global Output Tensor，并 FreeTensor。*</code></div>
         </div>
       </figure>
     </div>
@@ -1665,11 +1746,11 @@
       </div>
       <div class="ex-fold-panel" id="ex4-html" hidden>
         <div class="ex-card-pair">
-    <p class="ex-card-title">前端源码调整</p>
+    <p class="ex-card-title">源码书写</p>
     <div class="ex-fold-intro">
       <ul class="fn-ex-list">
-        <li>1. 图题写在可见标题；图注用 <code>figcaption</code></li>
-        <li>2. <code>alt</code> 简述图意，不是图题；<code>src</code> 用绝对地址</li>
+        <li>1. 图题写成可见文本，图意写进 <code>alt</code>。</li>
+        <li>2. 完整结论写进 <code>figcaption</code>，并与正文保持一致。</li>
       </ul>
     </div>
     <div class="ex-card-pane">
@@ -1678,8 +1759,8 @@
         <div class="fn-ex-bar" aria-hidden="true"></div>
       </div>
       <figure class="file-sample file-sample--compact">
-        <pre><code class="language-html">&lt;p&gt;图 Kernel 调度示意图&lt;/p&gt;
-<span class="code-line-hl is-bad">&lt;img src="scheduler.png"&gt;</span></code></pre>
+        <pre><code class="language-html">&lt;p&gt;图 VECIN / VECOUT 数据流示意图&lt;/p&gt;
+<span class="code-line-hl is-bad">&lt;img src="vecin-vecout.png"&gt;</span></code></pre>
       </figure>
     </div>
     <div class="ex-card-pane">
@@ -1687,144 +1768,19 @@
         <span class="fn-ex-label is-good">正面</span>
         <div class="fn-ex-bar is-good" aria-hidden="true"></div>
       </div>
-      <figure class="file-sample file-sample--compact hier-md" aria-label="正面：figure、绝对地址、alt 与图注">
-        <div class="hier-md-sec">
-          <code>&lt;figure id="fig-scheduler"&gt;</code>
+      <figure class="file-sample hier-md file-sample--paper" aria-label="营销图 HTML">
+        <div class="llms-sec llms-sec--copy">
+          <span class="llms-mod">图题</span>
+          <div class="hier-md-sec"><code>&lt;p&gt;图 VECIN / VECOUT 数据流示意图&lt;/p&gt;</code></div>
         </div>
-        <div class="hier-md-sec">
-          <code>&lt;p&gt;图 Kernel 调度示意图&lt;/p&gt;</code>
+        <div class="llms-sec llms-sec--fig">
+          <span class="llms-mod">图</span>
+          <div class="hier-md-sec"><code>&lt;img alt="全局输入张量经 AllocTensor 与 DataCopy 进入本地输入张量，EnQue 到 VECIN，计算后经 VECOUT 写出到全局输出张量。"&gt;</code></div>
         </div>
-        <div class="hier-md-sec">
-          <code>&lt;img src="https://www.hiascend.com/assets/scheduler.png"</code>
-          <code class="code-line-hl is-good">     alt="Host 进程在 CPU 发起任务……"&gt;</code>
+        <div class="llms-sec llms-sec--cap">
+          <span class="llms-mod">图注·可选</span>
+          <div class="hier-md-sec"><code>&lt;figcaption&gt;图注：数据从 Global Input Tensor 经 AllocTensor、DataCopy 进入 Local Input Tensor，再 EnQue 到 VECIN；出队后在本地 Compute，结果 EnQue 到 VECOUT，最后 DataCopy 回 Global Output Tensor，并 FreeTensor。&lt;/figcaption&gt;</code></div>
         </div>
-        <div class="hier-md-sec">
-          <code class="code-line-hl is-good">&lt;figcaption&gt;图注：Host 进程运行在 CPU……&lt;/figcaption&gt;</code>
-          <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:80%"></span><span class="llms-skel-bar" style="width:48%"></span></span>
-        </div>
-        <div class="hier-md-sec">
-          <code>&lt;/figure&gt;</code>
-        </div>
-      </figure>
-    </div>
-        </div>
-      </div>
-
-        <h4 class="fn-h4">示例 5 · 文档截图 <a class="fn-h3-link" href="https://www.hiascend.com/document/detail/zh/MindSpeed/latest/quickstart/docs/zh/pytorch/training/quick_start.md" target="_blank" rel="noopener">查看示例来源</a></h4>
-      <div class="fn-ex-row">
-  <div class="fn-ex">
-    <div class="fn-ex-head">
-    <span class="fn-ex-label">反面</span>
-    <div class="fn-ex-bar" aria-hidden="true"></div>
-    </div>
-    <div class="fn-ex-body">
-    <div class="fn-ex-mock" aria-label="反面：训练关键与参数量只在截图里">
-      <div class="info-card">
-        <p class="info-title">图 1 启动预训练</p>
-        <img src="assets/design-guide/mindspeed-pretrain-term.png" alt="">
-      </div>
-    </div>
-    <div class="fn-ex-foot">
-    <ul class="fn-ex-list">
-      <li><strong>常见疏漏：</strong></li>
-      <li>1. 参数量、迭代数、损失值仅存于终端截图</li>
-      <li>2. 图注未提取结论</li>
-    </ul>
-    </div>
-    </div>
-  </div>
-  <div class="fn-ex">
-    <div class="fn-ex-head">
-    <span class="fn-ex-label is-good">正面</span>
-    <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-    </div>
-    <div class="fn-ex-body">
-    <div class="fn-ex-mock" aria-label="正面：图注写清日志结论，截图仅作示意">
-      <div class="info-card">
-        <p class="info-title">图 1 启动预训练</p>
-        <img src="assets/design-guide/mindspeed-pretrain-term.png" alt="预训练终端日志示意：加载扩展模块后输出参数量与 iteration 指标">
-        <p class="info-cap">图注：预训练已启动；总参数量约 7.62B（Transformer 层约 6.53B）。日志自 <code>iteration 1/2000</code> 起持续输出，单卡吞吐约 25.1 TFLOP/s/GPU，首步 lm loss 约 12.15。</p>
-      </div>
-    </div>
-    <div class="fn-ex-foot">
-    <ul class="fn-ex-list">
-      <li><strong>正确做法：</strong></li>
-      <li>1. 图题保留，截图中的终端结论写进图注</li>
-      <li>2. alt 说明这是预训练日志示意</li>
-    </ul>
-    </div>
-    </div>
-  </div>
-</div>
-      <div class="ex-fold-bar">
-        <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex5-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
-        <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex5-html" aria-label="前端源码调整"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
-      </div>
-      <div class="ex-fold-panel" id="ex5-md" hidden>
-        <div class="ex-card-pair">
-    <p class="ex-card-title">Markdown 书写</p>
-    <div class="ex-fold-intro">
-      <ul class="fn-ex-list">
-        <li>1. 把参数量、迭代与损失写成图注</li>
-        <li>2. 截图只作对照，不单独承载结论</li>
-      </ul>
-    </div>
-    <div class="ex-card-pane">
-      <div class="ex-card-pane-head">
-        <span class="fn-ex-label">反面</span>
-        <div class="fn-ex-bar" aria-hidden="true"></div>
-      </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-markdown">图 1 启动预训练
-
-<span class="code-line-hl is-bad">![](pretrain-term.png)</span></code></pre>
-      </figure>
-    </div>
-    <div class="ex-card-pane">
-      <div class="ex-card-pane-head">
-        <span class="fn-ex-label is-good">正面</span>
-        <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-      </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-markdown">图 1 启动预训练
-
-![预训练终端日志示意：加载扩展模块后输出参数量与 iteration 指标](https://www.hiascend.com/assets/pretrain-term.png)
-
-<span class="code-line-hl is-good">*图注：预训练已启动；总参数量约 7.62B。日志自 iteration 1/2000 起持续输出，首步 lm loss 约 12.15。*</span></code></pre>
-      </figure>
-    </div>
-        </div>
-      </div>
-      <div class="ex-fold-panel" id="ex5-html" hidden>
-        <div class="ex-card-pair">
-    <p class="ex-card-title">前端源码调整</p>
-    <div class="ex-fold-intro">
-      <ul class="fn-ex-list">
-        <li>1. 用 figcaption 写入可抓结论</li>
-        <li>2. <code>src</code> 用绝对地址；首包即含图注，不靠 OCR</li>
-      </ul>
-    </div>
-    <div class="ex-card-pane">
-      <div class="ex-card-pane-head">
-        <span class="fn-ex-label">反面</span>
-        <div class="fn-ex-bar" aria-hidden="true"></div>
-      </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-html">&lt;p&gt;图 1 启动预训练&lt;/p&gt;
-<span class="code-line-hl is-bad">&lt;img src="pretrain-term.png"&gt;</span></code></pre>
-      </figure>
-    </div>
-    <div class="ex-card-pane">
-      <div class="ex-card-pane-head">
-        <span class="fn-ex-label is-good">正面</span>
-        <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-      </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-html">&lt;figure id="fig-pretrain"&gt;
-  &lt;img src="https://www.hiascend.com/assets/pretrain-term.png"
-       alt="预训练终端日志示意：加载扩展模块后输出参数量与 iteration 指标"&gt;
-<span class="code-line-hl is-good">  &lt;figcaption&gt;图注：预训练已启动；总参数量约 7.62B。日志自 iteration 1/2000 起持续输出，首步 lm loss 约 12.15。&lt;/figcaption&gt;</span>
-&lt;/figure&gt;</code></pre>
       </figure>
     </div>
         </div>
@@ -1832,12 +1788,22 @@
       </div>
     </section>
 
-    <section class="section" id="benefits">
-      <h2>价值收益</h2>
-      <ul class="bg-list">
-        <li><strong>图中事实可被检索</strong>Agent 能点名活动名、品牌、层名与调度结论，而不必依赖 OCR 或「见图」。绝对 <code>src</code> 只是给多模态的加成，不是转写的替代。</li>
-        <li><strong>引用可核对</strong>指标与结构写入图注或平行 Markdown 后，回答可带回可复核的文字证据（如参数量 7.62B、Host→NPU 调度关系）。</li>
-      </ul>
+    <section class="section" id="expected-effect">
+      <h2>预期效果</h2>
+      <ol class="bg-list">
+        <li>帮助 AI Agent 通过 HTML 文本、图注或平行 Markdown 获取图片中的关键文案、技术参数、结构关系和主要结论。</li>
+        <li>减少仅依赖 OCR 或多模态识别带来的不确定性，使回答能够回查到可检索、可引用的文字证据。</li>
+      </ol>
+    </section>
+
+    <section class="section" id="notes">
+      <h2>注意事项</h2>
+      <ol class="bg-list">
+        <li>装饰图、氛围图不承载事实时，不需要硬写图意转写，可使用空 <code>alt</code>（<code>alt=""</code>）。</li>
+        <li><code>alt</code> 用于简述图片主要内容或功能，不宜只重复图题；复杂结构和完整结论应写在图注、正文或平行 Markdown 中。</li>
+        <li>图片、替代文本、图注、正文和平行 Markdown 应保持语义一致，图片内容变化时同步检查并更新相关文字。</li>
+        <li>图片使用可抓取地址有助于多模态 Agent 取图，但不能替代关键内容的文本转写。</li>
+      </ol>
     </section>
   </main>
 

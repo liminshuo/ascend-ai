@@ -149,7 +149,7 @@
           </tr>
 <tr id="principle-full-3" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
             <td class="col-id">3</td>
-            <td>双轨交付</td>
+            <td>Markdown 正文可直取</td>
             <td><strong>同源同文</strong>：<br>Markdown / 纯净正文与 HTML 渲染页必须由同一来源导出；严禁给人看一套、给机器看另一套，或按 UA 动态换皮。<br><strong>入口文案写清动作</strong>：<br>入口须使用「复制 Markdown」「打开 Markdown」「机器可读版本」等可独立理解的短语；严禁只写「MD」「源码」等含糊缩写而无动作说明。</td>
             <td><strong>文档页级</strong>：<br>Markdown 入口 文档页头必须提供可见的「打开 / 复制 Markdown」入口，文案须写清具体动作；严禁仅用仓库源码链替代。若整站 llms.txt 已收录稳定的本页 .md 直链，可免重复堆按钮。<br><strong>内容块平行</strong>：<br>MD 架构图、规格表等强视觉块必须配备平行 Markdown；标题旁轻量 MD 徽标仅作快捷入口，严禁替代正文。若首包已包含完整可抓取的语义化 HTML 表，徽标可省略。<br><strong>入口默认可见</strong>：<br>机器可读入口必须为可见文字或明确动作控件；严禁仅用无字图标暗示存在 Markdown 版本。</td>
             <td><strong>Markdown 源文件对外可访问</strong>：<br>/doc_center/source/ 路径下的 Markdown 文件必须可直接访问和下载，不做鉴权拦截，配合 robots.txt 放行和 llms.txt 索引。<br><strong>两轨内容一致性校验</strong>：<br>构建流程中对比 Markdown 源文件与生成的 HTML 内容，检测是否存在渲染层单独修改导致的内容不一致，不一致则阻断发布。<br><strong>Markdown 文件元数据同步</strong>：<br>Markdown 文件头部的 frontmatter（版本号、日期、状态等）与 HTML 页面 &lt;head&gt; 中的 meta 和 JSON-LD 字段保持自动同步，由构建管道统一处理，不依赖人工双向维护。<br><strong>HTML源码优化</strong>：<br>不使用 .md 的渲染页面，采用 .html 渲染页面，需尽量在前端输出，不通过服务端动态渲染。</td>
@@ -207,7 +207,7 @@
         <tbody>
           <tr id="principle-full-7" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
             <td class="col-id">7</td>
-            <td>页面 HTML 可读</td>
+            <td>页面 HTML 可读性</td>
             <td><strong>文档内容必须确保传统的搜索引擎爬虫和AI爬虫能够通过静态HTML或服务端渲染（SSR）的方式获取到完整的、不依赖客户端执行JavaScript的内容。具体禁止</strong>：<br>无限滚动、动态渲染（页面主要内容不能完全依赖JavaScript客户端渲染）、虚拟滚动、关键内容的懒加载。</td>
             <td><strong>禁止设计无限滚动交互</strong>：<br>文档页面不使用无限滚动加载更多内容的设计模式，内容分页或一次性完整展示</td>
             <td><strong>SSR 完整输出页面主体内容</strong>：<br>所有文档正文、标题、代码块、表格必须在服务端渲染到首屏 HTML，禁止依赖客户端 JS 渲染主体内容<br><strong>禁止关键内容懒加载</strong>：<br>图片懒加载可以保留，但文字内容（正文、步骤、警示块、验证区块）禁止懒加载，必须随页面 HTML 直接输出<br><strong>禁止虚拟滚动</strong>：<br>长列表、长表格禁止使用虚拟滚动组件，必须完整输出所有行的 DOM 节点。<br><strong>爬虫可达性验证</strong>：<br>在 CI/CD 流程中加入静态 HTML 完整性检测，禁用 JS 后抓取页面，对比关键内容节点是否完整存在，不完整则阻断发布</td>
@@ -239,7 +239,7 @@
           </tr>
           <tr id="principle-full-11" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
             <td class="col-id">11</td>
-            <td>音视频要点伴随</td>
+            <td>音视频内容可转译</td>
             <td><strong>要点与口播一致</strong>：<br>用条目概括操作步骤、命令与预期结果；旁侧要点须与口播关键事实一致，勿另写一套营销摘要。<br><strong>页内须有足够摘要</strong>：<br>可链完整讲义 / Markdown，但页内须有足够步骤与结论摘要，禁止「详见视频」作为唯一出处。</td>
             <td><strong>媒体不独自表意</strong>：<br>讲解、步骤与结论不得仅存于音视频；须配旁侧可抓取标题与要点。画面烧字与口播均不视为文本替代。<br><strong>要点概括即可</strong>：<br>旁侧文字概括关键步骤、参数与结论即可，无需逐字转写口播；布局上要点默认可见，勿藏进需点击才展开的唯一入口。</td>
             <td><strong>要点在首包</strong>：<br>HTML 旁侧标题与要点须随首包输出；禁止仅靠 XHR / 点击后加载字幕或摘要作为唯一文本。<br><strong>字幕不作唯一替代</strong>：<br>可提供字幕轨，但关键步骤仍须以可见正文 / 要点块交付；勿假设爬虫会解析媒体轨。<br><strong>装饰媒体勿入库</strong>：<br>装饰性背景视频 / 氛围音标记跳过向量化；信息型媒体旁的要点块须参与切片。</td>
