@@ -353,7 +353,7 @@
           </tr>
           <tr id="principle-full-22" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
             <td class="col-id">22</td>
-            <td>版本号外显</td>
+            <td>版本与时效外显</td>
             <td><strong>每个文档页面必须在其元数据区域以结构化（机器可优先读）和自然语言（人类可读）两种形式，明确声明</strong>：<br>产品/项目名称、文档对应的软件版本号（遵循SemVer）、该版本的发布日期、该版本的生命周期状态（如当前稳定版、维护中、已启用、EOS）、（可选）文档版本自身的版本号。所有版本差异必须使用表格进行条目化描述，禁止使用模糊散文。</td>
             <td><strong>版本元数据展示，不使用JS动态渲染</strong>：<br>在页面固定位置（参考 NV 放顶部导航栏或 H1 下方）展示产品名、版本号、发布日期、生命周期状态，位置全站统一。<br><strong>生命周期状态标签</strong>：<br>稳定版、维护中、已弃用、EOS 用不同颜色的标签组件区分，与失效状态原则的警告色保持一致的色彩语义体系，不能各自定义颜色<br><strong>版本差异表格样式（可选）</strong>：<br>版本对比内容必须用表格呈现，表格列头（版本号、差异项、说明）样式清晰，设计上禁止用列表或段落替代表格来呈现版本差异</td>
             <td><strong>CMS 中为每个页面增加强制填写的结构化字段</strong>：<br>product-name、software-version（SemVer 格式校验）、release-date、lifecycle-status，发布时校验必填，缺失则阻断。<br><strong>元数据机器可读输出</strong>：<br>版本信息同步写入页面 &lt;head&gt; 的 &lt;meta&gt; 标签和 JSON-LD，如 softwareVersion、datePublished、releaseNotes 字段，供大模型直接读取，不依赖解析页面正文<br><strong>SemVer 格式校验</strong>：<br>CMS 在版本号字段录入时强制校验 SemVer 格式（X.Y.Z），拒绝模糊写法如&quot;最新版&quot;、&quot;V2&quot<br><strong>版本元数据在大纲接口中透传</strong>：<br>页面大纲接口返回结果中包含版本元数据字段，大模型消费接口时可直接获取版本上下文，无需进入页面解析。</td>
@@ -377,7 +377,7 @@
           </tr>
           <tr id="principle-full-25" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
             <td class="col-id">25</td>
-            <td>元数据丰富化</td>
+            <td>页面元数据完整一致</td>
             <td><strong>每个文档页面建议在&lt;head&gt;中包含丰富的结构化元数据，优先使用JSON-LD格式，至少嵌入</strong>：<br>、FAQPage)、headline、description(150-160字符) 、inLanguage、datePublished、dataModified、keywords、author/publisher。</td>
             <td><strong>页头展示身份摘要</strong>：<br>标题下方固定展示摘要、适用产品 / 版本、更新日期；信息写成字，不靠悬停或图标暗示。<br><strong>面包屑真实可定位</strong>：<br>页头保留真实层级面包屑，与结构化 BreadcrumbList 同源。细则见 面包屑路径可定位。</td>
             <td><strong>JSON-LD 模板化输出</strong>：<br>在页面模板中统一注入 JSON-LD，字段从 CMS 结构化数据中动态读取，覆盖所有文档页面，不依赖人工逐页添加。<br><strong>必填字段完整性校验</strong>：<br>发布流程中检测 JSON-LD 是否包含所有必填字段（@type、headline、description、inLanguage、datePublished、dateModified、keywords、author/publisher），缺失字段则阻断发布。<br><strong>type 按页面类型自动匹配</strong>：<br>文档类型（HowTo、TechArticle、FAQPage 等）在 CMS 中作为页面属性维护，JSON-LD 的 @type 由系统根据页面类型自动填入，不依赖人工判断</td>
@@ -386,7 +386,7 @@
           <tr id="principle-full-26" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
             <td class="col-id">26</td>
             <td>状态词（已拆入表格 / 颜色 / 异常）</td>
-            <td><strong>能力格写成词</strong>：<br>矩阵单元格写「支持 / 不支持」，空格不得暗示不支持。细则见 <a href="principles-table.html#capability">表格语义化</a>。<br><strong>回执写完整句</strong>：<br>成功写对象与结果；失败附原因与下一步；加载写正在做什么。细则见 <a href="principles-exception.html#receipt">失败状态可处理</a>。<br><strong>术语用词一致</strong>：<br>全站须有可入库的术语表；当页用表中选定词，已收录缩写不必每页再定义。细则见 <a href="principles-term.html">术语用词一致</a>。</td>
+            <td><strong>能力格写成词</strong>：<br>矩阵单元格写「支持 / 不支持」，空格不得暗示不支持。细则见 <a href="principles-table.html#capability">表格语义化</a>。<br><strong>回执写完整句</strong>：<br>成功写对象与结果；失败附原因与下一步；加载写正在做什么。细则见 <a href="principles-exception.html#receipt">失败状态可处理</a>。<br><strong>内容表述清晰可指代</strong>：<br>结论写在相关内容附近；逻辑用连接词写出；指代写出对象名；同一概念保持术语一致。细则见 <a href="principles-term.html">内容表述清晰可指代</a>。</td>
             <td><strong>运行态不靠色点</strong>：<br>写成「运行中 / 已停止」；绿点 / 灰点只辅助。细则见 <a href="principles-style-semantic.html#runtime">颜色语义转写</a>。<br><strong>能力格不对号独义</strong>：<br>对号可保留，须配「支持 / 不支持」文字。</td>
             <td><strong>状态为文本节点</strong>：<br>勿只输出 ✓、空 td 或纯色点；可加 data-status。<br><strong>禁 JS 仍可读</strong>：<br>状态词随首包或 SSR 输出。</td>
             <td class="col-basis"><span class="copy-explain" tabindex="0" data-tip="Barnett et al. 2024 · FP6 Incorrect Specificity / FP7 Incomplete Answer：版本/粒度不匹配，或答案不完整">Barnett FP6/FP7</span><br><span class="copy-explain" tabindex="0" data-tip="Aggarwal et al. 2024 · Generative Engine Optimization：优化内容结构与权威性信号，使其更易被生成式搜索引擎引用">GEO 2024</span></td>
@@ -401,7 +401,7 @@
           </tr>
                                                   <tr id="principle-full-28" data-adjust-content="1" data-adjust-design="1" data-adjust-dev="1">
             <td class="col-id">28</td>
-            <td>链接语义化</td>
+            <td>链接目标可识别</td>
             <td><strong>描述性锚文本可索引</strong>：<br>内容引用超链接采用描述性、可见文字显性标注跳转目标，实现AI可访问性和搜索索引性。<br><strong>描述性锚文本</strong>：<br>超链接的可点击文本必须能够在不依赖上下文的情况下，独立描述链接的目标内容或操作。禁止使用“点击这里”、“更多”、“链接”作为锚文本。<br><strong>站外来源标注</strong>：<br>对于指向其他域名的链接，应在锚文本旁添加显式标识，如[外部]或图标+目标域名<br><strong>内联上下文</strong>：<br>链接应嵌入在具有上下文的句子中，而不是孤立地列出<br><strong>用途说明</strong>：<br>对于下载链接、API参考链接等，可在链接后附带括号说明文件类型、大小或用途。</td>
             <td><strong>建立链接文案规范，纳入内容审核流程，同时覆盖正文链接和热区链接</strong>：<br>a.锚文本必须能独立描述跳转目标，脱离上下文也能理解<br>b.禁止使用&quot;点击这里&quot;&quot;更多&quot;&quot;链接&quot;&quot;查看详情&quot;作为锚文本<br>c.下载链接、API 链接在锚文本后附带括号说明文件类型、大小、用途<br>d.热区的 area alt / area title 文案同步提供，禁止使用&quot;区域1&quot;&quot;链接2&quot;等无意义文字</td>
             <td><strong>描述性锚文本实现</strong>：<br>正文 &lt;a&gt; 标签内必须有描述性文字，href 为绝对 URL。下载链接和 API 链接在锚文本后附带 &lt;span&gt; 说明用途，不影响链接本身的语义.<br><strong>站外链接自动标识</strong>：<br>构建管道中检测 &lt;a href&gt; 是否跨域，跨域链接自动注入外部标识和 rel=&quot;noopener noreferrer&quot; 属性，同时添加 data-external=&quot;true&quot; 供切片管道识别.<br><strong>热区 &lt;area&gt; 标签补全</strong>：<br>每个 &lt;area&gt; 填写描述性 alt 和 title，href 为绝对 URL。<br><strong>在已有切片逻辑基础上，针对链接语义追加提取规则</strong>：<br>a.提取每个 &lt;a&gt; 的锚文本 + href，拼接为&quot;锚文本 → 绝对URL&quot;格式，纳入所在段落的 chunk;<br>b.站外链接（data-external=&quot;true&quot;）在 chunk 中标注来源域名;<br>c.热区链接从 figcaption 内的 &lt;a&gt; 提取，格式与正文链接一致;<br>d.裸 URL（无锚文本的 &lt;a&gt;）标记为低质量，降低索引权重。</td>

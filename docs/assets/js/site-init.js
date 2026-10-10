@@ -202,8 +202,7 @@
   function injectExtraNav() {
     var path = (location.pathname || "").split("/").pop() || "";
     var extras = [
-      { href: "data-analysis.html", label: "数据分析" },
-      { href: "principles-llms-parse-nvidia-path-sample.html", label: "材料准备" }
+      { href: "data-analysis.html", label: "数据分析" }
     ];
     document.querySelectorAll("nav.site-nav").forEach(function (nav) {
       extras.forEach(function (item) {

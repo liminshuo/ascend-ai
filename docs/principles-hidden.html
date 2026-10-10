@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>交互不藏关键正文 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
+  <title>关键正文不默认隐藏 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
   <link rel="stylesheet" href="assets/css/style.css">
 <style>
   .topbar {
@@ -359,11 +359,11 @@
     height: 100%;
   }
   .wanli-face-title {
-    margin: 0 0 16px;
+    margin: 0 0 20px;
     text-align: center;
-    font-size: 18px;
+    font-size: 24px;
     font-weight: 700;
-    line-height: 28px;
+    line-height: 32px;
     letter-spacing: -0.02em;
     color: #191919;
   }
@@ -396,35 +396,56 @@
   .wanli-face-panel { display: none; }
   .wanli-face-panel.is-on {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: repeat(4, 1fr);
     gap: 10px;
+  }
+  .wanli-face-panel.is-on.wanli-face-panel--3 {
+    grid-template-columns: repeat(3, 1fr);
   }
   .wanli-face-panel[hidden] { display: none !important; }
   .wanli-face-card {
-    min-height: 118px;
-    border-radius: 8px;
+    position: relative;
+    aspect-ratio: 696 / 920;
+    width: 100%;
+    border-radius: 12px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    padding: 0;
+    padding: 20px 18px 0;
     box-sizing: border-box;
-    background: #f2f2f2;
+    background: #f7f8fa;
+    border: 1px solid #ececec;
   }
-  .wanli-face-card::before {
-    content: "";
-    flex: 1 1 auto;
-    min-height: 64px;
-    background: linear-gradient(90deg, #ebebeb 0%, #f6f6f6 50%, #ebebeb 100%);
-    background-size: 200% 100%;
-  }
-  .wanli-face-card p {
+  .wanli-face-card-t {
+    position: relative;
+    z-index: 1;
     margin: 0;
-    padding: 8px 10px 10px;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 700;
+    color: #191919;
+  }
+  .wanli-face-card-d {
+    position: relative;
+    z-index: 1;
+    margin: 8px 0 0;
     font-size: 12px;
-    line-height: 18px;
-    font-weight: 500;
+    line-height: 20px;
+    font-weight: 400;
     color: #8c8c8c;
-    background: #f2f2f2;
+  }
+  .wanli-face-card-art {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    object-fit: cover;
+    object-position: center center;
+    pointer-events: none;
+    background: #f7f8fa;
   }
   .wanli-face-card p a {
     color: inherit;
@@ -433,10 +454,13 @@
   .wanli-face-card p a:hover {
     text-decoration: underline;
   }
+  @media (max-width: 900px) {
+    .wanli-face-panel.is-on,
+    .wanli-face-panel.is-on.wanli-face-panel--3 { grid-template-columns: 1fr 1fr; }
+  }
   @media (max-width: 700px) {
-    .wanli-face-panel.is-on { grid-template-columns: 1fr; }
-    .wanli-face-card { min-height: 88px; }
-    .wanli-face-card::before { min-height: 48px; }
+    .wanli-face-panel.is-on,
+    .wanli-face-panel.is-on.wanli-face-panel--3 { grid-template-columns: 1fr; }
   }
 
   .principle-example[id] {
@@ -1190,6 +1214,10 @@
   #practices .principle-example > .fn-h3-desc + h4.fn-h4 {
     margin-top: var(--space-stack, 16px);
   }
+  #practices .principle-example > h4.fn-h4 + .fn-h3-desc {
+    margin-top: 0;
+    margin-bottom: var(--space-stack, 16px);
+  }
   #practices .principle-example { margin: 0; }
   #practices .principle-example + .principle-example { margin-top: var(--space-stack, 16px); }
   #practices .principle-example > .ex-fold-panel + h4.fn-h4 {
@@ -1254,7 +1282,12 @@
   #benefits .bg-list li + li { margin-top: 16px; }
   #detail-principles ol.bg-list,
   #expected-effect ol.bg-list,
-  #notes ol.bg-list { list-style: decimal; }
+  #notes ol.bg-list {
+    list-style: decimal;
+    list-style-position: inside;
+    padding-left: 0;
+    margin-left: 0;
+  }
   #expected-effect .bg-list li strong,
   #notes .bg-list li strong,
   #benefits .bg-list li strong {
@@ -1401,6 +1434,115 @@
     border-radius: 8px;
     background: #fafafa;
   }
+  #practices .file-sample.file-sample--paper {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 0;
+    padding: 16px;
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  #practices .file-sample--paper .llms-sec {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 0;
+    padding: 6px 10px;
+    padding-right: 52px;
+    border-radius: 8px;
+  }
+  #practices .file-sample--paper .llms-sec--copy { background: rgba(14, 165, 233, 0.07); }
+  #practices .file-sample--paper .llms-sec--cta { background: rgba(52, 211, 153, 0.07); }
+  #practices .file-sample--paper .llms-sec--tip { background: rgba(37, 99, 235, 0.07); }
+  #practices .file-sample--paper .llms-sec--caution { background: rgba(217, 119, 6, 0.08); }
+  #practices .file-sample--paper .llms-mod {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    display: inline-flex;
+    align-items: center;
+    height: 20px;
+    padding: 0 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    line-height: 20px;
+    font-weight: 650;
+    color: #525252;
+    background: rgba(25, 25, 25, 0.08);
+  }
+  #practices .file-sample--paper .llms-sec--copy .llms-mod {
+    color: #0369a1;
+    background: rgba(14, 165, 233, 0.16);
+  }
+  #practices .file-sample--paper .llms-sec--cta .llms-mod {
+    color: #047857;
+    background: rgba(52, 211, 153, 0.16);
+  }
+  #practices .file-sample--paper .llms-sec--tip .llms-mod {
+    color: #1d4ed8;
+    background: rgba(37, 99, 235, 0.14);
+  }
+  #practices .file-sample--paper .llms-sec--caution .llms-mod {
+    color: #b45309;
+    background: rgba(217, 119, 6, 0.16);
+  }
+  #practices .file-sample--paper .hier-md-sec { margin: 0; }
+  #practices .file-sample--paper .hier-md-sec code {
+    display: block;
+    margin: 0;
+    padding: 0;
+    background: none;
+    color: #191919;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 400;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+  }
+  #practices .ex-fold-panel--pair-h .ex-card-pair {
+    align-items: stretch;
+  }
+  #practices .ex-fold-panel--pair-h .ex-card-pane {
+    align-self: stretch;
+  }
+  #practices .ex-fold-panel--pair-h .ex-card-pane > .file-sample {
+    flex: 1 1 auto;
+    min-height: 200px;
+    overflow: auto;
+    box-sizing: border-box;
+  }
+  #practices .ex-fold-panel--pair-h .ex-card-pane > .file-sample--compact,
+  #practices .ex-fold-panel--pair-h .ex-card-pane > .file-sample.file-sample--paper {
+    display: flex;
+    flex-direction: column;
+  }
+  #practices .ex-fold-panel--pair-h .ex-card-pane > .file-sample--compact pre {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
+    overflow: auto;
+  }
+  #practices .ex-fold-panel--pair-h .ex-card-pane > .file-sample.file-sample--paper {
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  #practices .ex-fold-panel--pair-h-tall .ex-card-pane > .file-sample {
+    flex: 1 0 480px;
+    height: 480px;
+    min-height: 480px;
+    max-height: 480px;
+  }
+  #practices .ex-fold-panel--pair-h-mid .ex-card-pane > .file-sample {
+    flex: 1 0 320px;
+    height: 320px;
+    min-height: 320px;
+    max-height: 320px;
+  }
   .ex-card-pane-head {
     display: flex;
     flex-direction: column;
@@ -1450,69 +1592,114 @@
 
   <main class="main-content">
     <div class="page-header">
-      <h1>交互不藏关键正文</h1>
+      <h1>关键正文不默认隐藏</h1>
     </div>
 
     <section class="section" id="mechanism">
-      <h2>交互概述</h2>
-      <p class="page-lead">Tab、折叠、悬停与蒙版用来控制页面显隐，方便人读切换。</p>
-      <p class="page-lead">Agent 只读默认态、首包 HTML。关键步骤、定义与命令须写在可读流里；禁止用 display:none、默认收起、悬停注入或模糊遮罩把正文从可读流拿掉。</p>
+      <h2>概述</h2>
+      <p class="page-lead">Tab、折叠、悬停提示和弹窗等交互形式可以优化页面布局与浏览体验，但关键正文可能因默认隐藏、依赖交互或动态加载而难以被 AI Agent 获取。</p>
+      <p class="page-lead">交互不藏关键正文原则旨在确保页面中的关键知识、定义、操作步骤和命令等内容能够被 AI Agent 直接读取，避免因默认隐藏、依赖交互或动态加载造成信息遗漏。</p>
     </section>
 
     <section class="section" id="detail-principles">
       <h2>具体原则</h2>
       <ol class="bg-list">
-        <li>关键步骤、定义与命令须在默认态、首包 HTML 中可读。</li>
-        <li>Tab / 折叠 / 悬停 / 蒙版只控制显隐，不能当唯一出处。</li>
-        <li>禁止用 display:none、默认收起、悬停注入或模糊遮罩把任务必需正文从可读流拿掉。</li>
-        <li>Markdown 与源码仍须写出全部栏目与卡片标题，界面可以保留切换。</li>
+        <li>关键正文应可直接读取。核心定义、操作步骤、技术参数和命令等内容应存在于可访问的 HTML 中，不应仅在交互触发后才生成或加载。</li>
+        <li>交互组件应保留完整内容。Tab、折叠面板等组件应确保各选项或面板中的正文可被获取，不应只暴露当前选中或展开的内容。</li>
+        <li>关键语义不应依赖悬停或隐藏提示。定义、限制条件等重要信息应有可直接读取的文本；悬停提示可用于补充说明，不应成为唯一的信息来源。</li>
+        <li>交互内容应与页面正文保持一致。切换、展开或加载内容时，应确保文本完整、语义清晰，并避免重复、遗漏或过期信息。</li>
       </ol>
     </section>
     <section class="section" id="practices">
-      <h2>交互不藏关键正文建议示例</h2>
+      <h2>典型示例</h2>
       <div class="principle-example" id="tab">
-        <h3 class="fn-h3">Tab · 各面板写入 Markdown 与源码</h3>
-        <p class="fn-h3-desc">界面可以用 Tab 切换；Markdown 与首包 HTML 仍须写出全部栏目与卡片标题。</p>
-        <h4 class="fn-h4">示例 1 · 首页资讯 Tab <a class="fn-h3-link" href="https://www.hiascend.com/zh" target="_blank" rel="noopener">查看示例来源</a></h4>
+        <h3 class="fn-h3">Tab 内容可获取</h3>
+        <p class="fn-h3-desc">Tab 可以控制内容的展示，但不应导致未选中面板中的关键正文无法获取。各面板应保留完整标题、正文和相关链接。</p>
+        <h4 class="fn-h4">示例 1 · 科研成果 Tab <a class="fn-h3-link" href="https://edu.hicomputing.huawei.com/researchers" target="_blank" rel="noopener">查看示例来源</a></h4>
 <div class="fn-ex-row" id="tab-expand-all">
           <div class="fn-ex">
             <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="昇腾首页资讯 Tab：最新发布 / 产业资讯 / 精彩活动 / 官方技术文章">
+              <div class="fn-ex-mock" aria-label="科研成果 Tab：计算系统平台 / 通用应用技术 / 科学行业应用">
                 <div class="wanli-face">
-                  <p class="wanli-face-title">昇腾万里，让智能无所不及</p>
-                  <div class="wanli-face-tabs" role="tablist" aria-label="资讯栏目">
-                    <button type="button" class="wanli-face-tab is-on" role="tab" aria-selected="true" aria-controls="wanli-p-latest" id="wanli-t-latest">最新发布</button>
-                    <button type="button" class="wanli-face-tab" role="tab" aria-selected="false" aria-controls="wanli-p-news" id="wanli-t-news">产业资讯</button>
-                    <button type="button" class="wanli-face-tab" role="tab" aria-selected="false" aria-controls="wanli-p-event" id="wanli-t-event">精彩活动</button>
-                    <button type="button" class="wanli-face-tab" role="tab" aria-selected="false" aria-controls="wanli-p-tech" id="wanli-t-tech">官方技术文章</button>
+                  <p class="wanli-face-title">了解与鲲鹏昇腾合作的科研成果</p>
+                  <div class="wanli-face-tabs" role="tablist" aria-label="科研成果分类">
+                    <button type="button" class="wanli-face-tab is-on" role="tab" aria-selected="true" aria-controls="wanli-p-compute" id="wanli-t-compute">计算系统平台</button>
+                    <button type="button" class="wanli-face-tab" role="tab" aria-selected="false" aria-controls="wanli-p-general" id="wanli-t-general">通用应用技术</button>
+                    <button type="button" class="wanli-face-tab" role="tab" aria-selected="false" aria-controls="wanli-p-industry" id="wanli-t-industry">科学/行业应用</button>
                   </div>
-                  <div class="wanli-face-panel is-on" id="wanli-p-latest" role="tabpanel" aria-labelledby="wanli-t-latest">
-                    <div class="wanli-face-card"><p><a href="https://www.hiascend.com/zh/activities/dynamic-news/775?id=775" target="_blank" rel="noopener">代码侦探挑战赛（第五期）开启</a></p></div>
-                    <div class="wanli-face-card"><p><a href="https://www.hiascend.com/zh/activities/dynamic-news/774?id=774" target="_blank" rel="noopener">昇腾“淬火行动”广州专场——破局昇腾落地最后一公里</a></p></div>
-                    <div class="wanli-face-card"><p><a href="https://www.hiascend.com/zh/activities/dynamic-news/773?id=773" target="_blank" rel="noopener">2026昇腾软件焕新体验：效率升级！昇腾资料4大新优化上线，一站式获取所需资料</a></p></div>
+                  <div class="wanli-face-panel is-on" id="wanli-p-compute" role="tabpanel" aria-labelledby="wanli-t-compute">
+                    <div class="wanli-face-card">
+                      <p class="wanli-face-card-t">计算机体系结构</p>
+                      <p class="wanli-face-card-d">从芯片到集群的全栈体系结构创新，构筑高效算力底座。</p>
+                      <img class="wanli-face-card-art" src="assets/researchers-cards/computing-Arch.png" alt="" width="696" height="920" loading="lazy" decoding="async">
+                    </div>
+                    <div class="wanli-face-card">
+                      <p class="wanli-face-card-t">模型/算法</p>
+                      <p class="wanli-face-card-d">面向鲲鹏昇腾的模型创新与算法研究，探索AI计算新边界。</p>
+                      <img class="wanli-face-card-art" src="assets/researchers-cards/computing-modelsAlgos.png" alt="" width="696" height="920" loading="lazy" decoding="async">
+                    </div>
+                    <div class="wanli-face-card">
+                      <p class="wanli-face-card-t">训推加速</p>
+                      <p class="wanli-face-card-d">全流程训推加速/优化技术，让AI模型训练推理更高效。</p>
+                      <img class="wanli-face-card-art" src="assets/researchers-cards/computing-fastTraining.png" alt="" width="696" height="920" loading="lazy" decoding="async">
+                    </div>
+                    <div class="wanli-face-card">
+                      <p class="wanli-face-card-t">算子/加速库</p>
+                      <p class="wanli-face-card-d">底层算子与加速库深度优化，释放硬件极致性能。</p>
+                      <img class="wanli-face-card-art" src="assets/researchers-cards/computing-kernelLib.png" alt="" width="696" height="920" loading="lazy" decoding="async">
+                    </div>
                   </div>
-                  <div class="wanli-face-panel" id="wanli-p-news" role="tabpanel" aria-labelledby="wanli-t-news" hidden>
-                    <div class="wanli-face-card"><p><a href="https://mp.weixin.qq.com/s/UE1xxWeHRuEmUP6gkm7N4A" target="_blank" rel="noopener">淬火至蓉城 · 昇腾「淬火行动」成都专场圆满收官</a></p></div>
-                    <div class="wanli-face-card"><p><a href="https://www.hiascend.com/zh/activities/dynamic-news/743?id=743" target="_blank" rel="noopener">昇腾950超节点斩获2026世界人工智能大会SAIL最高奖</a></p></div>
-                    <div class="wanli-face-card"><p><a href="https://www.hiascend.com/zh/activities/dynamic-news/742?id=742" target="_blank" rel="noopener">昇腾950超节点真机亮相2026世界人工智能大会</a></p></div>
+                  <div class="wanli-face-panel" id="wanli-p-general" role="tabpanel" aria-labelledby="wanli-t-general" hidden>
+                    <div class="wanli-face-card">
+                      <p class="wanli-face-card-t">通用智能体</p>
+                      <p class="wanli-face-card-d">具备自主感知、规划与决策能力的通用智能实体，拓展AI应用边界。</p>
+                      <img class="wanli-face-card-art" src="assets/researchers-cards/general-agents.png" alt="" width="696" height="920" loading="lazy" decoding="async">
+                    </div>
+                    <div class="wanli-face-card">
+                      <p class="wanli-face-card-t">推荐/检索技术</p>
+                      <p class="wanli-face-card-d">智能推荐与向量检索技术，实现精准高效的信息匹配。</p>
+                      <img class="wanli-face-card-art" src="assets/researchers-cards/general-recSearch.png" alt="" width="696" height="920" loading="lazy" decoding="async">
+                    </div>
+                    <div class="wanli-face-card">
+                      <p class="wanli-face-card-t">生成式AI</p>
+                      <p class="wanli-face-card-d">文本、图像、语音、代码生成，赋能内容创作与人机交互创新。</p>
+                      <img class="wanli-face-card-art" src="assets/researchers-cards/general-genAi.png" alt="" width="696" height="920" loading="lazy" decoding="async">
+                    </div>
+                    <div class="wanli-face-card">
+                      <p class="wanli-face-card-t">具身智能</p>
+                      <p class="wanli-face-card-d">智能体与物理环境交互的感知决策技术，赋能机器人及自主系统。</p>
+                      <img class="wanli-face-card-art" src="assets/researchers-cards/general-embodiedAi.png" alt="" width="696" height="920" loading="lazy" decoding="async">
+                    </div>
                   </div>
-                  <div class="wanli-face-panel" id="wanli-p-event" role="tabpanel" aria-labelledby="wanli-t-event" hidden>
-                    <div class="wanli-face-card"><p><a href="https://www.hiascend.com/ascend-2026KADC?utm_campaign=com&amp;utm_source=kadcab" target="_blank" rel="noopener">鲲鹏昇腾开发者大会2026</a></p></div>
-                    <div class="wanli-face-card"><p><a href="https://www.hiascend.com/developer/activities/cann20252" target="_blank" rel="noopener">2025昇腾CANN训练营</a></p></div>
-                    <div class="wanli-face-card"><p><a href="https://www.hiascend.com/developer/AAIC2026" target="_blank" rel="noopener">昇腾AI创新大赛2026</a></p></div>
-                  </div>
-                  <div class="wanli-face-panel" id="wanli-p-tech" role="tabpanel" aria-labelledby="wanli-t-tech" hidden>
-                    <div class="wanli-face-card"><p>vLLM 流式 Function Call 工具调用内容缺失问题排查与解决</p></div>
-                    <div class="wanli-face-card"><p>Atlas 800I A2 物理机场景下算力切分导致业务拉起失败</p></div>
-                    <div class="wanli-face-card"><p>Atlas 200T A2 Box16 多机推理部署中 MindIE 启动失败</p></div>
+                  <div class="wanli-face-panel" id="wanli-p-industry" role="tabpanel" aria-labelledby="wanli-t-industry" hidden>
+                    <div class="wanli-face-card">
+                      <p class="wanli-face-card-t">工业智能</p>
+                      <p class="wanli-face-card-d">工业仿真、智能运维与优化决策，加速工业数字化升级。</p>
+                      <img class="wanli-face-card-art" src="assets/researchers-cards/industry-sim.png" alt="" width="696" height="920" loading="lazy" decoding="async">
+                    </div>
+                    <div class="wanli-face-card">
+                      <p class="wanli-face-card-t">物质科学</p>
+                      <p class="wanli-face-card-d">物质模拟与材料设计，探索材料与分子的微观奥秘。</p>
+                      <img class="wanli-face-card-art" src="assets/researchers-cards/industry-physicalSci.png" alt="" width="696" height="920" loading="lazy" decoding="async">
+                    </div>
+                    <div class="wanli-face-card">
+                      <p class="wanli-face-card-t">生命科学</p>
+                      <p class="wanli-face-card-d">生命系统与健康技术研究，助力基因、蛋白与药物等方向的探索。</p>
+                      <img class="wanli-face-card-art" src="assets/researchers-cards/industry-lifeSci.png" alt="" width="696" height="920" loading="lazy" decoding="async">
+                    </div>
+                    <div class="wanli-face-card">
+                      <p class="wanli-face-card-t">地球科学</p>
+                      <p class="wanli-face-card-d">地球系统模拟与预测，探索大气、海洋、地质的演化规律。</p>
+                      <img class="wanli-face-card-art" src="assets/researchers-cards/industry-earthSci.png" alt="" width="696" height="920" loading="lazy" decoding="async">
+                    </div>
                   </div>
                 </div>
               </div>
               <div class="fn-ex-foot">
                     <ul class="fn-ex-list">
       <li><strong>正确做法：</strong></li>
-      <li>1. Markdown 各栏目空一行，卡片写成带 URL 的链接</li>
-      <li>2. 源码首包保留全部面板与 href，激活态只改样式</li>
+      <li>1. 各 Tab 面板正文均可获取，不仅限于当前选中项</li>
+      <li>2. 标题、摘要与链接随面板一并保留</li>
     </ul>
               </div>
             </div>
@@ -1522,13 +1709,13 @@
         <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="tab-ex1-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
         <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="tab-ex1-html" aria-label="前端源码调整"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
       </div>
-      <div class="ex-fold-panel" id="tab-ex1-md" hidden>
+      <div class="ex-fold-panel ex-fold-panel--pair-h ex-fold-panel--pair-h-tall" id="tab-ex1-md" hidden>
         <div class="ex-card-pair">
     <p class="ex-card-title">Markdown 书写</p>
     <div class="ex-fold-intro">
       <ul class="fn-ex-list">
-        <li>1. 各栏目用标题分开，栏目之间空一行</li>
-        <li>2. 卡片写成带 URL 的链接，不要只写当前面板标题</li>
+        <li>1. 总题与各条目标题写成带 URL 的链接</li>
+        <li>2. 三个 Tab 的标题与说明都要写出，不要只写当前面板</li>
       </ul>
     </div>
     <div class="ex-card-pane">
@@ -1537,11 +1724,12 @@
         <div class="fn-ex-bar" aria-hidden="true"></div>
       </div>
       <figure class="file-sample file-sample--compact">
-        <pre><code class="language-markdown"><span class="code-line-hl is-bad">## 最新发布
-- 代码侦探挑战赛（第五期）开启
-- 昇腾“淬火行动”广州专场——破局昇腾落地最后一公里
-- 2026昇腾软件焕新体验：效率升级！昇腾资料4大新优化上线</span>
-<!-- 无链接，其余栏目未写出 --></code></pre>
+        <pre><code class="language-markdown"><span class="code-line-hl is-bad">## 计算系统平台
+- 计算机体系结构
+- 模型/算法
+- 训推加速
+- 算子/加速库</span>
+<!-- 其余 Tab 与链接未写出 --></code></pre>
       </figure>
     </div>
     <div class="ex-card-pane">
@@ -1549,36 +1737,45 @@
         <span class="fn-ex-label is-good">正面</span>
         <div class="fn-ex-bar is-good" aria-hidden="true"></div>
       </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-markdown">## 最新发布
-- [代码侦探挑战赛（第五期）开启](https://www.hiascend.com/zh/activities/dynamic-news/775?id=775)
-- [昇腾“淬火行动”广州专场——破局昇腾落地最后一公里](https://www.hiascend.com/zh/activities/dynamic-news/774?id=774)
-- [2026昇腾软件焕新体验：效率升级！昇腾资料4大新优化上线](https://www.hiascend.com/zh/activities/dynamic-news/773?id=773)
-
-<span class="code-line-hl is-good">## 产业资讯
-- [淬火至蓉城 · 昇腾「淬火行动」成都专场圆满收官](https://mp.weixin.qq.com/s/UE1xxWeHRuEmUP6gkm7N4A)
-- [昇腾950超节点斩获2026世界人工智能大会SAIL最高奖](https://www.hiascend.com/zh/activities/dynamic-news/743?id=743)
-- [昇腾950超节点真机亮相2026世界人工智能大会](https://www.hiascend.com/zh/activities/dynamic-news/742?id=742)
-
-## 精彩活动
-- [鲲鹏昇腾开发者大会2026](https://www.hiascend.com/ascend-2026KADC?utm_campaign=com&amp;utm_source=kadcab)
-- [2025昇腾CANN训练营](https://www.hiascend.com/developer/activities/cann20252)
-- [昇腾AI创新大赛2026](https://www.hiascend.com/developer/AAIC2026)
-
-## 官方技术文章
-- vLLM 流式 Function Call 工具调用内容缺失问题排查与解决
-- Atlas 800I A2 物理机场景下算力切分导致业务拉起失败
-- Atlas 200T A2 Box16 多机推理部署中 MindIE 启动失败</span></code></pre>
+      <figure class="file-sample hier-md file-sample--paper" aria-label="科研成果 Tab Markdown">
+        <div class="llms-sec llms-sec--copy">
+          <span class="llms-mod">总题</span>
+          <div class="hier-md-sec"><code># [了解与鲲鹏昇腾合作的科研成果](https://edu.hicomputing.huawei.com/researchers)</code></div>
+        </div>
+        <div class="llms-sec llms-sec--cta">
+          <span class="llms-mod">计算系统平台</span>
+          <div class="hier-md-sec"><code>## 计算系统平台
+- [计算机体系结构](https://edu.hicomputing.huawei.com/researchers)：从芯片到集群的全栈体系结构创新，构筑高效算力底座。
+- [模型/算法](https://edu.hicomputing.huawei.com/researchers)：面向鲲鹏昇腾的模型创新与算法研究，探索AI计算新边界。
+- [训推加速](https://edu.hicomputing.huawei.com/researchers)：全流程训推加速/优化技术，让AI模型训练推理更高效。
+- [算子/加速库](https://edu.hicomputing.huawei.com/researchers)：底层算子与加速库深度优化，释放硬件极致性能。</code></div>
+        </div>
+        <div class="llms-sec llms-sec--tip">
+          <span class="llms-mod">通用应用技术</span>
+          <div class="hier-md-sec"><code>## 通用应用技术
+- [通用智能体](https://edu.hicomputing.huawei.com/researchers)：具备自主感知、规划与决策能力的通用智能实体，拓展AI应用边界。
+- [推荐/检索技术](https://edu.hicomputing.huawei.com/researchers)：智能推荐与向量检索技术，实现精准高效的信息匹配。
+- [生成式AI](https://edu.hicomputing.huawei.com/researchers)：文本、图像、语音、代码生成，赋能内容创作与人机交互创新。
+- [具身智能](https://edu.hicomputing.huawei.com/researchers)：智能体与物理环境交互的感知决策技术，赋能机器人及自主系统。</code></div>
+        </div>
+        <div class="llms-sec llms-sec--caution">
+          <span class="llms-mod">科学/行业应用</span>
+          <div class="hier-md-sec"><code>## 科学/行业应用
+- [工业智能](https://edu.hicomputing.huawei.com/researchers)：工业仿真、智能运维与优化决策，加速工业数字化升级。
+- [物质科学](https://edu.hicomputing.huawei.com/researchers)：物质模拟与材料设计，探索材料与分子的微观奥秘。
+- [生命科学](https://edu.hicomputing.huawei.com/researchers)：生命系统与健康技术研究，助力基因、蛋白与药物等方向的探索。
+- [地球科学](https://edu.hicomputing.huawei.com/researchers)：地球系统模拟与预测，探索大气、海洋、地质的演化规律。</code></div>
+        </div>
       </figure>
     </div>
         </div>
       </div>
-      <div class="ex-fold-panel" id="tab-ex1-html" hidden>
+      <div class="ex-fold-panel ex-fold-panel--pair-h ex-fold-panel--pair-h-tall" id="tab-ex1-html" hidden>
         <div class="ex-card-pair">
     <p class="ex-card-title">前端源码调整</p>
     <div class="ex-fold-intro">
       <ul class="fn-ex-list">
-        <li>1. 首包输出全部面板，卡片写成 a href</li>
+        <li>1. 全部面板正文保留在可访问结构中，标题写成 <code>a href</code></li>
         <li>2. 激活态只改样式，不删节点、不丢链接</li>
       </ul>
     </div>
@@ -1588,7 +1785,12 @@
         <div class="fn-ex-bar" aria-hidden="true"></div>
       </div>
       <figure class="file-sample file-sample--compact">
-        <pre><code class="language-html"><span class="code-line-hl is-bad">&lt;div class="tab-panel hidden"&gt;产业资讯&lt;/div&gt;</span></code></pre>
+        <pre><code class="language-html"><span class="code-line-hl is-bad">&lt;div class="tab-panel" data-active="true"&gt;
+  &lt;h3&gt;计算机体系结构&lt;/h3&gt;
+  &lt;p&gt;从芯片到集群的全栈体系结构创新…&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="tab-panel hidden"&gt;通用应用技术&lt;/div&gt;</span>
+<!-- 未选中面板正文被移除 --></code></pre>
       </figure>
     </div>
     <div class="ex-card-pane">
@@ -1596,35 +1798,61 @@
         <span class="fn-ex-label is-good">正面</span>
         <div class="fn-ex-bar is-good" aria-hidden="true"></div>
       </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-html">&lt;div class="tab-panel" data-active="true"&gt;
-  &lt;a href="https://www.hiascend.com/zh/activities/dynamic-news/775?id=775"&gt;代码侦探挑战赛（第五期）开启&lt;/a&gt;
-  &lt;a href="https://www.hiascend.com/zh/activities/dynamic-news/774?id=774"&gt;昇腾“淬火行动”广州专场——破局昇腾落地最后一公里&lt;/a&gt;
-  &lt;a href="https://www.hiascend.com/zh/activities/dynamic-news/773?id=773"&gt;2026昇腾软件焕新体验：效率升级！昇腾资料4大新优化上线&lt;/a&gt;
-&lt;/div&gt;
-<span class="code-line-hl is-good">&lt;div class="tab-panel"&gt;
-  &lt;a href="https://mp.weixin.qq.com/s/UE1xxWeHRuEmUP6gkm7N4A"&gt;淬火至蓉城 · 昇腾「淬火行动」成都专场圆满收官&lt;/a&gt;
-  &lt;a href="https://www.hiascend.com/zh/activities/dynamic-news/743?id=743"&gt;昇腾950超节点斩获2026世界人工智能大会SAIL最高奖&lt;/a&gt;
-  &lt;a href="https://www.hiascend.com/zh/activities/dynamic-news/742?id=742"&gt;昇腾950超节点真机亮相2026世界人工智能大会&lt;/a&gt;
-&lt;/div&gt;
-&lt;div class="tab-panel"&gt;
-  &lt;a href="https://www.hiascend.com/ascend-2026KADC?utm_campaign=com&amp;utm_source=kadcab"&gt;鲲鹏昇腾开发者大会2026&lt;/a&gt;
-  &lt;a href="https://www.hiascend.com/developer/activities/cann20252"&gt;2025昇腾CANN训练营&lt;/a&gt;
-  &lt;a href="https://www.hiascend.com/developer/AAIC2026"&gt;昇腾AI创新大赛2026&lt;/a&gt;
-&lt;/div&gt;
-&lt;div class="tab-panel"&gt;
-  &lt;p&gt;vLLM 流式 Function Call 工具调用内容缺失问题排查与解决&lt;/p&gt;
-  &lt;p&gt;Atlas 800I A2 物理机场景下算力切分导致业务拉起失败&lt;/p&gt;
-  &lt;p&gt;Atlas 200T A2 Box16 多机推理部署中 MindIE 启动失败&lt;/p&gt;
-&lt;/div&gt;</span></code></pre>
+      <figure class="file-sample hier-md file-sample--paper" aria-label="科研成果 Tab HTML">
+        <div class="llms-sec llms-sec--copy">
+          <span class="llms-mod">总题</span>
+          <div class="hier-md-sec"><code>&lt;h1&gt;&lt;a href="https://edu.hicomputing.huawei.com/researchers"&gt;了解与鲲鹏昇腾合作的科研成果&lt;/a&gt;&lt;/h1&gt;</code></div>
+        </div>
+        <div class="llms-sec llms-sec--cta">
+          <span class="llms-mod">计算系统平台</span>
+          <div class="hier-md-sec"><code>&lt;section class="tab-panel" data-active="true"&gt;
+  &lt;h2&gt;计算系统平台&lt;/h2&gt;
+  &lt;h3&gt;&lt;a href="https://edu.hicomputing.huawei.com/researchers"&gt;计算机体系结构&lt;/a&gt;&lt;/h3&gt;
+  &lt;p&gt;从芯片到集群的全栈体系结构创新，构筑高效算力底座。&lt;/p&gt;
+  &lt;h3&gt;&lt;a href="https://edu.hicomputing.huawei.com/researchers"&gt;模型/算法&lt;/a&gt;&lt;/h3&gt;
+  &lt;p&gt;面向鲲鹏昇腾的模型创新与算法研究，探索AI计算新边界。&lt;/p&gt;
+  &lt;h3&gt;&lt;a href="https://edu.hicomputing.huawei.com/researchers"&gt;训推加速&lt;/a&gt;&lt;/h3&gt;
+  &lt;p&gt;全流程训推加速/优化技术，让AI模型训练推理更高效。&lt;/p&gt;
+  &lt;h3&gt;&lt;a href="https://edu.hicomputing.huawei.com/researchers"&gt;算子/加速库&lt;/a&gt;&lt;/h3&gt;
+  &lt;p&gt;底层算子与加速库深度优化，释放硬件极致性能。&lt;/p&gt;
+&lt;/section&gt;</code></div>
+        </div>
+        <div class="llms-sec llms-sec--tip">
+          <span class="llms-mod">通用应用技术</span>
+          <div class="hier-md-sec"><code>&lt;section class="tab-panel"&gt;
+  &lt;h2&gt;通用应用技术&lt;/h2&gt;
+  &lt;h3&gt;&lt;a href="https://edu.hicomputing.huawei.com/researchers"&gt;通用智能体&lt;/a&gt;&lt;/h3&gt;
+  &lt;p&gt;具备自主感知、规划与决策能力的通用智能实体，拓展AI应用边界。&lt;/p&gt;
+  &lt;h3&gt;&lt;a href="https://edu.hicomputing.huawei.com/researchers"&gt;推荐/检索技术&lt;/a&gt;&lt;/h3&gt;
+  &lt;p&gt;智能推荐与向量检索技术，实现精准高效的信息匹配。&lt;/p&gt;
+  &lt;h3&gt;&lt;a href="https://edu.hicomputing.huawei.com/researchers"&gt;生成式AI&lt;/a&gt;&lt;/h3&gt;
+  &lt;p&gt;文本、图像、语音、代码生成，赋能内容创作与人机交互创新。&lt;/p&gt;
+  &lt;h3&gt;&lt;a href="https://edu.hicomputing.huawei.com/researchers"&gt;具身智能&lt;/a&gt;&lt;/h3&gt;
+  &lt;p&gt;智能体与物理环境交互的感知决策技术，赋能机器人及自主系统。&lt;/p&gt;
+&lt;/section&gt;</code></div>
+        </div>
+        <div class="llms-sec llms-sec--caution">
+          <span class="llms-mod">科学/行业应用</span>
+          <div class="hier-md-sec"><code>&lt;section class="tab-panel"&gt;
+  &lt;h2&gt;科学/行业应用&lt;/h2&gt;
+  &lt;h3&gt;&lt;a href="https://edu.hicomputing.huawei.com/researchers"&gt;工业智能&lt;/a&gt;&lt;/h3&gt;
+  &lt;p&gt;工业仿真、智能运维与优化决策，加速工业数字化升级。&lt;/p&gt;
+  &lt;h3&gt;&lt;a href="https://edu.hicomputing.huawei.com/researchers"&gt;物质科学&lt;/a&gt;&lt;/h3&gt;
+  &lt;p&gt;物质模拟与材料设计，探索材料与分子的微观奥秘。&lt;/p&gt;
+  &lt;h3&gt;&lt;a href="https://edu.hicomputing.huawei.com/researchers"&gt;生命科学&lt;/a&gt;&lt;/h3&gt;
+  &lt;p&gt;生命系统与健康技术研究，助力基因、蛋白与药物等方向的探索。&lt;/p&gt;
+  &lt;h3&gt;&lt;a href="https://edu.hicomputing.huawei.com/researchers"&gt;地球科学&lt;/a&gt;&lt;/h3&gt;
+  &lt;p&gt;地球系统模拟与预测，探索大气、海洋、地质的演化规律。&lt;/p&gt;
+&lt;/section&gt;</code></div>
+        </div>
       </figure>
     </div>
         </div>
       </div>
       </div>
       <div class="principle-example" id="collapse">
-        <h3 class="fn-h3">折叠 · 条目写入稿面与源码</h3>
-        <p class="fn-h3-desc">界面可以只展开一项；Markdown 与首包 HTML 仍须写出全部条目标题、摘要与链接。</p>
+        <h3 class="fn-h3">折叠内容可读取</h3>
+        <p class="fn-h3-desc">折叠可以减少页面占用，但折叠面板中的关键正文仍应可获取；标题应明确表达面板主题，避免仅使用「更多」「详情」等模糊名称。</p>
         <h4 class="fn-h4">示例 2 · CANN 实践折叠 <a class="fn-h3-link" href="https://www.hiascend.com/cann" target="_blank" rel="noopener">查看示例来源</a></h4>
 <div class="fn-ex-row" id="collapse-sidebar-expand">
           <div class="fn-ex">
@@ -1660,8 +1888,8 @@
               <div class="fn-ex-foot">
                     <ul class="fn-ex-list">
       <li><strong>正确做法：</strong></li>
-      <li>1. Markdown 写出全部条目标题、摘要与链接</li>
-      <li>2. 源码首包保留全部条目，折叠只改显隐</li>
+      <li>1. 折叠态仍可获取面板正文</li>
+      <li>2. 标题写清主题，不用模糊名称</li>
     </ul>
               </div>
             </div>
@@ -1671,7 +1899,7 @@
         <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="col-ex1-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
         <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="col-ex1-html" aria-label="前端源码调整"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
       </div>
-      <div class="ex-fold-panel" id="col-ex1-md" hidden>
+      <div class="ex-fold-panel ex-fold-panel--pair-h ex-fold-panel--pair-h-mid" id="col-ex1-md" hidden>
         <div class="ex-card-pair">
     <p class="ex-card-title">Markdown 书写</p>
     <div class="ex-fold-intro">
@@ -1696,22 +1924,31 @@
         <span class="fn-ex-label is-good">正面</span>
         <div class="fn-ex-bar is-good" aria-hidden="true"></div>
       </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-markdown">## CANN 实践
-
-- [DeepSeek-V3.2-Exp支持0day推理部署](https://gitcode.com/cann/cann-recipes-infer/blob/master/docs/models/deepseek-v3.2-exp/deepseek_v3.2_exp_inference_guide.md)
-  基于Transformers库，设计亲和部署策略，结合NPU融合Kernel与多流并行优化，提升推理吞吐
-
-<span class="code-line-hl is-good">- [DeepSeek-R1 RL训练优化实践](https://gitcode.com/cann/cann-recipes-train/blob/master/docs/llm_rl/deepseek_rl_train_optimization.md)
-  基于verl框架，在Atlas A3实现GRPO算法的高吞吐RL训练，系统吞吐达到120+ TPS/卡
-
-- [HunyuanVideo模型推理优化实践](https://gitcode.com/cann/cann-recipes-infer/blob/master/docs/models/hunyuan-video/hunyuan_video_optimization.md)
-  基于xDiT框架，结合Ulysses与RingAttention序列并行及TeaCache加速，实现高吞吐推理</span></code></pre>
+      <figure class="file-sample hier-md file-sample--paper" aria-label="CANN 实践 Markdown">
+        <div class="llms-sec llms-sec--copy">
+          <span class="llms-mod">总题</span>
+          <div class="hier-md-sec"><code>## CANN 实践</code></div>
+        </div>
+        <div class="llms-sec llms-sec--cta">
+          <span class="llms-mod">V3.2-Exp</span>
+          <div class="hier-md-sec"><code>- [DeepSeek-V3.2-Exp支持0day推理部署](https://gitcode.com/cann/cann-recipes-infer/blob/master/docs/models/deepseek-v3.2-exp/deepseek_v3.2_exp_inference_guide.md)
+  基于Transformers库，设计亲和部署策略，结合NPU融合Kernel与多流并行优化，提升推理吞吐</code></div>
+        </div>
+        <div class="llms-sec llms-sec--tip">
+          <span class="llms-mod">DeepSeek-R1</span>
+          <div class="hier-md-sec"><code>- [DeepSeek-R1 RL训练优化实践](https://gitcode.com/cann/cann-recipes-train/blob/master/docs/llm_rl/deepseek_rl_train_optimization.md)
+  基于verl框架，在Atlas A3实现GRPO算法的高吞吐RL训练，系统吞吐达到120+ TPS/卡</code></div>
+        </div>
+        <div class="llms-sec llms-sec--caution">
+          <span class="llms-mod">HunyuanVideo</span>
+          <div class="hier-md-sec"><code>- [HunyuanVideo模型推理优化实践](https://gitcode.com/cann/cann-recipes-infer/blob/master/docs/models/hunyuan-video/hunyuan_video_optimization.md)
+  基于xDiT框架，结合Ulysses与RingAttention序列并行及TeaCache加速，实现高吞吐推理</code></div>
+        </div>
       </figure>
     </div>
         </div>
       </div>
-      <div class="ex-fold-panel" id="col-ex1-html" hidden>
+      <div class="ex-fold-panel ex-fold-panel--pair-h ex-fold-panel--pair-h-mid" id="col-ex1-html" hidden>
         <div class="ex-card-pair">
     <p class="ex-card-title">前端源码调整</p>
     <div class="ex-fold-intro">
@@ -1734,26 +1971,36 @@
         <span class="fn-ex-label is-good">正面</span>
         <div class="fn-ex-bar is-good" aria-hidden="true"></div>
       </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-html">&lt;details open&gt;
+      <figure class="file-sample hier-md file-sample--paper" aria-label="CANN 实践 HTML">
+        <div class="llms-sec llms-sec--cta">
+          <span class="llms-mod">V3.2-Exp</span>
+          <div class="hier-md-sec"><code>&lt;details open&gt;
   &lt;summary&gt;&lt;a href="https://gitcode.com/cann/cann-recipes-infer/blob/master/docs/models/deepseek-v3.2-exp/deepseek_v3.2_exp_inference_guide.md"&gt;DeepSeek-V3.2-Exp支持0day推理部署&lt;/a&gt;&lt;/summary&gt;
-  &lt;p&gt;基于Transformers库，设计亲和部署策略…&lt;/p&gt;
-&lt;/details&gt;
-<span class="code-line-hl is-good">&lt;details&gt;
+  &lt;p&gt;基于Transformers库，设计亲和部署策略，结合NPU融合Kernel与多流并行优化，提升推理吞吐&lt;/p&gt;
+&lt;/details&gt;</code></div>
+        </div>
+        <div class="llms-sec llms-sec--tip">
+          <span class="llms-mod">DeepSeek-R1</span>
+          <div class="hier-md-sec"><code>&lt;details&gt;
   &lt;summary&gt;&lt;a href="https://gitcode.com/cann/cann-recipes-train/blob/master/docs/llm_rl/deepseek_rl_train_optimization.md"&gt;DeepSeek-R1 RL训练优化实践&lt;/a&gt;&lt;/summary&gt;
   &lt;p&gt;基于verl框架，在Atlas A3实现GRPO算法的高吞吐RL训练，系统吞吐达到120+ TPS/卡&lt;/p&gt;
-&lt;/details&gt;
-&lt;details&gt;
+&lt;/details&gt;</code></div>
+        </div>
+        <div class="llms-sec llms-sec--caution">
+          <span class="llms-mod">HunyuanVideo</span>
+          <div class="hier-md-sec"><code>&lt;details&gt;
   &lt;summary&gt;&lt;a href="https://gitcode.com/cann/cann-recipes-infer/blob/master/docs/models/hunyuan-video/hunyuan_video_optimization.md"&gt;HunyuanVideo模型推理优化实践&lt;/a&gt;&lt;/summary&gt;
   &lt;p&gt;基于xDiT框架，结合Ulysses与RingAttention序列并行及TeaCache加速，实现高吞吐推理&lt;/p&gt;
-&lt;/details&gt;</span></code></pre>
+&lt;/details&gt;</code></div>
+        </div>
       </figure>
     </div>
         </div>
       </div>
       </div>
       <div class="principle-example" id="hover">
-        <h3 class="fn-h3">悬停 · 定义写在稿面</h3>
+        <h3 class="fn-h3">定义不依赖悬停</h3>
+        <p class="fn-h3-desc">关键术语的定义应以可直接读取的文本呈现。悬停提示可以补充说明，但不应成为获取定义的唯一方式。</p>
         <h4 class="fn-h4">示例 3 · 术语定义</h4>
 <div class="fn-ex-row" id="hover-def-body">
           <div class="fn-ex">
@@ -1793,8 +2040,8 @@
               <div class="fn-ex-foot">
                     <ul class="fn-ex-list">
       <li><strong>正确做法：</strong></li>
-      <li>1. 定义写在词条下方或旁注</li>
-      <li>2. Hover 只作补充</li>
+      <li>1. 定义以正文直接呈现</li>
+      <li>2. 悬停只作补充，不作唯一出处</li>
     </ul>
               </div>
             </div>
@@ -1804,7 +2051,7 @@
         <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="hov-ex1-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
         <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="hov-ex1-html" aria-label="前端源码调整"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
       </div>
-      <div class="ex-fold-panel" id="hov-ex1-md" hidden>
+      <div class="ex-fold-panel ex-fold-panel--pair-h" id="hov-ex1-md" hidden>
         <div class="ex-card-pair">
     <p class="ex-card-title">Markdown 书写</p>
     <div class="ex-fold-intro">
@@ -1828,21 +2075,26 @@
         <span class="fn-ex-label is-good">正面</span>
         <div class="fn-ex-bar is-good" aria-hidden="true"></div>
       </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-markdown">请先完成 CANN 再继续。
-
-<span class="code-line-hl is-good">CANN：昇腾异构计算架构，提供驱动、编译与运行时。</span></code></pre>
+      <figure class="file-sample hier-md file-sample--paper" aria-label="术语定义 Markdown">
+        <div class="llms-sec llms-sec--copy">
+          <span class="llms-mod">正文</span>
+          <div class="hier-md-sec"><code>请先完成 CANN 再继续。</code></div>
+        </div>
+        <div class="llms-sec llms-sec--cta">
+          <span class="llms-mod">定义句</span>
+          <div class="hier-md-sec"><code>CANN：昇腾异构计算架构，提供驱动、编译与运行时。</code></div>
+        </div>
       </figure>
     </div>
         </div>
       </div>
-      <div class="ex-fold-panel" id="hov-ex1-html" hidden>
+      <div class="ex-fold-panel ex-fold-panel--pair-h" id="hov-ex1-html" hidden>
         <div class="ex-card-pair">
     <p class="ex-card-title">前端源码调整</p>
     <div class="ex-fold-intro">
       <ul class="fn-ex-list">
-        <li>1. 定义随首包输出</li>
-        <li>2. tip 只切换显隐</li>
+        <li>1. 定义以可读文本输出</li>
+        <li>2. tip 只切换显隐，不作唯一出处</li>
       </ul>
     </div>
     <div class="ex-card-pane">
@@ -1859,130 +2111,24 @@
         <span class="fn-ex-label is-good">正面</span>
         <div class="fn-ex-bar is-good" aria-hidden="true"></div>
       </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-html">&lt;p&gt;请先完成 CANN 再继续。&lt;/p&gt;
-<span class="code-line-hl is-good">&lt;p&gt;CANN：昇腾异构计算架构，提供驱动、编译与运行时。&lt;/p&gt;</span></code></pre>
-      </figure>
-    </div>
+      <figure class="file-sample hier-md file-sample--paper" aria-label="术语定义 HTML">
+        <div class="llms-sec llms-sec--copy">
+          <span class="llms-mod">正文</span>
+          <div class="hier-md-sec"><code>&lt;p&gt;请先完成 CANN 再继续。&lt;/p&gt;</code></div>
         </div>
-      </div>
-        <h4 class="fn-h4">示例 4 · 状态说明</h4>
-<div class="fn-ex-row" id="hover-status-label">
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label">反面</span>
-              <div class="fn-ex-bar" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="反面：状态只在悬停 tip">
-                <div class="vis-card">
-                  <p class="vis-kicker">设备状态</p>
-                  <p class="vis-status-row">
-                    <span class="vis-status-dot is-warn" aria-hidden="true"></span>
-                    <span class="vis-term vis-tip is-force">NPU<span class="vis-tip-bubble">驱动未匹配，需升级至配套版本。</span></span>
-                  </p>
-                </div>
-              </div>
-              <div class="fn-ex-foot">
-                    <ul class="fn-ex-list">
-      <li><strong>常见疏漏：</strong></li>
-      <li>1. 只靠色点 + 悬停 tip</li>
-      <li>2. 未悬停时读不到「驱动未匹配」</li>
-    </ul>
-              </div>
-            </div>
-          </div>
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label is-good">正面</span>
-              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="正面：稿面写明状态">
-                <div class="vis-card">
-                  <p class="vis-kicker">设备状态</p>
-                  <p class="vis-status-row">
-                    <span class="vis-status-dot is-warn" aria-hidden="true"></span>
-                    <span>NPU：驱动未匹配，需升级至配套版本</span>
-                  </p>
-                </div>
-              </div>
-              <div class="fn-ex-foot">
-                    <ul class="fn-ex-list">
-      <li><strong>正确做法：</strong></li>
-      <li>1. 状态词写在默认可读稿面</li>
-      <li>2. 色点 / tip 只辅助</li>
-    </ul>
-              </div>
-            </div>
-          </div>
+        <div class="llms-sec llms-sec--cta">
+          <span class="llms-mod">定义句</span>
+          <div class="hier-md-sec"><code>&lt;p&gt;CANN：昇腾异构计算架构，提供驱动、编译与运行时。&lt;/p&gt;</code></div>
         </div>
-      <div class="ex-fold-bar">
-        <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="hov-ex2-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
-        <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="hov-ex2-html" aria-label="前端源码调整"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
-      </div>
-      <div class="ex-fold-panel" id="hov-ex2-md" hidden>
-        <div class="ex-card-pair">
-    <p class="ex-card-title">Markdown 书写</p>
-    <div class="ex-fold-intro">
-      <ul class="fn-ex-list">
-        <li>1. 状态写成完整句</li>
-        <li>2. 不要只靠色点</li>
-      </ul>
-    </div>
-    <div class="ex-card-pane">
-      <div class="ex-card-pane-head">
-        <span class="fn-ex-label">反面</span>
-        <div class="fn-ex-bar" aria-hidden="true"></div>
-      </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-markdown"><span class="code-line-hl is-bad">NPU（悬停查看）</span></code></pre>
-      </figure>
-    </div>
-    <div class="ex-card-pane">
-      <div class="ex-card-pane-head">
-        <span class="fn-ex-label is-good">正面</span>
-        <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-      </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-markdown"><span class="code-line-hl is-good">NPU：驱动未匹配，需升级至配套版本</span></code></pre>
-      </figure>
-    </div>
-        </div>
-      </div>
-      <div class="ex-fold-panel" id="hov-ex2-html" hidden>
-        <div class="ex-card-pair">
-    <p class="ex-card-title">前端源码调整</p>
-    <div class="ex-fold-intro">
-      <ul class="fn-ex-list">
-        <li>1. 可见文本节点写清状态</li>
-        <li>2. 完整写法见状态词页</li>
-      </ul>
-    </div>
-    <div class="ex-card-pane">
-      <div class="ex-card-pane-head">
-        <span class="fn-ex-label">反面</span>
-        <div class="fn-ex-bar" aria-hidden="true"></div>
-      </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-html"><span class="code-line-hl is-bad">&lt;span class="dot warn" title="驱动未匹配"&gt;&lt;/span&gt; NPU</span></code></pre>
-      </figure>
-    </div>
-    <div class="ex-card-pane">
-      <div class="ex-card-pane-head">
-        <span class="fn-ex-label is-good">正面</span>
-        <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-      </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-html"><span class="code-line-hl is-good">&lt;p&gt;NPU：驱动未匹配，需升级至配套版本&lt;/p&gt;</span></code></pre>
       </figure>
     </div>
         </div>
       </div>
       </div>
       <div class="principle-example" id="mask">
-        <h3 class="fn-h3">蒙版 · 命令默认可视</h3>
-        <h4 class="fn-h4">示例 5 · 安装命令 <a class="fn-h3-link" href="https://www.hiascend.com/cann/download?versionId=779&amp;ids=d806%2Ch0501%2Ch0601%2Ch0702" target="_blank" rel="noopener">查看示例来源</a></h4>
+        <h3 class="fn-h3">关键命令默认可见</h3>
+        <p class="fn-h3-desc">安装条件、关键命令和必要限制应可直接读取。复制按钮、展开详情等交互可以保留，但不应成为获取关键正文的唯一途径。</p>
+        <h4 class="fn-h4">示例 4 · 安装命令 <a class="fn-h3-link" href="https://www.hiascend.com/cann/download?versionId=779&amp;ids=d806%2Ch0501%2Ch0601%2Ch0702" target="_blank" rel="noopener">查看示例来源</a></h4>
 <div class="fn-ex-row" id="mask-clear-steps">
           <div class="fn-ex">
             <div class="fn-ex-head">
@@ -2057,8 +2203,8 @@ sudo yum install cann-kernels</pre>
               <div class="fn-ex-foot">
                     <ul class="fn-ex-list">
       <li><strong>正确做法：</strong></li>
-      <li>1. 安装命令首包默认可读</li>
-      <li>2. 协议勾选可保留，不得挡命令</li>
+      <li>1. 安装条件、命令与限制可直接读取</li>
+      <li>2. 交互可保留，但不能作为唯一获取途径</li>
     </ul>
               </div>
             </div>
@@ -2068,7 +2214,7 @@ sudo yum install cann-kernels</pre>
         <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="msk-ex1-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
         <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="msk-ex1-html" aria-label="前端源码调整"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
       </div>
-      <div class="ex-fold-panel" id="msk-ex1-md" hidden>
+      <div class="ex-fold-panel ex-fold-panel--pair-h ex-fold-panel--pair-h-mid" id="msk-ex1-md" hidden>
         <div class="ex-card-pair">
     <p class="ex-card-title">Markdown 书写</p>
     <div class="ex-fold-intro">
@@ -2093,26 +2239,31 @@ sudo yum install cann-kernels</pre>
         <span class="fn-ex-label is-good">正面</span>
         <div class="fn-ex-bar is-good" aria-hidden="true"></div>
       </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-markdown">## 在线安装
-
-<span class="code-line-hl is-good">```bash
+      <figure class="file-sample hier-md file-sample--paper" aria-label="安装命令 Markdown">
+        <div class="llms-sec llms-sec--copy">
+          <span class="llms-mod">栏题</span>
+          <div class="hier-md-sec"><code>## 在线安装</code></div>
+        </div>
+        <div class="llms-sec llms-sec--cta">
+          <span class="llms-mod">命令</span>
+          <div class="hier-md-sec"><code>```bash
 sudo yum install cann-toolkit
 sudo yum install cann-kernels
-```</span>
+```
 
-下载并使用即表示同意遵守许可协议。</code></pre>
+下载并使用即表示同意遵守许可协议。</code></div>
+        </div>
       </figure>
     </div>
         </div>
       </div>
-      <div class="ex-fold-panel" id="msk-ex1-html" hidden>
+      <div class="ex-fold-panel ex-fold-panel--pair-h ex-fold-panel--pair-h-mid" id="msk-ex1-html" hidden>
         <div class="ex-card-pair">
     <p class="ex-card-title">前端源码调整</p>
     <div class="ex-fold-intro">
       <ul class="fn-ex-list">
-        <li>1. 命令节点始终在首包</li>
-        <li>2. 勾选只控制下载等交互</li>
+        <li>1. 命令节点始终可读取</li>
+        <li>2. 勾选只控制下载等交互，不挡正文</li>
       </ul>
     </div>
     <div class="ex-card-pane">
@@ -2129,9 +2280,16 @@ sudo yum install cann-kernels
         <span class="fn-ex-label is-good">正面</span>
         <div class="fn-ex-bar is-good" aria-hidden="true"></div>
       </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-html">&lt;label&gt;&lt;input type="checkbox"&gt; 同意许可协议&lt;/label&gt;
-<span class="code-line-hl is-good">&lt;pre&gt;sudo yum install cann-toolkit&lt;/pre&gt;</span></code></pre>
+      <figure class="file-sample hier-md file-sample--paper" aria-label="安装命令 HTML">
+        <div class="llms-sec llms-sec--copy">
+          <span class="llms-mod">协议</span>
+          <div class="hier-md-sec"><code>&lt;label&gt;&lt;input type="checkbox"&gt; 同意许可协议&lt;/label&gt;</code></div>
+        </div>
+        <div class="llms-sec llms-sec--cta">
+          <span class="llms-mod">命令</span>
+          <div class="hier-md-sec"><code>&lt;pre&gt;sudo yum install cann-toolkit
+sudo yum install cann-kernels&lt;/pre&gt;</code></div>
+        </div>
       </figure>
     </div>
         </div>
@@ -2142,17 +2300,20 @@ sudo yum install cann-kernels
     <section class="section" id="expected-effect">
       <h2>预期效果</h2>
       <ol class="bg-list">
-        <li>帮助 AI Agent 在不必点击、展开或悬停的情况下抓全步骤与链接。</li>
-        <li>减少因非激活 Tab、收起折叠、气泡或蒙版导致的事实遗漏。</li>
+        <li>帮助 AI Agent 获取 Tab、折叠面板等交互组件中的关键正文，减少因内容隐藏或动态加载造成的信息遗漏。</li>
+        <li>提高定义、操作步骤和命令等信息的可理解性与可引用性，减少对悬停、点击等交互行为的依赖。</li>
+        <li>保留页面交互体验的同时，提升关键知识的可发现性和获取稳定性。</li>
       </ol>
     </section>
 
     <section class="section" id="notes">
       <h2>注意事项</h2>
       <ol class="bg-list">
-        <li>交互可以保留以改善人读，但不能删除或遮挡任务必需正文。</li>
-        <li>首包 HTML 与平行 Markdown 应对同一套事实。</li>
-        <li>协议勾选、登录墙等若挡住命令，须在未勾选时仍能读到步骤说明。</li>
+        <li>不要求所有交互内容始终展开，但关键正文应能够被稳定获取。</li>
+        <li>对于 Tab、折叠面板和弹窗，应确保相关正文存在于可访问的页面结构中，不应仅依赖点击后才生成的内容。</li>
+        <li>悬停提示适合补充定义、参数说明等信息，不应承载唯一的关键知识。</li>
+        <li>纯装饰性内容、非关键辅助信息和用户主动触发的次要内容，不必强制默认展示。</li>
+        <li>页面内容发生变化时，应确保交互组件中的正文与页面其他位置的相关说明保持一致。</li>
       </ol>
     </section>
 </main>

@@ -104,8 +104,8 @@
     margin-top: 0;
     margin-bottom: 16px;
     padding-top: var(--space-h2-pad-y, 16px);
-    padding-bottom: var(--space-h2-pad-y, 16px);
-    border-bottom: 2px solid var(--color-card-border);
+    padding-bottom: 0;
+    border-bottom: none;
     color: var(--color-text, var(--color-text));
   }
   body.inner-page[data-page="hierarchy"] .main-content .section h3 { height: auto; }
@@ -338,21 +338,230 @@
     color: var(--color-text-secondary);
   }
   .hd-fake-sub:last-child { margin-bottom: 0; }
-  .hd-num {
-    margin: 0 0 8px;
+
+  /* 反面：视觉层级冒充标题（对齐昇腾文档色条/圆点/缩进） */
+  .hd-skel {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .hd-skel:not(.hd-skel-good) > .hd-skel-block {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .hd-skel:not(.hd-skel-good) > .hd-skel-block > * + * {
+    margin-top: 12px;
+  }
+  .hd-skel:not(.hd-skel-good) > .hd-skel-block:first-child > * + * {
+    margin-top: 16px;
+  }
+  .hd-skel-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 26px;
+    color: #191919;
+  }
+  .fn-ex-mock .hd-skel-title {
+    margin: 0;
+    color: #191919;
+  }
+  .hd-skel-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .hd-skel-line {
+    display: block;
+    height: 8px;
+    border-radius: 4px;
+    background: #e8eaed;
+  }
+  .hd-skel-line.is-w100 { width: 100%; }
+  .hd-skel-line.is-w92 { width: 92%; }
+  .hd-skel-line.is-w80 { width: 80%; }
+  .hd-skel-line.is-w72 { width: 72%; }
+  .hd-skel-line.is-w60 { width: 60%; }
+  .hd-skel-line.is-w48 { width: 48%; }
+  .hd-skel-sec {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+  }
+  .hd-skel-sec .hd-skel-dot {
+    flex-shrink: 0;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #191919;
+  }
+  .hd-skel-sec .hd-skel-label {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 650;
+    line-height: 18px;
+    color: var(--color-text);
+  }
+  .hd-skel-sub {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 0 14px;
+    padding: 2px 0;
+  }
+  .hd-skel-sub .hd-skel-ring {
+    flex-shrink: 0;
+    box-sizing: border-box;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    border: 1.5px solid #8c8c8c;
+    background: transparent;
+  }
+  .hd-skel-sub .hd-skel-label {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 18px;
+    color: var(--color-text);
+  }
+  .hd-skel-nest {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-left: 14px;
+  }
+  .hd-skel-code {
+    margin: 2px 0 0 14px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  /* 正面：语义化标题排版 */
+  .hd-skel-good {
+    gap: 20px;
+  }
+  .hd-skel-good > .hd-row {
+    margin-top: 0;
+  }
+  /* H2 → H3 */
+  .hd-skel-good .hd-skel-block > .hd-row + .hd-row {
+    margin-top: 12px;
+  }
+  .section .fn-ex-mock .hd-skel-good .hd-ttl.is-h1,
+  .section .fn-ex-mock .hd-skel-good h1.hd-ttl {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 26px;
+    color: var(--color-text);
+  }
+  .section .fn-ex-mock .hd-skel-good h2.hd-ttl.is-h2,
+  .section .fn-ex-mock .hd-skel-good .hd-ttl.is-h2 {
+    font-size: 14px;
+    font-weight: 650;
+    line-height: 22px;
+  }
+  .section .fn-ex-mock .hd-skel-good h3.hd-ttl.is-h3,
+  .section .fn-ex-mock .hd-skel-good .hd-ttl.is-h3 {
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 18px;
+  }
+  .hd-skel-good .hd-row.is-child {
+    padding-left: 0;
+  }
+  .hd-skel-good .hd-skel-nest,
+  .hd-skel-good .hd-skel-code {
+    margin-left: 0;
+  }
+  .hd-skel-good .hd-skel-block {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  /* H2/H3 → 骨架、H3 → 下级骨架：12px */
+  .hd-skel-good .hd-skel-block > * + * {
+    margin-top: 12px;
+  }
+  /* 页题 → 正文骨架：16px */
+  .hd-skel-good .hd-skel-block:first-child > * + * {
+    margin-top: 16px;
+  }
+  .hd-skel-good .hd-skel-block + .hd-skel-block {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+  }
+  .hd-skel-good .hd-lv {
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: 11px;
+    line-height: 16px;
+    color: #047857;
+    background: #ecfdf5;
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+  .hd-num,
+  .hd-num-sub,
+  .hd-num-leaf {
+    margin: 0;
     font-size: 13px;
     font-weight: 650;
     line-height: 20px;
-    color: var(--color-text);
+    color: #000;
   }
-  .hd-num-sub {
-    margin: 0 0 4px;
+  /* 示例 2：编号场景统一字号与间距，不靠字号区分层级 */
+  .fn-ex-mock .hd-skel.hd-skel-flat,
+  .fn-ex-mock .hd-skel.hd-skel-good.hd-skel-flat {
+    gap: 8px;
+  }
+  .fn-ex-mock .hd-skel.hd-skel-flat > * {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+  .hd-skel-flat .hd-skel-title,
+  .hd-skel-flat .hd-skel-sec .hd-skel-label,
+  .hd-skel-flat .hd-skel-sub .hd-skel-label,
+  .hd-skel-flat .hd-num,
+  .hd-skel-flat .hd-num-sub,
+  .hd-skel-flat .hd-num-leaf {
     font-size: 13px;
+    font-weight: 650;
     line-height: 20px;
+  }
+  .hd-skel-flat:not(.hd-skel-good) .hd-skel-title,
+  .hd-skel-flat:not(.hd-skel-good) .hd-skel-sec .hd-skel-label,
+  .hd-skel-flat:not(.hd-skel-good) .hd-skel-sub .hd-skel-label {
     color: var(--color-text);
   }
-  .hd-num-sub:last-child { margin-bottom: 0; }
+  .hd-skel-flat .hd-skel-sub {
+    margin-left: 14px;
+    padding: 0;
+  }
+  .hd-skel-flat .hd-skel-nest {
+    margin-left: 14px;
+  }
+  .hd-skel-flat.hd-skel-good .hd-skel-sec,
+  .hd-skel-flat.hd-skel-good .hd-skel-sub {
+    margin-left: 0;
+    padding: 0;
+  }
+  .hd-skel-flat.hd-skel-good .hd-skel-nest {
+    margin-left: 0;
+  }
+  .hd-skel-flat .hd-num,
+  .hd-skel-flat .hd-num-sub,
+  .hd-skel-flat .hd-num-leaf {
+    padding: 0;
+    color: #000;
+  }
 
+  .section .fn-ex-mock h1,
   .section .fn-ex-mock h2,
   .section .fn-ex-mock h3,
   .section .fn-ex-mock .hd-ttl {
@@ -446,53 +655,6 @@
 
   body.inner-page[data-page="hierarchy"] .main-content > .section:first-of-type > h2 {
     margin-top: 0;
-  }
-  #problem > p.page-lead,
-  #practices > p.page-lead,
-  #core-principles > p.page-lead {
-    margin: 0;
-    font-size: var(--text-body);
-    line-height: var(--text-body-lh, 22px);
-    color: var(--color-text-secondary);
-  }
-  #problem > h2 + .page-lead,
-  #core-principles > h2 + .principle-body {
-    margin-top: 0;
-  }
-  #problem,
-  #core-principles,
-  #practices {
-    margin-bottom: 16px;
-  }
-  #core-principles .principle-body {
-    margin: 0;
-  }
-  #core-principles .principle-body p {
-    margin: 0;
-    font-size: var(--text-body);
-    line-height: var(--text-body-lh, 22px);
-    color: var(--color-text-secondary);
-  }
-  #core-principles .principle-body strong {
-    display: block;
-    margin-bottom: 4px;
-    font-weight: 650;
-    color: var(--color-text);
-  }
-  .bg-list {
-    margin: 0;
-    padding-left: 1.25em;
-    font-size: var(--text-body);
-    line-height: 22px;
-    list-style: disc;
-    color: var(--color-text-secondary);
-  }
-  #benefits .bg-list li + li { margin-top: 16px; }
-  #benefits .bg-list li strong {
-    display: block;
-    margin-bottom: 4px;
-    font-weight: 650;
-    color: var(--color-text);
   }
   #practices .principle-example > h3.fn-h3 + h4.fn-h4 {
     margin-top: 0;
@@ -625,6 +787,117 @@
     border-radius: 8px;
     background: #fafafa;
   }
+  #practices .file-sample.file-sample--paper {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 0;
+    padding: 16px;
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  #practices .file-sample--paper .llms-sec {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 0;
+    padding: 6px 10px;
+    padding-right: 52px;
+    border-radius: 8px;
+  }
+  #practices .file-sample--paper .llms-sec--copy { background: rgba(14, 165, 233, 0.07); }
+  #practices .file-sample--paper .llms-sec--cta { background: rgba(52, 211, 153, 0.07); }
+  #practices .file-sample--paper .llms-sec--tip { background: rgba(37, 99, 235, 0.07); }
+  #practices .file-sample--paper .llms-sec--caution { background: rgba(217, 119, 6, 0.08); }
+  #practices .file-sample--paper .llms-mod {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    display: inline-flex;
+    align-items: center;
+    height: 20px;
+    padding: 0 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    line-height: 20px;
+    font-weight: 650;
+    color: #525252;
+    background: rgba(25, 25, 25, 0.08);
+  }
+  #practices .file-sample--paper .llms-sec--copy .llms-mod {
+    color: #0369a1;
+    background: rgba(14, 165, 233, 0.16);
+  }
+  #practices .file-sample--paper .llms-sec--cta .llms-mod {
+    color: #047857;
+    background: rgba(52, 211, 153, 0.16);
+  }
+  #practices .file-sample--paper .llms-sec--tip .llms-mod {
+    color: #1d4ed8;
+    background: rgba(37, 99, 235, 0.14);
+  }
+  #practices .file-sample--paper .llms-sec--caution .llms-mod {
+    color: #b45309;
+    background: rgba(217, 119, 6, 0.16);
+  }
+  #practices .file-sample--paper .hier-md-sec { margin: 0; }
+  #practices .file-sample--paper .hier-md-sec code {
+    display: block;
+    margin: 0;
+    padding: 0;
+    background: none;
+    color: #191919;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 400;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+  }
+  #practices .file-sample--paper .hd-skel-lines {
+    margin-top: 4px;
+    gap: 4px;
+  }
+  #practices .file-sample--paper .hd-skel-line {
+    height: 6px;
+    border-radius: 3px;
+    background: #e8eaed;
+  }
+  #practices .file-sample--paper .llms-sec > .hier-md-sec + .hier-md-sec {
+    margin-top: 6px;
+  }
+  #practices .ex-fold-panel--pair-h .ex-card-pair { align-items: stretch; }
+  #practices .ex-fold-panel--pair-h .ex-card-pane { align-self: stretch; }
+  #practices .ex-fold-panel--pair-h .ex-card-pane > .file-sample {
+    flex: 1 1 auto;
+    min-height: 200px;
+    overflow: auto;
+    box-sizing: border-box;
+  }
+  #practices .ex-fold-panel--pair-h .ex-card-pane > .file-sample--compact,
+  #practices .ex-fold-panel--pair-h .ex-card-pane > .file-sample.file-sample--paper {
+    display: flex;
+    flex-direction: column;
+  }
+  #practices .ex-fold-panel--pair-h .ex-card-pane > .file-sample--compact pre {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
+    overflow: auto;
+  }
+  #practices .ex-fold-panel--pair-h .ex-card-pane > .file-sample.file-sample--paper {
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  #practices .ex-fold-panel--pair-h-mid .ex-card-pane > .file-sample {
+    flex: 1 0 320px;
+    height: 320px;
+    min-height: 320px;
+    max-height: 320px;
+  }
   .ex-card-pane-head {
     display: flex;
     flex-direction: column;
@@ -646,9 +919,75 @@
     }
     .ex-card-pair { grid-template-columns: 1fr; }
   }
+
+  #mechanism > p.page-lead,
+  #practices > p.page-lead {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  #mechanism > h2 + .page-lead,
+  #detail-principles > h2 + .bg-list,
+  #expected-effect > h2 + .bg-list,
+  #notes > h2 + .bg-list {
+    margin-top: 0;
+  }
+  #mechanism > p.page-lead {
+    margin-bottom: var(--space-stack, 16px);
+  }
+  #mechanism > p.page-lead + p.page-lead {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+  #mechanism,
+  #detail-principles,
+  #practices,
+  #expected-effect,
+  #notes {
+    margin-bottom: 32px;
+  }
+  .bg-list {
+    margin: 0;
+    padding-left: 1.25em;
+    font-size: var(--text-body);
+    line-height: 22px;
+    list-style: disc;
+    color: var(--color-text-secondary);
+  }
+  #detail-principles .bg-list li + li,
+  #expected-effect .bg-list li + li,
+  #notes .bg-list li + li { margin-top: 16px; }
+  #detail-principles ol.bg-list,
+  #expected-effect ol.bg-list,
+  #notes ol.bg-list {
+    list-style: decimal;
+    list-style-position: inside;
+    padding-left: 0;
+    margin-left: 0;
+  }
+  #detail-principles ol.bg-list li strong {
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  .hd-topic {
+    margin: 0 0 10px;
+    font-size: 15px;
+    font-weight: 650;
+    line-height: 22px;
+  }
+  .hd-topic.is-vague { color: var(--color-text-secondary); }
+  .hd-topic.is-clear { color: var(--color-text); }
+  .hd-topic:last-child { margin-bottom: 0; }
+  .hd-ttl.is-h2-flat {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 22px;
+  }
+
 </style>
 </head>
-<body class="inner-page" data-module="principles" data-page="hierarchy">
+<body class="inner-page agent-entry-page" data-module="principles" data-page="hierarchy" data-no-surface-tabs>
 
 <div class="topbar">
   <div class="topbar-inner">
@@ -674,17 +1013,20 @@
       <h1>标题层级可识别</h1>
     </div>
 
-    <section class="section" id="problem">
-      <h2>解决什么问题</h2>
-      <p class="page-lead">Agent 无法仅凭字号、缩进或分割线理解章节的从属与并列关系。</p>
+    <section class="section" id="mechanism">
+      <h2>概述</h2>
+      <p class="page-lead">标题层级用于表达页面内容的主题、层次与从属关系。仅依靠字号、粗细或视觉排版区分标题，可能导致 AI Agent 无法准确识别内容结构。</p>
+      <p class="page-lead">标题层级可识别原则旨在通过规范的标题语义和层级关系，帮助 AI Agent 准确识别页面主题、理解内容组织方式，并定位和引用相关信息。</p>
     </section>
 
-    <section class="section" id="core-principles">
-      <h2>核心原则</h2>
-      <div class="principle-body">
-        <strong>标题层级反映结构</strong>
-        <p>从属与并列关系体现在标题级别（如 H2 / H3）或编号（1 / 1.1）上，不依赖视觉排版。两种方式选其一，避免叠用。</p>
-      </div>
+    <section class="section" id="detail-principles">
+      <h2>具体原则</h2>
+      <ol class="bg-list">
+        <li><strong>使用规范的标题标签表达层级。</strong> HTML 使用 <code>&lt;h1&gt;</code> 至 <code>&lt;h6&gt;</code>，Markdown 使用 <code>#</code> 至 <code>######</code>，避免仅通过字号、加粗或普通段落模拟标题。</li>
+        <li><strong>标题层级应连续且符合内容结构。</strong> 根据主题的从属关系设置标题，避免无合理依据地跳级，或仅为调整视觉样式而选择标题级别。</li>
+        <li><strong>标题应准确概括对应内容。</strong> 标题应清晰表达所在章节的主题，避免使用含义模糊或脱离上下文的标题；同级标题应保持合理的并列关系。</li>
+        <li><strong>标题语义应与视觉呈现保持一致。</strong> 确保标题标签、实际内容层级和页面展示相匹配；对于仅用于视觉强调的文本，不应误用标题标签。</li>
+      </ol>
     </section>
 
     <section class="section" id="practices">
@@ -693,7 +1035,7 @@
         <h3 class="fn-h3">用标题级别或编号标明从属</h3>
         <p class="fn-h3-desc">标题级别与编号二选一，不叠加使用（如不在 H3 下同时写 1.1）。</p>
         <h4 class="fn-h4">示例 1 · 标题级别</h4>
-        <p class="fn-h3-desc">结构由 H1–H5 源码定义（Markdown 用 #，HTML 用 H1–H5），字号仅作视觉呈现，不承担结构语义；标题级别应连续，不宜跳级（如：不在 H1 下直接挂 H4）。</p>
+        <p class="fn-h3-desc">结构由 H1–H6 源码定义（Markdown 用 #，HTML 用 H1–H6），字号仅作视觉呈现，不承担结构语义；标题级别应连续，不宜跳级（如：不在 H1 下直接挂 H4）。</p>
         <div class="fn-ex-row">
           <div class="fn-ex">
             <div class="fn-ex-head">
@@ -701,17 +1043,54 @@
               <div class="fn-ex-bar" aria-hidden="true"></div>
             </div>
             <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="反面：段落字号冒充层级">
-                <div class="st-card">
-                  <p class="hd-fake-h">安装</p>
-                  <p class="hd-fake-sub">准备环境</p>
-                  <p class="hd-fake-sub">执行命令</p>
+              <div class="fn-ex-mock" aria-label="反面：色条、圆点与缩进冒充标题层级">
+                <div class="st-card hd-skel" aria-hidden="true">
+                  <div class="hd-skel-block">
+                    <p class="hd-skel-title">Add算子快速入门</p>
+                    <div class="hd-skel-lines">
+                      <span class="hd-skel-line is-w100"></span>
+                      <span class="hd-skel-line is-w92"></span>
+                      <span class="hd-skel-line is-w72"></span>
+                    </div>
+                  </div>
+                  <div class="hd-skel-block">
+                    <div class="hd-skel-sec">
+                      <span class="hd-skel-dot"></span>
+                      <p class="hd-skel-label">Add算子功能介绍</p>
+                    </div>
+                    <div class="hd-skel-lines">
+                      <span class="hd-skel-line is-w80"></span>
+                      <span class="hd-skel-line is-w60"></span>
+                    </div>
+                  </div>
+                  <div class="hd-skel-block">
+                    <div class="hd-skel-sec">
+                      <span class="hd-skel-dot"></span>
+                      <p class="hd-skel-label">算子设计</p>
+                    </div>
+                    <div class="hd-skel-sub">
+                      <span class="hd-skel-ring"></span>
+                      <p class="hd-skel-label">Device 端核函数接口</p>
+                    </div>
+                    <div class="hd-skel-nest">
+                      <span class="hd-skel-line is-w92"></span>
+                      <span class="hd-skel-line is-w72"></span>
+                    </div>
+                    <div class="hd-skel-sub">
+                      <span class="hd-skel-ring"></span>
+                      <p class="hd-skel-label">Host 端运行时接口</p>
+                    </div>
+                    <div class="hd-skel-nest">
+                      <span class="hd-skel-line is-w80"></span>
+                      <span class="hd-skel-line is-w60"></span>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div class="fn-ex-foot">
                 <ul class="fn-ex-list">
                   <li><strong>常见疏漏：</strong></li>
-                  <li>1. 只改字号，源码不是标题，看不出从属关系</li>
+                  <li>1. 视觉上有层级，但源码只是普通文本，Agent 读不到章节关系</li>
                 </ul>
               </div>
             </div>
@@ -722,23 +1101,52 @@
               <div class="fn-ex-bar is-good" aria-hidden="true"></div>
             </div>
             <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="正面：H2 H3 标题级别">
-                <div class="st-card">
-                  <div class="hd-row">
-                    <h2 class="hd-ttl is-h2">安装</h2>
+              <div class="fn-ex-mock" aria-label="正面：语义化标题表达层级">
+                <div class="st-card hd-skel hd-skel-good">
+                  <div class="hd-skel-block">
+                    <div class="hd-row">
+                      <h1 class="hd-ttl is-h1">Add算子快速入门</h1>
+                    </div>
+                    <div class="hd-skel-lines" aria-hidden="true">
+                      <span class="hd-skel-line is-w100"></span>
+                      <span class="hd-skel-line is-w92"></span>
+                      <span class="hd-skel-line is-w72"></span>
+                    </div>
                   </div>
-                  <div class="hd-row">
-                    <h3 class="hd-ttl is-h3">准备环境</h3>
+                  <div class="hd-skel-block">
+                    <div class="hd-row">
+                      <h2 class="hd-ttl is-h2">Add算子功能介绍</h2>
+                    </div>
+                    <div class="hd-skel-lines" aria-hidden="true">
+                      <span class="hd-skel-line is-w80"></span>
+                      <span class="hd-skel-line is-w60"></span>
+                    </div>
                   </div>
-                  <div class="hd-row">
-                    <h3 class="hd-ttl is-h3">执行命令</h3>
+                  <div class="hd-skel-block">
+                    <div class="hd-row">
+                      <h2 class="hd-ttl is-h2">算子设计</h2>
+                    </div>
+                    <div class="hd-row is-child">
+                      <h3 class="hd-ttl is-h3">Device 端核函数接口</h3>
+                    </div>
+                    <div class="hd-skel-nest" aria-hidden="true">
+                      <span class="hd-skel-line is-w92"></span>
+                      <span class="hd-skel-line is-w72"></span>
+                    </div>
+                    <div class="hd-row is-child">
+                      <h3 class="hd-ttl is-h3">Host 端运行时接口</h3>
+                    </div>
+                    <div class="hd-skel-nest" aria-hidden="true">
+                      <span class="hd-skel-line is-w80"></span>
+                      <span class="hd-skel-line is-w60"></span>
+                    </div>
                   </div>
                 </div>
               </div>
               <div class="fn-ex-foot">
                 <ul class="fn-ex-list">
                   <li><strong>正确做法：</strong></li>
-                  <li>1. 「安装」用 H2，「准备环境」「执行命令」用 H3</li>
+                  <li>1. 用 H1 / H2 / H3 写出页题、章节与子节，层级关系可被直接解析</li>
                 </ul>
               </div>
             </div>
@@ -748,12 +1156,13 @@
           <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex1-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
           <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex1-html" aria-label="前端源码调整"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
         </div>
-        <div class="ex-fold-panel" id="ex1-md" hidden>
+        <div class="ex-fold-panel ex-fold-panel--pair-h ex-fold-panel--pair-h-mid" id="ex1-md" hidden>
           <div class="ex-card-pair">
             <p class="ex-card-title">Markdown 书写</p>
             <div class="ex-fold-intro">
               <ul class="fn-ex-list">
-                <li>1. 用连续的 # / ## / ### 标明从属，H1 下应接 H2，不要直接挂 H4</li>
+                <li>1. 用 <code># / ## / ###</code> 写出页题、章节与子节，不靠加粗或列表冒充</li>
+                <li>2. 层级与内容从属一致，Agent 才能解析章节树</li>
               </ul>
             </div>
             <div class="ex-card-pane">
@@ -762,10 +1171,15 @@
                 <div class="fn-ex-bar" aria-hidden="true"></div>
               </div>
               <figure class="file-sample file-sample--compact">
-                <pre><code class="language-markdown"># 安装指南
-
-<span class="code-line-hl is-bad">#### 准备环境</span>
-<span class="code-line-hl is-bad">#### 执行命令</span></code></pre>
+                <pre><code class="language-markdown"><span class="code-line-hl is-bad">**Add算子快速入门**</span>
+…
+<span class="code-line-hl is-bad">● Add算子功能介绍</span>
+…
+<span class="code-line-hl is-bad">● 算子设计</span>
+<span class="code-line-hl is-bad">  ○ Device 端核函数接口</span>
+  …
+<span class="code-line-hl is-bad">  ○ Host 端运行时接口</span>
+  …</code></pre>
               </figure>
             </div>
             <div class="ex-card-pane">
@@ -773,22 +1187,52 @@
                 <span class="fn-ex-label is-good">正面</span>
                 <div class="fn-ex-bar is-good" aria-hidden="true"></div>
               </div>
-              <figure class="file-sample file-sample--compact">
-                <pre><code class="language-markdown"># 安装指南
-
-<span class="code-line-hl is-good">## 安装</span>
-<span class="code-line-hl is-good">### 准备环境</span>
-<span class="code-line-hl is-good">### 执行命令</span></code></pre>
+              <figure class="file-sample hier-md file-sample--paper" aria-label="标题级别 Markdown">
+                <div class="llms-sec llms-sec--copy">
+                  <span class="llms-mod">H1</span>
+                  <div class="hier-md-sec"><code># Add算子快速入门</code></div>
+                  <div class="hd-skel-lines" aria-hidden="true">
+                    <span class="hd-skel-line is-w100"></span>
+                    <span class="hd-skel-line is-w92"></span>
+                    <span class="hd-skel-line is-w72"></span>
+                  </div>
+                </div>
+                <div class="llms-sec llms-sec--cta">
+                  <span class="llms-mod">H2</span>
+                  <div class="hier-md-sec"><code>## Add算子功能介绍</code></div>
+                  <div class="hd-skel-lines" aria-hidden="true">
+                    <span class="hd-skel-line is-w80"></span>
+                    <span class="hd-skel-line is-w60"></span>
+                  </div>
+                </div>
+                <div class="llms-sec llms-sec--cta">
+                  <span class="llms-mod">H2</span>
+                  <div class="hier-md-sec"><code>## 算子设计</code></div>
+                </div>
+                <div class="llms-sec llms-sec--tip">
+                  <span class="llms-mod">H3</span>
+                  <div class="hier-md-sec"><code>### Device 端核函数接口</code></div>
+                  <div class="hd-skel-lines" aria-hidden="true">
+                    <span class="hd-skel-line is-w92"></span>
+                    <span class="hd-skel-line is-w72"></span>
+                  </div>
+                  <div class="hier-md-sec"><code>### Host 端运行时接口</code></div>
+                  <div class="hd-skel-lines" aria-hidden="true">
+                    <span class="hd-skel-line is-w80"></span>
+                    <span class="hd-skel-line is-w60"></span>
+                  </div>
+                </div>
               </figure>
             </div>
           </div>
         </div>
-        <div class="ex-fold-panel" id="ex1-html" hidden>
+        <div class="ex-fold-panel ex-fold-panel--pair-h ex-fold-panel--pair-h-mid" id="ex1-html" hidden>
           <div class="ex-card-pair">
             <p class="ex-card-title">前端源码调整</p>
             <div class="ex-fold-intro">
               <ul class="fn-ex-list">
-                <li>1. 用真实 H2 / H3，不要用加大字号的 div 冒充标题</li>
+                <li>1. 用真实 <code>&lt;h1&gt; / &lt;h2&gt; / &lt;h3&gt;</code>，不要用 <code>div</code>、圆点样式冒充标题</li>
+                <li>2. 语义标签与页面展示层级一致</li>
               </ul>
             </div>
             <div class="ex-card-pane">
@@ -797,9 +1241,11 @@
                 <div class="fn-ex-bar" aria-hidden="true"></div>
               </div>
               <figure class="file-sample file-sample--compact">
-                <pre><code class="language-html"><span class="code-line-hl is-bad">&lt;div class="title-lg"&gt;安装&lt;/div&gt;</span>
-<span class="code-line-hl is-bad">&lt;div class="title-sm"&gt;准备环境&lt;/div&gt;</span>
-<span class="code-line-hl is-bad">&lt;div class="title-sm"&gt;执行命令&lt;/div&gt;</span></code></pre>
+                <pre><code class="language-html"><span class="code-line-hl is-bad">&lt;p class="title-lg"&gt;Add算子快速入门&lt;/p&gt;</span>
+<span class="code-line-hl is-bad">&lt;div class="sec"&gt;● Add算子功能介绍&lt;/div&gt;</span>
+<span class="code-line-hl is-bad">&lt;div class="sec"&gt;● 算子设计&lt;/div&gt;</span>
+<span class="code-line-hl is-bad">&lt;div class="sub"&gt;○ Device 端核函数接口&lt;/div&gt;</span>
+<span class="code-line-hl is-bad">&lt;div class="sub"&gt;○ Host 端运行时接口&lt;/div&gt;</span></code></pre>
               </figure>
             </div>
             <div class="ex-card-pane">
@@ -807,10 +1253,41 @@
                 <span class="fn-ex-label is-good">正面</span>
                 <div class="fn-ex-bar is-good" aria-hidden="true"></div>
               </div>
-              <figure class="file-sample file-sample--compact">
-                <pre><code class="language-html"><span class="code-line-hl is-good">&lt;h2 id="install"&gt;安装&lt;/h2&gt;</span>
-<span class="code-line-hl is-good">&lt;h3 id="prep"&gt;准备环境&lt;/h3&gt;</span>
-<span class="code-line-hl is-good">&lt;h3 id="run"&gt;执行命令&lt;/h3&gt;</span></code></pre>
+              <figure class="file-sample hier-md file-sample--paper" aria-label="标题级别 HTML">
+                <div class="llms-sec llms-sec--copy">
+                  <span class="llms-mod">H1</span>
+                  <div class="hier-md-sec"><code>&lt;h1&gt;Add算子快速入门&lt;/h1&gt;</code></div>
+                  <div class="hd-skel-lines" aria-hidden="true">
+                    <span class="hd-skel-line is-w100"></span>
+                    <span class="hd-skel-line is-w92"></span>
+                    <span class="hd-skel-line is-w72"></span>
+                  </div>
+                </div>
+                <div class="llms-sec llms-sec--cta">
+                  <span class="llms-mod">H2</span>
+                  <div class="hier-md-sec"><code>&lt;h2 id="intro"&gt;Add算子功能介绍&lt;/h2&gt;</code></div>
+                  <div class="hd-skel-lines" aria-hidden="true">
+                    <span class="hd-skel-line is-w80"></span>
+                    <span class="hd-skel-line is-w60"></span>
+                  </div>
+                </div>
+                <div class="llms-sec llms-sec--cta">
+                  <span class="llms-mod">H2</span>
+                  <div class="hier-md-sec"><code>&lt;h2 id="design"&gt;算子设计&lt;/h2&gt;</code></div>
+                </div>
+                <div class="llms-sec llms-sec--tip">
+                  <span class="llms-mod">H3</span>
+                  <div class="hier-md-sec"><code>&lt;h3 id="device"&gt;Device 端核函数接口&lt;/h3&gt;</code></div>
+                  <div class="hd-skel-lines" aria-hidden="true">
+                    <span class="hd-skel-line is-w92"></span>
+                    <span class="hd-skel-line is-w72"></span>
+                  </div>
+                  <div class="hier-md-sec"><code>&lt;h3 id="host"&gt;Host 端运行时接口&lt;/h3&gt;</code></div>
+                  <div class="hd-skel-lines" aria-hidden="true">
+                    <span class="hd-skel-line is-w80"></span>
+                    <span class="hd-skel-line is-w60"></span>
+                  </div>
+                </div>
               </figure>
             </div>
           </div>
@@ -823,17 +1300,49 @@
               <div class="fn-ex-bar" aria-hidden="true"></div>
             </div>
             <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="反面：段落字号冒充层级">
-                <div class="st-card">
-                  <p class="hd-fake-h">安装</p>
-                  <p class="hd-fake-sub">准备环境</p>
-                  <p class="hd-fake-sub">执行命令</p>
+              <div class="fn-ex-mock" aria-label="反面：无编号，只靠字号与缩进">
+                <div class="st-card hd-skel hd-skel-flat" aria-hidden="true">
+                  <p class="hd-skel-title">Add算子快速入门</p>
+                  <div class="hd-skel-lines">
+                    <span class="hd-skel-line is-w100"></span>
+                    <span class="hd-skel-line is-w92"></span>
+                    <span class="hd-skel-line is-w72"></span>
+                  </div>
+                  <div class="hd-skel-sec">
+                    <span class="hd-skel-dot"></span>
+                    <p class="hd-skel-label">Add算子功能介绍</p>
+                  </div>
+                  <div class="hd-skel-lines">
+                    <span class="hd-skel-line is-w80"></span>
+                    <span class="hd-skel-line is-w60"></span>
+                  </div>
+                  <div class="hd-skel-sec">
+                    <span class="hd-skel-dot"></span>
+                    <p class="hd-skel-label">算子设计</p>
+                  </div>
+                  <div class="hd-skel-sub">
+                    <span class="hd-skel-ring"></span>
+                    <p class="hd-skel-label">Device 端核函数接口</p>
+                  </div>
+                  <div class="hd-skel-nest">
+                    <span class="hd-skel-line is-w92"></span>
+                    <span class="hd-skel-line is-w72"></span>
+                    <span class="hd-skel-line is-w48"></span>
+                  </div>
+                  <div class="hd-skel-sub">
+                    <span class="hd-skel-ring"></span>
+                    <p class="hd-skel-label">Host 端运行时接口</p>
+                  </div>
+                  <div class="hd-skel-nest">
+                    <span class="hd-skel-line is-w80"></span>
+                    <span class="hd-skel-line is-w60"></span>
+                  </div>
                 </div>
               </div>
               <div class="fn-ex-foot">
                 <ul class="fn-ex-list">
                   <li><strong>常见疏漏：</strong></li>
-                  <li>1. 只靠字号与缩进，看不出从属关系</li>
+                  <li>1. 只靠字号与缩进，正文里没有编号，看不出从属关系</li>
                 </ul>
               </div>
             </div>
@@ -845,228 +1354,70 @@
             </div>
             <div class="fn-ex-body">
               <div class="fn-ex-mock" aria-label="正面：编号写出从属">
-                <div class="st-card">
-                  <p class="hd-num">1 安装</p>
-                  <p class="hd-num-sub">1.1 准备环境</p>
-                  <p class="hd-num-sub">1.2 执行命令</p>
+                <div class="st-card hd-skel hd-skel-good hd-skel-flat">
+                  <p class="hd-skel-title hd-num">1 Add算子快速入门</p>
+                  <div class="hd-skel-lines" aria-hidden="true">
+                    <span class="hd-skel-line is-w100"></span>
+                    <span class="hd-skel-line is-w92"></span>
+                    <span class="hd-skel-line is-w72"></span>
+                  </div>
+                  <div class="hd-skel-sec">
+                    <p class="hd-skel-label hd-num-sub">1.1 Add算子功能介绍</p>
+                  </div>
+                  <div class="hd-skel-lines" aria-hidden="true">
+                    <span class="hd-skel-line is-w80"></span>
+                    <span class="hd-skel-line is-w60"></span>
+                  </div>
+                  <div class="hd-skel-sec">
+                    <p class="hd-skel-label hd-num-sub">1.2 算子设计</p>
+                  </div>
+                  <div class="hd-skel-sub">
+                    <p class="hd-skel-label hd-num-leaf">1.2.1 Device 端核函数接口</p>
+                  </div>
+                  <div class="hd-skel-nest" aria-hidden="true">
+                    <span class="hd-skel-line is-w92"></span>
+                    <span class="hd-skel-line is-w72"></span>
+                    <span class="hd-skel-line is-w48"></span>
+                  </div>
+                  <div class="hd-skel-sub">
+                    <p class="hd-skel-label hd-num-leaf">1.2.2 Host 端运行时接口</p>
+                  </div>
+                  <div class="hd-skel-nest" aria-hidden="true">
+                    <span class="hd-skel-line is-w80"></span>
+                    <span class="hd-skel-line is-w60"></span>
+                  </div>
                 </div>
               </div>
               <div class="fn-ex-foot">
                 <ul class="fn-ex-list">
                   <li><strong>正确做法：</strong></li>
-                  <li>1. 用 1 / 1.1 编号标明从属</li>
+                  <li>1. 用 1 / 1.1 / 1.2.1 编号写出页题、章节与子节从属</li>
                 </ul>
               </div>
-            </div>
-          </div>
-        </div>
-        <div class="ex-fold-bar">
-          <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex2-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
-          <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex2-html" aria-label="前端源码调整"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
-        </div>
-        <div class="ex-fold-panel" id="ex2-md" hidden>
-          <div class="ex-card-pair">
-            <p class="ex-card-title">Markdown 书写</p>
-            <div class="ex-fold-intro">
-              <ul class="fn-ex-list">
-                <li>1. 用 1 / 1.1 写出从属，不要只靠缩进</li>
-              </ul>
-            </div>
-            <div class="ex-card-pane">
-              <div class="ex-card-pane-head">
-                <span class="fn-ex-label">反面</span>
-                <div class="fn-ex-bar" aria-hidden="true"></div>
-              </div>
-              <figure class="file-sample file-sample--compact">
-                <pre><code class="language-markdown">安装
-  准备环境
-  执行命令</code></pre>
-              </figure>
-            </div>
-            <div class="ex-card-pane">
-              <div class="ex-card-pane-head">
-                <span class="fn-ex-label is-good">正面</span>
-                <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-              </div>
-              <figure class="file-sample file-sample--compact">
-                <pre><code class="language-markdown"><span class="code-line-hl is-good">1 安装</span>
-<span class="code-line-hl is-good">1.1 准备环境</span>
-<span class="code-line-hl is-good">1.2 执行命令</span></code></pre>
-              </figure>
-            </div>
-          </div>
-        </div>
-        <div class="ex-fold-panel" id="ex2-html" hidden>
-          <div class="ex-card-pair">
-            <p class="ex-card-title">前端源码调整</p>
-            <div class="ex-fold-intro">
-              <ul class="fn-ex-list">
-                <li>1. 编号写在可见文本里，不要只靠缩进样式</li>
-              </ul>
-            </div>
-            <div class="ex-card-pane">
-              <div class="ex-card-pane-head">
-                <span class="fn-ex-label">反面</span>
-                <div class="fn-ex-bar" aria-hidden="true"></div>
-              </div>
-              <figure class="file-sample file-sample--compact">
-                <pre><code class="language-html">&lt;p class="title"&gt;安装&lt;/p&gt;
-<span class="code-line-hl is-bad">&lt;p class="indent"&gt;准备环境&lt;/p&gt;</span>
-<span class="code-line-hl is-bad">&lt;p class="indent"&gt;执行命令&lt;/p&gt;</span></code></pre>
-              </figure>
-            </div>
-            <div class="ex-card-pane">
-              <div class="ex-card-pane-head">
-                <span class="fn-ex-label is-good">正面</span>
-                <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-              </div>
-              <figure class="file-sample file-sample--compact">
-                <pre><code class="language-html"><span class="code-line-hl is-good">&lt;p&gt;1 安装&lt;/p&gt;</span>
-<span class="code-line-hl is-good">&lt;p&gt;1.1 准备环境&lt;/p&gt;</span>
-<span class="code-line-hl is-good">&lt;p&gt;1.2 执行命令&lt;/p&gt;</span></code></pre>
-              </figure>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="principle-example">
-        <h3 class="fn-h3">用同级标题标明并列</h3>
-        <h4 class="fn-h4">示例 3 · 并列主题</h4>
-        <div class="fn-ex-row">
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label">反面</span>
-              <div class="fn-ex-bar" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="反面：分割线当主题">
-                <div class="st-card">
-                  <p class="hd-body" style="margin:0 0 4px;">训练开发：环境准备、训练调优。</p>
-                  <p class="hd-body" style="margin:0;padding-top:8px;border-top:1px dashed #e5e5e5;">推理部署：安装、服务化与性能参数。</p>
-                </div>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>常见疏漏：</strong></li>
-                  <li>1. 训练与推理只用分割线隔开，看不出并列关系</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label is-good">正面</span>
-              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="正面：并列 H2">
-                <div class="st-card">
-                  <div class="hd-row">
-                    <h2 class="hd-ttl is-h2">训练开发</h2>
-                  </div>
-                  <p class="hd-body">环境准备、训练调优。</p>
-                  <div class="hd-row">
-                    <h2 class="hd-ttl is-h2">推理部署</h2>
-                  </div>
-                  <p class="hd-body">安装、服务化与性能参数。</p>
-                </div>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>正确做法：</strong></li>
-                  <li>1. 用同级标题分别挂「训练开发」「推理部署」</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="ex-fold-bar">
-          <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex3-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
-          <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex3-html" aria-label="前端源码调整"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
-        </div>
-        <div class="ex-fold-panel" id="ex3-md" hidden>
-          <div class="ex-card-pair">
-            <p class="ex-card-title">Markdown 书写</p>
-            <div class="ex-fold-intro">
-              <ul class="fn-ex-list">
-                <li>1. 并列主题用同级标题，不要只用分割线隔开</li>
-              </ul>
-            </div>
-            <div class="ex-card-pane">
-              <div class="ex-card-pane-head">
-                <span class="fn-ex-label">反面</span>
-                <div class="fn-ex-bar" aria-hidden="true"></div>
-              </div>
-              <figure class="file-sample file-sample--compact">
-                <pre><code class="language-markdown"># 昇腾开发
-
-训练开发：环境准备、训练调优。
-<span class="code-line-hl is-bad">---</span>
-推理部署：安装、服务化与性能参数。</code></pre>
-              </figure>
-            </div>
-            <div class="ex-card-pane">
-              <div class="ex-card-pane-head">
-                <span class="fn-ex-label is-good">正面</span>
-                <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-              </div>
-              <figure class="file-sample file-sample--compact">
-                <pre><code class="language-markdown"># 昇腾开发
-
-<span class="code-line-hl is-good">## 训练开发</span>
-环境准备、训练调优。
-
-<span class="code-line-hl is-good">## 推理部署</span>
-安装、服务化与性能参数。</code></pre>
-              </figure>
-            </div>
-          </div>
-        </div>
-        <div class="ex-fold-panel" id="ex3-html" hidden>
-          <div class="ex-card-pair">
-            <p class="ex-card-title">前端源码调整</p>
-            <div class="ex-fold-intro">
-              <ul class="fn-ex-list">
-                <li>1. 并列主题用同级 H2，不要只用 hr 隔开</li>
-              </ul>
-            </div>
-            <div class="ex-card-pane">
-              <div class="ex-card-pane-head">
-                <span class="fn-ex-label">反面</span>
-                <div class="fn-ex-bar" aria-hidden="true"></div>
-              </div>
-              <figure class="file-sample file-sample--compact">
-                <pre><code class="language-html">&lt;h1&gt;昇腾开发&lt;/h1&gt;
-&lt;p&gt;训练开发：环境准备、训练调优。&lt;/p&gt;
-<span class="code-line-hl is-bad">&lt;hr&gt;</span>
-&lt;p&gt;推理部署：安装、服务化与性能参数。&lt;/p&gt;</code></pre>
-              </figure>
-            </div>
-            <div class="ex-card-pane">
-              <div class="ex-card-pane-head">
-                <span class="fn-ex-label is-good">正面</span>
-                <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-              </div>
-              <figure class="file-sample file-sample--compact">
-                <pre><code class="language-html">&lt;h1&gt;昇腾开发&lt;/h1&gt;
-<span class="code-line-hl is-good">&lt;h2 id="train"&gt;训练开发&lt;/h2&gt;</span>
-&lt;p&gt;环境准备、训练调优。&lt;/p&gt;
-<span class="code-line-hl is-good">&lt;h2 id="infer"&gt;推理部署&lt;/h2&gt;</span>
-&lt;p&gt;安装、服务化与性能参数。&lt;/p&gt;</code></pre>
-              </figure>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="section" id="benefits">
-      <h2>价值收益</h2>
-      <ul class="bg-list">
-        <li><strong>从属关系可被理解</strong>Agent 能识别「准备环境」属于「安装」，不必靠字号或缩进猜测章节树。</li>
-        <li><strong>并列关系可被理解</strong>Agent 能把「训练开发」「推理部署」当同级主题，引用时不会交叉串节。</li>
-      </ul>
+
+    <section class="section" id="expected-effect">
+      <h2>预期效果</h2>
+      <ol class="bg-list">
+        <li>帮助 AI Agent 准确识别页面主题、章节层级和内容从属关系，提升页面结构的可理解性。</li>
+        <li>帮助 AI Agent 根据标题定位和检索相关内容，提高信息提取、摘要生成与知识引用的准确性。</li>
+        <li>减少因标题语义缺失、层级混乱或标题含义模糊造成的内容误判。</li>
+      </ol>
+    </section>
+
+    <section class="section" id="notes">
+      <h2>注意事项</h2>
+      <ol class="bg-list">
+        <li>标题层级应依据内容结构确定，不应仅为满足视觉排版需求而设置。</li>
+        <li>页面主标题、章节标题和子章节标题应形成清晰的层级关系；不必机械要求每个页面只能出现一个 <code>&lt;h1&gt;</code>，但应确保主旨明确。</li>
+        <li>标题应简洁、具体，并与其下方内容保持一致，避免标题与正文表达不同主题。</li>
+        <li>对于标签页、折叠面板等交互区域，应确保标题及其关联内容能够被正常读取；不应将普通文本或装饰性文字误标为标题。</li>
+      </ol>
     </section>
   </main>
 </div>

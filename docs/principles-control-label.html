@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>控件标签与数值可读取 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
+  <title>控件名称与值可读 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
   <link rel="stylesheet" href="assets/css/style.css">
 <style>
   .topbar {
@@ -634,7 +634,12 @@
   #benefits .bg-list li + li { margin-top: 16px; }
   #detail-principles ol.bg-list,
   #expected-effect ol.bg-list,
-  #notes ol.bg-list { list-style: decimal; }
+  #notes ol.bg-list {
+    list-style: decimal;
+    list-style-position: inside;
+    padding-left: 0;
+    margin-left: 0;
+  }
   #expected-effect .bg-list li strong,
   #notes .bg-list li strong,
   #benefits .bg-list li strong {
@@ -781,6 +786,105 @@
     border-radius: 8px;
     background: #fafafa;
   }
+  #practices .file-sample.file-sample--paper {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 0;
+    padding: 16px;
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  #practices .file-sample--paper .llms-sec {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 0;
+    padding: 6px 10px;
+    padding-right: 52px;
+    border-radius: 8px;
+  }
+  #practices .file-sample--paper .llms-sec--copy { background: rgba(14, 165, 233, 0.07); }
+  #practices .file-sample--paper .llms-sec--cta { background: rgba(52, 211, 153, 0.07); }
+  #practices .file-sample--paper .llms-sec--tip { background: rgba(37, 99, 235, 0.07); }
+  #practices .file-sample--paper .llms-sec--caution { background: rgba(217, 119, 6, 0.08); }
+  #practices .file-sample--paper .llms-mod {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    display: inline-flex;
+    align-items: center;
+    height: 20px;
+    padding: 0 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    line-height: 20px;
+    font-weight: 650;
+    color: #525252;
+    background: rgba(25, 25, 25, 0.08);
+  }
+  #practices .file-sample--paper .llms-sec--copy .llms-mod {
+    color: #0369a1;
+    background: rgba(14, 165, 233, 0.16);
+  }
+  #practices .file-sample--paper .llms-sec--cta .llms-mod {
+    color: #047857;
+    background: rgba(52, 211, 153, 0.16);
+  }
+  #practices .file-sample--paper .llms-sec--tip .llms-mod {
+    color: #1d4ed8;
+    background: rgba(37, 99, 235, 0.14);
+  }
+  #practices .file-sample--paper .llms-sec--caution .llms-mod {
+    color: #b45309;
+    background: rgba(217, 119, 6, 0.16);
+  }
+  #practices .file-sample--paper .hier-md-sec { margin: 0; }
+  #practices .file-sample--paper .hier-md-sec code {
+    display: block;
+    margin: 0;
+    padding: 0;
+    background: none;
+    color: #191919;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 400;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+  }
+  #practices .ex-fold-panel--pair-h .ex-card-pair { align-items: stretch; }
+  #practices .ex-fold-panel--pair-h .ex-card-pane { align-self: stretch; }
+  #practices .ex-fold-panel--pair-h .ex-card-pane > .file-sample {
+    flex: 1 1 auto;
+    min-height: 200px;
+    overflow: auto;
+    box-sizing: border-box;
+  }
+  #practices .ex-fold-panel--pair-h .ex-card-pane > .file-sample--compact,
+  #practices .ex-fold-panel--pair-h .ex-card-pane > .file-sample.file-sample--paper {
+    display: flex;
+    flex-direction: column;
+  }
+  #practices .ex-fold-panel--pair-h .ex-card-pane > .file-sample--compact pre {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
+    overflow: auto;
+  }
+  #practices .ex-fold-panel--pair-h .ex-card-pane > .file-sample.file-sample--paper {
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  #practices .ex-fold-panel--pair-h-mid .ex-card-pane > .file-sample {
+    flex: 1 0 280px;
+    height: 280px;
+    min-height: 280px;
+    max-height: 280px;
+  }
   .ex-card-pane-head {
     display: flex;
     flex-direction: column;
@@ -829,118 +933,29 @@
 
   <main class="main-content">
     <div class="page-header">
-      <h1>控件标签与数值可读取</h1>
+      <h1>控件名称与值可读</h1>
     </div>
 
     <section class="section" id="mechanism">
-      <h2>控件概述</h2>
-      <p class="page-lead">搜索框、拆分输入、滑杆、进度与评分是页面上的操作控件。</p>
-      <p class="page-lead">Agent 须能点名用途并读出当前值。源码用 label / aria-label，占位符不能当唯一出处；拆成多框时每框须有独立可见标签；当前值与单位须写成可见文字。</p>
+      <h2>概述</h2>
+      <p class="page-lead">输入框、滑块、进度条和评分等控件用于表达操作用途、当前值和状态，但这些信息可能仅通过占位符、图形或视觉位置呈现，导致 AI Agent 难以准确识别。</p>
+      <p class="page-lead">控件标签与数值可读取原则旨在确保控件的用途、当前值、单位和状态能够通过明确的文本或语义化属性获取，帮助 AI Agent 准确理解控件含义及其当前状态。</p>
     </section>
 
     <section class="section" id="detail-principles">
       <h2>具体原则</h2>
       <ol class="bg-list">
-        <li>每个输入须能点名用途：源码用 label / aria-label，占位符不能当唯一出处。</li>
-        <li>搜索框界面不必另加「关键词」标题，按钮「搜索」即可。</li>
-        <li>拆成多框时每框须有独立可见标签。</li>
-        <li>滑杆、进度、评分的当前值与单位须写成可见文字，图形只作辅助。</li>
+        <li>控件应有明确的名称和用途说明。输入框等应通过关联的 <code>label</code> 或 <code>aria-label</code> 标明用途，不能仅依赖占位符或图标；名称应准确表达用途，不要求额外重复添加与用途无关的标题。</li>
+        <li>动态数值应以可读取的文本或语义化属性呈现。进度、评分、滑块等控件应提供当前值，必要时标注单位、总量或统计口径。</li>
+        <li>控件状态应明确表达。对于禁用、加载、选中等状态，应提供可识别的语义信息，避免仅通过颜色、位置或图形区分。</li>
+        <li>控件的可见信息与实际状态应保持一致。用户操作导致数值或状态变化时，应同步更新对应文本和语义属性，避免读取到过期信息。</li>
       </ol>
     </section>
     <section class="section" id="practices">
-      <h2>控件标签与数值可读取建议示例</h2>
+      <h2>典型示例</h2>
       <div class="principle-example" id="label">
-        <h3 class="fn-h3">标签 · 用途可点名</h3>
-        <p class="fn-h3-desc">搜索框不必在界面上再写「关键词」；源码须有 label 或 aria-label。拆成多框时，每框仍须独立可见标签。</p>
-        <h4 class="fn-h4">示例 1 · 搜索框</h4>
-<div class="fn-ex-row" id="control-label-placeholder">
-          <div class="fn-ex">
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="搜索框：占位 + 搜索按钮">
-                <div class="st-card">
-                  <div class="form-search">
-                    <div class="form-col">
-                      <p class="form-input is-empty">搜索文档、API…</p>
-                    </div>
-                    <p class="form-btn">搜索</p>
-                  </div>
-                </div>
-              </div>
-              <div class="fn-ex-foot">
-                    <ul class="fn-ex-list">
-      <li><strong>正确做法：</strong></li>
-      <li>1. 界面：占位 +「搜索」按钮即可</li>
-      <li>2. 源码：label / aria-label 写出用途，勿只靠 placeholder</li>
-    </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      <div class="ex-fold-bar">
-        <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="lab-ex1-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
-        <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="lab-ex1-html" aria-label="前端源码调整"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
-      </div>
-      <div class="ex-fold-panel" id="lab-ex1-md" hidden>
-        <div class="ex-card-pair">
-    <p class="ex-card-title">Markdown 书写</p>
-    <div class="ex-fold-intro">
-      <ul class="fn-ex-list">
-        <li>1. 稿面写出「搜索」及示例词</li>
-        <li>2. 不必单独起一行「关键词」</li>
-      </ul>
-    </div>
-    <div class="ex-card-pane">
-      <div class="ex-card-pane-head">
-        <span class="fn-ex-label">反面</span>
-        <div class="fn-ex-bar" aria-hidden="true"></div>
-      </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-markdown"><span class="code-line-hl is-bad">[ 搜索文档、API… ]</span></code></pre>
-      </figure>
-    </div>
-    <div class="ex-card-pane">
-      <div class="ex-card-pane-head">
-        <span class="fn-ex-label is-good">正面</span>
-        <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-      </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-markdown"><span class="code-line-hl is-good">搜索：例如 CANN 安装</span></code></pre>
-      </figure>
-    </div>
-        </div>
-      </div>
-      <div class="ex-fold-panel" id="lab-ex1-html" hidden>
-        <div class="ex-card-pair">
-    <p class="ex-card-title">前端源码调整</p>
-    <div class="ex-fold-intro">
-      <ul class="fn-ex-list">
-        <li>1. 用 label 或 aria-label 点名用途</li>
-        <li>2. 界面可不露「关键词」标题</li>
-      </ul>
-    </div>
-    <div class="ex-card-pane">
-      <div class="ex-card-pane-head">
-        <span class="fn-ex-label">反面</span>
-        <div class="fn-ex-bar" aria-hidden="true"></div>
-      </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-html"><span class="code-line-hl is-bad">&lt;input placeholder="搜索文档、API…"&gt;</span></code></pre>
-      </figure>
-    </div>
-    <div class="ex-card-pane">
-      <div class="ex-card-pane-head">
-        <span class="fn-ex-label is-good">正面</span>
-        <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-      </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-html"><span class="code-line-hl is-good">&lt;label for="q" class="sr-only"&gt;搜索&lt;/label&gt;
-&lt;input id="q" placeholder="搜索文档、API…"&gt;
-&lt;button type="submit"&gt;搜索&lt;/button&gt;</span></code></pre>
-      </figure>
-    </div>
-        </div>
-      </div>
-        <h4 class="fn-h4">示例 2 · 拆框字段</h4>
+        <h4 class="fn-h4">示例 1 · 表单字段</h4>
+        <p class="fn-h3-desc">标签应明确对应字段。输入框应有清晰的字段名称，并通过 <code>label</code> 或 <code>aria-label</code> 与控件关联。占位符可以提供输入示例，但不能替代字段名称。</p>
 <div class="fn-ex-row" id="control-label-split">
           <div class="fn-ex">
             <div class="fn-ex-head">
@@ -990,8 +1005,8 @@
               <div class="fn-ex-foot">
                     <ul class="fn-ex-list">
       <li><strong>正确做法：</strong></li>
-      <li>1. 两框分别写「软件包」「版本号」</li>
-      <li>2. 占位只作格式示例</li>
+      <li>1. 「软件包」「版本号」通过 <code>label</code> 与输入框关联</li>
+      <li>2. 占位只作格式示例，不替代字段名</li>
     </ul>
               </div>
             </div>
@@ -1001,7 +1016,7 @@
         <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="lab-ex2-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
         <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="lab-ex2-html" aria-label="前端源码调整"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
       </div>
-      <div class="ex-fold-panel" id="lab-ex2-md" hidden>
+      <div class="ex-fold-panel ex-fold-panel--pair-h ex-fold-panel--pair-h-mid" id="lab-ex2-md" hidden>
         <div class="ex-card-pair">
     <p class="ex-card-title">Markdown 书写</p>
     <div class="ex-fold-intro">
@@ -1025,15 +1040,24 @@
         <span class="fn-ex-label is-good">正面</span>
         <div class="fn-ex-bar is-good" aria-hidden="true"></div>
       </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-markdown"><span class="code-line-hl is-good">软件版本
-- 软件包：例如 CANN
-- 版本号：例如 8.0.0</span></code></pre>
+      <figure class="file-sample hier-md file-sample--paper" aria-label="表单字段 Markdown">
+        <div class="llms-sec llms-sec--copy">
+          <span class="llms-mod">分组</span>
+          <div class="hier-md-sec"><code>软件版本</code></div>
+        </div>
+        <div class="llms-sec llms-sec--cta">
+          <span class="llms-mod">软件包</span>
+          <div class="hier-md-sec"><code>- 软件包：例如 CANN</code></div>
+        </div>
+        <div class="llms-sec llms-sec--tip">
+          <span class="llms-mod">版本号</span>
+          <div class="hier-md-sec"><code>- 版本号：例如 8.0.0</code></div>
+        </div>
       </figure>
     </div>
         </div>
       </div>
-      <div class="ex-fold-panel" id="lab-ex2-html" hidden>
+      <div class="ex-fold-panel ex-fold-panel--pair-h ex-fold-panel--pair-h-mid" id="lab-ex2-html" hidden>
         <div class="ex-card-pair">
     <p class="ex-card-title">前端源码调整</p>
     <div class="ex-fold-intro">
@@ -1060,23 +1084,29 @@
         <span class="fn-ex-label is-good">正面</span>
         <div class="fn-ex-bar is-good" aria-hidden="true"></div>
       </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-html">&lt;fieldset&gt;
-  &lt;legend&gt;软件版本&lt;/legend&gt;
-<span class="code-line-hl is-good">  &lt;label for="pkg"&gt;软件包&lt;/label&gt;</span>
-  &lt;input id="pkg" placeholder="例如 CANN"&gt;
-<span class="code-line-hl is-good">  &lt;label for="ver"&gt;版本号&lt;/label&gt;</span>
+      <figure class="file-sample hier-md file-sample--paper" aria-label="表单字段 HTML">
+        <div class="llms-sec llms-sec--copy">
+          <span class="llms-mod">分组</span>
+          <div class="hier-md-sec"><code>&lt;fieldset&gt;
+  &lt;legend&gt;软件版本&lt;/legend&gt;</code></div>
+        </div>
+        <div class="llms-sec llms-sec--cta">
+          <span class="llms-mod">软件包</span>
+          <div class="hier-md-sec"><code>  &lt;label for="pkg"&gt;软件包&lt;/label&gt;
+  &lt;input id="pkg" placeholder="例如 CANN"&gt;</code></div>
+        </div>
+        <div class="llms-sec llms-sec--tip">
+          <span class="llms-mod">版本号</span>
+          <div class="hier-md-sec"><code>  &lt;label for="ver"&gt;版本号&lt;/label&gt;
   &lt;input id="ver" placeholder="例如 8.0.0"&gt;
-&lt;/fieldset&gt;</code></pre>
+&lt;/fieldset&gt;</code></div>
+        </div>
       </figure>
     </div>
         </div>
       </div>
-      </div>
-      <div class="principle-example" id="value">
-        <h3 class="fn-h3">数值 · 写成带单位的字</h3>
-        <p class="fn-h3-desc">用户拖动或步进后，可见数值须同步更新，勿只改图形位置。</p>
-        <h4 class="fn-h4">示例 3 · 进度</h4>
+        <h4 class="fn-h4">示例 2 · 进度</h4>
+        <p class="fn-h3-desc">进度应有明确数值。进度条应提供当前进度及必要的总量或单位信息，不能只依赖填充长度表达进度。对于百分比、步骤数等不同口径，应明确标注。</p>
 <div class="fn-ex-row" id="gui-map-progress">
           <div class="fn-ex">
             <div class="fn-ex-head">
@@ -1094,8 +1124,8 @@
               <div class="fn-ex-foot">
                     <ul class="fn-ex-list">
       <li><strong>常见疏漏：</strong></li>
-      <li>1. 仅有进度条</li>
-      <li>2. 未写成百分比或「已完成 n/m」</li>
+      <li>1. 仅显示进度条，无法直接获取当前进度及完成情况</li>
+      <li>2. 未标注百分比、步骤数等口径</li>
     </ul>
               </div>
             </div>
@@ -1128,7 +1158,7 @@
         <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="gui-ex1-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
         <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="gui-ex1-html" aria-label="前端源码调整"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
       </div>
-      <div class="ex-fold-panel" id="gui-ex1-md" hidden>
+      <div class="ex-fold-panel ex-fold-panel--pair-h ex-fold-panel--pair-h-mid" id="gui-ex1-md" hidden>
         <div class="ex-card-pair">
     <p class="ex-card-title">Markdown 书写</p>
     <div class="ex-fold-intro">
@@ -1153,15 +1183,20 @@
         <span class="fn-ex-label is-good">正面</span>
         <div class="fn-ex-bar is-good" aria-hidden="true"></div>
       </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-markdown"><span class="code-line-hl is-good">## 训练进度
-
-训练进度 60% · 已完成 3/5 步</span></code></pre>
+      <figure class="file-sample hier-md file-sample--paper" aria-label="进度 Markdown">
+        <div class="llms-sec llms-sec--copy">
+          <span class="llms-mod">栏题</span>
+          <div class="hier-md-sec"><code>## 训练进度</code></div>
+        </div>
+        <div class="llms-sec llms-sec--cta">
+          <span class="llms-mod">数值</span>
+          <div class="hier-md-sec"><code>训练进度 60% · 已完成 3/5 步</code></div>
+        </div>
       </figure>
     </div>
         </div>
       </div>
-      <div class="ex-fold-panel" id="gui-ex1-html" hidden>
+      <div class="ex-fold-panel ex-fold-panel--pair-h ex-fold-panel--pair-h-mid" id="gui-ex1-html" hidden>
         <div class="ex-card-pair">
     <p class="ex-card-title">前端源码调整</p>
     <div class="ex-fold-intro">
@@ -1184,14 +1219,21 @@
         <span class="fn-ex-label is-good">正面</span>
         <div class="fn-ex-bar is-good" aria-hidden="true"></div>
       </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-html"><span class="code-line-hl is-good">&lt;p&gt;训练进度 60% · 已完成 3/5 步&lt;/p&gt;</span>
-&lt;div role="progressbar" aria-valuenow="60" aria-valuetext="60%"&gt;&lt;/div&gt;</code></pre>
+      <figure class="file-sample hier-md file-sample--paper" aria-label="进度 HTML">
+        <div class="llms-sec llms-sec--cta">
+          <span class="llms-mod">可见句</span>
+          <div class="hier-md-sec"><code>&lt;p&gt;训练进度 60% · 已完成 3/5 步&lt;/p&gt;</code></div>
+        </div>
+        <div class="llms-sec llms-sec--copy">
+          <span class="llms-mod">语义</span>
+          <div class="hier-md-sec"><code>&lt;div role="progressbar" aria-valuenow="60" aria-valuetext="60%"&gt;&lt;/div&gt;</code></div>
+        </div>
       </figure>
     </div>
         </div>
       </div>
-        <h4 class="fn-h4">示例 4 · 滑块</h4>
+        <h4 class="fn-h4">示例 3 · 滑块</h4>
+        <p class="fn-h3-desc">滑块应显示当前值。滑块应提供当前选中值，并在需要时标注单位或参数名称，不能只通过滑块位置推测数值。</p>
 <div class="fn-ex-row" id="gui-map-slider">
           <div class="fn-ex">
             <div class="fn-ex-head">
@@ -1221,10 +1263,10 @@
               <div class="fn-ex-bar is-good" aria-hidden="true"></div>
             </div>
             <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="正面：写成 8 GB">
+              <div class="fn-ex-mock" aria-label="正面：写成批大小 8">
                 <div class="num-face">
                   <div class="num-face-inner">
-                    <p class="num-face-label">批大小 8 GB</p>
+                    <p class="num-face-label">批大小：8</p>
                     <p class="num-slider" aria-hidden="true"><span style="left:70%"></span></p>
                   </div>
                 </div>
@@ -1232,8 +1274,8 @@
               <div class="fn-ex-foot">
                     <ul class="fn-ex-list">
       <li><strong>正确做法：</strong></li>
-      <li>1. 当前值写成「批大小 8 GB」</li>
-      <li>2. 滑块只辅助</li>
+      <li>1. 当前值写成「批大小：8」并随拖动同步更新</li>
+      <li>2. 滑块只作辅助，不单独承载数值</li>
     </ul>
               </div>
             </div>
@@ -1243,7 +1285,7 @@
         <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="gui-ex2-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
         <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="gui-ex2-html" aria-label="前端源码调整"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
       </div>
-      <div class="ex-fold-panel" id="gui-ex2-md" hidden>
+      <div class="ex-fold-panel ex-fold-panel--pair-h ex-fold-panel--pair-h-mid" id="gui-ex2-md" hidden>
         <div class="ex-card-pair">
     <p class="ex-card-title">Markdown 书写</p>
     <div class="ex-fold-intro">
@@ -1268,15 +1310,20 @@
         <span class="fn-ex-label is-good">正面</span>
         <div class="fn-ex-bar is-good" aria-hidden="true"></div>
       </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-markdown"><span class="code-line-hl is-good">## 批大小
-
-默认：8 GB（可调范围 2–16 GB）</span></code></pre>
+      <figure class="file-sample hier-md file-sample--paper" aria-label="滑块 Markdown">
+        <div class="llms-sec llms-sec--copy">
+          <span class="llms-mod">参数</span>
+          <div class="hier-md-sec"><code>## 批大小</code></div>
+        </div>
+        <div class="llms-sec llms-sec--cta">
+          <span class="llms-mod">当前值</span>
+          <div class="hier-md-sec"><code>默认：8（可调范围 2–16）</code></div>
+        </div>
       </figure>
     </div>
         </div>
       </div>
-      <div class="ex-fold-panel" id="gui-ex2-html" hidden>
+      <div class="ex-fold-panel ex-fold-panel--pair-h ex-fold-panel--pair-h-mid" id="gui-ex2-html" hidden>
         <div class="ex-card-pair">
     <p class="ex-card-title">前端源码调整</p>
     <div class="ex-fold-intro">
@@ -1299,14 +1346,21 @@
         <span class="fn-ex-label is-good">正面</span>
         <div class="fn-ex-bar is-good" aria-hidden="true"></div>
       </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-html"><span class="code-line-hl is-good">&lt;p&gt;批大小 8 GB&lt;/p&gt;
-&lt;input type="range" value="8" aria-valuetext="8 GB"&gt;</span></code></pre>
+      <figure class="file-sample hier-md file-sample--paper" aria-label="滑块 HTML">
+        <div class="llms-sec llms-sec--cta">
+          <span class="llms-mod">当前值</span>
+          <div class="hier-md-sec"><code>&lt;p&gt;批大小：8&lt;/p&gt;</code></div>
+        </div>
+        <div class="llms-sec llms-sec--copy">
+          <span class="llms-mod">语义</span>
+          <div class="hier-md-sec"><code>&lt;input type="range" value="8" aria-valuetext="8"&gt;</code></div>
+        </div>
       </figure>
     </div>
         </div>
       </div>
-        <h4 class="fn-h4">示例 5 · 评分</h4>
+        <h4 class="fn-h4">示例 4 · 评分</h4>
+        <p class="fn-h3-desc">评分应显示分值及必要统计信息。评分控件应以可读取的文本呈现具体分值；若涉及评价人数、评价次数或平均分，应根据场景补充相应信息。星形图标可作为视觉辅助。</p>
 <div class="fn-ex-row" id="gui-map-rating">
           <div class="fn-ex">
             <div class="fn-ex-head">
@@ -1340,15 +1394,15 @@
                 <div class="num-face">
                   <div class="num-face-inner">
                     <div class="st-stars" aria-hidden="true">★★★★☆</div>
-                    <p class="st-rate">4.6 分 · 128 人</p>
+                    <p class="st-rate">4.6 分 · 128 人评价</p>
                   </div>
                 </div>
               </div>
               <div class="fn-ex-foot">
                     <ul class="fn-ex-list">
       <li><strong>正确做法：</strong></li>
-      <li>1. 评分写成「4.6 分 · 128 人」</li>
-      <li>2. 星星只辅助</li>
+      <li>1. 评分写成「4.6 分 · 128 人评价」，标明统计口径</li>
+      <li>2. 星星只作视觉辅助</li>
     </ul>
               </div>
             </div>
@@ -1358,7 +1412,7 @@
         <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="gui-ex3-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
         <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="gui-ex3-html" aria-label="前端源码调整"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
       </div>
-      <div class="ex-fold-panel" id="gui-ex3-md" hidden>
+      <div class="ex-fold-panel ex-fold-panel--pair-h" id="gui-ex3-md" hidden>
         <div class="ex-card-pair">
     <p class="ex-card-title">Markdown 书写</p>
     <div class="ex-fold-intro">
@@ -1381,13 +1435,16 @@
         <span class="fn-ex-label is-good">正面</span>
         <div class="fn-ex-bar is-good" aria-hidden="true"></div>
       </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-markdown"><span class="code-line-hl is-good">评分：4.6 分 · 128 人</span></code></pre>
+      <figure class="file-sample hier-md file-sample--paper" aria-label="评分 Markdown">
+        <div class="llms-sec llms-sec--cta">
+          <span class="llms-mod">分值</span>
+          <div class="hier-md-sec"><code>评分：4.6 分 · 128 人评价</code></div>
+        </div>
       </figure>
     </div>
         </div>
       </div>
-      <div class="ex-fold-panel" id="gui-ex3-html" hidden>
+      <div class="ex-fold-panel ex-fold-panel--pair-h" id="gui-ex3-html" hidden>
         <div class="ex-card-pair">
     <p class="ex-card-title">前端源码调整</p>
     <div class="ex-fold-intro">
@@ -1410,9 +1467,15 @@
         <span class="fn-ex-label is-good">正面</span>
         <div class="fn-ex-bar is-good" aria-hidden="true"></div>
       </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-html">&lt;span aria-hidden="true"&gt;★★★★☆&lt;/span&gt;
-<span class="code-line-hl is-good">&lt;span&gt;4.6 分 · 128 人&lt;/span&gt;</span></code></pre>
+      <figure class="file-sample hier-md file-sample--paper" aria-label="评分 HTML">
+        <div class="llms-sec llms-sec--copy">
+          <span class="llms-mod">装饰</span>
+          <div class="hier-md-sec"><code>&lt;span aria-hidden="true"&gt;★★★★☆&lt;/span&gt;</code></div>
+        </div>
+        <div class="llms-sec llms-sec--cta">
+          <span class="llms-mod">分值</span>
+          <div class="hier-md-sec"><code>&lt;span&gt;4.6 分 · 128 人评价&lt;/span&gt;</code></div>
+        </div>
       </figure>
     </div>
         </div>
@@ -1423,17 +1486,20 @@
     <section class="section" id="expected-effect">
       <h2>预期效果</h2>
       <ol class="bg-list">
-        <li>帮助 AI Agent 说出要搜、要填软件包还是版本号，再选择操作。</li>
-        <li>减少只靠条长、星数或占位符猜测当前值，使进度、配额与评分可写成带单位的证据。</li>
+        <li>帮助 AI Agent 准确识别控件用途、当前数值及状态，减少对占位符、图形和视觉位置的依赖。</li>
+        <li>提高进度、参数和评分等信息的可读取性与可理解性，减少因单位缺失或统计口径不明造成的歧义。</li>
+        <li>确保控件状态和数值变化能够被及时获取，提升交互信息的准确性与可用性。</li>
       </ol>
     </section>
 
     <section class="section" id="notes">
       <h2>注意事项</h2>
       <ol class="bg-list">
-        <li>可见标签与源码 label 须一致，不能只写给读屏、不写给人读流。</li>
-        <li>空列表与「-」等失败态见失败状态可处理，不在本页展开。</li>
-        <li>装饰性控件不承载事实时，不必硬加数值。</li>
+        <li><code>label</code> 应与对应控件正确关联；<code>aria-label</code> 可用于没有可见标签的场景，但不能无必要地重复已有标签。</li>
+        <li>占位符用于提示输入格式或示例，不应替代控件名称。</li>
+        <li>进度、滑块和评分等动态信息应同步更新文本或语义属性，避免数值与实际状态不一致。</li>
+        <li>数值应根据场景标注必要的单位、总量或统计口径，避免孤立数字产生歧义。</li>
+        <li>装饰性图标不承载独立信息时，无需额外添加语义说明。</li>
       </ol>
     </section>
 </main>

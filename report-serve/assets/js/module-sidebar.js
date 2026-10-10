@@ -10,12 +10,12 @@
       { group: null, id: "content-collapse", href: "problems-content-collapse.html", label: "折叠隐藏语义", pageIds: ["content-collapse", "content-tab"] }
     ],
     principles: [
-      { group: "可达", id: "robots", href: "principles-robots.html", label: "配置 robots.txt 许可声明" },
-      { group: null, id: "llms", href: "principles-llms.html", label: "部署 llms.txt 索引目录", pageIds: ["llms", "llms-volume"] },
-      { group: null, id: "llms-full", href: "principles-llms-full.html", label: "部署 llms-full.txt 完整正文" },
-      { group: null, id: "sitemap", href: "principles-sitemap.html", label: "Sitemap 路径清单语义化" },
+      { group: "可达", id: "robots", href: "principles-robots.html", label: "robots.txt 授权许可" },
+      { group: null, id: "sitemap", href: "principles-sitemap.html", label: "sitemap 路径清单可发现" },
+      { group: null, id: "llms", href: "principles-llms.html", label: "llms.txt 索引入口可发现", pageIds: ["llms", "llms-volume"] },
+      { group: null, id: "llms-full", href: "principles-llms-full.html", label: "llms-full.txt 全文可抓取" },
       {
-        group: "可读", id: "content-retrievable", href: "principles-content-retrievable.html", label: "页面 HTML 可读性",
+        group: "可读", id: "content-retrievable", href: "principles-content-retrievable.html", label: "HTML 页面正文可读",
         pageIds: ["page-readable", "content-retrievable"]
       },
       {
@@ -23,51 +23,49 @@
         pageIds: ["machine-track", "format", "dual-track", "page-md", "block-md"]
       },
       {
-        group: null, id: "carrier", href: "principles-image.html", label: "载体信息可转写",
+        group: null, id: "carrier", href: "principles-image.html", label: "载体内容可转写",
         pageIds: ["carrier", "nontext", "image", "icon-text", "style-semantic", "media", "structured", "table", "code"],
         children: [
-          { id: "image", href: "principles-image.html", label: "图片内容转译" },
-          { id: "media", href: "principles-media.html", label: "音视频内容可转译" },
-          { id: "icon-text", href: "principles-icon-text.html", label: "图标语义可识别" },
-          { id: "style-semantic", href: "principles-style-semantic.html", label: "颜色语义转写" },
-          { id: "table", href: "principles-table.html", label: "表格语义化" },
-          { id: "code", href: "principles-code.html", label: "代码块语义化" }
+          { id: "image", href: "principles-image.html", label: "图片内容可转写" },
+          { id: "media", href: "principles-media.html", label: "音视频内容可转写" },
+          { id: "icon-text", href: "principles-icon-text.html", label: "图标含义可读" },
+          { id: "style-semantic", href: "principles-style-semantic.html", label: "颜色含义可读" },
+          { id: "table", href: "principles-table.html", label: "表格结构可读" },
+          { id: "code", href: "principles-code.html", label: "代码块语义可读" }
         ]
       },
       {
-        group: null, id: "interactive", href: "principles-hidden.html", label: "交互信息可抓取",
+        group: null, id: "interactive", href: "principles-hidden.html", label: "交互内容可抓取",
         pageIds: ["interactive", "hidden", "tab", "collapse", "default-visible", "mask-clear", "page-elements", "controls", "control-label", "gui-map"],
         children: [
-          { id: "hidden", href: "principles-hidden.html", label: "交互不藏关键正文",
+          { id: "hidden", href: "principles-hidden.html", label: "关键正文不默认隐藏",
             pageIds: ["hidden", "tab", "collapse", "default-visible", "mask-clear"] },
-          { id: "control-label", href: "principles-control-label.html", label: "控件标签与数值可读取",
+          { id: "control-label", href: "principles-control-label.html", label: "控件名称与值可读",
             pageIds: ["controls", "page-elements", "control-label", "gui-map"] }
         ]
       },
       {
-        group: "可理解", id: "doc-structure", href: "principles-hierarchy.html", label: "信息结构明确",
+        group: "可理解", id: "doc-structure", href: "principles-hierarchy.html", label: "内容结构可识别",
         pageIds: ["doc-structure", "hierarchy", "noise"],
         children: [
-          { id: "hierarchy", href: "principles-hierarchy.html", label: "标题按层级标注" },
-          { id: "noise", href: "principles-noise.html", label: "推荐内容置后" }
+          { id: "hierarchy", href: "principles-hierarchy.html", label: "标题层级可识别" },
+          { id: "noise", href: "principles-noise.html", label: "推荐内容后置" }
         ]
       },
       {
         group: null, id: "lifecycle", href: "principles-timeliness.html", label: "必要信息完整",
         pageIds: ["lifecycle", "timeliness", "date-modified", "a2", "structure-metadata"],
         children: [
-          { id: "timeliness", href: "principles-timeliness.html", label: "版本号外显" },
-          { id: "date-modified", href: "principles-date-modified.html", label: "更新日期外显" },
-          { id: "a2", href: "principles-a2.html", label: "生命周期状态显化" },
-          { id: "structure-metadata", href: "principles-structure-metadata.html", label: "元数据丰富化" }
+          { id: "timeliness", href: "principles-timeliness.html", label: "版本与时效信息可识别" },
+          { id: "structure-metadata", href: "principles-structure-metadata.html", label: "页面元数据完整一致" }
         ]
       },
       {
         group: null, id: "meaning", href: "principles-link.html", label: "内容含义明确",
         pageIds: ["meaning", "status-word", "note", "link", "term"],
         children: [
-          { id: "link", href: "principles-link.html", label: "链接语义化" },
-          { id: "term", href: "principles-term.html", label: "术语用词一致" }
+          { id: "link", href: "principles-link.html", label: "链接目标可识别" },
+          { id: "term", href: "principles-term.html", label: "内容表述清晰可指代" }
         ]
       },
       {
@@ -92,7 +90,8 @@
       { group: null, id: "llms-parse", href: "principles-llms-parse.html", label: "根 llms 解析",
         pageIds: ["llms-parse", "llms-parse-mintlify", "llms-parse-mintlify-path", "llms-parse-mintlify-path-cross", "llms-parse-mintlify-path-insight", "llms-parse-nvidia", "llms-parse-nvidia-path", "llms-parse-nvidia-path-cross", "llms-parse-nvidia-path-insight", "llms-parse-hiascend", "llms-parse-root-compare"] },
       { group: null, id: "llms-parse-book", href: "principles-llms-parse-book.html", label: "分册 llms 解析",
-        pageIds: ["llms-parse-book", "llms-parse-mintlify-docs", "llms-parse-nvidia-docs", "llms-parse-nvidia-cuda"] }
+        pageIds: ["llms-parse-book", "llms-parse-mintlify-docs", "llms-parse-nvidia-docs", "llms-parse-nvidia-cuda"] },
+      { group: null, id: "llms-parse-nvidia-path-sample", href: "principles-llms-parse-nvidia-path-sample.html", label: "材料准备" }
     ]
   };
 
@@ -201,6 +200,12 @@
 
   var SCENE_KEY = "aff-nav-scene";
   var SCENE_LABEL = { all: "全部场景", site: "官网场景", docs: "文档场景" };
+  var EXTRA_GROUPS = { "可操作": true, "实测记录": true };
+  var extraGroup = null;
+  items.forEach(function (item) {
+    if (item.group) extraGroup = EXTRA_GROUPS[item.group] ? item.group : null;
+    item.extraGroup = extraGroup;
+  });
 
   function readScene() {
     try {
@@ -251,10 +256,21 @@
     html += "<button type=\"button\" class=\"nav-settings\" aria-expanded=\"false\" aria-haspopup=\"true\" aria-controls=\"nav-scene-menu\" aria-label=\"设置\" title=\"设置\">";
     html += "<img class=\"nav-settings-icon\" src=\"assets/icons/nav-settings.png\" width=\"14\" height=\"14\" alt=\"\" aria-hidden=\"true\">";
     html += "</button>";
-    html += "<div class=\"nav-settings-panel\" id=\"nav-scene-menu\" hidden role=\"menu\" aria-label=\"场景\">";
+    html += "<div class=\"nav-settings-panel\" id=\"nav-scene-menu\" hidden role=\"menu\" aria-label=\"设置\">";
     html += "<button type=\"button\" class=\"nav-settings-option\" role=\"menuitemradio\" data-scene=\"all\" aria-checked=\"true\">全部场景</button>";
     html += "<button type=\"button\" class=\"nav-settings-option\" role=\"menuitemradio\" data-scene=\"site\" aria-checked=\"false\">官网场景</button>";
     html += "<button type=\"button\" class=\"nav-settings-option\" role=\"menuitemradio\" data-scene=\"docs\" aria-checked=\"false\">文档场景</button>";
+    var extraLast = null;
+    items.forEach(function (item) {
+      if (!item.extraGroup) return;
+      if (item.extraGroup !== extraLast) {
+        html += "<div class=\"nav-settings-sep\" role=\"separator\"></div>";
+        html += "<div class=\"nav-settings-heading\">" + item.extraGroup + "</div>";
+        extraLast = item.extraGroup;
+      }
+      var extraActive = navItemActive(item);
+      html += "<a class=\"nav-settings-link" + (extraActive ? " is-active" : "") + "\" role=\"menuitem\" href=\"" + item.href + "\">" + item.label + "</a>";
+    });
     html += "</div>";
     html += "</span>";
     html += "<button type=\"button\" class=\"nav-expand-all\" aria-expanded=\"false\" aria-label=\"展开全部一级菜单\" title=\"展开/收起全部\">";
@@ -277,6 +293,7 @@
   html += "<ul class=\"sidebar-nav sidebar-phase-nav\">";
   var lastGroup = null;
   items.forEach(function (item) {
+    if (item.extraGroup) return;
     if (item.group && item.group !== lastGroup) {
       html += "<li class=\"nav-group-label\">" + item.group + "</li>";
       lastGroup = item.group;
@@ -342,6 +359,12 @@
 
   aside.addEventListener("click", function (e) {
     if (!e.target.closest(".nav-settings-wrap")) setSettingsOpen(false);
+
+    var extraLink = e.target.closest(".nav-settings-link");
+    if (extraLink) {
+      setSettingsOpen(false);
+      return;
+    }
 
     var option = e.target.closest(".nav-settings-option");
     if (option) {

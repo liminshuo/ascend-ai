@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>代码源码可复用 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
+  <title>代码块语义可读 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
   <link rel="stylesheet" href="assets/css/style.css">
 <style>
   .topbar {
@@ -286,21 +286,93 @@
     padding: 10px 12px;
     background: #fff;
     border-radius: 6px;
+    font-size: 12px;
+    line-height: 18px;
   }
   .code-face-lang {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
     margin: 0 0 8px;
-    font-size: var(--text-auxiliary);
+    font-size: 12px;
     line-height: 18px;
     font-weight: 650;
     color: var(--color-text);
   }
+  .code-face-acts {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex-shrink: 0;
+  }
+  .code-face-act {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: 0;
+    border-radius: 4px;
+    background: none;
+    color: #8c8c8c;
+    cursor: default;
+  }
+  .code-face-act svg {
+    width: 14px;
+    height: 14px;
+  }
   .code-face-pre {
     margin: 0;
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: var(--text-auxiliary);
-    line-height: 20px;
+    font-size: 12px;
+    line-height: 18px;
     color: var(--color-text);
     white-space: pre-wrap;
+  }
+  .code-face-doc {
+    padding: 12px;
+    background: #fff;
+    border-radius: 6px;
+    font-size: 12px;
+    line-height: 18px;
+  }
+  .code-face-h {
+    margin: 0;
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 700;
+    color: var(--color-text);
+  }
+  .code-face-skel {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 8px 0 0;
+  }
+  .code-face-skel i {
+    display: block;
+    height: 8px;
+    border-radius: 2px;
+    background: #e8e8e8;
+  }
+  .code-face-caption {
+    margin: 10px 0 0;
+    font-size: 12px;
+    line-height: 18px;
+    color: var(--color-text);
+  }
+  .code-face-doc .code-face-inner {
+    margin-top: 10px;
+    padding: 10px 12px;
+    background: #f6f7f9;
+  }
+  .code-face-doc .code-face-inner + .code-face-inner {
+    margin-top: 8px;
+  }
+  .code-face-doc .code-face-inner.is-good {
+    background: rgba(52, 211, 153, 0.07);
   }
 
   .principle-example + .principle-example { margin-top: 28px; }
@@ -396,6 +468,10 @@
   }
   #practices .principle-example > .fn-h3-desc + h4.fn-h4 {
     margin-top: var(--space-stack, 16px);
+  }
+  #practices .principle-example > h4.fn-h4 + .fn-h3-desc {
+    margin-top: 0;
+    margin-bottom: var(--space-stack, 16px);
   }
   #practices .principle-example { margin: 0; }
   #practices .principle-example + .principle-example { margin-top: var(--space-stack, 16px); }
@@ -520,6 +596,125 @@
   }
   .file-sample .code-line-hl.is-bad { background: rgba(180, 35, 24, 0.28); }
   .file-sample .code-line-hl.is-good { background: rgba(4, 120, 87, 0.28); }
+  .file-sample.hier-md {
+    padding: 12px 14px 14px;
+    gap: 10px;
+  }
+  .file-sample.hier-md code {
+    display: block;
+    margin: 0;
+    padding: 0;
+    background: none;
+    color: #e8e8e8;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: var(--text-auxiliary);
+    line-height: 20px;
+    font-weight: 650;
+    overflow-wrap: anywhere;
+  }
+  #practices .file-sample.file-sample--paper {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 0;
+    padding: 16px;
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  #practices .file-sample--paper .llms-sec {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 0;
+    padding: 6px 10px;
+    padding-right: 52px;
+    border-radius: 8px;
+  }
+  #practices .file-sample--paper .llms-sec--copy {
+    background: rgba(14, 165, 233, 0.07);
+  }
+  #practices .file-sample--paper .llms-sec--cta {
+    background: rgba(52, 211, 153, 0.07);
+  }
+  #practices .file-sample--paper .llms-mod {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    display: inline-flex;
+    align-items: center;
+    height: 20px;
+    padding: 0 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    line-height: 20px;
+    font-weight: 650;
+    color: #525252;
+    background: rgba(25, 25, 25, 0.08);
+  }
+  #practices .file-sample--paper .llms-sec--copy .llms-mod {
+    color: #0369a1;
+    background: rgba(14, 165, 233, 0.16);
+  }
+  #practices .file-sample--paper .llms-sec--cta .llms-mod {
+    color: #047857;
+    background: rgba(52, 211, 153, 0.16);
+  }
+  #practices .file-sample--paper .hier-md-sec { margin: 0; }
+  #practices .file-sample--paper .hier-md-sec code {
+    display: block;
+    margin: 0;
+    padding: 0;
+    background: none;
+    color: #191919;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 400;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+  }
+  #ex1-md .ex-card-pane:last-child .file-sample,
+  #ex1-html .ex-card-pane:last-child .file-sample,
+  #ex2-md .ex-card-pane:last-child .file-sample,
+  #ex2-html .ex-card-pane:last-child .file-sample,
+  #ex3-md .ex-card-pane:last-child .file-sample,
+  #ex3-html .ex-card-pane:last-child .file-sample {
+    max-height: none;
+  }
+  #ex1-md .file-sample--compact pre,
+  #ex1-html .file-sample--compact pre,
+  #ex2-md .file-sample--compact pre,
+  #ex2-html .file-sample--compact pre,
+  #ex3-md .file-sample--compact pre,
+  #ex3-html .file-sample--compact pre,
+  #ex1-md .file-sample--compact pre code,
+  #ex1-html .file-sample--compact pre code,
+  #ex2-md .file-sample--compact pre code,
+  #ex2-html .file-sample--compact pre code,
+  #ex3-md .file-sample--compact pre code,
+  #ex3-html .file-sample--compact pre code,
+  #ex1-md .file-sample--paper .hier-md-sec code,
+  #ex1-html .file-sample--paper .hier-md-sec code,
+  #ex2-md .file-sample--paper .hier-md-sec code,
+  #ex2-html .file-sample--paper .hier-md-sec code,
+  #ex3-md .file-sample--paper .hier-md-sec code,
+  #ex3-html .file-sample--paper .hier-md-sec code {
+    font-size: 10px;
+    line-height: 16px;
+  }
+  #ex1-md .file-sample--paper .llms-mod,
+  #ex1-html .file-sample--paper .llms-mod,
+  #ex2-md .file-sample--paper .llms-mod,
+  #ex2-html .file-sample--paper .llms-mod,
+  #ex3-md .file-sample--paper .llms-mod,
+  #ex3-html .file-sample--paper .llms-mod {
+    font-size: 10px;
+    line-height: 16px;
+    height: 16px;
+  }
   .ex-card-title {
     margin: 0;
     padding: 0;
@@ -660,31 +855,32 @@
 
   <main class="main-content">
     <div class="page-header">
-      <h1>代码源码可复用</h1>
+      <h1>代码块语义可读</h1>
     </div>
 
     <section class="section" id="mechanism">
       <h2>概述</h2>
-      <p class="page-lead">代码块是网页提供命令、配置和示例程序的主要载体，但展示效果不等于可复用源码。</p>
-      <p class="page-lead">代码源码可复用原则旨在降低代码示例的执行障碍，使语言、场景、源码、行号和预期输出能够被 AI Agent 准确区分，并生成可复制、可运行的回答。</p>
+      <p class="page-lead">代码块是网页展示命令、配置和示例程序的重要载体，但视觉上完整的代码不一定能被 AI Agent 准确识别和直接执行。</p>
+      <p class="page-lead">代码源码可复用原则旨在明确代码语言、使用场景、源码边界及运行条件，使 AI Agent 能够准确获取代码，并生成可复制、可验证的回答。</p>
     </section>
 
     <section class="section" id="detail-principles">
       <h2>具体原则</h2>
-<ol class="bg-list">
-        <li>为代码块标注语言和使用场景，避免无语言围栏或仅靠高亮样式猜测代码类型。</li>
-        <li>将行号、复制按钮、提示标记等展示元素与源码分离，避免入库文本夹杂行号或 UI 文案。</li>
-        <li>还原 HTML 实体和转义内容，确保复制后的命令、配置或程序可以直接运行。</li>
-        <li>执行类示例应配套预期输出或校验方式，便于判断命令是否执行成功。</li>
-        <li>装饰性伪代码且正文已覆盖同一事实时，可只作示意，不必当作可执行源码入库。</li>
+      <ol class="bg-list">
+        <li>为代码块标注编程语言和使用场景，避免无语言标识或仅凭高亮样式判断代码类型。</li>
+        <li>将行号、复制按钮和提示文案等展示元素与源码分离，避免混入可复制内容。</li>
+        <li>正确处理 HTML 实体和转义字符，确保复制后的命令、配置或程序内容准确。</li>
+        <li>执行类示例应提供必要的运行条件，并根据需要补充预期输出或验证方式。</li>
+        <li>装饰性伪代码或仅用于说明的片段应明确其示意性质，避免被误认为可直接执行的源码。</li>
       </ol>
     </section>
     <section class="section" id="practices">
-      <h2>典型示例</h2>
+      <h2>代码源码可复用典型示例</h2>
       <div class="principle-example">
         <h3 class="fn-h3">代码源码保持可复制</h3>
-        <p class="fn-h3-desc">代码块要让 Agent 能区分语言、源码、行号和输出；复制出来的内容应当可以直接执行或用于核对。</p>
+        <p class="fn-h3-desc">代码块应让 Agent 能识别语言、划清源码边界，并在需要时核验运行结果；复制出来的内容应可直接使用。</p>
         <h4 class="fn-h4">示例 1 · 语言标注</h4>
+        <p class="fn-h3-desc">代码块应明确标注语言，确保代码类型可识别，并便于正确复制。</p>
 <div class="fn-ex-row" id="code-lang-label">
           <div class="fn-ex">
             <div class="fn-ex-head">
@@ -718,7 +914,17 @@ ascend-dmi -a</p>
               <div class="fn-ex-mock" aria-label="正面：写成 Bash">
                 <div class="code-face">
                   <div class="code-face-inner">
-                    <p class="code-face-lang">Bash</p>
+                    <div class="code-face-lang">
+                      <span>Bash</span>
+                      <span class="code-face-acts" aria-hidden="true">
+                        <button type="button" class="code-face-act" aria-label="复制" tabindex="-1">
+                          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M10.5 5.5V4A1.5 1.5 0 0 0 9 2.5H4A1.5 1.5 0 0 0 2.5 4v5A1.5 1.5 0 0 0 4 10.5h1.5" stroke="currentColor" stroke-width="1.2"/></svg>
+                        </button>
+                        <button type="button" class="code-face-act" aria-label="咨询智慧助手" tabindex="-1">
+                          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2.2 9.15 6.1 13 7.2 9.15 8.3 8 12.2 6.85 8.3 3 7.2l3.85-1.1L8 2.2Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M12.4 3.2v1.6M13.2 4h-1.6M3.6 11.4v1.2M4.2 12h-1.2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+                        </button>
+                      </span>
+                    </div>
                     <p class="code-face-pre">npu-smi info
 ascend-dmi -a</p>
                   </div>
@@ -727,7 +933,8 @@ ascend-dmi -a</p>
               <div class="fn-ex-foot">
                     <ul class="fn-ex-list">
       <li><strong>正确做法：</strong></li>
-      <li>1. 块顶写成「Bash」等语言名</li>
+      <li>1. 用围栏或 <code>language-xxx</code> 标明语言</li>
+      <li>2. 不以高亮样式代替语言标识</li>
     </ul>
               </div>
             </div>
@@ -735,15 +942,15 @@ ascend-dmi -a</p>
         </div>
       <div class="ex-fold-bar">
         <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex1-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
-        <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex1-html" aria-label="前端源码调整"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
+        <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex1-html" aria-label="源码书写"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
       </div>
-      <div class="ex-fold-panel" id="ex1-md" hidden>
+            <div class="ex-fold-panel" id="ex1-md" hidden>
         <div class="ex-card-pair">
     <p class="ex-card-title">Markdown 书写</p>
     <div class="ex-fold-intro">
       <ul class="fn-ex-list">
-        <li>1. 围栏写清语言</li>
-        <li>2. 必要时注明文件名与场景</li>
+        <li>1. 围栏写清语言。</li>
+        <li>2. 必要时注明文件名与场景。</li>
       </ul>
     </div>
     <div class="ex-card-pane">
@@ -754,6 +961,7 @@ ascend-dmi -a</p>
       <figure class="file-sample file-sample--compact">
         <pre><code class="language-markdown"><span class="code-line-hl is-bad">```</span>
 npu-smi info
+ascend-dmi -a
 ```</code></pre>
       </figure>
     </div>
@@ -762,22 +970,25 @@ npu-smi info
         <span class="fn-ex-label is-good">正面</span>
         <div class="fn-ex-bar is-good" aria-hidden="true"></div>
       </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-markdown"><span class="code-line-hl is-good">```bash</span>
+      <figure class="file-sample hier-md file-sample--paper" aria-label="语言标注 Markdown">
+        <div class="llms-sec llms-sec--cta">
+          <span class="llms-mod">语言</span>
+          <div class="hier-md-sec"><code>```bash
 npu-smi info
 ascend-dmi -a
-```</code></pre>
+```</code></div>
+        </div>
       </figure>
     </div>
         </div>
       </div>
       <div class="ex-fold-panel" id="ex1-html" hidden>
         <div class="ex-card-pair">
-    <p class="ex-card-title">前端源码调整</p>
+    <p class="ex-card-title">源码书写</p>
     <div class="ex-fold-intro">
       <ul class="fn-ex-list">
-        <li>1. pre>code.language-xxx</li>
-        <li>2. 不要靠高亮猜语言</li>
+        <li>1. 使用 <code>pre &gt; code.language-xxx</code>。</li>
+        <li>2. 不要靠高亮样式猜语言。</li>
       </ul>
     </div>
     <div class="ex-card-pane">
@@ -786,7 +997,10 @@ ascend-dmi -a
         <div class="fn-ex-bar" aria-hidden="true"></div>
       </div>
       <figure class="file-sample file-sample--compact">
-        <pre><code class="language-html"><span class="code-line-hl is-bad">&lt;pre&gt;npu-smi info&lt;/pre&gt;</span></code></pre>
+        <pre><code class="language-html"><span class="code-line-hl is-bad">&lt;pre&gt;
+npu-smi info
+ascend-dmi -a
+&lt;/pre&gt;</span></code></pre>
       </figure>
     </div>
     <div class="ex-card-pane">
@@ -794,33 +1008,46 @@ ascend-dmi -a
         <span class="fn-ex-label is-good">正面</span>
         <div class="fn-ex-bar is-good" aria-hidden="true"></div>
       </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-html"><span class="code-line-hl is-good">&lt;pre&gt;&lt;code class="language-bash"&gt;npu-smi info&lt;/code&gt;&lt;/pre&gt;</span></code></pre>
+      <figure class="file-sample hier-md file-sample--paper" aria-label="语言标注 HTML">
+        <div class="llms-sec llms-sec--cta">
+          <span class="llms-mod">语言</span>
+          <div class="hier-md-sec"><code>&lt;pre&gt;&lt;code class="language-bash"&gt;
+npu-smi info
+ascend-dmi -a
+&lt;/code&gt;&lt;/pre&gt;</code></div>
+        </div>
       </figure>
     </div>
         </div>
       </div>
-        <h4 class="fn-h4">示例 2 · 预期输出</h4>
-<div class="fn-ex-row" id="code-expected-output">
+        <h4 class="fn-h4">示例 2 · 环境准备代码块</h4>
+        <p class="fn-h3-desc">同时给出运行场景、可执行命令和预期输出，便于核对安装是否成功。</p>
+<div class="fn-ex-row" id="code-env-setup">
           <div class="fn-ex">
             <div class="fn-ex-head">
               <span class="fn-ex-label">反面</span>
               <div class="fn-ex-bar" aria-hidden="true"></div>
             </div>
             <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="反面：没有输出块">
+              <div class="fn-ex-mock" aria-label="反面：有页面骨架但缺语言与输出">
                 <div class="code-face">
-                  <div class="code-face-inner">
-                    <p class="code-face-lang">Bash</p>
-                    <p class="code-face-pre">npu-smi info</p>
+                  <div class="code-face-doc">
+                    <p class="code-face-h">环境准备</p>
+                    <span class="code-face-skel" aria-hidden="true"><i style="width:92%"></i><i style="width:74%"></i></span>
+                    <p class="code-face-caption">示例：安装 3.16.0 版本的 CMake（x86_64 架构）。</p>
+                    <div class="code-face-inner">
+                      <p class="code-face-pre">mkdir -p cmake-3.16 &amp;&amp; wget -qO- "https://cmake.org/files/v3.16/cmake-3.16.0-Linux-x86_64.tar.gz" | tar --strip-components=1 -xz -C cmake-3.16
+export PATH=`pwd`/cmake-3.16/bin:$PATH
+cmake --version</p>
+                    </div>
                   </div>
                 </div>
               </div>
               <div class="fn-ex-foot">
                     <ul class="fn-ex-list">
       <li><strong>常见疏漏：</strong></li>
-      <li>1. 仅有命令，未配输出文字块</li>
-      <li>2. 无法识别成功时长什么样</li>
+      <li>1. 没有写代码类型，无法判断语言</li>
+      <li>2. 没有执行后的输出或校验结果</li>
     </ul>
               </div>
             </div>
@@ -831,22 +1058,50 @@ ascend-dmi -a
               <div class="fn-ex-bar is-good" aria-hidden="true"></div>
             </div>
             <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="正面：预期输出写成独立代码块">
-                <div class="code-face code-face--stack">
-                  <div class="code-face-inner">
-                    <p class="code-face-lang">Bash</p>
-                    <p class="code-face-pre">npu-smi info</p>
-                  </div>
-                  <div class="code-face-inner">
-                    <p class="code-face-lang">Output</p>
-                    <p class="code-face-pre">NPU 状态为 OK，设备列表可见。</p>
+              <div class="fn-ex-mock" aria-label="正面：代码块有标题、语言和输出">
+                <div class="code-face">
+                  <div class="code-face-doc">
+                    <p class="code-face-h">环境准备</p>
+                    <span class="code-face-skel" aria-hidden="true"><i style="width:92%"></i><i style="width:74%"></i></span>
+                    <p class="code-face-caption">示例：安装 3.16.0 版本的 CMake（x86_64 架构）。</p>
+                    <div class="code-face-inner">
+                      <div class="code-face-lang">
+                        <span>Bash</span>
+                        <span class="code-face-acts" aria-hidden="true">
+                          <button type="button" class="code-face-act" aria-label="复制" tabindex="-1">
+                            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M10.5 5.5V4A1.5 1.5 0 0 0 9 2.5H4A1.5 1.5 0 0 0 2.5 4v5A1.5 1.5 0 0 0 4 10.5h1.5" stroke="currentColor" stroke-width="1.2"/></svg>
+                          </button>
+                          <button type="button" class="code-face-act" aria-label="咨询智慧助手" tabindex="-1">
+                            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2.2 9.15 6.1 13 7.2 9.15 8.3 8 12.2 6.85 8.3 3 7.2l3.85-1.1L8 2.2Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M12.4 3.2v1.6M13.2 4h-1.6M3.6 11.4v1.2M4.2 12h-1.2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+                          </button>
+                        </span>
+                      </div>
+                      <p class="code-face-pre">mkdir -p cmake-3.16 &amp;&amp; wget -qO- "https://cmake.org/files/v3.16/cmake-3.16.0-Linux-x86_64.tar.gz" | tar --strip-components=1 -xz -C cmake-3.16
+export PATH=`pwd`/cmake-3.16/bin:$PATH
+cmake --version</p>
+                    </div>
+                    <div class="code-face-inner is-good">
+                      <div class="code-face-lang">
+                        <span>Output</span>
+                        <span class="code-face-acts" aria-hidden="true">
+                          <button type="button" class="code-face-act" aria-label="复制" tabindex="-1">
+                            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M10.5 5.5V4A1.5 1.5 0 0 0 9 2.5H4A1.5 1.5 0 0 0 2.5 4v5A1.5 1.5 0 0 0 4 10.5h1.5" stroke="currentColor" stroke-width="1.2"/></svg>
+                          </button>
+                          <button type="button" class="code-face-act" aria-label="咨询智慧助手" tabindex="-1">
+                            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2.2 9.15 6.1 13 7.2 9.15 8.3 8 12.2 6.85 8.3 3 7.2l3.85-1.1L8 2.2Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M12.4 3.2v1.6M13.2 4h-1.6M3.6 11.4v1.2M4.2 12h-1.2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+                          </button>
+                        </span>
+                      </div>
+                      <p class="code-face-pre">cmake version 3.16.0</p>
+                    </div>
                   </div>
                 </div>
               </div>
               <div class="fn-ex-foot">
                     <ul class="fn-ex-list">
       <li><strong>正确做法：</strong></li>
-      <li>1. 预期输出写成可选中的独立文字块</li>
+      <li>1. 写清场景、语言和可复制命令</li>
+      <li>2. 输出与实际执行结果一致，用于核验</li>
     </ul>
               </div>
             </div>
@@ -854,15 +1109,15 @@ ascend-dmi -a
         </div>
       <div class="ex-fold-bar">
         <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex2-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
-        <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex2-html" aria-label="前端源码调整"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
+        <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex2-html" aria-label="源码书写"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
       </div>
-      <div class="ex-fold-panel" id="ex2-md" hidden>
+            <div class="ex-fold-panel" id="ex2-md" hidden>
         <div class="ex-card-pair">
     <p class="ex-card-title">Markdown 书写</p>
     <div class="ex-fold-intro">
       <ul class="fn-ex-list">
-        <li>1. 块后提供预期输出文字</li>
-        <li>2. 勿只写「见截图」</li>
+        <li>1. 标题、说明、语言围栏一起提供。</li>
+        <li>2. 另附输出块，便于核验执行结果。</li>
       </ul>
     </div>
     <div class="ex-card-pane">
@@ -871,11 +1126,15 @@ ascend-dmi -a
         <div class="fn-ex-bar" aria-hidden="true"></div>
       </div>
       <figure class="file-sample file-sample--compact">
-        <pre><code class="language-markdown">```bash
-npu-smi info
-```
+        <pre><code class="language-markdown"># 环境准备
 
-<span class="code-line-hl is-bad">（成功输出见截图）</span></code></pre>
+示例：安装 3.16.0 版本的 CMake（x86_64 架构）。
+
+<span class="code-line-hl is-bad">```
+mkdir -p cmake-3.16 &amp;&amp; wget ...
+export PATH=`pwd`/cmake-3.16/bin:$PATH
+cmake --version
+```</span></code></pre>
       </figure>
     </div>
     <div class="ex-card-pane">
@@ -883,27 +1142,38 @@ npu-smi info
         <span class="fn-ex-label is-good">正面</span>
         <div class="fn-ex-bar is-good" aria-hidden="true"></div>
       </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-markdown">```bash
-npu-smi info
-```
-
-<span class="code-line-hl is-good">**预期输出：**</span>
-
-```
-NPU 状态为 OK，设备列表可见。
-```</code></pre>
+      <figure class="file-sample hier-md file-sample--paper" aria-label="环境准备 Markdown">
+        <div class="llms-sec llms-sec--copy">
+          <span class="llms-mod">说明</span>
+          <div class="hier-md-sec"><code># 环境准备</code></div>
+          <div class="hier-md-sec"><code>示例：安装 3.16.0 版本的 CMake（x86_64 架构）。</code></div>
+        </div>
+        <div class="llms-sec llms-sec--cta">
+          <span class="llms-mod">语言</span>
+          <div class="hier-md-sec"><code>```bash
+mkdir -p cmake-3.16 &amp;&amp; wget ...
+export PATH=`pwd`/cmake-3.16/bin:$PATH
+cmake --version
+```</code></div>
+        </div>
+        <div class="llms-sec llms-sec--cta">
+          <span class="llms-mod">Output</span>
+          <div class="hier-md-sec"><code>执行后输出如下：</code></div>
+          <div class="hier-md-sec"><code>```text
+cmake version 3.16.0
+```</code></div>
+        </div>
       </figure>
     </div>
         </div>
       </div>
       <div class="ex-fold-panel" id="ex2-html" hidden>
         <div class="ex-card-pair">
-    <p class="ex-card-title">前端源码调整</p>
+    <p class="ex-card-title">源码书写</p>
     <div class="ex-fold-intro">
       <ul class="fn-ex-list">
-        <li>1. 输出块与命令同页首包</li>
-        <li>2. 文本节点可选取</li>
+        <li>1. 用可读文本写出说明、语言和代码。</li>
+        <li>2. 输出结果单独成块，不依赖截图。</li>
       </ul>
     </div>
     <div class="ex-card-pane">
@@ -912,7 +1182,13 @@ NPU 状态为 OK，设备列表可见。
         <div class="fn-ex-bar" aria-hidden="true"></div>
       </div>
       <figure class="file-sample file-sample--compact">
-        <pre><code class="language-html">&lt;pre&gt;&lt;code class="language-bash"&gt;npu-smi info&lt;/code&gt;&lt;/pre&gt;</code></pre>
+        <pre><code class="language-html">&lt;h2&gt;环境准备&lt;/h2&gt;
+&lt;p&gt;示例：安装 3.16.0 版本的 CMake（x86_64 架构）。&lt;/p&gt;
+<span class="code-line-hl is-bad">&lt;pre&gt;
+mkdir -p cmake-3.16 &amp;&amp; wget ...
+export PATH=`pwd`/cmake-3.16/bin:$PATH
+cmake --version
+&lt;/pre&gt;</span></code></pre>
       </figure>
     </div>
     <div class="ex-card-pane">
@@ -920,14 +1196,31 @@ NPU 状态为 OK，设备列表可见。
         <span class="fn-ex-label is-good">正面</span>
         <div class="fn-ex-bar is-good" aria-hidden="true"></div>
       </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-html">&lt;pre&gt;&lt;code class="language-bash"&gt;npu-smi info&lt;/code&gt;&lt;/pre&gt;
-<span class="code-line-hl is-good">&lt;pre&gt;&lt;code class="language-output"&gt;NPU 状态为 OK…&lt;/code&gt;&lt;/pre&gt;</span></code></pre>
+      <figure class="file-sample hier-md file-sample--paper" aria-label="环境准备 HTML">
+        <div class="llms-sec llms-sec--copy">
+          <span class="llms-mod">说明</span>
+          <div class="hier-md-sec"><code>&lt;h2&gt;环境准备&lt;/h2&gt;</code></div>
+          <div class="hier-md-sec"><code>&lt;p&gt;示例：安装 3.16.0 版本的 CMake（x86_64 架构）。&lt;/p&gt;</code></div>
+        </div>
+        <div class="llms-sec llms-sec--cta">
+          <span class="llms-mod">语言</span>
+          <div class="hier-md-sec"><code>&lt;pre&gt;&lt;code class="language-bash"&gt;
+mkdir -p cmake-3.16 &amp;&amp; wget ...
+export PATH=`pwd`/cmake-3.16/bin:$PATH
+cmake --version
+&lt;/code&gt;&lt;/pre&gt;</code></div>
+        </div>
+        <div class="llms-sec llms-sec--cta">
+          <span class="llms-mod">Output</span>
+          <div class="hier-md-sec"><code>&lt;p&gt;执行后输出如下：&lt;/p&gt;</code></div>
+          <div class="hier-md-sec"><code>&lt;pre&gt;&lt;code class="language-text"&gt;cmake version 3.16.0&lt;/code&gt;&lt;/pre&gt;</code></div>
+        </div>
       </figure>
     </div>
         </div>
       </div>
         <h4 class="fn-h4">示例 3 · 行号分离</h4>
+        <p class="fn-h3-desc">行号仅作界面展示；复制结果不应包含行号。</p>
 <div class="fn-ex-row" id="code-line-numbers">
           <div class="fn-ex">
             <div class="fn-ex-head">
@@ -962,7 +1255,17 @@ NPU 状态为 OK，设备列表可见。
               <div class="fn-ex-mock" aria-label="正面：命令不含行号">
                 <div class="code-face">
                   <div class="code-face-inner">
-                    <p class="code-face-lang">Bash</p>
+                    <div class="code-face-lang">
+                      <span>Bash</span>
+                      <span class="code-face-acts" aria-hidden="true">
+                        <button type="button" class="code-face-act" aria-label="复制" tabindex="-1">
+                          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M10.5 5.5V4A1.5 1.5 0 0 0 9 2.5H4A1.5 1.5 0 0 0 2.5 4v5A1.5 1.5 0 0 0 4 10.5h1.5" stroke="currentColor" stroke-width="1.2"/></svg>
+                        </button>
+                        <button type="button" class="code-face-act" aria-label="咨询智慧助手" tabindex="-1">
+                          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2.2 9.15 6.1 13 7.2 9.15 8.3 8 12.2 6.85 8.3 3 7.2l3.85-1.1L8 2.2Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M12.4 3.2v1.6M13.2 4h-1.6M3.6 11.4v1.2M4.2 12h-1.2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+                        </button>
+                      </span>
+                    </div>
                     <p class="code-face-pre">npu-smi info
 ascend-dmi -a</p>
                   </div>
@@ -971,8 +1274,8 @@ ascend-dmi -a</p>
               <div class="fn-ex-foot">
                     <ul class="fn-ex-list">
       <li><strong>正确做法：</strong></li>
-      <li>1. 可复制内容不含行号</li>
-      <li>2. 对照报错时行号须与正文分离</li>
+      <li>1. 复制结果不含行号</li>
+      <li>2. 行号由前端渲染，不进文本节点</li>
     </ul>
               </div>
             </div>
@@ -980,15 +1283,15 @@ ascend-dmi -a</p>
         </div>
       <div class="ex-fold-bar">
         <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex3-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
-        <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex3-html" aria-label="前端源码调整"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
+        <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex3-html" aria-label="源码书写"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
       </div>
-      <div class="ex-fold-panel" id="ex3-md" hidden>
+            <div class="ex-fold-panel" id="ex3-md" hidden>
         <div class="ex-card-pair">
     <p class="ex-card-title">Markdown 书写</p>
     <div class="ex-fold-intro">
       <ul class="fn-ex-list">
-        <li>1. 源稿不要手写「1  command」</li>
-        <li>2. 行号交给前端渲染</li>
+        <li>1. 源稿不要手写「1 command」行号。</li>
+        <li>2. 行号交给前端渲染。</li>
       </ul>
     </div>
     <div class="ex-card-pane">
@@ -997,10 +1300,10 @@ ascend-dmi -a</p>
         <div class="fn-ex-bar" aria-hidden="true"></div>
       </div>
       <figure class="file-sample file-sample--compact">
-        <pre><code class="language-markdown"><span class="code-line-hl is-bad">```bash
-1  npu-smi info
-2  ascend-dmi -a
-```</span></code></pre>
+        <pre><code class="language-markdown">```bash
+<span class="code-line-hl is-bad">1  npu-smi info
+2  ascend-dmi -a</span>
+```</code></pre>
       </figure>
     </div>
     <div class="ex-card-pane">
@@ -1008,22 +1311,25 @@ ascend-dmi -a</p>
         <span class="fn-ex-label is-good">正面</span>
         <div class="fn-ex-bar is-good" aria-hidden="true"></div>
       </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-markdown"><span class="code-line-hl is-good">```bash
+      <figure class="file-sample hier-md file-sample--paper" aria-label="行号分离 Markdown">
+        <div class="llms-sec llms-sec--cta">
+          <span class="llms-mod">源码</span>
+          <div class="hier-md-sec"><code>```bash
 npu-smi info
 ascend-dmi -a
-```</span></code></pre>
+```</code></div>
+        </div>
       </figure>
     </div>
         </div>
       </div>
       <div class="ex-fold-panel" id="ex3-html" hidden>
         <div class="ex-card-pair">
-    <p class="ex-card-title">前端源码调整</p>
+    <p class="ex-card-title">源码书写</p>
     <div class="ex-fold-intro">
       <ul class="fn-ex-list">
-        <li>1. 行号用 CSS，不进文本节点</li>
-        <li>2. 禁止 highlighttable 绑行号</li>
+        <li>1. 行号用 CSS，不进文本节点。</li>
+        <li>2. 禁止 <code>highlighttable</code> 绑行号。</li>
       </ul>
     </div>
     <div class="ex-card-pane">
@@ -1032,7 +1338,12 @@ ascend-dmi -a
         <div class="fn-ex-bar" aria-hidden="true"></div>
       </div>
       <figure class="file-sample file-sample--compact">
-        <pre><code class="language-html"><span class="code-line-hl is-bad">&lt;td class="linenos"&gt;1&lt;/td&gt;&lt;td class="code"&gt;npu-smi info&lt;/td&gt;</span></code></pre>
+        <pre><code class="language-html"><span class="code-line-hl is-bad">&lt;table class="highlighttable"&gt;
+  &lt;tr&gt;
+    &lt;td class="linenos"&gt;1&lt;/td&gt;
+    &lt;td class="code"&gt;npu-smi info&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;</span></code></pre>
       </figure>
     </div>
     <div class="ex-card-pane">
@@ -1040,8 +1351,14 @@ ascend-dmi -a
         <span class="fn-ex-label is-good">正面</span>
         <div class="fn-ex-bar is-good" aria-hidden="true"></div>
       </div>
-      <figure class="file-sample file-sample--compact">
-        <pre><code class="language-html"><span class="code-line-hl is-good">&lt;pre&gt;&lt;code class="language-bash"&gt;npu-smi info&lt;/code&gt;&lt;/pre&gt;</span></code></pre>
+      <figure class="file-sample hier-md file-sample--paper" aria-label="行号分离 HTML">
+        <div class="llms-sec llms-sec--cta">
+          <span class="llms-mod">结构</span>
+          <div class="hier-md-sec"><code>&lt;pre&gt;&lt;code class="language-bash"&gt;
+npu-smi info
+ascend-dmi -a
+&lt;/code&gt;&lt;/pre&gt;</code></div>
+        </div>
       </figure>
     </div>
         </div>
@@ -1051,18 +1368,20 @@ ascend-dmi -a
 
     <section class="section" id="expected-effect">
       <h2>预期效果</h2>
-<ol class="bg-list">
-        <li>帮助 AI Agent 获取干净、可复制、可运行的源码，减少回答中夹带行号、错误实体或未知语言的情况。</li>
-        <li>通过预期输出和校验方式，让命令类回答能够说明执行成功的判断依据。</li>
+      <ol class="bg-list">
+        <li>帮助 AI Agent 准确获取代码源码，减少语言识别错误、行号混入和特殊字符失真。</li>
+        <li>提供必要的运行条件及验证依据，提升代码回答的可复制性、可执行性和可验证性。</li>
       </ol>
     </section>
 
     <section class="section" id="notes">
       <h2>注意事项</h2>
-<ol class="bg-list">
-        <li>截图形式的代码不能替代可复制源码。</li>
-        <li>行号可以用于人读定位，但不得进入复制内容或机器入库正文。</li>
-        <li>高亮样式不能替代语言标注；代码语言应写在围栏或 <code>code</code> class 中。</li>
+      <ol class="bg-list">
+        <li>代码截图或图片不能替代可复制的源码文本。</li>
+        <li>行号可以用于定位，但不应混入复制内容；提示文案和操作控件也应与源码分离。</li>
+        <li>高亮样式不能替代语言标注，应通过代码块的语言标识明确代码类型。</li>
+        <li>代码示例应区分可执行源码、伪代码和省略片段；必要时说明前置条件、占位符及省略内容。</li>
+        <li>预期输出应与实际执行结果一致；代码或运行环境发生变化时，应同步更新相关说明和验证结果。</li>
       </ol>
     </section>
 </main>
