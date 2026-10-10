@@ -81,14 +81,14 @@
     padding-bottom: var(--space-h1-pad-y, 32px);
     color: var(--color-text);
   }
-  body.inner-page[data-page="exception"]:has(#module-sidebar) .main-content {
+  body.inner-page.agent-entry-page:has(#module-sidebar) .main-content {
     padding-top: var(--content-main-pad-top, 16px);
     padding-left: 0;
     padding-right: 0;
   }
-  body.inner-page[data-page="exception"]:has(#module-sidebar) .main-content > .page-header,
-  body.inner-page[data-page="exception"]:has(#module-sidebar) .main-content > .section,
-  body.inner-page[data-page="exception"]:has(#module-sidebar) .main-content > .surface-tabs {
+  body.inner-page.agent-entry-page:has(#module-sidebar) .main-content > .page-header,
+  body.inner-page.agent-entry-page:has(#module-sidebar) .main-content > .section,
+  body.inner-page.agent-entry-page:has(#module-sidebar) .main-content > .surface-tabs {
     width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
     max-width: var(--content-max-width, 1000px);
     margin-inline: auto;
@@ -96,7 +96,7 @@
     padding-right: 0;
     box-sizing: border-box;
   }
-  body.inner-page[data-page="exception"] .main-content .section > h2 {
+  body.inner-page.agent-entry-page .main-content .section > h2 {
     font-size: var(--text-h2, 24px);
     font-weight: 700;
     line-height: var(--text-h2-lh, 36px);
@@ -104,8 +104,8 @@
     margin-top: 0;
     margin-bottom: var(--space-stack, 16px);
     padding-top: var(--space-h2-pad-y, 16px);
-    padding-bottom: var(--space-h2-pad-y, 16px);
-    border-bottom: 2px solid var(--color-card-border);
+    padding-bottom: 0;
+    border-bottom: none;
     color: var(--color-text, var(--color-text));
   }
   body.inner-page[data-page="exception"] .main-content .section h3 { height: auto; }
@@ -364,40 +364,31 @@
     color: var(--color-text-secondary);
   }
 
-  body.inner-page[data-page="exception"] .main-content > .section:first-of-type > h2 {
+  body.inner-page.agent-entry-page .main-content > .section:first-of-type > h2 {
     margin-top: 0;
   }
-  #problem > p.page-lead,
-  #practices > p.page-lead,
-  #core-principles > p.page-lead {
+  body.inner-page.agent-entry-page .main-content > .section {
+    margin-bottom: 32px;
+  }
+  #mechanism > p.page-lead,
+  #practices > p.page-lead {
     margin: 0;
     font-size: var(--text-body);
     line-height: var(--text-body-lh, 22px);
     color: var(--color-text-secondary);
   }
-  #problem > h2 + .page-lead,
-  #core-principles > h2 + .principle-body {
+  #mechanism > h2 + .page-lead,
+  #detail-principles > h2 + .bg-list,
+  #expected-effect > h2 + .bg-list,
+  #notes > h2 + .bg-list {
     margin-top: 0;
   }
-  #problem,
-  #core-principles,
-  #practices {
+  #mechanism > p.page-lead {
     margin-bottom: var(--space-stack, 16px);
   }
-  #core-principles .principle-body {
-    margin: 0;
-  }
-  #core-principles .principle-body p {
-    margin: 0;
-    font-size: var(--text-body);
-    line-height: var(--text-body-lh, 22px);
-    color: var(--color-text-secondary);
-  }
-  #core-principles .principle-body strong {
-    display: block;
-    margin-bottom: 4px;
-    font-weight: 650;
-    color: var(--color-text);
+  #mechanism > p.page-lead + p.page-lead {
+    margin-top: 0;
+    margin-bottom: 0;
   }
   .bg-list {
     margin: 0;
@@ -407,12 +398,16 @@
     list-style: disc;
     color: var(--color-text-secondary);
   }
-  #benefits .bg-list li + li { margin-top: 16px; }
-  #benefits .bg-list li strong {
-    display: block;
-    margin-bottom: 4px;
-    font-weight: 650;
-    color: var(--color-text);
+  #detail-principles .bg-list li + li,
+  #expected-effect .bg-list li + li,
+  #notes .bg-list li + li { margin-top: 16px; }
+  #detail-principles ol.bg-list,
+  #expected-effect ol.bg-list,
+  #notes ol.bg-list {
+    list-style: decimal;
+    list-style-position: inside;
+    padding-left: 0;
+    margin-left: 0;
   }
   #practices .principle-example > h3.fn-h3 + h4.fn-h4 {
     margin-top: 0;
@@ -690,17 +685,20 @@
       <h1>失败状态可处理</h1>
     </div>
 
-    <section class="section" id="problem">
-      <h2>解决什么问题</h2>
+    <section class="section" id="mechanism">
+      <h2>概述</h2>
       <p class="page-lead">Agent 在空结果、报错或回执短词上停住或臆造下一步（如：结果区只有「-」、失败只标红点、只写「成功 / 失败 / 加载中」）。</p>
+      <p class="page-lead">失败状态可处理原则旨在把空因、失败原因与下一步写成可见文案，帮助 AI Agent 识别为何失败以及可以怎么处置。</p>
     </section>
 
-    <section class="section" id="core-principles">
-      <h2>核心原则</h2>
-      <div class="principle-body">
-        <strong>空因可写清，失败可处置</strong>
-        <p>空列表、无匹配、无权限须写成可见文案：缺什么、为何空、下一步改什么；禁止空白或「-」单独表意。错误 / 失败须有含义、原因与官方下一步，不单靠颜色或图标。回执写成完整句（对象 + 结果；失败附处置；加载写正在做什么）。无官方结论时写「暂无官方处理说明」。怎样算做对见 <a href="principles-expected.html">任务结果可确认</a>。</p>
-      </div>
+    <section class="section" id="detail-principles">
+      <h2>具体原则</h2>
+      <ol class="bg-list">
+        <li>空列表、无匹配、无权限须写成可见文案：缺什么、为何空、下一步改什么；禁止空白或「-」单独表意。</li>
+        <li>错误 / 失败须有含义、原因与官方下一步，不单靠颜色或图标。</li>
+        <li>回执写成完整句（对象 + 结果；失败附处置；加载写正在做什么）。无官方结论时写「暂无官方处理说明」。</li>
+        <li>怎样算做对见 <a href="principles-expected.html">任务结果可确认</a>。</li>
+      </ol>
     </section>
 
     <section class="section" id="practices">
@@ -976,12 +974,12 @@
       </div>
     </section>
 
-    <section class="section" id="benefits">
-      <h2>价值收益</h2>
-      <ul class="bg-list">
-        <li><strong>空结果可改条件</strong>Agent 知道缺什么、下一步筛什么，不会停在空白区。</li>
-        <li><strong>失败可引用官方路径</strong>含义与下一步可抓取，减少臆造排障。</li>
-      </ul>
+    <section class="section" id="expected-effect">
+      <h2>预期效果</h2>
+      <ol class="bg-list">
+        <li>空结果可改条件：Agent 知道缺什么、下一步筛什么，不会停在空白区。</li>
+        <li>失败可引用官方路径：含义与下一步可抓取，减少臆造排障。</li>
+      </ol>
     </section>
   </main>
 

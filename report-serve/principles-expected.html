@@ -81,14 +81,14 @@
     padding-bottom: var(--space-h1-pad-y, 32px);
     color: var(--color-text);
   }
-  body.inner-page[data-page="expected"]:has(#module-sidebar) .main-content {
+  body.inner-page.agent-entry-page:has(#module-sidebar) .main-content {
     padding-top: var(--content-main-pad-top, 16px);
     padding-left: 0;
     padding-right: 0;
   }
-  body.inner-page[data-page="expected"]:has(#module-sidebar) .main-content > .page-header,
-  body.inner-page[data-page="expected"]:has(#module-sidebar) .main-content > .section,
-  body.inner-page[data-page="expected"]:has(#module-sidebar) .main-content > .surface-tabs {
+  body.inner-page.agent-entry-page:has(#module-sidebar) .main-content > .page-header,
+  body.inner-page.agent-entry-page:has(#module-sidebar) .main-content > .section,
+  body.inner-page.agent-entry-page:has(#module-sidebar) .main-content > .surface-tabs {
     width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
     max-width: var(--content-max-width, 1000px);
     margin-inline: auto;
@@ -96,7 +96,7 @@
     padding-right: 0;
     box-sizing: border-box;
   }
-  body.inner-page[data-page="expected"] .main-content .section > h2 {
+  body.inner-page.agent-entry-page .main-content .section > h2 {
     font-size: var(--text-h2, 24px);
     font-weight: 700;
     line-height: var(--text-h2-lh, 36px);
@@ -104,8 +104,8 @@
     margin-top: 0;
     margin-bottom: var(--space-stack, 16px);
     padding-top: var(--space-h2-pad-y, 16px);
-    padding-bottom: var(--space-h2-pad-y, 16px);
-    border-bottom: 2px solid var(--color-card-border);
+    padding-bottom: 0;
+    border-bottom: none;
     color: var(--color-text, var(--color-text));
   }
   body.inner-page[data-page="expected"] .main-content .section h3 { height: auto; }
@@ -364,40 +364,31 @@
     color: var(--color-text-secondary);
   }
 
-  body.inner-page[data-page="expected"] .main-content > .section:first-of-type > h2 {
+  body.inner-page.agent-entry-page .main-content > .section:first-of-type > h2 {
     margin-top: 0;
   }
-  #problem > p.page-lead,
-  #practices > p.page-lead,
-  #core-principles > p.page-lead {
+  body.inner-page.agent-entry-page .main-content > .section {
+    margin-bottom: 32px;
+  }
+  #mechanism > p.page-lead,
+  #practices > p.page-lead {
     margin: 0;
     font-size: var(--text-body);
     line-height: var(--text-body-lh, 22px);
     color: var(--color-text-secondary);
   }
-  #problem > h2 + .page-lead,
-  #core-principles > h2 + .principle-body {
+  #mechanism > h2 + .page-lead,
+  #detail-principles > h2 + .bg-list,
+  #expected-effect > h2 + .bg-list,
+  #notes > h2 + .bg-list {
     margin-top: 0;
   }
-  #problem,
-  #core-principles,
-  #practices {
+  #mechanism > p.page-lead {
     margin-bottom: var(--space-stack, 16px);
   }
-  #core-principles .principle-body {
-    margin: 0;
-  }
-  #core-principles .principle-body p {
-    margin: 0;
-    font-size: var(--text-body);
-    line-height: var(--text-body-lh, 22px);
-    color: var(--color-text-secondary);
-  }
-  #core-principles .principle-body strong {
-    display: block;
-    margin-bottom: 4px;
-    font-weight: 650;
-    color: var(--color-text);
+  #mechanism > p.page-lead + p.page-lead {
+    margin-top: 0;
+    margin-bottom: 0;
   }
   .bg-list {
     margin: 0;
@@ -407,12 +398,16 @@
     list-style: disc;
     color: var(--color-text-secondary);
   }
-  #benefits .bg-list li + li { margin-top: 16px; }
-  #benefits .bg-list li strong {
-    display: block;
-    margin-bottom: 4px;
-    font-weight: 650;
-    color: var(--color-text);
+  #detail-principles .bg-list li + li,
+  #expected-effect .bg-list li + li,
+  #notes .bg-list li + li { margin-top: 16px; }
+  #detail-principles ol.bg-list,
+  #expected-effect ol.bg-list,
+  #notes ol.bg-list {
+    list-style: decimal;
+    list-style-position: inside;
+    padding-left: 0;
+    margin-left: 0;
   }
   #practices .principle-example > h3.fn-h3 + h4.fn-h4 {
     margin-top: 0;
@@ -728,17 +723,19 @@
       <h1>任务结果可确认</h1>
     </div>
 
-    <section class="section" id="problem">
-      <h2>解决什么问题</h2>
+    <section class="section" id="mechanism">
+      <h2>概述</h2>
       <p class="page-lead">Agent 做完步骤却无法核对是否成功（如：只写「运行正常 / 观察是否正确」、验证埋在段落里、没有可执行命令，或暂无判据却不声明「无法验证」）。</p>
+      <p class="page-lead">任务结果可确认原则旨在写明如何核对成功：写出可见状态、日志、退出码，或给出可抄命令与输出，帮助 AI Agent 对照步骤是否完成。</p>
     </section>
 
-    <section class="section" id="core-principles">
-      <h2>核心原则</h2>
-      <div class="principle-body">
-        <strong>写明如何核对成功</strong>
-        <p>做完步骤后须能对照是否成功：写清看到什么（状态词、日志、退出码）或给出可抄命令与输出。写在步骤旁或单独一节都可以。禁止只写「运行正常」「请自行确认」。暂无判据时写「无法核对」。空态与失败处置见 <a href="principles-exception.html">失败状态可处理</a>；默认可复制命令见 <a href="principles-steps.html">操作可按序照抄</a>。</p>
-      </div>
+    <section class="section" id="detail-principles">
+      <h2>具体原则</h2>
+      <ol class="bg-list">
+        <li>做完步骤后须能对照是否成功：写清看到什么（状态词、日志、退出码）或给出可抄命令与输出。写在步骤旁或单独一节都可以。</li>
+        <li>禁止只写「运行正常」「请自行确认」。暂无判据时写「无法核对」。</li>
+        <li>空态与失败处置见 <a href="principles-exception.html">失败状态可处理</a>；默认可复制命令见 <a href="principles-steps.html">操作可按序照抄</a>。</li>
+      </ol>
     </section>
 
     <section class="section" id="practices">
@@ -920,11 +917,11 @@ curl -s localhost:8080/health
       </div>
     </section>
 
-    <section class="section" id="benefits">
-      <h2>价值收益</h2>
-      <ul class="bg-list">
-        <li><strong>对错可核对</strong>人与模型都能对照状态、日志或命令输出，不必臆造「已成功」。</li>
-      </ul>
+    <section class="section" id="expected-effect">
+      <h2>预期效果</h2>
+      <ol class="bg-list">
+        <li>人与模型都能对照状态、日志或命令输出，不必臆造「已成功」。</li>
+      </ol>
     </section>
   </main>
 
