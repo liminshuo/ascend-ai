@@ -271,6 +271,9 @@
       var extraActive = navItemActive(item);
       html += "<a class=\"nav-settings-link" + (extraActive ? " is-active" : "") + "\" role=\"menuitem\" href=\"" + item.href + "\">" + item.label + "</a>";
     });
+    html += "<div class=\"nav-settings-sep\" role=\"separator\"></div>";
+    html += "<div class=\"nav-settings-heading\">设计模式</div>";
+    html += "<a class=\"nav-settings-link\" role=\"menuitem\" href=\"design-guide-image-text.html\">设计模式</a>";
     html += "</div>";
     html += "</span>";
     html += "<button type=\"button\" class=\"nav-expand-all\" aria-expanded=\"false\" aria-label=\"展开全部一级菜单\" title=\"展开/收起全部\">";

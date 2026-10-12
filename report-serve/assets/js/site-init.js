@@ -205,6 +205,9 @@
       { href: "data-analysis.html", label: "数据分析" }
     ];
     document.querySelectorAll("nav.site-nav").forEach(function (nav) {
+      nav.querySelectorAll('a[href="design-guide-image-text.html"]').forEach(function (a) {
+        a.remove();
+      });
       extras.forEach(function (item) {
         var existing = nav.querySelector('a[href="' + item.href + '"]');
         if (!existing) {
