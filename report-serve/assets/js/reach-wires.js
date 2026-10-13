@@ -84,6 +84,110 @@
     chip.style.transform = "translate(0, -50%)";
   }
 
+  function placeChipH(chip, x, y) {
+    if (!chip) return;
+    chip.style.left = x + "px";
+    chip.style.top = y + "px";
+    chip.style.transform = "translate(-50%, -50%)";
+  }
+
+  function layoutChartH(chart, markerId) {
+    var svg = chart.querySelector(".rc-wires");
+    var gate = chart.querySelector('[data-rc="gate"]');
+    var llms = chart.querySelector('[data-rc="llms"]');
+    var sitemap = chart.querySelector('[data-rc="sitemap"]');
+    var leaf = chart.querySelector('[data-rc="leaf"]');
+    if (!svg || !gate || !llms || !sitemap || !leaf) return;
+
+    var w = Math.max(1, chart.offsetWidth);
+    var h = Math.max(1, chart.offsetHeight);
+    svg.setAttribute("viewBox", "0 0 " + w + " " + h);
+    svg.setAttribute("width", w);
+    svg.setAttribute("height", h);
+
+    var g = localBox(gate, chart);
+    var a = localBox(llms, chart);
+    var b = localBox(sitemap, chart);
+    var c = localBox(leaf, chart);
+
+    var outX = g.x + g.w;
+    var gCy = g.y + g.h / 2;
+    var aCy = a.y + a.h / 2;
+    var bCy = b.y + b.h / 2;
+    var cCy = c.y + c.h / 2;
+    var yTop = Math.max(12, Math.min(g.y, a.y, b.y, c.y) - 18);
+    var yGuess = Math.min(h - 14, Math.max(g.y + g.h, a.y + a.h, b.y + b.h, c.y + c.h) + 22);
+    var rad = 18;
+
+    var dYes = roundPoly(
+      [
+        [outX, gCy],
+        [(outX + a.x) / 2, gCy],
+        [(outX + a.x) / 2, aCy],
+        [a.x - 2, aCy]
+      ],
+      rad
+    );
+    var dNo = roundPoly(
+      [
+        [a.x + a.w, aCy],
+        [b.x - 2, aCy],
+        [b.x - 2, bCy]
+      ],
+      rad
+    );
+    var dHit = roundPoly(
+      [
+        [a.x + a.w / 2, a.y],
+        [a.x + a.w / 2, yTop],
+        [c.x + c.w / 2, yTop],
+        [c.x + c.w / 2, c.y - 2]
+      ],
+      rad
+    );
+    var dNo2 = roundPoly(
+      [
+        [b.x + b.w, bCy],
+        [(b.x + b.w + c.x) / 2, bCy],
+        [(b.x + b.w + c.x) / 2, cCy],
+        [c.x - 2, cCy]
+      ],
+      rad
+    );
+    var dGuess = roundPoly(
+      [
+        [g.x + g.w / 2, g.y + g.h],
+        [g.x + g.w / 2, yGuess],
+        [c.x + c.w / 2, yGuess],
+        [c.x + c.w / 2, c.y + c.h + 2]
+      ],
+      rad
+    );
+
+    svg.innerHTML =
+      "<defs>" +
+      '<marker id="' +
+      markerId +
+      '" viewBox="0 0 8 8" markerWidth="8" markerHeight="8" refX="6.2" refY="4" orient="auto" markerUnits="userSpaceOnUse">' +
+      '<path d="M0 0.6 L8 4 L0 7.4 Z" fill="#191919"/>' +
+      "</marker>" +
+      "</defs>" +
+      '<circle cx="' +
+      outX +
+      '" cy="' +
+      gCy +
+      '" r="2.2" fill="#fff" stroke="#191919" stroke-width="1.5"/>' +
+      arm(dYes, true, false, markerId) +
+      arm(dNo, true, true, markerId) +
+      arm(dNo2, true, true, markerId) +
+      arm(dHit, true, false, markerId) +
+      arm(dGuess, true, true, markerId);
+
+    placeChipH(chart.querySelector(".rc-chip-yes"), (outX + a.x) / 2, Math.min(gCy, aCy) - 16);
+    placeChipH(chart.querySelector(".rc-chip-no"), (a.x + a.w + b.x) / 2, aCy - 16);
+    placeChipH(chart.querySelector(".rc-chip-guess"), (outX + c.x) / 2, yGuess);
+  }
+
   function layoutChart(chart, markerId) {
     var svg = chart.querySelector(".rc-wires");
     var gate = chart.querySelector('[data-rc="gate"]');
@@ -665,6 +769,9 @@
       if (chart.querySelector('[data-rc="html"]')) layoutReadChart(chart, "rc-arr-r-" + i);
       else layoutChart(chart, "rc-arr-" + i);
     });
+    document.querySelectorAll("#mechanism .reach-chart--h").forEach(function (chart, i) {
+      layoutChartH(chart, "rc-arr-h-" + i);
+    });
     document.querySelectorAll("#practices .ppt-dual, #vendor-analysis .ppt-dual").forEach(layoutDual);
     document.querySelectorAll("#practices .ppt-hier:has(.ppt-dual-shot--vecprog)").forEach(layoutImgdocCallout);
     document.querySelectorAll("#practices .llms-dual").forEach(layoutLlmsJump);
@@ -715,6 +822,9 @@
       new ResizeObserver(layout).observe(el);
     });
     document.querySelectorAll("#vendor-analysis .ppt-dual, #practices .ppt-dual").forEach(function (el) {
+      new ResizeObserver(layout).observe(el);
+    });
+    document.querySelectorAll("#mechanism .reach-chart--h").forEach(function (el) {
       new ResizeObserver(layout).observe(el);
     });
   }

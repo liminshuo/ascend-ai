@@ -99,6 +99,145 @@
   #mechanism > p.page-lead + p.page-lead {
     margin-top: 0;
   }
+  #mechanism > .page-lead + .reach-flow-block { margin-top: 0; }
+  #mechanism .reach-flow-block { margin: 0; }
+  #mechanism .reach-flow-block > .aj-caption {
+    caption-side: top;
+    text-align: left;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 650;
+    padding: 0 0 16px;
+    color: var(--color-text);
+    margin: 0;
+  }
+  #mechanism .reach-chart--h {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-rows: auto;
+    column-gap: 40px;
+    row-gap: 0;
+    padding: 28px 4px 40px;
+    box-sizing: border-box;
+    align-items: stretch;
+  }
+  #mechanism .reach-chart--h .rc-wires {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+    z-index: 2;
+  }
+  #mechanism .reach-chart--h [data-rc="gate"] { grid-column: 1; }
+  #mechanism .reach-chart--h [data-rc="llms"] { grid-column: 2; }
+  #mechanism .reach-chart--h [data-rc="sitemap"] { grid-column: 3; }
+  #mechanism .reach-chart--h [data-rc="leaf"] { grid-column: 4; }
+  #mechanism .reach-chart--h .rc-node {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    min-height: 96px;
+    height: auto;
+    padding: 0;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 12px;
+    text-align: left;
+  }
+  #mechanism .reach-chart--h .rc-node.is-on {
+    z-index: 2;
+    border: 1.5px solid var(--color-primary, #1476FF);
+    box-shadow: 0 4px 14px rgba(20, 118, 255, 0.18);
+  }
+  #mechanism .reach-chart--h .rc-head {
+    margin: 0;
+    padding: 10px 12px;
+    font-size: 15px;
+    line-height: 22px;
+    font-weight: 650;
+    color: var(--color-text);
+    background: #e8edfb;
+    overflow-wrap: anywhere;
+  }
+  #mechanism .reach-chart--h .rc-body {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 14px 14px 16px;
+    background: #fff;
+  }
+  #mechanism .reach-chart--h .rc-file {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #eef6c8;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    white-space: nowrap;
+    color: var(--color-text);
+  }
+  #mechanism .reach-chart--h .rc-file.is-hl {
+    background: #dbeafe;
+    color: #075985;
+  }
+  #mechanism .reach-chart--h .rc-chip {
+    position: absolute;
+    z-index: 3;
+    margin: 0;
+    padding: 1px 6px;
+    border-radius: 999px;
+    font-size: 11px;
+    line-height: 16px;
+    font-weight: 650;
+    white-space: nowrap;
+    background: #eef4ff;
+    color: var(--color-primary);
+    pointer-events: none;
+  }
+  #mechanism .reach-chart--h .rc-chip-yes {
+    background: #e8f6ee;
+    color: #0f7b4a;
+  }
+  #mechanism .reach-chart--h .rc-chip-no {
+    background: #f4f4f5;
+    color: #525252;
+  }
+  #mechanism .reach-chart--h .rc-chip-guess {
+    background: #fff4e5;
+    color: #b45309;
+  }
+  @media (max-width: 820px) {
+    #mechanism .reach-chart--h {
+      grid-template-columns: 1fr;
+      grid-template-rows: none;
+      column-gap: 0;
+      row-gap: 20px;
+      padding-bottom: 8px;
+    }
+    #mechanism .reach-chart--h [data-rc="gate"],
+    #mechanism .reach-chart--h [data-rc="llms"],
+    #mechanism .reach-chart--h [data-rc="sitemap"],
+    #mechanism .reach-chart--h [data-rc="leaf"] {
+      grid-column: 1;
+      grid-row: auto;
+      align-self: stretch;
+    }
+    #mechanism .reach-chart--h .rc-wires,
+    #mechanism .reach-chart--h .rc-chip {
+      display: none;
+    }
+  }
   #mechanism,
   #detail-principles,
   #stages,
@@ -171,6 +310,22 @@
     color: var(--color-text, var(--color-text));
     letter-spacing: -0.01em;
   }
+  h3.fn-h3:has(> .fn-h3-link) {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  h3.fn-h3 > .fn-h3-link {
+    margin-left: auto;
+    flex-shrink: 0;
+    font-size: var(--text-body);
+    font-weight: 500;
+    line-height: 22px;
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+  h3.fn-h3 > .fn-h3-link:hover { text-decoration: underline; }
   body.inner-page.agent-entry-page .main-content .section h4 { height: auto; }
   h4.fn-h4 {
     margin: 0;
@@ -188,6 +343,7 @@
   #practices h3.fn-h3 + .fn-ex-row,
   #stages h2 + h3.fn-h3,
   #stages h3.fn-h3 + .aj-caption,
+  #stages h3.fn-h3 + .ssr-page-shot,
   #stages h3.fn-h3 + .fn-ex-row { margin-top: 0; }
   #stages .fn-ex-row + h3.fn-h3 {
     margin-top: var(--space-stack, 16px);
@@ -315,7 +471,8 @@
     color: var(--color-text);
     margin: 0;
   }
-  #stages > .aj-caption + .ssr-page-shot {
+  #stages > .aj-caption + .ssr-page-shot,
+  #stages > h3.fn-h3 + .ssr-page-shot {
     margin: 0 0 16px;
   }
   #stages .ssr-page-shot .ssr-loss-frame {
@@ -1049,22 +1206,46 @@
       <h2>概述</h2>
       <p class="page-lead">AI Agent 获取网页 HTML 后，需要能够直接从页面源码中读取标题、正文、步骤、表格和代码等核心知识内容。若关键信息依赖 JavaScript 渲染、隐藏在 iframe 或图片中，或页面内容过大导致截断，Agent 可能无法完整获取和理解页面内容。因此，应确保核心知识内容在 HTML 中可直接访问，并保持结构清晰、内容完整。</p>
       <p class="page-lead">不是要求页面没有 JavaScript，而是要求 AI Agent 无需执行复杂交互，就能从 HTML 中直接获取核心知识内容。</p>
+      <div class="reach-flow-block" aria-label="Agent 内容发现流程">
+        <p class="aj-caption">Agent 内容发现流程</p>
+        <div class="reach-chart reach-chart--h">
+          <svg class="rc-wires" viewBox="0 0 100 100" fill="none" aria-hidden="true" preserveAspectRatio="none"></svg>
+          <span class="rc-chip rc-chip-yes">有llms</span>
+          <span class="rc-chip rc-chip-no">无llms</span>
+          <span class="rc-chip rc-chip-guess">猜地址</span>
+          <div class="rc-node" data-rc="gate">
+            <p class="rc-head">读取许可声明</p>
+            <div class="rc-body"><span class="rc-file">robots.txt</span></div>
+          </div>
+          <div class="rc-node" data-rc="llms">
+            <p class="rc-head">查找索引目录</p>
+            <div class="rc-body"><span class="rc-file">llms.txt</span></div>
+          </div>
+          <div class="rc-node" data-rc="sitemap">
+            <p class="rc-head">查看兜底URL清单</p>
+            <div class="rc-body"><span class="rc-file">sitemap.xml</span></div>
+          </div>
+          <div class="rc-node is-on" data-rc="leaf">
+            <p class="rc-head">打开正文URL</p>
+            <div class="rc-body"><span class="rc-file is-hl">.html</span><span class="rc-file">.md</span></div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <section class="section" id="detail-principles">
       <h2>具体原则</h2>
       <ol class="bg-list">
         <li>确保页面 HTML 可直接访问，避免依赖登录、强制跳转或其他前置条件才能获取核心内容。</li>
-        <li>在首屏 HTML 中直接提供页面标题、正文、步骤、表格和代码等核心知识内容，避免依赖 JavaScript 执行后才能生成。</li>
         <li>将核心知识内容放在页面主文档中，避免隐藏在 iframe、Canvas 或图片等不可直接解析的载体中。</li>
+        <li>在首屏 HTML 中直接提供页面标题、正文、步骤、表格和代码等核心知识内容，避免依赖 JavaScript 执行后才能生成。</li>
         <li>使用明确的字符集和合理的页面结构，控制页面内容规模，避免因字符编码错误或内容过长导致信息截断。</li>
       </ol>
     </section>
 
     <section class="section" id="stages">
-      <h2>HTML 可读典型示例</h2>
-      <h3 class="fn-h3">示例 1</h3>
-      <p class="aj-caption">昇腾模型查询助手 https://www.hiascend.com/developer/models</p>
+      <h2>典型示例</h2>
+      <h3 class="fn-h3">示例 1 · 昇腾模型查询助手 <a class="fn-h3-link" href="https://www.hiascend.com/developer/models" target="_blank" rel="noopener">查看示例来源</a></h3>
       <figure class="ssr-page-shot">
         <div class="ssr-loss-frame">
           <div class="ssr-shot-fit">
@@ -1150,8 +1331,7 @@
         </div>
       </div>
 
-      <h3 class="fn-h3">示例 2</h3>
-      <p class="aj-caption">昇腾博客 https://www.hiascend.com/developer/blog</p>
+      <h3 class="fn-h3">示例 2 · 昇腾博客 <a class="fn-h3-link" href="https://www.hiascend.com/developer/blog" target="_blank" rel="noopener">查看示例来源</a></h3>
       <figure class="ssr-page-shot">
         <div class="ssr-loss-frame">
           <div class="ssr-shot-fit">

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>站内可定位 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
+  <title>章节锚点可定位 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
   <link rel="stylesheet" href="assets/css/style.css">
 
 <style>
@@ -139,12 +139,14 @@
   }
   h3.fn-h3 + .principle-example > h4.fn-h4,
   h3.fn-h3 + h4.fn-h4 { margin-top: 0; }
+  h3.fn-h3:has(> .fn-h3-link),
   h4.fn-h4:has(> .fn-h3-link) {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
     gap: 16px;
   }
+  h3.fn-h3 > .fn-h3-link,
   h4.fn-h4 > .fn-h3-link {
     margin-left: auto;
     flex-shrink: 0;
@@ -430,57 +432,332 @@
   body.inner-page[data-page="breadcrumb"] .main-content > .section:first-of-type > h2 {
     margin-top: 0;
   }
-  #problem,
-  #how-walk,
-  #core-principles,
-  #practices {
+  #mechanism,
+  #detail-principles,
+  #practices,
+  #expected-effect,
+  #notes {
     margin-bottom: var(--space-stack, 16px);
   }
-  #crumb, #neighbor, #section {
+  #section {
     scroll-margin-top: calc(var(--header-height, 56px) + 16px);
   }
-  #problem > p.page-lead,
-  #how-walk > p.page-lead {
-    margin: 0;
-    font-size: var(--text-body);
-    line-height: var(--text-body-lh, 22px);
-    color: var(--color-text-secondary);
-  }
-  #how-walk > .af-figure {
-    margin-top: var(--space-stack, 16px);
-  }
-  #core-principles .principle-body {
-    margin: 0;
-  }
-  #core-principles .principle-body + .principle-body {
-    margin-top: var(--space-stack, 16px);
-  }
-  #core-principles .principle-body p {
-    margin: 0;
-    font-size: var(--text-body);
-    line-height: 22px;
-    color: var(--color-text-secondary);
-  }
-  #core-principles .principle-body strong {
-    display: block;
-    margin-bottom: 4px;
-    font-weight: 650;
-    color: var(--color-text);
-  }
+  #mechanism > p.page-lead,
   #practices .fn-h3-desc {
     margin: 0;
     font-size: var(--text-body);
     line-height: var(--text-body-lh, 22px);
     color: var(--color-text-secondary);
   }
+  #mechanism > h2 + .page-lead,
+  #detail-principles > h2 + .bg-list,
+  #expected-effect > h2 + .bg-list,
+  #notes > h2 + .bg-list {
+    margin-top: 0;
+  }
+  #mechanism > p.page-lead {
+    margin-bottom: var(--space-stack, 16px);
+  }
+  #mechanism > p.page-lead + p.page-lead {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
   #practices .principle-example > h3.fn-h3 + h4.fn-h4 { margin-top: 0; }
-  #practices .principle-example > .fn-h3-desc + h4.fn-h4 {
+  #practices .principle-example > .fn-h3-desc + h4.fn-h4,
+  #practices .principle-example > .fn-h3-desc + .ppt-anchor {
     margin-top: var(--space-stack, 16px);
   }
-  #practices .principle-example { margin: 0; }
+  #practices .principle-example { margin: 0; overflow: visible; }
   #practices .principle-example > .ex-fold-panel + h4.fn-h4 {
     margin-top: var(--space-stack, 16px);
     padding-top: var(--space-h4-pad-y, 16px);
+  }
+  #practices .ppt-anchor {
+    margin: 0 0 var(--space-stack, 16px);
+    overflow: visible;
+  }
+  #practices .ppt-anchor .hier-label {
+    margin: 0 0 12px;
+    padding: 0;
+    font-size: var(--text-body);
+    line-height: 22px;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  #practices .ppt-anchor .reach-file-intro {
+    margin: 0 0 16px;
+    font-size: 14px;
+    line-height: 22px;
+    color: #525252;
+  }
+  #practices .ppt-anchor .reach-file-intro p { margin: 0; }
+  #practices .ppt-anchor .reach-file-intro code { font-size: 13px; }
+  #practices .ppt-anchor .reach-file-intro a {
+    color: inherit;
+    overflow-wrap: anywhere;
+  }
+  #practices .ppt-anchor .llms-anno {
+    --anno-pad-left: 92px;
+    --anno-pad-right: 100px;
+    margin: 0;
+    padding: 0 var(--anno-pad-right) 0 var(--anno-pad-left);
+    display: flex;
+    flex-direction: column;
+    overflow: visible;
+  }
+  #practices .ppt-anchor .anchor-card {
+    margin: 0 0 12px;
+    background: #fff;
+    border: 1.5px solid #191919;
+    border-radius: 12px;
+    overflow: visible;
+  }
+  #practices .ppt-anchor .anchor-url {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    background: #e8e8e8;
+    border-radius: 10.5px 10.5px 0 0;
+    border-bottom: 1px solid #d4d4d4;
+  }
+  #practices .ppt-anchor .anchor-url .llms-row {
+    flex: 1;
+    min-width: 0;
+    display: block;
+    position: relative;
+  }
+  #practices .ppt-anchor .omnibox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    height: 28px;
+    padding: 0 12px;
+    background: #fff;
+    border: 1px solid #d0d0d0;
+    border-radius: 14px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  }
+  #practices .ppt-anchor .omnibox-lock {
+    flex-shrink: 0;
+    width: 12px;
+    height: 12px;
+    color: #737373;
+  }
+  #practices .ppt-anchor .omnibox-text {
+    display: flex;
+    align-items: baseline;
+    min-width: 0;
+    overflow: hidden;
+    font-family: system-ui, sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 28px;
+    color: #191919;
+  }
+  #practices .ppt-anchor .omnibox-path {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #191919;
+    border-bottom: 2px solid #b45309;
+    padding-bottom: 1px;
+  }
+  #practices .ppt-anchor .omnibox-hash {
+    flex-shrink: 0;
+    margin-left: 6px;
+    color: #191919;
+    font-weight: 650;
+    background: rgba(254, 243, 199, 0.55);
+    border-bottom: 2px solid #facc15;
+    border-radius: 2px;
+    padding: 1px 3px;
+  }
+  #practices .ppt-anchor .anchor-doc {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 14px 16px 16px;
+    color: #191919;
+    font-size: 13px;
+    line-height: 20px;
+    overflow: visible;
+  }
+  #practices .ppt-anchor .anchor-body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow: auto;
+  }
+  #practices .ppt-anchor .anchor-toc {
+    width: 148px;
+    flex-shrink: 0;
+    padding-left: 12px;
+  }
+  #practices .ppt-anchor .anchor-toc-t {
+    margin: 0 0 8px;
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 650;
+    color: #191919;
+  }
+  #practices .ppt-anchor .anchor-toc ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 12px;
+    line-height: 20px;
+    color: #191919;
+  }
+  #practices .ppt-anchor .anchor-toc li {
+    margin: 0;
+    padding: 3px 0 3px 10px;
+    border-left: 2px solid #d4d4d4;
+  }
+  #practices .ppt-anchor .anchor-toc li.is-sub { padding-left: 20px; }
+  #practices .ppt-anchor .anchor-toc li:has(> a.is-current) {
+    border-left-color: #facc15;
+  }
+  #practices .ppt-anchor .anchor-toc a,
+  #practices .ppt-anchor .anchor-toc a:hover {
+    color: #191919;
+    font-weight: inherit;
+    text-decoration: none;
+  }
+  #practices .ppt-anchor .anchor-toc a.is-current { font-weight: 650; }
+  #practices .ppt-anchor .anchor-h1,
+  #practices .ppt-anchor .anchor-h {
+    margin: 0;
+    font: inherit;
+    font-weight: 650;
+    color: #191919;
+  }
+  #practices .ppt-anchor .anchor-hash {
+    margin-left: 6px;
+    color: #b45309;
+    font-weight: 650;
+  }
+  #practices .ppt-anchor .anchor-sec.is-hit {
+    position: relative;
+    padding: 8px 10px;
+    margin: 0 -10px;
+    border-radius: 4px;
+    background: #fef3c7;
+    overflow: visible;
+  }
+  #practices .ppt-anchor .anchor-sec.is-hit .llms-pin--right {
+    left: 100%;
+    margin-left: 172px;
+  }
+  #practices .ppt-anchor .llms-skel {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 6px;
+  }
+  #practices .ppt-anchor .llms-skel-bar {
+    display: block;
+    height: 8px;
+    border-radius: 2px;
+    background: #e4e4e4;
+  }
+  #practices .ppt-anchor .llms-row {
+    position: relative;
+    display: block;
+  }
+  #practices .ppt-anchor .llms-pin {
+    position: absolute;
+    top: 1px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    pointer-events: none;
+  }
+  #practices .ppt-anchor .llms-pin .anno-cap {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 14px;
+    color: #191919;
+    white-space: nowrap;
+  }
+  #practices .ppt-anchor .llms-pin .anno-name {
+    font-size: 11px;
+    font-weight: 500;
+    color: #737373;
+    line-height: 14px;
+  }
+  #practices .ppt-anchor .llms-pin--left {
+    right: 100%;
+    margin-right: 10px;
+  }
+  #practices .ppt-anchor .llms-pin--right {
+    left: 100%;
+    margin-left: 10px;
+    flex-direction: row-reverse;
+  }
+  #practices .ppt-anchor .llms-pin--right .anno-cap { align-items: flex-start; }
+  #practices .ppt-anchor .llms-pin .anno-leader {
+    width: 14px;
+    height: 1.5px;
+    background: #191919;
+  }
+  #practices .ppt-anchor .llms-pin .anno-tip {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #191919;
+  }
+  #practices .ppt-anchor .anno-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 18px;
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+    min-height: 18px;
+    box-sizing: border-box;
+    border-radius: 50%;
+    background: #191919;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+  }
+  #practices .ppt-anchor .llms-anno-legend {
+    list-style: none;
+    margin: 0 calc(-1 * var(--anno-pad-right)) 0 calc(-1 * var(--anno-pad-left));
+    padding: 0;
+    display: grid;
+    gap: 8px;
+    font-size: 13px;
+  }
+  #practices .ppt-anchor .llms-anno-legend li {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 14px;
+    line-height: 22px;
+    color: var(--color-text-secondary);
+  }
+  #practices .ppt-anchor .llms-anno-legend strong {
+    color: var(--color-text);
+    font-weight: 650;
+  }
+  @media (max-width: 900px) {
+    #practices .ppt-anchor .llms-anno { padding: 0; }
+    #practices .ppt-anchor .llms-pin { display: none; }
+    #practices .ppt-anchor .anchor-sec.is-hit .llms-pin--right { display: none; }
   }
   .bg-list {
     margin: 0;
@@ -490,12 +767,16 @@
     list-style: disc;
     color: var(--color-text-secondary);
   }
-  #benefits .bg-list li + li { margin-top: 16px; }
-  #benefits .bg-list li strong {
-    display: block;
-    margin-bottom: 4px;
-    font-weight: 650;
-    color: var(--color-text);
+  #detail-principles .bg-list li + li,
+  #expected-effect .bg-list li + li,
+  #notes .bg-list li + li { margin-top: 16px; }
+  #detail-principles ol.bg-list,
+  #expected-effect ol.bg-list,
+  #notes ol.bg-list {
+    list-style: decimal;
+    list-style-position: inside;
+    padding-left: 0;
+    margin-left: 0;
   }
   .file-sample {
     margin: 0;
@@ -542,7 +823,10 @@
     line-height: 22px;
     color: #191919;
   }
-  .ex-card-pair > .ex-card-title { grid-column: 1 / -1; }
+  .ex-card-pair > .ex-card-title {
+    grid-column: 1 / -1;
+    margin: 0;
+  }
   .ex-card-pair {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -550,6 +834,56 @@
     padding: 16px;
     align-items: stretch;
   }
+  #ex1-md .ex-card-pair {
+    grid-template-columns: 1fr;
+  }
+  #ex1-md .ex-card-pair > .file-sample {
+    grid-column: 1 / -1;
+    margin: 0;
+  }
+  #practices .file-sample.file-sample--paper {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 0;
+    padding: 16px;
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  #practices .file-sample--paper .hier-md-sec { margin: 0; }
+  #practices .file-sample--paper .hier-md-sec code {
+    display: block;
+    margin: 0;
+    padding: 0;
+    background: none;
+    color: #191919;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 400;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+  }
+  .hd-skel-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 4px;
+  }
+  .hd-skel-line {
+    display: block;
+    height: 6px;
+    border-radius: 3px;
+    background: #e8eaed;
+  }
+  .hd-skel-line.is-w100 { width: 100%; }
+  .hd-skel-line.is-w92 { width: 92%; }
+  .hd-skel-line.is-w80 { width: 80%; }
+  .hd-skel-line.is-w72 { width: 72%; }
+  .hd-skel-line.is-w60 { width: 60%; }
+  #practices .file-sample--paper .hd-skel-lines { gap: 4px; }
   .ex-card-pane {
     display: flex;
     flex-direction: column;
@@ -562,7 +896,13 @@
     margin-bottom: 0;
   }
   .ex-card-pane .file-sample pre { flex: 1; }
-  .ex-fold-intro { grid-column: 1 / -1; }
+  .ex-fold-intro {
+    grid-column: 1 / -1;
+    margin: 0;
+  }
+  .ex-card-pair > .ex-card-title + .ex-fold-intro {
+    margin-top: 0;
+  }
   .ex-fold-intro .fn-ex-list {
     margin: 0;
     padding: 0;
@@ -767,120 +1107,72 @@
 
   <main class="main-content">
     <div class="page-header">
-      <h1>站内可定位</h1>
+      <h1>章节锚点可定位</h1>
     </div>
 
-    <section class="section" id="problem">
-      <h2>解决什么问题</h2>
-      <p class="page-lead">Agent 经搜索或发现层打开某篇文档后，单页信息缺乏上下文锚点，导致机器无法建立局部与整体的连接。</p>
+    <section class="section" id="mechanism">
+      <h2>概述</h2>
+      <p class="page-lead">AI Agent 在获取网页后，可能需要通过章节 URL 直接访问指定内容。如果页面缺少稳定的章节锚点，或目录链接与实际章节位置不对应，AI Agent 就难以准确定位目标章节，影响内容引用与后续访问。</p>
+      <p class="page-lead">章节锚点可定位原则旨在为重要章节提供稳定、唯一的锚点，并使目录链接与锚点一致，帮助 AI Agent 通过含锚点的 URL 直接落到目标章节。</p>
     </section>
 
-    <section class="section" id="how-walk">
-      <h2>Agent 是如何完成站内定位的</h2>
-      <figure class="af-figure">
-        <table class="aj">
-          <caption>表1 Agent 落页后的定位顺序（以《安装指南》为例）</caption>
-          <colgroup>
-            <col class="aj-rowhead" />
-            <col />
-            <col />
-            <col />
-            <col />
-          </colgroup>
-          <thead>
-            <tr>
-              <th class="aj-corner" scope="col">行为阶段</th>
-              <th scope="col"><span class="aj-stage-name">落到当前篇</span></th>
-              <th class="aj-pri" scope="col"><span class="aj-stage-name">读路径定坐标</span></th>
-              <th scope="col"><span class="aj-stage-name">落到任务节</span></th>
-              <th scope="col"><span class="aj-stage-name">沿邻篇续读</span></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th class="aj-label" scope="row">触点元素</th>
-              <td class="is-mute"><span class="aj-file">当前篇 HTML</span>搜索 / 发现层命中</td>
-              <td class="is-pri"><span class="aj-file">面包屑</span>文档中心 › CANN 8.0 › 安装指南</td>
-              <td><span class="aj-file">段落锚点</span>节标题旁带「#」，右侧锚点导航项「安装步骤」可跟链至该节</td>
-              <td><span class="aj-file">邻篇导航</span>上一篇 安装驱动 ｜ 下一篇 配置环境变量</td>
-            </tr>
-            <tr>
-              <th class="aj-label" scope="row">解决问题</th>
-              <td class="is-mute">—</td>
-              <td class="is-pri">归属不明（纵向坐标）：无法确认手册与产品线</td>
-              <td>提取不准（微观精度）：无法精准引用章节或步骤</td>
-              <td>路径中断（横向顺序）：看完这篇就断了，无法沿手册往下读</td>
-            </tr>
-            <tr>
-              <th class="aj-label" scope="row">阶段说明</th>
-              <td class="is-mute">起点：进入《安装指南》正文</td>
-              <td class="is-pri">接着读面包屑，确认这篇的手册与产品线</td>
-              <td>再对准「安装步骤」，让引用精准落到该节而非整页；此时地址变为 <code>…/install.html#install-steps</code></td>
-              <td>再打开《配置环境变量》，沿手册续读下一章</td>
-            </tr>
-          </tbody>
-        </table>
-      </figure>
-    </section>
-
-    <section class="section" id="core-principles">
-      <h2>核心原则</h2>
-      <div class="principle-body">
-        <strong>面包屑写出真实层级</strong>
-        <p>路径按父级到子级完整写出（如：文档中心 › 产品线 › 手册 › 当前篇），当前篇不可点击，各级名称与对应页标题一致。</p>
-      </div>
-      <div class="principle-body">
-        <strong>节级锚点可引用</strong>
-        <p>段落标题旁露出「#」，每个锚点对应稳定 URL，并与右侧目录指向同一小节。点击可复制含 hash 的完整地址。</p>
-      </div>
-      <div class="principle-body">
-        <strong>邻篇导航齐全</strong>
-        <p>页底默认可见上一篇 / 下一篇，篇名与目标页标题一致，并附带真实可跟链接。</p>
-      </div>
+    <section class="section" id="detail-principles">
+      <h2>具体原则</h2>
+      <ol class="bg-list">
+        <li>重要章节应具有稳定、唯一的锚点标识，支持通过包含锚点的 URL 直接定位到对应章节。</li>
+        <li>对于 Markdown 文档，不要求必须显式编写锚点，但应确保渲染后的页面能够通过章节 URL 定位到目标章节。</li>
+        <li>目录中的章节链接应与实际生成的锚点准确对应，确保访问后能够定位到目标章节。</li>
+      </ol>
     </section>
 
     <section class="section" id="practices">
       <h2>典型示例</h2>
       <div class="principle-example">
-        <h3 class="fn-h3" id="crumb">面包屑 · 写出真实层级</h3>
-        <p class="fn-h3-desc">顶栏按父级到子级写出「文档中心 › CANN 8.0 › 安装指南」；当前篇不可点击，各级名称与对应页标题一致。</p>
-        <h4 class="fn-h4">示例 1 · 文档路径</h4>
-        <div class="fn-ex-row">
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label">反面</span>
-              <div class="fn-ex-bar" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="反面：只有篇名">
-                <div class="st-card"><p class="st-title">安装指南</p></div>
+        <h3 class="fn-h3" id="section">目录链接与章节锚点一致 <a class="fn-h3-link" href="https://www.hiascend.com/document/detail/zh/mindie/latest/quickstart/docs/zh/user_guide/quick_start.md#环境要求" target="_blank" rel="noopener">查看示例来源</a></h3>
+        <p class="fn-h3-desc">目录链接应与章节锚点保持一致；AI Agent 访问包含锚点的 URL 后，应能够直接定位到对应章节。以 MindIE 文本生成推理快速入门为例，通过带 <code>#</code> 锚点的 URL 可直接跳转至目标章节。</p>
+        <div class="reach-col reach-theme ppt-anchor">
+          <div class="llms-anno" aria-label="段落级锚点标注">
+            <figure class="anchor-card">
+              <div class="anchor-url">
+                <span class="llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">页地址</span><span class="anno-num">1</span><span class="anno-leader"></span><span class="anno-tip"></span></span><span class="omnibox"><svg class="omnibox-lock" viewBox="0 0 12 12" aria-hidden="true"><path fill="currentColor" d="M9.5 5.5V4a3.5 3.5 0 1 0-7 0v1.5H2A1 1 0 0 0 1 6.5v4A1 1 0 0 0 2 11.5h8a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1H9.5Zm-5.5 0V4a2 2 0 1 1 4 0v1.5H4Z"/></svg><span class="omnibox-text"><span class="omnibox-path">https://www.hiascend.com/document/detail/zh/mindie/latest/quickstart/docs/zh/user_guide/quick_start.md</span><span class="omnibox-hash">#环境要求</span></span></span><span class="llms-pin llms-pin--right" aria-hidden="true"><span class="anno-cap">段落锚点</span><span class="anno-num">2</span><span class="anno-leader"></span><span class="anno-tip"></span></span></span>
               </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>常见疏漏：</strong></li>
-                  <li>1. 只有篇名，看不出手册、版本等上级层</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label is-good">正面</span>
-              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="正面：完整面包屑">
-                <div class="st-card">
-                  <p class="st-crumb">文档中心 › CANN 8.0 › <span class="st-crumb-current">安装指南</span></p>
+              <div class="anchor-doc">
+                <div class="anchor-body">
+                  <p class="anchor-h1">MindIE 文本生成推理快速入门</p>
+                  <div class="anchor-sec" id="ppt-an-overview">
+                    <p class="anchor-h">1. 简介</p>
+                    <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:96%"></span><span class="llms-skel-bar" style="width:92%"></span><span class="llms-skel-bar" style="width:88%"></span><span class="llms-skel-bar" style="width:74%"></span><span class="llms-skel-bar" style="width:61%"></span></span>
+                  </div>
+                  <div class="anchor-sec is-hit" id="ppt-an-env-req">
+                    <p class="anchor-h llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">段落名<span class="anno-name">须与 # 后同名</span></span><span class="anno-num">3</span><span class="anno-leader"></span><span class="anno-tip"></span></span>2. 环境要求<span class="anchor-hash">#</span><span class="llms-pin llms-pin--right" aria-hidden="true"><span class="anno-cap">锚点符<span class="anno-name">写入 URL 的 #</span></span><span class="anno-num">4</span><span class="anno-leader"></span><span class="anno-tip"></span></span></p>
+                    <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:95%"></span><span class="llms-skel-bar" style="width:91%"></span><span class="llms-skel-bar" style="width:87%"></span><span class="llms-skel-bar" style="width:72%"></span></span>
+                  </div>
+                  <div class="anchor-sec" id="ppt-an-hw">
+                    <p class="anchor-h">2.1 硬件要求</p>
+                    <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:92%"></span><span class="llms-skel-bar" style="width:84%"></span><span class="llms-skel-bar" style="width:70%"></span></span>
+                  </div>
+                  <div class="anchor-sec" id="ppt-an-install">
+                    <p class="anchor-h">3. 安装部署</p>
+                    <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:94%"></span><span class="llms-skel-bar" style="width:90%"></span><span class="llms-skel-bar" style="width:86%"></span><span class="llms-skel-bar" style="width:68%"></span></span>
+                  </div>
                 </div>
+                <nav class="anchor-toc" aria-label="页内锚点">
+                  <p class="anchor-toc-t">页内导航</p>
+                  <ul>
+                    <li><a href="#ppt-an-overview">1. 简介</a></li>
+                    <li><a class="is-current" href="#ppt-an-env-req" aria-current="location">2. 环境要求</a></li>
+                    <li class="is-sub"><a href="#ppt-an-hw">2.1 硬件要求</a></li>
+                    <li><a href="#ppt-an-install">3. 安装部署</a></li>
+                  </ul>
+                </nav>
               </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>正确做法：</strong></li>
-                  <li>1. 每一级（含手册与版本）写进路径，末级为当前篇</li>
-                </ul>
-              </div>
-            </div>
+            </figure>
+            <ol class="llms-anno-legend">
+              <li><span class="anno-num">1</span><span><strong>页地址</strong>告诉 Agent 引用知识来自于哪篇文章。</span></li>
+              <li><span class="anno-num">2</span><span><strong>段落锚点</strong><code>#环境要求</code> 与该段标题同名，告诉 Agent 从这一段起读。</span></li>
+              <li><span class="anno-num">3</span><span><strong>段落名</strong>正文标题「2. 环境要求」，须与地址栏 <code>#</code> 后同名，Agent 才能落到这一段。</span></li>
+              <li><span class="anno-num">4</span><span><strong>锚点符</strong>标题旁的 <code>#</code>，把段落名写进 URL，机器从这一段起读。</span></li>
+            </ol>
           </div>
         </div>
         <div class="ex-fold-bar">
@@ -892,30 +1184,34 @@
             <p class="ex-card-title">Markdown 书写</p>
             <div class="ex-fold-intro">
               <ul class="fn-ex-list">
-                <li>1. 正文前按父级到子级写出路径；父级做成链接，当前篇不要做成链接</li>
-                <li>2. 当前篇名与标题一致</li>
+                <li>1. 按正常 Markdown 写标题即可；工具链会自动生成锚点，无需手写 <code>{#id}</code>。目录与定位以渲染结果为准</li>
               </ul>
             </div>
-            <div class="ex-card-pane">
-              <div class="ex-card-pane-head">
-                <span class="fn-ex-label">反面</span>
-                <div class="fn-ex-bar" aria-hidden="true"></div>
+            <figure class="file-sample hier-md file-sample--paper" aria-label="章节锚点 Markdown">
+              <div class="hier-md-sec"><code>## 1. 简介</code></div>
+              <div class="hd-skel-lines" aria-hidden="true">
+                <span class="hd-skel-line is-w100"></span>
+                <span class="hd-skel-line is-w92"></span>
+                <span class="hd-skel-line is-w72"></span>
               </div>
-              <figure class="file-sample file-sample--compact">
-                <pre><code class="language-markdown"><span class="code-line-hl is-bad"># 安装指南</span></code></pre>
-              </figure>
-            </div>
-            <div class="ex-card-pane">
-              <div class="ex-card-pane-head">
-                <span class="fn-ex-label is-good">正面</span>
-                <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+              <div class="hier-md-sec"><code>## 2. 环境要求</code></div>
+              <div class="hd-skel-lines" aria-hidden="true">
+                <span class="hd-skel-line is-w92"></span>
+                <span class="hd-skel-line is-w80"></span>
+                <span class="hd-skel-line is-w60"></span>
               </div>
-              <figure class="file-sample file-sample--compact">
-                <pre><code class="language-markdown"><span class="code-line-hl is-good">[文档中心](/docs) › [CANN 8.0](/docs/cann/8.0) › 安装指南</span>
-
-<span class="code-line-hl is-good"># 安装指南</span></code></pre>
-              </figure>
-            </div>
+              <div class="hier-md-sec"><code>### 2.1 硬件要求</code></div>
+              <div class="hd-skel-lines" aria-hidden="true">
+                <span class="hd-skel-line is-w92"></span>
+                <span class="hd-skel-line is-w72"></span>
+              </div>
+              <div class="hier-md-sec"><code>## 3. 安装部署</code></div>
+              <div class="hd-skel-lines" aria-hidden="true">
+                <span class="hd-skel-line is-w100"></span>
+                <span class="hd-skel-line is-w80"></span>
+                <span class="hd-skel-line is-w60"></span>
+              </div>
+            </figure>
           </div>
         </div>
         <div class="ex-fold-panel" id="ex1-html" hidden>
@@ -923,8 +1219,7 @@
             <p class="ex-card-title">前端源码调整</p>
             <div class="ex-fold-intro">
               <ul class="fn-ex-list">
-                <li>1. 首包即输出全量祖先可跟链，当前篇用纯文本</li>
-                <li>2. href 指向手册祖先页，不要链到 sitemap</li>
+                <li>1. 标题带稳定 <code>id</code>；目录用 <code>a[href="#id"]</code> 同名对应，首包即可落到该节</li>
               </ul>
             </div>
             <div class="ex-card-pane">
@@ -933,169 +1228,20 @@
                 <div class="fn-ex-bar" aria-hidden="true"></div>
               </div>
               <figure class="file-sample file-sample--compact">
-                <pre><code class="language-html">&lt;div class="o-breadcrumb"&gt;
-<span class="code-line-hl is-bad">  &lt;a href="/sitemap/sitemapdoc1.xml"&gt;文档中心&lt;/a&gt;</span>
-<span class="code-line-hl is-bad">  &lt;a href="…/install.html"&gt;安装指南&lt;/a&gt;</span>
-&lt;/div&gt;</code></pre>
-              </figure>
-            </div>
-            <div class="ex-card-pane">
-              <div class="ex-card-pane-head">
-                <span class="fn-ex-label is-good">正面</span>
-                <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-              </div>
-              <figure class="file-sample file-sample--compact">
-                <pre><code class="language-html">&lt;nav aria-label="面包屑"&gt;
-<span class="code-line-hl is-good">  &lt;a href="/docs"&gt;文档中心&lt;/a&gt; ›</span>
-<span class="code-line-hl is-good">  &lt;a href="/docs/cann/8.0"&gt;CANN 8.0&lt;/a&gt; ›</span>
-<span class="code-line-hl is-good">  &lt;span aria-current="page"&gt;安装指南&lt;/span&gt;</span>
-&lt;/nav&gt;</code></pre>
-              </figure>
-            </div>
-          </div>
-        </div>
+                <pre><code class="language-html">&lt;h2&gt;1. 简介&lt;/h2&gt;
+…
+<span class="code-line-hl is-bad">&lt;h2&gt;2. 环境要求&lt;/h2&gt;</span>
+…
+&lt;h3&gt;2.1 硬件要求&lt;/h3&gt;
+…
+&lt;h2&gt;3. 安装部署&lt;/h2&gt;
+…
 
-      </div>
-
-      <div class="principle-example">
-        <h3 class="fn-h3" id="section">章节 · 节级锚点可引用</h3>
-        <p class="fn-h3-desc">段落标题旁露出「#」，每个锚点对应稳定 URL，并与右侧目录指向同一小节。点击可复制含 hash 的完整地址。</p>
-        <h4 class="fn-h4">示例 2 · 节锚点与目录</h4>
-        <div class="fn-ex-row">
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label">反面</span>
-              <div class="fn-ex-bar" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="反面：目录不能按节引用">
-                <div class="ck-card">
-                  <div class="an-doc">
-                    <div class="an-body">
-                      <p class="an-doc-t">安装指南</p>
-                      <p class="an-h">安装前提</p>
-                      <p class="an-p">准备驱动与依赖环境…</p>
-                      <p class="an-h">安装步骤</p>
-                      <p class="an-p">按顺序执行安装命令…</p>
-                    </div>
-                    <div class="an-toc">
-                      <p class="an-toc-t">页内导航</p>
-                      <ul>
-                        <li class="is-vague">安装前提</li>
-                        <li class="is-vague">安装步骤</li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>常见疏漏：</strong></li>
-                  <li>1. 目录只能滚到位置，没有独立 URL</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label is-good">正面</span>
-              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="正面：标题旁有井号，点击后复制链接">
-                <div class="ck-card">
-                  <div class="an-doc">
-                    <div class="an-body">
-                      <p class="an-doc-t">安装指南</p>
-                      <p class="an-h">安装前提<span class="an-hash">#</span></p>
-                      <p class="an-p">准备驱动与依赖环境…</p>
-                      <p class="an-h an-h--with-toast">安装步骤<span class="an-hash">#</span><span class="an-toast" role="status">已复制链接</span></p>
-                      <p class="an-p">按顺序执行安装命令…</p>
-                    </div>
-                    <div class="an-toc">
-                      <p class="an-toc-t">页内导航</p>
-                      <ul>
-                        <li class="is-link">安装前提</li>
-                        <li class="is-link">安装步骤</li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>正确做法：</strong></li>
-                  <li>1. 目录指向该节；点击「#」复制含 hash 的完整 URL，并给出成功反馈</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="ex-fold-bar">
-          <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex2-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
-          <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex2-html" aria-label="前端源码调整"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
-        </div>
-        <div class="ex-fold-panel" id="ex2-md" hidden>
-          <div class="ex-card-pair">
-            <p class="ex-card-title">Markdown 书写</p>
-            <div class="ex-fold-intro">
-              <ul class="fn-ex-list">
-                <li>1. 节标题写出稳定 id；目录用 <code>#id</code> 链到该节，不要只写不能跳转的纯文本</li>
-              </ul>
-            </div>
-            <div class="ex-card-pane">
-              <div class="ex-card-pane-head">
-                <span class="fn-ex-label">反面</span>
-                <div class="fn-ex-bar" aria-hidden="true"></div>
-              </div>
-              <figure class="file-sample file-sample--compact">
-                <pre><code class="language-markdown">## 安装前提
-准备驱动与依赖环境…
-
-## 安装步骤
-按顺序执行安装命令…
-
-页内导航
-<span class="code-line-hl is-bad">- 安装前提</span>
-<span class="code-line-hl is-bad">- 安装步骤</span></code></pre>
-              </figure>
-            </div>
-            <div class="ex-card-pane">
-              <div class="ex-card-pane-head">
-                <span class="fn-ex-label is-good">正面</span>
-                <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-              </div>
-              <figure class="file-sample file-sample--compact">
-                <pre><code class="language-markdown"><span class="code-line-hl is-good">## 安装前提 {#install-prereq}</span>
-准备驱动与依赖环境…
-
-<span class="code-line-hl is-good">## 安装步骤 {#install-steps}</span>
-按顺序执行安装命令…
-
-页内导航
-<span class="code-line-hl is-good">- [安装前提](#install-prereq)</span>
-<span class="code-line-hl is-good">- [安装步骤](#install-steps)</span></code></pre>
-              </figure>
-            </div>
-          </div>
-        </div>
-        <div class="ex-fold-panel" id="ex2-html" hidden>
-          <div class="ex-card-pair">
-            <p class="ex-card-title">前端源码调整</p>
-            <div class="ex-fold-intro">
-              <ul class="fn-ex-list">
-                <li>1. 标题带稳定 id；目录用 <code>a[href="#id"]</code>，首包即含</li>
-              </ul>
-            </div>
-            <div class="ex-card-pane">
-              <div class="ex-card-pane-head">
-                <span class="fn-ex-label">反面</span>
-                <div class="fn-ex-bar" aria-hidden="true"></div>
-              </div>
-              <figure class="file-sample file-sample--compact">
-                <pre><code class="language-html"><span class="code-line-hl is-bad">&lt;h2&gt;安装前提&lt;/h2&gt;</span>
 &lt;nav class="toc"&gt;
-<span class="code-line-hl is-bad">  &lt;span&gt;安装前提&lt;/span&gt;</span>
+  &lt;a href="#section-2"&gt;1. 简介&lt;/a&gt;
+<span class="code-line-hl is-bad">  &lt;a href="#section-3"&gt;2. 环境要求&lt;/a&gt;</span>
+  &lt;a href="#section-4"&gt;2.1 硬件要求&lt;/a&gt;
+  &lt;a href="#section-5"&gt;3. 安装部署&lt;/a&gt;
 &lt;/nav&gt;</code></pre>
               </figure>
             </div>
@@ -1104,138 +1250,58 @@
                 <span class="fn-ex-label is-good">正面</span>
                 <div class="fn-ex-bar is-good" aria-hidden="true"></div>
               </div>
-              <figure class="file-sample file-sample--compact">
-                <pre><code class="language-html"><span class="code-line-hl is-good">&lt;h2 id="install-prereq"&gt;安装前提&lt;/h2&gt;</span>
-&lt;nav class="toc"&gt;
-<span class="code-line-hl is-good">  &lt;a href="#install-prereq"&gt;安装前提&lt;/a&gt;</span>
-&lt;/nav&gt;</code></pre>
+              <figure class="file-sample hier-md file-sample--paper" aria-label="章节锚点 HTML">
+                <div class="hier-md-sec"><code>&lt;h2 id="简介"&gt;1. 简介&lt;/h2&gt;</code></div>
+                <div class="hd-skel-lines" aria-hidden="true">
+                  <span class="hd-skel-line is-w100"></span>
+                  <span class="hd-skel-line is-w92"></span>
+                  <span class="hd-skel-line is-w72"></span>
+                </div>
+                <div class="hier-md-sec"><code>&lt;h2 id="环境要求"&gt;2. 环境要求&lt;/h2&gt;</code></div>
+                <div class="hd-skel-lines" aria-hidden="true">
+                  <span class="hd-skel-line is-w92"></span>
+                  <span class="hd-skel-line is-w80"></span>
+                  <span class="hd-skel-line is-w60"></span>
+                </div>
+                <div class="hier-md-sec"><code>&lt;h3 id="硬件要求"&gt;2.1 硬件要求&lt;/h3&gt;</code></div>
+                <div class="hd-skel-lines" aria-hidden="true">
+                  <span class="hd-skel-line is-w92"></span>
+                  <span class="hd-skel-line is-w72"></span>
+                </div>
+                <div class="hier-md-sec"><code>&lt;h2 id="安装部署"&gt;3. 安装部署&lt;/h2&gt;</code></div>
+                <div class="hd-skel-lines" aria-hidden="true">
+                  <span class="hd-skel-line is-w100"></span>
+                  <span class="hd-skel-line is-w80"></span>
+                  <span class="hd-skel-line is-w60"></span>
+                </div>
+                <div class="hier-md-sec"><code>&lt;nav class="toc"&gt;
+  &lt;a href="#简介"&gt;1. 简介&lt;/a&gt;
+  &lt;a href="#环境要求"&gt;2. 环境要求&lt;/a&gt;
+  &lt;a href="#硬件要求"&gt;2.1 硬件要求&lt;/a&gt;
+  &lt;a href="#安装部署"&gt;3. 安装部署&lt;/a&gt;
+&lt;/nav&gt;</code></div>
               </figure>
             </div>
           </div>
         </div>
       </div>
-      <div class="principle-example">
-        <h3 class="fn-h3" id="neighbor">邻篇 · 邻篇导航齐全</h3>
-        <p class="fn-h3-desc">页底默认可见「上一篇 安装驱动」「下一篇 配置环境变量」，篇名与目标页标题一致，并附带真实可跟链接。</p>
-        <h4 class="fn-h4">示例 3 · 上一篇 / 下一篇</h4>
-        <div class="fn-ex-row">
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label">反面</span>
-              <div class="fn-ex-bar" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="反面：只有上一页下一页">
-                <div class="st-card">
-                  <p class="st-title">安装指南</p>
-                  <p class="st-nav is-vague">‹ 上一页　　下一页 ›</p>
-                </div>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>常见疏漏：</strong></li>
-                  <li>1. 只写「上一页 / 下一页」，看不出邻篇是谁</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div class="fn-ex">
-            <div class="fn-ex-head">
-              <span class="fn-ex-label is-good">正面</span>
-              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-            </div>
-            <div class="fn-ex-body">
-              <div class="fn-ex-mock" aria-label="正面：写出篇名">
-                <div class="st-card">
-                  <p class="st-title">安装指南</p>
-                  <p class="st-nav">上一篇 安装驱动　　下一篇 配置环境变量</p>
-                </div>
-              </div>
-              <div class="fn-ex-foot">
-                <ul class="fn-ex-list">
-                  <li><strong>正确做法：</strong></li>
-                  <li>1. 写成「上一篇 / 下一篇」加真实篇名，且与目标页文档标题一致</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="ex-fold-bar">
-          <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex3-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
-          <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex3-html" aria-label="前端源码调整"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
-        </div>
-        <div class="ex-fold-panel" id="ex3-md" hidden>
-          <div class="ex-card-pair">
-            <p class="ex-card-title">Markdown 书写</p>
-            <div class="ex-fold-intro">
-              <ul class="fn-ex-list">
-                <li>1. 写成「上一篇 / 下一篇」加篇名，并链到目标页</li>
-              </ul>
-            </div>
-            <div class="ex-card-pane">
-              <div class="ex-card-pane-head">
-                <span class="fn-ex-label">反面</span>
-                <div class="fn-ex-bar" aria-hidden="true"></div>
-              </div>
-              <figure class="file-sample file-sample--compact">
-                <pre><code class="language-markdown"><span class="code-line-hl is-bad">‹ 上一页　　下一页 ›</span></code></pre>
-              </figure>
-            </div>
-            <div class="ex-card-pane">
-              <div class="ex-card-pane-head">
-                <span class="fn-ex-label is-good">正面</span>
-                <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-              </div>
-              <figure class="file-sample file-sample--compact">
-                <pre><code class="language-markdown"><span class="code-line-hl is-good">上一篇 [安装驱动](/docs/driver)　　下一篇 [配置环境变量](/docs/env)</span></code></pre>
-              </figure>
-            </div>
-          </div>
-        </div>
-        <div class="ex-fold-panel" id="ex3-html" hidden>
-          <div class="ex-card-pair">
-            <p class="ex-card-title">前端源码调整</p>
-            <div class="ex-fold-intro">
-              <ul class="fn-ex-list">
-                <li>1. 首包输出 <code>a[href]</code>，锚文本含关系词和篇名</li>
-              </ul>
-            </div>
-            <div class="ex-card-pane">
-              <div class="ex-card-pane-head">
-                <span class="fn-ex-label">反面</span>
-                <div class="fn-ex-bar" aria-hidden="true"></div>
-              </div>
-              <figure class="file-sample file-sample--compact">
-                <pre><code class="language-html"><span class="code-line-hl is-bad">&lt;button type="button"&gt;上一页&lt;/button&gt;</span>
-<span class="code-line-hl is-bad">&lt;button type="button"&gt;下一页&lt;/button&gt;</span></code></pre>
-              </figure>
-            </div>
-            <div class="ex-card-pane">
-              <div class="ex-card-pane-head">
-                <span class="fn-ex-label is-good">正面</span>
-                <div class="fn-ex-bar is-good" aria-hidden="true"></div>
-              </div>
-              <figure class="file-sample file-sample--compact">
-                <pre><code class="language-html">&lt;nav aria-label="邻篇"&gt;
-<span class="code-line-hl is-good">  &lt;a href="/docs/driver"&gt;上一篇 安装驱动&lt;/a&gt;</span>
-<span class="code-line-hl is-good">  &lt;a href="/docs/env"&gt;下一篇 配置环境变量&lt;/a&gt;</span>
-&lt;/nav&gt;</code></pre>
-              </figure>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
     </section>
 
-    <section class="section" id="benefits">
-      <h2>价值收益</h2>
-      <ul class="bg-list">
-        <li><strong>归属更清楚</strong>回答能点明产品线与手册，同名文档不再串篇。</li>
-        <li><strong>引用更可核</strong>回答能落到具体章节或步骤，含 hash 的地址可复制核对。</li>
-        <li><strong>续读更连贯</strong>回答能沿手册指到下一章，不会看完这篇就断。</li>
-      </ul>
+    <section class="section" id="expected-effect">
+      <h2>预期效果</h2>
+      <ol class="bg-list">
+        <li>帮助 AI Agent 通过章节 URL 直接定位目标内容，提高章节引用的准确性。</li>
+        <li>减少逐层查找和重复读取页面内容的成本。</li>
+      </ol>
+    </section>
+
+    <section class="section" id="notes">
+      <h2>注意事项</h2>
+      <ol class="bg-list">
+        <li>锚点标识应尽量保持稳定，避免因章节调整导致已有链接失效。</li>
+        <li>不同 Markdown 平台的锚点生成规则可能不同，应以渲染后的实际定位结果为准。</li>
+        <li>章节能够定位不代表正文一定可被读取，正文的可读性应遵循相应规范。</li>
+      </ol>
     </section>
   </main>
 </div>

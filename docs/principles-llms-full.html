@@ -1081,10 +1081,14 @@
   #path h3.fn-h3 + .bg-list,
   #path h3.fn-h3 + .file-lead,
   #path h3.fn-h3 + .file-sample,
+  #path h3.fn-h3 + .af-figure,
   #path .file-lead + .file-sample,
+  #path .file-lead + .af-figure,
   #path .bg-list + .file-sample,
-  #path .file-sample + h3.fn-h3 {
-    margin-top: 0;
+  #path .bg-list + .af-figure,
+  #path .file-sample + h3.fn-h3,
+  #path .af-figure + h3.fn-h3 {
+    margin-top: var(--space-stack, 16px);
   }
   #path .file-lead {
     margin: 0 0 var(--space-stack, 16px);
@@ -1271,9 +1275,28 @@ The intelligent documentation platform. Self-updating documentation for startups
       <h2>机器如何发现 llms-full.txt</h2>
       <h3 class="fn-h3">方式一：试约定路径</h3>
       <p class="file-lead">AI Agent 可尝试访问网站根目录的 <code>/llms-full.txt</code>。</p>
-      <figure class="file-sample">
-        <figcaption>约定路径</figcaption>
-        <pre><code>https://{域名}/llms-full.txt</code></pre>
+      <figure class="af-figure">
+        <table class="aj aj--llms-size">
+          <colgroup>
+            <col class="aj-rowhead" />
+            <col class="aj-url" />
+            <col class="aj-url" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th class="aj-corner" scope="col">场景</th>
+              <th scope="col">约定写法</th>
+              <th scope="col">示例</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th class="aj-label" scope="row">网站根 llms-full.txt</th>
+              <td><code>https://{域名}/llms-full.txt</code></td>
+              <td><code>https://www.hiascend.com/llms-full.txt</code></td>
+            </tr>
+          </tbody>
+        </table>
       </figure>
 
       <h3 class="fn-h3">方式二：读 llms.txt</h3>
@@ -1288,8 +1311,8 @@ The intelligent documentation platform. Self-updating documentation for startups
       <h3 class="fn-h3">方式三：读 HTTP 响应头</h3>
       <p class="file-lead">网站可通过 HTTP <code>Link</code> 响应头提供 <code>llms-full.txt</code> 的位置，作为补充发现方式。</p>
       <figure class="file-sample">
-        <figcaption>示例发现声明</figcaption>
-        <pre><code><span class="code-line-hl">Link: &lt;/llms-full.txt&gt;; rel="llms-full-txt"</span></code></pre>
+        <figcaption><code>https://{域名}/</code> · 页面 HTTP 响应头</figcaption>
+        <pre><code><span class="code-line-hl">Link: &lt;https://{域名}/llms-full.txt&gt;; rel="llms-full-txt"</span></code></pre>
       </figure>
     </section>
 

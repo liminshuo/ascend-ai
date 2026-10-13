@@ -11,9 +11,13 @@
     ],
     principles: [
       { group: "可达", id: "robots", href: "principles-robots.html", label: "robots.txt 授权许可" },
-      { group: null, id: "sitemap", href: "principles-sitemap.html", label: "sitemap 路径清单可发现" },
       { group: null, id: "llms", href: "principles-llms.html", label: "llms.txt 索引入口可发现", pageIds: ["llms", "llms-volume"] },
       { group: null, id: "llms-full", href: "principles-llms-full.html", label: "llms-full.txt 全文可抓取" },
+      { group: null, id: "sitemap", href: "principles-sitemap.html", label: "sitemap 路径清单可发现" },
+      {
+        group: null, id: "site-locate", href: "principles-breadcrumb.html", label: "章节锚点可定位",
+        pageIds: ["site-locate", "page-context", "breadcrumb", "neighbor", "section-locate", "section-anchor", "locate"]
+      },
       {
         group: "可读", id: "content-retrievable", href: "principles-content-retrievable.html", label: "HTML 页面正文可读",
         pageIds: ["page-readable", "content-retrievable"]

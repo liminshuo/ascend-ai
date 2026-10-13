@@ -51,14 +51,29 @@
     color: var(--color-text, var(--color-text));
   }
   #problem > p.page-lead,
-  #mechanism > p.page-lead {
+  #mechanism > p.page-lead,
+  #references > p.page-lead {
     margin: 0;
     font-size: var(--text-body);
     line-height: var(--text-body-lh, 22px);
     color: var(--color-text-secondary);
   }
   #problem > h2 + .page-lead,
-  #mechanism > h2 + .page-lead { margin-top: 0; }
+  #mechanism > h2 + .page-lead,
+  #references > h2 + .page-lead { margin-top: 0; }
+  #references > .page-lead + .bg-list,
+  #references > .bg-list + .page-lead {
+    margin-top: var(--space-stack, 16px);
+  }
+  #mechanism .page-lead a,
+  #references .page-lead a {
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+  #mechanism .page-lead a:hover,
+  #references .page-lead a:hover {
+    text-decoration: underline;
+  }
   #mechanism > p.page-lead {
     margin-bottom: var(--space-stack, 16px);
   }
@@ -66,6 +81,141 @@
     margin-top: 0;
   }
   #mechanism > .page-lead + .af-figure { margin-top: 0; }
+  #mechanism > .page-lead + .reach-flow-block { margin-top: var(--space-stack, 16px); }
+  #mechanism .reach-flow-block { margin: 0; }
+  #mechanism .reach-flow-block > .aj-caption {
+    caption-side: top;
+    text-align: left;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 650;
+    padding: 0 0 16px;
+    color: var(--color-text);
+    margin: 0;
+  }
+  #mechanism .reach-chart--h {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-rows: auto;
+    column-gap: 40px;
+    row-gap: 0;
+    padding: 28px 4px 40px;
+    box-sizing: border-box;
+    align-items: stretch;
+  }
+  #mechanism .reach-chart--h .rc-wires {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+    z-index: 2;
+  }
+  #mechanism .reach-chart--h [data-rc="gate"] { grid-column: 1; }
+  #mechanism .reach-chart--h [data-rc="llms"] { grid-column: 2; }
+  #mechanism .reach-chart--h [data-rc="sitemap"] { grid-column: 3; }
+  #mechanism .reach-chart--h [data-rc="leaf"] { grid-column: 4; }
+  #mechanism .reach-chart--h .rc-node {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    min-height: 96px;
+    height: auto;
+    padding: 0;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 12px;
+    text-align: left;
+  }
+  #mechanism .reach-chart--h .rc-node.is-on {
+    z-index: 2;
+    border: 1.5px solid var(--color-primary, #1476FF);
+    box-shadow: 0 4px 14px rgba(20, 118, 255, 0.18);
+  }
+  #mechanism .reach-chart--h .rc-head {
+    margin: 0;
+    padding: 10px 12px;
+    font-size: 15px;
+    line-height: 22px;
+    font-weight: 650;
+    color: var(--color-text);
+    background: #e8edfb;
+    overflow-wrap: anywhere;
+  }
+  #mechanism .reach-chart--h .rc-body {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 14px 14px 16px;
+    background: #fff;
+  }
+  #mechanism .reach-chart--h .rc-file {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #eef6c8;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    white-space: nowrap;
+    color: var(--color-text);
+  }
+  #mechanism .reach-chart--h .rc-chip {
+    position: absolute;
+    z-index: 3;
+    margin: 0;
+    padding: 1px 6px;
+    border-radius: 999px;
+    font-size: 11px;
+    line-height: 16px;
+    font-weight: 650;
+    white-space: nowrap;
+    background: #eef4ff;
+    color: var(--color-primary);
+    pointer-events: none;
+  }
+  #mechanism .reach-chart--h .rc-chip-yes {
+    background: #e8f6ee;
+    color: #0f7b4a;
+  }
+  #mechanism .reach-chart--h .rc-chip-no {
+    background: #f4f4f5;
+    color: #525252;
+  }
+  #mechanism .reach-chart--h .rc-chip-guess {
+    background: #fff4e5;
+    color: #b45309;
+  }
+  @media (max-width: 820px) {
+    #mechanism .reach-chart--h {
+      grid-template-columns: 1fr;
+      grid-template-rows: none;
+      column-gap: 0;
+      row-gap: 20px;
+      padding-bottom: 8px;
+    }
+    #mechanism .reach-chart--h [data-rc="gate"],
+    #mechanism .reach-chart--h [data-rc="llms"],
+    #mechanism .reach-chart--h [data-rc="sitemap"],
+    #mechanism .reach-chart--h [data-rc="leaf"] {
+      grid-column: 1;
+      grid-row: auto;
+      align-self: stretch;
+    }
+    #mechanism .reach-chart--h .rc-wires,
+    #mechanism .reach-chart--h .rc-chip {
+      display: none;
+    }
+  }
   #mechanism > .page-lead + h3.fn-h3,
   #mechanism h3.fn-h3 + .af-figure { margin-top: 0; }
   body.inner-page.agent-entry-page:has(#module-sidebar) .main-content {
@@ -350,6 +500,7 @@
   #detail-principles .bg-list li + li,
   #expected-effect .bg-list li + li,
   #notes .bg-list li + li,
+  #references .bg-list li + li,
   #find-md .bg-list li + li,
   #mechanism .bg-list li + li{ margin-top: 16px; }
   #practices .bg-list li > strong:first-child,
@@ -370,17 +521,20 @@
   #detail-principles .bg-list,
   #expected-effect .bg-list,
   #notes .bg-list,
+  #references .bg-list,
   #mechanism .bg-list {
     margin: 0;
   }
   #detail-principles > h2 + .bg-list,
   #expected-effect > h2 + .bg-list,
-  #notes > h2 + .bg-list {
+  #notes > h2 + .bg-list,
+  #references > h2 + .bg-list {
     margin-top: 0;
   }
   #detail-principles ol.bg-list,
   #expected-effect ol.bg-list,
-  #notes ol.bg-list {
+  #notes ol.bg-list,
+  #references ol.bg-list {
     list-style: decimal;
   }
   #practices .file-sample-note + h4.fn-h4,
@@ -983,7 +1137,32 @@
     <section class="section" id="mechanism">
       <h2 id="mech-access">概述</h2>
       <p class="page-lead">robots.txt 是网站根目录下的一个纯文本文件，用于告诉爬虫（crawler / bot）哪些页面可以抓取，哪些页面不要抓取。</p>
-      <p class="page-lead">基于 RFC 9309（Robots Exclusion Protocol）的约定，robots.txt 入口固定为网站根路径 <code>https://{域名}/robots.txt</code>。遵循协议的 Agent 会主动读取该文件，并依据其中规则决定抓取范围；未遵循协议的 Agent 不受其约束。</p>
+      <p class="page-lead">基于 <a href="#references">RFC 9309（Robots Exclusion Protocol）</a> 的约定，robots.txt 入口固定为网站根路径 <code>https://{域名}/robots.txt</code>。遵循协议的 Agent 会主动读取该文件，并依据其中规则决定抓取范围；未遵循协议的 Agent 不受其约束。</p>
+      <div class="reach-flow-block" aria-label="Agent 内容发现流程">
+        <p class="aj-caption">Agent 内容发现流程</p>
+        <div class="reach-chart reach-chart--h">
+          <svg class="rc-wires" viewBox="0 0 100 100" fill="none" aria-hidden="true" preserveAspectRatio="none"></svg>
+          <span class="rc-chip rc-chip-yes">有llms</span>
+          <span class="rc-chip rc-chip-no">无llms</span>
+          <span class="rc-chip rc-chip-guess">猜地址</span>
+          <div class="rc-node is-on" data-rc="gate">
+            <p class="rc-head">读取许可声明</p>
+            <div class="rc-body"><span class="rc-file">robots.txt</span></div>
+          </div>
+          <div class="rc-node" data-rc="llms">
+            <p class="rc-head">查找索引目录</p>
+            <div class="rc-body"><span class="rc-file">llms.txt</span></div>
+          </div>
+          <div class="rc-node" data-rc="sitemap">
+            <p class="rc-head">查看兜底URL清单</p>
+            <div class="rc-body"><span class="rc-file">sitemap.xml</span></div>
+          </div>
+          <div class="rc-node" data-rc="leaf">
+            <p class="rc-head">打开正文URL</p>
+            <div class="rc-body"><span class="rc-file">.html</span><span class="rc-file">.md</span></div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <section class="section" id="detail-principles">
@@ -1018,15 +1197,15 @@
 <span class="llms-sec"><span class="llms-mod">禁止路径</span><span class="llms-row"><span class="llms-pin llms-pin--right" aria-hidden="true"><span class="anno-cap">禁止规则<span class="anno-name">User-agent * 与 Disallow</span></span><span class="anno-leader"></span><span class="anno-tip"></span></span># Disallow Rules</span>
 <span class="llms-row">User-agent: *</span>
 <span class="llms-row"># Gated Content</span>
-<span class="llms-row">Disallow: /content/g/*</span>
-<span class="llms-row">Disallow: /content/gated-pdfs/*</span>
-<span class="llms-row">Disallow: /content/*/gated-resources/*</span>
-<span class="llms-row">Disallow: /content/*/gated-pdfs/*</span>
-<span class="llms-row">Disallow: /gated-resources/*</span>
+<span class="llms-row"><mark class="hl-3">Disallow: /content/g/*</mark></span>
+<span class="llms-row"><mark class="hl-3">Disallow: /content/gated-pdfs/*</mark></span>
+<span class="llms-row"><mark class="hl-3">Disallow: /content/*/gated-resources/*</mark></span>
+<span class="llms-row"><mark class="hl-3">Disallow: /content/*/gated-pdfs/*</mark></span>
+<span class="llms-row"><mark class="hl-3">Disallow: /gated-resources/*</mark></span>
 <span class="llms-row"># GF Forums</span>
-<span class="llms-row">Disallow: /*?topicPage=</span>
-<span class="llms-row">Disallow: /*&amp;topicPage=</span>
-<span class="llms-row">Disallow: /*?commentPage=</span></span></span></code></pre>
+<span class="llms-row"><mark class="hl-3">Disallow: /*?topicPage=</mark></span>
+<span class="llms-row"><mark class="hl-3">Disallow: /*&amp;topicPage=</mark></span>
+<span class="llms-row"><mark class="hl-3">Disallow: /*?commentPage=</mark></span></span></span></code></pre>
           </figure>
           </div>
       </div>
@@ -1034,7 +1213,7 @@
 
     <section class="section" id="practices">
       <h2>robots.txt 建议示例</h2>
-      <p class="aj-caption">网站 robots.txt</p>
+      <p class="aj-caption">通用示例</p>
       <figure class="file-sample">
         <figcaption><code>https://{域名}/robots.txt</code></figcaption>
         <pre><code class="language-robots"><span class="cmt"># 必选 对全体爬虫生效；勿单独误挡主流 Agent</span>
@@ -1042,19 +1221,18 @@ User-agent: *
 <span class="cmt"># 可选 内容用途信号</span>
 Content-Signal: ai-train=yes,search=yes,ai-input=yes
 
-<span class="cmt"># 必选 放行知识面</span>
-Allow: /docs/
+<span class="cmt"># 必选 放行公开内容</span>
+Allow: /
 
 <span class="cmt"># 必选 拦截噪声面</span>
 Disallow: /admin/
-Disallow: /staging/
-Disallow: /api/debug/
+Disallow: /private/
 
 <span class="cmt"># 必选 声明 Sitemap 地址</span>
-Sitemap: https://docs.example.com/sitemap.xml
+Sitemap: https://{域名}/sitemap.xml
 
 <span class="cmt"># 可选 声明 llms 索引（非标准字段）</span>
-LLMs.txt: https://docs.example.com/llms.txt</code></pre>
+LLMs.txt: https://{域名}/llms.txt</code></pre>
       </figure>
     </section>
 
@@ -1069,10 +1247,16 @@ LLMs.txt: https://docs.example.com/llms.txt</code></pre>
     <section class="section" id="notes">
       <h2>注意事项</h2>
       <ol class="bg-list">
-        <li>robots.txt 用于声明抓取规则，不能代替身份验证和访问权限控制，也不能保证所有爬虫遵守。</li>
-        <li>允许抓取不等于一定会被索引或引用；站点地图也不保证内容被收录。</li>
-        <li>开放范围应与内容权限保持一致，避免为了提升可发现性而开放敏感或非公开内容。</li>
+        <li>robots.txt 用于声明爬虫访问规则，不等同于身份认证或访问权限控制，不能用于保护敏感内容。</li>
+        <li>robots.txt 中的允许或禁止规则应与网站实际开放策略保持一致，避免声明与实际访问状态不符。</li>
+        <li>更新 robots.txt 后，应检查文件是否可正常访问、规则语法是否有效，以及目标路径是否受到预期限制。</li>
       </ol>
+    </section>
+
+    <section class="section" id="references">
+      <h2>文献标注</h2>
+      <p class="page-lead">Koster, M., Illyes, G., Zeller, H., and L. Sassman, “Robots Exclusion Protocol”, RFC 9309, DOI 10.17487/RFC9309, September 2022.<br>
+      <a href="https://www.rfc-editor.org/rfc/rfc9309.html" target="_blank" rel="noopener">https://www.rfc-editor.org/rfc/rfc9309.html</a></p>
     </section>
 
   </main>
@@ -1081,5 +1265,6 @@ LLMs.txt: https://docs.example.com/llms.txt</code></pre>
 <script src="assets/js/site-config.js"></script>
 <script src="assets/js/site-init.js"></script>
 <script src="assets/js/module-sidebar.js"></script>
+<script src="assets/js/reach-wires.js"></script>
 </body>
 </html>
