@@ -891,11 +891,56 @@
     font-weight: 600;
   }
   .ex-fold-panel { margin: var(--space-stack, 16px) 0; }
-  .ex-fold-panel > .ex-card-pair {
+  .ex-fold-panel > .ex-card-pair,
+  .ex-fold-panel > .ex-card-shell {
     margin: 0;
     border: none;
     border-radius: 8px;
     background: #fafafa;
+  }
+  .ex-card-shell {
+    padding: 16px;
+    box-sizing: border-box;
+  }
+  .ex-card-shell > .ex-card-title {
+    margin: 0 0 12px;
+  }
+  .ex-tech-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin: 0 0 16px;
+    padding: 0;
+  }
+  .ex-tech-tab {
+    appearance: none;
+    margin: 0;
+    padding: 6px 12px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 20px;
+    color: var(--color-text-secondary, #595959);
+    cursor: pointer;
+  }
+  .ex-tech-tab:hover {
+    color: var(--color-text, #191919);
+    background: rgba(0, 0, 0, 0.04);
+  }
+  .ex-tech-tab[aria-selected="true"] {
+    color: var(--color-primary, #1476FF);
+    background: var(--color-primary-subtle, rgba(20, 118, 255, 0.06));
+    font-weight: 600;
+  }
+  .ex-card-shell > .ex-card-pair {
+    padding: 0;
+    background: transparent;
+  }
+  .ex-card-shell > .ex-tech-panel[hidden] {
+    display: none !important;
   }
   .ex-card-pane-head {
     display: flex;
@@ -1025,7 +1070,7 @@
         </figure>
         <div class="ex-fold-bar">
           <button type="button" class="ex-fold-btn" aria-expanded="true" aria-controls="ex1-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
-          <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex1-html" aria-label="前端源码调整"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
+          <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex1-html" aria-label="前端源码书写"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
         </div>
         <div class="ex-fold-panel" id="ex1-md">
           <div class="ex-card-pair">
@@ -1093,63 +1138,124 @@
           </div>
         </div>
         <div class="ex-fold-panel" id="ex1-html" hidden>
-          <div class="ex-card-pair">
-            <p class="ex-card-title">前端源码调整</p>
-            <div class="ex-fold-intro">
-              <ul class="fn-ex-list">
-                <li>1. 核心属性按文档身份、时效与状态、内容范围写入首包 &lt;head&gt;，不要靠 JS 后注入。</li>
-                <li>2. title、version、dateModified、description、product 与正文同一套事实；更新正文时同步 meta。</li>
-                <li>3. 不要只把关键属性写在图片、隐藏提示或非结构化文本里。</li>
-              </ul>
+          <div class="ex-card-shell">
+            <p class="ex-card-title">前端源码书写</p>
+            <div class="ex-tech-tabs" role="tablist" aria-label="前端技术方案">
+              <button type="button" class="ex-tech-tab" role="tab" id="ex1-tab-meta" aria-controls="ex1-html-meta" aria-selected="true">HTML meta</button>
+              <button type="button" class="ex-tech-tab" role="tab" id="ex1-tab-jsonld" aria-controls="ex1-html-jsonld" aria-selected="false" tabindex="-1">JSON-LD</button>
             </div>
-            <div class="ex-card-pane">
-              <div class="ex-card-pane-head">
-                <span class="fn-ex-label">反面</span>
-                <div class="fn-ex-bar" aria-hidden="true"></div>
+            <div class="ex-card-pair ex-tech-panel" id="ex1-html-meta" role="tabpanel" aria-labelledby="ex1-tab-meta">
+              <div class="ex-fold-intro">
+                <ul class="fn-ex-list">
+                  <li>1. 核心属性按文档身份、时效与状态、内容范围写入首包 &lt;head&gt;，不要靠 JS 后注入。</li>
+                  <li>2. title、version、dateModified、description、product 与正文同一套事实；更新正文时同步 meta。</li>
+                  <li>3. 不要只把关键属性写在图片、隐藏提示或非结构化文本里。</li>
+                </ul>
               </div>
-              <figure class="file-sample hier-md file-sample--paper file-sample--dark" aria-label="文档详情 HTML 反面">
-                <div class="hier-md-stack">
-                  <div class="hier-md-sec"><code>&lt;title&gt;安装Spark引擎&lt;/title&gt;</code></div>
-                  <div class="hier-md-sec"><code>&lt;h1&gt;安装Spark引擎 24.0.0&lt;/h1&gt;</code></div>
-                  <div class="hier-md-sec"><code>&lt;p&gt;更新时间：2026/04/14&lt;/p&gt;</code></div>
-                  <div class="hier-md-sec"><code>&lt;p&gt;OmniData算子下推特性支持Spark引擎，使用OmniData算子下推特性前应先安装Spark引擎，并在Spark引擎中添加OmniData算子下推参数。&lt;/p&gt;</code></div>
-                  <div class="hier-md-sec"><code>&lt;h2&gt;规划集群环境&lt;/h2&gt;</code></div>
+              <div class="ex-card-pane">
+                <div class="ex-card-pane-head">
+                  <span class="fn-ex-label">反面</span>
+                  <div class="fn-ex-bar" aria-hidden="true"></div>
                 </div>
-              </figure>
+                <figure class="file-sample hier-md file-sample--paper file-sample--dark" aria-label="文档详情 HTML 反面">
+                  <div class="hier-md-stack">
+                    <div class="hier-md-sec"><code>&lt;title&gt;安装Spark引擎&lt;/title&gt;</code></div>
+                    <div class="hier-md-sec"><code>&lt;h1&gt;安装Spark引擎 24.0.0&lt;/h1&gt;</code></div>
+                    <div class="hier-md-sec"><code>&lt;p&gt;更新时间：2026/04/14&lt;/p&gt;</code></div>
+                    <div class="hier-md-sec"><code>&lt;p&gt;OmniData算子下推特性支持Spark引擎，使用OmniData算子下推特性前应先安装Spark引擎，并在Spark引擎中添加OmniData算子下推参数。&lt;/p&gt;</code></div>
+                    <div class="hier-md-sec"><code>&lt;h2&gt;规划集群环境&lt;/h2&gt;</code></div>
+                  </div>
+                </figure>
+              </div>
+              <div class="ex-card-pane">
+                <div class="ex-card-pane-head">
+                  <span class="fn-ex-label is-good">正面</span>
+                  <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+                </div>
+                <figure class="file-sample hier-md file-sample--paper" aria-label="文档详情 HTML">
+                  <div class="llms-sec llms-sec--copy">
+                    <span class="llms-mod">文档身份</span>
+                    <div class="hier-md-sec"><code>&lt;title&gt;安装Spark引擎&lt;/title&gt;</code></div>
+                    <div class="hier-md-sec"><code>&lt;meta name="version" content="24.0.0"&gt;</code></div>
+                    <div class="hier-md-sec"><code>&lt;meta name="schema_type" content="TechArticle"&gt;</code></div>
+                  </div>
+                  <div class="llms-sec llms-sec--cta">
+                    <span class="llms-mod">时效与状态</span>
+                    <div class="hier-md-sec"><code>&lt;meta name="dateModified" content="2026-04-14"&gt;</code></div>
+                    <div class="hier-md-sec"><code>&lt;meta name="lifecycle_status" content="current"&gt;</code></div>
+                  </div>
+                  <div class="llms-sec llms-sec--caution">
+                    <span class="llms-mod">内容范围</span>
+                    <div class="hier-md-sec"><code>&lt;meta name="description" content="OmniData算子下推特性支持Spark引擎，使用前应先安装Spark引擎。"&gt;</code></div>
+                    <div class="hier-md-sec"><code>&lt;meta name="product" content="OmniData算子下推"&gt;</code></div>
+                    <div class="hier-md-sec"><code>&lt;meta name="inLanguage" content="zh-CN"&gt;</code></div>
+                    <div class="hier-md-sec"><code>&lt;meta name="keywords" content="Spark, OmniData, OmniRuntime"&gt;</code></div>
+                  </div>
+                  <div class="hier-md-stack">
+                    <div class="hier-md-sec"><code>&lt;h1&gt;安装Spark引擎 &lt;span class="ver"&gt;24.0.0&lt;/span&gt;&lt;/h1&gt;</code></div>
+                    <div class="hier-md-sec"><code>&lt;p&gt;更新时间：2026/04/14&lt;/p&gt;</code></div>
+                    <div class="hier-md-sec"><code>&lt;h2&gt;概要&lt;/h2&gt;</code></div>
+                    <div class="hier-md-sec"><code>&lt;p&gt;OmniData算子下推特性支持Spark引擎，使用OmniData算子下推特性前应先安装Spark引擎，并在Spark引擎中添加OmniData算子下推参数。&lt;/p&gt;</code></div>
+                    <div class="hier-md-sec"><code>&lt;h2&gt;适用产品&lt;/h2&gt;</code></div>
+                    <div class="hier-md-sec"><code>&lt;p&gt;OmniRuntime大数据套件 / OmniData算子下推&lt;/p&gt;</code></div>
+                  </div>
+                </figure>
+              </div>
             </div>
-            <div class="ex-card-pane">
-              <div class="ex-card-pane-head">
-                <span class="fn-ex-label is-good">正面</span>
-                <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+            <div class="ex-card-pair ex-tech-panel" id="ex1-html-jsonld" role="tabpanel" aria-labelledby="ex1-tab-jsonld" hidden>
+              <div class="ex-fold-intro">
+                <ul class="fn-ex-list">
+                  <li>1. 用 &lt;script type="application/ld+json"&gt; 写在首包 HTML，不要靠 JS 后注入。</li>
+                  <li>2. @type、headline、version、dateModified、description 等与 meta / 正文同一套事实。</li>
+                  <li>3. JSON-LD 用于补充可类型化的语义，可与 meta 并存；缺字段、与正文冲突时同样会误导 Agent。</li>
+                </ul>
               </div>
-              <figure class="file-sample hier-md file-sample--paper" aria-label="文档详情 HTML">
-                <div class="llms-sec llms-sec--copy">
-                  <span class="llms-mod">文档身份</span>
-                  <div class="hier-md-sec"><code>&lt;title&gt;安装Spark引擎&lt;/title&gt;</code></div>
-                  <div class="hier-md-sec"><code>&lt;meta name="version" content="24.0.0"&gt;</code></div>
-                  <div class="hier-md-sec"><code>&lt;meta name="schema_type" content="TechArticle"&gt;</code></div>
+              <div class="ex-card-pane">
+                <div class="ex-card-pane-head">
+                  <span class="fn-ex-label">反面</span>
+                  <div class="fn-ex-bar" aria-hidden="true"></div>
                 </div>
-                <div class="llms-sec llms-sec--cta">
-                  <span class="llms-mod">时效与状态</span>
-                  <div class="hier-md-sec"><code>&lt;meta name="dateModified" content="2026-04-14"&gt;</code></div>
-                  <div class="hier-md-sec"><code>&lt;meta name="lifecycle_status" content="current"&gt;</code></div>
+                <figure class="file-sample hier-md file-sample--paper file-sample--dark" aria-label="JSON-LD 反面">
+                  <div class="hier-md-stack">
+                    <div class="hier-md-sec"><code>&lt;title&gt;安装Spark引擎&lt;/title&gt;</code></div>
+                    <div class="hier-md-sec"><code>&lt;!-- 无 JSON-LD；版本与日期仅出现在正文段落中 --&gt;</code></div>
+                    <div class="hier-md-sec"><code>&lt;h1&gt;安装Spark引擎 24.0.0&lt;/h1&gt;</code></div>
+                    <div class="hier-md-sec"><code>&lt;p&gt;更新时间：2026/04/14&lt;/p&gt;</code></div>
+                    <div class="hier-md-sec"><code>&lt;p&gt;OmniData算子下推特性支持Spark引擎……&lt;/p&gt;</code></div>
+                  </div>
+                </figure>
+              </div>
+              <div class="ex-card-pane">
+                <div class="ex-card-pane-head">
+                  <span class="fn-ex-label is-good">正面</span>
+                  <div class="fn-ex-bar is-good" aria-hidden="true"></div>
                 </div>
-                <div class="llms-sec llms-sec--caution">
-                  <span class="llms-mod">内容范围</span>
-                  <div class="hier-md-sec"><code>&lt;meta name="description" content="OmniData算子下推特性支持Spark引擎，使用前应先安装Spark引擎。"&gt;</code></div>
-                  <div class="hier-md-sec"><code>&lt;meta name="product" content="OmniData算子下推"&gt;</code></div>
-                  <div class="hier-md-sec"><code>&lt;meta name="inLanguage" content="zh-CN"&gt;</code></div>
-                  <div class="hier-md-sec"><code>&lt;meta name="keywords" content="Spark, OmniData, OmniRuntime"&gt;</code></div>
-                </div>
-                <div class="hier-md-stack">
-                  <div class="hier-md-sec"><code>&lt;h1&gt;安装Spark引擎 &lt;span class="ver"&gt;24.0.0&lt;/span&gt;&lt;/h1&gt;</code></div>
-                  <div class="hier-md-sec"><code>&lt;p&gt;更新时间：2026/04/14&lt;/p&gt;</code></div>
-                  <div class="hier-md-sec"><code>&lt;h2&gt;概要&lt;/h2&gt;</code></div>
-                  <div class="hier-md-sec"><code>&lt;p&gt;OmniData算子下推特性支持Spark引擎，使用OmniData算子下推特性前应先安装Spark引擎，并在Spark引擎中添加OmniData算子下推参数。&lt;/p&gt;</code></div>
-                  <div class="hier-md-sec"><code>&lt;h2&gt;适用产品&lt;/h2&gt;</code></div>
-                  <div class="hier-md-sec"><code>&lt;p&gt;OmniRuntime大数据套件 / OmniData算子下推&lt;/p&gt;</code></div>
-                </div>
-              </figure>
+                <figure class="file-sample hier-md file-sample--paper" aria-label="JSON-LD 正面">
+                  <div class="llms-sec llms-sec--copy">
+                    <span class="llms-mod">文档身份</span>
+                    <div class="hier-md-sec"><code>&lt;script type="application/ld+json"&gt;</code></div>
+                    <div class="hier-md-sec"><code>{</code></div>
+                    <div class="hier-md-sec"><code>  "@context": "https://schema.org",</code></div>
+                    <div class="hier-md-sec"><code>  "@type": "TechArticle",</code></div>
+                    <div class="hier-md-sec"><code>  "headline": "安装Spark引擎",</code></div>
+                    <div class="hier-md-sec"><code>  "version": "24.0.0",</code></div>
+                  </div>
+                  <div class="llms-sec llms-sec--cta">
+                    <span class="llms-mod">时效与状态</span>
+                    <div class="hier-md-sec"><code>  "dateModified": "2026-04-14",</code></div>
+                    <div class="hier-md-sec"><code>  "creativeWorkStatus": "current",</code></div>
+                  </div>
+                  <div class="llms-sec llms-sec--caution">
+                    <span class="llms-mod">内容范围</span>
+                    <div class="hier-md-sec"><code>  "description": "OmniData算子下推特性支持Spark引擎，使用前应先安装Spark引擎。",</code></div>
+                    <div class="hier-md-sec"><code>  "about": "OmniData算子下推",</code></div>
+                    <div class="hier-md-sec"><code>  "inLanguage": "zh-CN",</code></div>
+                    <div class="hier-md-sec"><code>  "keywords": ["Spark", "OmniData", "OmniRuntime"]</code></div>
+                    <div class="hier-md-sec"><code>}</code></div>
+                    <div class="hier-md-sec"><code>&lt;/script&gt;</code></div>
+                  </div>
+                </figure>
+              </div>
             </div>
           </div>
         </div>
@@ -1170,7 +1276,7 @@
       <ol class="bg-list">
         <li>元数据字段应根据页面类型合理设置，不要求所有页面使用完全相同的字段集合。</li>
         <li>页面可见信息与机器可读元数据应保持一致，不能只更新其中一处。</li>
-        <li>Frontmatter、HTML meta 等是实现方式，不是原则本身；应以字段清晰、信息完整、内容一致为判断标准。</li>
+        <li>Frontmatter、HTML meta、JSON-LD 等是实现方式，不是原则本身；应以字段清晰、信息完整、内容一致为判断标准。JSON-LD 可与 meta 并存，用于补充 Schema.org 类型语义。</li>
         <li>元数据用于补充和明确文档属性，不能替代正文中的必要说明、操作步骤和技术细节。</li>
       </ol>
     </section>
@@ -1185,8 +1291,35 @@
       var panel = document.getElementById(btn.getAttribute("aria-controls"));
       if (!panel) return;
       var open = btn.getAttribute("aria-expanded") === "true";
+      var bar = btn.closest(".ex-fold-bar");
+      if (!open && bar) {
+        bar.querySelectorAll(".ex-fold-btn").forEach(function (other) {
+          if (other === btn) return;
+          other.setAttribute("aria-expanded", "false");
+          var otherPanel = document.getElementById(other.getAttribute("aria-controls"));
+          if (otherPanel) otherPanel.hidden = true;
+        });
+      }
       btn.setAttribute("aria-expanded", open ? "false" : "true");
       panel.hidden = open;
+    });
+  });
+
+  document.querySelectorAll(".ex-tech-tabs").forEach(function (tabs) {
+    var buttons = tabs.querySelectorAll('[role="tab"]');
+    buttons.forEach(function (tab) {
+      tab.addEventListener("click", function () {
+        var targetId = tab.getAttribute("aria-controls");
+        var shell = tabs.closest(".ex-card-shell") || tabs.parentElement;
+        buttons.forEach(function (btn) {
+          var on = btn === tab;
+          btn.setAttribute("aria-selected", on ? "true" : "false");
+          btn.tabIndex = on ? 0 : -1;
+        });
+        shell.querySelectorAll(".ex-tech-panel").forEach(function (panel) {
+          panel.hidden = panel.id !== targetId;
+        });
+      });
     });
   });
 })();

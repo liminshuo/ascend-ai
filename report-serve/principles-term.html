@@ -1005,6 +1005,15 @@
       var panel = document.getElementById(btn.getAttribute("aria-controls"));
       if (!panel) return;
       var open = btn.getAttribute("aria-expanded") === "true";
+      var bar = btn.closest(".ex-fold-bar");
+      if (!open && bar) {
+        bar.querySelectorAll(".ex-fold-btn").forEach(function (other) {
+          if (other === btn) return;
+          other.setAttribute("aria-expanded", "false");
+          var otherPanel = document.getElementById(other.getAttribute("aria-controls"));
+          if (otherPanel) otherPanel.hidden = true;
+        });
+      }
       btn.setAttribute("aria-expanded", open ? "false" : "true");
       panel.hidden = open;
     });

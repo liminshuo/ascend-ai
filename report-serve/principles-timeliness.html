@@ -260,8 +260,7 @@
     white-space: nowrap;
   }
   #practices .ppt-ver-table tbody td {
-    min-height: 49px;
-    height: 49px;
+    height: 31px;
     box-sizing: border-box;
   }
   #practices .ppt-ver-table th:nth-child(1),
@@ -1022,7 +1021,7 @@
         </div>
         <div class="ex-fold-bar">
           <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex1-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
-          <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex1-html" aria-label="前端源码调整"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
+          <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex1-html" aria-label="前端源码书写"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
         </div>
         <div class="ex-fold-panel" id="ex1-md" hidden>
           <div class="ex-card-pair">
@@ -1069,7 +1068,7 @@
         </div>
         <div class="ex-fold-panel" id="ex1-html" hidden>
           <div class="ex-card-pair">
-            <p class="ex-card-title">前端源码调整</p>
+            <p class="ex-card-title">前端源码书写</p>
             <div class="ex-fold-intro">
               <ul class="fn-ex-list">
                 <li>1. 版本号、状态、日期写成可见文本。</li>
@@ -1170,7 +1169,7 @@
         </div>
         <div class="ex-fold-bar">
           <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex2-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
-          <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex2-html" aria-label="前端源码调整"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
+          <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex2-html" aria-label="前端源码书写"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
         </div>
         <div class="ex-fold-panel" id="ex2-md" hidden>
           <div class="ex-card-pair">
@@ -1211,7 +1210,7 @@
         </div>
         <div class="ex-fold-panel" id="ex2-html" hidden>
           <div class="ex-card-pair">
-            <p class="ex-card-title">前端源码调整</p>
+            <p class="ex-card-title">前端源码书写</p>
             <div class="ex-fold-intro">
               <ul class="fn-ex-list">
                 <li>1. 标题旁的版本写成可见文本。</li>
@@ -1281,6 +1280,15 @@
       var panel = document.getElementById(btn.getAttribute("aria-controls"));
       if (!panel) return;
       var open = btn.getAttribute("aria-expanded") === "true";
+      var bar = btn.closest(".ex-fold-bar");
+      if (!open && bar) {
+        bar.querySelectorAll(".ex-fold-btn").forEach(function (other) {
+          if (other === btn) return;
+          other.setAttribute("aria-expanded", "false");
+          var otherPanel = document.getElementById(other.getAttribute("aria-controls"));
+          if (otherPanel) otherPanel.hidden = true;
+        });
+      }
       btn.setAttribute("aria-expanded", open ? "false" : "true");
       panel.hidden = open;
     });

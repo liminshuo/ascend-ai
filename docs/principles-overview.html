@@ -52,6 +52,7 @@
 
   body.inner-page.agent-entry-page:has(#module-sidebar) .main-content {
     padding-top: var(--content-main-pad-top, 16px);
+    padding-bottom: 32px;
     padding-left: 0;
     padding-right: 0;
   }
@@ -64,7 +65,8 @@
     padding-right: 0;
     box-sizing: border-box;
   }
-  body.inner-page.agent-entry-page .main-content .section > h2 {
+  body.inner-page.agent-entry-page .main-content .section > h2,
+  body.inner-page.agent-entry-page .main-content .section h2.ov-goal-id {
     font-size: var(--text-h2, 24px);
     font-weight: 700;
     line-height: var(--text-h2-lh, 36px);
@@ -95,184 +97,92 @@
     margin-bottom: 0;
   }
 
-  .ov-flow {
-    margin: 0;
-  }
-  #llm-flow > h2#llm-flow-title {
-    margin-bottom: 32px;
-  }
   .ov-flow-track {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 24px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-sizing: border-box;
+  }
+  .ov-flow-card {
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    padding: 0 0 8px;
-    background: transparent;
-    border-radius: 0;
-    overflow: visible;
-  }
-  .ov-flow-stages,
-  .ov-flow-circles {
-    position: relative;
-    z-index: 1;
-    display: grid;
-    grid-template-columns: 176px 64px 176px 64px 176px 64px 176px;
-    align-items: center;
-    justify-content: center;
-    justify-items: center;
-    width: 100%;
-    box-sizing: border-box;
-    padding: 0;
+    align-items: stretch;
+    min-height: 168px;
     margin: 0;
-    column-gap: 0;
-    row-gap: 0;
-  }
-  .ov-flow-stages {
-    height: 24px;
-    min-height: 24px;
-  }
-  .ov-flow-stage-slot,
-  .ov-flow-stage-gap {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 24px;
-    margin: 0;
-    padding: 0;
+    padding: 16px 16px 20px;
+    border-radius: 18px;
+    background: #f5f1fa;
     box-sizing: border-box;
+    text-decoration: none;
+    color: #000;
+    transition: transform .15s ease, box-shadow .15s ease;
   }
-  .ov-flow-stage-slot {
-    flex: none;
+  a.ov-flow-card:visited,
+  a.ov-flow-card:active {
+    color: #000;
+    text-decoration: none;
   }
-  .ov-flow-stage-gap {
-    position: relative;
-    flex: none;
-  }
-  .ov-flow-stage-gap::before {
-    content: "";
-    position: absolute;
-    left: 8px;
-    right: 12px;
-    top: 50%;
-    height: 0;
-    border-top: 1.5px dashed #B0B0B0;
-    transform: translateY(-50%);
-  }
-  .ov-flow-stage-gap::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    right: 8px;
-    width: 0;
-    height: 0;
-    border-top: 3.5px solid transparent;
-    border-bottom: 3.5px solid transparent;
-    border-left: 5px solid #B0B0B0;
-    transform: translateY(-50%);
+  a.ov-flow-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28);
+    text-decoration: none;
+    color: #000;
   }
   .ov-flow-stage {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    text-align: center;
-    font-size: 16px;
-    font-weight: 700;
-    line-height: 24px;
-    letter-spacing: 0.06em;
-    color: var(--color-primary);
-  }
-  .ov-flow-stage--focus {
-    font-size: 16px;
-    line-height: 24px;
-  }
-  .ov-flow-circles {
-    min-height: 240px;
-  }
-  .ov-flow-node {
-    position: relative;
-    z-index: 1;
-    width: 176px;
-    height: 176px;
-    justify-self: center;
-  }
-  .ov-flow-rim {
-    position: absolute;
-    inset: -12px;
-    width: calc(100% + 24px);
-    height: calc(100% + 24px);
-    pointer-events: none;
-    z-index: 0;
-    overflow: visible;
-  }
-  .ov-flow-circle {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    width: 100%;
-    height: 100%;
-    flex: none;
-    border-radius: 50%;
-    background: #F7FAFE;
-    border: 1px solid rgba(20, 118, 255, 0.28);
-    box-shadow: 0 2px 10px rgba(20, 118, 255, 0.08);
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 16px 14px;
-    box-sizing: border-box;
-    text-decoration: none;
-    color: var(--color-text);
-    transition: box-shadow .15s, transform .15s;
-  }
-  a.ov-flow-circle:link,
-  a.ov-flow-circle:visited,
-  a.ov-flow-circle:hover,
-  a.ov-flow-circle:active {
-    color: var(--color-text);
-    text-decoration: none;
-  }
-  a.ov-flow-circle:hover {
-    box-shadow: 0 4px 16px rgba(20, 118, 255, 0.12);
-    transform: translateY(-1px);
-  }
-  .ov-flow-title {
     margin: 0 0 8px;
-    font-size: var(--text-h3);
-    font-weight: 700;
-    line-height: 1.2;
-    color: var(--color-text);
-    letter-spacing: 0.02em;
-  }
-  .ov-flow-list {
-    margin: 0;
     padding: 0;
-    list-style: none;
-    font-size: var(--text-auxiliary);
-    line-height: 1.5;
-    color: var(--color-text-secondary);
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 18px;
+    color: #8c8c8c;
+    text-align: left;
   }
-  .ov-flow-list li + li { margin-top: 2px; }
-  /* 圆间转折箭头：上下交替 */
-  .ov-flow-turn {
-    position: relative;
-    z-index: 2;
-    width: 64px;
-    height: 120px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    justify-self: center;
-    pointer-events: none;
+  a.ov-flow-card .ov-flow-head,
+  a.ov-flow-card:hover .ov-flow-head,
+  a.ov-flow-card:visited .ov-flow-head {
+    margin: 0 0 12px;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 28px;
+    letter-spacing: -0.01em;
+    color: #000;
+    text-align: left;
+  }
+  .ov-flow-goal {
+    display: inline-flex;
+    align-self: flex-start;
+    margin: 0 0 24px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: #c9b8e8;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 24px;
+    color: #191919;
+  }
+  .ov-flow-desc {
     margin: 0;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #3d3d3d;
   }
-  .ov-flow-turn svg {
-    width: 64px;
-    height: 120px;
-    overflow: visible;
-    display: block;
+  @media (max-width: 900px) {
+    .ov-flow-track {
+      grid-template-columns: 1fr 1fr;
+    }
   }
+  @media (max-width: 560px) {
+    .ov-flow-track {
+      grid-template-columns: 1fr;
+    }
+  }
+
   .ov-goals {
     margin: 0;
   }
@@ -282,19 +192,9 @@
     border: 0;
   }
   .ov-goal:last-child { margin-bottom: 0; }
-  .ov-goals.section .ov-goal:first-child > h3.ov-goal-id {
+  .ov-goals.section .ov-goal:first-child > h2.ov-goal-id {
     margin-top: 0;
     padding-top: 0;
-  }
-  h3.ov-goal-id {
-    margin: 0;
-    padding-top: var(--space-h3-pad-y, 16px);
-    padding-bottom: var(--space-h3-pad-y, 16px);
-    font-size: var(--text-h3, 18px);
-    line-height: var(--text-h3-lh, 28px);
-    font-weight: var(--text-h3-weight, 650);
-    letter-spacing: -0.01em;
-    color: var(--color-text, var(--color-text));
   }
   .ov-goal-id .ov-goal-g {
     font-variant-numeric: tabular-nums;
@@ -382,42 +282,6 @@
     color: var(--color-text, var(--color-text));
     font-weight: 650;
   }
-  @media (max-width: 1280px) {
-    .ov-flow-track {
-      padding: 0;
-    }
-    .ov-flow-stages {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      align-items: center;
-      gap: 8px 12px;
-      height: auto;
-      min-height: 24px;
-      max-height: none;
-    }
-    .ov-flow-stage-slot {
-      flex: 0 0 auto;
-      width: auto;
-      min-width: 64px;
-    }
-    .ov-flow-stage-gap { display: none; }
-    .ov-flow-circles {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 28px;
-      min-height: 0;
-    }
-    .ov-flow-turn { display: none; }
-    .ov-flow-rim { display: none; }
-    .ov-flow-node {
-      flex: 0 0 152px;
-      width: 152px;
-      height: 152px;
-    }
-    .ov-flow-title { font-size: 17px; }
-  }
 </style>
 </head>
 <body class="inner-page agent-entry-page" data-module="principles" data-page="overview">
@@ -444,189 +308,141 @@
   <main class="main-content">
 
     <div class="page-header">
-      <h1>AI 亲和原则</h1>
+      <h1>AI 亲和设计原则总览</h1>
     </div>
 
-    <section class="section" id="why" aria-labelledby="why-title">
-      <h2 id="why-title">为什么要做 AI 亲和原则</h2>
-      <p class="ov-why-body">当用户通过大模型检索产品与技术问题，答案往往依赖文档站、官网等公开内容能否被机器稳定发现、完整读取并正确理解。若入口不可达、正文抓不全，或版本与语义含混，模型更容易用训练记忆填补缺口，表现为幻觉、答非所问或过时指引，直接损害知识交付效率与产品体验。</p>
-      <p class="ov-why-body">AI 亲和原则据此将答问链路拆解为<strong>可达、可读、可理解、可验证</strong>四层能力目标，为设计、内容与前端提供统一对照标准，使同一套公开面既服务读者，也可被生成式检索与知识入库可靠消费。概念边界与适用范围见 <a href="principles-background.html">设计背景</a>。</p>
+    <section class="section" id="why" aria-label="原则框架">
+      <p class="ov-why-body">AI 亲和设计围绕 AI 获取和使用信息的关键过程，建立从发现与访问、读取与提取、理解与判断到执行与核验的原则框架，为网站内容组织、页面设计和信息交互提供统一的设计依据。</p>
+      <p class="ov-why-body">本原则框架由四组原则构成，分别关注内容的可达性、可读性、可理解性和可验证性。各组原则相互配合，共同降低 AI 获取、理解和使用网站信息的难度。</p>
     </section>
 
-    <section class="ov-flow section" id="llm-flow" aria-labelledby="llm-flow-title">
-      <h2 id="llm-flow-title">大模型查找知识的流程</h2>
-      <div class="ov-flow-track">
-        <div class="ov-flow-stages" aria-label="流程关键点">
-          <div class="ov-flow-stage-slot"><p class="ov-flow-stage">发现</p></div>
-          <span class="ov-flow-stage-gap" aria-hidden="true"></span>
-          <div class="ov-flow-stage-slot"><p class="ov-flow-stage ov-flow-stage--focus">抓取</p></div>
-          <span class="ov-flow-stage-gap" aria-hidden="true"></span>
-          <div class="ov-flow-stage-slot"><p class="ov-flow-stage">消歧</p></div>
-          <span class="ov-flow-stage-gap" aria-hidden="true"></span>
-          <div class="ov-flow-stage-slot"><p class="ov-flow-stage">核对</p></div>
-        </div>
-
-        <div class="ov-flow-circles" role="list">
-          <div class="ov-flow-node ov-flow-node--over" role="listitem">
-            <svg class="ov-flow-rim" viewBox="0 0 100 100" fill="none" aria-hidden="true">
-              <path d="M12 50 A38 38 0 0 1 88 50" stroke="var(--color-primary)" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="7 6"/>
-            </svg>
-            <a class="ov-flow-circle" href="#goal-reach">
-              <p class="ov-flow-title">可达</p>
-              <ul class="ov-flow-list">
-                <li>robots 许可通畅</li>
-                <li>llms 索引清晰</li>
-                <li>URL 语义明确</li>
-              </ul>
-            </a>
-          </div>
-          <span class="ov-flow-turn" aria-hidden="true">
-            <svg viewBox="0 0 64 120" fill="none">
-              <path d="M8 34 C28 34 34 78 40 88" stroke="var(--color-primary)" stroke-width="3.5" stroke-linecap="round"/>
-              <path d="M32 82 L40 92 L48 80" fill="none" stroke="var(--color-primary)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </span>
-          <div class="ov-flow-node ov-flow-node--under ov-flow-node--focus" role="listitem">
-            <svg class="ov-flow-rim" viewBox="0 0 100 100" fill="none" aria-hidden="true">
-              <path d="M12 50 A38 38 0 0 0 88 50" stroke="var(--color-primary)" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="7 6"/>
-            </svg>
-            <a class="ov-flow-circle" href="#goal-readable" aria-current="step">
-              <p class="ov-flow-title">可读</p>
-              <ul class="ov-flow-list">
-                <li>HTML 首包可读</li>
-                <li>Markdown 可直取</li>
-                <li>图文媒体可转写</li>
-              </ul>
-            </a>
-          </div>
-          <span class="ov-flow-turn" aria-hidden="true">
-            <svg viewBox="0 0 64 120" fill="none">
-              <path d="M8 86 C28 86 34 42 40 32" stroke="var(--color-primary)" stroke-width="3.5" stroke-linecap="round"/>
-              <path d="M32 38 L40 28 L48 40" fill="none" stroke="var(--color-primary)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </span>
-          <div class="ov-flow-node ov-flow-node--over" role="listitem">
-            <svg class="ov-flow-rim" viewBox="0 0 100 100" fill="none" aria-hidden="true">
-              <path d="M12 50 A38 38 0 0 1 88 50" stroke="var(--color-primary)" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="7 6"/>
-            </svg>
-            <a class="ov-flow-circle" href="#goal-understand">
-              <p class="ov-flow-title">可理解</p>
-              <ul class="ov-flow-list">
-                <li>版本时效可辨</li>
-                <li>结论术语清晰</li>
-                <li>逻辑关系明确</li>
-              </ul>
-            </a>
-          </div>
-          <span class="ov-flow-turn" aria-hidden="true">
-            <svg viewBox="0 0 64 120" fill="none">
-              <path d="M8 34 C28 34 34 78 40 88" stroke="var(--color-primary)" stroke-width="3.5" stroke-linecap="round"/>
-              <path d="M32 82 L40 92 L48 80" fill="none" stroke="var(--color-primary)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </span>
-          <div class="ov-flow-node ov-flow-node--under" role="listitem">
-            <svg class="ov-flow-rim" viewBox="0 0 100 100" fill="none" aria-hidden="true">
-              <path d="M12 50 A38 38 0 0 0 88 50" stroke="var(--color-primary)" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="7 6"/>
-              <path d="M82 42 L90 50 L82 58" fill="none" stroke="var(--color-primary)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <a class="ov-flow-circle" href="#goal-verify">
-              <p class="ov-flow-title">可验证</p>
-              <ul class="ov-flow-list">
-                <li>预期结果可判定</li>
-                <li>失败可继续处理</li>
-              </ul>
-            </a>
-          </div>
-        </div>
+    <section class="section" id="goals" aria-label="AI 亲和设计的目标">
+      <div class="ov-flow-track" role="list" aria-label="大模型查找知识流程">
+        <a class="ov-flow-card" href="#goal-reach" role="listitem">
+          <p class="ov-flow-stage">发现阶段</p>
+          <p class="ov-flow-head">清晰的信息入口</p>
+          <span class="ov-flow-goal">可达</span>
+          <p class="ov-flow-desc">构建机器友好的内容获取路径</p>
+        </a>
+        <a class="ov-flow-card" href="#goal-readable" role="listitem">
+          <p class="ov-flow-stage">抓取阶段</p>
+          <p class="ov-flow-head">完整可读的内容</p>
+          <span class="ov-flow-goal">可读</span>
+          <p class="ov-flow-desc">确保正文与关键信息完整获取</p>
+        </a>
+        <a class="ov-flow-card" href="#goal-understand" role="listitem">
+          <p class="ov-flow-stage">消歧阶段</p>
+          <p class="ov-flow-head">明确的内容语义</p>
+          <span class="ov-flow-goal">可理解</span>
+          <p class="ov-flow-desc">帮助 AI Agent 准确理解内容及其关系</p>
+        </a>
+        <a class="ov-flow-card" href="#goal-verify" role="listitem">
+          <p class="ov-flow-stage">核对阶段</p>
+          <p class="ov-flow-head">明确的验证依据</p>
+          <span class="ov-flow-goal">可验证</span>
+          <p class="ov-flow-desc">提供信息核对、结果判断与异常处理依据</p>
+        </a>
       </div>
     </section>
 
     <section class="ov-goals section" id="stage-goals" aria-label="各阶段目标">
 
       <article class="ov-goal" id="goal-reach">
-        <h3 class="ov-goal-id"><span class="ov-goal-g">G1.</span> 清晰的索引 · 可达</h3>
-        <p class="ov-subgoal-desc">构建机器友好的内容获取路径</p>
+        <h2 class="ov-goal-id">G1：清晰的信息入口 · 可达</h2>
         <div class="ov-goal-guide">
           <div class="ov-goal-row">
-            <h4 class="ov-goal-label">概述</h4>
-            <div class="ov-goal-body">这条原则是为了减少 AI 在发现和定位内容时的阻碍，帮助 AI 了解内容的分布与获取入口，找到与任务相关的信息。</div>
+            <div class="ov-goal-body">这条原则旨在减少 AI 在发现和定位内容时的障碍，通过明确的访问规则、内容索引和页面定位方式，帮助 AI 找到与任务相关的信息。</div>
           </div>
         </div>
         <div class="ov-subgoals">
           <div class="ov-subgoal" id="goal-reach-1">
-            <h4 class="ov-subgoal-id"><span class="ov-goal-g">G1.1</span> 提供可访问的许可声明 robots.txt，让 AI 发现入口通畅</h4>
+            <h4 class="ov-subgoal-id"><span class="ov-goal-g">G1.1</span> 明确 robots.txt 抓取规则，保障公开内容可被合规发现</h4>
+            <p class="ov-subgoal-desc">在网站根路径提供可访问的 robots.txt 文件，明确声明适用爬虫的抓取规则，避免重要公开内容被规则意外屏蔽。</p>
           </div>
           <div class="ov-subgoal" id="goal-reach-2">
-            <h4 class="ov-subgoal-id"><span class="ov-goal-g">G1.2</span> 提供清晰的索引 llms.txt，分层组织内容入口，引导 AI 按需深入</h4>
+            <h4 class="ov-subgoal-id"><span class="ov-goal-g">G1.2</span> 提供 llms.txt 内容索引，按需组织内容入口</h4>
+            <p class="ov-subgoal-desc">在网站根路径提供 llms.txt，按主题组织重要页面、技术文档及相关资源链接，并为链接提供清晰的标题或简要说明。对于内容规模较大、需要集中提供全文的站点，可根据实际需求补充 llms-full.txt，汇集适合直接读取的完整正文。</p>
           </div>
           <div class="ov-subgoal" id="goal-reach-3">
-            <h4 class="ov-subgoal-id"><span class="ov-goal-g">G1.3</span> 使用语义明确的 URL，提升目标页面定位效率</h4>
+            <h4 class="ov-subgoal-id"><span class="ov-goal-g">G1.3</span> 提供 Sitemap 路径清单，辅助发现网站页面</h4>
+            <p class="ov-subgoal-desc">通过 sitemap.xml 或 Sitemap 索引文件列出需要被发现的重要页面，并保持 URL 准确、有效且及时更新。可在 robots.txt 中声明 Sitemap 地址，方便爬虫发现页面清单。</p>
+          </div>
+          <div class="ov-subgoal" id="goal-reach-4">
+            <h4 class="ov-subgoal-id"><span class="ov-goal-g">G1.4</span> 提供稳定的章节锚点，支持直接定位内容</h4>
+            <p class="ov-subgoal-desc">为重要章节、关键结论和具体操作步骤设置稳定且具有语义的 URL 锚点，并通过真实链接提供定位入口，使 AI 能够直接进入相关内容，减少查找成本。</p>
           </div>
         </div>
       </article>
 
       <article class="ov-goal" id="goal-readable">
-        <h3 class="ov-goal-id"><span class="ov-goal-g">G2.</span> 机器可读的正文 · 可读</h3>
-        <p class="ov-subgoal-desc">保持内容完整与语义清晰</p>
+        <h2 class="ov-goal-id">G2：完整可读的内容 · 可读</h2>
         <div class="ov-goal-guide">
           <div class="ov-goal-row">
-            <h4 class="ov-goal-label">概述</h4>
-            <div class="ov-goal-body">这条原则是为了减少页面呈现形式和交互方式造成的信息获取障碍，帮助 AI 完整读取正文，避免遗漏影响理解的关键信息。</div>
+            <div class="ov-goal-body">这条原则旨在减少页面呈现形式和交互方式造成的信息获取障碍，确保 AI 能够读取完整正文及关键内容，避免因内容缺失、非文本载体或交互限制而遗漏重要信息。</div>
           </div>
         </div>
         <div class="ov-subgoals">
           <div class="ov-subgoal" id="goal-readable-1">
-            <h4 class="ov-subgoal-id"><span class="ov-goal-g">G2.1</span> 初始 HTML 包含完整正文，AI 直接读取，不依赖客户端渲染</h4>
+            <h4 class="ov-subgoal-id"><span class="ov-goal-g">G2.1</span> 初始 HTML 包含完整正文，支持直接读取</h4>
+            <p class="ov-subgoal-desc">关键正文应尽可能在初始 HTML 中提供，避免必须执行客户端脚本或完成特定交互后才能获取。</p>
           </div>
           <div class="ov-subgoal" id="goal-readable-2">
-            <h4 class="ov-subgoal-id"><span class="ov-goal-g">G2.2</span> 提供结构清晰、内容完整的 Markdown 正文，便于 AI 快速读取</h4>
+            <h4 class="ov-subgoal-id"><span class="ov-goal-g">G2.2</span> 提供结构清晰、内容完整的 Markdown 正文</h4>
+            <p class="ov-subgoal-desc">通过稳定的 Markdown 地址提供完整正文，保留必要的标题层级、列表、链接和表格结构，便于 AI 直接获取和提取内容。</p>
           </div>
           <div class="ov-subgoal" id="goal-readable-3">
-            <h4 class="ov-subgoal-id"><span class="ov-goal-g">G2.3</span> 为图片与音视频提供配套文本，保留关键语义与内容对应关系</h4>
+            <h4 class="ov-subgoal-id"><span class="ov-goal-g">G2.3</span> 为图片、音视频等载体内容提供文本表达</h4>
+            <p class="ov-subgoal-desc">对图片、音视频中的关键信息，应提供适当的文本说明、字幕、转录或内容摘要，保留重要语义及其与原始内容的对应关系。</p>
           </div>
           <div class="ov-subgoal" id="goal-readable-4">
-            <h4 class="ov-subgoal-id"><span class="ov-goal-g">G2.4</span> 用可读取的文字表达颜色与图标的语义</h4>
+            <h4 class="ov-subgoal-id"><span class="ov-goal-g">G2.4</span> 确保复杂内容的结构与语义可读取</h4>
+            <p class="ov-subgoal-desc">对图标、颜色、表格和代码块等内容，应通过可读取的文字、语义标记或结构化表达，明确关键信息及其含义和关系，避免重要信息仅依赖视觉表现。</p>
           </div>
           <div class="ov-subgoal" id="goal-readable-5">
-            <h4 class="ov-subgoal-id"><span class="ov-goal-g">G2.5</span> 将关键交互关系和信息写入正文</h4>
+            <h4 class="ov-subgoal-id"><span class="ov-goal-g">G2.5</span> 确保关键交互内容可获取、控件信息可读取</h4>
+            <p class="ov-subgoal-desc">关键正文不应仅在交互操作后才加载或展示；控件的名称、状态、取值及必要的关联信息应通过可读取的文本或语义化结构明确表达。</p>
           </div>
         </div>
       </article>
 
       <article class="ov-goal" id="goal-understand">
-        <h3 class="ov-goal-id"><span class="ov-goal-g">G3.</span> 清晰的内容语义 · 可理解</h3>
-        <p class="ov-subgoal-desc">帮助 AI 准确理解</p>
+        <h2 class="ov-goal-id">G3：明确的内容语义 · 可理解</h2>
         <div class="ov-goal-guide">
           <div class="ov-goal-row">
-            <h4 class="ov-goal-label">概述</h4>
-            <div class="ov-goal-body">这条原则是为了减少 AI 对内容含义、信息关系适用条件的误解，帮助 AI 建立准确的理解，并在对应场景中正确使用信息。</div>
+            <div class="ov-goal-body">这条原则旨在减少 AI 对内容含义、信息关系和适用条件的误解，通过清晰的内容结构、完整的必要信息和明确的语义表达，帮助 AI 准确理解内容，并在相应场景中正确使用信息。</div>
           </div>
         </div>
         <div class="ov-subgoals">
           <div class="ov-subgoal" id="goal-understand-1">
-            <h4 class="ov-subgoal-id"><span class="ov-goal-g">G3.1</span> 清晰标注版本时效状态，帮助 AI 获取目标版本信息</h4>
+            <h4 class="ov-subgoal-id"><span class="ov-goal-g">G3.1</span> 明确内容结构与重点层级，帮助 AI 识别内容主次</h4>
+            <p class="ov-subgoal-desc">通过清晰的标题层级组织内容，将核心结论和关键信息放在适当位置，避免重要信息被冗长的背景说明或次要内容淹没。</p>
           </div>
           <div class="ov-subgoal" id="goal-understand-2">
-            <h4 class="ov-subgoal-id"><span class="ov-goal-g">G3.2</span> 前置核心结论，统一术语且逻辑关系表达明确，帮助 AI 快速识别要点、准确理解内容</h4>
+            <h4 class="ov-subgoal-id"><span class="ov-goal-g">G3.2</span> 保证必要信息完整且时效明确，帮助 AI 判断内容适用性</h4>
+            <p class="ov-subgoal-desc">明确标注版本、更新时间和内容状态，确保页面元数据与正文信息一致，帮助 AI 识别目标版本，判断信息的有效性与适用范围。</p>
+          </div>
+          <div class="ov-subgoal" id="goal-understand-3">
+            <h4 class="ov-subgoal-id"><span class="ov-goal-g">G3.3</span> 明确内容语义与关联关系，帮助 AI 准确理解信息</h4>
+            <p class="ov-subgoal-desc">统一关键术语，清晰表达内容之间的逻辑关系、链接目标和适用条件；对于难以直接理解的表达，提供明确的文字说明，减少语义歧义。</p>
           </div>
         </div>
       </article>
 
       <article class="ov-goal" id="goal-verify">
-        <h3 class="ov-goal-id"><span class="ov-goal-g">G4.</span> 任务状态指引 · 可验证</h3>
-        <p class="ov-subgoal-desc">提供结果判定与失败处理指引</p>
+        <h2 class="ov-goal-id">G4：明确的验证依据 · 可验证</h2>
         <div class="ov-goal-guide">
           <div class="ov-goal-row">
-            <h4 class="ov-goal-label">概述</h4>
-            <div class="ov-goal-body">这条原则是为了减少 AI 对任务执行状态的误判，帮助 AI 确认结果是否达到目标，并在失败或结果不明确时选择合理的下一步。</div>
+            <div class="ov-goal-body">这条原则旨在减少 AI 对任务执行结果和状态的误判，通过明确的成功判定标准、结果反馈和异常处理指引，帮助 AI 确认任务是否完成，并在失败或结果不明确时采取合理的下一步行动。</div>
           </div>
         </div>
         <div class="ov-subgoals">
           <div class="ov-subgoal" id="goal-verify-1">
-            <h4 class="ov-subgoal-id"><span class="ov-goal-g">G4.1</span> 为代码示例提供预期输出与成功判定标准，帮助 AI 判断示例是否正确执行</h4>
+            <h4 class="ov-subgoal-id"><span class="ov-goal-g">G4.1</span> 提供明确的结果反馈与成功判定标准，帮助 AI 确认任务是否完成</h4>
+            <p class="ov-subgoal-desc">对代码执行、工具调用、配置操作及其他任务，明确说明预期结果、成功条件和必要的验证方式，并提供可读取的执行结果或状态反馈，避免 AI 仅凭操作已发起就判断任务成功。</p>
           </div>
           <div class="ov-subgoal" id="goal-verify-2">
-            <h4 class="ov-subgoal-id"><span class="ov-goal-g">G4.2</span> 提供失败原因与下一步行动，帮助 AI 处理异常问题</h4>
+            <h4 class="ov-subgoal-id"><span class="ov-goal-g">G4.2</span> 明确失败状态与处理方式，帮助 AI 判断异常并采取下一步行动</h4>
+            <p class="ov-subgoal-desc">对执行失败、条件不满足或结果无法确认等情况，提供清晰的状态说明、可识别的失败原因及相应处理建议，帮助 AI 判断问题所在，并选择重试、修正输入、补充信息或停止操作等合理的下一步。</p>
           </div>
         </div>
       </article>

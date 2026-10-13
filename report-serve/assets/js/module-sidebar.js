@@ -73,13 +73,6 @@
         ]
       },
       {
-        group: "可操作", id: "steps", href: "principles-steps.html", label: "操作可按序照抄",
-        pageIds: ["executable", "example", "steps"]
-      },
-      {
-        group: null, id: "playground", href: "principles-playground.html", label: "可交互示例"
-      },
-      {
         group: "可验证", id: "outcome", href: "principles-expected.html", label: "任务结果可确认",
         pageIds: ["outcome", "verify", "expected"]
       },
@@ -202,28 +195,12 @@
     btn.title = allOpen ? "收起全部" : "展开全部";
   }
 
-  var SCENE_KEY = "aff-nav-scene";
-  var SCENE_LABEL = { all: "全部场景", site: "官网场景", docs: "文档场景" };
-  var EXTRA_GROUPS = { "可操作": true, "实测记录": true };
+  var EXTRA_GROUPS = { "实测记录": true };
   var extraGroup = null;
   items.forEach(function (item) {
     if (item.group) extraGroup = EXTRA_GROUPS[item.group] ? item.group : null;
     item.extraGroup = extraGroup;
   });
-
-  function readScene() {
-    try {
-      var v = localStorage.getItem(SCENE_KEY);
-      if (v === "site" || v === "docs" || v === "all") return v;
-    } catch (e) {}
-    return "all";
-  }
-
-  function writeScene(scene) {
-    try {
-      localStorage.setItem(SCENE_KEY, scene);
-    } catch (e) {}
-  }
 
   function setSettingsOpen(open) {
     var wrap = aside.querySelector(".nav-settings-wrap");
@@ -233,21 +210,6 @@
     wrap.classList.toggle("is-open", open);
     btn.setAttribute("aria-expanded", open ? "true" : "false");
     panel.hidden = !open;
-  }
-
-  function applyScene(scene) {
-    document.body.setAttribute("data-nav-scene", scene);
-    var btn = aside.querySelector(".nav-settings");
-    var label = SCENE_LABEL[scene] || SCENE_LABEL.all;
-    if (btn) {
-      btn.setAttribute("aria-label", "设置，当前" + label);
-      btn.title = label;
-    }
-    aside.querySelectorAll(".nav-settings-option").forEach(function (opt) {
-      var on = opt.getAttribute("data-scene") === scene;
-      opt.classList.toggle("is-active", on);
-      opt.setAttribute("aria-checked", on ? "true" : "false");
-    });
   }
 
   var html = "";
@@ -261,21 +223,18 @@
     html += "<img class=\"nav-settings-icon\" src=\"assets/icons/nav-settings.png\" width=\"14\" height=\"14\" alt=\"\" aria-hidden=\"true\">";
     html += "</button>";
     html += "<div class=\"nav-settings-panel\" id=\"nav-scene-menu\" hidden role=\"menu\" aria-label=\"设置\">";
-    html += "<button type=\"button\" class=\"nav-settings-option\" role=\"menuitemradio\" data-scene=\"all\" aria-checked=\"true\">全部场景</button>";
-    html += "<button type=\"button\" class=\"nav-settings-option\" role=\"menuitemradio\" data-scene=\"site\" aria-checked=\"false\">官网场景</button>";
-    html += "<button type=\"button\" class=\"nav-settings-option\" role=\"menuitemradio\" data-scene=\"docs\" aria-checked=\"false\">文档场景</button>";
     var extraLast = null;
     items.forEach(function (item) {
       if (!item.extraGroup) return;
       if (item.extraGroup !== extraLast) {
-        html += "<div class=\"nav-settings-sep\" role=\"separator\"></div>";
+        if (extraLast) html += "<div class=\"nav-settings-sep\" role=\"separator\"></div>";
         html += "<div class=\"nav-settings-heading\">" + item.extraGroup + "</div>";
         extraLast = item.extraGroup;
       }
       var extraActive = navItemActive(item);
       html += "<a class=\"nav-settings-link" + (extraActive ? " is-active" : "") + "\" role=\"menuitem\" href=\"" + item.href + "\">" + item.label + "</a>";
     });
-    html += "<div class=\"nav-settings-sep\" role=\"separator\"></div>";
+    if (extraLast) html += "<div class=\"nav-settings-sep\" role=\"separator\"></div>";
     html += "<a class=\"nav-settings-link\" role=\"menuitem\" href=\"design-guide-image-text.html\">设计模式</a>";
     html += "</div>";
     html += "</span>";
@@ -286,7 +245,7 @@
     html += "</span>";
     html += "</li>";
     html += "<li><a href=\"principles-background.html\"" + (page === "background" ? " class=\"active\"" : "") + ">设计背景</a></li>";
-    html += "<li><a href=\"principles-overview.html\"" + (page === "overview" ? " class=\"active\"" : "") + ">AI 亲和原则</a></li>";
+    html += "<li><a href=\"principles-overview.html\"" + (page === "overview" ? " class=\"active\"" : "") + ">设计原则</a></li>";
     html += "<li><a href=\"principles-affinity-full.html\"" + (page === "affinity-full" ? " class=\"active\"" : "") + ">全量亲和原则</a></li>";
     html += "</ul>";
   } else if (module === "problems") {

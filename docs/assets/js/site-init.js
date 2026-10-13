@@ -202,7 +202,8 @@
   function injectExtraNav() {
     var path = (location.pathname || "").split("/").pop() || "";
     var extras = [
-      { href: "data-analysis.html", label: "数据分析" }
+      { href: "data-analysis.html", label: "数据分析" },
+      { href: "skills.html", label: "Skill 目录" }
     ];
     document.querySelectorAll("nav.site-nav").forEach(function (nav) {
       nav.querySelectorAll('a[href="design-guide-image-text.html"]').forEach(function (a) {
@@ -223,6 +224,11 @@
           existing.classList.add("active");
         }
       });
+      var daNav = nav.querySelector('a[href="data-analysis.html"]');
+      var skNav = nav.querySelector('a[href="skills.html"]');
+      if (daNav && skNav && daNav.nextElementSibling !== skNav) {
+        daNav.insertAdjacentElement("afterend", skNav);
+      }
     });
   }
 

@@ -1436,7 +1436,7 @@ h3.fn-h3 .fn-h3-link:hover,
 </div>
       <div class="ex-fold-bar">
         <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex1-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
-        <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex1-html" aria-label="前端源码调整"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
+        <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex1-html" aria-label="前端源码书写"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
       </div>
       <div class="ex-fold-panel" id="ex1-md" hidden>
         <div class="ex-card-pair">
@@ -1492,7 +1492,7 @@ h3.fn-h3 .fn-h3-link:hover,
       </div>
       <div class="ex-fold-panel" id="ex1-html" hidden>
         <div class="ex-card-pair">
-    <p class="ex-card-title">源码书写</p>
+    <p class="ex-card-title">前端源码书写</p>
     <div class="ex-fold-intro">
       <ul class="fn-ex-list">
         <li>1. 标题、摘要、观点、定位和相关入口都写成可见文本节点，不必写「更多」按钮。</li>
@@ -1630,7 +1630,7 @@ h3.fn-h3 .fn-h3-link:hover,
 </div>
       <div class="ex-fold-bar">
         <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex2-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
-        <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex2-html" aria-label="前端源码调整"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
+        <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex2-html" aria-label="前端源码书写"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
       </div>
       <div class="ex-fold-panel" id="ex2-md" hidden>
         <div class="ex-card-pair">
@@ -1686,7 +1686,7 @@ h3.fn-h3 .fn-h3-link:hover,
       </div>
       <div class="ex-fold-panel" id="ex2-html" hidden>
         <div class="ex-card-pair">
-    <p class="ex-card-title">源码书写</p>
+    <p class="ex-card-title">前端源码书写</p>
     <div class="ex-fold-intro">
       <ul class="fn-ex-list">
         <li>1. 标题、摘要、观点、定位和相关入口都写成可见文本节点，不必写「更多」按钮。</li>
@@ -1767,6 +1767,15 @@ h3.fn-h3 .fn-h3-link:hover,
       var panel = document.getElementById(btn.getAttribute("aria-controls"));
       if (!panel) return;
       var open = btn.getAttribute("aria-expanded") === "true";
+      var bar = btn.closest(".ex-fold-bar");
+      if (!open && bar) {
+        bar.querySelectorAll(".ex-fold-btn").forEach(function (other) {
+          if (other === btn) return;
+          other.setAttribute("aria-expanded", "false");
+          var otherPanel = document.getElementById(other.getAttribute("aria-controls"));
+          if (otherPanel) otherPanel.hidden = true;
+        });
+      }
       btn.setAttribute("aria-expanded", open ? "false" : "true");
       panel.hidden = open;
     });

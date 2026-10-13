@@ -1082,7 +1082,7 @@ extern "C" __global__ __aicore__ void add_custom(GM_ADDR x, GM_ADDR y, GM_ADDR z
         </div>
         <div class="ex-fold-bar">
           <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="tiling-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
-          <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="tiling-html" aria-label="源码书写"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
+          <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="tiling-html" aria-label="前端源码书写"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
         </div>
         <div class="ex-fold-panel" id="tiling-md" hidden>
           <div class="ex-card-pair">
@@ -1131,7 +1131,7 @@ extern "C" __global__ __aicore__ void add_custom(GM_ADDR x, GM_ADDR y, GM_ADDR z
         </div>
         <div class="ex-fold-panel" id="tiling-html" hidden>
           <div class="ex-card-pair">
-            <p class="ex-card-title">源码书写</p>
+            <p class="ex-card-title">前端源码书写</p>
             <div class="ex-fold-intro">
               <ul class="fn-ex-list">
                 <li>1. 现象、根因与处理步骤写进可见文本节点，给出可执行排查。</li>
@@ -1235,7 +1235,7 @@ extern "C" __global__ __aicore__ void add_custom(GM_ADDR x, GM_ADDR y, GM_ADDR z
         </div>
         <div class="ex-fold-bar">
           <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex1-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
-          <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex1-html" aria-label="前端源码调整"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
+          <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex1-html" aria-label="前端源码书写"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
         </div>
         <div class="ex-fold-panel" id="ex1-md" hidden>
           <div class="ex-card-pair">
@@ -1257,7 +1257,7 @@ extern "C" __global__ __aicore__ void add_custom(GM_ADDR x, GM_ADDR y, GM_ADDR z
         </div>
         <div class="ex-fold-panel" id="ex1-html" hidden>
           <div class="ex-card-pair">
-            <p class="ex-card-title">前端源码调整</p>
+            <p class="ex-card-title">前端源码书写</p>
             <div class="ex-fold-intro"><ul class="fn-ex-list"><li>1. 空态文案进首包，带上当前筛选；可用 data-empty-reason</li></ul></div>
             <div class="ex-card-pane">
               <div class="ex-card-pane-head"><span class="fn-ex-label">反面</span><div class="fn-ex-bar" aria-hidden="true"></div></div>
@@ -1308,6 +1308,15 @@ extern "C" __global__ __aicore__ void add_custom(GM_ADDR x, GM_ADDR y, GM_ADDR z
       var panel = document.getElementById(btn.getAttribute("aria-controls"));
       if (!panel) return;
       var open = btn.getAttribute("aria-expanded") === "true";
+      var bar = btn.closest(".ex-fold-bar");
+      if (!open && bar) {
+        bar.querySelectorAll(".ex-fold-btn").forEach(function (other) {
+          if (other === btn) return;
+          other.setAttribute("aria-expanded", "false");
+          var otherPanel = document.getElementById(other.getAttribute("aria-controls"));
+          if (otherPanel) otherPanel.hidden = true;
+        });
+      }
       btn.setAttribute("aria-expanded", open ? "false" : "true");
       panel.hidden = open;
     });

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skill 目录 · AI 亲和原则</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid var(--color-border);
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: 100%; max-width: none; margin: 0; padding: 0 24px; box-sizing: border-box;
+    height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: var(--color-text); text-decoration: none; white-space: nowrap; margin-right: 40px;
+  }
+  .topbar .brand span { color: var(--color-primary); }
+  .topbar .site-nav { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; flex-wrap: wrap; }
+  .topbar .site-nav > a {
+    text-decoration: none; color: var(--color-text-secondary); font-size: var(--text-body); font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .topbar .site-nav > a:hover { color: var(--color-primary); background: var(--color-bg); text-decoration: none; }
+  .topbar .site-nav > a.active { color: var(--color-primary); background: var(--color-bg); font-weight: 600; }
+  body.inner-page[data-page="skills"] .page-wrapper {
+    min-height: 100vh;
+    background: #fff;
+  }
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: var(--space-stack, 16px);
+  }
+  body.inner-page[data-page="skills"] .main-content {
+    padding-top: var(--content-main-pad-top, 16px);
+    padding-bottom: 32px;
+    padding-left: 0;
+    padding-right: 0;
+    background: #fff;
+    min-height: calc(100vh - var(--header-height, 56px));
+  }
+  body.inner-page[data-page="skills"] .main-content > .page-header,
+  body.inner-page[data-page="skills"] .main-content > .section {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page[data-page="skills"] .main-content > .section {
+    margin-bottom: 32px;
+  }
+  .page-header > h1 {
+    font-family: var(--font);
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1-weight, 600);
+    line-height: var(--text-h1-lh);
+    letter-spacing: -0.02em;
+    margin: 0;
+    padding-top: var(--space-h1-pad-y, 32px);
+    padding-bottom: var(--space-h1-pad-y, 32px);
+    color: var(--color-text);
+  }
+  .page-lead {
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  body.inner-page[data-page="skills"] .main-content .section > h2 {
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    margin: 0 0 var(--space-stack, 16px);
+    padding-top: var(--space-h2-pad-y, 16px);
+    color: var(--color-text);
+  }
+  .section ul.skill-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .skill-list > li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 16px 0;
+    border-top: 1px solid #e8eef5;
+  }
+  .skill-list > li:last-child { border-bottom: 1px solid #e8eef5; }
+  .skill-list .skill-main {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+  .skill-list .skill-name {
+    margin: 0 0 6px;
+    font-size: 16px;
+    font-weight: 650;
+    line-height: 24px;
+    color: var(--color-text);
+  }
+  .skill-list .skill-name .skill-title {
+    font-size: 16px;
+    font-weight: 650;
+    line-height: 24px;
+    color: var(--color-text);
+  }
+  .skill-list .skill-desc {
+    margin: 0 0 16px;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  .skill-list .skill-id {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 650;
+    line-height: 20px;
+    color: var(--color-text-secondary);
+  }
+  .skill-list .skill-actions {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 8px;
+  }
+  .skill-list .skill-actions a {
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 64px;
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: 1px solid #d0d5dd;
+    background: #fff;
+    color: var(--color-text);
+    font-size: 13px;
+    font-weight: 650;
+    line-height: 20px;
+    text-decoration: none;
+    white-space: nowrap;
+    box-sizing: border-box;
+  }
+  .skill-list .skill-actions a:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+  .skill-list .skill-actions a.skill-btn-primary {
+    border-color: var(--color-primary);
+    background: var(--color-primary);
+    color: #fff;
+  }
+  .skill-list .skill-actions a.skill-btn-primary:hover {
+    opacity: 0.92;
+    color: #fff;
+  }
+</style>
+</head>
+<body class="inner-page" data-page="skills" data-no-surface-tabs>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span>AI 亲和原则</span></a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="mintlify.html">友商对照</a>
+      <a href="reachability.html">社区诊断</a>
+      <a href="principles-overview.html">亲和原则</a>
+      <a href="community-ui.html">组件亲和</a>
+      <a href="data-analysis.html">数据分析</a>
+      <a href="skills.html" class="active">Skill 目录</a>
+    </nav>
+  </div>
+</div>
+
+<div class="page-wrapper">
+  <main class="main-content">
+    <div class="page-header">
+      <h1>Skill 目录</h1>
+    </div>
+
+    <section class="section">
+      <p class="page-lead">可复用的 AI 亲和诊断与改造 Skill。在 Cursor 中按名称调用，或打开示例报告查看交付形态。</p>
+      <ul class="skill-list">
+        <li>
+          <div class="skill-main">
+            <p class="skill-name"><span class="skill-title">robots.txt 配置诊断</span></p>
+            <p class="skill-desc">核验入口可达、Allow/Disallow、Sitemap 绝对 URL 声明、可选 LLMs.txt 声明，输出 Part1/Part2 HTML 报告，支持导出 PDF。</p>
+            <p class="skill-id"><code>robots-txt-audit</code></p>
+          </div>
+          <div class="skill-actions">
+            <a href="skill-robots-txt-audit.html">查看</a>
+            <a class="skill-btn-primary" href="exports/robots-txt-audit.zip" download="robots-txt-audit.zip">下载</a>
+          </div>
+        </li>
+      </ul>
+    </section>
+  </main>
+</div>
+
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js"></script>
+</body>
+</html>

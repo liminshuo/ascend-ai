@@ -1186,7 +1186,7 @@
         </div>
         <div class="ex-fold-bar">
           <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex1-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
-          <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex1-html" aria-label="前端源码调整"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
+          <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex1-html" aria-label="前端源码书写"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
         </div>
         <div class="ex-fold-panel" id="ex1-md" hidden>
           <div class="ex-card-pair">
@@ -1234,7 +1234,7 @@ docker image list
         </div>
         <div class="ex-fold-panel" id="ex1-html" hidden>
           <div class="ex-card-pair">
-            <p class="ex-card-title">前端源码调整</p>
+            <p class="ex-card-title">前端源码书写</p>
             <div class="ex-fold-intro"><ul class="fn-ex-list"><li>1. 预期进首包，写在该步骤旁；可用 data-expected 关联步骤</li></ul></div>
             <div class="ex-card-pane">
               <div class="ex-card-pane-head"><span class="fn-ex-label">反面</span><div class="fn-ex-bar" aria-hidden="true"></div></div>
@@ -1364,7 +1364,7 @@ cmake --version</p>
         </div>
       <div class="ex-fold-bar">
         <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex2-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
-        <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex2-html" aria-label="源码书写"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
+        <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex2-html" aria-label="前端源码书写"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
       </div>
             <div class="ex-fold-panel" id="ex2-md" hidden>
         <div class="ex-card-pair">
@@ -1424,7 +1424,7 @@ cmake version 3.16.0
       </div>
       <div class="ex-fold-panel" id="ex2-html" hidden>
         <div class="ex-card-pair">
-    <p class="ex-card-title">源码书写</p>
+    <p class="ex-card-title">前端源码书写</p>
     <div class="ex-fold-intro">
       <ul class="fn-ex-list">
         <li>1. 命令、预期输出与判断标准成对，写进正文。</li>
@@ -1510,6 +1510,15 @@ cmake --version
       var panel = document.getElementById(btn.getAttribute("aria-controls"));
       if (!panel) return;
       var open = btn.getAttribute("aria-expanded") === "true";
+      var bar = btn.closest(".ex-fold-bar");
+      if (!open && bar) {
+        bar.querySelectorAll(".ex-fold-btn").forEach(function (other) {
+          if (other === btn) return;
+          other.setAttribute("aria-expanded", "false");
+          var otherPanel = document.getElementById(other.getAttribute("aria-controls"));
+          if (otherPanel) otherPanel.hidden = true;
+        });
+      }
       btn.setAttribute("aria-expanded", open ? "false" : "true");
       panel.hidden = open;
     });

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>robots.txt 配置诊断 · Skill · AI 亲和原则</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid var(--color-border);
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: 100%; max-width: none; margin: 0; padding: 0 24px; box-sizing: border-box;
+    height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: var(--color-text); text-decoration: none; white-space: nowrap; margin-right: 40px;
+  }
+  .topbar .brand span { color: var(--color-primary); }
+  .topbar .site-nav { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; flex-wrap: wrap; }
+  .topbar .site-nav > a {
+    text-decoration: none; color: var(--color-text-secondary); font-size: var(--text-body); font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .topbar .site-nav > a:hover { color: var(--color-primary); background: var(--color-bg); text-decoration: none; }
+  .topbar .site-nav > a.active { color: var(--color-primary); background: var(--color-bg); font-weight: 600; }
+
+  body.inner-page[data-page="skill-detail"] .page-wrapper {
+    min-height: 100vh;
+    background: #fff;
+  }
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: var(--space-stack, 16px);
+  }
+  body.inner-page[data-page="skill-detail"] .main-content {
+    padding-top: var(--content-main-pad-top, 16px);
+    padding-bottom: 32px;
+    padding-left: 0;
+    padding-right: 0;
+    background: #fff;
+    min-height: calc(100vh - var(--header-height, 56px));
+  }
+  body.inner-page[data-page="skill-detail"] .main-content > .page-header,
+  body.inner-page[data-page="skill-detail"] .main-content > .page-meta,
+  body.inner-page[data-page="skill-detail"] .main-content > .section {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page[data-page="skill-detail"] .main-content > .section {
+    margin-bottom: 32px;
+  }
+  body.inner-page[data-page="skill-detail"] .main-content > .section:first-of-type > h2 {
+    margin-top: 0;
+  }
+  .page-header > h1 {
+    font-family: var(--font);
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1-weight, 600);
+    line-height: var(--text-h1-lh);
+    letter-spacing: -0.02em;
+    margin: 0;
+    padding-top: var(--space-h1-pad-y, 32px);
+    padding-bottom: var(--space-h1-pad-y, 32px);
+    color: var(--color-text);
+  }
+  .page-meta {
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  .page-meta a { color: var(--color-primary); text-decoration: none; }
+  .page-meta a:hover { text-decoration: underline; }
+  .page-meta code {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+  }
+  body.inner-page[data-page="skill-detail"] .main-content .section > h2 {
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    letter-spacing: -0.01em;
+    margin-top: 0;
+    margin-bottom: var(--space-stack, 16px);
+    padding-top: var(--space-h2-pad-y, 16px);
+    padding-bottom: 0;
+    border-bottom: none;
+    color: var(--color-text);
+  }
+  .page-lead {
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  .page-lead a { color: var(--color-primary); text-decoration: none; }
+  .page-lead a:hover { text-decoration: underline; }
+  .bg-list {
+    margin: 0;
+    padding-left: 1.25em;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text);
+  }
+  .bg-list li + li { margin-top: 10px; }
+  .bg-list strong { font-weight: 650; }
+  .section ul.plain-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .section ul.plain-list li + li { margin-top: 10px; }
+  .probe-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+  }
+  .probe-table th,
+  .probe-table td {
+    border: 1px solid #e8eef5;
+    border-top: none;
+    border-left: none;
+    vertical-align: top;
+    padding: 10px 12px;
+    text-align: left;
+  }
+  .probe-table thead tr:first-child > th { border-top: 1px solid #e8eef5; }
+  .probe-table th:first-child,
+  .probe-table td:first-child { border-left: 1px solid #e8eef5; }
+  .probe-table th { background: #f5f6f8; font-weight: 650; width: 22%; }
+  .probe-table code { font-size: 12px; }
+  .skill-detail-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: var(--space-stack, 16px);
+  }
+  .skill-detail-actions a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 88px;
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: 1px solid #d0d5dd;
+    background: #fff;
+    color: var(--color-text);
+    font-size: 13px;
+    font-weight: 650;
+    line-height: 20px;
+    text-decoration: none;
+    box-sizing: border-box;
+  }
+  .skill-detail-actions a:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+  .skill-detail-actions a.is-primary {
+    border-color: var(--color-primary);
+    background: var(--color-primary);
+    color: #fff;
+  }
+  .skill-detail-actions a.is-primary:hover {
+    opacity: 0.92;
+    color: #fff;
+  }
+  .crumb {
+    margin: 0 0 8px;
+    font-size: 13px;
+    line-height: 20px;
+    color: var(--color-text-secondary);
+  }
+  .crumb a {
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+  .crumb a:hover { text-decoration: underline; }
+</style>
+</head>
+<body class="inner-page" data-page="skill-detail" data-no-surface-tabs>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span>AI 亲和原则</span></a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="mintlify.html">友商对照</a>
+      <a href="reachability.html">社区诊断</a>
+      <a href="principles-overview.html">亲和原则</a>
+      <a href="community-ui.html">组件亲和</a>
+      <a href="data-analysis.html">数据分析</a>
+      <a href="skills.html" class="active">Skill 目录</a>
+    </nav>
+  </div>
+</div>
+
+<div class="page-wrapper">
+  <main class="main-content">
+    <div class="page-header">
+      <p class="crumb"><a href="skills.html">Skill 目录</a> / robots.txt 配置诊断</p>
+      <h1>robots.txt 配置诊断</h1>
+    </div>
+    <p class="page-meta">
+      Skill ID：<code>robots-txt-audit</code>
+      · 依据：<a href="principles-robots.html">配置 robots.txt 许可声明</a>
+    </p>
+
+    <section class="section" id="overview">
+      <h2>核心命题</h2>
+      <p class="page-lead"><code>robots.txt</code> 是 Agent / 爬虫读取的许可声明。本 Skill 只回答：规则是否可获取、开放/禁止范围是否写清、发现入口（Sitemap / 可选 llms）是否在文件内声明。</p>
+      <div class="skill-detail-actions">
+        <a class="is-primary" href="exports/robots-txt-audit.zip" download="robots-txt-audit.zip">下载 Skill</a>
+        <a href="robots-audit-huaweicloud.html">查看示例报告</a>
+        <a href="robots-audit-developer-huawei.html">华为开发者示例</a>
+      </div>
+    </section>
+
+    <section class="section" id="scope">
+      <h2>检查范围</h2>
+      <p class="page-lead">要查 robots.txt 本体与轻量关联探测；不评估 Sitemap 文件本体质量，不做全站内容审计。</p>
+      <table class="probe-table">
+        <thead>
+          <tr>
+            <th>检查项</th>
+            <th>通过标准</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>入口可达</td>
+            <td><code>https://{域名}/robots.txt</code> GET → 200，正文可解析</td>
+          </tr>
+          <tr>
+            <td>Allow</td>
+            <td>有显式 <code>Allow:</code>（建议至少 <code>Allow: /</code>），否则记为问题</td>
+          </tr>
+          <tr>
+            <td>Disallow</td>
+            <td>列出全部路径；标记疑似误屏蔽的公开/知识向路径</td>
+          </tr>
+          <tr>
+            <td>Sitemap 声明</td>
+            <td>文件内有 <code>Sitemap:</code> / <code>sitemap:</code> 绝对 URL</td>
+          </tr>
+          <tr>
+            <td>LLMs.txt 声明</td>
+            <td>若服务 AI Agent：有声明；未部署则待确认，勿指向不可达地址</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section" id="workflow">
+      <h2>诊断工作流</h2>
+      <ol class="bg-list">
+        <li><strong>输入</strong>：站点根域名或完整 robots URL；可选是否需要 AI Agent / llms 场景。</li>
+        <li><strong>拉取 robots.txt</strong>：解析 User-agent、Allow、Disallow、Sitemap、LLMs.txt、Content-Signal。</li>
+        <li><strong>轻量关联探测</strong>：统计声明条数；探测 <code>/llms.txt</code> 与候选 Sitemap 是否可访问（不评价清单质量）。</li>
+        <li><strong>问题列表</strong>：P0 无 Sitemap 声明；P1 无 Allow / 无 LLMs 声明（场景需要时）/ 疑似误屏蔽；P2 写法不统一。</li>
+        <li><strong>建议稿</strong>：补 Allow、Sitemap；知识向路径待确认；LLMs.txt 可访问后再声明。</li>
+        <li><strong>输出 HTML 报告</strong>：Part1 当前配置分析 + Part2 优化建议；可导出 PDF。</li>
+      </ol>
+    </section>
+
+    <section class="section" id="report">
+      <h2>报告结构</h2>
+      <p class="page-lead">交付为白底 HTML，无侧栏；顶栏仅品牌与「导出 PDF」，并与正文 1000px 栏左右对齐。</p>
+      <ol class="bg-list">
+        <li><strong>Part1. 当前配置分析</strong>：带标注的 robots.txt、关联探测表、问题列表。</li>
+        <li><strong>Part2. robots.txt 的优化建议</strong>：建议模板、修改说明、待确认事项。</li>
+      </ol>
+      <p class="page-lead" style="margin-top:16px;margin-bottom:0">标注块中 Sitemap、LLMs.txt、Allow、Disallow 各自独立，禁止嵌套。</p>
+    </section>
+
+    <section class="section" id="examples">
+      <h2>示例报告</h2>
+      <ul class="plain-list">
+        <li><a href="robots-audit-huaweicloud.html">华为云 huaweicloud.com · robots.txt 配置诊断</a></li>
+        <li><a href="robots-audit-developer-huawei.html">华为开发者 developer.huawei.com · robots.txt 配置诊断</a></li>
+      </ul>
+    </section>
+
+    <section class="section" id="usage">
+      <h2>如何使用</h2>
+      <ol class="bg-list">
+        <li>下载 Skill 包，解压到 Cursor 的 <code>.cursor/skills/robots-txt-audit/</code>（或个人 skills 目录）。</li>
+        <li>在对话中按名称调用，例如：按 robots-txt-audit 诊断 <code>https://example.com/robots.txt</code>。</li>
+        <li>按报告模板输出 HTML；在 GEO 仓库中同步到 <code>docs/</code> 与 <code>report-serve/</code>。</li>
+      </ol>
+    </section>
+  </main>
+</div>
+
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js"></script>
+</body>
+</html>

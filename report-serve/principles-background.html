@@ -54,6 +54,9 @@
     line-height: 1.75;
     color: var(--text, var(--color-text));
   }
+  body.inner-page.agent-entry-page[data-page="background"] {
+    --content-max-width: 900px;
+  }
   body.inner-page.agent-entry-page:has(#module-sidebar) .main-content {
     padding-top: var(--content-main-pad-top, 16px);
     padding-left: 0;
@@ -61,8 +64,8 @@
   }
   body.inner-page.agent-entry-page:has(#module-sidebar) .main-content > .page-header,
   body.inner-page.agent-entry-page:has(#module-sidebar) .main-content > .section {
-    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
-    max-width: var(--content-max-width, 1000px);
+    width: min(var(--content-max-width, 900px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 900px);
     margin-inline: auto;
     padding-left: 0;
     padding-right: 0;
@@ -110,14 +113,27 @@
     padding: 0 0 8px;
   }
   .bg-body {
-    margin: 0 0 12px;
+    margin: 0 0 var(--space-stack, 16px);
     font-size: var(--text-body);
     line-height: 22px;
     color: var(--color-text, var(--color-text));
   }
   .bg-body:last-child { margin-bottom: 0; }
+  .bg-list {
+    margin: 0 0 var(--space-stack, 16px);
+    padding-left: 1.25em;
+    font-size: var(--text-body);
+    line-height: 22px;
+    list-style: disc;
+    color: var(--color-text, var(--color-text));
+  }
+  .bg-list li + li { margin-top: 12px; }
+  .bg-list li > strong {
+    font-weight: 650;
+    color: var(--color-text, var(--color-text));
+  }
   .bg-card {
-    margin: 16px 0 0;
+    margin: 0 0 var(--space-stack, 16px);
     padding: 16px 20px;
     background: var(--color-card-bg);
     border: 1px solid var(--color-card-border);
@@ -126,6 +142,7 @@
     line-height: 22px;
     color: var(--color-text, var(--color-text));
   }
+  .bg-card:last-child { margin-bottom: 0; }
   .bg-card p {
     margin: 0;
     font-size: var(--text-body);
@@ -159,26 +176,17 @@
       <h1>设计背景</h1>
     </div>
 
+    <section class="section" id="why">
+      <h2>为什么要做 AI 亲和</h2>
+      <p class="bg-body">随着生成式人工智能和 AI Agent 的发展，用户越来越多地通过 AI 助手获取产品与技术知识。AI 系统需要从官网、技术文档等信息源中发现、读取和理解内容，并基于这些信息生成回答或执行任务。</p>
+      <p class="bg-body">如果内容入口不可达、正文无法完整读取，或内容结构混乱、语义表达不清，AI 就可能遗漏关键信息、误解内容含义，甚至生成过时或不准确的回答。</p>
+      <p class="bg-body">传统网页设计主要面向人类用户，而 AI 系统同样需要清晰的内容结构、明确的语义表达和稳定的信息获取方式。因此，网页设计需要在满足人类用户阅读与使用需求的基础上，进一步降低 AI 获取、理解和使用信息的难度。</p>
+    </section>
+
     <section class="section" id="meaning">
       <h2>AI 亲和的含义</h2>
-      <p class="bg-body">AI 亲和（AI-Friendly）指的是让产品界面、代码结构与文字内容更容易被 Agent 稳定发现、完整读取并正确理解的一套设计原则。它不是为 AI 牺牲人的体验，而是把 Agent 当作一类特殊的信息消费者，让内容对人和 Agent 同样友好。发现、读取与理解构成基础层；在此基础上，内容还需支撑可操作与可验证的进阶层，后续章节将逐一展开。</p>
-      <div class="bg-card">
-        <p>简单比喻：就像为视障用户做无障碍设计，AI 亲和是为 Agent 这类“机器用户”做无障碍设计。如果一个页面没有标题层级、按钮没有语义、图片没有描述，Agent 就很难理解内容结构，也无法为用户提供准确的摘要、问答或自动化操作。</p>
-      </div>
-    </section>
-
-    <section class="section" id="audience">
-      <h2>设计对象的转变</h2>
-      <p class="bg-body">过去，内容的读者是人。我们为眼睛设计，在意视觉层级、交互反馈、文案语气。人通过这些信号快速理解结构，也能靠经验补全信息的缺失。</p>
-      <p class="bg-body">生成式 AI 改变了这条路径。用户不再逐一打开链接，而是把问题交给 AI 助手，由它调度 Agent 去读、去比较、去整合，最后给出答案。页面可能从未被用户访问，但内容已经被 Agent 读过、引用过，成为答案的一部分。内容的真实读者，已经不只是人，还包括 Agent。</p>
-      <p class="bg-body">读者变了，阅读方式也跟着变了。Agent 不需要视觉引导、动效或交互反馈，这些为人类阅读服务的设计，对 Agent 来说不是不能用，而是不经济。它依赖结构、语义和元数据来判断“这是什么、能否被引用”。把大量面向人类的内容原样交给 Agent，只会带来额外的上下文负担，消耗更多推理资源。</p>
-      <p class="bg-body">所以，设计对象的转换已经发生：我们不再只为人设计，而是同时为人和 Agent 设计。给 Agent 设计，关心的不是它“看起来怎么样”，而是它“能不能被高效读懂”。原来的基础设施在面对 Agent 这个新读者时已经不够用了，需要针对它重新设计内容被获取和阅读的方式。</p>
-    </section>
-
-    <section class="section" id="value">
-      <h2>AI 亲和的价值</h2>
-      <p class="bg-body">随着大模型在日常工作与学习中的普及，用户越来越习惯直接向它要答案。内容若无法被 Agent 稳定发现、完整读取并正确理解，模型就会用训练记忆填补缺口，产生幻觉或过时指引，损害信任。关注 AI 亲和，就是让内容在人与 Agent 共构的信息环境中持续被看见、被使用。</p>
-      <p class="bg-body">对 Agent 友好的内容，对人也更友好。清晰的结构、明确的语义、统一的术语，本身就是更好的用户体验。AI 亲和不是额外的工作，而是让内容在 AI 主导的信息环境中，依然能被准确使用的基础。</p>
+      <p class="bg-body">AI 亲和（AI-Friendly）是指通过清晰的内容组织、明确的语义表达和稳定的信息获取方式，降低 AI 系统发现、读取、理解和使用信息的难度。</p>
+      <p class="bg-body">AI 亲和并非单独为 AI 设计一套内容，而是在兼顾人类用户阅读与使用体验的基础上，让网页内容更容易被 AI 准确识别、理解和利用，为信息检索、回答生成及任务执行提供基础。</p>
     </section>
 
     <section class="section" id="domains">
