@@ -757,17 +757,18 @@
 
     <section class="section" id="mechanism">
       <h2>概述</h2>
-      <p class="page-lead">AI Agent 需要根据文本识别概念、理解信息关系并定位具体对象。指代不明、逻辑省略或术语不一致，容易导致内容被误解、关联错误或无法准确引用。</p>
-      <p class="page-lead">内容表述清晰可指代原则旨在确保关键信息表达完整、逻辑关系明确、指代对象清晰，并在相同语境下保持术语一致，帮助 AI Agent 准确理解和使用页面内容。</p>
+      <p class="page-lead">AI Agent 需要根据文本识别概念、理解信息关系并定位具体对象。指代不明、逻辑省略、术语不一致，或内容块依赖上下文才能读懂，容易导致内容被误解、关联错误或无法准确引用。</p>
+      <p class="page-lead">内容表述清晰可指代原则旨在确保关键信息表达完整、逻辑关系明确、指代对象清晰、术语一致，并使独立内容块在脱离上下文时仍可理解，帮助 AI Agent 准确理解和使用页面内容。</p>
     </section>
 
     <section class="section" id="detail-principles">
-      <h2>具体原则</h2>
+      <h2>内容表述清晰可指代原则</h2>
       <ol class="bg-list">
         <li><strong>核心结论应明确表达。</strong>重要结论、适用条件和关键限制应在相关内容附近完整说明，避免依赖上下文补全关键信息。</li>
         <li><strong>逻辑关系应明确呈现。</strong>对因果、条件、转折、递进等关系，应使用明确的连接词表达，避免省略关键逻辑导致语义不完整。</li>
         <li><strong>指代对象应清晰可定位。</strong>使用「它」「该功能」「上述内容」等指代时，应确保对象在当前语境中明确；涉及多个对象时，应直接写出具体名称，避免歧义。</li>
         <li><strong>同一概念应保持术语一致。</strong>同一页面及相关页面中，同一概念应使用统一名称；确需使用简称、别名或英文术语时，应明确其对应关系。</li>
+        <li><strong>内容块应自包含。</strong>段落、列表项、表格单元格、代码注释中的说明句等独立内容块，宜只承载一个知识点，不混杂多场景多逻辑；块内应写明所属系统/产品、涉及的动作或概念，以及必要的前提或假设，使该块脱离上下文仍可被独立理解（可通过「孤岛测试」检验）。</li>
       </ol>
     </section>
 
@@ -972,6 +973,55 @@
           </div>
         </div>
       </div>
+      <div class="principle-example" id="self-contained">
+        <h3 class="fn-h3">内容块自包含</h3>
+        <p class="fn-h3-desc">每个独立内容块宜只承载一个知识点，并写清「关于哪个实体、在什么条件下、要做什么或表达什么」。随机摘录任一非标题块做「孤岛测试」时，评估者或 AI 应能答出这三点。</p>
+        <h4 class="fn-h4">示例 5 · 孤岛测试</h4>
+        <div class="fn-ex-row">
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label">反面</span>
+              <div class="fn-ex-bar" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="反面：摘出后无法独立理解">
+                <div class="st-card">
+                  <p class="term-p">完成上述配置后，再执行该命令即可。</p>
+                  <p class="term-p">此场景下也适用，注意版本限制。</p>
+                </div>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>常见疏漏：</strong></li>
+                  <li>1. 「上述」「该命令」「此场景」依赖上下文，孤岛测试失败</li>
+                  <li>2. 一块混写多逻辑，切分后实体与条件丢失</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label is-good">正面</span>
+              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="正面：摘出后仍可独立理解">
+                <div class="st-card">
+                  <p class="term-p">在 <span class="term-ok">CANN 环境变量已配置完成</span> 的前提下，于宿主机执行 <span class="term-ok">npu-smi info</span> 可查看 NPU 状态。</p>
+                  <p class="term-p"><span class="term-ok">MindIE 服务部署</span>同样适用该检查；要求驱动版本 ≥ 指定基线。</p>
+                </div>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>正确做法：</strong></li>
+                  <li>1. 块内写明产品/系统、动作与前提</li>
+                  <li>2. 一块一事；孤岛测试可答「谁、条件、做什么」</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
     </section>
 
@@ -981,6 +1031,7 @@
         <li>帮助 AI Agent 准确识别核心结论、适用条件及信息之间的逻辑关系。</li>
         <li>减少因指代不明、语义省略或术语混用造成的理解偏差。</li>
         <li>提高内容检索、跨段落关联和知识引用的准确性。</li>
+        <li>使独立内容块在切片后仍可被理解与引用，降低因上下文缺失导致的误读。</li>
       </ol>
     </section>
 
@@ -990,6 +1041,7 @@
         <li>无需消除所有代词或简称；只需确保其指代对象在当前语境中明确。</li>
         <li>术语统一不代表必须统一所有表达方式，必要时可保留别名、缩写及中英文对照。</li>
         <li>结论前置不应改变原有语义，也不应省略必要的推导过程、条件或限制。</li>
+        <li>自包含不以堆叠冗长为前提：一块一事即可；章节级切块模式见「页内结构模式化」，全站约定见「全站规范一致性」。</li>
       </ol>
     </section>
   </main>

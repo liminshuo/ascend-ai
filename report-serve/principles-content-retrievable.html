@@ -1203,9 +1203,9 @@
     </div>
 
     <section class="section" id="mechanism">
-      <h2>概述</h2>
-      <p class="page-lead">AI Agent 获取网页 HTML 后，需要能够直接从页面源码中读取标题、正文、步骤、表格和代码等核心知识内容。若关键信息依赖 JavaScript 渲染、隐藏在 iframe 或图片中，或页面内容过大导致截断，Agent 可能无法完整获取和理解页面内容。因此，应确保核心知识内容在 HTML 中可直接访问，并保持结构清晰、内容完整。</p>
-      <p class="page-lead">不是要求页面没有 JavaScript，而是要求 AI Agent 无需执行复杂交互，就能从 HTML 中直接获取核心知识内容。</p>
+      <h2>原则概述</h2>
+      <p class="page-lead">AI Agent 获取网页 HTML 后，需要能够直接从页面源码中读取标题、正文、步骤、表格和代码等核心知识内容。若关键信息依赖 JavaScript 渲染、隐藏在 iframe 或图片中、与导航/页脚等壳层混杂，或页面内容过大导致截断，Agent 可能无法完整获取和理解页面内容。因此，应确保核心知识内容在 HTML 中可直接访问，壳层与正文分区清晰，并保持结构完整。</p>
+      <p class="page-lead">不是要求页面没有 JavaScript，而是要求 AI Agent 无需执行复杂交互，就能从 HTML 中直接获取核心知识内容，并能区分主内容区与导航、页脚等噪音壳层。</p>
       <div class="reach-flow-block" aria-label="Agent 内容发现流程">
         <p class="aj-caption">Agent 内容发现流程</p>
         <div class="reach-chart reach-chart--h">
@@ -1234,11 +1234,12 @@
     </section>
 
     <section class="section" id="detail-principles">
-      <h2>具体原则</h2>
+      <h2>HTML 页面正文可读原则</h2>
       <ol class="bg-list">
         <li>确保页面 HTML 可直接访问，避免依赖登录、强制跳转或其他前置条件才能获取核心内容。</li>
         <li>将核心知识内容放在页面主文档中，避免隐藏在 iframe、Canvas 或图片等不可直接解析的载体中。</li>
         <li>在首屏 HTML 中直接提供页面标题、正文、步骤、表格和代码等核心知识内容，避免依赖 JavaScript 执行后才能生成。</li>
+        <li><strong>壳层与正文应结构分离。</strong> 导航栏、页脚、Cookie 横幅等噪音元素应使用 <code>&lt;header&gt;</code>、<code>&lt;nav&gt;</code>、<code>&lt;footer&gt;</code>、<code>&lt;aside&gt;</code> 等标签与主内容区清晰分开；核心知识放在 <code>&lt;main&gt;</code>（或等价主内容容器）内，避免壳层文案与正文混在同一无语义区块中。</li>
         <li>使用明确的字符集和合理的页面结构，控制页面内容规模，避免因字符编码错误或内容过长导致信息截断。</li>
       </ol>
     </section>
@@ -1394,12 +1395,72 @@
             </div>
           </div>
         </div>
+
+      <h3 class="fn-h3" id="shell-separate">示例 3 · 壳层与正文分离</h3>
+      <p class="fn-h3-desc">导航、页脚、Cookie 横幅等壳层用 landmark 标签标出；核心知识放在 <code>&lt;main&gt;</code>。Agent 抓取时可优先取主内容区，降低把菜单/页脚文案当正文的风险。</p>
+      <div class="fn-ex-row">
+        <div class="fn-ex">
+          <div class="fn-ex-head">
+            <span class="fn-ex-label">反面</span>
+            <div class="fn-ex-bar" aria-hidden="true"></div>
+          </div>
+          <div class="fn-ex-body">
+            <div class="fn-ex-mock" aria-label="反面：壳层与正文混在无语义 div">
+              <pre class="st-code ssr-src" tabindex="0"><code>&lt;body&gt;
+  &lt;div class="page"&gt;
+    &lt;div&gt;产品导航 · 登录 · Cookie 同意&lt;/div&gt;
+    &lt;div&gt;
+      &lt;h1&gt;安装驱动&lt;/h1&gt;
+      &lt;p&gt;步骤正文……&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div&gt;页脚链接 · 法律声明&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/body&gt;</code></pre>
+            </div>
+            <div class="fn-ex-foot">
+              <ul class="fn-ex-list">
+                <li><strong>常见疏漏：</strong></li>
+                <li>1. 导航、正文、页脚都是无语义 <code>div</code>，难以区分主内容</li>
+                <li>2. Cookie / 页脚文案易被当成知识正文</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="fn-ex">
+          <div class="fn-ex-head">
+            <span class="fn-ex-label is-good">正面</span>
+            <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+          </div>
+          <div class="fn-ex-body">
+            <div class="fn-ex-mock" aria-label="正面：landmark 分离壳层与正文">
+              <pre class="st-code ssr-src" tabindex="0"><code>&lt;body&gt;
+  &lt;header&gt;…站点壳…&lt;/header&gt;
+  &lt;nav aria-label="主导航"&gt;…&lt;/nav&gt;
+  &lt;aside&gt;Cookie 同意…&lt;/aside&gt;
+  &lt;main&gt;
+    &lt;h1&gt;安装驱动&lt;/h1&gt;
+    &lt;p&gt;步骤正文……&lt;/p&gt;
+  &lt;/main&gt;
+  &lt;footer&gt;…页脚…&lt;/footer&gt;
+&lt;/body&gt;</code></pre>
+            </div>
+            <div class="fn-ex-foot">
+              <ul class="fn-ex-list">
+                <li><strong>正确做法：</strong></li>
+                <li>1. 壳层用 <code>header</code> / <code>nav</code> / <code>footer</code> / <code>aside</code></li>
+                <li>2. 核心知识放在 <code>main</code> 内</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <section class="section" id="expected-effect">
       <h2>预期效果</h2>
       <ol class="bg-list">
         <li>帮助 AI Agent 直接从 HTML 中获取页面标题、正文、操作步骤、表格和代码等核心内容，减少因动态渲染或内容缺失造成的获取障碍。</li>
+        <li>帮助 AI Agent 区分主内容区与导航、页脚等壳层，降低噪音文案进入知识抽取的风险。</li>
         <li>提高页面内容的可理解性和可引用性，帮助 AI Agent 准确识别内容层级、理解信息关系并使用相关知识。</li>
       </ol>
     </section>
@@ -1409,8 +1470,10 @@
       <ol class="bg-list">
         <li>HTML 可读不等于禁止使用 JavaScript，重点是核心知识内容不应依赖 JavaScript 执行才能获取。</li>
         <li>页面可以使用图片、Canvas 或 iframe，但标题、正文、步骤、参数等核心知识内容不应仅存在于这些载体中。</li>
+        <li>壳层分离依赖真实 landmark 标签，勿仅用 class 名区分；侧栏文档目录可用 <code>nav</code> 或 <code>aside</code>，勿与 <code>main</code> 内正文混写。</li>
         <li>页面内容较多时应合理分页或拆分，避免单页内容过长导致抓取和解析成本过高。</li>
         <li>对于需要交互才能展开的内容，应提供可直接访问的文本或独立页面入口，避免关键信息仅通过交互操作才能获取。</li>
+        <li>步骤中插入推荐/广告等流程噪音见「推荐内容后置」；本条聚焦 HTML 壳层与正文的结构分离。</li>
       </ol>
     </section>
   </main>

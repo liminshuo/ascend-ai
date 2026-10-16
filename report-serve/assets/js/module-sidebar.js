@@ -50,10 +50,11 @@
       },
       {
         group: "可理解", id: "doc-structure", href: "principles-hierarchy.html", label: "内容结构可识别",
-        pageIds: ["doc-structure", "hierarchy", "noise"],
+        pageIds: ["doc-structure", "hierarchy", "noise", "structure-pattern"],
         children: [
           { id: "hierarchy", href: "principles-hierarchy.html", label: "标题层级可识别" },
-          { id: "noise", href: "principles-noise.html", label: "推荐内容后置" }
+          { id: "noise", href: "principles-noise.html", label: "推荐内容后置" },
+          { id: "structure-pattern", href: "principles-structure-pattern.html", label: "页内结构模式化" }
         ]
       },
       {
@@ -72,6 +73,7 @@
           { id: "term", href: "principles-term.html", label: "内容表述清晰可指代" }
         ]
       },
+      { group: null, id: "structure-align", href: "principles-structure-align.html", label: "全站规范一致性" },
       {
         group: "可验证", id: "outcome", href: "principles-expected.html", label: "任务结果可确认",
         pageIds: ["outcome", "verify", "expected"]
@@ -246,7 +248,7 @@
     html += "</li>";
     html += "<li><a href=\"principles-background.html\"" + (page === "background" ? " class=\"active\"" : "") + ">设计背景</a></li>";
     html += "<li><a href=\"principles-overview.html\"" + (page === "overview" ? " class=\"active\"" : "") + ">设计原则</a></li>";
-    html += "<li><a href=\"principles-affinity-full.html\"" + (page === "affinity-full" ? " class=\"active\"" : "") + ">全量亲和原则</a></li>";
+    html += "<li><a href=\"principles-full-catalog.html\"" + (page === "full-catalog" ? " class=\"active\"" : "") + ">全量亲和原则</a></li>";
     html += "</ul>";
   } else if (module === "problems") {
     html += "<ul class=\"sidebar-nav sidebar-phase-nav sidebar-module-title\">";

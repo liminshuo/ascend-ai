@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>全站规范一致性 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid var(--color-border);
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: 100%; max-width: none; margin: 0; padding: 0 24px; box-sizing: border-box;
+    height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: var(--color-text); text-decoration: none; white-space: nowrap; margin-right: 40px;
+  }
+  .topbar .brand span { color: var(--color-primary); }
+  .topbar .site-nav { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; flex-wrap: wrap; }
+  .topbar .site-nav > a {
+    text-decoration: none; color: var(--color-text-secondary); font-size: var(--text-body); font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .topbar .site-nav > a:hover { color: var(--color-primary); background: var(--color-bg); text-decoration: none; }
+  .topbar .site-nav > a.active { color: var(--color-primary); background: var(--color-bg); font-weight: 600; }
+  .nav-dd { position: relative; z-index: 210; display: inline-flex; align-items: center; }
+  .nav-dd-trigger {
+    appearance: none; border: 0; background: transparent; cursor: pointer; font: inherit;
+    text-decoration: none; color: var(--color-text-secondary); font-size: var(--text-body); font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+    display: inline-flex; align-items: center; gap: 12px;
+  }
+  .nav-dd-trigger::after {
+    content: ""; width: 6px; height: 6px;
+    border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg); opacity: .65; margin-top: -3px; flex-shrink: 0;
+  }
+  .nav-dd-trigger:hover, .nav-dd:hover .nav-dd-trigger, .nav-dd:focus-within .nav-dd-trigger {
+    color: var(--color-primary); background: var(--color-bg);
+  }
+  .nav-dd::before { content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 10px; }
+  .nav-dd-panel {
+    position: absolute; top: calc(100% + 4px); left: 0; min-width: 148px; padding: 6px;
+    background: #fff; border: 1px solid var(--color-border); border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(25, 25, 25, 0.08);
+    opacity: 0; visibility: hidden; transform: translateY(-4px);
+    transition: opacity .15s, transform .15s, visibility .15s; z-index: 210;
+  }
+  .nav-dd:hover .nav-dd-panel, .nav-dd:focus-within .nav-dd-panel {
+    opacity: 1; visibility: visible; transform: translateY(0);
+  }
+  .nav-dd-panel a {
+    display: block; padding: 8px 12px; border-radius: 6px; text-decoration: none;
+    color: var(--color-text-secondary); font-size: 13px; font-weight: 500; line-height: 1.4;
+  }
+  .nav-dd-panel a:hover { color: var(--color-primary); background: var(--color-bg); }
+  body.inner-page .page-wrapper { min-height: 100vh; }
+
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: var(--space-stack, 16px);
+  }
+  .page-header > h1 {
+    font-family: var(--font);
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1-weight, 600);
+    line-height: var(--text-h1-lh);
+    letter-spacing: -0.02em;
+    margin: 0;
+    padding-top: var(--space-h1-pad-y, 32px);
+    padding-bottom: var(--space-h1-pad-y, 32px);
+    color: var(--color-text);
+  }
+  body.inner-page[data-page="structure-align"]:has(#module-sidebar) .main-content {
+    padding-top: var(--content-main-pad-top, 16px);
+    padding-left: 0;
+    padding-right: 0;
+  }
+  body.inner-page[data-page="structure-align"]:has(#module-sidebar) .main-content > .page-header,
+  body.inner-page[data-page="structure-align"]:has(#module-sidebar) .main-content > .section,
+  body.inner-page[data-page="structure-align"]:has(#module-sidebar) .main-content > .surface-tabs {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page[data-page="structure-align"] .main-content .section > h2 {
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    letter-spacing: -0.01em;
+    margin-top: 0;
+    margin-bottom: var(--space-stack, 16px);
+    padding-top: var(--space-h2-pad-y, 16px);
+    padding-bottom: 0;
+    border-bottom: none;
+    color: var(--color-text, var(--color-text));
+  }
+  body.inner-page[data-page="structure-align"] .main-content .section h3 { height: auto; }
+  h3.fn-h3 {
+    margin: 0;
+    padding-top: var(--space-h3-pad-y, 16px);
+    padding-bottom: var(--space-h3-pad-y, 16px);
+    font-size: var(--text-h3, 18px);
+    line-height: var(--text-h3-lh, 28px);
+    font-weight: var(--text-h3-weight, 650);
+    color: var(--color-text, var(--color-text));
+    letter-spacing: -0.01em;
+  }
+  body.inner-page[data-page="structure-align"] .main-content .section h4 { height: auto; }
+  h4.fn-h4 {
+    margin: 0;
+    padding-top: var(--space-h4-pad-y, 16px);
+    padding-bottom: var(--space-h4-pad-y, 16px);
+    font-size: var(--text-h4, 14px);
+    line-height: var(--text-h4-lh, 22px);
+    font-weight: var(--text-h4-weight, 650);
+    color: var(--color-text, var(--color-text));
+    letter-spacing: -0.01em;
+  }
+  h3.fn-h3 + .principle-example > h4.fn-h4,
+  h3.fn-h3 + h4.fn-h4 { margin-top: 0; }
+
+  #scenarios .scene-def-table td .badge { border: none; }
+  .scene-def-table td .badge-optional {
+    background: var(--color-bg);
+    color: var(--color-text-secondary);
+  }
+  .scene-def-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--text-body);
+    line-height: 22px;
+    margin: 0 0 24px;
+    table-layout: fixed;
+  }
+  .scene-def-table th,
+  .scene-def-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: middle;
+    font-size: var(--text-body);
+    line-height: 22px;
+    font-weight: 400;
+  }
+  .scene-def-table tbody td {
+    height: auto;
+    min-height: 48px;
+  }
+  .scene-def-table th {
+    font-size: var(--text-auxiliary);
+    font-weight: 650;
+    color: var(--color-text-secondary);
+    background: var(--color-card-bg);
+    height: 40px;
+    box-sizing: border-box;
+  }
+  .scene-def-table .col-type { width: 18%; }
+  .scene-def-table .col-desc { width: 55%; }
+  .scene-def-table .col-place { width: 27%; }
+  #objects .scene-def-table .col-type { width: 18%; }
+  #objects .scene-def-table .col-desc { width: 52%; }
+  #objects .scene-def-table .col-place { width: 30%; }
+  #scenarios .scene-def-table .col-type { width: 18%; }
+  #scenarios .scene-def-table .col-place { width: 40%; }
+  #scenarios .scene-def-table .col-desc { width: 42%; }
+
+  .fn-ex-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr auto;
+    column-gap: 16px;
+    row-gap: 0;
+    align-items: stretch;
+    margin: var(--space-stack, 16px) 0 0;
+  }
+  .fn-ex-row .fn-ex {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 1 / span 3;
+    margin: 0;
+    min-width: 0;
+  }
+  .fn-ex-row .fn-ex-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .fn-ex-row .fn-ex-head .fn-ex-label { margin: 0; }
+  .fn-ex-row .fn-ex-head .fn-ex-bar {
+    display: block; margin: 0; width: 100%; align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-body {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 2 / span 2;
+    min-height: 0;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .fn-ex-row .fn-ex-mock {
+    min-height: 0; height: 100%; box-sizing: border-box;
+    border: none; border-radius: 0; align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-mock pre.st-code {
+    margin: 0;
+    padding: 14px 16px;
+    background: #1e1e1e;
+    border: 1px solid #111;
+    border-radius: 0;
+    font-size: var(--text-auxiliary);
+    line-height: 18px;
+    color: #e8e8e8;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow: auto;
+    box-sizing: border-box;
+    min-height: 100%;
+  }
+  .fn-ex-row .fn-ex-foot {
+    display: flex; flex-direction: column; gap: 8px;
+    padding: 12px 14px 14px; background: #fff;
+    border-top: 1px solid var(--color-border);
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    gap: 4px;
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-list li { font-size: 14px; line-height: 22px; }
+  .fn-ex-label {
+    display: inline-block; padding: 0 8px; border-radius: 4px;
+    font-size: var(--text-auxiliary); font-weight: 650; line-height: 20px;
+    color: #b42318; background: #fef3f2;
+  }
+  .fn-ex-label.is-good { color: #047857; background: #ecfdf5; }
+  .fn-ex-bar {
+    display: block; width: 100%; height: 3px;
+    background: #b42318; border-radius: 2px;
+  }
+  .fn-ex-bar.is-good { background: #047857; }
+  .fn-ex-list {
+    margin: 0; padding: 0 0 0 1.25em; list-style: disc;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .fn-ex-list li {
+    margin: 0; font-size: var(--text-body); line-height: 22px; color: var(--color-text);
+  }
+  .fn-ex-list strong { font-weight: 650; }
+  .principle-example[id] { scroll-margin-top: 80px; }
+  .st-card {
+    padding: 16px 18px 14px;
+    color: var(--color-text);
+    background: #fff;
+    border-radius: 8px;
+  }
+  .fn-ex-mock:has(.st-card) { padding: 16px; }
+
+  .term-p {
+    margin: 0 0 8px;
+    font-size: 13px;
+    line-height: 22px;
+    color: var(--color-text);
+  }
+  .term-p:last-child { margin-bottom: 0; }
+  .term-hit {
+    padding: 0 4px;
+    border-radius: 3px;
+    background: #fef3f2;
+    color: #b42318;
+    font-weight: 650;
+  }
+  .term-ok {
+    padding: 0 4px;
+    border-radius: 3px;
+    background: #ecfdf5;
+    color: #047857;
+    font-weight: 650;
+  }
+  body.inner-page[data-page="structure-align"] .principle-example + .principle-example {
+    margin-top: var(--space-stack, 16px);
+    padding-top: 0;
+    border-top: none;
+  }
+
+  #design-ui .principle-suggestions,
+  #content-adjust .principle-suggestions,
+  #frontend-adjust .principle-suggestions {
+    list-style: none;
+    margin: 0 0 32px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    counter-reset: sug;
+  }
+  #design-ui .principle-suggestions > li,
+  #content-adjust .principle-suggestions > li,
+  #frontend-adjust .principle-suggestions > li {
+    position: relative;
+    margin: 0;
+    padding: 0 0 0 36px;
+    color: var(--color-text-secondary);
+  }
+  #design-ui .principle-suggestions > li::before,
+  #content-adjust .principle-suggestions > li::before,
+  #frontend-adjust .principle-suggestions > li::before {
+    counter-increment: sug;
+    content: counter(sug);
+    position: absolute;
+    left: 0;
+    top: 2px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #eff6ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--text-auxiliary);
+    font-weight: 700;
+    line-height: 22px;
+    letter-spacing: 0.02em;
+    color: var(--color-primary);
+  }
+  #design-ui .principle-suggestions > li .sug-title,
+  #content-adjust .principle-suggestions > li .sug-title,
+  #frontend-adjust .principle-suggestions > li .sug-title {
+    display: block;
+    margin: 0 0 6px;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 24px;
+    color: var(--color-text);
+  }
+  #design-ui .principle-suggestions > li .sug-desc,
+  #content-adjust .principle-suggestions > li .sug-desc,
+  #frontend-adjust .principle-suggestions > li .sug-desc {
+    display: block;
+    margin: 0;
+    max-width: none;
+    width: 100%;
+    font-size: var(--text-body);
+    font-weight: 400;
+    line-height: 24px;
+    color: var(--color-text-secondary);
+  }
+
+  body.inner-page[data-page="structure-align"] .main-content > .section:first-of-type > h2 {
+    margin-top: 0;
+  }
+  #practices .principle-example > h3.fn-h3 + h4.fn-h4 {
+    margin-top: 0;
+  }
+  #practices .principle-example > .fn-h3-desc + h4.fn-h4 {
+    margin-top: var(--space-stack, 16px);
+  }
+  #practices .fn-h3-desc {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  #practices .principle-example { margin: 0; }
+  #practices .principle-example + .principle-example { margin-top: var(--space-stack, 16px); }
+  #practices .principle-example > .ex-fold-panel + h4.fn-h4 {
+    margin-top: var(--space-stack, 16px);
+    padding-top: var(--space-h4-pad-y, 16px);
+    border-top: none;
+  }
+  .file-sample {
+    margin: 0 0 20px;
+    padding: 0;
+    background: #1e1e1e;
+    border: 1px solid #111;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .file-sample pre {
+    margin: 0;
+    padding: 12px 14px 14px;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: var(--text-auxiliary);
+    line-height: 20px;
+    color: #e8e8e8;
+    background: transparent;
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .file-sample pre code {
+    display: block;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    color: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    font-family: inherit;
+    white-space: inherit;
+  }
+  .file-sample .code-line-hl {
+    display: block;
+    margin: 0 -14px;
+    padding: 0 14px;
+  }
+  .file-sample .code-line-hl.is-bad { background: rgba(180, 35, 24, 0.28); }
+  .file-sample .code-line-hl.is-good { background: rgba(4, 120, 87, 0.28); }
+  .ex-card-title {
+    margin: 0;
+    padding: 0;
+    font-size: var(--text-body);
+    font-weight: 650;
+    line-height: 22px;
+    color: #191919;
+    background: none;
+    border: none;
+  }
+  .ex-card-pair > .ex-card-title { grid-column: 1 / -1; margin: 0; }
+  .ex-card-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    padding: 16px;
+    align-items: stretch;
+  }
+  .ex-card-pane { display: flex; flex-direction: column; min-width: 0; }
+  .ex-card-pane .file-sample {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0;
+  }
+  .ex-card-pane .file-sample pre { flex: 1; }
+  .ex-fold-intro { grid-column: 1 / -1; }
+  .ex-fold-intro .fn-ex-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    gap: 4px;
+  }
+  .ex-fold-intro .fn-ex-list li { font-size: 14px; line-height: 22px; }
+  .ex-fold-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: var(--space-stack, 16px) 0;
+  }
+  .ex-fold-bar + .ex-fold-panel { margin-top: var(--space-stack, 16px); }
+  .ex-fold-btn {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    padding: 4px 6px;
+    margin: 0;
+    cursor: pointer;
+    font: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 22px;
+    color: var(--color-text);
+  }
+  .ex-fold-btn img {
+    width: 20px;
+    height: 20px;
+    display: block;
+    flex-shrink: 0;
+  }
+  .ex-fold-btn img[src*="ex-fold-code.png"] {
+    width: 22px;
+    height: 22px;
+  }
+  .ex-fold-btn[aria-expanded="true"] {
+    background: var(--color-primary-subtle);
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+  .ex-fold-panel { margin: var(--space-stack, 16px) 0; }
+  .ex-fold-panel > .ex-card-pair {
+    margin: 0;
+    border: none;
+    border-radius: 8px;
+    background: #fafafa;
+  }
+  #practices .file-sample.file-sample--paper {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 0;
+    padding: 16px;
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  #practices .file-sample--paper .llms-sec {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 0;
+    padding: 6px 10px;
+    padding-right: 52px;
+    border-radius: 8px;
+  }
+  #practices .file-sample--paper .llms-sec--copy { background: rgba(14, 165, 233, 0.07); }
+  #practices .file-sample--paper .llms-sec--cta { background: rgba(52, 211, 153, 0.07); }
+  #practices .file-sample--paper .llms-sec--tip { background: rgba(37, 99, 235, 0.07); }
+  #practices .file-sample--paper .llms-mod {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    display: inline-flex;
+    align-items: center;
+    height: 20px;
+    padding: 0 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    line-height: 20px;
+    font-weight: 650;
+    color: #525252;
+    background: rgba(25, 25, 25, 0.08);
+  }
+  #practices .file-sample--paper .llms-sec--copy .llms-mod {
+    color: #0369a1;
+    background: rgba(14, 165, 233, 0.16);
+  }
+  #practices .file-sample--paper .llms-sec--cta .llms-mod {
+    color: #047857;
+    background: rgba(52, 211, 153, 0.16);
+  }
+  #practices .file-sample--paper .llms-sec--tip .llms-mod {
+    color: #1d4ed8;
+    background: rgba(37, 99, 235, 0.14);
+  }
+  #practices .file-sample--paper .hier-md-sec { margin: 0; }
+  #practices .file-sample--paper .hier-md-sec code {
+    display: block;
+    margin: 0;
+    padding: 0;
+    background: none;
+    color: #191919;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 400;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+  }
+  #practices .ex-fold-panel--pair-h .ex-card-pair { align-items: stretch; }
+  #practices .ex-fold-panel--pair-h .ex-card-pane { align-self: stretch; }
+  #practices .ex-fold-panel--pair-h .ex-card-pane > .file-sample {
+    flex: 1 1 auto;
+    min-height: 200px;
+    overflow: auto;
+    box-sizing: border-box;
+  }
+  #practices .ex-fold-panel--pair-h .ex-card-pane > .file-sample--compact,
+  #practices .ex-fold-panel--pair-h .ex-card-pane > .file-sample.file-sample--paper {
+    display: flex;
+    flex-direction: column;
+  }
+  #practices .ex-fold-panel--pair-h .ex-card-pane > .file-sample--compact pre {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
+    overflow: auto;
+  }
+  #practices .ex-fold-panel--pair-h .ex-card-pane > .file-sample.file-sample--paper {
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  #practices .ex-fold-panel--pair-h-mid .ex-card-pane > .file-sample {
+    flex: 1 0 280px;
+    height: 280px;
+    min-height: 280px;
+    max-height: 280px;
+  }
+  .ex-card-pane-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .ex-card-pane-head .fn-ex-label { margin: 0; }
+  .ex-card-pane-head .fn-ex-bar { display: block; width: 100%; margin: 0; }
+
+  @media (max-width: 900px) {
+    .fn-ex-row {
+      grid-template-columns: 1fr;
+      grid-template-rows: none;
+    }
+    .fn-ex-row .fn-ex { display: block; grid-row: auto; }
+    .fn-ex-row .fn-ex-body {
+      display: flex; flex-direction: column; grid-row: auto;
+    }
+    .ex-card-pair { grid-template-columns: 1fr; }
+  }
+  .st-cap {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      line-height: 24px;
+    }
+
+  .st-cap + .st-cap { margin-top: 4px; }
+
+  .st-cap-name { color: var(--color-text); }
+
+  .st-cap-mark {
+      flex-shrink: 0;
+      width: 16px;
+      height: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #8c8c8c;
+    }
+
+  .st-cap-mark.is-ok { color: var(--color-primary); }
+
+  .st-cap-mark.is-fail { color: #8c8c8c; }
+
+  .st-cap-mark.is-ok-green { color: #16a34a; }
+
+  .st-cap-mark.is-fail-red { color: #dc2626; }
+
+  .st-cap-mark.is-mute { color: #a3a3a3; }
+
+  .st-cap-mark svg { display: block; }
+
+  .st-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background: currentColor;
+    }
+
+  .st-word-row {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+  .st-word {
+      flex-shrink: 0;
+      font-weight: 650;
+      color: var(--color-text);
+    }
+
+  .st-word.is-wait { color: var(--color-text-secondary); font-weight: 500; }
+
+  h4.fn-h4:has(> .fn-h3-link) {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
+  }
+  h4.fn-h4 > .fn-h3-link { margin-left: auto; flex-shrink: 0; font-weight: 500; }
+  h3.fn-h3 .fn-h3-link, .fn-h3-link {
+    margin-left: 12px; font-size: var(--text-body); font-weight: 500;
+    line-height: 22px; color: var(--color-primary); text-decoration: none;
+  }
+  h3.fn-h3 .fn-h3-link:hover, .fn-h3-link:hover { text-decoration: underline; }
+  .principle-example-note {
+    margin-top: 12px; font-size: var(--text-body); line-height: 22px;
+    color: var(--color-text-secondary);
+  }
+
+  .pat-mock { display: flex; flex-direction: column; gap: 8px; }
+  .pat-h { margin: 0; font-size: 13px; font-weight: 650; line-height: 20px; color: var(--color-text); }
+  .pat-h.is-muted { color: var(--color-text-secondary); font-weight: 500; }
+  .pat-p { margin: 0; font-size: 12px; line-height: 18px; color: var(--color-text-secondary); }
+  .pat-block {
+    margin: 0; padding: 8px 10px; border-radius: 8px;
+    background: rgba(25, 25, 25, 0.04);
+  }
+  .pat-block.is-pattern {
+    background: rgba(37, 99, 235, 0.06);
+    border-left: 3px solid var(--color-primary);
+  }
+  .pat-block .pat-h { margin-bottom: 4px; }
+  .pat-olist { margin: 0; padding-left: 1.2em; font-size: 12px; line-height: 18px; color: var(--color-text-secondary); }
+  .pat-code {
+    margin: 4px 0 0; padding: 6px 8px; border-radius: 6px;
+    background: #f4f4f5; font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: 11px; line-height: 16px; color: #191919; white-space: pre-wrap;
+  }
+  .pat-dl { margin: 0; font-size: 12px; line-height: 18px; color: var(--color-text-secondary); }
+  .pat-dl dt { font-weight: 650; color: var(--color-text); }
+  .pat-dl dd { margin: 0 0 4px 0; }
+
+  #mechanism > p.page-lead,
+  #practices > p.page-lead {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  #mechanism > h2 + .page-lead,
+  #detail-principles > h2 + .bg-list,
+  #expected-effect > h2 + .bg-list,
+  #notes > h2 + .bg-list {
+    margin-top: 0;
+  }
+  #mechanism > p.page-lead {
+    margin-bottom: var(--space-stack, 16px);
+  }
+  #mechanism > p.page-lead + p.page-lead {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+  #mechanism,
+  #detail-principles,
+  #practices,
+  #expected-effect,
+  #notes {
+    margin-bottom: 32px;
+  }
+  .bg-list {
+    margin: 0;
+    padding-left: 1.25em;
+    font-size: var(--text-body);
+    line-height: 22px;
+    list-style: disc;
+    color: var(--color-text-secondary);
+  }
+  #detail-principles .bg-list li + li,
+  #practices .bg-list li + li,
+  #expected-effect .bg-list li + li,
+  #notes .bg-list li + li { margin-top: 16px; }
+  #detail-principles ol.bg-list,
+  #practices ol.bg-list,
+  #expected-effect ol.bg-list,
+  #notes ol.bg-list {
+    list-style: decimal;
+    list-style-position: inside;
+    padding-left: 0;
+    margin-left: 0;
+  }
+  #detail-principles ol.bg-list li strong,
+  #practices ol.bg-list li strong {
+    font-weight: 650;
+    color: var(--color-text);
+  }
+
+</style>
+</head>
+<body class="inner-page agent-entry-page" data-module="principles" data-page="structure-align" data-no-surface-tabs>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span>AI 亲和原则</span></a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="mintlify.html">友商对照</a>
+      <a href="reachability.html">社区诊断</a>
+      <a href="principles-overview.html" class="active">亲和原则</a>
+      <a href="community-ui.html">组件亲和</a>
+      <a href="design-guide-image-text.html">设计模式</a>
+      <a href="data-analysis.html">数据分析</a>
+    </nav>
+  </div>
+</div>
+
+<div class="page-wrapper">
+
+  <aside id="module-sidebar"></aside>
+
+        <main class="main-content">
+    <div class="page-header">
+      <h1>全站规范一致性</h1>
+    </div>
+
+    <section class="section" id="mechanism">
+      <h2>概述</h2>
+      <p class="page-lead">即便单篇已按模式块书写，若同类任务页各写各的——章节名不统一、顺序不一致、内部格式各异——AI Agent 仍难以跨页对齐同一任务类型，检索与复述时易把「准备工作」与「前提条件」当成不同结构。</p>
+      <p class="page-lead">全站规范一致性原则要求：全站范围内，核心概念、术语、格式规范、结构模式与交互样式保持一致；跨文档的相同内容使用完全相同的表达、格式和结构。单篇如何切块见「页内结构模式化」。</p>
+    </section>
+
+    <section class="section" id="detail-principles">
+      <h2>全站规范一致性原则</h2>
+      <ol class="bg-list">
+        <li><strong>同类页共用同一套模板。</strong> 安装、配置、API、排障等任务类型各自约定固定章节名与顺序；禁止同类型页各起一套栏目名。</li>
+        <li><strong>跨页相同内容同表达、同格式、同结构。</strong> 同一概念、同一操作块在不同文档中的标题、列表/表格/代码块写法保持一致。</li>
+        <li><strong>术语与模式名全站统一。</strong> 如统一用「前提条件」而非混用「前置 Cond」「准备工作」；模式名与页内标题字面一致。</li>
+        <li><strong>交互与版式约定一致。</strong> 同类页的步骤编号、验证写法、示例代码块、排障表头等交互/版式样式保持统一，避免页与页之间「看起来像另一套规范」。</li>
+      </ol>
+    </section>
+
+    <section class="section" id="practices">
+      <h2>典型示例</h2>
+      <div class="principle-example" id="cross-align">
+        <h3 class="fn-h3">同类安装页章节名与顺序对齐</h3>
+        <p class="fn-h3-desc">两篇安装文档都应采用站点约定的「前提条件 → 步骤 → 验证」；勿一篇用「准备工作」、一篇用「前置 Cond」，也勿打乱顺序。</p>
+        <h4 class="fn-h4">示例 1 · 各写各的 vs 跨页对齐</h4>
+        <div class="fn-ex-row">
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label">反面</span>
+              <div class="fn-ex-bar" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="反面：两篇各写各的">
+                <div class="st-card pat-mock">
+                  <div class="pat-block">
+                    <p class="pat-h is-muted">页 A</p>
+                    <p class="pat-p">准备工作 → 操作说明 → 看一下是否成功</p>
+                  </div>
+                  <div class="pat-block">
+                    <p class="pat-h is-muted">页 B</p>
+                    <p class="pat-p">前置 Cond → 验证 → 步骤（顺序颠倒）</p>
+                  </div>
+                </div>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>常见疏漏：</strong></li>
+                  <li>1. 同类型页章节名不统一，Agent 无法跨页对齐模板</li>
+                  <li>2. 顺序各异，检索到的块语义错位</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="fn-ex">
+            <div class="fn-ex-head">
+              <span class="fn-ex-label is-good">正面</span>
+              <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+            </div>
+            <div class="fn-ex-body">
+              <div class="fn-ex-mock" aria-label="正面：两篇同模板">
+                <div class="st-card pat-mock">
+                  <div class="pat-block is-pattern">
+                    <p class="pat-h">页 A / 页 B（同构）</p>
+                    <p class="pat-p">前提条件 → 步骤 → 验证 → 示例</p>
+                  </div>
+                </div>
+              </div>
+              <div class="fn-ex-foot">
+                <ul class="fn-ex-list">
+                  <li><strong>正确做法：</strong></li>
+                  <li>1. 同类型页固定同一套章节名与顺序，禁各写各的</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ex-fold-bar">
+          <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex1-md" aria-label="Markdown 书写"><img src="assets/icons/ex-fold-markdown.png" alt="" width="20" height="20" aria-hidden="true"></button>
+          <button type="button" class="ex-fold-btn" aria-expanded="false" aria-controls="ex1-html" aria-label="前端源码书写"><img src="assets/icons/ex-fold-code.png" alt="" width="22" height="22" aria-hidden="true"></button>
+        </div>
+        <div class="ex-fold-panel ex-fold-panel--pair-h ex-fold-panel--pair-h-mid" id="ex1-md" hidden>
+          <div class="ex-card-pair">
+            <p class="ex-card-title">Markdown 书写</p>
+            <div class="ex-fold-intro">
+              <ul class="fn-ex-list">
+                <li>1. 同类型页标题字面统一（如一律「前提条件」）</li>
+                <li>2. 章节顺序固定；勿在个别页调换「步骤 / 验证」</li>
+              </ul>
+            </div>
+            <div class="ex-card-pane">
+              <div class="ex-card-pane-head">
+                <span class="fn-ex-label">反面</span>
+                <div class="fn-ex-bar" aria-hidden="true"></div>
+              </div>
+              <figure class="file-sample file-sample--compact">
+                <pre><code class="language-markdown"><span class="code-line-hl is-bad"># 页 A：## 准备工作 / ## 操作说明</span>
+<span class="code-line-hl is-bad"># 页 B：## 前置 Cond / ## 验证 / ## 步骤</span></code></pre>
+              </figure>
+            </div>
+            <div class="ex-card-pane">
+              <div class="ex-card-pane-head">
+                <span class="fn-ex-label is-good">正面</span>
+                <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+              </div>
+              <figure class="file-sample file-sample--compact">
+                <pre><code class="language-markdown"># 页 A 与页 B 均使用：
+
+## 前提条件
+## 步骤
+## 验证
+## 示例</code></pre>
+              </figure>
+            </div>
+          </div>
+        </div>
+        <div class="ex-fold-panel ex-fold-panel--pair-h ex-fold-panel--pair-h-mid" id="ex1-html" hidden>
+          <div class="ex-card-pair">
+            <p class="ex-card-title">前端源码书写</p>
+            <div class="ex-fold-intro">
+              <ul class="fn-ex-list">
+                <li>1. 同类页 <code>h2</code> 文案与 DOM 顺序保持站点约定</li>
+                <li>2. 可用统一模板或组件生成，避免手工另起栏目名</li>
+              </ul>
+            </div>
+            <div class="ex-card-pane">
+              <div class="ex-card-pane-head">
+                <span class="fn-ex-label">反面</span>
+                <div class="fn-ex-bar" aria-hidden="true"></div>
+              </div>
+              <figure class="file-sample file-sample--compact">
+                <pre><code class="language-html"><span class="code-line-hl is-bad">&lt;!-- 页 A --&gt;&lt;h2&gt;准备工作&lt;/h2&gt;</span>
+<span class="code-line-hl is-bad">&lt;!-- 页 B --&gt;&lt;h2&gt;前置 Cond&lt;/h2&gt;</span></code></pre>
+              </figure>
+            </div>
+            <div class="ex-card-pane">
+              <div class="ex-card-pane-head">
+                <span class="fn-ex-label is-good">正面</span>
+                <div class="fn-ex-bar is-good" aria-hidden="true"></div>
+              </div>
+              <figure class="file-sample file-sample--compact">
+                <pre><code class="language-html">&lt;!-- 页 A / 页 B 同构 --&gt;
+&lt;h2&gt;前提条件&lt;/h2&gt;
+&lt;h2&gt;步骤&lt;/h2&gt;
+&lt;h2&gt;验证&lt;/h2&gt;</code></pre>
+              </figure>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="expected-effect">
+      <h2>预期效果</h2>
+      <ol class="bg-list">
+        <li>帮助 AI Agent 跨页识别同一任务类型的固定模板，降低「同义不同名」造成的结构错配。</li>
+        <li>提高全站同类文档的可对齐性，便于对比、聚合与复述。</li>
+        <li>减少因各写各的导致的术语漂移、顺序混乱和格式不一致。</li>
+      </ol>
+    </section>
+
+    <section class="section" id="notes">
+      <h2>注意事项</h2>
+      <ol class="bg-list">
+        <li>先约定任务类型模板（安装 / 配置 / API / 排障等），再约束各页落地；模板变更应全站同步。</li>
+        <li>本原则管<strong>跨页</strong>是否同名同序同格式；单篇是否切成模式块见「页内结构模式化」。</li>
+        <li>术语表与结构模板宜集中维护，避免仅靠各写作者记忆对齐。</li>
+      </ol>
+    </section>
+  </main>
+
+
+
+</div>
+
+
+<script>
+(function () {
+  document.querySelectorAll(".ex-fold-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var panel = document.getElementById(btn.getAttribute("aria-controls"));
+      if (!panel) return;
+      var open = btn.getAttribute("aria-expanded") === "true";
+      var bar = btn.closest(".ex-fold-bar");
+      if (!open && bar) {
+        bar.querySelectorAll(".ex-fold-btn").forEach(function (other) {
+          if (other === btn) return;
+          other.setAttribute("aria-expanded", "false");
+          var otherPanel = document.getElementById(other.getAttribute("aria-controls"));
+          if (otherPanel) otherPanel.hidden = true;
+        });
+      }
+      btn.setAttribute("aria-expanded", open ? "false" : "true");
+      panel.hidden = open;
+    });
+  });
+})();
+</script>
+
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js"></script>
+<script src="assets/js/module-sidebar.js"></script>
+</body>
+</html>
