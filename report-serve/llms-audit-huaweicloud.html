@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<!--
+  llms-txt-generate report template.
+  Fill placeholders named like SITE_NAME / STATS_ROWS / OPTIMIZED_LLMS_HTML
+  (see SKILL.md). Do not put live placeholder tokens in this comment block.
+-->
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>llms.txt 配置诊断 · AI 亲和原则</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid var(--color-border);
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin: 0 auto;
+    padding: 0;
+    box-sizing: border-box;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: var(--color-text); text-decoration: none; white-space: nowrap;
+  }
+  .topbar .brand span { color: var(--color-primary); }
+  .topbar .brand:hover { text-decoration: none; opacity: 0.9; }
+  .topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  body.inner-page .page-wrapper { min-height: 100vh; }
+
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: var(--space-stack, 16px);
+  }
+  .page-header > h1 {
+    font-family: var(--font);
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1-weight, 600);
+    line-height: var(--text-h1-lh);
+    letter-spacing: -0.02em;
+    margin: 0;
+    padding-top: var(--space-h1-pad-y, 32px);
+    padding-bottom: var(--space-h1-pad-y, 32px);
+    color: var(--color-text);
+  }
+  .page-meta {
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  .page-meta a { color: var(--color-primary); text-decoration: none; }
+  .page-meta a:hover { text-decoration: underline; }
+
+  body.inner-page.agent-entry-page .page-wrapper {
+    background: #fff;
+    padding-top: var(--header-height, 56px);
+  }
+  body.inner-page.agent-entry-page .main-content {
+    padding-top: 16px;
+    padding-bottom: 32px;
+    padding-left: 0;
+    padding-right: 0;
+    background: #fff;
+    min-height: calc(100vh - var(--header-height, 56px));
+  }
+  body.inner-page.agent-entry-page .main-content > .page-header,
+  body.inner-page.agent-entry-page .main-content > .page-meta,
+  body.inner-page.agent-entry-page .main-content > .section {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page.agent-entry-page .main-content .section > h2 {
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    letter-spacing: -0.01em;
+    margin-top: 0;
+    margin-bottom: var(--space-stack, 16px);
+    padding-top: var(--space-h2-pad-y, 16px);
+    padding-bottom: 0;
+    border-bottom: none;
+    color: var(--color-text);
+  }
+  body.inner-page.agent-entry-page .main-content .section > h3 {
+    font-size: var(--text-h3, 18px);
+    font-weight: var(--text-h3-weight, 650);
+    line-height: var(--text-h3-lh, 28px);
+    letter-spacing: -0.01em;
+    margin-top: 0;
+    margin-bottom: var(--space-stack, 16px);
+    padding-top: var(--space-h3-pad-y, 16px);
+    padding-bottom: var(--space-h3-pad-y, 16px);
+    border-bottom: none;
+    color: var(--color-text);
+  }
+  body.inner-page.agent-entry-page .main-content > .section:first-of-type > h2 {
+    margin-top: 0;
+  }
+  body.inner-page.agent-entry-page .main-content > .section {
+    margin-bottom: 32px;
+  }
+  body.inner-page.agent-entry-page .main-content .section > h3.aj-caption {
+    margin: 0 0 var(--space-stack, 16px);
+    padding-top: 0;
+    padding-bottom: 0;
+    text-align: left;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  .page-lead {
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  .page-lead a { color: var(--color-primary); text-decoration: none; }
+  .page-lead a:hover { text-decoration: underline; }
+  .bg-list {
+    margin: 0;
+    padding-left: 1.25em;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text);
+  }
+  .bg-list li + li { margin-top: 10px; }
+  .bg-list strong { font-weight: 650; }
+  .sev {
+    display: inline-block;
+    margin-right: 6px;
+    padding: 1px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 18px;
+    vertical-align: 1px;
+  }
+  .sev-p0 { background: #fee2e2; color: #991b1b; }
+  .sev-p1 { background: #ffedd5; color: #9a3412; }
+  .sev-p2 { background: #fef9c3; color: #854d0e; }
+  .sev-ok { background: #dcfce7; color: #166534; }
+  .sev-ask { background: #e0e7ff; color: #3730a3; }
+
+  .file-sample {
+    margin: 0 0 var(--space-stack, 16px);
+    padding: 0;
+    background: #1e1e1e;
+    border: 1px solid #111;
+    border-radius: 16px;
+    overflow: hidden;
+    color-scheme: dark;
+    scrollbar-color: #5c5c5c #1e1e1e;
+  }
+  .file-sample figcaption {
+    margin: 0;
+    padding: 12px 14px;
+    font-size: 14px;
+    font-weight: 650;
+    line-height: 22px;
+    color: #a3a3a3;
+    border-bottom: 1px solid #333;
+  }
+  .file-sample figcaption code {
+    font-size: inherit;
+    color: #e8e8e8;
+    background: none;
+  }
+  .file-sample figcaption a {
+    color: #e8e8e8;
+    text-decoration: none;
+  }
+  .file-sample figcaption a:hover { text-decoration: underline; }
+  .file-sample pre {
+    margin: 0;
+    padding: 12px 14px 14px;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: 12px;
+    line-height: 20px;
+    color: #e8e8e8;
+    background: transparent;
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .file-sample pre code {
+    display: block;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    color: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    font-family: inherit;
+    white-space: inherit;
+  }
+  .file-sample .cmt { color: #737373; }
+
+  #optimized .file-sample {
+    background: #fafafa;
+    border: 1px solid #e5e5e5;
+    border-radius: 16px;
+    color-scheme: light;
+    scrollbar-color: #c4c4c4 #fafafa;
+  }
+  #optimized .file-sample figcaption {
+    padding: 12px 14px;
+    color: #525252;
+    background: #fafafa;
+    border-bottom-color: #e5e5e5;
+  }
+  #optimized .file-sample figcaption code { color: #191919; }
+  #optimized .file-sample pre,
+  #optimized .file-sample pre code {
+    color: #191919;
+    background: #fafafa;
+    font-size: 12px;
+    line-height: 20px;
+  }
+  #optimized .file-sample .cmt { color: #737373; }
+  #optimized .file-sample .add { background: rgba(34, 197, 94, 0.18); border-radius: 2px; padding: 0 3px; }
+  #optimized .file-sample .keep { background: rgba(167, 139, 250, 0.28); border-radius: 2px; padding: 0 3px; }
+  #optimized .file-sample .ask { background: rgba(250, 204, 21, 0.35); border-radius: 2px; padding: 0 3px; }
+
+  .probe-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+  }
+  .probe-table th,
+  .probe-table td {
+    border: 1px solid #e8eef5;
+    border-top: none;
+    border-left: none;
+    vertical-align: top;
+    padding: 10px 12px;
+    text-align: left;
+  }
+  .probe-table thead tr:first-child > th { border-top: 1px solid #e8eef5; }
+  .probe-table th:first-child,
+  .probe-table td:first-child { border-left: 1px solid #e8eef5; }
+  .probe-table th { background: #f5f6f8; font-weight: 650; }
+  .probe-table code { font-size: 12px; }
+
+  .topbar .btn-export-pdf,
+  .btn-export-pdf,
+  .btn-download-llms {
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #d0d5dd;
+    background: #fff;
+    color: var(--color-text, #191919);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 650;
+    line-height: 20px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    box-sizing: border-box;
+  }
+  .topbar .btn-export-pdf:hover,
+  .btn-export-pdf:hover,
+  .btn-download-llms:hover {
+    border-color: var(--color-primary, #1476ff);
+    color: var(--color-primary, #1476ff);
+    text-decoration: none;
+  }
+  .btn-download-llms.is-primary {
+    border-color: var(--color-primary, #1476ff);
+    background: var(--color-primary, #1476ff);
+    color: #fff;
+  }
+  .btn-download-llms.is-primary:hover {
+    opacity: 0.92;
+    color: #fff;
+  }
+  .download-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 var(--space-stack, 16px);
+  }
+
+  @media print {
+    @page { size: A4; margin: 14mm 12mm; }
+    html, body {
+      background: #fff !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .topbar,
+    .download-row,
+    .btn-export-pdf,
+    .btn-download-llms,
+    #module-sidebar,
+    .sidebar { display: none !important; }
+    body.inner-page .page-wrapper,
+    body.inner-page.agent-entry-page .page-wrapper,
+    body.inner-page.agent-entry-page .main-content {
+      padding: 0 !important;
+      margin: 0 !important;
+      background: #fff !important;
+      min-height: 0 !important;
+      border: none !important;
+    }
+    body.inner-page.agent-entry-page .main-content > .page-header,
+    body.inner-page.agent-entry-page .main-content > .page-meta,
+    body.inner-page.agent-entry-page .main-content > .section {
+      width: 100% !important;
+      max-width: none !important;
+      margin-inline: 0 !important;
+    }
+    .file-sample,
+    .probe-table,
+    .bg-list { break-inside: avoid; }
+    a[href]::after { content: none !important; }
+  }
+</style>
+</head>
+<body class="inner-page agent-entry-page" data-module="principles" data-page="llms-audit-huaweicloud" data-no-surface-tabs>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="https://liminshuo.github.io/ascend-ai/principles-overview.html" target="_blank" rel="noopener"><span>AI 亲和原则</span></a>
+    <div class="topbar-actions">
+      <a class="btn-download-llms is-primary" id="btn-download-llms" href="exports/llms-huaweicloud.txt" download="llms.txt">下载 llms.txt</a>
+      <button type="button" class="btn-export-pdf" id="btn-export-pdf">导出 PDF</button>
+    </div>
+  </div>
+</div>
+
+<div class="page-wrapper">
+  <main class="main-content">
+    <div class="page-header">
+      <h1>llms.txt 配置诊断</h1>
+    </div>
+    <p class="page-meta">
+      示例站点：<a href="https://www.huaweicloud.com/" target="_blank" rel="noopener">https://www.huaweicloud.com/</a>
+      · 数据来源：<code>huaweicloud-internal_all.csv</code>（主）· Sitemap 轻量核对
+      · 生成日期：2026-10-19
+      · 依据：<a href="principles-llms.html">llms.txt 索引入口可发现</a>
+    </p>
+
+    <section class="section" id="analysis">
+      <h2>Part1. 输入数据与结构分析</h2>
+
+      <h3 id="stats">数据概况</h3>
+      <table class="probe-table">
+        <thead>
+          <tr>
+            <th>指标</th>
+            <th>数量 / 说明</th>
+          </tr>
+        </thead>
+        <tbody>
+<tr><td>抓取表有效行（含 Address）</td><td>327</td></tr>
+<tr><td>同站 HTML 且状态 200</td><td>230</td></tr>
+<tr><td>重定向（301/302）</td><td>7</td></tr>
+<tr><td>排除：噪声路径 / 登录壳 / 其他 host</td><td>噪声 131 · 登录壳 0 · 其他 host 90</td></tr>
+<tr><td>去重后候选（www 主站）</td><td>99</td></tr>
+<tr><td>拟推荐写入 llms.txt</td><td>34</td></tr>
+        </tbody>
+      </table>
+
+      <h3 id="sitemap">Sitemap 核对 / 弱输入</h3>
+      <p class="page-lead">本版<strong>有抓取表</strong>，对 <a href="https://www.huaweicloud.com/sitemap.xml" target="_blank" rel="noopener">https://www.huaweicloud.com/sitemap.xml</a> 仅作轻量核对，不作为写入来源。</p>
+      <ol class="bg-list">
+        <li><strong>可达</strong>：HTTP 200，<code>urlset</code>（非 sitemapindex）；robots.txt <strong>未声明</strong> <code>Sitemap:</code>（与 robots 诊断一致）。</li>
+        <li><strong>规模</strong>：约 <strong>1518</strong> 条 <code>&lt;loc&gt;</code>，全部为 <code>www.huaweicloud.com</code>；远大于本 CSV 门户精选（34 条），不枚举、不灌入优化稿。</li>
+        <li><strong>路径簇信号</strong>（类型级）：<code>/notice/</code>≈464、<code>/en-us/</code>≈322、<code>/news/</code>≈196、<code>/about/</code>≈156、<code>/product/</code>≈150、<code>/solution/</code>≈84 等——公告/新闻/关于类占比高，不宜按 Sitemap 比例写入 llms。</li>
+        <li><strong>时效与协议</strong>：注释显示由 Screaming Frog 生成；<code>lastmod</code> 集中在 2018-03；绝大多数 loc 为 <code>http://</code>（仅极少 <code>https://</code>）。作发现参考即可，推荐稿仍用抓取表已核验的 https 终址。</li>
+        <li><strong>覆盖缺口</strong>：本 Sitemap <strong>无</strong> <code>support.*</code> 等帮助中心/文档站 host；与 CSV 一致——文档操作手册需另表/分册，不写入本根 llms。</li>
+      </ol>
+
+      <h3 id="categories">网站内容分类</h3>
+<ol class="bg-list">
+<li><strong>门户与导航</strong>：官网首页与一级入口（产品中心、解决方案、AI、全球布局）。 代表页：<a href="https://www.huaweicloud.com/" target="_blank" rel="noopener">华为云官网</a>、<a href="https://www.huaweicloud.com/product/" target="_blank" rel="noopener">云产品中心</a>、<a href="https://www.huaweicloud.com/solution/" target="_blank" rel="noopener">解决方案库</a>、<a href="https://www.huaweicloud.com/ai/" target="_blank" rel="noopener">行业 AI 梦工厂</a>、<a href="https://www.huaweicloud.com/global/" target="_blank" rel="noopener">全球布局</a>。</li>
+<li><strong>核心云产品</strong>：计算、存储、网络、数据库与安全等代表性产品页。 代表页：<a href="https://www.huaweicloud.com/product/ecs.html" target="_blank" rel="noopener">弹性云服务器 ECS</a>、<a href="https://www.huaweicloud.com/product/obs.html" target="_blank" rel="noopener">对象存储服务 OBS</a>。</li>
+<li><strong>AI 产品与平台</strong>：ModelArts / MaaS / AgentArts 与行业 AI 专区。 代表页：<a href="https://www.huaweicloud.com/product/modelarts.html" target="_blank" rel="noopener">ModelArts AI 开发平台</a>、<a href="https://www.huaweicloud.com/product/agentarts.html" target="_blank" rel="noopener">AgentArts 智能体平台</a>。</li>
+<li><strong>解决方案实践</strong>：可落地的实施方案（Dify、MCP、数字人、智能问数等）。 代表页：<a href="https://www.huaweicloud.com/solution/implementations/building-a-dify-llm-application-development-platform.html" target="_blank" rel="noopener">快速搭建Dify-LLM应用开发平台</a>。</li>
+<li><strong>客户案例</strong>：行业与标杆客户故事精选。 代表页：<a href="https://www.huaweicloud.com/cases/pioneers100.html" target="_blank" rel="noopener">云上万象中国案例精选</a>。</li>
+<li><strong>支持与服务</strong>：专业服务、服务保障与联系入口。 代表页：<a href="https://www.huaweicloud.com/service/professionalservices.html" target="_blank" rel="noopener">华为云专业服务</a>。</li>
+</ol>
+
+      <h3 id="filters">页面筛选依据</h3>
+      <ol class="bg-list">
+<li><strong>保留</strong>：状态 200、HTML、<code>www.huaweicloud.com</code>、主题可从 Title/H1/Description 核验的产品/方案/案例/服务页。</li>
+<li><strong>排除</strong>：<code>/intl/</code>、<code>/eu/</code>、认证注册控制台路径、工单咨询、声明与安全中心噪声；不把抓取表全量写入。</li>
+<li><strong>不采用</strong>：SEO 排名/流量作为价值主依据；不以路径名臆测正文。</li>
+<li><strong>精选规模</strong>：本版共 34 条门户级推荐。</li>
+      </ol>
+
+      <h3 id="problems">问题与发现</h3>
+      <ol class="bg-list">
+<li><span class="sev sev-p1">P1</span> <strong>抓取范围偏营销主站，缺少帮助中心/文档站。</strong> 表内几乎无 <code>support.huaweicloud.com</code>；公开 Sitemap 亦无文档站 host；Agent 查找操作手册仍需另表或分册。</li>
+<li><span class="sev sev-p2">P2</span> <strong>Sitemap 偏旧且多为 http。</strong> <code>/sitemap.xml</code> 约 1518 条、<code>lastmod</code>≈2018、robots 未声明；轻量核对已完成，未用作写入源。</li>
+<li><span class="sev sev-p2">P2</span> <strong>大量页面 H1 为空。</strong> 说明主要来自 Meta Description / Title；已对 SEO 拼盘标题做可读化，仍建议内容侧补齐 H1。</li>
+<li><span class="sev sev-p2">P2</span> <strong>另有 90 条非 www 主站 host。</strong> 未写入本根 llms；国际站/控制台应另册处理。</li>
+<li><span class="sev sev-p2">P2</span> <strong>抓取表含 7 条重定向。</strong> 未写入推荐稿。</li>
+<li><span class="sev sev-ok">核验</span> <strong>推荐 34 条 URL 同日 GET 均为 200。</strong> 未声称已阅读全部正文。</li>
+      </ol>
+
+      <h3 id="tbd">待确认事项</h3>
+      <ol class="bg-list">
+<li><span class="sev sev-ask">待确认</span> 是否需要增加 <code>support.huaweicloud.com</code> 帮助中心分册？</li>
+<li><span class="sev sev-ask">待确认</span> 国际站 <code>/intl/</code> 是否单独提供 locale llms.txt？</li>
+<li><span class="sev sev-ask">待确认</span> ModelArts Studio 对外一句话描述是否采用正式产品文案替换关键词堆叠 Meta？</li>
+      </ol>
+    </section>
+
+    <section class="section" id="optimized">
+      <h2>Part2. llms.txt 的优化建议</h2>
+      <p class="page-lead">以下为基于 Screaming Frog 导出表精选的门户型 <code>llms.txt</code> 建议稿，可直接作为站点根部署基线；帮助中心等需另册扩展。</p>
+
+      
+      <h3 id="volume">分册判断</h3>
+      <p class="page-lead"><span class="sev sev-ok">不需要分册</span> 当前建议稿仅 <strong>34</strong> 条、单 host 营销主站精选门户，体量远低于 80～120 条阈值，Agent 可一次读完。</p>
+      <h3 class="aj-caption">若业务仍要求分册（备选方案）</h3>
+      <ol class="bg-list">
+        <li><strong>根 <code>llms.txt</code></strong>：仅保留「门户与导航」+ 各分册入口（<code>## 分册</code>），约 5～8 条。</li>
+        <li><strong><code>/llms-product.txt</code></strong>：核心云产品与 AI 产品页（本表 <code>/product/*</code>、<code>/ai/*</code>）。</li>
+        <li><strong><code>/llms-solution.txt</code></strong>：解决方案实践与客户案例（<code>/solution/*</code>、<code>/cases/*</code>）。</li>
+        <li><strong><code>/llms-support.txt</code></strong>：帮助中心/文档站——<strong>本 CSV 几乎无数据</strong>，需另补 <code>support.huaweicloud.com</code> 抓取后再生成；当前勿编造文档 URL。</li>
+        <li><strong><code>/intl/…/llms.txt</code>（可选）</strong>：国际站 locale 分册；本根册继续排除 <code>/intl/</code>。</li>
+      </ol>
+      <p class="page-lead" style="margin-top:0">推荐：先部署单文件门户稿；待帮助中心表就绪后再升为「根 + 分册」。</p>
+
+      <div class="download-row">
+        <a class="btn-download-llms is-primary" href="exports/llms-huaweicloud.txt" download="llms.txt">下载优化后的 llms.txt</a>
+      </div>
+
+      <h3 class="aj-caption">建议稿（可部署基线）</h3>
+      <figure class="file-sample" aria-label="优化后的 llms.txt">
+        <figcaption><code>https://www.huaweicloud.com/llms.txt</code>（建议稿）</figcaption>
+        <pre><code class="language-markdown"># 华为云
+
+&gt; 华为云官方站点精选索引入口，覆盖门户导航、核心云产品、AI 平台、解决方案实践、客户案例与支持服务。本文件基于站内抓取表精选，非全站 URL 枚举；帮助中心/文档站（如 support.huaweicloud.com）未包含在本抓取范围内。
+
+## 门户与导航
+- [华为云官网](https://www.huaweicloud.com/): 华为云提供稳定可靠、安全可信、可持续发展的云服务，致力于让云无处不在，让智能无所不及，共建智能世界云底座。助力企业降本增效，全球300万客户的共同选择。7x24小时专业服…
+- [云产品中心](https://www.huaweicloud.com/product/): 华为云服务官网为客户提供云计算、云存储、云网络、云安全、云数据库、云管理与部署应用等IT基础设施云服务,让客户像用水用电一样使用ICT服务,详情咨询4000-955-988。
+- [解决方案库](https://www.huaweicloud.com/solution/): 面向60+业务领域，提供超百种解决方案，满足您多场景上云需求
+- [行业 AI 梦工厂](https://www.huaweicloud.com/ai/): 行业AI创新与实践的首选平台，为开发者提供坚实而丰沃的创新土壤，赋能开发者，实现AI在行业深度落地。
+- [全球布局](https://www.huaweicloud.com/global/): 全球一张云网，一点触及，全球通达
+
+## 核心云产品
+- [弹性云服务器 ECS](https://www.huaweicloud.com/product/ecs.html): 华为云弹性云服务器(简称ECS)是一种可随时自助获取，可弹性伸缩的云服务器，可帮助您打造可靠、安全、灵活、高效的应用环境，确保服务持久稳定运行，提升运维效率
+- [对象存储服务 OBS](https://www.huaweicloud.com/product/obs.html): 对象存储服务（Object Storage Service，OBS）是一个基于对象的存储服务，为客户提供海量、安全、高可靠、低成本的数据存储能力，使用时无需考虑容量限制，…
+- [虚拟私有云 VPC](https://www.huaweicloud.com/product/vpc.html): 华为云虚拟私有云（Virtual Private Cloud）是用户在华为云上申请的隔离的、私密的虚拟网络环境。用户可以自由配置VPC内的IP地址段、子网、安全组等子服务
+- [弹性公网IP EIP](https://www.huaweicloud.com/product/eip.html): 弹性公网IP（Elastic IP）提供独立的公网IP资源，包括公网IP地址与公网出口带宽服务。可以与弹性云服务器、裸金属服务器、虚拟IP、弹性负载均衡、NAT网关等资源…
+- [弹性负载均衡 ELB](https://www.huaweicloud.com/product/elb.html): 华为云弹性负载均衡（ Elastic Load Balance，简称ELB）将访问流量自动分发到多台云服务器，扩展应用系统对外的服务能力，实现更高水平的应用容错。华为云E…
+- [Flexus云服务器X实例](https://www.huaweicloud.com/product/flexus-x.html): Flexus云服务器X实例（Flexus X）是柔性算力，旗舰体验，覆盖高科技、零售、金融、游戏等行业大多数通用工作负载场景。
+- [云数据库 RDS for MySQL](https://www.huaweicloud.com/product/mysql.html): 云数据库 RDS for MySQL是关系型数据库的一种云端完全托管的云数据库服务，在读写性能、扩容能力、备份恢复功能、故障容忍能力方面有显著优化提升
+- [云数据库 GaussDB](https://www.huaweicloud.com/product/gaussdb.html): 华为自主创新研发的分布式关系型数据库，具备企业级复杂事务混合负载能力，同时支持分布式事务，同城跨AZ部署，数据0丢失，支持1000+的扩展能力，PB级海量存储。
+- [Web 应用防火墙 WAF](https://www.huaweicloud.com/product/waf.html): 华为云Web应用防火墙WAF保护网站等Web应用程序免受常见Web攻击，保障业务持续稳定运行，满足合规和监管要求。对网站业务流量进行多维度检测和防护，避免网站被黑客恶意攻…
+- [函数工作流 FunctionGraph](https://www.huaweicloud.com/product/functiongraph.html): 华为云函数工作流（FunctionGraph）是一项基于事件驱动的函数托管计算服务。通过函数工作流,只需编写业务函数代码并设置运行的条件,无需配置和管理服务器等基础设施,…
+
+## AI 产品与平台
+- [ModelArts AI 开发平台](https://www.huaweicloud.com/product/modelarts.html): ModelArts是面向开发者的一站式AI开发平台，可快速创建和部署模型，管理全周期AI工作流。为机器学习与深度学习提供海量数据预处理及半自动化标注、大规模分布式Trai…
+- [ModelArts Studio（MaaS）](https://www.huaweicloud.com/product/modelarts/studio.html): 面向开发者的模型即服务（MaaS）能力入口。
+- [AgentArts 智能体平台](https://www.huaweicloud.com/product/agentarts.html): AgentArts是一个企业级一站式智能体构建与运营平台，聚焦Agent全生命周期提供能力。它打破了传统开发壁垒，支持研发与业务人员通过可视化、低代码的方式，快速搭建从简…
+- [智能制造专区](https://www.huaweicloud.com/ai/industry.html): 提供开箱即用的本体建模、工业增强知识图谱、多模态数据融合分析等平台能力，加速工业智能体创新和落地
+- [具身智能专区](https://www.huaweicloud.com/ai/cloudrobo.html): 一站式具身智能数据合成、模型开发、仿真验证平台，助力具身智能应用开发
+- [AI 硬件专区](https://www.huaweicloud.com/ai/ai-hardware.html): 提供端云协同、开箱即用的一站式AI硬件解决方案，加速AI模型高效部署与规模化落地
+
+## 解决方案实践
+- [快速搭建Dify-LLM应用开发平台](https://www.huaweicloud.com/solution/implementations/building-a-dify-llm-application-development-platform.html): Dify 是一款开源的大语言模型（LLM）应用开发平台，让开发者乃至非技术用户无需编程即可快速搭建生产级生成式AI应用。基于Dify可构建智能问答助手，无缝连接企业知识库…
+- [快速部署MCP SSE服务器](https://www.huaweicloud.com/solution/implementations/quickly-deploying-an-sse-based-mcp-server.html): 基于华为云Flexus云服务器X实例快速部署MCP SSE服务器
+- [快速部署OpenClaw](https://www.huaweicloud.com/solution/implementations/building-clawdbot-agents.html): 基于华为云Flexus云服务器X实例来部署OpenClaw（原名：Clawdbot）。
+- [数字人交互智能问答解决方案](https://www.huaweicloud.com/solution/implementations/digital-human-interaction-and-intelligent-qa-solution.html): 该解决方案帮助您快速部署开箱即用的数字人交互智能问答平台。
+- [快速体验智能问数](https://www.huaweicloud.com/solution/implementations/getting-started-with-intelligent-data-insight.html): 该解决方案实现从用户自然语言提问到结构化智能数据查询、分析与可视化的工作流系统。
+- [LiteLLM 统一的AI管理网关](https://www.huaweicloud.com/solution/implementations/litellm-unified-ai-management-gateway.html): 该解决方案支持在华为云Flexus X实例上一键部署LiteLLM统一大语言模型API网关。LiteLLM将100多个LLM提供商（包括OpenAI、Anthropic、…
+
+## 客户案例
+- [云上万象中国案例精选](https://www.huaweicloud.com/cases/pioneers100.html): 精选华为云Stack优质案例，了解深度用云先行者故事。
+- [中铝集团案例](https://www.huaweicloud.com/cases/chinalco.html): 中铝集团基于华为云Stack打造坤安大模型，应用于8大业务领域18个场景，借助云与AI技术，攻克氧化铝、电解铝、铝加工等工艺的核心难题，编写智能制造新“铝”程。
+- [丰图科技搭建质检推理平台，可靠性提升至100%](https://www.huaweicloud.com/cases/fengtu.html): 丰图科技携手华为云Serverless，搭建质检推理平台，可靠性提升至100%。
+- [汽车之家构建Serverless化文件系统容灾备份业务，每日千万次图片备份](https://www.huaweicloud.com/cases/autohome.html): 汽车之家构建Serverless化文件系统容灾备份业务，每日千万次图片备份。
+
+## 支持与服务
+- [华为云专业服务](https://www.huaweicloud.com/service/professionalservices.html): 华为云专业服务提供全场景专业服务产品和解决方案，帮助您上好云、用好云、管好云，联合伙伴为您提供卓越的服务体验。专业服务专注为客户提供从上云前方案咨询、上云中的迁移部署、上…
+- [服务保障](https://www.huaweicloud.com/service/protection.html): 华为云服务保障体系：7×24 小时多渠道支持、工单与智能客服、热线与意见反馈等。
+- [联系我们](https://www.huaweicloud.com/service/contact.html): 华为云联系我们为您提供售前服务,技术服务,售后服务,备案服务和投诉服务,可以通过工单,智能客服,自助服务,400热线电话,邮件联系我们.
+</code></pre>
+      </figure>
+
+      <h3 id="changelog">编写说明</h3>
+      <ol class="bg-list">
+<li><strong>分类</strong>：按门户 / 核心产品 / AI / 方案实践 / 案例 / 支持组织。</li>
+<li><strong>精选</strong>：从 99 条主站候选中取 34 条；优先主题清晰的入口与代表产品。</li>
+<li><strong>未纳入</strong>：国际站、认证壳、工单咨询、重复方案变体、说明不足页。</li>
+<li><strong>诚实边界</strong>：仅使用抓取表真实 URL；说明来自 Title/H1/Description。</li>
+      </ol>
+    </section>
+  </main>
+</div>
+
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js"></script>
+
+<script>
+(function () {
+  var btn = document.getElementById('btn-export-pdf');
+  if (!btn) return;
+  btn.addEventListener('click', function () {
+    window.print();
+  });
+})();
+</script>
+</body>
+</html>

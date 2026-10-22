@@ -7,7 +7,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
-<title>标签页面板首包可抓全 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
+<title>标签页的 AI 亲和实践 · 组件 AI 亲和实践指南</title>
 <style>
 
 
@@ -269,25 +269,37 @@
   .main-content {
     flex: 1; min-width: 0; background: var(--panel); border-right: 1px solid var(--line);
     min-height: calc(100vh - var(--detail-head-h));
-    padding: var(--content-pad-top) var(--content-pad-x) 32px var(--content-pad-left);
+    padding-top: var(--content-main-pad-top, 16px);
+    padding-bottom: 32px;
+    padding-left: var(--content-pad-left);
+    padding-right: var(--content-pad-x);
     box-sizing: border-box;
   }
   .main-content > .page-header,
   .main-content > .page-desc,
   .main-content > .section {
-    width: 100%; max-width: var(--content-max); margin-inline: 0;
+    width: 100%; max-width: var(--content-max-width, var(--content-max)); margin-inline: 0;
     padding-left: 0; padding-right: 0; box-sizing: border-box;
   }
   .page-header {
-    margin-bottom: 36px; padding-bottom: 24px; border-bottom: 1px solid var(--line);
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: var(--space-stack, 16px);
   }
   .page-header-top {
     display: flex; align-items: center; justify-content: space-between;
     gap: 16px; margin-bottom: 0;
   }
   .page-header-top h1 {
-    margin: 0; font-size: 32px; font-weight: 800; line-height: 1.2;
-    letter-spacing: -0.02em; color: var(--text);
+    margin: 0;
+    font-family: var(--font);
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1-weight, 600);
+    line-height: var(--text-h1-lh);
+    letter-spacing: -0.02em;
+    color: var(--color-text, var(--text));
+    padding-top: var(--space-h1-pad-y, 32px);
+    padding-bottom: var(--space-h1-pad-y, 32px);
     display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
     flex: 1; min-width: 0;
   }
@@ -307,34 +319,64 @@
   .btn-preview:hover { text-decoration: underline; color: var(--accent); }
   .btn-preview:disabled { opacity: 0.5; cursor: not-allowed; text-decoration: none; }
   .page-desc {
-    font-size: var(--body-size); line-height: var(--body-lh);
-    color: var(--desc); margin: 0 0 48px;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary, var(--desc));
+    margin: 0;
   }
-  .page-desc-line { display: block; line-height: var(--body-lh); }
+  .page-desc-line { display: block; line-height: var(--text-body-lh, 22px); }
   .page-desc-line + .page-desc-line { margin-top: 4px; }
-  .page-desc strong { color: var(--text); font-weight: 600; }
+  .page-desc strong { color: var(--color-text, var(--text)); font-weight: 600; }
   .section {
-    margin-bottom: 48px;
+    margin-bottom: 32px;
     scroll-margin-top: calc(var(--detail-head-h) + 16px);
   }
   .section > h2 {
-    margin: 48px 0 16px; padding-bottom: 24px;
-    font-size: var(--text-h2); font-weight: 700; line-height: 36px;
-    color: var(--text); border-bottom: 2px solid var(--heading-rule);
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    letter-spacing: -0.01em;
+    margin-top: 0;
+    margin-bottom: var(--space-stack, 16px);
+    padding-top: var(--space-h2-pad-y, 16px);
+    padding-bottom: 0;
+    border-bottom: none;
+    color: var(--color-text, var(--text));
   }
   .section:first-of-type > h2 { margin-top: 0; }
-  .content-unit + .content-unit { margin-top: 40px; }
+  .content-unit + .content-unit { margin-top: var(--space-stack, 16px); }
   .section h3 {
-    margin: 32px 0 16px; font-size: var(--text-h3); font-weight: 700; line-height: 28px; color: var(--text);
+    margin: 0;
+    padding-top: var(--space-h3-pad-y, 16px);
+    padding-bottom: var(--space-h3-pad-y, 16px);
+    font-size: var(--text-h3, 18px);
+    line-height: var(--text-h3-lh, 28px);
+    font-weight: var(--text-h3-weight, 650);
+    letter-spacing: -0.01em;
+    color: var(--color-text, var(--text));
+  }
+  /* 实践要点列表 → 正反示例：块间距 16px，保留 h3 原有上下 padding */
+  .section .principle-suggestions + h3 {
+    margin-top: var(--space-stack, 16px);
+  }
+  /* 正反示例标题与实践要点同构：保留 h3 上下 padding；对照区不再叠 margin */
+  .section h3[id$="-example"] + .principle-example {
+    margin-top: 0;
   }
   .section h4 {
-    margin: 24px 0 16px; font-size: var(--text-body); font-weight: 700; color: var(--text);
+    margin: 0;
+    padding-top: var(--space-h4-pad-y, 16px);
+    padding-bottom: var(--space-h4-pad-y, 16px);
+    font-size: var(--text-h4, 14px);
+    line-height: var(--text-h4-lh, 22px);
+    font-weight: var(--text-h4-weight, 650);
+    color: var(--color-text, var(--text));
   }
-  .section p { margin: 0 0 8px; color: var(--muted); }
-  .section ul { margin: 8px 0 0; padding-left: 20px; color: var(--muted); }
-  .section li { margin-bottom: 6px; }
+  .section p { margin: 0 0 var(--space-stack, 16px); color: var(--color-text-secondary, var(--muted)); font-size: var(--text-body); line-height: var(--text-body-lh, 22px); }
+  .section ul { margin: 0; padding-left: 20px; color: var(--color-text-secondary, var(--muted)); }
+  .section li { margin-bottom: 8px; font-size: var(--text-body); line-height: var(--text-body-lh, 22px); }
   .section li:last-child { margin-bottom: 0; }
-  .section li strong { color: var(--text); font-weight: 600; }
+  .section li strong { color: var(--color-text, var(--text)); font-weight: 600; }
   .test-prompt-card {
     background: rgba(222, 236, 255, 0.5); border-radius: 8px;
     padding: 24px; margin: 0 0 24px;
@@ -714,12 +756,18 @@
 
   .page-header-top {
     display: flex; align-items: center; justify-content: space-between;
-    gap: 16px; margin-bottom: 16px;
+    gap: 16px; margin-bottom: 0;
   }
   .page-header-top h1 {
     margin: 0;
-    font-size: 32px; font-weight: 800; line-height: 1.2;
-    letter-spacing: -0.02em; color: var(--text);
+    font-family: var(--font);
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1-weight, 600);
+    line-height: var(--text-h1-lh);
+    letter-spacing: -0.02em;
+    color: var(--color-text, var(--text));
+    padding-top: var(--space-h1-pad-y, 32px);
+    padding-bottom: var(--space-h1-pad-y, 32px);
     flex: 1; min-width: 0;
   }
   .page-header .page-desc { margin-bottom: 0; }
@@ -833,43 +881,60 @@
   .role-split-item--strip h4 { color: var(--muted); }
 
   .scene-judge-item {
-    margin: 0 0 16px;
-    font-size: var(--body-size); line-height: var(--body-lh);
-    color: var(--text);
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text, var(--text));
   }
   .scene-judge-item:last-child { margin-bottom: 0; }
   .scene-judge-head {
     margin: 0 0 4px;
     display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
   }
-  .scene-judge-head strong { font-weight: 700; color: var(--text); }
-  .scene-judge-body { margin: 0; color: var(--text); }
+  .scene-judge-head strong { font-weight: 700; color: var(--color-text, var(--text)); }
+  .scene-judge-body { margin: 0; color: var(--color-text, var(--text)); }
 
   .principle-suggestions {
     margin: 0; padding-left: 20px;
-    color: var(--muted); font-size: var(--text-body); line-height: 22px;
+    color: var(--color-text-secondary, var(--muted));
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
   }
   .principle-suggestions li { margin-bottom: 8px; }
   .principle-lead {
-    margin: 0 0 12px; font-size: var(--text-body); line-height: 22px; color: var(--text);
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text, var(--text));
   }
   .principle-subhead {
-    margin: 0 0 8px; font-size: var(--text-body); font-weight: 700; line-height: 22px; color: var(--text);
+    margin: 0 0 8px;
+    font-size: var(--text-body);
+    font-weight: 700;
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text, var(--text));
   }
   .principle-suggestions li:last-child { margin-bottom: 0; }
   .principle-suggestions li strong { color: var(--text); font-weight: 600; }
 
   .principle-example {
-    margin-top: 16px;
+    margin-top: var(--space-stack, 16px);
     padding: 0;
     background: transparent;
     border: none;
     border-radius: 0;
   }
   .principle-example > h4 {
-    margin: 0 0 12px;
+    margin: 0;
+    padding-top: var(--space-h4-pad-y, 16px);
+    padding-bottom: var(--space-h4-pad-y, 16px);
     font-size: var(--text-body); font-weight: 700; line-height: 22px;
     color: var(--text);
+  }
+  /* 示例标题与对照标签同构：间距由 h4 底 padding 承担，不再叠 margin */
+  .principle-example > h4 + .compare-grid,
+  .principle-example > h4 + .compare-col {
+    margin-top: 0;
   }
   .principle-example + .principle-example {
     margin-top: 28px;
@@ -885,7 +950,7 @@
   }
   .compare-grid--stack { grid-template-columns: 1fr; gap: 16px; }
   .compare-grid--cols { grid-template-columns: 1fr 1fr; gap: 16px; align-items: stretch; }
-  .compare-grid--cols .compare-side { display: flex; flex-direction: column; gap: 8px; min-width: 0; height: 100%; }
+  .compare-grid--cols .compare-side { display: flex; flex-direction: column; gap: 0; min-width: 0; height: 100%; }
   .compare-grid--cols .compare-col { flex: 1; display: flex; flex-direction: column; }
   .compare-grid--cols .compare-col .render-frame,
   .compare-grid--cols .compare-col .arch-diagram { flex: 1; }
@@ -907,13 +972,19 @@
   }
   .section .principle-example .compare-grid h4.compare-label {
     margin: 0;
-    font-size: 13px;
+    padding-top: var(--space-h4-pad-y, 16px);
+    padding-bottom: var(--space-h4-pad-y, 16px);
+    font-size: var(--text-h4, 14px);
     font-weight: 700;
-    line-height: 20px;
+    line-height: var(--text-h4-lh, 22px);
   }
   .compare-label {
     margin: 0;
-    font-size: 13px; font-weight: 700; line-height: 20px;
+    padding-top: var(--space-h4-pad-y, 16px);
+    padding-bottom: var(--space-h4-pad-y, 16px);
+    font-size: var(--text-h4, 14px);
+    font-weight: 700;
+    line-height: var(--text-h4-lh, 22px);
   }
   .compare-label--machine { color: var(--danger); }
   .compare-label--human { color: var(--success); }
@@ -1085,7 +1156,7 @@
 
 </style>
 </head>
-<body data-module="principles" data-page="otab">
+<body class="inner-page agent-entry-page" data-module="principles" data-page="otab">
 <div class="detail-head-bar" aria-label="组件详情导航">
   <div class="modal-title-wrap">
     <a class="back-link" href="community-ui.html" aria-label="返回组件亲和"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6L9 12l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
@@ -1099,63 +1170,56 @@
 </div>
 
 <div class="page-wrapper">
-  <aside class="comp-sidebar" aria-label="组件列表">
-    <div class="comp-sidebar-title">组件列表</div>
+    <aside class="comp-sidebar" aria-label="组件列表">
     <nav class="comp-nav">
-      <ul>
-        <li><a href="design-guide-icon.html"><span class="comp-nav-label">图标</span></a></li>
-        <li><a href="design-guide-card.html"><span class="comp-nav-label">卡片</span></a></li>
-        <li><a href="design-guide-banner.html"><span class="comp-nav-label">Banner</span></a></li>
-      </ul>
       <div class="comp-group-label">导航类</div>
       <ul>
-        <li><a href="principles-omenu.html"><span class="comp-nav-label">菜单</span><span class="comp-dot" title="有 UI 小样" aria-hidden="true"></span></a></li>
+        <li><a href="principles-omenu.html"><span class="comp-nav-label">菜单</span></a></li>
+        <li><a href="principles-onavigation.html"><span class="comp-nav-label">导航</span></a></li>
         <li><a href="principles-otab.html" class="active"><span class="comp-nav-label">标签页</span></a></li>
-        <li><a href="principles-obreadcrumb.html"><span class="comp-nav-label">面包屑</span><span class="comp-dot" title="有 UI 小样" aria-hidden="true"></span></a></li>
-        <li><a href="principles-oanchor.html"><span class="comp-nav-label">锚点</span><span class="comp-dot" title="有 UI 小样" aria-hidden="true"></span></a></li>
+        <li><a href="principles-obreadcrumb.html"><span class="comp-nav-label">面包屑</span></a></li>
+        <li><a href="principles-ostep.html"><span class="comp-nav-label">步骤条</span></a></li>
+        <li><a href="principles-oanchor.html"><span class="comp-nav-label">锚点</span></a></li>
         <li><a href="principles-opagination.html"><span class="comp-nav-label">分页</span></a></li>
-        <li><a href="principles-ostep.html"><span class="comp-nav-label">步骤条</span><span class="comp-dot" title="有 UI 小样" aria-hidden="true"></span></a></li>
-        <li><a href="principles-onavigation.html"><span class="comp-nav-label">导航</span><span class="comp-dot" title="有 UI 小样" aria-hidden="true"></span></a></li>
-        <li><a href="principles-ofooternav.html"><span class="comp-nav-label">底部导航</span><span class="comp-dot" title="有 UI 小样" aria-hidden="true"></span></a></li>
+        <li><a href="principles-ofooternav.html"><span class="comp-nav-label">底部导航</span></a></li>
       </ul>
       <div class="comp-group-label">操作类</div>
       <ul>
-        <li><a href="principles-obutton.html"><span class="comp-nav-label">按钮</span><span class="comp-dot" title="有 UI 小样" aria-hidden="true"></span></a></li>
-        <li><a href="principles-olink.html"><span class="comp-nav-label">链接</span><span class="comp-dot" title="有 UI 小样" aria-hidden="true"></span></a></li>
-        <li><a href="principles-odropdown.html"><span class="comp-nav-label">下拉菜单</span><span class="comp-dot" title="有 UI 小样" aria-hidden="true"></span></a></li>
+        <li><a href="principles-obutton.html"><span class="comp-nav-label">按钮</span></a></li>
+        <li><a href="principles-olink.html"><span class="comp-nav-label">链接</span></a></li>
+        <li><a href="principles-odropdown.html"><span class="comp-nav-label">下拉菜单</span></a></li>
         <li><a href="principles-otoggle.html"><span class="comp-nav-label">选择块</span></a></li>
       </ul>
       <div class="comp-group-label">输入类</div>
       <ul>
-        <li><a href="principles-osearch.html"><span class="comp-nav-label">搜索框</span><span class="comp-dot" title="有 UI 小样" aria-hidden="true"></span></a></li>
+        <li><a href="principles-osearch.html"><span class="comp-nav-label">搜索框</span></a></li>
         <li><a href="principles-oselect.html"><span class="comp-nav-label">选择器</span></a></li>
-        <li><a href="principles-otrees.html"><span class="comp-nav-label">树</span><span class="comp-dot" title="有 UI 小样" aria-hidden="true"></span></a></li>
-        <li><a href="principles-orate.html"><span class="comp-nav-label">评分</span><span class="comp-dot" title="有 UI 小样" aria-hidden="true"></span></a></li>
         <li><a href="principles-ocascader.html"><span class="comp-nav-label">级联选择</span></a></li>
+        <li><a href="principles-otrees.html"><span class="comp-nav-label">树</span></a></li>
+        <li><a href="principles-orate.html"><span class="comp-nav-label">评分</span></a></li>
       </ul>
       <div class="comp-group-label">展示类</div>
       <ul>
-        <li><a href="principles-otag.html"><span class="comp-nav-label">标签</span><span class="comp-dot" title="有 UI 小样" aria-hidden="true"></span></a></li>
+        <li><a href="principles-oavatar.html"><span class="comp-nav-label">头像</span></a></li>
+        <li><a href="principles-ofigure.html"><span class="comp-nav-label">图片/视频</span></a></li>
+        <li><a href="principles-otag.html"><span class="comp-nav-label">标签</span></a></li>
+        <li><a href="principles-ocalendar.html"><span class="comp-nav-label">日历通知</span></a></li>
+        <li><a href="principles-ocarousel.html"><span class="comp-nav-label">幻灯片</span></a></li>
       </ul>
       <div class="comp-group-label">容器类</div>
       <ul>
-        <li><a href="principles-ocarousel.html"><span class="comp-nav-label">幻灯片</span><span class="comp-dot" title="有 UI 小样" aria-hidden="true"></span></a></li>
+        <li><a href="principles-ocard.html"><span class="comp-nav-label">卡片</span></a></li>
+        <li><a href="principles-olist.html"><span class="comp-nav-label">列表</span></a></li>
+        <li><a href="principles-otable.html"><span class="comp-nav-label">表格</span></a></li>
+        <li><a href="principles-odatetable.html"><span class="comp-nav-label">数据表格</span></a></li>
+        <li><a href="principles-oform.html"><span class="comp-nav-label">表单</span></a></li>
+        <li><a href="principles-ocollapse.html"><span class="comp-nav-label">折叠面板</span></a></li>
         <li><a href="principles-odialog.html"><span class="comp-nav-label">对话框</span></a></li>
-        <li><a href="principles-ocard.html"><span class="comp-nav-label">卡片</span><span class="comp-dot" title="有 UI 小样" aria-hidden="true"></span></a></li>
-        <li><a href="principles-odatetable.html"><span class="comp-nav-label">数据表格</span><span class="comp-dot" title="有 UI 小样" aria-hidden="true"></span></a></li>
       </ul>
       <div class="comp-group-label">反馈类</div>
       <ul>
-        <li><a href="principles-opopover.html"><span class="comp-nav-label">气泡卡片</span><span class="comp-dot" title="有 UI 小样" aria-hidden="true"></span></a></li>
-      </ul>
-      <div class="comp-group-label">内容载体</div>
-      <ul>
-        <li><a href="principles-image.html"><span class="comp-nav-label">图片图意</span></a></li>
-        <li><a href="principles-hotzone.html"><span class="comp-nav-label">图片热区</span></a></li>
-        <li><a href="principles-table.html"><span class="comp-nav-label">表格语义</span></a></li>
-        <li><a href="principles-code.html"><span class="comp-nav-label">代码块</span></a></li>
-        <li><a href="principles-style-semantic.html"><span class="comp-nav-label">安全警示</span></a></li>
-        <li><a href="principles-collapse.html"><span class="comp-nav-label">折叠面板</span></a></li>
+        <li><a href="principles-opopover.html"><span class="comp-nav-label">气泡提示</span></a></li>
+        <li><a href="principles-oresult.html"><span class="comp-nav-label">结果</span></a></li>
       </ul>
     </nav>
   </aside>
@@ -1163,23 +1227,28 @@
   <main class="main-content">
     <div class="page-header">
       <div class="page-header-top">
-        <h1>标签页面板首包可抓全</h1>
+        <h1>标签页的 AI 亲和实践</h1>
         <button type="button" class="comp-link" data-name="OTab 标签页" data-shots="o-tab.png">OTab 标签页</button>
       </div>
       <p class="page-desc page-desc--split">
-        <span class="page-desc-line">内容型标签页的各面板须<strong>首包 SSR 全量输出</strong>；可用 <code>display:none</code> 隐藏，但静态抓取仍须读到全部页签正文，禁止点击后才注入。</span>
-
+        <span class="page-desc-line">指导标签页在面板命名、内容组织和前端实现方面提升 AI 对分面内容的识别与完整获取能力。</span>
       </p>
     </div>
 
+    
+    <section class="section" id="practice-goal">
+      <h2>实践目标</h2>
+      <p class="principle-lead">内容型标签页的各面板须<strong>首包 SSR 全量输出</strong>；可用 <code>display:none</code> 隐藏，但静态抓取仍须读到全部页签正文，禁止点击后才注入。</p>
+    </section>
+
     <section class="section" id="scene-judge">
-      <h2>场景判断</h2>
+      <h2>适用场景</h2>
         <div class="scene-judge-item">
-          <p class="scene-judge-head"><strong>场景1·内容型 Tab</strong><span class="rsc-verdict rsc-verdict--keep">要做亲和</span></p>
+          <p class="scene-judge-head"><strong>场景1·内容型 Tab</strong><span class="rsc-verdict rsc-verdict--keep">适用</span></p>
           <p class="scene-judge-body">每个页签面板承载独立内容（说明 / 列表 / 步骤 / 规格），切换页签即切换知识块。所有面板须 SSR 全量输出至首包 HTML，可用 <code>display:none</code> 隐藏，但禁止点击后 JS 动态注入。<br>对应页面：<a href="https://www.hiascend.com/developer/download" target="_blank" rel="noopener">CANN 软件下载</a></p>
         </div>
         <div class="scene-judge-item">
-          <p class="scene-judge-head"><strong>场景2·纯交互 / 装饰型 Tab</strong><span class="rsc-verdict rsc-verdict--strip">不做亲和 · 入库剥离</span></p>
+          <p class="scene-judge-head"><strong>场景2·纯交互 / 装饰型 Tab</strong><span class="rsc-verdict rsc-verdict--strip">按需处理</span></p>
           <p class="scene-judge-body">只换样式、布局或空壳，不承载可引用正文。入库管道宜标 <code>data-llm-exclude</code> 或剥离，别当知识正文。</p>
         </div>
     </section>
@@ -1187,29 +1256,32 @@
 
 
     <section class="section" id="design-ui">
-      <h2>设计UI调整</h2>
+      <h2>设计实践</h2>
       <p class="principle-none">无</p>
     </section>
 
     <section class="section" id="content-adjust">
-      <h2>文档内容调整 · 场景1</h2>
-      <h3 id="content-suggestions">调整建议</h3>
+      <h2>Markdown 书写</h2>
+      <h3 id="content-suggestions">实践要点</h3>
       <ul class="principle-suggestions">
         <li><strong>面板内容须有平行持久版本</strong>：每个页签的核心要点须写入 Markdown / 独立文档，不得仅存在于切换后才出现的面板中。</li>
         <li><strong>MD 按页签结构平铺</strong>：一级标题对应页签名，下级展开条目。例：资源下载中心 → 昇腾资源 / 三方资源 → 各软件要点与文档链。</li>
       </ul>
-      <h3 id="content-example">调整示例</h3>
+      <h3 id="content-example">正反示例</h3>
       <div class="principle-example">
         <h4>示例1. 内容型 Tab：面板知识进 MD 平行轨</h4>
-        <div class="compare-grid compare-grid--stack compare-grid--no-mid-divider">
-          <h4 class="compare-label compare-label--machine"><span class="cmp-mark cmp-mark--x">✗</span> 当前问题 · 要点只在切换后的面板里</h4>
-          <div class="compare-col machine">
+        <div class="compare-grid compare-grid--cols">
+          <div class="compare-side">
+            <h4 class="compare-label compare-label--machine"><span class="cmp-mark cmp-mark--x">✗</span> 当前问题 · 要点只在切换后的面板里</h4>
+            <div class="compare-col machine">
             <pre class="arch-diagram">页面默认只看到「昇腾资源」下 CANN 等部分卡片短述；
 切到「三方资源」才出现该面板说明，
 且没有按页签结构写的 Markdown / 独立文档可对照。</pre>
+            </div>
           </div>
-          <h4 class="compare-label compare-label--human"><span class="cmp-mark cmp-mark--v">✓</span> 推荐做法 · MD 按页签结构平铺</h4>
-          <div class="compare-col human">
+          <div class="compare-side">
+            <h4 class="compare-label compare-label--human"><span class="cmp-mark cmp-mark--v">✓</span> 推荐做法 · MD 按页签结构平铺</h4>
+            <div class="compare-col human">
             <pre class="arch-diagram">## 下载资源
 ### 昇腾资源
 #### CANN
@@ -1222,14 +1294,15 @@
 #### （三方资源面板条目）
 短述…
 - 文档：https://…</pre>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
     <section class="section" id="frontend-adjust">
-      <h2>前端调整 · 场景1</h2>
-      <h3 id="frontend-suggestions">调整建议</h3>
+      <h2>前端实现</h2>
+      <h3 id="frontend-suggestions">实践要点</h3>
       <p class="principle-lead">内容型 Tab 的页签名与各面板正文须写入首包 HTML；静态抓取（不执行 JS）仍可读全部页签名称与面板内容。</p>
       <p class="principle-subhead">具体要求：</p>
       <ul class="principle-suggestions">
@@ -1237,12 +1310,13 @@
         <li><strong>未激活面板也进首包</strong>：各 tabpanel 全量 SSR；可用 hidden / display:none 做视觉隐藏，禁止点击页签后才 JS 注入正文。</li>
         <li><strong>面板内知识节点可抓</strong>：卡片标题、短述、文档链等可见文本写进对应 pane（如昇腾资源下的 CANN / MindSDK）；未激活的三方资源 pane 同样须预先输出。</li>
       </ul>
-      <h3 id="frontend-example">调整示例</h3>
+      <h3 id="frontend-example">正反示例</h3>
       <div class="principle-example">
-        <h4>示例1. 下载中心 Tab：空 nav → 双面板进源码</h4>
-        <div class="compare-grid compare-grid--stack compare-grid--no-mid-divider">
-          <h4 class="compare-label compare-label--machine"><span class="cmp-mark cmp-mark--x">✗</span> 当前问题 · 页签未进源码、未激活面板缺失</h4>
-          <div class="compare-col machine">
+        <h4>示例1. 下载中心 Tab：双面板进源码</h4>
+        <div class="compare-grid compare-grid--cols">
+          <div class="compare-side">
+            <h4 class="compare-label compare-label--machine"><span class="cmp-mark cmp-mark--x">✗</span> 当前问题 · 页签未进源码、未激活面板缺失</h4>
+            <div class="compare-col machine">
             <pre class="arch-diagram">&lt;div class="o-tab"&gt;
   &lt;div class="o-tab-nav-list"&gt;&lt;/div&gt;
   &lt;!-- 浏览器可见「昇腾资源 / 三方资源」，源码无页签名 --&gt;
@@ -1252,9 +1326,11 @@
   &lt;/div&gt;
 &lt;/div&gt;</pre>
             <p class="rf-frame-caption">页签名只在浏览器里渲染，源码 tab nav 为空；未激活面板也未进首包，静态抓取列不全页签与内容。</p>
+            </div>
           </div>
-          <h4 class="compare-label compare-label--human"><span class="cmp-mark cmp-mark--v">✓</span> 推荐做法 · 页签 + 双 pane 全量 SSR</h4>
-          <div class="compare-col human">
+          <div class="compare-side">
+            <h4 class="compare-label compare-label--human"><span class="cmp-mark cmp-mark--v">✓</span> 推荐做法 · 页签 + 双 pane 全量 SSR</h4>
+            <div class="compare-col human">
             <pre class="arch-diagram">&lt;div class="o-tab-nav-list"&gt;
   &lt;span role="tab" aria-selected="true"&gt;昇腾资源&lt;/span&gt;
   &lt;span role="tab"&gt;三方资源&lt;/span&gt;
@@ -1270,10 +1346,23 @@
   …三方资源面板条目…
 &lt;/div&gt;</pre>
             <p class="rf-frame-caption">页签名与双面板均在首包；未激活 pane 可用 hidden，文本仍可抓。</p>
+            </div>
           </div>
         </div>
       </div>
     </section>
+
+    <section class="section" id="verify">
+      <h2>检查项</h2>
+      <ul class="principle-suggestions">
+        <li><strong>名称与层级清晰：</strong>关键文案准确表达目标内容，结构关系可通过文本识别。</li>
+        <li><strong>索引一致有效：</strong>组件文案、页面标题及其他文档索引命名保持一致，链接指向有效页面。</li>
+        <li><strong>内容可发现：</strong>需要公开的信息可通过初始 HTML 或目标爬虫支持的渲染方式获取。</li>
+        <li><strong>链接可跟踪：</strong>跳转型入口使用有效的 <code>a[href]</code> 链接。</li>
+        <li><strong>采集范围合理：</strong>公开知识入口与纯操作控件得到合理区分。</li>
+      </ul>
+    </section>
+
   </main>
 
   <aside class="page-toc" id="page-toc" aria-label="本篇目录">

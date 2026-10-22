@@ -23,9 +23,9 @@
       "</svg>"
   };
   var SURFACES = [
-    { id: "design-ui", label: "设计UI调整", desc: "视觉呈现与交互结构" },
-    { id: "content-adjust", label: "文档内容调整", desc: "文案、层级与适用表述" },
-    { id: "frontend-adjust", label: "前端调整", desc: "源码结构与抓取管道" }
+    { id: "design-ui", label: "设计实践", desc: "视觉呈现与交互结构" },
+    { id: "content-adjust", label: "Markdown 书写", desc: "文案、层级与适用表述" },
+    { id: "frontend-adjust", label: "前端实现", desc: "源码结构与抓取管道" }
   ];
 
   function preferredSurface() {

@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/peer-nav.css">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>昇腾社区 GEO 基线指标体系与复测方案</title>
+<style>
+:root{--ink:#172b4d;--muted:#667085;--line:#dfe4ec;--bg:#f4f6fa;--blue:#2457c5;--bluebg:#edf3ff;--red:#b42318;--redbg:#fff1f0;--amber:#a15c00;--amberbg:#fff7e6;--green:#087443;--greenbg:#eaf8f0}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}main{max-width:1120px;margin:28px auto;padding:0 20px 50px}.hero{padding:32px 34px;background:#14294c;color:#fff;border-radius:16px}.hero .eyebrow{font-size:12px;letter-spacing:.12em;color:#bcd0ff}.hero h1{font-size:30px;line-height:1.3;margin:10px 0}.hero p{color:#e1e9f7;max-width:900px;margin:0}.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}.chips span{border:1px solid #52688b;border-radius:99px;padding:3px 10px;font-size:12px}
+section,.summary{background:#fff;border:1px solid var(--line);border-radius:13px;padding:23px 25px;margin:16px 0}.head{display:flex;gap:10px;align-items:center;margin-bottom:12px}.n{background:var(--bluebg);color:var(--blue);border-radius:7px;padding:2px 9px;font-weight:700}.head h2{margin:0;font-size:21px}.muted,.small{color:var(--muted)}.small{font-size:12px}.callout{padding:13px 15px;background:#f7f9fc;border-left:4px solid #7b8ba6;border-radius:0 8px 8px 0;margin:13px 0}.warn{background:var(--amberbg);border-color:#e6a23c}.ok{background:var(--greenbg);border-color:#35a56d}.bad{background:var(--redbg);border-color:#d92d20}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin:17px 0}.kpi{border:1px solid var(--line);border-radius:10px;padding:13px}.kpi b{font-size:24px;display:block;line-height:1.35}.kpi span{font-size:12px;color:var(--muted)}.status{font-size:12px;font-weight:700;padding:2px 7px;border-radius:5px;white-space:nowrap}.measured{color:var(--green);background:var(--greenbg)}.pending{color:var(--amber);background:var(--amberbg)}.review{color:#9a5b00;background:#fff5df;border:1px solid #f0d4a0}.priority{color:var(--red);background:var(--redbg)}
+table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14px}th,td{padding:10px 11px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}th{background:#f6f8fb;font-weight:700}th.col-status,td.col-status{white-space:nowrap;width:1%;min-width:5.5em}code{background:#f1f3f7;padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}.formula{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:#f7f8fa;border:1px solid var(--line);padding:9px 11px;border-radius:7px;font-size:13px;overflow-wrap:anywhere}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:13px}.tile{border:1px solid var(--line);border-radius:10px;padding:15px}.tile h3{margin:0 0 6px;font-size:16px}.tag{display:inline-block;padding:1px 7px;border-radius:5px;font-size:12px;font-weight:700}.p1{color:var(--red);background:var(--redbg)}.p2{color:var(--amber);background:var(--amberbg)}.p3{color:var(--green);background:var(--greenbg)}.peer-main ul,.peer-main ol{padding-left:23px}.peer-main li{margin:5px 0}.footer{text-align:center;color:var(--muted);font-size:12px;padding:20px 0}
+@media(max-width:720px){main{padding:0 10px 30px;margin:12px auto}.hero{padding:23px 20px}.hero h1{font-size:25px}.kpis{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}section,.summary{padding:17px}.head h2{font-size:19px}table{display:block;overflow-x:auto}}
+@media print{body{background:white}main{max-width:none;margin:0}.hero{print-color-adjust:exact;background:#14294c!important}section,.summary{break-inside:avoid}}
+
+  .topbar{position:sticky;top:0;z-index:200;height:56px;min-height:56px;max-height:56px;box-sizing:border-box;background:#fff;border-bottom:1px solid #e4e9f1;overflow:visible}
+  .topbar-inner{width:100%;max-width:none;margin:0;padding:0 24px;box-sizing:border-box;height:100%;display:flex;align-items:center;justify-content:flex-start;gap:0}
+  .brand{font-weight:700;font-size:15px;letter-spacing:-0.01em;color:#172033;text-decoration:none;white-space:nowrap;margin-right:40px}
+  .brand span{color:#2457d6}
+  .site-nav{display:flex;align-items:center;gap:4px;flex:0 0 auto;flex-wrap:wrap}
+  .site-nav a{text-decoration:none;color:#667085;font-size:14px;font-weight:500;padding:6px 14px;border-radius:6px;white-space:nowrap;transition:background .15s,color .15s}
+  .site-nav a:hover{color:#2457d6;background:#f4f7fb;text-decoration:none}
+  .site-nav a.active{color:#2457d6;background:#f4f7fb;font-weight:600}
+</style></head><body>
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span>AI 亲和原则</span></a>
+        <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="mintlify.html">友商对照</a>
+      <a href="reachability.html" class="active">社区诊断</a>
+      <a href="principles-overview.html">亲和原则</a>
+      <a href="community-ui.html">组件亲和</a>
+      <a href="data-analysis.html">数据分析</a>
+      <a href="skills.html">Skill 目录</a>
+    </nav>
+  </div>
+</div>
+<div class="page-wrapper">
+<aside class="peer-sidebar" aria-label="社区诊断导航">
+    <nav class="peer-nav">
+      <div class="peer-group-label">分析层面</div>
+      <ul>
+        <li><a href="reachability.html">分析概览</a></li>
+        <li><a href="reachability.html#index">找的到（收录索引）</a></li>
+        <li><a href="citability-html-ascend.html">读的懂（html 可读）</a></li>
+        <li><a href="citability-ascend.html">读的顺（双轨交付）</a></li>
+      </ul>
+                  <div class="peer-group-label">GEO 基线</div>
+      <ul>
+        <li><a href="ascend_geo_public_recon.html">公开信息摸底</a></li>
+        <li><a href="ascend_geo_baseline_metrics_report.html" class="active">指标体系与复测</a></li>
+        <li><a href="ascend_geo_metric_dictionary.html">指标字典</a></li>
+        <li><a href="ascend_geo_40_questions.html">40 题测试集</a></li>
+        <li><a href="ascend_geo_retest_plan.html">复测总体规划</a></li>
+      </ul>
+    </nav>
+  </aside>
+<div class="peer-main">
+<main>
+<header class="hero">
+<div class="eyebrow">GEO MEASUREMENT FRAMEWORK · 2026-10-19</div>
+<h1>昇腾社区 GEO 基线指标体系与复测方案</h1>
+<p>本报告将 GEO 评估从“基础设施检查”升级为“效果指标 + 原因指标”双层体系。用于记录优化前的真实基线、定位问题，并在优化后使用同一问题集、同一平台和同一统计口径复测。</p>
+<div class="chips"><span>版本：V1.0</span><span>对象：昇腾社区</span><span>用途：优化前基线 / 优化后复测</span></div>
+</header>
+
+<div class="summary">
+<div class="head"><span class="n">先看结论</span><h2>报告应回答的 3 个问题</h2></div>
+<ol>
+<li><strong>AI 表现怎么样：</strong>回答昇腾相关问题时，AI 是否能找到、提及并引用昇腾社区内容，是否准确理解信息。</li>
+<li><strong>问题出在哪里：</strong>网站是否可抓取、页面是否可索引、标题和正文是否清晰、引用材料是否可访问。</li>
+<li><strong>优化是否有效：</strong>同一套问题、平台、轮次和评分规则复测，计算百分点变化和相对提升率。</li>
+</ol>
+<div class="callout ok"><strong>40 题测试集：</strong><a href="ascend_geo_40_questions.html">页面</a> · <a href="exports/ascend_geo_40_questions.xlsx" download="昇腾社区_40道固定AI测试问题与评分规则.xlsx"><strong>下载 Excel</strong></a></div>
+<div class="callout ok"><strong>指标字典：</strong>28 项正式字典（定义 / 口径 / 判定 / 状态）见侧栏 <a href="ascend_geo_metric_dictionary.html">指标字典</a>。<a href="exports/ascend_geo_metric_dictionary.xlsx" download="昇腾社区_GEO指标字典.xlsx"><strong>下载 Excel</strong></a></div>
+<div class="callout warn"><strong>重要：</strong>现有 robots.txt、Sitemap 和 llms.txt 文件只能支持部分技术与内容清单统计，不能直接推导 AI 答案引用率、品牌提及率或事实准确率。下表会明确标记哪些已测、哪些必须通过新一轮测试建立基线；未测指标不填猜测值。</div>
+</div>
+
+<section>
+<div class="head"><span class="n">01</span><h2>维度 1 实测结果：站点配置与结构（Sitemap 静态）</h2></div>
+<p>对应 <a href="ascend_geo_metric_dictionary.html">指标字典</a>「维度 1」的 <strong>5 项已测指标</strong>。证据为 Sitemap XML 清单解析（非 HTTP / 非 AI 实测）。</p>
+<div class="kpis">
+<div class="kpi"><b>77,430</b><span>Sitemap 原始条目 <span class="status measured">已统计</span></span></div>
+<div class="kpi"><b>76,753</b><span>精确去重 URL <span class="status measured">已统计</span></span></div>
+<div class="kpi"><b>677</b><span>重复多出条目 <span class="status measured">已统计</span></span></div>
+<div class="kpi"><b>5/5</b><span>维度 1 指标已出数 <span class="status measured">已完成</span></span></div>
+</div>
+<table><thead><tr><th>指标名称（同字典）</th><th>基线值</th><th>分子 / 分母</th><th>状态</th><th>注意事项</th></tr></thead><tbody>
+<tr><td><strong>重复URL率</strong></td><td><strong>0.87%</strong></td><td>677 ÷ 77,430</td><td><span class="status measured">已测（静态文件）</span></td><td>≠ 搜索引擎重复收录率</td></tr>
+<tr><td><strong>查询参数URL占比</strong></td><td><strong>2.83%</strong></td><td>2,190 ÷ 77,430</td><td><span class="status measured">已测（静态文件）</span></td><td>参数 URL 不必然错误；用于划定治理范围</td></tr>
+<tr><td><strong>特殊编码URL占比</strong></td><td><strong>1.48%</strong></td><td>1,145 ÷ 77,430（含 <code>%26</code>）</td><td><span class="status measured">已测（静态文件）</span></td><td>仅为排查线索，需 HTTP 抽样核验</td></tr>
+<tr><td><strong>非主站Host占比</strong></td><td><strong>1.00%</strong></td><td>776 ÷ 77,430（15 个外部主机）</td><td><span class="status measured">已测（静态文件）</span></td><td>需确认是否有意纳入及由谁维护</td></tr>
+<tr><td><strong>lastmod缺失率</strong></td><td><strong>0.11%</strong></td><td>85 ÷ 77,430</td><td><span class="status measured">已测（静态文件）</span></td><td>lastmod 通常非必填；单独缺失不构成故障</td></tr>
+</tbody></table>
+<div class="callout"><strong>相关结构信号（非维度 1 五指标之一）：</strong>文档详情路径 <code>/document/detail/</code> 占精确去重 URL 约 <strong>78.1%</strong>（59,975 ÷ 76,753），用于指导维度 2 抽样权重。</div>
+<p class="small">口径：完整 URL 字符串精确去重；未归一化尾斜杠、参数顺序或大小写。静态清单指标 ≠ 可访问、可索引或已被 AI 引用。维度 3（AI 回答）仍为待实测。</p>
+</section>
+
+<section>
+<div class="head"><span class="n">02</span><h2>维度 2 实测结果：页面可达与内容质量（抽样 120）</h2></div>
+<p>对应 <a href="ascend_geo_metric_dictionary.html">指标字典</a>「维度 2」。证据：技术 URL 抽样表首轮探测（2026-10-20），明细见 <a href="exports/ascend_geo_record_templates.xlsx" download="昇腾社区_GEO_AI回答记录表与技术URL抽样表.xlsx">记录与抽样表</a> · 工作表「维度2实测摘要」。</p>
+<div class="callout warn"><strong>请你核对后再定稿：</strong>标为「需人工核对」的项，机器结果仅供参考，<strong>未当作最终结论</strong>。你核对完把结论/修正发我，我再回填。标「机测可采信」的项已与原始 JSON 重算一致，并做过抽检。</div>
+<div class="kpis">
+<div class="kpi"><b>120</b><span>分层抽样 URL</span></div>
+<div class="kpi"><b>118</b><span>HTTP 2xx（机测）</span></div>
+<div class="kpi"><b>3</b><span>机测可采信</span></div>
+<div class="kpi"><b>12</b><span>需你核对 / 待测</span></div>
+</div>
+<table><thead><tr><th>指标名称（同字典）</th><th>机测值</th><th>分子 / 分母</th><th>状态</th><th>请你核对什么</th></tr></thead><tbody>
+<tr><td><strong>HTTP成功率</strong></td><td><strong>98.3%</strong></td><td>118 ÷ 120</td><td><span class="status review">需人工核对</span></td><td>URL-011 机测 SSL 失败，复检曾为 200；请确认现网是否稳定 200。URL-104 机测/复检均为 404，可确认是否属实。</td></tr>
+<tr><td><strong>异常重定向率</strong></td><td><strong>0.0%</strong></td><td>0 ÷ 120</td><td><span class="status measured">机测可采信</span></td><td>口径：跳转≥3 或最终主机≠请求主机。若你要改口径，告诉我后重算。</td></tr>
+<tr><td><strong>URL有效性率</strong></td><td>58.3%（参考）</td><td>70 ÷ 120</td><td><span class="status review">需人工核对</span></td><td>机测定义为「2xx + 静态正文非空」。大量页可能是 SPA，请抽几条浏览器打开确认正文是否真可读。</td></tr>
+<tr><td><strong>可索引性抽样通过率</strong></td><td><strong>90.0%</strong></td><td>108 ÷ 120</td><td><span class="status measured">机测可采信</span></td><td>仅查静态 meta / X-Robots 是否含 noindex；未模拟搜索引擎抓取。</td></tr>
+<tr><td><strong>Canonical一致率</strong></td><td>62.7%（参考）</td><td>74 ÷ 118</td><td><span class="status review">需人工核对</span></td><td>缺失 43、错误 1。请抽查「缺失/错误」样本是否业务上可接受。</td></tr>
+<tr><td><strong>正文可读性通过率</strong></td><td>58.3%（参考）</td><td>70 ÷ 120</td><td><span class="status review">需人工核对</span></td><td>仅静态 HTML 抽取；脚本渲染页会偏低。请浏览器核对若干「正文=否」样本。</td></tr>
+<tr><td><strong>标题主题一致率</strong></td><td>7.6%（参考）</td><td>9 ÷ 118</td><td><span class="status review">需人工核对</span></td><td>约 104 个 2xx 页静态 HTML 无 H1。请确认是否前端渲染；在未渲染核验前<strong>不要采信此百分比</strong>。</td></tr>
+<tr><td>Markdown链接有效率 / 非空 / 匹配 / 摘要相关</td><td>—</td><td>—</td><td><span class="status pending">待实测</span></td><td>本轮未测 llms-content；需你定样本或授权后我再跑。</td></tr>
+<tr><td>关键事实可定位 / 版本日期明确 / 导航语义清晰 / 结构覆盖</td><td>—</td><td>—</td><td><span class="status pending">待实测</span></td><td>需人工内容清单；你核对页面后把结论给我即可。</td></tr>
+</tbody></table>
+<div class="callout"><strong>建议你优先核对：</strong>① URL-011 现网状态；② URL-104 是否确实 404；③ 任选 5～10 条「正文非空=否」或「无 H1」的 URL，浏览器打开看真实表现。核对结论发我后回填定稿。</div>
+<p class="small">原始证据：<code>诊断评测/dim2_probe_results.json</code>（120 条逐 URL）。范围：分层抽样，不自动代表全站。</p>
+</section>
+
+<section>
+<div class="head"><span class="n">03</span><h2>建议采用的 GEO 核心 KPI</h2></div>
+<p>建议把以下 6 项作为管理层最常看的效果指标；其他技术指标用于解释原因。每次复测都要记录分子、分母和原始样本，避免只报一个百分比。</p>
+<table><thead><tr><th>指标</th><th>定义 / 计算公式</th><th>它回答什么</th><th class="col-status">当前状态</th></tr></thead><tbody>
+<tr><td><strong>1. 来源发现率</strong></td><td>回答中出现昇腾社区官方来源的有效测试数 ÷ 有效测试总数 × 100%</td><td>AI 能否发现并把昇腾社区识别为相关来源？</td><td class="col-status"><span class="status pending">待实测</span></td></tr>
+<tr><td><strong>2. 答案引用率</strong></td><td>最终答案明确引用 / 链接到昇腾社区内容的测试数 ÷ 有效测试总数 × 100%</td><td>AI 是否真正把社区内容用于回答，而不只是提到品牌？</td><td class="col-status"><span class="status pending">待实测</span></td></tr>
+<tr><td><strong>3. 品牌提及率</strong></td><td>回答中提及“昇腾 / Ascend / 昇腾社区”等目标实体的测试数 ÷ 有效测试总数 × 100%</td><td>在相关问题中品牌是否进入答案？</td><td class="col-status"><span class="status pending">待实测</span></td></tr>
+<tr><td><strong>4. 引用支持率</strong></td><td>经核验、来源确实支持其所对应主张的引用数 ÷ 抽检引用总数 × 100%</td><td>AI 引用了来源之后，引用是否真的能支撑答案？</td><td class="col-status"><span class="status pending">待实测</span></td></tr>
+<tr><td><strong>5. 事实准确率</strong></td><td>经核验正确的事实项数 ÷ 被核验事实项总数 × 100%</td><td>产品名称、能力、适用场景、版本、参数等信息是否准确？</td><td class="col-status"><span class="status pending">待实测</span></td></tr>
+<tr><td><strong>6. 关键问题覆盖率</strong></td><td>回答完整覆盖预先定义的关键答案要点的测试数 ÷ 有效测试总数 × 100%</td><td>答案是否包含用户真正需要的信息，而不只是泛泛提及？</td><td class="col-status"><span class="status pending">待实测</span></td></tr>
+</tbody></table>
+<div class="callout"><strong>口径区别：</strong>“品牌提及”不等于“来源发现”；“来源发现”不等于“答案引用”；“答案引用”也不等于“引用支持”。这几个指标必须分开统计，否则无法判断优化究竟改善了哪一环。</div>
+</section>
+
+<section>
+<div class="head"><span class="n">04</span><h2>解释问题的技术与内容指标</h2></div>
+<table><thead><tr><th>指标组</th><th>建议记录的指标</th><th>计算方式 / 验收方法</th><th>当前情况</th></tr></thead><tbody>
+<tr><td>抓取与访问</td><td>HTTP 成功率、超时率、重定向率</td><td>按固定 URL 样本抓取；分别记录 2xx、3xx、4xx、5xx、超时。</td><td><span class="status pending">需实测</span></td></tr>
+<tr><td>索引信号</td><td>可索引页面比例、canonical 一致率、noindex 冲突率</td><td>抽样页检查 robots、meta robots、X-Robots-Tag、canonical。</td><td><span class="status pending">需实测</span></td></tr>
+<tr><td>Sitemap 清洁度</td><td>重复率、参数 URL 率、非预期外部主机率、无效 URL 率</td><td>当前已有部分静态统计；无效 URL 率需实际请求后计算。</td><td><span class="status measured">部分已测</span></td></tr>
+<tr><td>llms.txt 链接质量</td><td>Markdown 链接有效率、内容非空率、页面与 Markdown 内容匹配率</td><td>批量请求全部链接并抽查内容与目标页面是否一致。</td><td><span class="status pending">需实测</span></td></tr>
+<tr><td>页面可理解性</td><td>Title / H1 主题一致率、摘要相关率、语言一致率、正文可读率</td><td>按模板抽样，使用固定规则评分；人工复核有争议的页面。</td><td><span class="status pending">需实测</span></td></tr>
+<tr><td>内容可引用性</td><td>关键事实可定位率、明确来源 / 日期 / 版本的内容比例</td><td>对产品、文档、教程、兼容性和错误码页按统一清单核验。</td><td><span class="status pending">需实测</span></td></tr>
+</tbody></table>
+</section>
+
+<section>
+<div class="head"><span class="n">05</span><h2>AI 回答测试：建议固定 40 道问题</h2></div>
+<p>为保证优化前后可比较，建议建立 <strong>8 类 × 每类 5 道 = 40 道</strong>固定问题。问题应覆盖用户真实需求，而不是只用品牌词直接询问“昇腾是什么”。</p>
+<table><thead><tr><th>问题类别</th><th>数量</th><th>示例方向（示例需在正式测试集里固定措辞）</th><th>主要观察点</th></tr></thead><tbody>
+<tr><td>品牌 / 平台认知</td><td>5</td><td>昇腾社区提供什么资源？适合哪些开发者？</td><td>品牌提及、官方来源发现、核心定位准确性</td></tr>
+<tr><td>产品与硬件</td><td>5</td><td>某类昇腾硬件的用途、能力或适用场景是什么？</td><td>产品事实准确率、官方产品页引用</td></tr>
+<tr><td>软件栈与工具</td><td>5</td><td>CANN、MindStudio 等工具分别解决什么问题？</td><td>术语理解、内容覆盖、官方文档引用</td></tr>
+<tr><td>开发入门 / 教程</td><td>5</td><td>如何开始部署或运行一个昇腾开发任务？</td><td>步骤完整度、教程发现率、链接有效性</td></tr>
+<tr><td>故障排查 / 错误码</td><td>5</td><td>遇到某个错误码或常见故障应如何定位？</td><td>错误码准确性、证据支持率、答案可操作性</td></tr>
+<tr><td>兼容性 / 版本</td><td>5</td><td>某软件版本与硬件 / 驱动是否兼容？</td><td>版本准确率、日期 / 版本信息、引用时效性</td></tr>
+<tr><td>行业方案 / 使用场景</td><td>5</td><td>昇腾如何支持某类模型或行业应用？</td><td>场景匹配度、官方案例发现率、关键要点覆盖</td></tr>
+<tr><td>社区资源 / 下载 / 活动</td><td>5</td><td>在哪里获取软件下载、技术支持、培训或活动信息？</td><td>目标页面发现率、官方链接准确性、任务完成度</td></tr>
+</tbody></table>
+<div class="callout warn"><strong>测试规模建议：</strong>固定 40 道问题，选择 3 个目标 AI 平台，每道问题每个平台重复测试 2 次，合计 240 个回答样本。若资源有限，可先用 1 个平台建立试运行基线，但不要把单次回答当作稳定结论。测试平台、模型版本、联网 / 搜索开关、日期、问题原文均需记录。</div>
+</section>
+
+<section>
+<div class="head"><span class="n">06</span><h2>如何计算优化提升率</h2></div>
+<div class="grid2">
+<div class="tile"><h3>百分点变化（优先展示）</h3><div class="formula">复测值 − 基线值</div><p>例如引用率从 20% 提升到 30%，变化为 <strong>+10 个百分点</strong>。</p></div>
+<div class="tile"><h3>相对提升率</h3><div class="formula">(复测值 − 基线值) ÷ 基线值 × 100%</div><p>同一例子相对提升率为 <strong>+50%</strong>。当基线为 0 时，相对提升率不适用，应报告百分点变化和实际计数。</p></div>
+</div>
+<p><strong>推荐每次复测报告同时展示：</strong>基线值、复测值、百分点变化、相对提升率、分子 / 分母、样本数、平台和日期。</p>
+<table><thead><tr><th>指标</th><th>基线示例（仅演示）</th><th>复测示例（仅演示）</th><th>百分点变化</th><th>相对提升率</th></tr></thead><tbody>
+<tr><td>答案引用率</td><td>20%（8/40）</td><td>30%（12/40）</td><td>+10 个百分点</td><td>+50%</td></tr>
+<tr><td>事实准确率</td><td>80%（40/50）</td><td>90%（45/50）</td><td>+10 个百分点</td><td>+12.5%</td></tr>
+</tbody></table>
+<p class="small">上表仅展示计算方法，不是昇腾社区的实际测试结果。正式报告必须用实测数据替换。</p>
+</section>
+
+<section>
+<div class="head"><span class="n">07</span><h2>复测必须控制的条件</h2></div>
+<ul>
+<li><strong>问题集固定：</strong>优化前后使用同一批问题和完全一致的措辞，不随意替换为更容易触发品牌的问法。</li>
+<li><strong>平台和设置固定：</strong>记录平台、模型版本、联网 / 搜索状态、语言、测试日期与重复次数。</li>
+<li><strong>判分规则固定：</strong>提前定义何为品牌提及、官方来源、有效引用、事实正确和要点覆盖；尽可能由同一规则或双人复核。</li>
+<li><strong>保留原始证据：</strong>保存完整回答、引用链接、页面内容、截图或导出记录，不能只保留最终分数。</li>
+<li><strong>按问题类别拆分：</strong>整体分数提升可能掩盖某一类问题下降，应同时报告类别级结果和平台级结果。</li>
+<li><strong>技术与效果分开：</strong>页面可抓取率提高是原因指标，不代表 AI 引用率必然同步提高；需要分别测量。</li>
+</ul>
+</section>
+
+<section>
+<div class="head"><span class="n">08</span><h2>建议交付的基线数据表</h2></div>
+<p>每次测试建议维护两张明细表和一张汇总表：</p>
+<div class="grid2">
+<div class="tile"><h3>A. AI 回答样本表</h3><ul><li>问题 ID、类别、问题原文</li><li>平台 / 模型 / 测试时间 / 重复序号</li><li>回答全文、是否提及品牌</li><li>是否出现官方来源、是否引用社区</li><li>引用 URL、引用是否支持主张</li><li>事实正确项、缺失要点、人工评分</li></ul></div>
+<div class="tile"><h3>B. 页面技术样本表</h3><ul><li>URL、页面类型、语言</li><li>HTTP 状态、最终 URL、重定向</li><li>robots / noindex / canonical</li><li>Title、H1、description、正文可读性</li><li>llms.txt 链接状态与内容匹配情况</li><li>问题级别、整改动作、复测结果</li></ul></div>
+</div>
+<div class="tile" style="margin-top:13px"><h3>C. 管理层汇总表</h3><p>每个 KPI 一行：<strong>基线值｜本次值｜变化百分点｜相对提升率｜样本数｜主要问题｜已完成整改｜下一步动作</strong>。另按平台、问题类别和页面类型拆分。</p></div>
+</section>
+
+<section>
+<div class="head"><span class="n">09</span><h2>执行顺序与本轮报告的定位</h2></div>
+<ol>
+<li><strong>先冻结指标定义和问题集：</strong>确定 40 道测试问题、目标 AI 平台及判分规则。</li>
+<li><strong>采集 AI 表现基线：</strong>完成第一轮回答测试，生成来源发现率、答案引用率、品牌提及率、引用支持率、事实准确率和关键问题覆盖率。</li>
+<li><strong>并行做技术抽样：</strong>对 Sitemap URL、重点页面和 llms.txt Markdown 链接开展 HTTP / 索引信号检查。</li>
+<li><strong>按证据排优先级整改：</strong>把技术问题和内容问题映射到相应 KPI，不以配置项数量代替效果。</li>
+<li><strong>同口径复测：</strong>使用同样的问题集和平台条件，报告百分点变化、相对提升率和样本数。</li>
+</ol>
+<div class="callout ok"><strong>最终原则：</strong>GEO 基线不是一份静态“问题清单”，而是一套可复测的测量系统。当前已有的 Sitemap 数值作为技术基线的一部分保留；AI 可见度与引用表现需要通过固定问题集实测后建立，不能从配置文件推算。</div>
+</section>
+<div class="footer">昇腾社区 GEO 基线指标体系与复测方案 · V1.0 · 2026-10-19</div>
+</main>
+</div></div>
+
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js"></script>
+</body></html>

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTML 转化成 Markdown · Skill · AI 亲和原则</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid var(--color-border);
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: 100%; max-width: none; margin: 0; padding: 0 24px; box-sizing: border-box;
+    height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: var(--color-text); text-decoration: none; white-space: nowrap; margin-right: 40px;
+  }
+  .topbar .brand span { color: var(--color-primary); }
+  .topbar .site-nav { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; flex-wrap: wrap; }
+  .topbar .site-nav > a {
+    text-decoration: none; color: var(--color-text-secondary); font-size: var(--text-body); font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .topbar .site-nav > a:hover { color: var(--color-primary); background: var(--color-bg); text-decoration: none; }
+  .topbar .site-nav > a.active { color: var(--color-primary); background: var(--color-bg); font-weight: 600; }
+
+  body.inner-page[data-page="skill-detail"] .page-wrapper {
+    min-height: 100vh;
+    background: #fff;
+  }
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: var(--space-stack, 16px);
+  }
+  body.inner-page[data-page="skill-detail"] .main-content {
+    padding-top: var(--content-main-pad-top, 16px);
+    padding-bottom: 32px;
+    padding-left: 0;
+    padding-right: 0;
+    background: #fff;
+    min-height: calc(100vh - var(--header-height, 56px));
+  }
+  body.inner-page[data-page="skill-detail"] .main-content > .page-header,
+  body.inner-page[data-page="skill-detail"] .main-content > .page-meta,
+  body.inner-page[data-page="skill-detail"] .main-content > .section {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page[data-page="skill-detail"] .main-content > .section {
+    margin-bottom: 32px;
+  }
+  body.inner-page[data-page="skill-detail"] .main-content > .section:first-of-type > h2 {
+    margin-top: 0;
+  }
+  .page-header > h1 {
+    font-family: var(--font);
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1-weight, 600);
+    line-height: var(--text-h1-lh);
+    letter-spacing: -0.02em;
+    margin: 0;
+    padding-top: var(--space-h1-pad-y, 32px);
+    padding-bottom: var(--space-h1-pad-y, 32px);
+    color: var(--color-text);
+  }
+  .page-meta {
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  .page-meta a { color: var(--color-primary); text-decoration: none; }
+  .page-meta a:hover { text-decoration: underline; }
+  .page-meta code {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+  }
+  body.inner-page[data-page="skill-detail"] .main-content .section > h2 {
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    letter-spacing: -0.01em;
+    margin-top: 0;
+    margin-bottom: var(--space-stack, 16px);
+    padding-top: var(--space-h2-pad-y, 16px);
+    padding-bottom: 0;
+    border-bottom: none;
+    color: var(--color-text);
+  }
+  .page-lead {
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  .page-lead a { color: var(--color-primary); text-decoration: none; }
+  .page-lead a:hover { text-decoration: underline; }
+  .bg-list {
+    margin: 0;
+    padding-left: 1.25em;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text);
+  }
+  .bg-list li + li { margin-top: 10px; }
+  .bg-list strong { font-weight: 650; }
+  .section ul.plain-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .section ul.plain-list li + li { margin-top: 10px; }
+  .probe-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+  }
+  .probe-table th,
+  .probe-table td {
+    border: 1px solid #e8eef5;
+    border-top: none;
+    border-left: none;
+    vertical-align: top;
+    padding: 10px 12px;
+    text-align: left;
+  }
+  .probe-table thead tr:first-child > th { border-top: 1px solid #e8eef5; }
+  .probe-table th:first-child,
+  .probe-table td:first-child { border-left: 1px solid #e8eef5; }
+  .probe-table th { background: #f5f6f8; font-weight: 650; width: 22%; }
+  .probe-table code { font-size: 12px; }
+  .skill-detail-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: var(--space-stack, 16px);
+  }
+  .skill-detail-actions a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 88px;
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: 1px solid #d0d5dd;
+    background: #fff;
+    color: var(--color-text);
+    font-size: 13px;
+    font-weight: 650;
+    line-height: 20px;
+    text-decoration: none;
+    box-sizing: border-box;
+  }
+  .skill-detail-actions a:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+  .skill-detail-actions a.is-primary {
+    border-color: var(--color-primary);
+    background: var(--color-primary);
+    color: #fff;
+  }
+  .skill-detail-actions a.is-primary:hover {
+    opacity: 0.92;
+    color: #fff;
+  }
+  .crumb {
+    margin: 0 0 8px;
+    font-size: 13px;
+    line-height: 20px;
+    color: var(--color-text-secondary);
+  }
+  .crumb a {
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+  .crumb a:hover { text-decoration: underline; }
+</style>
+</head>
+<body class="inner-page" data-page="skill-detail" data-no-surface-tabs>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span>AI 亲和原则</span></a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="mintlify.html">友商对照</a>
+      <a href="reachability.html">社区诊断</a>
+      <a href="principles-overview.html">亲和原则</a>
+      <a href="community-ui.html">组件亲和</a>
+      <a href="data-analysis.html">数据分析</a>
+      <a href="skills.html" class="active">Skill 目录</a>
+    </nav>
+  </div>
+</div>
+
+<div class="page-wrapper">
+  <main class="main-content">
+    <div class="page-header">
+      <p class="crumb"><a href="skills.html">Skill 目录</a> / HTML 转化成 Markdown</p>
+      <h1>HTML 转化成 Markdown</h1>
+    </div>
+    <p class="page-meta">
+      Skill ID：<code>html-to-md</code>
+      · 依据：<a href="principles-format.html">Markdown 正文可直取</a>
+      · <a href="principles-noise.html">推荐内容后置</a>
+    </p>
+
+    <section class="section" id="overview">
+      <h2>核心命题</h2>
+      <p class="page-lead">原始 HTML（尤其营销站）对 Agent 噪声高。本 Skill 把给定页面压成可扫读的 Markdown：去壳去重、保留 CTA；文首索引模块只声明根 llms 与对应 HTML 的 URL；报告只下载 .md。与 <a href="skill-md-discoverability.html">md-discoverability</a> 成对：本 Skill 生成 MD，后者核验人读页能否发现平行稿。</p>
+      <div class="skill-detail-actions">
+        <a class="is-primary" href="exports/html-to-md.zip" download="html-to-md.zip">下载 Skill</a>
+        <a href="html-to-md-agentarts.html">查看示例报告</a>
+      </div>
+    </section>
+
+    <section class="section" id="scope">
+      <h2>转换范围</h2>
+      <p class="page-lead">主输入为页面 URL；也可本地 HTML 或粘贴片段。输出精简 <code>.md</code> 与轻量对照报告。不编造正文；不把全站导航写进 MD。</p>
+      <table class="probe-table">
+        <thead>
+          <tr><th>项</th><th>要求</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>页面 URL</td><td>优先：GET 后抽正文；记最终 URL</td></tr>
+          <tr><td>本地 / 片段</td><td>需登录、反爬或 JS 不全时改用</td></tr>
+          <tr><td>去壳</td><td>去掉 nav/header/footer、登录购物车、语言切换、备案热线</td></tr>
+          <tr><td>去重</td><td>轮播等造成的连续重复标题/段落只留一份</td></tr>
+          <tr><td>语义</td><td>标题层级、列表、绝对链接、代码块、表格；图片用 alt</td></tr>
+          <tr><td>按钮 / CTA</td><td>有有效 href 的按钮文案必须写入 MD 为 <code>[文案](URL)</code>；空链可保留文案并注明</td></tr>
+          <tr><td>交付</td><td>Part1 转换说明 + Part2 MD 预览；可下载 .md、导出 PDF</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section" id="workflow">
+      <h2>工作流</h2>
+      <ol class="bg-list">
+        <li><strong>输入</strong>：页面 URL（优先）或本地 HTML / 片段；可选正文选择器。</li>
+        <li><strong>获取</strong>：GET 或读文件；去掉 script/style 噪声。</li>
+        <li><strong>定位正文</strong>：选择器 → main/article → 最大文本块；丢弃壳层。</li>
+        <li><strong>转 MD</strong>：文首索引（根 llms + 对应 HTML）→ 正文；来源/清洗写报告 Part1；报告只下载 MD。</li>
+        <li><strong>质检</strong>：是否仍含登录/备案等；过短则标 JS 可能不全。</li>
+        <li><strong>输出</strong>：<code>.md</code> + 对照 HTML；双写 <code>docs/</code> 与 <code>report-serve/</code>。</li>
+      </ol>
+    </section>
+
+    <section class="section" id="report">
+      <h2>报告结构</h2>
+      <p class="page-lead">白底 HTML，无侧栏；顶栏品牌 +「下载 Markdown」+「导出 PDF」，与正文 1000px 栏对齐。</p>
+      <ol class="bg-list">
+        <li><strong>Part1. 转换说明</strong>：来源与可达、正文定位与清洗、问题与发现。</li>
+        <li><strong>Part2. 转换结果</strong>：建议稿预览；下载 .md；编写说明。</li>
+      </ol>
+    </section>
+
+    <section class="section" id="usage">
+      <h2>如何使用</h2>
+      <ol class="bg-list">
+        <li>下载 Skill 包，解压到 Cursor 的 <code>.cursor/skills/html-to-md/</code>（或个人 skills 目录）。</li>
+        <li>准备要转换的页面 URL（优先）；若暂不可抓取，改用本地 HTML 或粘贴片段。</li>
+        <li>在对话中调用，例如：按 html-to-md 转换 <code>https://agentorchard.huaweicloud.com/agentarts.html</code>（文首声明根 llms 与对应 HTML URL）。</li>
+        <li>按报告模板输出 HTML，并将优化后的 <code>.md</code> 放到 <code>exports/</code> 供下载。可对照示例：<a href="html-to-md-agentarts.html">智果 AgentArts 对照报告</a>。</li>
+      </ol>
+    </section>
+  </main>
+</div>
+
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js"></script>
+</body>
+</html>

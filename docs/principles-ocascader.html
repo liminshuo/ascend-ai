@@ -7,7 +7,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
-<title>级联路径选项可读 · 亲和原则 · 昇腾社区 AI 亲和原则</title>
+<title>级联选择的 AI 亲和实践 · 组件 AI 亲和实践指南</title>
 <style>
 
 
@@ -269,25 +269,37 @@
   .main-content {
     flex: 1; min-width: 0; background: var(--panel); border-right: 1px solid var(--line);
     min-height: calc(100vh - var(--detail-head-h));
-    padding: var(--content-pad-top) var(--content-pad-x) 32px var(--content-pad-left);
+    padding-top: var(--content-main-pad-top, 16px);
+    padding-bottom: 32px;
+    padding-left: var(--content-pad-left);
+    padding-right: var(--content-pad-x);
     box-sizing: border-box;
   }
   .main-content > .page-header,
   .main-content > .page-desc,
   .main-content > .section {
-    width: 100%; max-width: var(--content-max); margin-inline: 0;
+    width: 100%; max-width: var(--content-max-width, var(--content-max)); margin-inline: 0;
     padding-left: 0; padding-right: 0; box-sizing: border-box;
   }
   .page-header {
-    margin-bottom: 36px; padding-bottom: 24px; border-bottom: 1px solid var(--line);
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: var(--space-stack, 16px);
   }
   .page-header-top {
     display: flex; align-items: center; justify-content: space-between;
     gap: 16px; margin-bottom: 0;
   }
   .page-header-top h1 {
-    margin: 0; font-size: 32px; font-weight: 800; line-height: 1.2;
-    letter-spacing: -0.02em; color: var(--text);
+    margin: 0;
+    font-family: var(--font);
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1-weight, 600);
+    line-height: var(--text-h1-lh);
+    letter-spacing: -0.02em;
+    color: var(--color-text, var(--text));
+    padding-top: var(--space-h1-pad-y, 32px);
+    padding-bottom: var(--space-h1-pad-y, 32px);
     display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
     flex: 1; min-width: 0;
   }
@@ -307,34 +319,64 @@
   .btn-preview:hover { text-decoration: underline; color: var(--accent); }
   .btn-preview:disabled { opacity: 0.5; cursor: not-allowed; text-decoration: none; }
   .page-desc {
-    font-size: var(--body-size); line-height: var(--body-lh);
-    color: var(--desc); margin: 0 0 48px;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary, var(--desc));
+    margin: 0;
   }
-  .page-desc-line { display: block; line-height: var(--body-lh); }
+  .page-desc-line { display: block; line-height: var(--text-body-lh, 22px); }
   .page-desc-line + .page-desc-line { margin-top: 4px; }
-  .page-desc strong { color: var(--text); font-weight: 600; }
+  .page-desc strong { color: var(--color-text, var(--text)); font-weight: 600; }
   .section {
-    margin-bottom: 48px;
+    margin-bottom: 32px;
     scroll-margin-top: calc(var(--detail-head-h) + 16px);
   }
   .section > h2 {
-    margin: 48px 0 16px; padding-bottom: 24px;
-    font-size: var(--text-h2); font-weight: 700; line-height: 36px;
-    color: var(--text); border-bottom: 2px solid var(--heading-rule);
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    letter-spacing: -0.01em;
+    margin-top: 0;
+    margin-bottom: var(--space-stack, 16px);
+    padding-top: var(--space-h2-pad-y, 16px);
+    padding-bottom: 0;
+    border-bottom: none;
+    color: var(--color-text, var(--text));
   }
   .section:first-of-type > h2 { margin-top: 0; }
-  .content-unit + .content-unit { margin-top: 40px; }
+  .content-unit + .content-unit { margin-top: var(--space-stack, 16px); }
   .section h3 {
-    margin: 32px 0 16px; font-size: var(--text-h3); font-weight: 700; line-height: 28px; color: var(--text);
+    margin: 0;
+    padding-top: var(--space-h3-pad-y, 16px);
+    padding-bottom: var(--space-h3-pad-y, 16px);
+    font-size: var(--text-h3, 18px);
+    line-height: var(--text-h3-lh, 28px);
+    font-weight: var(--text-h3-weight, 650);
+    letter-spacing: -0.01em;
+    color: var(--color-text, var(--text));
+  }
+  /* 实践要点列表 → 正反示例：块间距 16px，保留 h3 原有上下 padding */
+  .section .principle-suggestions + h3 {
+    margin-top: var(--space-stack, 16px);
+  }
+  /* 正反示例标题与实践要点同构：保留 h3 上下 padding；对照区不再叠 margin */
+  .section h3[id$="-example"] + .principle-example {
+    margin-top: 0;
   }
   .section h4 {
-    margin: 24px 0 16px; font-size: var(--text-body); font-weight: 700; color: var(--text);
+    margin: 0;
+    padding-top: var(--space-h4-pad-y, 16px);
+    padding-bottom: var(--space-h4-pad-y, 16px);
+    font-size: var(--text-h4, 14px);
+    line-height: var(--text-h4-lh, 22px);
+    font-weight: var(--text-h4-weight, 650);
+    color: var(--color-text, var(--text));
   }
-  .section p { margin: 0 0 8px; color: var(--muted); }
-  .section ul { margin: 8px 0 0; padding-left: 20px; color: var(--muted); }
-  .section li { margin-bottom: 6px; }
+  .section p { margin: 0 0 var(--space-stack, 16px); color: var(--color-text-secondary, var(--muted)); font-size: var(--text-body); line-height: var(--text-body-lh, 22px); }
+  .section ul { margin: 0; padding-left: 20px; color: var(--color-text-secondary, var(--muted)); }
+  .section li { margin-bottom: 8px; font-size: var(--text-body); line-height: var(--text-body-lh, 22px); }
   .section li:last-child { margin-bottom: 0; }
-  .section li strong { color: var(--text); font-weight: 600; }
+  .section li strong { color: var(--color-text, var(--text)); font-weight: 600; }
   .test-prompt-card {
     background: rgba(222, 236, 255, 0.5); border-radius: 8px;
     padding: 24px; margin: 0 0 24px;
@@ -714,12 +756,18 @@
 
   .page-header-top {
     display: flex; align-items: center; justify-content: space-between;
-    gap: 16px; margin-bottom: 16px;
+    gap: 16px; margin-bottom: 0;
   }
   .page-header-top h1 {
     margin: 0;
-    font-size: 32px; font-weight: 800; line-height: 1.2;
-    letter-spacing: -0.02em; color: var(--text);
+    font-family: var(--font);
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1-weight, 600);
+    line-height: var(--text-h1-lh);
+    letter-spacing: -0.02em;
+    color: var(--color-text, var(--text));
+    padding-top: var(--space-h1-pad-y, 32px);
+    padding-bottom: var(--space-h1-pad-y, 32px);
     flex: 1; min-width: 0;
   }
   .page-header .page-desc { margin-bottom: 0; }
@@ -833,43 +881,60 @@
   .role-split-item--strip h4 { color: var(--muted); }
 
   .scene-judge-item {
-    margin: 0 0 16px;
-    font-size: var(--body-size); line-height: var(--body-lh);
-    color: var(--text);
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text, var(--text));
   }
   .scene-judge-item:last-child { margin-bottom: 0; }
   .scene-judge-head {
     margin: 0 0 4px;
     display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
   }
-  .scene-judge-head strong { font-weight: 700; color: var(--text); }
-  .scene-judge-body { margin: 0; color: var(--text); }
+  .scene-judge-head strong { font-weight: 700; color: var(--color-text, var(--text)); }
+  .scene-judge-body { margin: 0; color: var(--color-text, var(--text)); }
 
   .principle-suggestions {
     margin: 0; padding-left: 20px;
-    color: var(--muted); font-size: var(--text-body); line-height: 22px;
+    color: var(--color-text-secondary, var(--muted));
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
   }
   .principle-suggestions li { margin-bottom: 8px; }
   .principle-lead {
-    margin: 0 0 12px; font-size: var(--text-body); line-height: 22px; color: var(--text);
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text, var(--text));
   }
   .principle-subhead {
-    margin: 0 0 8px; font-size: var(--text-body); font-weight: 700; line-height: 22px; color: var(--text);
+    margin: 0 0 8px;
+    font-size: var(--text-body);
+    font-weight: 700;
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text, var(--text));
   }
   .principle-suggestions li:last-child { margin-bottom: 0; }
   .principle-suggestions li strong { color: var(--text); font-weight: 600; }
 
   .principle-example {
-    margin-top: 16px;
+    margin-top: var(--space-stack, 16px);
     padding: 0;
     background: transparent;
     border: none;
     border-radius: 0;
   }
   .principle-example > h4 {
-    margin: 0 0 12px;
+    margin: 0;
+    padding-top: var(--space-h4-pad-y, 16px);
+    padding-bottom: var(--space-h4-pad-y, 16px);
     font-size: var(--text-body); font-weight: 700; line-height: 22px;
     color: var(--text);
+  }
+  /* 示例标题与对照标签同构：间距由 h4 底 padding 承担，不再叠 margin */
+  .principle-example > h4 + .compare-grid,
+  .principle-example > h4 + .compare-col {
+    margin-top: 0;
   }
   .principle-example + .principle-example {
     margin-top: 28px;
@@ -885,7 +950,7 @@
   }
   .compare-grid--stack { grid-template-columns: 1fr; gap: 16px; }
   .compare-grid--cols { grid-template-columns: 1fr 1fr; gap: 16px; align-items: stretch; }
-  .compare-grid--cols .compare-side { display: flex; flex-direction: column; gap: 8px; min-width: 0; height: 100%; }
+  .compare-grid--cols .compare-side { display: flex; flex-direction: column; gap: 0; min-width: 0; height: 100%; }
   .compare-grid--cols .compare-col { flex: 1; display: flex; flex-direction: column; }
   .compare-grid--cols .compare-col .render-frame,
   .compare-grid--cols .compare-col .arch-diagram { flex: 1; }
@@ -907,13 +972,19 @@
   }
   .section .principle-example .compare-grid h4.compare-label {
     margin: 0;
-    font-size: 13px;
+    padding-top: var(--space-h4-pad-y, 16px);
+    padding-bottom: var(--space-h4-pad-y, 16px);
+    font-size: var(--text-h4, 14px);
     font-weight: 700;
-    line-height: 20px;
+    line-height: var(--text-h4-lh, 22px);
   }
   .compare-label {
     margin: 0;
-    font-size: 13px; font-weight: 700; line-height: 20px;
+    padding-top: var(--space-h4-pad-y, 16px);
+    padding-bottom: var(--space-h4-pad-y, 16px);
+    font-size: var(--text-h4, 14px);
+    font-weight: 700;
+    line-height: var(--text-h4-lh, 22px);
   }
   .compare-label--machine { color: var(--danger); }
   .compare-label--human { color: var(--success); }
@@ -1085,7 +1156,7 @@
 
 </style>
 </head>
-<body data-module="principles" data-page="ocascader">
+<body class="inner-page agent-entry-page" data-module="principles" data-page="ocascader">
 <div class="detail-head-bar" aria-label="组件详情导航">
   <div class="modal-title-wrap">
     <a class="back-link" href="community-ui.html" aria-label="返回组件亲和"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6L9 12l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
@@ -1099,63 +1170,56 @@
 </div>
 
 <div class="page-wrapper">
-  <aside class="comp-sidebar" aria-label="组件列表">
-    <div class="comp-sidebar-title">组件列表</div>
+    <aside class="comp-sidebar" aria-label="组件列表">
     <nav class="comp-nav">
-      <ul>
-        <li><a href="design-guide-icon.html"><span class="comp-nav-label">图标</span></a></li>
-        <li><a href="design-guide-card.html"><span class="comp-nav-label">卡片</span></a></li>
-        <li><a href="design-guide-banner.html"><span class="comp-nav-label">Banner</span></a></li>
-      </ul>
       <div class="comp-group-label">导航类</div>
       <ul>
-        <li><a href="principles-omenu.html"><span class="comp-nav-label">菜单</span><span class="comp-dot" title="有 UI 小样" aria-hidden="true"></span></a></li>
+        <li><a href="principles-omenu.html"><span class="comp-nav-label">菜单</span></a></li>
+        <li><a href="principles-onavigation.html"><span class="comp-nav-label">导航</span></a></li>
         <li><a href="principles-otab.html"><span class="comp-nav-label">标签页</span></a></li>
-        <li><a href="principles-obreadcrumb.html"><span class="comp-nav-label">面包屑</span><span class="comp-dot" title="有 UI 小样" aria-hidden="true"></span></a></li>
-        <li><a href="principles-oanchor.html"><span class="comp-nav-label">锚点</span><span class="comp-dot" title="有 UI 小样" aria-hidden="true"></span></a></li>
+        <li><a href="principles-obreadcrumb.html"><span class="comp-nav-label">面包屑</span></a></li>
+        <li><a href="principles-ostep.html"><span class="comp-nav-label">步骤条</span></a></li>
+        <li><a href="principles-oanchor.html"><span class="comp-nav-label">锚点</span></a></li>
         <li><a href="principles-opagination.html"><span class="comp-nav-label">分页</span></a></li>
-        <li><a href="principles-ostep.html"><span class="comp-nav-label">步骤条</span><span class="comp-dot" title="有 UI 小样" aria-hidden="true"></span></a></li>
-        <li><a href="principles-onavigation.html"><span class="comp-nav-label">导航</span><span class="comp-dot" title="有 UI 小样" aria-hidden="true"></span></a></li>
-        <li><a href="principles-ofooternav.html"><span class="comp-nav-label">底部导航</span><span class="comp-dot" title="有 UI 小样" aria-hidden="true"></span></a></li>
+        <li><a href="principles-ofooternav.html"><span class="comp-nav-label">底部导航</span></a></li>
       </ul>
       <div class="comp-group-label">操作类</div>
       <ul>
-        <li><a href="principles-obutton.html"><span class="comp-nav-label">按钮</span><span class="comp-dot" title="有 UI 小样" aria-hidden="true"></span></a></li>
-        <li><a href="principles-olink.html"><span class="comp-nav-label">链接</span><span class="comp-dot" title="有 UI 小样" aria-hidden="true"></span></a></li>
-        <li><a href="principles-odropdown.html"><span class="comp-nav-label">下拉菜单</span><span class="comp-dot" title="有 UI 小样" aria-hidden="true"></span></a></li>
+        <li><a href="principles-obutton.html"><span class="comp-nav-label">按钮</span></a></li>
+        <li><a href="principles-olink.html"><span class="comp-nav-label">链接</span></a></li>
+        <li><a href="principles-odropdown.html"><span class="comp-nav-label">下拉菜单</span></a></li>
         <li><a href="principles-otoggle.html"><span class="comp-nav-label">选择块</span></a></li>
       </ul>
       <div class="comp-group-label">输入类</div>
       <ul>
-        <li><a href="principles-osearch.html"><span class="comp-nav-label">搜索框</span><span class="comp-dot" title="有 UI 小样" aria-hidden="true"></span></a></li>
+        <li><a href="principles-osearch.html"><span class="comp-nav-label">搜索框</span></a></li>
         <li><a href="principles-oselect.html"><span class="comp-nav-label">选择器</span></a></li>
-        <li><a href="principles-otrees.html"><span class="comp-nav-label">树</span><span class="comp-dot" title="有 UI 小样" aria-hidden="true"></span></a></li>
-        <li><a href="principles-orate.html"><span class="comp-nav-label">评分</span><span class="comp-dot" title="有 UI 小样" aria-hidden="true"></span></a></li>
         <li><a href="principles-ocascader.html" class="active"><span class="comp-nav-label">级联选择</span></a></li>
+        <li><a href="principles-otrees.html"><span class="comp-nav-label">树</span></a></li>
+        <li><a href="principles-orate.html"><span class="comp-nav-label">评分</span></a></li>
       </ul>
       <div class="comp-group-label">展示类</div>
       <ul>
-        <li><a href="principles-otag.html"><span class="comp-nav-label">标签</span><span class="comp-dot" title="有 UI 小样" aria-hidden="true"></span></a></li>
+        <li><a href="principles-oavatar.html"><span class="comp-nav-label">头像</span></a></li>
+        <li><a href="principles-ofigure.html"><span class="comp-nav-label">图片/视频</span></a></li>
+        <li><a href="principles-otag.html"><span class="comp-nav-label">标签</span></a></li>
+        <li><a href="principles-ocalendar.html"><span class="comp-nav-label">日历通知</span></a></li>
+        <li><a href="principles-ocarousel.html"><span class="comp-nav-label">幻灯片</span></a></li>
       </ul>
       <div class="comp-group-label">容器类</div>
       <ul>
-        <li><a href="principles-ocarousel.html"><span class="comp-nav-label">幻灯片</span><span class="comp-dot" title="有 UI 小样" aria-hidden="true"></span></a></li>
+        <li><a href="principles-ocard.html"><span class="comp-nav-label">卡片</span></a></li>
+        <li><a href="principles-olist.html"><span class="comp-nav-label">列表</span></a></li>
+        <li><a href="principles-otable.html"><span class="comp-nav-label">表格</span></a></li>
+        <li><a href="principles-odatetable.html"><span class="comp-nav-label">数据表格</span></a></li>
+        <li><a href="principles-oform.html"><span class="comp-nav-label">表单</span></a></li>
+        <li><a href="principles-ocollapse.html"><span class="comp-nav-label">折叠面板</span></a></li>
         <li><a href="principles-odialog.html"><span class="comp-nav-label">对话框</span></a></li>
-        <li><a href="principles-ocard.html"><span class="comp-nav-label">卡片</span><span class="comp-dot" title="有 UI 小样" aria-hidden="true"></span></a></li>
-        <li><a href="principles-odatetable.html"><span class="comp-nav-label">数据表格</span><span class="comp-dot" title="有 UI 小样" aria-hidden="true"></span></a></li>
       </ul>
       <div class="comp-group-label">反馈类</div>
       <ul>
-        <li><a href="principles-opopover.html"><span class="comp-nav-label">气泡卡片</span><span class="comp-dot" title="有 UI 小样" aria-hidden="true"></span></a></li>
-      </ul>
-      <div class="comp-group-label">内容载体</div>
-      <ul>
-        <li><a href="principles-image.html"><span class="comp-nav-label">图片图意</span></a></li>
-        <li><a href="principles-hotzone.html"><span class="comp-nav-label">图片热区</span></a></li>
-        <li><a href="principles-table.html"><span class="comp-nav-label">表格语义</span></a></li>
-        <li><a href="principles-code.html"><span class="comp-nav-label">代码块</span></a></li>
-        <li><a href="principles-style-semantic.html"><span class="comp-nav-label">安全警示</span></a></li>
-        <li><a href="principles-collapse.html"><span class="comp-nav-label">折叠面板</span></a></li>
+        <li><a href="principles-opopover.html"><span class="comp-nav-label">气泡提示</span></a></li>
+        <li><a href="principles-oresult.html"><span class="comp-nav-label">结果</span></a></li>
       </ul>
     </nav>
   </aside>
@@ -1163,23 +1227,28 @@
   <main class="main-content">
     <div class="page-header">
       <div class="page-header-top">
-        <h1>级联路径选项可读</h1>
+        <h1>级联选择的 AI 亲和实践</h1>
         <button type="button" class="comp-link" data-name="OCascader 级联选择" data-shots="o-cascader.png">OCascader 级联选择</button>
       </div>
       <p class="page-desc page-desc--split">
-        <span class="page-desc-line">级联若映射<strong>内容路径</strong>，各级 option 文本须首包可读（宜带落地链）；纯地址 / 表单级联入库剥离。</span>
-
+        <span class="page-desc-line">指导级联选择在路径文案、内容组织和前端实现方面提升 AI 对多级选项含义的识别能力。</span>
       </p>
     </div>
 
+    
+    <section class="section" id="practice-goal">
+      <h2>实践目标</h2>
+      <p class="principle-lead">级联若映射<strong>内容路径</strong>，各级 option 文本须首包可读（宜带落地链）；纯地址 / 表单级联入库剥离。</p>
+    </section>
+
     <section class="section" id="scene-judge">
-      <h2>场景判断</h2>
+      <h2>适用场景</h2>
         <div class="scene-judge-item">
-          <p class="scene-judge-head"><strong>场景1·映射内容路径的级联</strong><span class="rsc-verdict rsc-verdict--keep">要做亲和</span></p>
+          <p class="scene-judge-head"><strong>场景1·映射内容路径的级联</strong><span class="rsc-verdict rsc-verdict--keep">适用</span></p>
           <p class="scene-judge-body">各级代表文档分类 / 内容路径时，option 须用可读全称进首包；映射到落地页的宜带 <code>a[href]</code>。面板勿等悬停 / 点击才挂载选项。</p>
         </div>
         <div class="scene-judge-item">
-          <p class="scene-judge-head"><strong>场景2·纯地址 / 表单字段级联</strong><span class="rsc-verdict rsc-verdict--strip">不做亲和 · 入库剥离</span></p>
+          <p class="scene-judge-head"><strong>场景2·纯地址 / 表单字段级联</strong><span class="rsc-verdict rsc-verdict--strip">按需处理</span></p>
           <p class="scene-judge-body">省市区等纯表单级联不承载官网知识。入库宜标 <code>data-llm-exclude</code> 或剥离。</p>
         </div>
     </section>
@@ -1187,8 +1256,8 @@
 
 
     <section class="section" id="design-ui">
-      <h2>设计UI调整 · 场景1</h2>
-      <h3 id="design-suggestions">调整建议</h3>
+      <h2>设计实践</h2>
+      <h3 id="design-suggestions">实践要点</h3>
       <ul class="principle-suggestions">
         <li><strong>视觉交互可维持</strong>：级联外观与逐级展开按常规即可，无需为亲和重做视觉。</li>
         <li><strong>稿面标注角色与文案</strong>：标注内容路径型 vs 表单型；内容路径各级用分类 / 文档全称，映射落地的按可跟链交付。</li>
@@ -1196,25 +1265,28 @@
     </section>
 
     <section class="section" id="content-adjust">
-      <h2>文档内容调整 · 场景1</h2>
-      <h3 id="content-suggestions">调整建议</h3>
+      <h2>Markdown 书写</h2>
+      <h3 id="content-suggestions">实践要点</h3>
       <ul class="principle-suggestions">
         <li><strong>统一命名</strong>：各级 option 文案与落地页 title、llms 分类名对齐；勿只用编号 / value。</li>
         <li><strong>分类路径平行清单</strong>：在 llms.txt / 文档 MD 写成与级联层级一致的嵌套列表（分类 + URL）；面板抓不全时仍可枚举路径。</li>
         <li><strong>过渡补位</strong>：级联 HTML 未达标前，用 llms / MD 临时补分类路径；SSR 达标后以页面为准，重复项可移除。</li>
       </ul>
-      <h3 id="content-example">调整示例</h3>
+      <h3 id="content-example">正反示例</h3>
       <div class="principle-example">
-        <h4>示例1. 内容路径级联 → MD / llms 平行目录</h4>
-        <div class="compare-grid compare-grid--stack compare-grid--no-mid-divider">
-          <h4 class="compare-label compare-label--machine"><span class="cmp-mark cmp-mark--x">✗</span> 当前问题 · 路径只在级联面板里</h4>
-          <div class="compare-col machine">
+        <h4>示例1. 内容路径级联：MD / llms 平行目录</h4>
+        <div class="compare-grid compare-grid--cols">
+          <div class="compare-side">
+            <h4 class="compare-label compare-label--machine"><span class="cmp-mark cmp-mark--x">✗</span> 当前问题 · 路径只在级联面板里</h4>
+            <div class="compare-col machine">
             <pre class="arch-diagram">分类层级只在级联 JS 面板中；
 首包读不全各级 option；
 无 Markdown / llms 嵌套分类 + URL。</pre>
+            </div>
           </div>
-          <h4 class="compare-label compare-label--human"><span class="cmp-mark cmp-mark--v">✓</span> 推荐做法 · MD 平行分类目录</h4>
-          <div class="compare-col human">
+          <div class="compare-side">
+            <h4 class="compare-label compare-label--human"><span class="cmp-mark cmp-mark--v">✓</span> 推荐做法 · MD 平行分类目录</h4>
+            <div class="compare-col human">
             <pre class="arch-diagram">## CANN 文档分类
 - CANN
   - 安装部署
@@ -1222,21 +1294,22 @@
     - [驱动安装](/document/cann/install/driver)
   - API 参考
     - …</pre>
-          </div>
-          <h4 class="compare-label compare-label--human"><span class="cmp-mark cmp-mark--v">✓</span> 推荐做法 · llms 临时补路径</h4>
-          <div class="compare-col human">
+            </div>
+            <h4 class="compare-label compare-label--human"><span class="cmp-mark cmp-mark--v">✓</span> 推荐做法 · llms 临时补路径</h4>
+            <div class="compare-col human">
             <pre class="arch-diagram"># llms.txt（过渡）
 - [CANN 安装指南](/document/cann/install/guide)
 - [驱动安装](/document/cann/install/driver)</pre>
             <p class="rf-frame-caption">级联 SSR 达标后以 HTML 为准，临时项可移除。</p>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
     <section class="section" id="frontend-adjust">
-      <h2>前端调整 · 场景1</h2>
-      <h3 id="frontend-suggestions">调整建议</h3>
+      <h2>前端实现</h2>
+      <h3 id="frontend-suggestions">实践要点</h3>
       <p class="principle-lead">内容路径型级联：各级 option 可读文本须写入首包；映射落地页的宜为 <code>a[href]</code>。静态抓取仍能枚举路径（表单级联见场景2，管道剥离）。</p>
       <p class="principle-subhead">具体要求：</p>
       <ul class="principle-suggestions">
@@ -1244,28 +1317,44 @@
         <li><strong>落地项宜为真实链接</strong>：映射文档 / 分类页的选项宜 a[href]；至少当前路径分支须在首包可读。</li>
         <li><strong>表单级联标注排除</strong>：省市区等纯表单字段加 data-llm-exclude，与内容路径级联区分。</li>
       </ul>
-      <h3 id="frontend-example">调整示例</h3>
+      <h3 id="frontend-example">正反示例</h3>
       <div class="principle-example">
         <h4>示例1. 内容路径级联</h4>
-        <div class="compare-grid compare-grid--stack compare-grid--no-mid-divider">
-          <h4 class="compare-label compare-label--machine"><span class="cmp-mark cmp-mark--x">✗</span> 当前问题 · 空壳 · 悬停才挂选项</h4>
-          <div class="compare-col machine">
+        <div class="compare-grid compare-grid--cols">
+          <div class="compare-side">
+            <h4 class="compare-label compare-label--machine"><span class="cmp-mark cmp-mark--x">✗</span> 当前问题 · 空壳 · 悬停才挂选项</h4>
+            <div class="compare-col machine">
             <pre class="arch-diagram">&lt;div class="o-cascader"&gt;&lt;/div&gt;
 &lt;!-- 各级悬停 / 点击后才挂，无可读 option / a[href] --&gt;</pre>
             <p class="rf-frame-caption">静态抓取读不到各级分类名，也无法跟到安装指南等落地页。</p>
+            </div>
           </div>
-          <h4 class="compare-label compare-label--human"><span class="cmp-mark cmp-mark--v">✓</span> 推荐做法 · SSR 可读路径 + 落地链</h4>
-          <div class="compare-col human">
+          <div class="compare-side">
+            <h4 class="compare-label compare-label--human"><span class="cmp-mark cmp-mark--v">✓</span> 推荐做法 · SSR 可读路径 + 落地链</h4>
+            <div class="compare-col human">
             <pre class="arch-diagram">&lt;div class="o-cascader"&gt;
   &lt;span&gt;CANN&lt;/span&gt;
   &lt;span&gt;安装部署&lt;/span&gt;
   &lt;a href="/document/cann/install/guide"&gt;CANN 安装指南&lt;/a&gt;
 &lt;/div&gt;</pre>
             <p class="rf-frame-caption">各级可读文案进首包；叶子落地写成 a[href]，静态抓取即可枚举路径。</p>
+            </div>
           </div>
         </div>
       </div>
     </section>
+
+    <section class="section" id="verify">
+      <h2>检查项</h2>
+      <ul class="principle-suggestions">
+        <li><strong>名称与层级清晰：</strong>关键文案准确表达目标内容，结构关系可通过文本识别。</li>
+        <li><strong>索引一致有效：</strong>组件文案、页面标题及其他文档索引命名保持一致，链接指向有效页面。</li>
+        <li><strong>内容可发现：</strong>需要公开的信息可通过初始 HTML 或目标爬虫支持的渲染方式获取。</li>
+        <li><strong>链接可跟踪：</strong>跳转型入口使用有效的 <code>a[href]</code> 链接。</li>
+        <li><strong>采集范围合理：</strong>公开知识入口与纯操作控件得到合理区分。</li>
+      </ul>
+    </section>
+
   </main>
 
   <aside class="page-toc" id="page-toc" aria-label="本篇目录">

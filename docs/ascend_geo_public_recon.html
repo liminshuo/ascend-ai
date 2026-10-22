@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/peer-nav.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>昇腾社区 GEO 基线诊断｜公开信息摸底记录</title>
+<style>
+:root{--bg:#f4f7fb;--panel:#fff;--text:#172033;--muted:#667085;--line:#e4e9f1;--blue:#2457d6;--blue-bg:#edf3ff;--amber:#9a5b00;--amber-bg:#fff5df;--green:#18794e;--green-bg:#eaf8f0;--red:#b42318;--red-bg:#fff0ee}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+.wrap{max-width:1120px;margin:0 auto;padding:32px 22px 56px}.hero{background:linear-gradient(135deg,#122a62,#2457d6);color:#fff;border-radius:20px;padding:34px 36px;margin-bottom:22px}.eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;opacity:.8}.hero h1{font-size:30px;line-height:1.25;margin:10px 0 12px}.hero p{max-width:760px;margin:0;color:#e2eaff}.meta{display:flex;flex-wrap:wrap;gap:9px;margin-top:22px}.pill{font-size:12px;border:1px solid #ffffff55;background:#ffffff12;padding:5px 10px;border-radius:999px}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:18px 0 24px}.metric,.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px}.metric .label{font-size:12px;color:var(--muted)}.metric .value{font-size:24px;font-weight:750;margin:5px 0}.metric .note{font-size:12px;color:var(--muted)}
+.panel{margin:16px 0}.panel h2{font-size:20px;margin:0 0 14px}.panel h3{font-size:16px;margin:0 0 7px}.lead{color:var(--muted);margin-top:-4px}.status{display:inline-block;border-radius:6px;padding:3px 8px;font-size:12px;font-weight:650;white-space:nowrap}.done{background:var(--green-bg);color:var(--green)}.partial{background:var(--blue-bg);color:var(--blue)}.pending{background:var(--amber-bg);color:var(--amber)}.notdone{background:var(--red-bg);color:var(--red)}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;padding:12px 11px;border-bottom:1px solid var(--line);vertical-align:top}th{background:#f8faff;color:#475467;font-weight:650}tr:last-child td{border-bottom:0}.small{font-size:12px;color:var(--muted)}a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.source{border:1px solid var(--line);border-radius:12px;padding:15px}.source .type{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}.source h3{margin:5px 0 7px}.source p{margin:0 0 8px;font-size:13px;color:#475467}
+.callout{border-left:4px solid #d89a24;background:var(--amber-bg);padding:13px 16px;border-radius:0 9px 9px 0}.bluebox{border-left:4px solid var(--blue);background:var(--blue-bg);padding:13px 16px;border-radius:0 9px 9px 0}
+.issue{display:grid;grid-template-columns:100px 1fr 100px;gap:14px;padding:15px 0;border-bottom:1px solid var(--line)}.issue:last-child{border-bottom:0}.issueid{font-weight:750;color:var(--blue)}.issue p{margin:5px 0;color:#475467;font-size:14px}.priority{font-size:12px;font-weight:700;color:var(--amber)}
+.steps{counter-reset:step;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.step{border:1px solid var(--line);border-radius:12px;padding:16px}.step:before{counter-increment:step;content:counter(step);display:inline-grid;place-items:center;width:28px;height:28px;border-radius:8px;background:var(--blue-bg);color:var(--blue);font-weight:800;margin-bottom:10px}
+footer{padding:20px 4px;color:var(--muted);font-size:12px}
+@media(max-width:800px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.cards,.steps{grid-template-columns:1fr}.hero{padding:26px 22px}.hero h1{font-size:25px}.issue{grid-template-columns:75px 1fr}.issue .priority{grid-column:2}}
+@media(max-width:520px){.wrap{padding:18px 12px 36px}.grid{gap:9px}.metric{padding:14px}.metric .value{font-size:20px}table{display:block;overflow-x:auto;white-space:normal}.panel{padding:15px}}
+
+  .topbar{position:sticky;top:0;z-index:200;height:56px;min-height:56px;max-height:56px;box-sizing:border-box;background:#fff;border-bottom:1px solid #e4e9f1;overflow:visible}
+  .topbar-inner{width:100%;max-width:none;margin:0;padding:0 24px;box-sizing:border-box;height:100%;display:flex;align-items:center;justify-content:flex-start;gap:0}
+  .brand{font-weight:700;font-size:15px;letter-spacing:-0.01em;color:#172033;text-decoration:none;white-space:nowrap;margin-right:40px}
+  .brand span{color:#2457d6}
+  .site-nav{display:flex;align-items:center;gap:4px;flex:0 0 auto;flex-wrap:wrap}
+  .site-nav a{text-decoration:none;color:#667085;font-size:14px;font-weight:500;padding:6px 14px;border-radius:6px;white-space:nowrap;transition:background .15s,color .15s}
+  .site-nav a:hover{color:#2457d6;background:#f4f7fb;text-decoration:none}
+  .site-nav a.active{color:#2457d6;background:#f4f7fb;font-weight:600}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span>AI 亲和原则</span></a>
+        <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="mintlify.html">友商对照</a>
+      <a href="reachability.html" class="active">社区诊断</a>
+      <a href="principles-overview.html">亲和原则</a>
+      <a href="community-ui.html">组件亲和</a>
+      <a href="data-analysis.html">数据分析</a>
+      <a href="skills.html">Skill 目录</a>
+    </nav>
+  </div>
+</div>
+<div class="page-wrapper">
+<aside class="peer-sidebar" aria-label="社区诊断导航">
+    <nav class="peer-nav">
+      <div class="peer-group-label">分析层面</div>
+      <ul>
+        <li><a href="reachability.html">分析概览</a></li>
+        <li><a href="reachability.html#index">找的到（收录索引）</a></li>
+        <li><a href="citability-html-ascend.html">读的懂（html 可读）</a></li>
+        <li><a href="citability-ascend.html">读的顺（双轨交付）</a></li>
+      </ul>
+                  <div class="peer-group-label">GEO 基线</div>
+      <ul>
+        <li><a href="ascend_geo_public_recon.html" class="active">公开信息摸底</a></li>
+        <li><a href="ascend_geo_baseline_metrics_report.html">指标体系与复测</a></li>
+        <li><a href="ascend_geo_metric_dictionary.html">指标字典</a></li>
+        <li><a href="ascend_geo_40_questions.html">24 题测试集</a></li>
+        <li><a href="ascend_geo_retest_plan.html">复测总体规划</a></li>
+      </ul>
+    </nav>
+  </aside>
+<div class="peer-main">
+<div class="wrap">
+<header class="hero">
+  <div class="eyebrow">GEO BASELINE · PHASE 01</div>
+  <h1>昇腾社区 GEO 基线诊断<br>公开信息摸底记录</h1>
+  <p>基于公开网页与公开搜索结果，对昇腾社区的内容入口、技术资料、版本信息及后续 GEO 测试缺口进行首轮摸底。本文是阶段性观察记录，不是完整的技术审计或 GEO 评分报告。</p>
+  <div class="meta"><span class="pill">检测范围：全站主要内容类型</span><span class="pill">数据来源：公开网页 / 搜索结果</span><span class="pill">阶段：初步摸底</span><span class="pill">日期：2026-10-19</span></div>
+</header>
+
+<section class="grid">
+  <div class="metric"><div class="label">阶段定位</div><div class="value">初步摸底</div><div class="note">非完整基线测试</div></div>
+  <div class="metric"><div class="label">主要内容入口</div><div class="value">已发现</div><div class="note">开发者、文档、支持、技术文章等</div></div>
+  <div class="metric"><div class="label">技术端点核验</div><div class="value">未完成</div><div class="note">robots / sitemap / llms 待确认</div></div>
+  <div class="metric"><div class="label">AI 可见性基线</div><div class="value">待检测</div><div class="note">尚未执行固定问题集测试</div></div>
+</section>
+
+<section class="panel">
+  <h2>01｜执行摘要</h2>
+  <p>首轮公开信息检查已确认：昇腾社区具有开发资源、产品与工具、文档、学习资源、技术文章及支持服务等多个内容入口；公开页面也能检索到 CANN 等产品的版本说明、安装与升级资料。这为后续建立 GEO 测试问题集和内容样本提供了基础。</p>
+  <div class="callout"><strong>重要边界：</strong>目前没有完成全站爬取、HTTP 状态码与响应头检查、搜索引擎索引覆盖统计，也没有在多个 AI 平台上运行固定问题集。因此，本记录不提供虚构的 GEO 总分、引用率或品牌提及率。</div>
+</section>
+
+<section class="panel">
+  <h2>02｜公开页面摸底</h2>
+  <p class="lead">以下为已通过公开搜索或页面内容提取观察到的入口与内容类型；“已观察”不代表已对该类页面完成全量抽样。</p>
+  <div class="cards">
+    <article class="source">
+      <div class="type">入口页面</div><h3><a href="https://www.hiascend.com/developer" target="_blank" rel="noopener">昇腾开发者页面</a></h3>
+      <p>公开页面展示开发资源、学习路径、在线课程与实验、认证、活动及开发者支持等内容。</p>
+      <span class="status done">已观察</span>
+    </article>
+    <article class="source">
+      <div class="type">技术文档</div><h3><a href="https://www.hiascend.com/cann/document" target="_blank" rel="noopener">CANN 文档入口</a></h3>
+      <p>公开搜索结果可见版本说明、快速安装、编程指南、软件安装等文档线索。页面正文提取结果不完整，需浏览器渲染和页面抽样复核。</p>
+      <span class="status partial">样本级观察</span>
+    </article>
+    <article class="source">
+      <div class="type">支持服务</div><h3><a href="https://www.hiascend.com/support/" target="_blank" rel="noopener">昇腾支持页面</a></h3>
+      <p>公开页面包含文档、论坛帮助、技术工单、常见问题、故障案例、产品公告等支持入口。</p>
+      <span class="status done">已观察</span>
+    </article>
+    <article class="source">
+      <div class="type">技术内容</div><h3><a href="https://www.hiascend.com/developer/blog/post-topic" target="_blank" rel="noopener">开发者博客 / 技术文章</a></h3>
+      <p>公开检索可找到 CANN 相关技术文章及博客入口；尚未统计文章总量、更新频率、结构质量或页面覆盖率。</p>
+      <span class="status partial">样本级观察</span>
+    </article>
+  </div>
+</section>
+
+<section class="panel">
+  <h2>03｜技术资料与版本信息观察</h2>
+  <table>
+    <thead><tr><th style="width:22%">观察点</th><th>公开信息观察</th><th style="width:17%">状态</th><th style="width:24%">对 GEO 的意义</th></tr></thead>
+    <tbody>
+      <tr><td>CANN 版本文档</td><td>公开搜索结果显示 CANN 文档入口涉及 CANN 9.2.0-beta.2 等版本信息；结果中也可检索到版本说明与安装资料。</td><td><span class="status partial">样本已发现</span></td><td>需确认版本、发布日期与适用范围是否清晰，避免 AI 混用新旧版本。</td></tr>
+      <tr><td>版本兼容关系</td><td>公开资料中存在 CANN、驱动、固件等版本配套信息，也存在不同版本文档。</td><td><span class="status partial">样本已发现</span></td><td>适合构建“版本兼容性”问题集，测试 AI 是否能给出准确且可追溯的组合。</td></tr>
+      <tr><td>升级与安装步骤</td><td>公开文档包含升级注意事项、安装前置条件和安装验证等内容线索。</td><td><span class="status partial">样本已发现</span></td><td>需检查步骤顺序、前置条件、风险提示和验证结果是否易于提取。</td></tr>
+      <tr><td>故障排查资料</td><td>公开搜索结果中可见 AI Core Error 等故障排查资料线索。</td><td><span class="status partial">样本已发现</span></td><td>后续可用真实故障问法验证 AI 答案是否引用官方资料且步骤正确。</td></tr>
+      <tr><td>全站内容一致性</td><td>尚未系统对比产品页、文档、论坛、博客中的术语、版本和结论。</td><td><span class="status pending">待检测</span></td><td>避免跨页面信息冲突导致模型生成混合或过期答案。</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="panel">
+  <h2>04｜技术端点检查：当前不能下结论</h2>
+  <table>
+    <thead><tr><th style="width:20%">检查对象</th><th>本轮实际情况</th><th style="width:20%">结论</th><th>下一步核验方式</th></tr></thead>
+    <tbody>
+      <tr><td><code>robots.txt</code></td><td>尝试通过当前检索工具打开时，工具未能访问该 URL；运行环境直接请求也因 DNS 解析失败而未取得响应。</td><td><span class="status pending">待检测</span></td><td>从可正常联网的浏览器或命令行检查 HTTP 状态码、响应内容、AI 爬虫规则及 Sitemap 声明。</td></tr>
+      <tr><td><code>sitemap.xml</code></td><td>检索工具因 XML 内容类型未能正常提取；未获得可用于统计的完整 URL 列表。</td><td><span class="status pending">待检测</span></td><td>确认响应状态、Content-Type、XML 可解析性、URL 数量、更新时间及重要页面覆盖情况。</td></tr>
+      <tr><td><code>llms.txt</code></td><td>当前工具无法完整读取该 URL 的响应；尚未独立核验其内容、格式或实际可访问性。</td><td><span class="status pending">待检测</span></td><td>使用可联网环境检查状态码、文件大小、文本内容与链接有效性；不能仅凭工具读取失败判定文件异常。</td></tr>
+      <tr><td>页面渲染 / 抓取</td><td>CANN 文档页面的本次文本提取未展示完整正文，但这本身不能证明搜索引擎或 AI 爬虫无法读取正文。</td><td><span class="status pending">待检测</span></td><td>对比原始 HTML、浏览器渲染 DOM 与可见正文，并抽样检查标题、正文、链接和结构化数据。</td></tr>
+    </tbody>
+  </table>
+  <p class="small">说明：本轮工具访问失败只代表“未能完成核验”，不等于站点配置错误，也不应直接记为网站缺陷。</p>
+</section>
+
+<section class="panel">
+  <h2>05｜初步问题清单</h2>
+  <p class="lead">以下是待验证的风险假设，不是已经证实的缺陷。优先级表示建议的核验顺序。</p>
+  <div class="issue">
+    <div class="issueid">GEO-001</div>
+    <div><h3>爬虫规则与 AI 访问权限尚未核验</h3><p>目前未取得 robots.txt 的有效响应内容，无法判断目标爬虫是否被允许访问关键目录。</p><p><strong>验证证据：</strong>HTTP 响应、规则全文、重点 URL 的规则匹配结果。</p></div>
+    <div class="priority">优先级 P1</div>
+  </div>
+  <div class="issue">
+    <div class="issueid">GEO-002</div>
+    <div><h3>Sitemap 覆盖率尚未核验</h3><p>尚未解析 Sitemap，也未对照公开重要页面建立 URL 覆盖统计。</p><p><strong>验证证据：</strong>URL 总数、规范 URL 比例、失效 URL、重点内容类型覆盖率。</p></div>
+    <div class="priority">优先级 P1</div>
+  </div>
+  <div class="issue">
+    <div class="issueid">GEO-003</div>
+    <div><h3>llms.txt 的内容与有效性尚未核验</h3><p>工具未能完整读取响应，当前不能判断文件是否有效、内容是否合理或是否需要优化。</p><p><strong>验证证据：</strong>文件内容、链接可达性、目录选择与实际站点内容的一致性。</p></div>
+    <div class="priority">优先级 P2</div>
+  </div>
+  <div class="issue">
+    <div class="issueid">GEO-004</div>
+    <div><h3>文档正文的可提取性需要复核</h3><p>一次页面提取没有呈现完整正文，原因尚不明确，不能据此认定页面存在渲染或抓取问题。</p><p><strong>验证证据：</strong>原始 HTML、渲染 DOM、页面正文和内部链接对照。</p></div>
+    <div class="priority">优先级 P1</div>
+  </div>
+  <div class="issue">
+    <div class="issueid">GEO-005</div>
+    <div><h3>多版本资料可能带来答案混用风险</h3><p>公开资料中存在多个软件版本及配套说明；是否导致 AI 输出过期或混合答案，尚未测试。</p><p><strong>验证证据：</strong>固定版本问题集、官方来源引用、答案版本准确率。</p></div>
+    <div class="priority">优先级 P1</div>
+  </div>
+  <div class="issue">
+    <div class="issueid">GEO-006</div>
+    <div><h3>AI 搜索可见性没有基线数据</h3><p>尚未运行固定问题集，因此品牌提及率、官方来源引用率、答案准确率等指标均无实测值。</p><p><strong>验证证据：</strong>平台、问题、日期、完整答案、引用 URL、评分记录。</p></div>
+    <div class="priority">优先级 P1</div>
+  </div>
+  <div class="issue">
+    <div class="issueid">GEO-007</div>
+    <div><h3>全站内容覆盖与结构质量未量化</h3><p>论坛、技术文章、产品页、文档等只做了入口级摸底，尚未完成分层抽样或全量爬取。</p><p><strong>验证证据：</strong>各类型 URL 数量、样本量、标题与正文完整度、内部链接及更新时间。</p></div>
+    <div class="priority">优先级 P2</div>
+  </div>
+  <div class="issue">
+    <div class="issueid">GEO-008</div>
+    <div><h3>Agent 任务可执行性尚未测试</h3><p>尚未用具体任务验证 AI 能否找到正确文档、识别适用版本、按步骤完成任务并确认结果。</p><p><strong>验证证据：</strong>任务成功率、步骤正确率、失败原因及官方页面引用情况。</p></div>
+    <div class="priority">优先级 P2</div>
+  </div>
+</section>
+
+<section class="panel">
+  <h2>06｜本轮结论与下一阶段计划</h2>
+  <div class="bluebox"><strong>当前结论：</strong>已完成公开内容入口与部分技术资料的首轮摸底，并形成待验证风险清单；尚不能给出昇腾社区的完整 GEO 基线分数，也不能将未核验项目判定为问题。</div>
+  <div class="steps" style="margin-top:16px">
+    <div class="step"><h3>技术可访问性核验</h3><p>检查 robots.txt、Sitemap、llms.txt、HTTP 状态、页面渲染与重要链接可达性。</p><span class="status pending">待执行</span></div>
+    <div class="step"><h3>全站样本与指标采集</h3><p>建立 URL 清单，按首页、产品、文档、论坛、技术文章等类型抽样并记录测量口径。</p><span class="status pending">待执行</span></div>
+    <div class="step"><h3>AI 答案基线测试</h3><p>建立固定问题集，记录品牌提及、官方引用、事实准确性、版本准确性和任务成功率。</p><span class="status pending">待执行</span></div>
+  </div>
+</section>
+
+<section class="panel">
+  <h2>07｜公开参考链接</h2>
+  <table>
+    <thead><tr><th>来源</th><th>用途</th></tr></thead>
+    <tbody>
+      <tr><td><a href="https://www.hiascend.com/developer" target="_blank" rel="noopener">昇腾开发者页面</a></td><td>开发资源、学习路径及开发者服务入口摸底。</td></tr>
+      <tr><td><a href="https://www.hiascend.com/cann/document" target="_blank" rel="noopener">CANN 文档入口</a></td><td>技术文档与版本信息入口。</td></tr>
+      <tr><td><a href="https://www.hiascend.com/support/" target="_blank" rel="noopener">昇腾支持页面</a></td><td>支持服务、FAQ、工单和故障案例入口。</td></tr>
+      <tr><td><a href="https://www.hiascend.com/developer/blog/post-topic" target="_blank" rel="noopener">开发者博客 / 技术文章入口</a></td><td>技术文章与博客内容入口。</td></tr>
+      <tr><td><a href="https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics" target="_blank" rel="noopener">Google：JavaScript SEO 基础</a></td><td>作为页面渲染与内容可发现性检查的通用参考。</td></tr>
+      <tr><td><a href="https://developers.google.com/search/docs/crawling-indexing/robots/intro" target="_blank" rel="noopener">Google：robots.txt 说明</a></td><td>作为爬取控制与索引控制区别的通用参考。</td></tr>
+    </tbody>
+  </table>
+</section>
+<footer>文档版本：v0.1｜定位：公开信息摸底记录｜适用范围：昇腾社区 GEO 诊断前期｜所有“待检测”项均需通过后续实测补充证据，不能直接作为已确认问题或优化成效。</footer>
+</div>
+
+</div></div>
+
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js"></script>
+</body>
+</html>

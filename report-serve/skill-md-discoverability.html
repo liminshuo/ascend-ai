@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Markdown 正文可发现 · Skill · AI 亲和原则</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid var(--color-border);
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: 100%; max-width: none; margin: 0; padding: 0 24px; box-sizing: border-box;
+    height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: var(--color-text); text-decoration: none; white-space: nowrap; margin-right: 40px;
+  }
+  .topbar .brand span { color: var(--color-primary); }
+  .topbar .site-nav { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; flex-wrap: wrap; }
+  .topbar .site-nav > a {
+    text-decoration: none; color: var(--color-text-secondary); font-size: var(--text-body); font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .topbar .site-nav > a:hover { color: var(--color-primary); background: var(--color-bg); text-decoration: none; }
+  .topbar .site-nav > a.active { color: var(--color-primary); background: var(--color-bg); font-weight: 600; }
+
+  body.inner-page[data-page="skill-detail"] .page-wrapper {
+    min-height: 100vh;
+    background: #fff;
+  }
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: var(--space-stack, 16px);
+  }
+  body.inner-page[data-page="skill-detail"] .main-content {
+    padding-top: var(--content-main-pad-top, 16px);
+    padding-bottom: 32px;
+    padding-left: 0;
+    padding-right: 0;
+    background: #fff;
+    min-height: calc(100vh - var(--header-height, 56px));
+  }
+  body.inner-page[data-page="skill-detail"] .main-content > .page-header,
+  body.inner-page[data-page="skill-detail"] .main-content > .page-meta,
+  body.inner-page[data-page="skill-detail"] .main-content > .section {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page[data-page="skill-detail"] .main-content > .section {
+    margin-bottom: 32px;
+  }
+  body.inner-page[data-page="skill-detail"] .main-content > .section:first-of-type > h2 {
+    margin-top: 0;
+  }
+  .page-header > h1 {
+    font-family: var(--font);
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1-weight, 600);
+    line-height: var(--text-h1-lh);
+    letter-spacing: -0.02em;
+    margin: 0;
+    padding-top: var(--space-h1-pad-y, 32px);
+    padding-bottom: var(--space-h1-pad-y, 32px);
+    color: var(--color-text);
+  }
+  .page-meta {
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  .page-meta a { color: var(--color-primary); text-decoration: none; }
+  .page-meta a:hover { text-decoration: underline; }
+  .page-meta code {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+  }
+  body.inner-page[data-page="skill-detail"] .main-content .section > h2 {
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    letter-spacing: -0.01em;
+    margin-top: 0;
+    margin-bottom: var(--space-stack, 16px);
+    padding-top: var(--space-h2-pad-y, 16px);
+    padding-bottom: 0;
+    border-bottom: none;
+    color: var(--color-text);
+  }
+  .page-lead {
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  .page-lead a { color: var(--color-primary); text-decoration: none; }
+  .page-lead a:hover { text-decoration: underline; }
+  .bg-list {
+    margin: 0;
+    padding-left: 1.25em;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text);
+  }
+  .bg-list li + li { margin-top: 10px; }
+  .bg-list strong { font-weight: 650; }
+  .section ul.plain-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .section ul.plain-list li + li { margin-top: 10px; }
+  .probe-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+  }
+  .probe-table th,
+  .probe-table td {
+    border: 1px solid #e8eef5;
+    border-top: none;
+    border-left: none;
+    vertical-align: top;
+    padding: 10px 12px;
+    text-align: left;
+  }
+  .probe-table thead tr:first-child > th { border-top: 1px solid #e8eef5; }
+  .probe-table th:first-child,
+  .probe-table td:first-child { border-left: 1px solid #e8eef5; }
+  .probe-table th { background: #f5f6f8; font-weight: 650; width: 22%; }
+  .probe-table code { font-size: 12px; }
+  .skill-detail-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: var(--space-stack, 16px);
+  }
+  .skill-detail-actions a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 88px;
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: 1px solid #d0d5dd;
+    background: #fff;
+    color: var(--color-text);
+    font-size: 13px;
+    font-weight: 650;
+    line-height: 20px;
+    text-decoration: none;
+    box-sizing: border-box;
+  }
+  .skill-detail-actions a:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+  .skill-detail-actions a.is-primary {
+    border-color: var(--color-primary);
+    background: var(--color-primary);
+    color: #fff;
+  }
+  .skill-detail-actions a.is-primary:hover {
+    opacity: 0.92;
+    color: #fff;
+  }
+  .crumb {
+    margin: 0 0 8px;
+    font-size: 13px;
+    line-height: 20px;
+    color: var(--color-text-secondary);
+  }
+  .crumb a {
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+  .crumb a:hover { text-decoration: underline; }
+</style>
+</head>
+<body class="inner-page" data-page="skill-detail" data-no-surface-tabs>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span>AI 亲和原则</span></a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="mintlify.html">友商对照</a>
+      <a href="reachability.html">社区诊断</a>
+      <a href="principles-overview.html">亲和原则</a>
+      <a href="community-ui.html">组件亲和</a>
+      <a href="data-analysis.html">数据分析</a>
+      <a href="skills.html" class="active">Skill 目录</a>
+    </nav>
+  </div>
+</div>
+
+<div class="page-wrapper">
+  <main class="main-content">
+    <div class="page-header">
+      <p class="crumb"><a href="skills.html">Skill 目录</a> / Markdown 正文可发现</p>
+      <h1>Markdown 正文可发现</h1>
+    </div>
+    <p class="page-meta">
+      Skill ID：<code>md-discoverability</code>
+      · 依据：<a href="principles-format.html">Markdown 正文可直取</a> · 全量原则 #7
+      · 成对：<a href="skill-html-to-md.html">html-to-md</a>（生成 MD）
+    </p>
+
+    <section class="section" id="overview">
+      <h2>核心命题</h2>
+      <p class="page-lead">核验人读页是否声明平行 Markdown（<code>rel="alternate" type="text/markdown"</code> 等），以及对应 <code>.md</code> 是否可达。与 <strong>html-to-md</strong> 成对：一个产 MD，一个验发现。不负责转换正文。</p>
+      <div class="skill-detail-actions">
+        <a class="is-primary" href="exports/md-discoverability.zip" download="md-discoverability.zip">下载 Skill</a>
+        <a href="md-discover-agentarts.html">查看示例报告</a>
+      </div>
+    </section>
+
+    <section class="section" id="input">
+      <h2>输入</h2>
+      <table class="probe-table">
+        <thead><tr><th>字段</th><th>必填</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>人读页 URL</td><td>是（主）</td><td>如 <code>https://agentorchard.huaweicloud.com/agentarts.html</code></td></tr>
+          <tr><td>预期 .md URL</td><td>可选</td><td>缺则从 alternate 解析，或同路径改 <code>.md</code> 作候选</td></tr>
+          <tr><td>站点根</td><td>可选</td><td>拼相对 href</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section" id="workflow">
+      <h2>工作流</h2>
+      <ol class="bg-list">
+        <li><strong>拉取人读页</strong>：解析 alternate / 等价 markdown 声明。</li>
+        <li><strong>可达核验</strong>：声明 URL + 候选路径；记状态码与 Content-Type。</li>
+        <li><strong>轻量正文信号</strong>（可选）：非空、含 <code>#</code> 标题。</li>
+        <li><strong>输出报告</strong>：Part1 现状 + Part2 补声明建议；导出 PDF；双写。</li>
+      </ol>
+    </section>
+
+    <section class="section" id="boundary">
+      <h2>边界</h2>
+      <ol class="bg-list">
+        <li>不把 HTML 转成 MD → 用 <code>html-to-md</code>。</li>
+        <li>不深审 robots / sitemap / llms 全文。</li>
+        <li>不编造不存在的 link 标签。</li>
+      </ol>
+    </section>
+
+    <section class="section" id="usage">
+      <h2>如何使用</h2>
+      <ol class="bg-list">
+        <li>下载 Skill 包，解压到 <code>.cursor/skills/md-discoverability/</code>（或个人 skills 目录）。</li>
+        <li>准备人读页 URL；可选给出预期 <code>.md</code> 地址。</li>
+        <li>在对话中调用，例如：按 md-discoverability 核验 <code>https://agentorchard.huaweicloud.com/agentarts.html</code>。</li>
+        <li>对照示例：<a href="md-discover-agentarts.html">智果 AgentArts · Markdown 可发现</a>。</li>
+      </ol>
+    </section>
+  </main>
+</div>
+
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js"></script>
+</body>
+</html>

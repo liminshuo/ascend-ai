@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTML 转化成 Markdown · AI 亲和原则</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid var(--color-border);
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin: 0 auto;
+    padding: 0;
+    box-sizing: border-box;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: var(--color-text); text-decoration: none; white-space: nowrap;
+  }
+  .topbar .brand span { color: var(--color-primary); }
+  .topbar .brand:hover { text-decoration: none; opacity: 0.9; }
+  .topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  body.inner-page .page-wrapper { min-height: 100vh; }
+
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: var(--space-stack, 16px);
+  }
+  .page-header > h1 {
+    font-family: var(--font);
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1-weight, 600);
+    line-height: var(--text-h1-lh);
+    letter-spacing: -0.02em;
+    margin: 0;
+    padding-top: var(--space-h1-pad-y, 32px);
+    padding-bottom: var(--space-h1-pad-y, 32px);
+    color: var(--color-text);
+  }
+  .page-meta {
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  .page-meta a { color: var(--color-primary); text-decoration: none; }
+  .page-meta a:hover { text-decoration: underline; }
+
+  body.inner-page.agent-entry-page .page-wrapper {
+    background: #fff;
+    padding-top: var(--header-height, 56px);
+  }
+  body.inner-page.agent-entry-page .main-content {
+    padding-top: 16px;
+    padding-bottom: 32px;
+    padding-left: 0;
+    padding-right: 0;
+    background: #fff;
+    min-height: calc(100vh - var(--header-height, 56px));
+  }
+  body.inner-page.agent-entry-page .main-content > .page-header,
+  body.inner-page.agent-entry-page .main-content > .page-meta,
+  body.inner-page.agent-entry-page .main-content > .section {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page.agent-entry-page .main-content .section > h2 {
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    letter-spacing: -0.01em;
+    margin-top: 0;
+    margin-bottom: var(--space-stack, 16px);
+    padding-top: var(--space-h2-pad-y, 16px);
+    padding-bottom: 0;
+    border-bottom: none;
+    color: var(--color-text);
+  }
+  body.inner-page.agent-entry-page .main-content .section > h3 {
+    font-size: var(--text-h3, 18px);
+    font-weight: var(--text-h3-weight, 650);
+    line-height: var(--text-h3-lh, 28px);
+    letter-spacing: -0.01em;
+    margin-top: 0;
+    margin-bottom: var(--space-stack, 16px);
+    padding-top: var(--space-h3-pad-y, 16px);
+    padding-bottom: var(--space-h3-pad-y, 16px);
+    border-bottom: none;
+    color: var(--color-text);
+  }
+  body.inner-page.agent-entry-page .main-content > .section:first-of-type > h2 {
+    margin-top: 0;
+  }
+  body.inner-page.agent-entry-page .main-content > .section {
+    margin-bottom: 32px;
+  }
+  body.inner-page.agent-entry-page .main-content .section > h3.aj-caption {
+    margin: 0 0 var(--space-stack, 16px);
+    padding-top: 0;
+    padding-bottom: 0;
+    text-align: left;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  .page-lead {
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  .page-lead a { color: var(--color-primary); text-decoration: none; }
+  .page-lead a:hover { text-decoration: underline; }
+  .bg-list {
+    margin: 0;
+    padding-left: 1.25em;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text);
+  }
+  .bg-list li + li { margin-top: 10px; }
+  .bg-list strong { font-weight: 650; }
+  .sev {
+    display: inline-block;
+    margin-right: 6px;
+    padding: 1px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 18px;
+    vertical-align: 1px;
+  }
+  .sev-p0 { background: #fee2e2; color: #991b1b; }
+  .sev-p1 { background: #ffedd5; color: #9a3412; }
+  .sev-p2 { background: #fef9c3; color: #854d0e; }
+  .sev-ok { background: #dcfce7; color: #166534; }
+  .sev-ask { background: #e0e7ff; color: #3730a3; }
+
+  .file-sample {
+    margin: 0 0 var(--space-stack, 16px);
+    padding: 0;
+    background: #1e1e1e;
+    border: 1px solid #111;
+    border-radius: 16px;
+    overflow: hidden;
+    color-scheme: dark;
+    scrollbar-color: #5c5c5c #1e1e1e;
+  }
+  .file-sample figcaption {
+    margin: 0;
+    padding: 12px 14px;
+    font-size: 14px;
+    font-weight: 650;
+    line-height: 22px;
+    color: #a3a3a3;
+    border-bottom: 1px solid #333;
+  }
+  .file-sample figcaption code {
+    font-size: inherit;
+    color: #e8e8e8;
+    background: none;
+  }
+  .file-sample figcaption a {
+    color: #e8e8e8;
+    text-decoration: none;
+  }
+  .file-sample figcaption a:hover { text-decoration: underline; }
+  .file-sample pre {
+    margin: 0;
+    padding: 12px 14px 14px;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: 12px;
+    line-height: 20px;
+    color: #e8e8e8;
+    background: transparent;
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .file-sample pre code {
+    display: block;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    color: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    font-family: inherit;
+    white-space: inherit;
+  }
+  .file-sample .cmt { color: #737373; }
+
+  #optimized .file-sample {
+    background: #fafafa;
+    border: 1px solid #e5e5e5;
+    border-radius: 16px;
+    color-scheme: light;
+    scrollbar-color: #c4c4c4 #fafafa;
+  }
+  #optimized .file-sample figcaption {
+    padding: 12px 14px;
+    color: #525252;
+    background: #fafafa;
+    border-bottom-color: #e5e5e5;
+  }
+  #optimized .file-sample figcaption code { color: #191919; }
+  #optimized .file-sample pre,
+  #optimized .file-sample pre code {
+    color: #191919;
+    background: #fafafa;
+    font-size: 12px;
+    line-height: 20px;
+  }
+  #optimized .file-sample .cmt { color: #737373; }
+  #optimized .file-sample .add { background: rgba(34, 197, 94, 0.18); border-radius: 2px; padding: 0 3px; }
+  #optimized .file-sample .keep { background: rgba(167, 139, 250, 0.28); border-radius: 2px; padding: 0 3px; }
+  #optimized .file-sample .ask { background: rgba(250, 204, 21, 0.35); border-radius: 2px; padding: 0 3px; }
+
+  .probe-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+  }
+  .probe-table th,
+  .probe-table td {
+    border: 1px solid #e8eef5;
+    border-top: none;
+    border-left: none;
+    vertical-align: top;
+    padding: 10px 12px;
+    text-align: left;
+  }
+  .probe-table thead tr:first-child > th { border-top: 1px solid #e8eef5; }
+  .probe-table th:first-child,
+  .probe-table td:first-child { border-left: 1px solid #e8eef5; }
+  .probe-table th { background: #f5f6f8; font-weight: 650; }
+  .probe-table code { font-size: 12px; }
+
+  .topbar .btn-export-pdf,
+  .btn-export-pdf,
+  .btn-download-llms {
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #d0d5dd;
+    background: #fff;
+    color: var(--color-text, #191919);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 650;
+    line-height: 20px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    box-sizing: border-box;
+  }
+  .topbar .btn-export-pdf:hover,
+  .btn-export-pdf:hover,
+  .btn-download-llms:hover {
+    border-color: var(--color-primary, #1476ff);
+    color: var(--color-primary, #1476ff);
+    text-decoration: none;
+  }
+  .btn-download-llms.is-primary {
+    border-color: var(--color-primary, #1476ff);
+    background: var(--color-primary, #1476ff);
+    color: #fff;
+  }
+  .btn-download-llms.is-primary:hover {
+    opacity: 0.92;
+    color: #fff;
+  }
+  .download-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 var(--space-stack, 16px);
+  }
+
+  @media print {
+    @page { size: A4; margin: 14mm 12mm; }
+    html, body {
+      background: #fff !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .topbar,
+    .download-row,
+    .btn-export-pdf,
+    .btn-download-llms,
+    #module-sidebar,
+    .sidebar { display: none !important; }
+    body.inner-page .page-wrapper,
+    body.inner-page.agent-entry-page .page-wrapper,
+    body.inner-page.agent-entry-page .main-content {
+      padding: 0 !important;
+      margin: 0 !important;
+      background: #fff !important;
+      min-height: 0 !important;
+      border: none !important;
+    }
+    body.inner-page.agent-entry-page .main-content > .page-header,
+    body.inner-page.agent-entry-page .main-content > .page-meta,
+    body.inner-page.agent-entry-page .main-content > .section {
+      width: 100% !important;
+      max-width: none !important;
+      margin-inline: 0 !important;
+    }
+    .file-sample,
+    .probe-table,
+    .bg-list { break-inside: avoid; }
+    a[href]::after { content: none !important; }
+  }
+</style>
+</head>
+<body class="inner-page agent-entry-page" data-module="principles" data-page="html-to-md-agentarts" data-no-surface-tabs>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="https://liminshuo.github.io/ascend-ai/principles-overview.html" target="_blank" rel="noopener"><span>AI 亲和原则</span></a>
+    <div class="topbar-actions">
+      <a class="btn-download-llms is-primary" href="exports/agentarts.md" download="agentarts.md">下载 Markdown</a>
+      <button type="button" class="btn-export-pdf" id="btn-export-pdf">导出 PDF</button>
+    </div>
+  </div>
+</div>
+
+<div class="page-wrapper">
+  <main class="main-content">
+    <div class="page-header">
+      <h1>HTML 转化成 Markdown</h1>
+    </div>
+    <p class="page-meta">
+      源页面：<a href="https://agentorchard.huaweicloud.com/agentarts.html" target="_blank" rel="noopener">https://agentorchard.huaweicloud.com/agentarts.html</a>
+      · 生成日期：2026-10-19
+      · 依据：<a href="principles-format.html">Markdown 正文可直取</a> · <a href="principles-noise.html">推荐内容后置</a>
+    </p>
+
+    <section class="section" id="analysis">
+      <h2>Part1. 转换说明</h2>
+
+      <h3 id="source">来源与可达</h3>
+      <table class="probe-table">
+        <thead><tr><th>项</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>最终 URL</td><td><code>https://agentorchard.huaweicloud.com/agentarts.html</code></td></tr>
+          <tr><td>HTTP</td><td>200 · HTML ≈ 127 KB</td></tr>
+          <tr><td>页面类型</td><td>智果园营销落地页（智能体平台 / AgentArts）</td></tr>
+          <tr><td>输入模式</td><td>页面 URL（主输入）</td></tr>
+        </tbody>
+      </table>
+
+      <h3 id="index">索引模块</h3>
+      <p class="page-lead">MD 文首只声明两个 URL（不加长说明）：</p>
+      <table class="probe-table">
+        <thead><tr><th>项</th><th>URL</th></tr></thead>
+        <tbody>
+          <tr><td>根 llms</td><td><code>https://www.huaweicloud.com/llms.txt</code></td></tr>
+          <tr><td>对应 HTML</td><td><code>https://agentorchard.huaweicloud.com/agentarts.html</code></td></tr>
+        </tbody>
+      </table>
+
+      <h3 id="extract">正文定位与清洗</h3>
+      <ol class="bg-list">
+        <li><strong>定位</strong>：主叙事；丢弃顶栏、登录/购物车、语言切换、页脚。</li>
+        <li><strong>去重</strong>：轮播重复只留一份。</li>
+        <li><strong>按钮 / CTA</strong>：有效 href 写入 MD。</li>
+        <li><strong>不加</strong>：YAML 清洗声明；报告不提供镜像 HTML 下载。</li>
+      </ol>
+
+      <h3 id="problems">问题与发现</h3>
+      <ol class="bg-list">
+        <li><span class="sev sev-p2">P2</span> <strong>营销页重复块多。</strong> 已合并轮播克隆。</li>
+        <li><span class="sev sev-p2">P2</span> <strong>根 llms 当前 404。</strong> 索引仍声明约定 URL。</li>
+        <li><span class="sev sev-ok">完成</span> <strong>MD 文首已声明根 llms + 对应 HTML。</strong></li>
+      </ol>
+    </section>
+
+    <section class="section" id="optimized">
+      <h2>Part2. 转换结果</h2>
+      <p class="page-lead">清洗后的建议稿；文首为索引模块（根 llms + 对应 HTML）。</p>
+      <div class="download-row">
+        <a class="btn-download-llms is-primary" href="exports/agentarts.md" download="agentarts.md">下载 agentarts.md</a>
+      </div>
+      <h3 class="aj-caption">Markdown 建议稿</h3>
+      <figure class="file-sample">
+        <pre><code>&gt; ## 索引
+&gt; 根 llms：https://www.huaweicloud.com/llms.txt
+&gt; 对应 HTML：https://agentorchard.huaweicloud.com/agentarts.html
+
+# 智能体平台
+
+&gt; 人人都能构建自己的企业级智能体
+
+## 智果 AgentArts 智能体平台
+
+智能流畅的智能体开发体验，高性能安全稳定运行时，端到端可观测可评估。
+
+- [了解详情](https://www.huaweicloud.com/product/agentarts.html)
+
+## openJiuwen 开源智能体平台
+
+精准 · 易用 · 高效，打造生产级 AI Agent。
+
+- [了解详情](https://www.openjiuwen.com/)
+
+## 让 Agent 用好华为云
+
+### 官方 Skills 库
+
+Skills 库，让 Agent 更智能、更高效，轻松解锁华为云的无限可能。
+
+通过与 Agent 对话安装华为云 Skills：
+
+```bash
+npx skills add huaweicloud/huaweicloud-skills --skill huawei-cloud-find-skills
+```
+
+- [探索更多 Skills](https://skills.huaweicloud.com/)
+
+### Hands-On 实践中心
+
+化繁为简，企业级高价值实践案例一键部署。
+
+- 告别生硬服务，码道 + MaaS 实现物业智能助手
+- AI 数智时代：股票智能预测系统功能实战
+- [发现更多实践案例](https://developer.huaweicloud.com/practicecenter.html)
+
+## AI 加持，开发工具进化升级
+
+### AI SHELL
+
+云端即开即用，无需安装；自然语言输入，掌控云服务。
+
+- [了解详情](https://devstation.developer.huaweicloud.com/aidevspace?target=/aishell)
+
+### AI CLI 工具
+
+以智能对话替代繁琐命令。
+
+- 敬请期待（页面为占位，无有效跳转）
+
+### 华为云 API / SDK（V3）
+
+简单易用、快速集成。入口维度：
+
+- API
+- SDK
+- Terraform
+
+#### API 开发
+
+CodeArts API：面向开发者的 API 设计、开发、文档、调试与自动化测试一体化协作平台。
+
+#### API 调试
+
+API Explorer：API 检索与平台调试、在线命令行、多语言 SDK 示例、帮助文档。
+
+#### API 诊断
+
+根据错误码与 `request_id` 等提供诊断方案，并关联调用链路、CLS 日志、相似错误码与 API 文档。
+
+## 验证专业技能 · SDK
+
+页面列出多语言 SDK 入口（含 Java、Python、Go、Node.js、.NET、PHP、C++ 及「全部 SDK」）。
+
+### Terraform Explorer
+
+开源 IT 基础设施编排工具；Explorer 提供资源检索与可视化调试。
+
+### KooCLI
+
+华为云命令行工具：以命令行调用 API Explorer 上的 OpenAPI，管理云服务资源。
+
+## 更多开放资源
+
+| 资源 | 说明 |
+|------|------|
+| 开发者空间 | 面向开发者的「经验即服务」云，汇集开发者流量 |
+| 华为云 API/SDK | API Explorer：检索、调试、CLI、多语言 SDK 示例 |
+| 云学堂 | 产教融合，高校专业建设与数字化人才培养 |
+| 开发者社区 | 社区博客与问答 |
+
+---
+
+智果园，为 Agent 而生。
+
+- [立即体验](https://agentorchard.huaweicloud.com/try-ai.html)
+</code></pre>
+      </figure>
+      <h3 id="notes">编写说明</h3>
+      <ol class="bg-list">
+        <li>索引模块只声明 URL，不写清洗话术。</li>
+        <li>CTA 保留为绝对链接。</li>
+        <li>报告仅提供 Markdown 下载。</li>
+      </ol>
+    </section>
+  </main>
+</div>
+
+<script>
+(function () {
+  var btn = document.getElementById('btn-export-pdf');
+  if (btn) btn.addEventListener('click', function () { window.print(); });
+})();
+</script>
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js"></script>
+</body>
+</html>

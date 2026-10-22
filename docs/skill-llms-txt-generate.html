@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>llms.txt 配置诊断 · Skill · AI 亲和原则</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid var(--color-border);
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: 100%; max-width: none; margin: 0; padding: 0 24px; box-sizing: border-box;
+    height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: var(--color-text); text-decoration: none; white-space: nowrap; margin-right: 40px;
+  }
+  .topbar .brand span { color: var(--color-primary); }
+  .topbar .site-nav { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; flex-wrap: wrap; }
+  .topbar .site-nav > a {
+    text-decoration: none; color: var(--color-text-secondary); font-size: var(--text-body); font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .topbar .site-nav > a:hover { color: var(--color-primary); background: var(--color-bg); text-decoration: none; }
+  .topbar .site-nav > a.active { color: var(--color-primary); background: var(--color-bg); font-weight: 600; }
+
+  body.inner-page[data-page="skill-detail"] .page-wrapper {
+    min-height: 100vh;
+    background: #fff;
+  }
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: var(--space-stack, 16px);
+  }
+  body.inner-page[data-page="skill-detail"] .main-content {
+    padding-top: var(--content-main-pad-top, 16px);
+    padding-bottom: 32px;
+    padding-left: 0;
+    padding-right: 0;
+    background: #fff;
+    min-height: calc(100vh - var(--header-height, 56px));
+  }
+  body.inner-page[data-page="skill-detail"] .main-content > .page-header,
+  body.inner-page[data-page="skill-detail"] .main-content > .page-meta,
+  body.inner-page[data-page="skill-detail"] .main-content > .section {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page[data-page="skill-detail"] .main-content > .section {
+    margin-bottom: 32px;
+  }
+  body.inner-page[data-page="skill-detail"] .main-content > .section:first-of-type > h2 {
+    margin-top: 0;
+  }
+  .page-header > h1 {
+    font-family: var(--font);
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1-weight, 600);
+    line-height: var(--text-h1-lh);
+    letter-spacing: -0.02em;
+    margin: 0;
+    padding-top: var(--space-h1-pad-y, 32px);
+    padding-bottom: var(--space-h1-pad-y, 32px);
+    color: var(--color-text);
+  }
+  .page-meta {
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  .page-meta a { color: var(--color-primary); text-decoration: none; }
+  .page-meta a:hover { text-decoration: underline; }
+  .page-meta code {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+  }
+  body.inner-page[data-page="skill-detail"] .main-content .section > h2 {
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    letter-spacing: -0.01em;
+    margin-top: 0;
+    margin-bottom: var(--space-stack, 16px);
+    padding-top: var(--space-h2-pad-y, 16px);
+    padding-bottom: 0;
+    border-bottom: none;
+    color: var(--color-text);
+  }
+  .page-lead {
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  .page-lead a { color: var(--color-primary); text-decoration: none; }
+  .page-lead a:hover { text-decoration: underline; }
+  .bg-list {
+    margin: 0;
+    padding-left: 1.25em;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text);
+  }
+  .bg-list li + li { margin-top: 10px; }
+  .bg-list strong { font-weight: 650; }
+  .section ul.plain-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .section ul.plain-list li + li { margin-top: 10px; }
+  .probe-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+  }
+  .probe-table th,
+  .probe-table td {
+    border: 1px solid #e8eef5;
+    border-top: none;
+    border-left: none;
+    vertical-align: top;
+    padding: 10px 12px;
+    text-align: left;
+  }
+  .probe-table thead tr:first-child > th { border-top: 1px solid #e8eef5; }
+  .probe-table th:first-child,
+  .probe-table td:first-child { border-left: 1px solid #e8eef5; }
+  .probe-table th { background: #f5f6f8; font-weight: 650; width: 22%; }
+  .probe-table code { font-size: 12px; }
+  .skill-detail-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: var(--space-stack, 16px);
+  }
+  .skill-detail-actions a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 88px;
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: 1px solid #d0d5dd;
+    background: #fff;
+    color: var(--color-text);
+    font-size: 13px;
+    font-weight: 650;
+    line-height: 20px;
+    text-decoration: none;
+    box-sizing: border-box;
+  }
+  .skill-detail-actions a:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+  .skill-detail-actions a.is-primary {
+    border-color: var(--color-primary);
+    background: var(--color-primary);
+    color: #fff;
+  }
+  .skill-detail-actions a.is-primary:hover {
+    opacity: 0.92;
+    color: #fff;
+  }
+  .crumb {
+    margin: 0 0 8px;
+    font-size: 13px;
+    line-height: 20px;
+    color: var(--color-text-secondary);
+  }
+  .crumb a {
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+  .crumb a:hover { text-decoration: underline; }
+</style>
+</head>
+<body class="inner-page" data-page="skill-detail" data-no-surface-tabs>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span>AI 亲和原则</span></a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="mintlify.html">友商对照</a>
+      <a href="reachability.html">社区诊断</a>
+      <a href="principles-overview.html">亲和原则</a>
+      <a href="community-ui.html">组件亲和</a>
+      <a href="data-analysis.html">数据分析</a>
+      <a href="skills.html" class="active">Skill 目录</a>
+    </nav>
+  </div>
+</div>
+
+<div class="page-wrapper">
+  <main class="main-content">
+    <div class="page-header">
+      <p class="crumb"><a href="skills.html">Skill 目录</a> / llms.txt 配置诊断</p>
+      <h1>llms.txt 配置诊断</h1>
+    </div>
+    <p class="page-meta">
+      Skill ID：<code>llms-txt-generate</code>
+      · 依据：<a href="principles-llms.html">llms.txt 索引入口可发现</a>
+    </p>
+
+    <section class="section" id="overview">
+      <h2>核心命题</h2>
+      <p class="page-lead"><code>llms.txt</code> 是给大模型 / Agent 的精选知识索引入口。本 Skill 优先基于抓取 URL 表（如 Screaming Frog CSV）分析结构、筛选有价值页面；有表时对 Sitemap 做轻量覆盖核对，无表时以 Sitemap 为弱输入。按 llmstxt.org 格式生成优化稿，并输出与 robots 诊断同构的 HTML 报告（可下载 llms.txt、导出 PDF）。</p>
+      <div class="skill-detail-actions">
+        <a class="is-primary" href="exports/llms-txt-generate.zip" download="llms-txt-generate.zip">下载 Skill</a>
+        <a href="llms-audit-huaweicloud.html">查看示例报告</a>
+      </div>
+    </section>
+
+    <section class="section" id="scope">
+      <h2>检查与生成范围</h2>
+      <p class="page-lead">输入为站点 URL + 抓取表（优先）和/或 Sitemap；输出为精选 <code>llms.txt</code> 与诊断报告。不编造链接；不把 SEO 排名当作 AI 价值；不声称已读完全部正文；不把 Sitemap 全量写入 llms.txt。</p>
+      <table class="probe-table">
+        <thead>
+          <tr>
+            <th>项</th>
+            <th>要求</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>有抓取表</td>
+            <td>CSV 为主输入；Sitemap 仅轻量核对（可达、规模、多 host、与表的覆盖缺口）</td>
+          </tr>
+          <tr>
+            <td>无抓取表</td>
+            <td>Sitemap 作弱输入：路径簇抽样 + 尽量补 Title；报告标明质量受限</td>
+          </tr>
+          <tr>
+            <td>结构分析</td>
+            <td>结合 URL、标题、H1、Description、状态码与内链归纳分类；信息不足标待核验</td>
+          </tr>
+          <tr>
+            <td>页面筛选</td>
+            <td>保留有主题与信息价值的页；排除失效、无价值重复、纯导航壳</td>
+          </tr>
+          <tr>
+            <td>重定向</td>
+            <td>核验并优先使用最终有效 URL</td>
+          </tr>
+          <tr>
+            <td>llms.txt 格式</td>
+            <td><code>#</code> 站名、<code>&gt;</code> 范围说明、<code>##</code> 分类、<code>- [标题](URL): 说明</code></td>
+          </tr>
+          <tr>
+            <td>报告交付</td>
+            <td>Part1（含 Sitemap 小节）+ Part2 优化稿；顶栏可下载 llms.txt 与导出 PDF</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section" id="workflow">
+      <h2>工作流</h2>
+      <ol class="bg-list">
+        <li><strong>输入</strong>：站点根 URL；抓取 CSV（优先）和/或 Sitemap；可选收录范围与站点名。</li>
+        <li><strong>模式</strong>：有表 → 清洗 CSV + Sitemap 轻量核对；无表 → Sitemap 弱输入（抽样，不灌全量）。</li>
+        <li><strong>分类与精选</strong>：归纳云产品 / 文档 / 解决方案 / 开发者 / 帮助中心等；每类代表页。</li>
+        <li><strong>分册判断</strong>：Agent 按体量 / 多 host / 多语言 / 用户要求自主判断是否分册；需要或用户要求时给出分册方案。</li>
+        <li><strong>生成 llms.txt</strong>：仅写入核验过的绝对 URL；不足处标待确认；分册时根文件只链分册。</li>
+        <li><strong>输出 HTML</strong>：填报告模板；双写 <code>docs/</code> 与 <code>report-serve/</code>；提供 txt 下载。</li>
+      </ol>
+    </section>
+
+    <section class="section" id="report">
+      <h2>报告结构</h2>
+      <p class="page-lead">交付为白底 HTML，无侧栏；顶栏品牌 +「下载 llms.txt」+「导出 PDF」，与正文 1000px 栏对齐（同 robots.txt 诊断排版）。</p>
+      <ol class="bg-list">
+        <li><strong>Part1. 输入数据与结构分析</strong>：数据概况、Sitemap 核对/弱输入、内容分类、筛选依据、问题与发现、待确认事项。</li>
+        <li><strong>Part2. llms.txt 的优化建议</strong>：分册判断与方案、建议稿预览、下载优化文件、编写说明。</li>
+      </ol>
+    </section>
+
+    <section class="section" id="usage">
+      <h2>如何使用</h2>
+      <ol class="bg-list">
+        <li>下载 Skill 包，解压到 Cursor 的 <code>.cursor/skills/llms-txt-generate/</code>（或个人 skills 目录）。</li>
+        <li>优先准备 Screaming Frog（或同类）导出的 CSV；若暂无表，准备或让 Agent 发现 Sitemap。</li>
+        <li>在对话中调用，例如：按 llms-txt-generate 分析 <code>crawl/export.csv</code>，为 <code>https://www.huaweicloud.com/</code> 生成 llms.txt（有表则轻量核对 Sitemap）。</li>
+        <li>按报告模板输出 HTML，并将优化后的 <code>llms.txt</code> 放到 <code>exports/</code> 供下载。</li>
+      </ol>
+    </section>
+  </main>
+</div>
+
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js"></script>
+</body>
+</html>

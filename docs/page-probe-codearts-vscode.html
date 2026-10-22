@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>页级亲和探针 · CodeArts VS Code 快速入门 · AI 亲和原则</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid var(--color-border);
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin: 0 auto;
+    padding: 0;
+    box-sizing: border-box;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: var(--color-text); text-decoration: none; white-space: nowrap;
+  }
+  .topbar .brand span { color: var(--color-primary); }
+  .topbar .brand:hover { text-decoration: none; opacity: 0.9; }
+  .topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  body.inner-page .page-wrapper { min-height: 100vh; }
+
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: var(--space-stack, 16px);
+  }
+  .page-header > h1 {
+    font-family: var(--font);
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1-weight, 600);
+    line-height: var(--text-h1-lh);
+    letter-spacing: -0.02em;
+    margin: 0;
+    padding-top: var(--space-h1-pad-y, 32px);
+    padding-bottom: var(--space-h1-pad-y, 32px);
+    color: var(--color-text);
+  }
+  .page-meta {
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  .page-meta a { color: var(--color-primary); text-decoration: none; }
+  .page-meta a:hover { text-decoration: underline; }
+
+  body.inner-page.agent-entry-page .page-wrapper {
+    background: #fff;
+    padding-top: var(--header-height, 56px);
+  }
+  body.inner-page.agent-entry-page .main-content {
+    padding-top: 16px;
+    padding-bottom: 32px;
+    padding-left: 0;
+    padding-right: 0;
+    background: #fff;
+    min-height: calc(100vh - var(--header-height, 56px));
+  }
+  body.inner-page.agent-entry-page .main-content > .page-header,
+  body.inner-page.agent-entry-page .main-content > .page-meta,
+  body.inner-page.agent-entry-page .main-content > .section {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page.agent-entry-page .main-content .section > h2 {
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    letter-spacing: -0.01em;
+    margin-top: 0;
+    margin-bottom: var(--space-stack, 16px);
+    padding-top: var(--space-h2-pad-y, 16px);
+    padding-bottom: 0;
+    border-bottom: none;
+    color: var(--color-text);
+  }
+  body.inner-page.agent-entry-page .main-content .section > h3 {
+    font-size: var(--text-h3, 18px);
+    font-weight: var(--text-h3-weight, 650);
+    line-height: var(--text-h3-lh, 28px);
+    letter-spacing: -0.01em;
+    margin-top: 0;
+    margin-bottom: var(--space-stack, 16px);
+    padding-top: var(--space-h3-pad-y, 16px);
+    padding-bottom: var(--space-h3-pad-y, 16px);
+    border-bottom: none;
+    color: var(--color-text);
+  }
+  body.inner-page.agent-entry-page .main-content > .section:first-of-type > h2 {
+    margin-top: 0;
+  }
+  body.inner-page.agent-entry-page .main-content > .section {
+    margin-bottom: 32px;
+  }
+  body.inner-page.agent-entry-page .main-content .section > h3.aj-caption {
+    margin: 0 0 var(--space-stack, 16px);
+    padding-top: 0;
+    padding-bottom: 0;
+    text-align: left;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  .page-lead {
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  .page-lead a { color: var(--color-primary); text-decoration: none; }
+  .page-lead a:hover { text-decoration: underline; }
+  .bg-list {
+    margin: 0;
+    padding-left: 1.25em;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text);
+  }
+  .bg-list li + li { margin-top: 10px; }
+  .bg-list strong { font-weight: 650; }
+  .sev {
+    display: inline-block;
+    margin-right: 6px;
+    padding: 1px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 18px;
+    vertical-align: 1px;
+  }
+  .sev-p0 { background: #fee2e2; color: #991b1b; }
+  .sev-p1 { background: #ffedd5; color: #9a3412; }
+  .sev-p2 { background: #fef9c3; color: #854d0e; }
+  .sev-ok { background: #dcfce7; color: #166534; }
+  .sev-ask { background: #e0e7ff; color: #3730a3; }
+
+  .file-sample {
+    margin: 0 0 var(--space-stack, 16px);
+    padding: 0;
+    background: #1e1e1e;
+    border: 1px solid #111;
+    border-radius: 16px;
+    overflow: hidden;
+    color-scheme: dark;
+    scrollbar-color: #5c5c5c #1e1e1e;
+  }
+  .file-sample figcaption {
+    margin: 0;
+    padding: 12px 14px;
+    font-size: 14px;
+    font-weight: 650;
+    line-height: 22px;
+    color: #a3a3a3;
+    border-bottom: 1px solid #333;
+  }
+  .file-sample figcaption code {
+    font-size: inherit;
+    color: #e8e8e8;
+    background: none;
+  }
+  .file-sample figcaption a {
+    color: #e8e8e8;
+    text-decoration: none;
+  }
+  .file-sample figcaption a:hover { text-decoration: underline; }
+  .file-sample pre {
+    margin: 0;
+    padding: 12px 14px 14px;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: 12px;
+    line-height: 20px;
+    color: #e8e8e8;
+    background: transparent;
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .file-sample pre code {
+    display: block;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    color: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    font-family: inherit;
+    white-space: inherit;
+  }
+  .file-sample .cmt { color: #737373; }
+
+  #optimized .file-sample {
+    background: #fafafa;
+    border: 1px solid #e5e5e5;
+    border-radius: 16px;
+    color-scheme: light;
+    scrollbar-color: #c4c4c4 #fafafa;
+  }
+  #optimized .file-sample figcaption {
+    padding: 12px 14px;
+    color: #525252;
+    background: #fafafa;
+    border-bottom-color: #e5e5e5;
+  }
+  #optimized .file-sample figcaption code { color: #191919; }
+  #optimized .file-sample pre,
+  #optimized .file-sample pre code {
+    color: #191919;
+    background: #fafafa;
+    font-size: 12px;
+    line-height: 20px;
+  }
+  #optimized .file-sample .cmt { color: #737373; }
+  #optimized .file-sample .add { background: rgba(34, 197, 94, 0.18); border-radius: 2px; padding: 0 3px; }
+  #optimized .file-sample .keep { background: rgba(167, 139, 250, 0.28); border-radius: 2px; padding: 0 3px; }
+  #optimized .file-sample .ask { background: rgba(250, 204, 21, 0.35); border-radius: 2px; padding: 0 3px; }
+
+  .probe-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+  }
+  .probe-table th,
+  .probe-table td {
+    border: 1px solid #e8eef5;
+    border-top: none;
+    border-left: none;
+    vertical-align: top;
+    padding: 10px 12px;
+    text-align: left;
+  }
+  .probe-table thead tr:first-child > th { border-top: 1px solid #e8eef5; }
+  .probe-table th:first-child,
+  .probe-table td:first-child { border-left: 1px solid #e8eef5; }
+  .probe-table th { background: #f5f6f8; font-weight: 650; }
+  .probe-table code { font-size: 12px; }
+  /* 状态列：加宽且不换行，避免徽章折行 */
+  .probe-table th:nth-child(3),
+  .probe-table td:nth-child(3) {
+    width: 7.5em;
+    min-width: 7.5em;
+    white-space: nowrap;
+  }
+
+  .topbar .btn-export-pdf,
+  .btn-export-pdf,
+  .btn-download-llms {
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #d0d5dd;
+    background: #fff;
+    color: var(--color-text, #191919);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 650;
+    line-height: 20px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    box-sizing: border-box;
+  }
+  .topbar .btn-export-pdf:hover,
+  .btn-export-pdf:hover,
+  .btn-download-llms:hover {
+    border-color: var(--color-primary, #1476ff);
+    color: var(--color-primary, #1476ff);
+    text-decoration: none;
+  }
+  .btn-download-llms.is-primary {
+    border-color: var(--color-primary, #1476ff);
+    background: var(--color-primary, #1476ff);
+    color: #fff;
+  }
+  .btn-download-llms.is-primary:hover {
+    opacity: 0.92;
+    color: #fff;
+  }
+  .download-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 var(--space-stack, 16px);
+  }
+
+  @media print {
+    @page { size: A4; margin: 14mm 12mm; }
+    html, body {
+      background: #fff !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .topbar,
+    .download-row,
+    .btn-export-pdf,
+    .btn-download-llms,
+    #module-sidebar,
+    .sidebar { display: none !important; }
+    body.inner-page .page-wrapper,
+    body.inner-page.agent-entry-page .page-wrapper,
+    body.inner-page.agent-entry-page .main-content {
+      padding: 0 !important;
+      margin: 0 !important;
+      background: #fff !important;
+      min-height: 0 !important;
+      border: none !important;
+    }
+    body.inner-page.agent-entry-page .main-content > .page-header,
+    body.inner-page.agent-entry-page .main-content > .page-meta,
+    body.inner-page.agent-entry-page .main-content > .section {
+      width: 100% !important;
+      max-width: none !important;
+      margin-inline: 0 !important;
+    }
+    .file-sample,
+    .probe-table,
+    .bg-list { break-inside: avoid; }
+    a[href]::after { content: none !important; }
+  }
+
+  .badge-ok { display:inline-block; padding:1px 8px; border-radius:4px; font-size:12px; font-weight:650; background:#dcfce7; color:#166534; }
+  .badge-mid { display:inline-block; padding:1px 8px; border-radius:4px; font-size:12px; font-weight:650; background:#fef9c3; color:#854d0e; }
+  .badge-bad { display:inline-block; padding:1px 8px; border-radius:4px; font-size:12px; font-weight:650; background:#fee2e2; color:#991b1b; }
+  .badge-na { display:inline-block; padding:1px 8px; border-radius:4px; font-size:12px; font-weight:650; background:#f3f4f6; color:#4b5563; }
+  .probe-q { margin:0 0 12px; padding:12px 14px; background:#f5f8fc; border-left:3px solid #1476ff; }
+</style>
+</head>
+<body class="inner-page agent-entry-page" data-module="principles" data-page="page-probe-codearts-vscode" data-no-surface-tabs>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="https://liminshuo.github.io/ascend-ai/principles-overview.html" target="_blank" rel="noopener"><span>AI 亲和原则</span></a>
+    <div class="topbar-actions">
+      <button type="button" class="btn-export-pdf" id="btn-export-pdf">导出 PDF</button>
+    </div>
+  </div>
+</div>
+
+<div class="page-wrapper">
+  <main class="main-content">
+    <div class="page-header">
+      <h1>页级亲和探针</h1>
+    </div>
+    <p class="page-meta">
+      源页面：<a href="https://support.huaweicloud.com/qs-codeartsagent/codeartsagent_qs_0002.html" target="_blank" rel="noopener">codeartsagent_qs_0002.html</a>
+      · 产品：华为云码道 CodeArts · Visual Studio Code 快速入门
+      · 生成日期：2026-10-19
+      · 依据：<a href="principles-full-catalog.html">全量原则25项</a>（含子原则分判）
+    </p>
+
+    <section class="section" id="overview">
+      <h2>Part1. 本页概况</h2>
+      <p class="page-lead">单页探针，只测本页实际出现的组件与相关原则/子原则；站点级 robots/sitemap 部署标为不适用。不按旧 35 条口径。</p>
+
+      <h3 id="components">本页组件清单</h3>
+      <ol class="bg-list">
+        <li><strong>有</strong>：步骤列表、提示/Note 块、多张界面截图（图1–图4）、若干 <code>pre.screen</code> 代码/提示词块、面包屑/文档导航壳、页内「更新时间」、平行 Markdown 声明、llms.txt 声明。</li>
+        <li><strong>无</strong>：数据表格、Tab/折叠面板、音视频、图片热区 map。</li>
+      </ol>
+
+      <h3 id="status">相关子原则状态</h3>
+      <table class="probe-table">
+        <thead>
+          <tr><th>原则</th><th>子原则</th><th>状态</th><th>短证据</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>2 llms.txt部署</td>
+            <td>llms.txt / llm-full.txt 部署</td>
+            <td><span class="badge-ok">达标</span></td>
+            <td><code>&lt;link rel="alternate" type="text/plain" data-link-type="llms-txt" href="/codeartsagent/llms.txt"&gt;</code>；同日 GET 200</td>
+          </tr>
+          <tr>
+            <td>5 章节锚点可定位</td>
+            <td>段落锚点</td>
+            <td><span class="badge-mid">待改进</span></td>
+            <td>H1/各 H4 无稳定 <code>id</code>；部分 note/li 有生成式 id，标题级锚点不足</td>
+          </tr>
+          <tr>
+            <td>6 HTML页面正文可读</td>
+            <td>内容可检索</td>
+            <td><span class="badge-ok">达标</span></td>
+            <td>步骤与正文在静态 HTML 中可取；非纯客户端渲染空壳</td>
+          </tr>
+          <tr>
+            <td>6 HTML页面正文可读</td>
+            <td>降噪纯净</td>
+            <td><span class="badge-mid">待改进</span></td>
+            <td>同文档壳含顶栏/登录/评价等噪声；未见清晰 <code>main</code>/<code>article</code> 包裹正文</td>
+          </tr>
+          <tr>
+            <td>7 Markdown 正文可直取</td>
+            <td>双轨交付</td>
+            <td><span class="badge-ok">达标</span></td>
+            <td><code>rel="alternate" type="text/markdown"</code> → <code>…/codeartsagent_qs_0002.md</code>；GET 200</td>
+          </tr>
+          <tr>
+            <td>8 图片内容可转写</td>
+            <td>图文图意</td>
+            <td><span class="badge-bad">缺失</span></td>
+            <td>文档截图 <code>alt</code> 为空；无 <code>figure</code>/<code>figcaption</code>；仅有「图1…」类文字题注</td>
+          </tr>
+          <tr>
+            <td>11 颜色含义可读</td>
+            <td>安全警示语义</td>
+            <td><span class="badge-mid">待改进</span></td>
+            <td>有 <code>div.note</code> 且正文可见；<code>notetitle</code> 为空，类型依赖 note 图标图</td>
+          </tr>
+          <tr>
+            <td>12 表格结构可读</td>
+            <td>表格语义</td>
+            <td><span class="badge-na">不适用</span></td>
+            <td>本页无数据表</td>
+          </tr>
+          <tr>
+            <td>13 代码块语义可读</td>
+            <td>代码语义</td>
+            <td><span class="badge-mid">待改进</span></td>
+            <td><code>pre.screen</code> 无语言 class；提示词与 Java 示例未标注 language；无预期输出块</td>
+          </tr>
+          <tr>
+            <td>14 关键正文不默认隐藏</td>
+            <td>隐藏语义</td>
+            <td><span class="badge-ok">达标</span></td>
+            <td>未见 Tab/折叠隐藏关键步骤；步骤正文直出</td>
+          </tr>
+          <tr>
+            <td>16 标题层级可识别</td>
+            <td>格式规范统一</td>
+            <td><span class="badge-mid">待改进</span></td>
+            <td>H1 后直接 H4，跳过 H2/H3</td>
+          </tr>
+          <tr>
+            <td>16 标题层级可识别</td>
+            <td>标题明确</td>
+            <td><span class="badge-ok">达标</span></td>
+            <td>「准备工作 / 步骤一… / 体验代码续写」等为任务向标题</td>
+          </tr>
+          <tr>
+            <td>18 文档结构规范化</td>
+            <td>内容结构模式</td>
+            <td><span class="badge-mid">待改进</span></td>
+            <td>有准备与步骤模式，缺独立「验证/预期结果」模式；无 <code>data-pattern</code></td>
+          </tr>
+          <tr>
+            <td>18 文档结构规范化</td>
+            <td>步骤列表化</td>
+            <td><span class="badge-ok">达标</span></td>
+            <td>安装与体验步骤使用有序步骤呈现</td>
+          </tr>
+          <tr>
+            <td>19 版本与时效信息可识别</td>
+            <td>明确更新日期</td>
+            <td><span class="badge-mid">待改进</span></td>
+            <td>页内展示「更新时间：2026-09-30」；建议同步机器可读 <code>last-modified</code> / dateModified</td>
+          </tr>
+          <tr>
+            <td>21 链接目标可识别</td>
+            <td>链接语义</td>
+            <td><span class="badge-mid">待改进</span></td>
+            <td>存在「单击…图标」依赖空图标位；注册账号等链接可读性尚可</td>
+          </tr>
+          <tr>
+            <td>24 任务结果可确认</td>
+            <td>验证区块</td>
+            <td><span class="badge-bad">缺失</span></td>
+            <td>快速入门操作文末无「验证 / 预期结果」专章</td>
+          </tr>
+          <tr>
+            <td>1 / 3 / 4 / 9 / 10 / …</td>
+            <td>（站点级或本页无组件）</td>
+            <td><span class="badge-na">不适用</span></td>
+            <td>robots、全站 sitemap、音视频、表格热区等本页不测或未出现</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section" id="probe-image">
+      <h2>Part2. 问题实测 · 图片图意</h2>
+      <div class="probe-q">
+        <strong>问句：</strong>我在看
+        <a href="https://support.huaweicloud.com/qs-codeartsagent/codeartsagent_qs_0002.html" target="_blank" rel="noopener">Visual Studio Code 快速入门</a>
+        ，「图1 工具生成效果」等截图里的界面信息，能否仅凭 HTML 文本被 Agent 检索到？
+      </div>
+      <h3>证据</h3>
+      <ol class="bg-list">
+        <li>文档区多张 <code>zh-cn_image_*.png</code> 的 <code>&lt;img&gt;</code> <strong>无 alt</strong>（或空）。</li>
+        <li>无 <code>&lt;figure&gt;</code> / <code>&lt;figcaption&gt;</code>；题注以「图1…」文本出现在附近，但未与 img 结构化绑定。</li>
+        <li>部分图仅有 <code>title="点击放大"</code>，对图意无信息量。</li>
+      </ol>
+      <h3>洞察</h3>
+      <ol class="bg-list">
+        <li><strong>图意未入库风险：</strong>切片若只拿文件名或空 alt，界面步骤截图语义丢失。</li>
+        <li><strong>与原则 8 子原则「图文图意」冲突：</strong>缺非空 alt 与转写位。</li>
+      </ol>
+      <h3 id="solution-image">根因与改法</h3>
+      <ol class="bg-list">
+        <li><strong>内容：</strong>为图1–图4 写一句 alt/转写（界面状态 + 操作结果）。</li>
+        <li><strong>前端：</strong><code>figure+figcaption</code> 包裹，补锚点 id；装饰图标空 alt 或 aria-hidden。</li>
+        <li><strong>对照：</strong><a href="principles-image.html">图片内容可转写</a> / 全量原则 #8。</li>
+      </ol>
+    </section>
+
+    <section class="section" id="probe-code">
+      <h2>Part2. 问题实测 · 代码块</h2>
+      <div class="probe-q">
+        <strong>问句：</strong>页内 Fib4 Java 示例与提示词块，Agent 能否识别语言并安全复制纯净代码？
+      </div>
+      <h3>证据</h3>
+      <ol class="bg-list">
+        <li>代码容器为 <code>&lt;pre class="screen"&gt;</code>，未见 <code>&lt;code class="language-*"&gt;</code>。</li>
+        <li>既有自然语言提示词，也有 Java 源码，语言元数据缺失。</li>
+        <li>无「预期输出」配套块。</li>
+      </ol>
+      <h3>洞察</h3>
+      <ol class="bg-list">
+        <li><strong>语义弱：</strong>切片难以区分「用户提示词」与「可运行代码」。</li>
+        <li><strong>原则 13 子原则「代码语义」待改进。</strong></li>
+      </ol>
+      <h3 id="solution-code">根因与改法</h3>
+      <ol class="bg-list">
+        <li>统一 <code>pre&gt;code.language-java</code>（提示词可用 <code>text</code> 或单独样式）。</li>
+        <li>执行类示例补「预期输出」；行号勿写入文本节点。</li>
+        <li>对照：<a href="principles-code.html">代码块语义可读</a> / 全量原则 #13。</li>
+      </ol>
+    </section>
+
+    <section class="section" id="probe-verify">
+      <h2>Part2. 问题实测 · 验证区块</h2>
+      <div class="probe-q">
+        <strong>问句：</strong>按本页完成「安装插件 / 体验智能体」后，文档是否给出可执行的成功判定？
+      </div>
+      <h3>证据</h3>
+      <ol class="bg-list">
+        <li>结构为准备工作 → 步骤一 → 步骤二（三个体验），文末直接相关文档/评价。</li>
+        <li>无「验证」「预期结果」专节；成功标准散落在步骤叙述中（如「可查看到图标」）。</li>
+      </ol>
+      <h3>洞察</h3>
+      <ol class="bg-list">
+        <li><strong>任务可确认性不足：</strong>Agent/用户难一次定位验收清单。</li>
+        <li><strong>原则 24 子原则「验证区块」缺失。</strong></li>
+      </ol>
+      <h3 id="solution-verify">根因与改法</h3>
+      <ol class="bg-list">
+        <li>每条体验路径末增加「验证」：可见侧边栏图标 / 能打开 login.html / 能插入代码等可勾选项。</li>
+        <li>容器建议 <code>data-pattern="verification"</code>。</li>
+        <li>对照：全量原则 #24。</li>
+      </ol>
+    </section>
+
+    <section class="section" id="probe-heading">
+      <h2>Part2. 问题实测 · 标题与锚点</h2>
+      <div class="probe-q">
+        <strong>问句：</strong>能否用稳定 URL 片段定位到「体验代码续写」一节？
+      </div>
+      <h3>证据</h3>
+      <ol class="bg-list">
+        <li>大纲标题多为 <code>h4</code> 且 <strong>无 id</strong>；H1 亦无 id。</li>
+        <li>层级从 H1 跳到 H4，不符合 H1–H2–H3 连续规范。</li>
+      </ol>
+      <h3>洞察</h3>
+      <ol class="bg-list">
+        <li>原则 5「段落锚点」待改进；原则 16「格式规范统一」待改进、「标题明确」达标。</li>
+      </ol>
+      <h3 id="solution-heading">根因与改法</h3>
+      <ol class="bg-list">
+        <li>章节改用 H2/H3，并生成语义化稳定 id（slug）。</li>
+        <li>对照：全量原则 #5、#16。</li>
+      </ol>
+    </section>
+
+    <section class="section" id="priority">
+      <h2>Part3. 优先改法</h2>
+      <ol class="bg-list">
+        <li><strong>P0 体验：</strong>为关键截图补 alt/figcaption 转写（原则 8）。</li>
+        <li><strong>P1 结构：</strong>补验证区块；理顺标题层级并加锚点 id（原则 24、5、16）。</li>
+        <li><strong>P1 代码：</strong><code>pre&gt;code</code> + language 类（原则 13）。</li>
+        <li><strong>P2 警示：</strong>Note 增加可见文字前缀（原则 11）。</li>
+        <li><strong>已具备：</strong>平行 <code>.md</code> 与产品 <code>llms.txt</code> 声明且可达——可继续保持并写入发布检查。</li>
+      </ol>
+    </section>
+  </main>
+</div>
+
+<script>
+(function () {
+  var btn = document.getElementById('btn-export-pdf');
+  if (btn) btn.addEventListener('click', function () { window.print(); });
+})();
+</script>
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js"></script>
+</body>
+</html>

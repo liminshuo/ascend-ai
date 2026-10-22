@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Markdown 正文可发现 · AI 亲和原则</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid var(--color-border);
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin: 0 auto;
+    padding: 0;
+    box-sizing: border-box;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: var(--color-text); text-decoration: none; white-space: nowrap;
+  }
+  .topbar .brand span { color: var(--color-primary); }
+  .topbar .brand:hover { text-decoration: none; opacity: 0.9; }
+  .topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  body.inner-page .page-wrapper { min-height: 100vh; }
+
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: var(--space-stack, 16px);
+  }
+  .page-header > h1 {
+    font-family: var(--font);
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1-weight, 600);
+    line-height: var(--text-h1-lh);
+    letter-spacing: -0.02em;
+    margin: 0;
+    padding-top: var(--space-h1-pad-y, 32px);
+    padding-bottom: var(--space-h1-pad-y, 32px);
+    color: var(--color-text);
+  }
+  .page-meta {
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  .page-meta a { color: var(--color-primary); text-decoration: none; }
+  .page-meta a:hover { text-decoration: underline; }
+
+  body.inner-page.agent-entry-page .page-wrapper {
+    background: #fff;
+    padding-top: var(--header-height, 56px);
+  }
+  body.inner-page.agent-entry-page .main-content {
+    padding-top: 16px;
+    padding-bottom: 32px;
+    padding-left: 0;
+    padding-right: 0;
+    background: #fff;
+    min-height: calc(100vh - var(--header-height, 56px));
+  }
+  body.inner-page.agent-entry-page .main-content > .page-header,
+  body.inner-page.agent-entry-page .main-content > .page-meta,
+  body.inner-page.agent-entry-page .main-content > .section {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page.agent-entry-page .main-content .section > h2 {
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    letter-spacing: -0.01em;
+    margin-top: 0;
+    margin-bottom: var(--space-stack, 16px);
+    padding-top: var(--space-h2-pad-y, 16px);
+    padding-bottom: 0;
+    border-bottom: none;
+    color: var(--color-text);
+  }
+  body.inner-page.agent-entry-page .main-content .section > h3 {
+    font-size: var(--text-h3, 18px);
+    font-weight: var(--text-h3-weight, 650);
+    line-height: var(--text-h3-lh, 28px);
+    letter-spacing: -0.01em;
+    margin-top: 0;
+    margin-bottom: var(--space-stack, 16px);
+    padding-top: var(--space-h3-pad-y, 16px);
+    padding-bottom: var(--space-h3-pad-y, 16px);
+    border-bottom: none;
+    color: var(--color-text);
+  }
+  body.inner-page.agent-entry-page .main-content > .section:first-of-type > h2 {
+    margin-top: 0;
+  }
+  body.inner-page.agent-entry-page .main-content > .section {
+    margin-bottom: 32px;
+  }
+  body.inner-page.agent-entry-page .main-content .section > h3.aj-caption {
+    margin: 0 0 var(--space-stack, 16px);
+    padding-top: 0;
+    padding-bottom: 0;
+    text-align: left;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  .page-lead {
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  .page-lead a { color: var(--color-primary); text-decoration: none; }
+  .page-lead a:hover { text-decoration: underline; }
+  .bg-list {
+    margin: 0;
+    padding-left: 1.25em;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text);
+  }
+  .bg-list li + li { margin-top: 10px; }
+  .bg-list strong { font-weight: 650; }
+  .sev {
+    display: inline-block;
+    margin-right: 6px;
+    padding: 1px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 18px;
+    vertical-align: 1px;
+  }
+  .sev-p0 { background: #fee2e2; color: #991b1b; }
+  .sev-p1 { background: #ffedd5; color: #9a3412; }
+  .sev-p2 { background: #fef9c3; color: #854d0e; }
+  .sev-ok { background: #dcfce7; color: #166534; }
+  .sev-ask { background: #e0e7ff; color: #3730a3; }
+
+  .file-sample {
+    margin: 0 0 var(--space-stack, 16px);
+    padding: 0;
+    background: #1e1e1e;
+    border: 1px solid #111;
+    border-radius: 16px;
+    overflow: hidden;
+    color-scheme: dark;
+    scrollbar-color: #5c5c5c #1e1e1e;
+  }
+  .file-sample figcaption {
+    margin: 0;
+    padding: 12px 14px;
+    font-size: 14px;
+    font-weight: 650;
+    line-height: 22px;
+    color: #a3a3a3;
+    border-bottom: 1px solid #333;
+  }
+  .file-sample figcaption code {
+    font-size: inherit;
+    color: #e8e8e8;
+    background: none;
+  }
+  .file-sample figcaption a {
+    color: #e8e8e8;
+    text-decoration: none;
+  }
+  .file-sample figcaption a:hover { text-decoration: underline; }
+  .file-sample pre {
+    margin: 0;
+    padding: 12px 14px 14px;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: 12px;
+    line-height: 20px;
+    color: #e8e8e8;
+    background: transparent;
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .file-sample pre code {
+    display: block;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    color: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    font-family: inherit;
+    white-space: inherit;
+  }
+  .file-sample .cmt { color: #737373; }
+
+  #optimized .file-sample {
+    background: #fafafa;
+    border: 1px solid #e5e5e5;
+    border-radius: 16px;
+    color-scheme: light;
+    scrollbar-color: #c4c4c4 #fafafa;
+  }
+  #optimized .file-sample figcaption {
+    padding: 12px 14px;
+    color: #525252;
+    background: #fafafa;
+    border-bottom-color: #e5e5e5;
+  }
+  #optimized .file-sample figcaption code { color: #191919; }
+  #optimized .file-sample pre,
+  #optimized .file-sample pre code {
+    color: #191919;
+    background: #fafafa;
+    font-size: 12px;
+    line-height: 20px;
+  }
+  #optimized .file-sample .cmt { color: #737373; }
+  #optimized .file-sample .add { background: rgba(34, 197, 94, 0.18); border-radius: 2px; padding: 0 3px; }
+  #optimized .file-sample .keep { background: rgba(167, 139, 250, 0.28); border-radius: 2px; padding: 0 3px; }
+  #optimized .file-sample .ask { background: rgba(250, 204, 21, 0.35); border-radius: 2px; padding: 0 3px; }
+
+  .probe-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+  }
+  .probe-table th,
+  .probe-table td {
+    border: 1px solid #e8eef5;
+    border-top: none;
+    border-left: none;
+    vertical-align: top;
+    padding: 10px 12px;
+    text-align: left;
+  }
+  .probe-table thead tr:first-child > th { border-top: 1px solid #e8eef5; }
+  .probe-table th:first-child,
+  .probe-table td:first-child { border-left: 1px solid #e8eef5; }
+  .probe-table th { background: #f5f6f8; font-weight: 650; }
+  .probe-table code { font-size: 12px; }
+
+  .topbar .btn-export-pdf,
+  .btn-export-pdf,
+  .btn-download-llms {
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #d0d5dd;
+    background: #fff;
+    color: var(--color-text, #191919);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 650;
+    line-height: 20px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    box-sizing: border-box;
+  }
+  .topbar .btn-export-pdf:hover,
+  .btn-export-pdf:hover,
+  .btn-download-llms:hover {
+    border-color: var(--color-primary, #1476ff);
+    color: var(--color-primary, #1476ff);
+    text-decoration: none;
+  }
+  .btn-download-llms.is-primary {
+    border-color: var(--color-primary, #1476ff);
+    background: var(--color-primary, #1476ff);
+    color: #fff;
+  }
+  .btn-download-llms.is-primary:hover {
+    opacity: 0.92;
+    color: #fff;
+  }
+  .download-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 var(--space-stack, 16px);
+  }
+
+  @media print {
+    @page { size: A4; margin: 14mm 12mm; }
+    html, body {
+      background: #fff !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .topbar,
+    .download-row,
+    .btn-export-pdf,
+    .btn-download-llms,
+    #module-sidebar,
+    .sidebar { display: none !important; }
+    body.inner-page .page-wrapper,
+    body.inner-page.agent-entry-page .page-wrapper,
+    body.inner-page.agent-entry-page .main-content {
+      padding: 0 !important;
+      margin: 0 !important;
+      background: #fff !important;
+      min-height: 0 !important;
+      border: none !important;
+    }
+    body.inner-page.agent-entry-page .main-content > .page-header,
+    body.inner-page.agent-entry-page .main-content > .page-meta,
+    body.inner-page.agent-entry-page .main-content > .section {
+      width: 100% !important;
+      max-width: none !important;
+      margin-inline: 0 !important;
+    }
+    .file-sample,
+    .probe-table,
+    .bg-list { break-inside: avoid; }
+    a[href]::after { content: none !important; }
+  }
+
+  .badge-ok { display:inline-block; padding:1px 8px; border-radius:4px; font-size:12px; font-weight:650; background:#dcfce7; color:#166534; white-space:nowrap; }
+  .badge-mid { display:inline-block; padding:1px 8px; border-radius:4px; font-size:12px; font-weight:650; background:#fef9c3; color:#854d0e; white-space:nowrap; }
+  .badge-bad { display:inline-block; padding:1px 8px; border-radius:4px; font-size:12px; font-weight:650; background:#fee2e2; color:#991b1b; white-space:nowrap; }
+  .probe-table th:nth-child(3),
+  .probe-table td:nth-child(3) { min-width: 5.5em; white-space: nowrap; }
+</style>
+</head>
+<body class="inner-page agent-entry-page" data-module="principles" data-page="md-discover-agentarts" data-no-surface-tabs>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="https://liminshuo.github.io/ascend-ai/principles-overview.html" target="_blank" rel="noopener"><span>AI 亲和原则</span></a>
+    <div class="topbar-actions">
+      <button type="button" class="btn-export-pdf" id="btn-export-pdf">导出 PDF</button>
+    </div>
+  </div>
+</div>
+
+<div class="page-wrapper">
+  <main class="main-content">
+    <div class="page-header">
+      <h1>Markdown 正文可发现</h1>
+    </div>
+    <p class="page-meta">
+      人读页：<a href="https://agentorchard.huaweicloud.com/agentarts.html" target="_blank" rel="noopener">https://agentorchard.huaweicloud.com/agentarts.html</a>
+      · 生成日期：2026-10-19
+      · 依据：<a href="principles-format.html">Markdown 正文可直取</a> · <a href="principles-full-catalog.html">全量原则 #7</a>
+      · 成对：<a href="skill-html-to-md.html">html-to-md</a>（生成）/ 本 Skill（验发现）
+    </p>
+
+    <section class="section" id="analysis">
+      <h2>Part1. 现状</h2>
+      <p class="page-lead">核验人读页是否声明平行 Markdown，以及候选 <code>.md</code> 是否可达。本页为营销落地页；<strong>不编造</strong>不存在的 <code>link</code> 标签。</p>
+
+      <h3 id="page">人读页</h3>
+      <table class="probe-table">
+        <thead><tr><th>项</th><th>结果</th></tr></thead>
+        <tbody>
+          <tr><td>最终 URL</td><td><code>https://agentorchard.huaweicloud.com/agentarts.html</code></td></tr>
+          <tr><td>HTTP</td><td>200 · HTML ≈ 118 KB</td></tr>
+          <tr><td>页面类型</td><td>智果园营销页（AgentArts）</td></tr>
+        </tbody>
+      </table>
+
+      <h3 id="declare">head 声明</h3>
+      <ol class="bg-list">
+        <li><span class="badge-bad">缺失</span> 未发现 <code>&lt;link rel="alternate" type="text/markdown"&gt;</code>。</li>
+        <li><span class="badge-bad">缺失</span> 未发现 <code>data-link-type="markdown"</code> 等等价声明。</li>
+        <li>本页 <code>&lt;link rel="alternate"&gt;</code> 计数为 <strong>0</strong>（同日解析）。</li>
+      </ol>
+
+      <h3 id="reach">.md 候选与可达</h3>
+      <table class="probe-table">
+        <thead><tr><th>候选</th><th>来源</th><th>状态</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>https://agentorchard.huaweicloud.com/agentarts.md</code></td>
+            <td>同路径后缀猜测</td>
+            <td><span class="badge-bad">失败</span></td>
+            <td>HTTP 404（WAF/HTML）</td>
+          </tr>
+          <tr>
+            <td><code>https://www.huaweicloud.com/product/agentarts.md</code></td>
+            <td>产品详情路径猜测</td>
+            <td><span class="badge-bad">失败</span></td>
+            <td>HTTP 418</td>
+          </tr>
+          <tr>
+            <td>（无声明 URL）</td>
+            <td>head alternate</td>
+            <td><span class="badge-bad">无</span></td>
+            <td>无法从声明解析</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3 id="contrast">对照（非本示例主页面）</h3>
+      <p class="page-lead">同组织文档站已有成功双轨样例，说明「可发现」在华为云文档体系可行；本营销页尚未对齐。</p>
+      <ol class="bg-list">
+        <li>对照页：<a href="https://support.huaweicloud.com/qs-codeartsagent/codeartsagent_qs_0002.html" target="_blank" rel="noopener">CodeArts VS Code 快速入门</a></li>
+        <li>声明：<code>rel="alternate" type="text/markdown"</code> → <code>…/codeartsagent_qs_0002.md</code></li>
+        <li>可达：同日 GET <strong>200</strong> · <code>text/markdown</code></li>
+      </ol>
+
+      <h3 id="problems">问题与发现</h3>
+      <ol class="bg-list">
+        <li><span class="sev sev-p1">P1</span> <strong>人读页未声明平行 Markdown。</strong> Agent 无法从 HTML head 发现机器正文入口。</li>
+        <li><span class="sev sev-p1">P1</span> <strong>同路径 <code>.md</code> 候选不可达。</strong> 猜测路径 404/418，不能当作已交付双轨。</li>
+        <li><span class="sev sev-ok">对照</span> 文档站同类声明+可达已跑通；营销页可复用同一模板约定。</li>
+      </ol>
+    </section>
+
+    <section class="section" id="optimized">
+      <h2>Part2. 优化建议</h2>
+      <p class="page-lead">先解决「可发现」：上线平行 <code>.md</code> 并在人读页 head 声明；正文可用 <code>html-to-md</code> 从本页生成后再挂载。</p>
+
+      <h3 class="aj-caption">建议写入人读页 &lt;head&gt;</h3>
+      <figure class="file-sample">
+        <figcaption><code>agentarts.html</code>（建议新增）</figcaption>
+        <pre><code>&lt;link rel=&quot;alternate&quot; type=&quot;text/markdown&quot;
+      href=&quot;https://agentorchard.huaweicloud.com/agentarts.md&quot;&gt;</code></pre>
+      </figure>
+
+      <h3 id="steps">落地步骤</h3>
+      <ol class="bg-list">
+        <li><strong>生成正文：</strong>用 <a href="skill-html-to-md.html">html-to-md</a> 产出 Agent 可读 <code>agentarts.md</code>（仓库已有示例稿可作基线）。</li>
+        <li><strong>发布路径：</strong>建议与 HTML 同路径改后缀，或统一 <code>/…/source/*.md</code>；本示例建议 <code>https://agentorchard.huaweicloud.com/agentarts.md</code>。</li>
+        <li><strong>声明：</strong>在人读页加入上方 <code>rel="alternate" type="text/markdown"</code>（绝对 URL）。</li>
+        <li><strong>回归：</strong>再跑本 Skill，确认声明存在且 GET 200 / markdown。</li>
+        <li><strong>勿混用：</strong>本 Skill 不替代 llms.txt；llms 是索引入口，alternate 是「本页平行正文」。</li>
+      </ol>
+
+      <h3 id="tbd">待确认事项</h3>
+      <ol class="bg-list">
+        <li><span class="sev sev-ask">待确认</span> 营销页是否纳入双轨交付范围，还是仅文档站强制？</li>
+        <li><span class="sev sev-ask">待确认</span> 平行 MD 的权威路径是同目录 <code>.md</code>，还是独立 source 域名/目录？</li>
+      </ol>
+    </section>
+  </main>
+</div>
+
+<script>
+(function () {
+  var btn = document.getElementById('btn-export-pdf');
+  if (btn) btn.addEventListener('click', function () { window.print(); });
+})();
+</script>
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js"></script>
+</body>
+</html>
