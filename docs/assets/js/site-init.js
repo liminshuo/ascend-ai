@@ -232,8 +232,11 @@
       nav.querySelectorAll('a[href="design-guide-image-text.html"]').forEach(function (a) {
         a.remove();
       });
-      nav.querySelectorAll('a[href="data-analysis.html"], a[href="../data-analysis.html"]').forEach(function (a) {
-        a.remove();
+      nav.querySelectorAll("a").forEach(function (a) {
+        var href = a.getAttribute("href") || "";
+        if (href.indexOf("data-analysis.html") !== -1 || a.textContent.trim() === "数据分析") {
+          a.remove();
+        }
       });
       extras.forEach(function (item) {
         var existing = nav.querySelector('a[href="' + item.href + '"]');
