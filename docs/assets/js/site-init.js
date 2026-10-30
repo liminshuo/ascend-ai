@@ -60,13 +60,37 @@
     });
   }
 
+  function injectPeerFoldStyles() {
+    if (document.getElementById("geo-peer-fold-style")) return;
+    var style = document.createElement("style");
+    style.id = "geo-peer-fold-style";
+    style.textContent = [
+      ".peer-nav li.peer-sub.has-children{list-style:none;}",
+      ".peer-nav .peer-row{display:flex;align-items:stretch;min-height:36px;border-left:2px solid transparent;box-sizing:border-box;}",
+      ".peer-nav .peer-row:hover{background:var(--color-primary-light,#F5F5F5);}",
+      ".peer-nav .peer-link{flex:1;min-width:0;display:flex;align-items:center;padding:8px 4px 8px 20px;font-size:13px;line-height:1.5;color:var(--muted,#595959);font-weight:400;cursor:pointer;user-select:none;box-sizing:border-box;}",
+      ".peer-nav .peer-row:hover .peer-link{color:var(--text,#191919);}",
+      ".peer-nav .peer-fold{appearance:none;-webkit-appearance:none;border:0 !important;box-shadow:none !important;background:transparent !important;cursor:pointer;flex:0 0 36px;width:36px;min-height:36px;display:inline-flex;align-items:center;justify-content:center;color:var(--muted,#595959);padding:0 !important;margin:0;border-radius:0 !important;font-size:0;line-height:0;}",
+      ".peer-nav .peer-row:hover .peer-fold{color:var(--text,#191919);background:transparent !important;}",
+      ".peer-nav .peer-fold svg{display:none !important;}",
+      ".peer-nav .peer-fold::before{content:'';box-sizing:border-box;width:6px;height:6px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(-45deg);margin-top:1px;transition:transform .15s;}",
+      ".peer-nav li.peer-sub.is-open>.peer-row .peer-fold::before{transform:rotate(45deg);margin-top:-2px;}",
+      ".peer-nav li.peer-sub>.peer-sub-list{list-style:none;margin:0;padding:0 0 4px;}",
+      ".peer-nav li.peer-sub:not(.is-open)>.peer-sub-list{display:none;}",
+      ".peer-nav li.peer-sub>.peer-sub-list a{display:block;padding:8px 20px 8px 32px;font-size:13px;line-height:1.5;color:var(--muted,#595959);font-weight:400;border-left:2px solid transparent;text-decoration:none;min-height:36px;box-sizing:border-box;}",
+      ".peer-nav li.peer-sub>.peer-sub-list a:hover{color:var(--text,#191919);background:var(--color-primary-light,#F5F5F5);text-decoration:none;}",
+      ".peer-nav li.peer-sub>.peer-sub-list a.active{color:var(--accent,#2457d6);border-left-color:var(--accent,#2457d6);background:#EEF5FF;font-weight:600;}"
+    ].join("");
+    document.head.appendChild(style);
+  }
+
   function injectStyles() {
     if (document.getElementById("geo-surface-tabs-style")) return;
     var style = document.createElement("style");
     style.id = "geo-surface-tabs-style";
     style.textContent = [
       ".surface-tabs{",
-      "  margin:32px 0 8px;width:100%;box-sizing:border-box;",
+      "  margin:16px 0 8px;width:100%;box-sizing:border-box;",
       "}",
       ".surface-tabs-label{",
       "  margin:0 0 16px;padding:0 0 16px;",
@@ -202,11 +226,13 @@
   function injectExtraNav() {
     var path = (location.pathname || "").split("/").pop() || "";
     var extras = [
-      { href: "data-analysis.html", label: "数据分析" },
       { href: "skills.html", label: "Skill 目录" }
     ];
     document.querySelectorAll("nav.site-nav").forEach(function (nav) {
       nav.querySelectorAll('a[href="design-guide-image-text.html"]').forEach(function (a) {
+        a.remove();
+      });
+      nav.querySelectorAll('a[href="data-analysis.html"], a[href="../data-analysis.html"]').forEach(function (a) {
         a.remove();
       });
       extras.forEach(function (item) {
@@ -224,25 +250,72 @@
           existing.classList.add("active");
         }
       });
-      var daNav = nav.querySelector('a[href="data-analysis.html"]');
-      var skNav = nav.querySelector('a[href="skills.html"]');
-      if (daNav && skNav && daNav.nextElementSibling !== skNav) {
-        daNav.insertAdjacentElement("afterend", skNav);
-      }
     });
   }
 
+  function initPeerFolds() {
+    var STORE_KEY = "geo-peer-fold";
+    var openMap = {};
+    try {
+      openMap = JSON.parse(sessionStorage.getItem(STORE_KEY) || "{}") || {};
+    } catch (err) {
+      openMap = {};
+    }
+
+    function setOpen(li, openNow) {
+      if (!li) return;
+      li.classList.toggle("is-open", openNow);
+      var fold = li.querySelector(".peer-fold");
+      if (fold) fold.setAttribute("aria-expanded", openNow ? "true" : "false");
+      var id = li.getAttribute("data-peer-fold");
+      if (id) {
+        openMap[id] = openNow;
+        try {
+          sessionStorage.setItem(STORE_KEY, JSON.stringify(openMap));
+        } catch (e) {}
+      }
+    }
+
+    document.querySelectorAll(".peer-nav li.peer-sub.has-children").forEach(function (li) {
+      var id = li.getAttribute("data-peer-fold") || "";
+      var childActive = !!li.querySelector(".peer-sub-list a.active");
+      var openNow = childActive;
+      if (!childActive && Object.prototype.hasOwnProperty.call(openMap, id)) {
+        openNow = !!openMap[id];
+      } else if (childActive) {
+        openNow = true;
+      }
+      setOpen(li, openNow);
+    });
+
+    document.querySelectorAll(".peer-nav").forEach(function (nav) {
+      nav.addEventListener("click", function (e) {
+        var fold = e.target.closest(".peer-fold");
+        var label = e.target.closest(".peer-link");
+        var hit = fold || label;
+        if (!hit || !nav.contains(hit)) return;
+        e.preventDefault();
+        e.stopPropagation();
+        var li = hit.closest("li.peer-sub.has-children");
+        setOpen(li, !li.classList.contains("is-open"));
+      });
+    });
+  }
+
+  injectPeerFoldStyles();
   injectStyles();
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", function () {
       injectExtraNav();
       injectSelector();
       syncFromHash();
+      initPeerFolds();
     });
   } else {
     injectExtraNav();
     injectSelector();
     syncFromHash();
+    initPeerFolds();
   }
   window.addEventListener("hashchange", syncFromHash);
 })();

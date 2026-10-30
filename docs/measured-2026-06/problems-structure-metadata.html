@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<link rel="stylesheet" href="../assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/style.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>页级元数据未结构化 · 实测记录 · 2026年6月</title>
+<style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  :root {
+    --bg: var(--color-bg); --panel: var(--color-surface); --panel2: var(--color-card-bg); --line: var(--color-border);
+    --text: var(--color-text); --muted: var(--color-text-secondary); --accent: var(--color-primary);
+    --link: var(--color-primary); --detail-head-h: var(--header-height);
+    --desc: rgba(0, 0, 0, 0.6);
+    --heading-rule: var(--color-heading-rule);
+    --card-bg: var(--color-card-bg); --card-border: var(--color-card-border);
+    --danger: #dc2626; --danger-bg: rgba(220, 38, 38, 0.08); --danger-border: rgba(220, 38, 38, 0.25);
+    --warning: #d97706; --warning-bg: rgba(217, 119, 6, 0.08); --warning-border: rgba(217, 119, 6, 0.28);
+    --success: #16a34a; --success-bg: rgba(22, 163, 74, 0.08); --success-border: rgba(22, 163, 74, 0.25);
+    --sidebar-w: var(--sidebar-width);
+    --toc-w: var(--toc-width);
+    --content-pad-x: var(--content-wide-pad-x);
+    --content-pad-left: var(--content-main-pad-left);
+    --content-pad-top: var(--content-main-pad-top);
+    --content-max: var(--content-max-width);
+    --body-size: var(--text-body);
+    --body-lh: var(--text-body-lh);
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-size: var(--body-size); margin: 0;
+    font-family: var(--font);
+    background: var(--bg); color: var(--muted); line-height: var(--body-lh);
+  }
+  body.modal-open { overflow: hidden; }
+  a { color: var(--link); }
+  code {
+    font-size: var(--text-auxiliary); background: var(--panel2); border: 1px solid var(--line);
+    border-radius: 4px; padding: 0 4px;
+  }
+  .detail-head-bar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 64px;
+    height: var(--detail-head-h);
+    min-height: var(--detail-head-h);
+    max-height: var(--detail-head-h);
+    padding: 0 24px;
+    box-sizing: border-box;
+    border-bottom: 1px solid var(--line);
+    background: #fff;
+    overflow: hidden;
+  }
+  .modal-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+  }
+  .back-link {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    color: var(--text);
+    text-decoration: none;
+    transition: background .15s, color .15s;
+  }
+  .back-link:hover {
+    background: var(--panel2);
+    color: var(--accent);
+  }
+  .back-link svg {
+    width: 18px;
+    height: 18px;
+    display: block;
+  }
+  .title-divider {
+    flex-shrink: 0;
+    width: 1px;
+    height: 18px;
+    background: var(--line);
+  }
+  .detail-head-bar .modal-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .modal-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .detail-head-tabs { display: flex; align-items: center; gap: 4px; min-width: 0; }
+  .detail-head-tabs a {
+    text-decoration: none;
+    color: var(--muted);
+    font-size: var(--text-body);
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 6px;
+    white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .detail-head-tabs a:hover { color: var(--accent); background: var(--color-bg); }
+  .detail-head-tabs a.active { color: var(--accent); background: var(--color-bg); font-weight: 600; }
+
+  .page-wrapper {
+    display: flex; align-items: stretch; width: 100%;
+    min-height: calc(100vh - var(--detail-head-h)); background: var(--bg);
+  }
+  .comp-sidebar {
+    width: var(--sidebar-w); flex-shrink: 0; position: sticky; top: var(--detail-head-h);
+    height: calc(100vh - var(--detail-head-h)); overflow-y: auto; padding: 16px 0 32px;
+    border-right: 1px solid var(--line); background: var(--panel);
+  }
+  .comp-sidebar-title {
+    font-size: var(--text-caption); font-weight: 700; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--muted); padding: 0 20px 10px;
+  }
+  .comp-nav ul { list-style: none; margin: 0; padding: 0; }
+  .comp-group-label {
+    font-size: var(--text-caption); font-weight: 700; letter-spacing: .04em; color: var(--muted);
+    padding: 12px 20px 4px; margin-top: 8px; border-top: 1px solid var(--line);
+  }
+  .comp-nav > .comp-group-label:first-child { margin-top: 0; border-top: none; padding-top: 0; }
+  .comp-nav a, .comp-nav .comp-pending {
+    display: block; padding: 8px 20px; font-size: 13px; line-height: 1.5;
+    text-decoration: none; border-left: 2px solid transparent;
+  }
+  .comp-nav a { color: var(--muted); }
+  .comp-nav a:hover { color: var(--text); background: var(--color-bg); }
+  .comp-nav a.active {
+    color: var(--accent); font-weight: 600; background: #EEF5FF; border-left-color: var(--accent);
+  }
+  .comp-nav .comp-pending { color: #bfbfbf; cursor: default; }
+  .main-content {
+    flex: 1; min-width: 0; background: var(--panel); border-right: 1px solid var(--line);
+    min-height: calc(100vh - var(--detail-head-h));
+    padding: var(--content-pad-top) var(--content-pad-x) 32px var(--content-pad-left);
+    box-sizing: border-box;
+  }
+  .main-content > .page-header,
+  .main-content > .page-desc,
+  .main-content > .section {
+    width: 100%; max-width: var(--content-max); margin-inline: 0;
+    padding-left: 0; padding-right: 0; box-sizing: border-box;
+  }
+  .page-header {
+    margin-bottom: 36px; padding-bottom: 24px; border-bottom: 1px solid var(--line);
+  }
+  .page-header-top {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; margin-bottom: 0;
+  }
+  .page-header-top h1 {
+    margin: 0; font-size: 32px; font-weight: 800; line-height: 1.2;
+    letter-spacing: -0.02em; color: var(--text);
+    display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
+    flex: 1; min-width: 0;
+  }
+  .badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: var(--text-auxiliary); font-weight: 600; line-height: 1;
+    padding: 4px 10px; border-radius: 4px; vertical-align: middle;
+  }
+  .badge-bad { color: var(--danger); background: var(--danger-bg); border: 1px solid var(--danger-border); }
+  .badge-should { color: var(--warning); background: var(--warning-bg); border: 1px solid var(--warning-border); }
+  .badge-ok { color: var(--success); background: var(--success-bg); border: 1px solid var(--success-border); }
+  .btn-preview {
+    flex-shrink: 0; border: none; background: none; padding: 0;
+    font-size: var(--text-body); font-weight: 600; color: var(--accent);
+    cursor: pointer; font-family: inherit; text-decoration: none;
+  }
+  .btn-preview:hover { text-decoration: underline; color: var(--accent); }
+  .btn-preview:disabled { opacity: 0.5; cursor: not-allowed; text-decoration: none; }
+  .page-desc {
+    font-size: var(--body-size); line-height: var(--body-lh);
+    color: var(--desc); margin: 0 0 48px;
+  }
+  .page-desc-line { display: block; line-height: var(--body-lh); }
+  .page-desc-line + .page-desc-line { margin-top: 4px; }
+  .page-desc strong { color: var(--text); font-weight: 600; }
+  .section {
+    margin-bottom: 48px;
+    scroll-margin-top: calc(var(--detail-head-h) + 16px);
+  }
+  .section > h2 {
+    margin: 48px 0 16px; padding-bottom: 24px;
+    font-size: var(--text-h2); font-weight: 700; line-height: 36px;
+    color: var(--text); border-bottom: 2px solid var(--heading-rule);
+  }
+  .section:first-of-type > h2 { margin-top: 0; }
+  .content-unit + .content-unit { margin-top: 40px; }
+  .section h3 {
+    margin: 32px 0 16px; font-size: var(--text-h3); font-weight: 700; line-height: 28px; color: var(--text);
+  }
+  .section h4 {
+    margin: 24px 0 16px; font-size: var(--text-body); font-weight: 700; color: var(--text);
+  }
+  .section p { margin: 0 0 8px; color: var(--muted); }
+  .section ul { margin: 8px 0 0; padding-left: 20px; color: var(--muted); }
+  .section li { margin-bottom: 6px; }
+  .section li:last-child { margin-bottom: 0; }
+  .section li strong { color: var(--text); font-weight: 600; }
+  .test-prompt-card {
+    background: rgba(222, 236, 255, 0.5); border-radius: 8px;
+    padding: 24px; margin: 0 0 24px;
+    font-size: var(--text-body); line-height: 22px; color: var(--text);
+  }
+  .test-prompt-card p { margin: 0; color: var(--text); line-height: 22px; }
+  .test-prompt-card a { color: var(--accent); }
+  .test-prompt-card strong { color: var(--text); }
+  .fix-suggestion {
+    background: var(--card-bg); border: 1px solid var(--card-border);
+    border-radius: 8px; padding: 16px 18px; margin: 12px 0 0;
+  }
+  .fix-suggestion > :first-child { margin-top: 0; }
+  .fix-suggestion > :last-child { margin-bottom: 0; }
+  .fix-suggestion h4 { margin: 0 0 8px; font-size: var(--text-body); font-weight: 700; color: var(--text); }
+  .fix-suggestion p { margin: 0; font-size: var(--text-body); line-height: 22px; color: var(--muted); }
+  .issue-body p { margin: 0; font-size: var(--text-body); line-height: 22px; color: var(--text); }
+  .issue-body p + p { margin-top: 8px; }
+  .issue-body code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 13px; background: #f1f5f9; padding: 1px 5px; border-radius: 4px;
+  }
+  .peer-test-table {
+    width: 100%; border-collapse: collapse; font-size: var(--text-table);
+    margin: 16px 0 0; background: var(--panel); border-radius: 8px;
+    overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,.08);
+  }
+  .peer-test-table th {
+    background: #f1f5f9; padding: 10px 14px; text-align: left;
+    font-weight: 600; color: var(--text); border-bottom: 1px solid var(--line);
+    vertical-align: middle;
+  }
+  .peer-test-table td {
+    padding: 10px 14px; border-bottom: 1px solid var(--line);
+    vertical-align: middle; color: var(--muted); line-height: 22px;
+  }
+  /* auto 布局下 width:1% = 按内容收缩；末列自然占满剩余宽度 */
+  .peer-test-table th:nth-child(1),
+  .peer-test-table td:nth-child(1),
+  .peer-test-table th:nth-child(2),
+  .peer-test-table td:nth-child(2),
+  .peer-test-table th:nth-child(3),
+  .peer-test-table td:nth-child(3),
+  .peer-test-table th:nth-child(4),
+  .peer-test-table td:nth-child(4) {
+    white-space: nowrap;
+    width: 1%;
+  }
+  .peer-test-table th:nth-child(5),
+  .peer-test-table td:nth-child(5) {
+    white-space: normal;
+    word-break: break-word;
+  }
+  .peer-test-table tr:last-child td { border-bottom: none; }
+  .peer-test-table a { color: var(--accent); text-decoration: none; }
+  .peer-test-table a:hover { text-decoration: underline; }
+  .peer-tag {
+    display: inline-block; font-size: var(--text-auxiliary); font-weight: 600;
+    padding: 2px 8px; border-radius: 4px; white-space: nowrap;
+  }
+  .peer-tag-ok { color: var(--success); background: var(--success-bg); border: 1px solid var(--success-border); }
+  .peer-tag-partial { color: var(--warning); background: var(--warning-bg); border: 1px solid var(--warning-border); }
+  .peer-tag-warn-ok { color: var(--muted); background: var(--panel2); border: 1px solid var(--line); }
+  .peer-reason { font-size: 13px; color: var(--muted); line-height: 22px; }
+  .peer-test-empty { margin: 12px 0 0; font-size: var(--text-body); line-height: 22px; color: var(--muted); }
+  .peer-test-note {
+    margin: 8px 0 0; font-size: 13px; line-height: 22px; color: var(--desc);
+  }
+  .peer-test-note strong { color: var(--text); font-weight: 600; }
+  .peer-th-sub {
+    display: block; font-size: var(--text-caption); font-weight: 500; color: var(--muted);
+    margin-top: 2px; line-height: 1.3;
+  }
+  .peer-floor-badge {
+    display: inline-block; font-size: var(--text-caption); font-weight: 500;
+    color: var(--muted); white-space: nowrap;
+  }
+  .peer-object-link {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    line-height: 1.35;
+    text-decoration: none;
+  }
+  .peer-object-link:hover .peer-object-name { text-decoration: underline; }
+  .peer-object-name { color: var(--accent); }
+  .page-toc {
+    width: var(--toc-w); flex-shrink: 0; position: sticky; top: var(--detail-head-h);
+    align-self: flex-start; height: calc(100vh - var(--detail-head-h));
+    overflow-y: auto; padding: 28px 16px 40px 20px; background: var(--bg);
+  }
+  .page-toc-title { font-size: var(--text-auxiliary); font-weight: 600; color: var(--muted); margin-bottom: 12px; }
+  .page-toc-nav ul { list-style: none; margin: 0; padding: 0; }
+  .page-toc-nav li + li { margin-top: 2px; }
+  .page-toc-nav a {
+    display: block; font-size: 13px; line-height: 1.5; color: var(--muted);
+    padding: 4px 0; text-decoration: none; border-left: 2px solid transparent;
+  }
+  .page-toc-nav a.toc-h3 { padding-left: 12px; font-size: var(--text-auxiliary); }
+  .page-toc-nav a:hover { color: var(--accent); }
+  .page-toc-nav a.active {
+    color: var(--accent); font-weight: 600; border-left-color: var(--accent);
+    padding-left: 8px; margin-left: -8px;
+  }
+  .page-toc-nav a.toc-h3.active { padding-left: 12px; margin-left: 0; border-left-color: transparent; }
+  @media (max-width: 1100px) {
+    .page-toc { display: none; }
+    .main-content { border-right: none; }
+  }
+  @media (max-width: 900px) {
+    .page-wrapper { flex-direction: column; }
+    .comp-sidebar {
+      position: static; width: 100%; height: auto;
+      border-right: none; border-bottom: 1px solid var(--line);
+    }
+  }
+  .modal[hidden] { display: none !important; }
+  .modal {
+    position: fixed; inset: 0; z-index: 100; background: rgba(17, 24, 39, 0.45);
+    display: flex; align-items: center; justify-content: center; padding: 24px;
+  }
+  .modal-panel {
+    width: min(720px, 100%); max-height: min(86vh, 900px); background: var(--panel);
+    border-radius: 16px; border: 1px solid var(--line);
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  .modal-head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; padding: 14px 18px; border-bottom: 1px solid var(--line);
+  }
+  .modal-title { margin: 0; font-size: 16px; font-weight: 650; }
+  .modal-close {
+    border: 1px solid var(--line); background: var(--panel); border-radius: 8px;
+    padding: 6px 10px; cursor: pointer; font-size: 13px; color: var(--muted); font-family: inherit;
+  }
+  .modal-close:hover { color: var(--accent); border-color: var(--accent); }
+  .modal-body { padding: 18px 20px; overflow: auto; background: var(--panel2); }
+  .dialog-card {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 12px; padding: 14px 16px; margin-bottom: 12px;
+  }
+  .dialog-card:last-child { margin-bottom: 0; }
+  .dialog-role { display: block; font-size: var(--text-auxiliary); font-weight: 650; color: var(--muted); margin-bottom: 6px; }
+  .dialog-card p { margin: 0 0 8px; color: var(--text); line-height: 1.65; }
+  .dialog-card p:last-child { margin-bottom: 0; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  .comp-nav a, .comp-nav .comp-pending {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  }
+  .comp-nav-label { flex: 1; min-width: 0; }
+  .comp-nav .aff {
+    display: inline-block; flex-shrink: 0;
+    font-size: var(--text-caption); font-weight: 600; line-height: 18px;
+    padding: 0 6px; border-radius: 999px; white-space: nowrap;
+  }
+  .comp-nav .aff-need { color: #b42318; background: #fef3f2; }
+  .comp-nav .aff-maybe { color: #b54708; background: #fffaeb; }
+  .comp-nav .aff-no { color: var(--color-text-secondary); background: var(--color-bg); }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  .comp-nav .comp-dot {
+    flex-shrink: 0;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #2563eb;
+  }
+
+
+
+
+  .comp-sidebar { overflow-anchor: none; }
+
+
+
+  .evidence-block {
+    margin: 12px 0 0;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel2);
+    overflow: hidden;
+  }
+  .evidence-block-title {
+    margin: 0;
+    padding: 8px 12px;
+    font-size: var(--text-auxiliary);
+    font-weight: 700;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+    background: var(--panel);
+  }
+  .section .evidence-block > .evidence-block-title {
+    margin: 0;
+    color: var(--muted);
+  }
+  .evidence-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    padding-top: 0;
+  }
+  .evidence-grid--single {
+    grid-template-columns: 1fr;
+  }
+  @media (max-width: 900px) {
+    .evidence-grid { grid-template-columns: 1fr; }
+  }
+  .evidence-pane {
+    min-width: 0;
+    padding: 12px;
+  }
+  .evidence-pane + .evidence-pane {
+    border-left: 1px solid var(--line);
+  }
+  @media (max-width: 900px) {
+    .evidence-pane + .evidence-pane {
+      border-left: none;
+      border-top: 1px solid var(--line);
+    }
+  }
+  .evidence-pane-label {
+    margin: 0 0 12px;
+    font-size: var(--text-auxiliary);
+    font-weight: 700;
+    color: var(--text);
+  }
+  .section .evidence-pane > .evidence-pane-label {
+    margin: 0 0 12px;
+    color: var(--text);
+  }
+  .evidence-pane img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    margin: 0;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #fff;
+  }
+  .evidence-pane pre {
+    margin: 0;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #0f172a;
+    color: var(--color-border);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 11.5px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 220px;
+    overflow: auto;
+  }
+  .evidence-caption {
+    margin: 12px 0 0;
+    padding: 0;
+    font-size: 12.5px;
+    line-height: 19px;
+    color: var(--muted);
+    text-align: left;
+  }
+  .section .evidence-pane > .evidence-caption {
+    margin: 12px 0 0;
+    color: var(--muted);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  /* measured-2026-06: tighter content padding */
+  :root {
+    --content-pad-x: 24px;
+    --content-pad-left: 24px;
+    --content-pad-top: 16px;
+    --content-main-pad-top: 16px;
+    --content-main-pad-left: 24px;
+    --content-wide-pad-x: 24px;
+    --space-page-header: 12px;
+    --space-section: 28px;
+  }
+  body.inner-page .page-wrapper,
+  .page-wrapper {
+    padding-top: 0 !important;
+    margin: 0;
+  }
+  .comp-sidebar { padding: 12px 0 24px; }
+  body.inner-page .main-content,
+  .main-content {
+    padding: 16px 24px 28px !important;
+    max-width: none !important;
+  }
+  body.inner-page:not(:has(#module-sidebar)) .main-content > .page-header,
+  body.inner-page:not(:has(#module-sidebar)) .main-content > .page-desc,
+  body.inner-page:not(:has(#module-sidebar)) .main-content > .section,
+  body.inner-page:not(:has(#module-sidebar)) .main-content > .page-nav,
+  body.inner-page:not(:has(#module-sidebar)) .main-content > .content-tabs,
+  .main-content > .page-header,
+  .main-content > .page-desc,
+  .main-content > .section {
+    max-width: none !important;
+    margin-inline: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  .page-header {
+    margin-bottom: 12px !important;
+    padding-bottom: 10px !important;
+  }
+  .page-header-top { margin-bottom: 0 !important; }
+  .page-header-top h1,
+  .page-header h1 {
+    font-size: 24px !important;
+    line-height: 1.3 !important;
+    margin: 0 !important;
+  }
+  .main-content > .page-desc,
+  .page-desc {
+    margin: 0 0 16px !important;
+  }
+  .section { margin-bottom: 24px !important; }
+  .section > h2 { margin: 24px 0 12px !important; padding-bottom: 10px !important; }
+  .section:first-of-type > h2 { margin-top: 0 !important; }
+  .content-unit + .content-unit { margin-top: 20px !important; }
+  .section h3 { margin: 16px 0 8px !important; }
+  .page-toc { padding: 16px 12px 24px 14px; }
+
+</style>
+</head>
+<body class="inner-page" data-module="problems" data-page="structure-metadata">
+<div class="detail-head-bar" aria-label="实测记录导航">
+  <div class="modal-title-wrap">
+    <a class="back-link" href="../ascend_geo_public_recon.html" aria-label="返回社区基线报告"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6L9 12l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    <span class="title-divider" aria-hidden="true"></span>
+    <div class="modal-title">实测记录 · 2026年6月</div>
+  </div>
+</div>
+
+<div class="page-wrapper">
+    <aside class="comp-sidebar" aria-label="实测问题列表">
+    <nav class="comp-nav">
+      <div class="comp-group-label">检索 / 生成</div>
+      <ul>
+        <li><a href="problems-answer-search.html"><span class="comp-nav-label">检索阶段</span></a></li>
+        <li><a href="problems-answer-generate.html"><span class="comp-nav-label">生成阶段</span></a></li>
+      </ul>
+      <div class="comp-group-label">抓不到</div>
+      <ul>
+        <li><a href="problems-structure-llms.html"><span class="comp-nav-label">机器发现层</span></a></li>
+      </ul>
+      <div class="comp-group-label">找不准</div>
+      <ul>
+        <li><a href="problems-timeliness.html"><span class="comp-nav-label">版本滞后 & 多版本并存</span></a></li>
+        <li><a href="problems-structure-metadata.html" class="active"><span class="comp-nav-label">页级元数据未结构化</span></a></li>
+        <li><a href="problems-structure-cross.html"><span class="comp-nav-label">跨页关系未显性化</span></a></li>
+      </ul>
+      <div class="comp-group-label">读不懂</div>
+      <ul>
+        <li><a href="problems-content-image.html"><span class="comp-nav-label">图片语义缺失</span></a></li>
+        <li><a href="problems-content-hotzone.html"><span class="comp-nav-label">热区信息缺失</span></a></li>
+        <li><a href="problems-content-table.html"><span class="comp-nav-label">表格语义缺失</span></a></li>
+        <li><a href="problems-content-code.html"><span class="comp-nav-label">代码块语义缺失</span></a></li>
+        <li><a href="problems-content-link.html"><span class="comp-nav-label">链接锚文本无效</span></a></li>
+        <li><a href="problems-content-note.html"><span class="comp-nav-label">警示级别缺失</span></a></li>
+        <li><a href="problems-content-tab.html"><span class="comp-nav-label">隐藏语义缺失</span></a></li>
+        <li><a href="problems-content-carousel.html"><span class="comp-nav-label">轮播帧语义噪声</span></a></li>
+      </ul>
+      <div class="comp-group-label">读不顺</div>
+      <ul>
+        <li><a href="problems-format.html"><span class="comp-nav-label">HTML 适配不足</span></a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+<div class="page-header">
+      <div class="page-header-top">
+        <h1>页级元数据未结构化 <span class="badge badge-status badge-should">语义未结构化</span></h1>
+      </div>
+    </div>
+
+    <p class="page-desc page-desc--split">
+        <span class="page-desc-line">页级元数据指每篇文档的<strong>身份信息</strong>：CANN 版本、章节路径、文档编号、适用芯片——人看 URL 和标题能知道，入库后却没有可检索字段。</span>
+        <span class="page-desc-line">以 <a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/900/programug/Ascendcopdevg/atlas_ascendc_map_10_0002.html" target="_blank" rel="noopener">什么是 Ascend C</a> 为例：9.0 / 8.5 / 9.1-beta 正文几乎相同、只有 URL 和标题版本串不同——<strong>不写 <code>version</code> 就会混召</strong>。</span>
+      </p>
+
+    <section class="section" id="structure-metadata-problem">
+      <h2>问题实测</h2>
+
+          <div class="content-unit">
+
+            <h3>1. 向模型提问</h3>
+
+            <div class="test-prompt-card">
+
+              <p>我在 Ascend C 文档里看到 <a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/900/programug/Ascendcopdevg/atlas_ascendc_map_10_0003.html" target="_blank" rel="noopener">环境准备（CANN 9.0.0）</a> 这篇——怎么知道它对应 CANN 9.0 还是 8.5？算入门教程还是安装文档？引用时有没有固定的文档编号？</p>
+
+            </div>
+
+            </div>
+
+          <div class="content-unit">
+            <h3>2. 大模型回答</h3>
+            <p>
+              <a href="#" data-drawer-open="structure-metadata-answer">查看大模型回答内容</a>
+            </p>
+          </div>
+
+          <div class="content-unit">
+            <h3>3. 问题洞察</h3>
+            <p>大模型的回答与页面对照指向三点结论：</p>
+            <ul>
+              <li><strong>页面有身份、库里没标签</strong>：人看 URL / 标题能知 9.0 版与章节位置，RAG chunk 只有正文——<code>version</code>、<code>breadcrumb</code>、<code>doc_id</code> 均未字段化。</li>
+              <li><strong>多版本混召</strong>：9.0 / 8.5 / 9.1-beta 正文几乎相同，不写 <code>version</code> 时检索<strong>新旧版混在一起</strong>。</li>
+              <li><strong>引用难唯一</strong>：文档编号、适用芯片页面上有，未写入 chunk——引用只能贴 URL，<strong>难以唯一对应</strong>某一版某一页。</li>
+            </ul>
+            <p>探测详见 <a href="references/元数据论证/hiascend-metadata-probe.md">hiascend-metadata-probe.md</a>。</p>
+          </div>
+
+            </section>
+
+    <section class="section" id="structure-metadata-root-cause">
+      <h2 id="solution">根因分析</h2>
+
+      <div class="content-unit">
+        <p>页级元数据未结构化的核心原因是：<strong>version / breadcrumb / doc_id 未字段化、Front Matter 缺失、chunk 无身份标签</strong>。</p>
+
+        <h3>1. version 未字段化</h3>
+        <p>版本号藏在 URL 与 <code>&lt;title&gt;</code> 里，入库不写 <code>version</code>——RAG 无法默认过滤 900，8.5 / 9.0 混召。</p>
+        <div class="fix-suggestion">
+          <h4>修改建议</h4>
+          <p>页头展示 <code>version</code> 徽章，Front Matter 强制写入 <code>version</code>（详见 <a href="principles-timeliness.html">版本外显</a>）。</p>
+        </div>
+
+        <h3>2. breadcrumb 未拆分</h3>
+        <p>章节路径挤在 <code>&lt;title&gt;</code> 一长串里——同名「环境准备」<strong>分不清教程线</strong>。</p>
+        <div class="fix-suggestion">
+          <h4>修改建议</h4>
+          <p>渲染页展示面包屑，机器层写入 <code>breadcrumb</code> 数组。</p>
+        </div>
+
+        <h3>3. doc_id 未携带</h3>
+        <p>URL 文件名可当编号，但 chunk 无 <code>doc_id</code>——引用只能贴链接，无法稳定回溯。</p>
+        <div class="fix-suggestion">
+          <h4>修改建议</h4>
+          <p>Front Matter 写入 <code>doc_id</code> + <code>source_url</code>，脚注可唯一对应文档。</p>
+        </div>
+
+        <h3>4. 适用属性未入库</h3>
+        <p>适用芯片等信息散落在正文，无 <code>applicable_devices</code> 等字段——无法按硬件过滤。</p>
+        <div class="fix-suggestion">
+          <h4>修改建议</h4>
+          <p>页头展示适用芯片标签，入库写入 <code>applicable_devices</code>（字段模板见 <a href="problems-structure-metadata.html#solution">页级元数据</a>）。</p>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <aside class="page-toc" id="page-toc" aria-label="本篇目录">
+    <div class="page-toc-title">本篇目录</div>
+    <nav class="page-toc-nav"><ul id="page-toc-list"></ul></nav>
+  </aside>
+</div>
+
+</div>
+
+
+<div class="answer-drawer" id="answer-drawer" aria-hidden="true">
+  <div class="answer-drawer-overlay" data-drawer-close></div>
+  <aside class="answer-drawer-panel" role="dialog" aria-labelledby="answer-drawer-title">
+    <header class="answer-drawer-header">
+      <h2 id="answer-drawer-title">对话详情</h2>
+      <button type="button" class="answer-drawer-close" data-drawer-close aria-label="关闭">×</button>
+    </header>
+    <div class="answer-drawer-body"></div>
+  </aside>
+</div>
+
+<template data-drawer-template="structure-metadata-answer" data-drawer-title="大模型回答">
+
+  <div class="dialog-card">
+    <span class="dialog-card-role">用户</span>
+    <div class="dialog-card-body">
+      <p>我在 Ascend C 文档里看到环境准备（CANN 9.0.0）这篇——怎么知道它对应 CANN 9.0 还是 8.5？算入门教程还是安装文档？引用时有没有固定的文档编号？</p>
+    </div>
+  </div>
+
+  <div class="dialog-card">
+    <span class="dialog-card-role">大模型</span>
+    <div class="dialog-card-body">
+      <p>这篇文档 URL 路径里带有 <code>…/900/…</code>，标题也写了 CANN 9.0.0，可以判断是 9.0 社区版。</p>
+      <p>从章节位置看，它属于 Ascend C 算子开发入门教程，紧接在「什么是 Ascend C」之后，主要讲环境准备，更偏<strong>入门教程的安装前置步骤</strong>，不是独立的 CANN 全量安装手册。</p>
+      <p>引用时可以贴 URL；文件名里的 <code>atlas_ascendc_map_10_0003</code> 可当作文档标识，但回答里<strong>没有单独给出 doc_id 或 version 字段</strong>，只能靠链接推断版本与章节身份。</p>
+    </div>
+  </div>
+</template>
+<script src="assets/js/answer-drawer.js"></script>
+
+<script>
+(function () {
+  var main = document.querySelector('.main-content');
+  var tocList = document.getElementById('page-toc-list');
+  var used = {};
+  function slugify(text) {
+    var base = (text || '').trim().toLowerCase().replace(/[^\w\u4e00-\u9fff]+/g, '-').replace(/^-+|-+$/g, '');
+    if (!base) base = 'section';
+    var slug = base, n = 2;
+    while (used[slug]) slug = base + '-' + n++;
+    used[slug] = true;
+    return slug;
+  }
+  var headings = main ? main.querySelectorAll('h2, h3') : [];
+  var tocItems = [];
+  headings.forEach(function (el) {
+    if (el.closest('.preview-drawer, .answer-drawer, template')) return;
+    var text = el.textContent.replace(/\s+/g, ' ').trim();
+    if (!text) return;
+    if (!el.id) el.id = slugify(text);
+    tocItems.push({ id: el.id, text: text, level: el.tagName === 'H3' ? 3 : 2, el: el });
+  });
+  if (tocList) {
+    tocList.innerHTML = tocItems.map(function (item) {
+      var cls = item.level === 3 ? ' class="toc-h3"' : '';
+      return '<li><a href="#' + item.id + '"' + cls + ' data-toc-link>' + item.text + '</a></li>';
+    }).join('');
+  }
+  var tocLinks = document.querySelectorAll('[data-toc-link]');
+  function setTocActive(id) {
+    tocLinks.forEach(function (a) { a.classList.toggle('active', a.getAttribute('href') === '#' + id); });
+  }
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      var visible = entries.filter(function (e) { return e.isIntersecting; })
+        .sort(function (a, b) { return a.boundingClientRect.top - b.boundingClientRect.top; });
+      if (visible.length) setTocActive(visible[0].target.id);
+    }, { rootMargin: '-20% 0px -60% 0px', threshold: [0, 0.25, 0.5] });
+    tocItems.forEach(function (item) { io.observe(item.el); });
+  }
+  function syncHash() {
+    var id = (location.hash || '').replace('#', '');
+    if (id) setTocActive(id);
+  }
+  window.addEventListener('hashchange', syncHash);
+  syncHash();
+})();
+</script>
+<script>
+(function () {
+  var sidebar = document.querySelector('.comp-sidebar');
+  if (!sidebar) return;
+  var key = 'geo-measured-2026-06-sidebar-scroll';
+  var y = null;
+  try {
+    var saved = sessionStorage.getItem(key);
+    if (saved !== null) y = parseInt(saved, 10);
+  } catch (e) {}
+  function restore() {
+    if (y === null || isNaN(y)) return;
+    sidebar.scrollTop = y;
+  }
+  restore();
+  requestAnimationFrame(restore);
+  window.addEventListener('load', restore);
+  sidebar.addEventListener('scroll', function () {
+    try { sessionStorage.setItem(key, String(sidebar.scrollTop)); } catch (e) {}
+  }, { passive: true });
+  sidebar.querySelectorAll('a[href]').forEach(function (a) {
+    a.addEventListener('click', function () {
+      try { sessionStorage.setItem(key, String(sidebar.scrollTop)); } catch (e) {}
+    });
+  });
+})();
+</script>
+</body>
+</html>

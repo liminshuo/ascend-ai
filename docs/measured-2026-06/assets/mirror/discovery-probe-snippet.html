@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>hiascend.com · 机器发现层探测示意</title>
+  <style>
+    body { margin: 0; padding: 20px 24px; font-family: "PingFang SC", sans-serif; font-size: 14px; line-height: 1.7; color: #1e293b; background: #f8fafc; }
+    h1 { font-size: 20px; margin: 0 0 8px; }
+    .muted { color: #64748b; font-size: 13px; margin: 0 0 20px; }
+    .probe { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; }
+    .probe h2 { font-size: 15px; margin: 0 0 8px; font-family: ui-monospace, monospace; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; }
+    .bad { background: #fee2e2; color: #b91c1c; }
+    .warn { background: #fef3c7; color: #b45309; }
+    pre { margin: 8px 0 0; padding: 10px 12px; background: #f1f5f9; border-radius: 6px; font-size: 12px; line-height: 1.5; overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 8px; }
+    th, td { border: 1px solid #e2e8f0; padding: 6px 10px; text-align: left; }
+    th { background: #f1f5f9; }
+    em { color: #64748b; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <h1>机器发现层探测</h1>
+  <p class="muted">2026-06-07 · hiascend.com 根路径三类配置（示意，非实时探测）</p>
+
+  <div class="probe">
+    <h2>GET /llms.txt</h2>
+    <span class="badge bad">404 Not Found</span>
+    <p>无站点级声明：机器友好 URL、主推版本、废弃索引均缺失。</p>
+  </div>
+
+  <div class="probe">
+    <h2>GET /robots.txt</h2>
+    <span class="badge warn">屏蔽 doc_center</span>
+    <pre>User-agent: *
+Allow: /
+Disallow: /profile/
+Disallow: /doc_center/
+
+Sitemap: https://www.hiascend.com/sitemap.xml</pre>
+    <p>合规爬虫<strong>不得抓取</strong> <code>/doc_center/source/</code> 源 HTML。</p>
+  </div>
+
+  <div class="probe">
+    <h2>GET /sitemap/sitemapdoc1.xml</h2>
+    <span class="badge bad">100% 渲染页</span>
+    <table>
+      <thead><tr><th>指标</th><th>值</th></tr></thead>
+      <tbody>
+        <tr><td>抽样条数</td><td>10,000</td></tr>
+        <tr><td><code>doc_center</code> 路径</td><td>0</td></tr>
+        <tr><td><code>document/detail</code></td><td>100%</td></tr>
+      </tbody>
+    </table>
+    <p><em>只引导 ~224 KB 渲染页，多版本无 canonical 优先级。</em></p>
+  </div>
+</body>
+</html>

@@ -1,0 +1,2028 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<link rel="stylesheet" href="../assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/style.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>版本滞后 &amp; 多版本并存 · 实测记录 · 2026年6月</title>
+<style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  :root {
+    --bg: var(--color-bg); --panel: var(--color-surface); --panel2: var(--color-card-bg); --line: var(--color-border);
+    --text: var(--color-text); --muted: var(--color-text-secondary); --accent: var(--color-primary);
+    --link: var(--color-primary); --detail-head-h: var(--header-height);
+    --desc: rgba(0, 0, 0, 0.6);
+    --heading-rule: var(--color-heading-rule);
+    --card-bg: var(--color-card-bg); --card-border: var(--color-card-border);
+    --danger: #dc2626; --danger-bg: rgba(220, 38, 38, 0.08); --danger-border: rgba(220, 38, 38, 0.25);
+    --warning: #d97706; --warning-bg: rgba(217, 119, 6, 0.08); --warning-border: rgba(217, 119, 6, 0.28);
+    --success: #16a34a; --success-bg: rgba(22, 163, 74, 0.08); --success-border: rgba(22, 163, 74, 0.25);
+    --sidebar-w: var(--sidebar-width);
+    --toc-w: var(--toc-width);
+    --content-pad-x: var(--content-wide-pad-x);
+    --content-pad-left: var(--content-main-pad-left);
+    --content-pad-top: var(--content-main-pad-top);
+    --content-max: var(--content-max-width);
+    --body-size: var(--text-body);
+    --body-lh: var(--text-body-lh);
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-size: var(--body-size); margin: 0;
+    font-family: var(--font);
+    background: var(--bg); color: var(--muted); line-height: var(--body-lh);
+  }
+  body.modal-open { overflow: hidden; }
+  a { color: var(--link); }
+  code {
+    font-size: var(--text-auxiliary); background: var(--panel2); border: 1px solid var(--line);
+    border-radius: 4px; padding: 0 4px;
+  }
+  .detail-head-bar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 64px;
+    height: var(--detail-head-h);
+    min-height: var(--detail-head-h);
+    max-height: var(--detail-head-h);
+    padding: 0 24px;
+    box-sizing: border-box;
+    border-bottom: 1px solid var(--line);
+    background: #fff;
+    overflow: hidden;
+  }
+  .modal-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+  }
+  .back-link {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    color: var(--text);
+    text-decoration: none;
+    transition: background .15s, color .15s;
+  }
+  .back-link:hover {
+    background: var(--panel2);
+    color: var(--accent);
+  }
+  .back-link svg {
+    width: 18px;
+    height: 18px;
+    display: block;
+  }
+  .title-divider {
+    flex-shrink: 0;
+    width: 1px;
+    height: 18px;
+    background: var(--line);
+  }
+  .detail-head-bar .modal-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .modal-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .detail-head-tabs { display: flex; align-items: center; gap: 4px; min-width: 0; }
+  .detail-head-tabs a {
+    text-decoration: none;
+    color: var(--muted);
+    font-size: var(--text-body);
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 6px;
+    white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .detail-head-tabs a:hover { color: var(--accent); background: var(--color-bg); }
+  .detail-head-tabs a.active { color: var(--accent); background: var(--color-bg); font-weight: 600; }
+
+  .page-wrapper {
+    display: flex; align-items: stretch; width: 100%;
+    min-height: calc(100vh - var(--detail-head-h)); background: var(--bg);
+  }
+  .comp-sidebar {
+    width: var(--sidebar-w); flex-shrink: 0; position: sticky; top: var(--detail-head-h);
+    height: calc(100vh - var(--detail-head-h)); overflow-y: auto; padding: 16px 0 32px;
+    border-right: 1px solid var(--line); background: var(--panel);
+  }
+  .comp-sidebar-title {
+    font-size: var(--text-caption); font-weight: 700; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--muted); padding: 0 20px 10px;
+  }
+  .comp-nav ul { list-style: none; margin: 0; padding: 0; }
+  .comp-group-label {
+    font-size: var(--text-caption); font-weight: 700; letter-spacing: .04em; color: var(--muted);
+    padding: 12px 20px 4px; margin-top: 8px; border-top: 1px solid var(--line);
+  }
+  .comp-nav > .comp-group-label:first-child { margin-top: 0; border-top: none; padding-top: 0; }
+  .comp-nav a, .comp-nav .comp-pending {
+    display: block; padding: 8px 20px; font-size: 13px; line-height: 1.5;
+    text-decoration: none; border-left: 2px solid transparent;
+  }
+  .comp-nav a { color: var(--muted); }
+  .comp-nav a:hover { color: var(--text); background: var(--color-bg); }
+  .comp-nav a.active {
+    color: var(--accent); font-weight: 600; background: #EEF5FF; border-left-color: var(--accent);
+  }
+  .comp-nav .comp-pending { color: #bfbfbf; cursor: default; }
+  .main-content {
+    flex: 1; min-width: 0; background: var(--panel); border-right: 1px solid var(--line);
+    min-height: calc(100vh - var(--detail-head-h));
+    padding: var(--content-pad-top) var(--content-pad-x) 32px var(--content-pad-left);
+    box-sizing: border-box;
+  }
+  .main-content > .page-header,
+  .main-content > .page-desc,
+  .main-content > .section {
+    width: 100%; max-width: var(--content-max); margin-inline: 0;
+    padding-left: 0; padding-right: 0; box-sizing: border-box;
+  }
+  .page-header {
+    margin-bottom: 36px; padding-bottom: 24px; border-bottom: 1px solid var(--line);
+  }
+  .page-header-top {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; margin-bottom: 0;
+  }
+  .page-header-top h1 {
+    margin: 0; font-size: 32px; font-weight: 800; line-height: 1.2;
+    letter-spacing: -0.02em; color: var(--text);
+    display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
+    flex: 1; min-width: 0;
+  }
+  .badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: var(--text-auxiliary); font-weight: 600; line-height: 1;
+    padding: 4px 10px; border-radius: 4px; vertical-align: middle;
+  }
+  .badge-bad { color: var(--danger); background: var(--danger-bg); border: 1px solid var(--danger-border); }
+  .badge-should { color: var(--warning); background: var(--warning-bg); border: 1px solid var(--warning-border); }
+  .badge-ok { color: var(--success); background: var(--success-bg); border: 1px solid var(--success-border); }
+  .btn-preview {
+    flex-shrink: 0; border: none; background: none; padding: 0;
+    font-size: var(--text-body); font-weight: 600; color: var(--accent);
+    cursor: pointer; font-family: inherit; text-decoration: none;
+  }
+  .btn-preview:hover { text-decoration: underline; color: var(--accent); }
+  .btn-preview:disabled { opacity: 0.5; cursor: not-allowed; text-decoration: none; }
+  .page-desc {
+    font-size: var(--body-size); line-height: var(--body-lh);
+    color: var(--desc); margin: 0 0 48px;
+  }
+  .page-desc-line { display: block; line-height: var(--body-lh); }
+  .page-desc-line + .page-desc-line { margin-top: 4px; }
+  .page-desc strong { color: var(--text); font-weight: 600; }
+  .section {
+    margin-bottom: 48px;
+    scroll-margin-top: calc(var(--detail-head-h) + 16px);
+  }
+  .section > h2 {
+    margin: 48px 0 16px; padding-bottom: 24px;
+    font-size: var(--text-h2); font-weight: 700; line-height: 36px;
+    color: var(--text); border-bottom: 2px solid var(--heading-rule);
+  }
+  .section:first-of-type > h2 { margin-top: 0; }
+  .content-unit + .content-unit { margin-top: 40px; }
+  .section h3 {
+    margin: 32px 0 16px; font-size: var(--text-h3); font-weight: 700; line-height: 28px; color: var(--text);
+  }
+  .section h4 {
+    margin: 24px 0 16px; font-size: var(--text-body); font-weight: 700; color: var(--text);
+  }
+  .section p { margin: 0 0 8px; color: var(--muted); }
+  .section ul { margin: 8px 0 0; padding-left: 20px; color: var(--muted); }
+  .section li { margin-bottom: 6px; }
+  .section li:last-child { margin-bottom: 0; }
+  .section li strong { color: var(--text); font-weight: 600; }
+  .test-prompt-card {
+    background: rgba(222, 236, 255, 0.5); border-radius: 8px;
+    padding: 24px; margin: 0 0 24px;
+    font-size: var(--text-body); line-height: 22px; color: var(--text);
+  }
+  .test-prompt-card p { margin: 0; color: var(--text); line-height: 22px; }
+  .test-prompt-card a { color: var(--accent); }
+  .test-prompt-card strong { color: var(--text); }
+  .fix-suggestion {
+    background: var(--card-bg); border: 1px solid var(--card-border);
+    border-radius: 8px; padding: 16px 18px; margin: 12px 0 0;
+  }
+  .fix-suggestion > :first-child { margin-top: 0; }
+  .fix-suggestion > :last-child { margin-bottom: 0; }
+  .fix-suggestion h4 { margin: 0 0 8px; font-size: var(--text-body); font-weight: 700; color: var(--text); }
+  .fix-suggestion p { margin: 0; font-size: var(--text-body); line-height: 22px; color: var(--muted); }
+  .issue-body p { margin: 0; font-size: var(--text-body); line-height: 22px; color: var(--text); }
+  .issue-body p + p { margin-top: 8px; }
+  .issue-body code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 13px; background: #f1f5f9; padding: 1px 5px; border-radius: 4px;
+  }
+  .peer-test-table {
+    width: 100%; border-collapse: collapse; font-size: var(--text-table);
+    margin: 16px 0 0; background: var(--panel); border-radius: 8px;
+    overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,.08);
+  }
+  .peer-test-table th {
+    background: #f1f5f9; padding: 10px 14px; text-align: left;
+    font-weight: 600; color: var(--text); border-bottom: 1px solid var(--line);
+    vertical-align: middle;
+  }
+  .peer-test-table td {
+    padding: 10px 14px; border-bottom: 1px solid var(--line);
+    vertical-align: middle; color: var(--muted); line-height: 22px;
+  }
+  /* auto 布局下 width:1% = 按内容收缩；末列自然占满剩余宽度 */
+  .peer-test-table th:nth-child(1),
+  .peer-test-table td:nth-child(1),
+  .peer-test-table th:nth-child(2),
+  .peer-test-table td:nth-child(2),
+  .peer-test-table th:nth-child(3),
+  .peer-test-table td:nth-child(3),
+  .peer-test-table th:nth-child(4),
+  .peer-test-table td:nth-child(4) {
+    white-space: nowrap;
+    width: 1%;
+  }
+  .peer-test-table th:nth-child(5),
+  .peer-test-table td:nth-child(5) {
+    white-space: normal;
+    word-break: break-word;
+  }
+  .peer-test-table tr:last-child td { border-bottom: none; }
+  .peer-test-table a { color: var(--accent); text-decoration: none; }
+  .peer-test-table a:hover { text-decoration: underline; }
+  .peer-tag {
+    display: inline-block; font-size: var(--text-auxiliary); font-weight: 600;
+    padding: 2px 8px; border-radius: 4px; white-space: nowrap;
+  }
+  .peer-tag-ok { color: var(--success); background: var(--success-bg); border: 1px solid var(--success-border); }
+  .peer-tag-partial { color: var(--warning); background: var(--warning-bg); border: 1px solid var(--warning-border); }
+  .peer-tag-warn-ok { color: var(--muted); background: var(--panel2); border: 1px solid var(--line); }
+  .peer-reason { font-size: 13px; color: var(--muted); line-height: 22px; }
+  .peer-test-empty { margin: 12px 0 0; font-size: var(--text-body); line-height: 22px; color: var(--muted); }
+  .peer-test-note {
+    margin: 8px 0 0; font-size: 13px; line-height: 22px; color: var(--desc);
+  }
+  .peer-test-note strong { color: var(--text); font-weight: 600; }
+  .peer-th-sub {
+    display: block; font-size: var(--text-caption); font-weight: 500; color: var(--muted);
+    margin-top: 2px; line-height: 1.3;
+  }
+  .peer-floor-badge {
+    display: inline-block; font-size: var(--text-caption); font-weight: 500;
+    color: var(--muted); white-space: nowrap;
+  }
+  .peer-object-link {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    line-height: 1.35;
+    text-decoration: none;
+  }
+  .peer-object-link:hover .peer-object-name { text-decoration: underline; }
+  .peer-object-name { color: var(--accent); }
+  .page-toc {
+    width: var(--toc-w); flex-shrink: 0; position: sticky; top: var(--detail-head-h);
+    align-self: flex-start; height: calc(100vh - var(--detail-head-h));
+    overflow-y: auto; padding: 28px 16px 40px 20px; background: var(--bg);
+  }
+  .page-toc-title { font-size: var(--text-auxiliary); font-weight: 600; color: var(--muted); margin-bottom: 12px; }
+  .page-toc-nav ul { list-style: none; margin: 0; padding: 0; }
+  .page-toc-nav li + li { margin-top: 2px; }
+  .page-toc-nav a {
+    display: block; font-size: 13px; line-height: 1.5; color: var(--muted);
+    padding: 4px 0; text-decoration: none; border-left: 2px solid transparent;
+  }
+  .page-toc-nav a.toc-h3 { padding-left: 12px; font-size: var(--text-auxiliary); }
+  .page-toc-nav a:hover { color: var(--accent); }
+  .page-toc-nav a.active {
+    color: var(--accent); font-weight: 600; border-left-color: var(--accent);
+    padding-left: 8px; margin-left: -8px;
+  }
+  .page-toc-nav a.toc-h3.active { padding-left: 12px; margin-left: 0; border-left-color: transparent; }
+  @media (max-width: 1100px) {
+    .page-toc { display: none; }
+    .main-content { border-right: none; }
+  }
+  @media (max-width: 900px) {
+    .page-wrapper { flex-direction: column; }
+    .comp-sidebar {
+      position: static; width: 100%; height: auto;
+      border-right: none; border-bottom: 1px solid var(--line);
+    }
+  }
+  .modal[hidden] { display: none !important; }
+  .modal {
+    position: fixed; inset: 0; z-index: 100; background: rgba(17, 24, 39, 0.45);
+    display: flex; align-items: center; justify-content: center; padding: 24px;
+  }
+  .modal-panel {
+    width: min(720px, 100%); max-height: min(86vh, 900px); background: var(--panel);
+    border-radius: 16px; border: 1px solid var(--line);
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  .modal-head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; padding: 14px 18px; border-bottom: 1px solid var(--line);
+  }
+  .modal-title { margin: 0; font-size: 16px; font-weight: 650; }
+  .modal-close {
+    border: 1px solid var(--line); background: var(--panel); border-radius: 8px;
+    padding: 6px 10px; cursor: pointer; font-size: 13px; color: var(--muted); font-family: inherit;
+  }
+  .modal-close:hover { color: var(--accent); border-color: var(--accent); }
+  .modal-body { padding: 18px 20px; overflow: auto; background: var(--panel2); }
+  .dialog-card {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 12px; padding: 14px 16px; margin-bottom: 12px;
+  }
+  .dialog-card:last-child { margin-bottom: 0; }
+  .dialog-role { display: block; font-size: var(--text-auxiliary); font-weight: 650; color: var(--muted); margin-bottom: 6px; }
+  .dialog-card p { margin: 0 0 8px; color: var(--text); line-height: 1.65; }
+  .dialog-card p:last-child { margin-bottom: 0; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  .comp-nav a, .comp-nav .comp-pending {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  }
+  .comp-nav-label { flex: 1; min-width: 0; }
+  .comp-nav .aff {
+    display: inline-block; flex-shrink: 0;
+    font-size: var(--text-caption); font-weight: 600; line-height: 18px;
+    padding: 0 6px; border-radius: 999px; white-space: nowrap;
+  }
+  .comp-nav .aff-need { color: #b42318; background: #fef3f2; }
+  .comp-nav .aff-maybe { color: #b54708; background: #fffaeb; }
+  .comp-nav .aff-no { color: var(--color-text-secondary); background: var(--color-bg); }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  .comp-nav .comp-dot {
+    flex-shrink: 0;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #2563eb;
+  }
+
+
+
+
+  .comp-sidebar { overflow-anchor: none; }
+
+
+
+  .evidence-block {
+    margin: 12px 0 0;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel2);
+    overflow: hidden;
+  }
+  .evidence-block-title {
+    margin: 0;
+    padding: 8px 12px;
+    font-size: var(--text-auxiliary);
+    font-weight: 700;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+    background: var(--panel);
+  }
+  .section .evidence-block > .evidence-block-title {
+    margin: 0;
+    color: var(--muted);
+  }
+  .evidence-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    padding-top: 0;
+  }
+  .evidence-grid--single {
+    grid-template-columns: 1fr;
+  }
+  @media (max-width: 900px) {
+    .evidence-grid { grid-template-columns: 1fr; }
+  }
+  .evidence-pane {
+    min-width: 0;
+    padding: 12px;
+  }
+  .evidence-pane + .evidence-pane {
+    border-left: 1px solid var(--line);
+  }
+  @media (max-width: 900px) {
+    .evidence-pane + .evidence-pane {
+      border-left: none;
+      border-top: 1px solid var(--line);
+    }
+  }
+  .evidence-pane-label {
+    margin: 0 0 12px;
+    font-size: var(--text-auxiliary);
+    font-weight: 700;
+    color: var(--text);
+  }
+  .section .evidence-pane > .evidence-pane-label {
+    margin: 0 0 12px;
+    color: var(--text);
+  }
+  .evidence-pane img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    margin: 0;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #fff;
+  }
+  .evidence-pane pre {
+    margin: 0;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #0f172a;
+    color: var(--color-border);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 11.5px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 220px;
+    overflow: auto;
+  }
+  .evidence-caption {
+    margin: 12px 0 0;
+    padding: 0;
+    font-size: 12.5px;
+    line-height: 19px;
+    color: var(--muted);
+    text-align: left;
+  }
+  .section .evidence-pane > .evidence-caption {
+    margin: 12px 0 0;
+    color: var(--muted);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  /* measured-2026-06: tighter content padding */
+  :root {
+    --content-pad-x: 24px;
+    --content-pad-left: 24px;
+    --content-pad-top: 16px;
+    --content-main-pad-top: 16px;
+    --content-main-pad-left: 24px;
+    --content-wide-pad-x: 24px;
+    --space-page-header: 12px;
+    --space-section: 28px;
+  }
+  body.inner-page .page-wrapper,
+  .page-wrapper {
+    padding-top: 0 !important;
+    margin: 0;
+  }
+  .comp-sidebar { padding: 12px 0 24px; }
+  body.inner-page .main-content,
+  .main-content {
+    padding: 16px 24px 28px !important;
+    max-width: none !important;
+  }
+  body.inner-page:not(:has(#module-sidebar)) .main-content > .page-header,
+  body.inner-page:not(:has(#module-sidebar)) .main-content > .page-desc,
+  body.inner-page:not(:has(#module-sidebar)) .main-content > .section,
+  body.inner-page:not(:has(#module-sidebar)) .main-content > .page-nav,
+  body.inner-page:not(:has(#module-sidebar)) .main-content > .content-tabs,
+  .main-content > .page-header,
+  .main-content > .page-desc,
+  .main-content > .section {
+    max-width: none !important;
+    margin-inline: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  .page-header {
+    margin-bottom: 12px !important;
+    padding-bottom: 10px !important;
+  }
+  .page-header-top { margin-bottom: 0 !important; }
+  .page-header-top h1,
+  .page-header h1 {
+    font-size: 24px !important;
+    line-height: 1.3 !important;
+    margin: 0 !important;
+  }
+  .main-content > .page-desc,
+  .page-desc {
+    margin: 0 0 16px !important;
+  }
+  .section { margin-bottom: 24px !important; }
+  .section > h2 { margin: 24px 0 12px !important; padding-bottom: 10px !important; }
+  .section:first-of-type > h2 { margin-top: 0 !important; }
+  .content-unit + .content-unit { margin-top: 20px !important; }
+  .section h3 { margin: 16px 0 8px !important; }
+  .page-toc { padding: 16px 12px 24px 14px; }
+
+</style>
+</head>
+<body class="inner-page" data-module="problems" data-page="timeliness">
+<div class="detail-head-bar" aria-label="实测记录导航">
+  <div class="modal-title-wrap">
+    <a class="back-link" href="../ascend_geo_public_recon.html" aria-label="返回社区基线报告"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6L9 12l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    <span class="title-divider" aria-hidden="true"></span>
+    <div class="modal-title">实测记录 · 2026年6月</div>
+  </div>
+</div>
+
+<div class="page-wrapper">
+    <aside class="comp-sidebar" aria-label="实测问题列表">
+    <nav class="comp-nav">
+      <div class="comp-group-label">检索 / 生成</div>
+      <ul>
+        <li><a href="problems-answer-search.html"><span class="comp-nav-label">检索阶段</span></a></li>
+        <li><a href="problems-answer-generate.html"><span class="comp-nav-label">生成阶段</span></a></li>
+      </ul>
+      <div class="comp-group-label">抓不到</div>
+      <ul>
+        <li><a href="problems-structure-llms.html"><span class="comp-nav-label">机器发现层</span></a></li>
+      </ul>
+      <div class="comp-group-label">找不准</div>
+      <ul>
+        <li><a href="problems-timeliness.html" class="active"><span class="comp-nav-label">版本滞后 & 多版本并存</span></a></li>
+        <li><a href="problems-structure-metadata.html"><span class="comp-nav-label">页级元数据未结构化</span></a></li>
+        <li><a href="problems-structure-cross.html"><span class="comp-nav-label">跨页关系未显性化</span></a></li>
+      </ul>
+      <div class="comp-group-label">读不懂</div>
+      <ul>
+        <li><a href="problems-content-image.html"><span class="comp-nav-label">图片语义缺失</span></a></li>
+        <li><a href="problems-content-hotzone.html"><span class="comp-nav-label">热区信息缺失</span></a></li>
+        <li><a href="problems-content-table.html"><span class="comp-nav-label">表格语义缺失</span></a></li>
+        <li><a href="problems-content-code.html"><span class="comp-nav-label">代码块语义缺失</span></a></li>
+        <li><a href="problems-content-link.html"><span class="comp-nav-label">链接锚文本无效</span></a></li>
+        <li><a href="problems-content-note.html"><span class="comp-nav-label">警示级别缺失</span></a></li>
+        <li><a href="problems-content-tab.html"><span class="comp-nav-label">隐藏语义缺失</span></a></li>
+        <li><a href="problems-content-carousel.html"><span class="comp-nav-label">轮播帧语义噪声</span></a></li>
+      </ul>
+      <div class="comp-group-label">读不顺</div>
+      <ul>
+        <li><a href="problems-format.html"><span class="comp-nav-label">HTML 适配不足</span></a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+<div class="page-header">
+      <div class="page-header-top">
+        <h1>版本滞后 &amp; 多版本并存</h1>
+        <button type="button" class="preview-drawer-trigger" data-preview-drawer-open>查看测试页面</button>
+      </div>
+    </div>
+
+    <p class="page-desc">以 CANN 社区版 <strong>9.0.0（900）</strong> 为基准，对照三模型检索池与生成溯源中的版本分布。</p>
+
+    <section class="section" id="timeliness-problem">
+      <h2>问题实测</h2>
+
+      <div class="content-unit">
+
+        <h3>1. 向模型提问</h3>
+
+        <div class="test-prompt-card">
+
+          <p>我想基于官方资料了解一下 Ascend C 算子开发，能介绍一下吗？</p>
+
+        </div>
+
+        </div>
+
+      <div class="content-unit">
+        <h3>2. 统计结果</h3>
+        <h4>检索阶段 · 版本分布</h4>
+
+        <div class="answer-card-grid">
+
+          <div class="answer-card answer-card--claude">
+            <div class="answer-card-header">
+              <h4>Claude AI 检索 web 19 条</h4>
+            </div>
+
+            <div class="source-breakdown source-breakdown--version">
+              <div class="source-breakdown-group">
+                <div class="source-breakdown-group-label"><span class="version-group-tag version-group-tag--official">官方文档 · 昇腾社区 21%</span></div>
+                <div class="source-row">
+                  <span class="source-row-label">CANN9.0.0</span>
+                  <span class="source-bar"><span class="source-bar-fill unknown" style="width:0%"></span></span>
+                  <span class="source-row-val low">0%</span>
+                </div>
+                <div class="source-row">
+                  <span class="source-row-label">8.5 α（850α）</span>
+                  <span class="source-bar"><span class="source-bar-fill official" style="width:5%"></span></span>
+                  <span class="source-row-val">5%</span>
+                </div>
+                <div class="source-row">
+                  <span class="source-row-label">9.1 β（910β）</span>
+                  <span class="source-bar"><span class="source-bar-fill official" style="width:5%"></span></span>
+                  <span class="source-row-val">5%</span>
+                </div>
+                <div class="source-row">
+                  <span class="source-row-label">7.0 商用</span>
+                  <span class="source-bar"><span class="source-bar-fill official" style="width:5%"></span></span>
+                  <span class="source-row-val">5%</span>
+                </div>
+                <div class="source-row">
+                  <span class="source-row-label">/cann/ascend-c</span>
+                  <span class="source-bar"><span class="source-bar-fill official" style="width:5%"></span></span>
+                  <span class="source-row-val">5%</span>
+                </div>
+              </div>
+              <div class="source-breakdown-divider" aria-hidden="true"></div>
+              <div class="source-breakdown-group">
+                <div class="source-breakdown-group-label"><span class="version-group-tag version-group-tag--third">非官方文档 79%</span></div>
+                <div class="source-row">
+                  <span class="source-row-label">第三方教程</span>
+                  <span class="source-bar"><span class="source-bar-fill third" style="width:79%"></span></span>
+                  <span class="source-row-val">79%</span>
+                </div>
+              </div>
+            </div>
+
+            <button type="button" class="answer-card-link" data-drawer-open="claude-search">查看检索网页列表</button>
+          </div>
+
+          <div class="answer-card answer-card--deepseek">
+            <div class="answer-card-header">
+              <h4>DeepSeek 检索 web 27 条</h4>
+            </div>
+
+            <div class="source-breakdown source-breakdown--version">
+              <div class="source-breakdown-group">
+                <div class="source-breakdown-group-label"><span class="version-group-tag version-group-tag--official">官方文档 · 昇腾社区 33%</span></div>
+                <div class="source-row">
+                  <span class="source-row-label">CANN9.0.0</span>
+                  <span class="source-bar"><span class="source-bar-fill unknown" style="width:0%"></span></span>
+                  <span class="source-row-val low">0%</span>
+                </div>
+                <div class="source-row">
+                  <span class="source-row-label">8.0 商用 800</span>
+                  <span class="source-bar"><span class="source-bar-fill official" style="width:11%"></span></span>
+                  <span class="source-row-val">11%</span>
+                </div>
+                <div class="source-row">
+                  <span class="source-row-label">8.0 RC 系</span>
+                  <span class="source-bar"><span class="source-bar-fill official" style="width:11%"></span></span>
+                  <span class="source-row-val">11%</span>
+                </div>
+                <div class="source-row">
+                  <span class="source-row-label">8.1 RC1</span>
+                  <span class="source-bar"><span class="source-bar-fill official" style="width:4%"></span></span>
+                  <span class="source-row-val">4%</span>
+                </div>
+                <div class="source-row">
+                  <span class="source-row-label">8.1 RC1 α</span>
+                  <span class="source-bar"><span class="source-bar-fill official" style="width:4%"></span></span>
+                  <span class="source-row-val">4%</span>
+                </div>
+                <div class="source-row">
+                  <span class="source-row-label">8.2 RC1 α</span>
+                  <span class="source-bar"><span class="source-bar-fill official" style="width:4%"></span></span>
+                  <span class="source-row-val">4%</span>
+                </div>
+              </div>
+              <div class="source-breakdown-divider" aria-hidden="true"></div>
+              <div class="source-breakdown-group">
+                <div class="source-breakdown-group-label"><span class="version-group-tag version-group-tag--model">官方文档 · 华为系 56%</span></div>
+                <div class="source-row">
+                  <span class="source-row-label">华为开发者</span>
+                  <span class="source-bar"><span class="source-bar-fill model" style="width:30%"></span></span>
+                  <span class="source-row-val">30%</span>
+                </div>
+                <div class="source-row">
+                  <span class="source-row-label">华为云博客</span>
+                  <span class="source-bar"><span class="source-bar-fill model" style="width:26%"></span></span>
+                  <span class="source-row-val">26%</span>
+                </div>
+              </div>
+              <div class="source-breakdown-divider" aria-hidden="true"></div>
+              <div class="source-breakdown-group">
+                <div class="source-breakdown-group-label"><span class="version-group-tag version-group-tag--third">非官方文档 11%</span></div>
+                <div class="source-row">
+                  <span class="source-row-label">第三方教程</span>
+                  <span class="source-bar"><span class="source-bar-fill third" style="width:11%"></span></span>
+                  <span class="source-row-val">11%</span>
+                </div>
+              </div>
+            </div>
+
+            <button type="button" class="answer-card-link" data-drawer-open="deepseek-search">查看检索网页列表</button>
+          </div>
+
+          <div class="answer-card answer-card--qwen">
+            <div class="answer-card-header">
+              <h4>千问 检索 web 13 条</h4>
+            </div>
+
+            <div class="source-breakdown source-breakdown--version">
+              <div class="source-breakdown-group">
+                <div class="source-breakdown-group-label"><span class="version-group-tag version-group-tag--official">官方文档 · 昇腾社区 54%</span></div>
+                <div class="source-row">
+                  <span class="source-row-label">CANN9.0.0</span>
+                  <span class="source-bar"><span class="source-bar-fill unknown" style="width:0%"></span></span>
+                  <span class="source-row-val low">0%</span>
+                </div>
+                <div class="source-row">
+                  <span class="source-row-label">83RC1</span>
+                  <span class="source-bar"><span class="source-bar-fill official" style="width:8%"></span></span>
+                  <span class="source-row-val">8%</span>
+                </div>
+                <div class="source-row">
+                  <span class="source-row-label">900beta1</span>
+                  <span class="source-bar"><span class="source-bar-fill official" style="width:8%"></span></span>
+                  <span class="source-row-val">8%</span>
+                </div>
+                <div class="source-row">
+                  <span class="source-row-label">80RC1 商用</span>
+                  <span class="source-bar"><span class="source-bar-fill official" style="width:8%"></span></span>
+                  <span class="source-row-val">8%</span>
+                </div>
+                <div class="source-row">
+                  <span class="source-row-label">850 商用</span>
+                  <span class="source-bar"><span class="source-bar-fill official" style="width:8%"></span></span>
+                  <span class="source-row-val">8%</span>
+                </div>
+                <div class="source-row">
+                  <span class="source-row-label">82RC1 / 82RC1α</span>
+                  <span class="source-bar"><span class="source-bar-fill official" style="width:15%"></span></span>
+                  <span class="source-row-val">15%</span>
+                </div>
+                <div class="source-row">
+                  <span class="source-row-label">/zh/ascend-c</span>
+                  <span class="source-bar"><span class="source-bar-fill official" style="width:8%"></span></span>
+                  <span class="source-row-val">8%</span>
+                </div>
+              </div>
+              <div class="source-breakdown-divider" aria-hidden="true"></div>
+              <div class="source-breakdown-group">
+                <div class="source-breakdown-group-label"><span class="version-group-tag version-group-tag--model">官方文档 · 华为论坛 8%</span></div>
+                <div class="source-row">
+                  <span class="source-row-label">开发者论坛</span>
+                  <span class="source-bar"><span class="source-bar-fill model" style="width:8%"></span></span>
+                  <span class="source-row-val">8%</span>
+                </div>
+              </div>
+              <div class="source-breakdown-divider" aria-hidden="true"></div>
+              <div class="source-breakdown-group">
+                <div class="source-breakdown-group-label"><span class="version-group-tag version-group-tag--third">非官方文档 38%</span></div>
+                <div class="source-row">
+                  <span class="source-row-label">第三方教程</span>
+                  <span class="source-bar"><span class="source-bar-fill third" style="width:38%"></span></span>
+                  <span class="source-row-val">38%</span>
+                </div>
+              </div>
+            </div>
+
+            <button type="button" class="answer-card-link" data-drawer-open="qwen-search">查看检索网页列表</button>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="content-unit">
+        <h4>生成阶段 · 版本分布</h4>
+
+        <div class="answer-card-grid">
+
+          <div class="answer-card answer-card--claude">
+            <div class="answer-card-header">
+              <h4>Claude AI 回答</h4>
+            </div>
+
+            <div class="source-breakdown source-breakdown--version">
+              <div class="source-breakdown-group">
+                <div class="source-breakdown-group-label"><span class="version-group-tag version-group-tag--official">官方文档 · 昇腾社区 35%</span></div>
+                <div class="source-row">
+                  <span class="source-row-label">CANN9.0.0</span>
+                  <span class="source-bar"><span class="source-bar-fill unknown" style="width:0%"></span></span>
+                  <span class="source-row-val low">0%</span>
+                </div>
+                <div class="source-row">
+                  <span class="source-row-label">9.1 β（910β1）</span>
+                  <span class="source-bar"><span class="source-bar-fill official" style="width:35%"></span></span>
+                  <span class="source-row-val">35%</span>
+                </div>
+              </div>
+              <div class="source-breakdown-divider" aria-hidden="true"></div>
+              <div class="source-breakdown-group">
+                <div class="source-breakdown-group-label"><span class="version-group-tag version-group-tag--third">非官方文档 65%</span></div>
+                <div class="source-row">
+                  <span class="source-row-label">第三方未标</span>
+                  <span class="source-bar"><span class="source-bar-fill third" style="width:65%"></span></span>
+                  <span class="source-row-val">65%</span>
+                </div>
+              </div>
+            </div>
+
+            <button type="button" class="answer-card-link" data-drawer-open="claude">查看 Claude ai 对话</button>
+          </div>
+
+          <div class="answer-card answer-card--deepseek">
+            <div class="answer-card-header">
+              <h4>DeepSeek 回答</h4>
+            </div>
+
+            <div class="source-breakdown source-breakdown--version">
+              <div class="source-breakdown-group">
+                <div class="source-breakdown-group-label"><span class="version-group-tag version-group-tag--official">官方文档 · 昇腾社区 22%</span></div>
+                <div class="source-row">
+                  <span class="source-row-label">CANN9.0.0</span>
+                  <span class="source-bar"><span class="source-bar-fill unknown" style="width:0%"></span></span>
+                  <span class="source-row-val low">0%</span>
+                </div>
+                <div class="source-row">
+                  <span class="source-row-label">8.1 RC1 商用</span>
+                  <span class="source-bar"><span class="source-bar-fill official" style="width:4%"></span></span>
+                  <span class="source-row-val">4%</span>
+                </div>
+                <div class="source-row">
+                  <span class="source-row-label">8.0 商用 800</span>
+                  <span class="source-bar"><span class="source-bar-fill official" style="width:9%"></span></span>
+                  <span class="source-row-val">9%</span>
+                </div>
+                <div class="source-row">
+                  <span class="source-row-label">8.1 RC1 α</span>
+                  <span class="source-bar"><span class="source-bar-fill official" style="width:4%"></span></span>
+                  <span class="source-row-val">4%</span>
+                </div>
+                <div class="source-row">
+                  <span class="source-row-label">8.2 RC1 α</span>
+                  <span class="source-bar"><span class="source-bar-fill official" style="width:4%"></span></span>
+                  <span class="source-row-val">4%</span>
+                </div>
+              </div>
+              <div class="source-breakdown-divider" aria-hidden="true"></div>
+              <div class="source-breakdown-group">
+                <div class="source-breakdown-group-label"><span class="version-group-tag version-group-tag--model">官方文档 · 华为系 39%</span></div>
+                <div class="source-row">
+                  <span class="source-row-label">华为系 8.x（CANN Kit 等）</span>
+                  <span class="source-bar"><span class="source-bar-fill model" style="width:39%"></span></span>
+                  <span class="source-row-val">39%</span>
+                </div>
+              </div>
+              <div class="source-breakdown-divider" aria-hidden="true"></div>
+              <div class="source-breakdown-group">
+                <div class="source-breakdown-group-label"><span class="version-group-tag version-group-tag--third">非官方文档 39%</span></div>
+                <div class="source-row">
+                  <span class="source-row-label">华为云博客</span>
+                  <span class="source-bar"><span class="source-bar-fill third" style="width:30%"></span></span>
+                  <span class="source-row-val">30%</span>
+                </div>
+                <div class="source-row">
+                  <span class="source-row-label">模型内化</span>
+                  <span class="source-bar"><span class="source-bar-fill third" style="width:9%"></span></span>
+                  <span class="source-row-val">9%</span>
+                </div>
+              </div>
+            </div>
+
+            <button type="button" class="answer-card-link" data-drawer-open="deepseek">查看 DeepSeek 对话</button>
+          </div>
+
+          <div class="answer-card answer-card--qwen">
+            <div class="answer-card-header">
+              <h4>千问回答</h4>
+            </div>
+
+            <div class="source-breakdown source-breakdown--version">
+              <div class="source-breakdown-group">
+                <div class="source-breakdown-group-label"><span class="version-group-tag version-group-tag--official">官方文档 · 昇腾社区 67%</span></div>
+                <div class="source-row">
+                  <span class="source-row-label">CANN9.0.0</span>
+                  <span class="source-bar"><span class="source-bar-fill unknown" style="width:0%"></span></span>
+                  <span class="source-row-val low">0%</span>
+                </div>
+                <div class="source-row">
+                  <span class="source-row-label">83RC1</span>
+                  <span class="source-bar"><span class="source-bar-fill official" style="width:28%"></span></span>
+                  <span class="source-row-val">28%</span>
+                </div>
+                <div class="source-row">
+                  <span class="source-row-label">900beta1</span>
+                  <span class="source-bar"><span class="source-bar-fill official" style="width:17%"></span></span>
+                  <span class="source-row-val">17%</span>
+                </div>
+                <div class="source-row">
+                  <span class="source-row-label">80RC1 商用</span>
+                  <span class="source-bar"><span class="source-bar-fill official" style="width:6%"></span></span>
+                  <span class="source-row-val">6%</span>
+                </div>
+                <div class="source-row">
+                  <span class="source-row-label">850 商用</span>
+                  <span class="source-bar"><span class="source-bar-fill official" style="width:6%"></span></span>
+                  <span class="source-row-val">6%</span>
+                </div>
+                <div class="source-row">
+                  <span class="source-row-label">82RC1 / 82RC1α</span>
+                  <span class="source-bar"><span class="source-bar-fill official" style="width:11%"></span></span>
+                  <span class="source-row-val">11%</span>
+                </div>
+              </div>
+              <div class="source-breakdown-divider" aria-hidden="true"></div>
+              <div class="source-breakdown-group">
+                <div class="source-breakdown-group-label"><span class="version-group-tag version-group-tag--third">非官方文档 33%</span></div>
+                <div class="source-row">
+                  <span class="source-row-label">第三方教程</span>
+                  <span class="source-bar"><span class="source-bar-fill third" style="width:28%"></span></span>
+                  <span class="source-row-val">28%</span>
+                </div>
+                <div class="source-row">
+                  <span class="source-row-label">模型内化</span>
+                  <span class="source-bar"><span class="source-bar-fill third" style="width:5%"></span></span>
+                  <span class="source-row-val">5%</span>
+                </div>
+              </div>
+            </div>
+
+            <button type="button" class="answer-card-link" data-drawer-open="qwen">查看 Qwen 对话</button>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="content-unit">
+        <h3>3. 问题洞察</h3>
+        <ul>
+          <li><strong>版本滞后</strong>：三模型检索与生成均未引用 <code>…/900/…</code> 社区版路径，多见 8.x / 850 商用 / beta 等旧版。</li>
+          <li><strong>多版本并存</strong>：不同世代命令与 API 混在同一回答，按旧路径操作将与 9.0.0 产品面脱节。</li>
+        </ul>
+      </div>
+
+        </section>
+
+    <section class="section" id="timeliness-root-cause">
+      <h2 id="solution">根因分析</h2>
+
+      <div class="content-unit">
+        <p>版本滞后的核心原因是：<strong>页级版本未外显、主推版本未声明、入库缺 version 字段、溯源不带版本信号</strong>。</p>
+
+        <h3>1. 页级版本未外显</h3>
+        <p>渲染页头无 <code>version</code> 徽章，版本仅藏在 URL 路径——入库 chunk 缺字段，RAG 无法默认过滤 900；旧版文档也未标「已弃用」。</p>
+        <div class="fix-suggestion">
+          <h4>修改建议</h4>
+          <p>页头展示 <code>version</code> 徽章；旧版章节标注「已弃用」并链到 900 替代文档（详见 <a href="principles-timeliness.html">亲和原则 · 版本外显</a>）。</p>
+        </div>
+
+        <h3>2. 主推版本未声明</h3>
+        <p><code>llms.txt</code> / sitemap 未声明 CANN9.0.0 为主推版本；910beta、8.x 与 900 同权收录，检索排序无优先级。</p>
+        <div class="fix-suggestion">
+          <h4>修改建议</h4>
+          <p>在 <code>llms.txt</code> 或 sitemap 中声明 canonical 源与主推版本（900）；旧版降权或标注 <code>deprecated</code>（详见 <a href="problems-structure-llms.html#structure-llms-root-cause">机器发现层 · 根因分析</a>）。</p>
+        </div>
+
+        <h3>3. 入库缺 version 字段</h3>
+        <p>机器层 Front Matter 未强制 <code>version</code>——三模型检索与生成均未引用 <code>…/900/…</code> 路径，多见 8.x / 850 / beta 等旧版 chunk 混召。</p>
+        <div class="fix-suggestion">
+          <h4>修改建议</h4>
+          <p>双轨交付时在 Front Matter 写入 <code>version</code>；RAG 默认 <code>filter(version="CANN社区版 9.0.0")</code>（字段模板见 <a href="problems-structure-metadata.html#solution">页级元数据</a>）。</p>
+        </div>
+
+        <h3>4. 溯源不带版本信号</h3>
+        <p>段末 URL / 脚注仅输出裸链接，不含 <code>version</code>、<code>doc_id</code>——开发者无法从回答判断命令适用于哪一版 CANN。</p>
+        <div class="fix-suggestion">
+          <h4>修改建议</h4>
+          <p>脚注附带 <code>version</code>、<code>doc_id</code> 及来源 URL；检索与生成默认过滤 900（详见 <a href="problems-answer-search.html#answer-search-root-cause">检索阶段 · 根因分析</a>）。</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <aside class="page-toc" id="page-toc" aria-label="本篇目录">
+    <div class="page-toc-title">本篇目录</div>
+    <nav class="page-toc-nav"><ul id="page-toc-list"></ul></nav>
+  </aside>
+</div>
+
+<aside class="preview-drawer" id="preview-drawer" aria-hidden="true" aria-label="测试页面预览">
+    <header class="preview-drawer-header">
+      <h2 class="preview-drawer-title">什么是 Ascend C · CANN9.0.0</h2>
+      <a class="preview-drawer-external" href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/900/programug/Ascendcopdevg/atlas_ascendc_map_10_0002.html" target="_blank" rel="noopener">新标签页打开</a>
+      <button type="button" class="preview-drawer-close" data-preview-drawer-close aria-label="关闭">×</button>
+    </header>
+    <iframe
+      class="preview-drawer-frame"
+      data-preview-src="assets/mirror/ascend-c-test-embed.html"
+      title="CANN 9.0.0 主推版本基准页"
+    ></iframe>
+  </aside></div>
+
+
+
+<div class="answer-drawer" id="answer-drawer" aria-hidden="true">
+  <div class="answer-drawer-overlay" data-drawer-close></div>
+  <aside class="answer-drawer-panel" role="dialog" aria-labelledby="answer-drawer-title">
+    <header class="answer-drawer-header">
+      <h2 id="answer-drawer-title">对话详情</h2>
+      <button type="button" class="answer-drawer-close" data-drawer-close aria-label="关闭">×</button>
+    </header>
+    <div class="answer-drawer-body"></div>
+  </aside>
+</div>
+
+<template data-drawer-template="claude-search" data-drawer-title="Claude AI 检索网页列表">
+  <p class="answer-card-prompt">联网检索 19 条 URL（19 个唯一地址）· 昇腾社区 21% · 第三方 79% · 完整列表见 <a href="references/官方信源感知弱/claude-检索网页.md">claude-检索网页.md</a></p>
+
+  <ul class="search-url-list">
+    <li>
+      <span class="search-url-badge third">第三方</span>
+      <a href="https://blog.csdn.net/weixin_66366070/article/details/140343119" target="_blank" rel="noopener">#1 Ascend C 算子开发学习笔记</a>
+    </li>
+    <li>
+      <span class="search-url-badge third">第三方</span>
+      <a href="https://zhuanlan.zhihu.com/p/653737107" target="_blank" rel="noopener">#2 知乎专栏文章</a>
+    </li>
+    <li>
+      <span class="search-url-badge third">第三方</span>
+      <a href="https://zhuanlan.zhihu.com/p/653497102" target="_blank" rel="noopener">#3 知乎专栏文章</a>
+    </li>
+    <li>
+      <span class="search-url-badge third">第三方</span>
+      <a href="https://news.zol.com.cn/843/8433114.html" target="_blank" rel="noopener">#4 Ascend C 保姆级教程</a>
+    </li>
+    <li>
+      <span class="search-url-badge official">昇腾社区官方</span>
+      <a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/850alpha001/opdevg/Ascendcopdevg/atlas_ascendc_10_0001.html" target="_blank" rel="noopener">#5 Ascend C 简介 · CANN 8.5.0.alpha001</a>
+    </li>
+    <li>
+      <span class="search-url-badge official">昇腾社区官方</span>
+      <a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/910beta1/index/index.html" target="_blank" rel="noopener">#6 使用导读 · CANN 9.1.0-beta.1</a>
+    </li>
+    <li>
+      <span class="search-url-badge official">昇腾社区官方</span>
+      <a href="https://www.hiascend.com/cann/ascend-c" target="_blank" rel="noopener">#7 AscendC 与 CANN 算子开发</a>
+    </li>
+    <li>
+      <span class="search-url-badge official">昇腾社区官方</span>
+      <a href="https://www.hiascend.com/document/detail/zh/canncommercial/700/operatordev/Ascendcopdevg/atlas_ascendc_10_0006.html" target="_blank" rel="noopener">#8 快速入门 · CANN 商用版 7.0.0</a>
+    </li>
+    <li>
+      <span class="search-url-badge third">第三方</span>
+      <a href="https://www.cnblogs.com/ZOMI/articles/18560677" target="_blank" rel="noopener">#9 【AI 系统】Ascend C 编程范式 · 博客园</a>
+    </li>
+    <li>
+      <span class="search-url-badge third">第三方</span>
+      <a href="https://blog.csdn.net/m0_37046057/article/details/144226382" target="_blank" rel="noopener">#10 【AI 系统】Ascend C 编程范式 · CSDN</a>
+    </li>
+    <li>
+      <span class="search-url-badge third">第三方</span>
+      <a href="https://www.cnblogs.com/rizhaojincheng/p/18606066" target="_blank" rel="noopener">#11 转载 · Ascend C 编程范式 · 博客园</a>
+    </li>
+    <li>
+      <span class="search-url-badge third">第三方</span>
+      <a href="https://zhuanlan.zhihu.com/p/687359397" target="_blank" rel="noopener">#12 知乎专栏文章</a>
+    </li>
+    <li>
+      <span class="search-url-badge third">第三方</span>
+      <a href="https://cloud.tencent.com/developer/article/2476178" target="_blank" rel="noopener">#13 转载 · Ascend C 编程范式 · 腾讯云</a>
+    </li>
+    <li>
+      <span class="search-url-badge third">第三方</span>
+      <a href="https://developer.aliyun.com/article/1644105" target="_blank" rel="noopener">#14 【AI 系统】Ascend C 语法扩展 · 阿里云</a>
+    </li>
+    <li>
+      <span class="search-url-badge third">第三方</span>
+      <a href="https://blog.csdn.net/2401_86149193/article/details/140146855" target="_blank" rel="noopener">#15 Ascend C 算子学习笔记 · CSDN</a>
+    </li>
+    <li>
+      <span class="search-url-badge third">第三方</span>
+      <a href="https://www.cnblogs.com/taixian/p/18329141" target="_blank" rel="noopener">#16 Ascend C 算子开发指南 · 博客园</a>
+    </li>
+    <li>
+      <span class="search-url-badge third">第三方</span>
+      <a href="https://blog.csdn.net/gitblog_00717/article/details/160915391" target="_blank" rel="noopener">#17 CANN/Ascend C 开发套件 · CSDN</a>
+    </li>
+    <li>
+      <span class="search-url-badge third">第三方</span>
+      <a href="https://developer.aliyun.com/article/1643821" target="_blank" rel="noopener">#18 昇腾 CANN 架构解析与 Ascend C 算子开发入门 · 阿里云</a>
+    </li>
+    <li>
+      <span class="search-url-badge third">第三方</span>
+      <a href="https://ascendai.csdn.net/693e936c0800f3458b822cce.html" target="_blank" rel="noopener">#19 昇腾 CANN 从单算子到融合优化实战 · CSDN 昇腾专区</a>
+    </li>
+  </ul>
+</template>
+
+<template data-drawer-template="deepseek-search" data-drawer-title="DeepSeek 检索网页列表">
+  <p class="answer-card-prompt">联网浏览 27 条 URL（27 个唯一地址）· 昇腾社区 33% · 华为开发者 30% · 华为云博客 26% · 百度系 11% · 完整列表见 <a href="references/官方信源感知弱/deepseek-检索网页.md">deepseek-检索网页.md</a></p>
+
+  <ul class="search-url-list">
+    <li><span class="search-url-badge official">昇腾社区官方</span><a href="https://www.hiascend.com/doc_center/source/zh/canncommercial/81RC1/developmentguide/opdevg/Ascendcopdevg/CANN%E5%95%86%E7%94%A8%E7%89%88%208.1.RC1%20Ascend%20C%E7%AE%97%E5%AD%90%E5%BC%80%E5%8F%91%E6%8C%87%E5%8D%97%2001.pdf" target="_blank" rel="noopener">#1 CANN 8.1.RC1 算子开发指南 PDF</a></li>
+    <li><span class="search-url-badge official">昇腾社区官方</span><a href="https://www.hiascend.com/doc_center/source/zh/CANNCommunityEdition/82RC1alpha002/opdevg/Ascendcopdevg/CANN%E7%A4%BE%E5%8C%BA%E7%89%88%208.2.RC1.alpha002%20Ascend%20C%E7%AE%97%E5%AD%90%E5%BC%80%E5%8F%91%E6%8C%87%E5%8D%97%2001.pdf" target="_blank" rel="noopener">#2 CANN 8.2.RC1.alpha002 算子开发指南 PDF</a></li>
+    <li><span class="search-url-badge alt-official">其他官方渠道</span><a href="https://developer.huawei.com/consumer/cn/doc/hiai-Guides/cannkit-vector-programming-0000002157683241" target="_blank" rel="noopener">#3 向量编程 · CANN Kit</a></li>
+    <li><span class="search-url-badge alt-official">其他官方渠道</span><a href="https://developer.huawei.com/consumer/cn/doc/hiai-guides/cannkit-matrix-programming-operator-0000002157683245" target="_blank" rel="noopener">#4 矩阵编程算子 · CANN Kit</a></li>
+    <li><span class="search-url-badge official">昇腾社区官方</span><a href="https://www.hiascend.com/doc_center/source/zh/CANNCommunityEdition/80RC3alpha003/devguide/opdevg/ascendcopdevg/CANN%208.0.RC3.alpha003%20Ascend%20C%E8%87%AA%E5%AE%9A%E4%B9%89%E7%AE%97%E5%AD%90%E5%BC%80%E5%8F%91%E6%8C%87%E5%8D%97%2001.pdf" target="_blank" rel="noopener">#5 CANN 8.0.RC3.alpha003 算子开发指南 PDF</a></li>
+    <li><span class="search-url-badge official">昇腾社区官方</span><a href="https://www.hiascend.com/doc_center/source/zh/canncommercial/800/developmentguide/opdevg/Ascendcopdevg/CANN%E5%95%86%E7%94%A8%E7%89%88%208.0.0%20Ascend%20C%E8%87%AA%E5%AE%9A%E4%B9%89%E7%AE%97%E5%AD%90%E5%BC%80%E5%8F%91%E6%8C%87%E5%8D%97%2001.pdf" target="_blank" rel="noopener">#6 CANN 8.0.0 自定义算子开发指南 PDF</a></li>
+    <li><span class="search-url-badge official">昇腾社区官方</span><a href="https://www.hiascend.com/doc_center/source/zh/canncommercial/80RC1/developmentguide/opdevg/Ascendcopdevg/CANN%208.0.RC1%20Ascend%20C%E8%87%AA%E5%AE%9A%E4%B9%89%E7%AE%97%E5%AD%90%E5%BC%80%E5%8F%91%E6%8C%87%E5%8D%97%2001.pdf" target="_blank" rel="noopener">#7 CANN 8.0.RC1 算子开发指南 PDF</a></li>
+    <li><span class="search-url-badge alt-official">其他官方渠道</span><a href="https://developer.huawei.com/consumer/cn/doc/hiai-Guides/cannkit-programmingapi-basic-apis-0000002300239860" target="_blank" rel="noopener">#8 编程 API 基础接口</a></li>
+    <li><span class="search-url-badge alt-official">其他官方渠道</span><a href="https://developer.huawei.com/home/forum/ascend/thread-02149210859291254016-1-1.html" target="_blank" rel="noopener">#9 昇腾论坛帖子</a></li>
+    <li><span class="search-url-badge alt-official">其他官方渠道</span><a href="https://developer.huawei.com/consumer/cn/doc/hiai-Guides/cannkit-environment-preparation-0000002157601593" target="_blank" rel="noopener">#10 环境准备 · CANN Kit</a></li>
+    <li><span class="search-url-badge unknown">其他来源</span><a href="https://bbs.huaweicloud.com/blogs/454296" target="_blank" rel="noopener">#11 华为云博客</a></li>
+    <li><span class="search-url-badge third">第三方</span><a href="https://developer.baidu.com/article/detail.html?id=6899421" target="_blank" rel="noopener">#12 百度开发者社区</a></li>
+    <li><span class="search-url-badge unknown">其他来源</span><a href="https://bbs.huaweicloud.com/blogs/467955" target="_blank" rel="noopener">#13 华为云博客</a></li>
+    <li><span class="search-url-badge official">昇腾社区官方</span><a href="https://www.hiascend.com/doc_center/source/zh/CANNCommunityEdition/80RC2alpha002/devguide/opdevg/ascendcopdevg/CANN%208.0.RC2.alpha002%20Ascend%20C%E8%87%AA%E5%AE%9A%E4%B9%89%E7%AE%97%E5%AD%90%E5%BC%80%E5%8F%91%E6%8C%87%E5%8D%97%2001.pdf" target="_blank" rel="noopener">#14 CANN 8.0.RC2.alpha002 算子开发指南 PDF</a></li>
+    <li><span class="search-url-badge official">昇腾社区官方</span><a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/81RC1alpha001/devaids/opdev/optool/atlasopdev_16_0027.html" target="_blank" rel="noopener">#15 Ascend C 算子开发辅助工具</a></li>
+    <li><span class="search-url-badge alt-official">其他官方渠道</span><a href="https://developer.huawei.com/consumer/cn/doc/hiai-guides/cannkit-operator-project-compilation-0000002122321636" target="_blank" rel="noopener">#16 算子工程编译</a></li>
+    <li><span class="search-url-badge unknown">其他来源</span><a href="https://bbs.huaweicloud.com/blogs/467112" target="_blank" rel="noopener">#17 华为云博客</a></li>
+    <li><span class="search-url-badge unknown">其他来源</span><a href="https://bbs.huaweicloud.com/blogs/469418" target="_blank" rel="noopener">#18 华为云博客</a></li>
+    <li><span class="search-url-badge official">昇腾社区官方</span><a href="https://www.hiascend.com/doc_center/source/zh/canncommercial/800/apiref/ascendcopapi/CANN%E5%95%86%E7%94%A8%E7%89%88%208.0.0%20%20Ascend%20C%E7%AE%97%E5%AD%90%E5%BC%80%E5%8F%91%E6%8E%A5%E5%8F%A3%E5%8F%82%E8%80%83%2001.pdf" target="_blank" rel="noopener">#19 CANN 8.0.0 算子开发接口参考 PDF</a></li>
+    <li><span class="search-url-badge alt-official">其他官方渠道</span><a href="https://developer.huawei.com/consumer/cn/doc/hiai-References/cannkit-matmul-usage-description-0000002158477037" target="_blank" rel="noopener">#20 MatMul 使用说明</a></li>
+    <li><span class="search-url-badge third">第三方</span><a href="https://developer.baidu.com/article/detail.html?id=5593259" target="_blank" rel="noopener">#21 百度开发者社区</a></li>
+    <li><span class="search-url-badge official">昇腾社区官方</span><a href="https://www.hiascend.com/doc_center/source/zh/canncommercial/800/developmentguide/opdevg/ascendcbestP/CANN%E5%95%86%E7%94%A8%E7%89%88%208.0.0%20Ascend%20C%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%2001.pdf" target="_blank" rel="noopener">#22 CANN 8.0.0 最佳实践 PDF</a></li>
+    <li><span class="search-url-badge unknown">其他来源</span><a href="https://bbs.huaweicloud.com/blogs/469234" target="_blank" rel="noopener">#23 华为云博客</a></li>
+    <li><span class="search-url-badge unknown">其他来源</span><a href="https://bbs.huaweicloud.com/blogs/469236" target="_blank" rel="noopener">#24 华为云博客</a></li>
+    <li><span class="search-url-badge third">第三方</span><a href="https://cloud.baidu.com/article/5317841" target="_blank" rel="noopener">#25 百度智能云文章</a></li>
+    <li><span class="search-url-badge alt-official">其他官方渠道</span><a href="https://developer.huawei.com/home/forum/ascend/thread-02162212495117620099-1-1.html" target="_blank" rel="noopener">#26 昇腾论坛 · Tiling 讨论</a></li>
+    <li><span class="search-url-badge unknown">其他来源</span><a href="https://bbs.huaweicloud.com/blogs/469426" target="_blank" rel="noopener">#27 华为云博客</a></li>
+  </ul>
+</template>
+
+<template data-drawer-template="qwen-search" data-drawer-title="千问 检索网页列表">
+  <p class="answer-card-prompt">脚注参考链接 13 条 URL（<code>[^1]</code>–<code>[^13]</code>）· 昇腾社区 54% · 其他官方 8% · 第三方 38% · 完整列表见 <a href="references/官方信源感知弱/千问-检索网页.md">千问-检索网页.md</a> · 旧版首次检索 10 条见 <a href="references/官方信源感知弱/千问-对话.md">千问-对话.md</a></p>
+
+  <ul class="search-url-list">
+    <li><span class="search-url-badge official">昇腾社区官方</span><a href="https://www.hiascend.cn/document/detail/zh/CANNCommunityEdition/83RC1/opdevg/Ascendcopdevg" target="_blank" rel="noopener">#1 [^1] Ascend C 简介 · CANN 83RC1</a></li>
+    <li><span class="search-url-badge alt-official">其他官方渠道</span><a href="https://developer.huawei.com/home/forum/ascend/thread-0239124507827469022-1-1.html" target="_blank" rel="noopener">#2 [^2] 昇腾 Ascend C 编程入门教程 · 华为论坛</a></li>
+    <li><span class="search-url-badge third">第三方</span><a href="https://www.cnblogs.com/chucz/p/20064171" target="_blank" rel="noopener">#3 [^3] Ascend C 新一代算子编程语言 · 博客园</a></li>
+    <li><span class="search-url-badge official">昇腾社区官方</span><a href="https://www.hiascend.com/zh/ascend-c" target="_blank" rel="noopener">#4 [^4] AscendC 与 CANN 算子开发</a></li>
+    <li><span class="search-url-badge official">昇腾社区官方</span><a href="https://www.hiascend.cn/document/detail/zh/CANNCommunityEdition/900beta1/opdevg/Ascendcopdevg/atlas_ascendc_best_practices_10_10017.html" target="_blank" rel="noopener">#5 [^5] 概述-SIMD 算子实现 · CANN 900beta1</a></li>
+    <li><span class="search-url-badge third">第三方</span><a href="https://m.blog.csdn.net/fjqdxq/article/details/159736161" target="_blank" rel="noopener">#6 [^6] Ascend C 核心组成 · CSDN</a></li>
+    <li><span class="search-url-badge third">第三方</span><a href="https://pickstar.blog.csdn.net/article/details/156021299" target="_blank" rel="noopener">#7 [^7] Ascend C 编程语言详解 · CSDN</a></li>
+    <li><span class="search-url-badge third">第三方</span><a href="https://developer.aliyun.com/article/1643959" target="_blank" rel="noopener">#8 [^8] Ascend C 的编程模型 · 阿里云</a></li>
+    <li><span class="search-url-badge official">昇腾社区官方</span><a href="https://www.hiascend.com/document/detail/zh/canncommercial/80RC1/developmentguide/opdevg/Ascendcopdevg/atlas_ascendc_10_0012.html" target="_blank" rel="noopener">#9 [^9] 流水编程范式 · CANN 80RC1 商用版</a></li>
+    <li><span class="search-url-badge official">昇腾社区官方</span><a href="https://www.hiascend.com/document/detail/zh/canncommercial/850/opdevg/Ascendcopdevg/atlas_ascendc_map_10_0002.html" target="_blank" rel="noopener">#10 [^10] 什么是 Ascend C · CANN 850 商用版</a></li>
+    <li><span class="search-url-badge official">昇腾社区官方</span><a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/82RC1alpha001/opdevg/Ascendcopdevg/atlas_ascendc_10_0005.html" target="_blank" rel="noopener">#11 [^11] 基于 Kernel 直调工程的算子开发 · 82RC1alpha001</a></li>
+    <li><span class="search-url-badge third">第三方</span><a href="https://cloud.tencent.com/developer/article/2606574" target="_blank" rel="noopener">#12 [^12] Ascend C 算子开发入门指南（进阶版）· 腾讯云</a></li>
+    <li><span class="search-url-badge official">昇腾社区官方</span><a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/82RC1/opdevg/ascendcbestP/atlas_ascendc_best_practices_10_0001.html" target="_blank" rel="noopener">#13 [^13] 前言-Ascend C 最佳实践 · CANN 82RC1</a></li>
+  </ul>
+</template>
+
+<template data-drawer-template="claude" data-drawer-title="Claude AI 对话">
+  <p>
+    <a href="https://claude.ai/share/0bd836f0-e4f6-4e90-acd7-c2d0b8a14885" target="_blank" rel="noopener">Claude AI</a>
+    · 导出文件：<a href="references/官方信源感知弱/claudeai-回答.md">claudeai-回答.md</a>（Pages 段末 <code>(URL:…)</code> 标注，17 单元溯源）· <a href="references/官方信源感知弱/claude-检索网页.md">claude-检索网页.md</a>（检索阶段 19 条 URL）
+  </p>
+
+  <div class="source-legend">
+    <span class="source-legend-item"><span class="source-legend-dot official"></span>昇腾社区官方</span>
+    <span class="source-legend-item"><span class="source-legend-dot third"></span>第三方教程</span>
+    <span class="source-legend-item"><span class="source-legend-dot model"></span>模型内化知识</span>
+    <span class="source-legend-item"><span class="source-legend-dot unknown"></span>无法溯源</span>
+  </div>
+  <div class="dialog-card">
+    <span class="dialog-card-role">用户</span>
+    <div class="dialog-card-body">基于官方资料，介绍一下 Ascend C 算子开发</div>
+  </div>
+  <div class="dialog-card">
+    <span class="dialog-card-role">Claude AI</span>
+    <div class="dialog-card-body">
+      <p>以下是基于官方资料和权威社区文档对 <strong>Ascend C 算子开发</strong>的系统介绍：</p>
+
+      <h4>一、什么是 Ascend C</h4>
+
+      <div class="source-block third">
+        <span class="source-block-tag">第三方教程</span>
+        <p class="source-block-refs">段 1 标注：<a href="https://zhuanlan.zhihu.com/p/653737107" target="_blank" rel="noopener">知乎专栏 · 昇腾 Ascend C 发布会</a></p>
+        <p>2023 年 5 月 6 日，在昇腾 AI 开发者峰会上，华为正式发布了面向算子开发场景的昇腾 Ascend C 编程语言。</p>
+      </div>
+
+      <div class="source-block official">
+        <span class="source-block-tag">昇腾社区官方</span>
+        <p class="source-block-refs">段 2 标注：<a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/910beta1/index/index.html" target="_blank" rel="noopener">CANN 社区版导读</a></p>
+        <p>Ascend C 是面向算子开发场景的编程语言，原生支持 C 和 C++ 标准规范，最大化匹配用户开发习惯；通过多层接口抽象、自动并行计算、孪生调试等关键技术，极大提高算子开发效率，助力 AI 开发者低成本完成算子开发和模型调优部署。</p>
+      </div>
+
+      <div class="source-block third">
+        <span class="source-block-tag">第三方教程</span>
+        <p class="source-block-refs">段 3 标注：<a href="https://zhuanlan.zhihu.com/p/653737107" target="_blank" rel="noopener">知乎专栏</a></p>
+        <p>和 CUDA 开发的算子运行在 GPU 上一样，基于 Ascend C 开发的算子，可以通过异构计算架构 CANN（Compute Architecture for Neural Networks）运行在昇腾 AI 处理器（NPU）上。CANN 是使能昇腾 AI 处理器的一个软件栈，通过软硬件协同优化，能够充分发挥昇腾 AI 处理器的强大算力。</p>
+      </div>
+
+      <h4>二、核心优势</h4>
+
+      <div class="source-block official">
+        <span class="source-block-tag">昇腾社区官方</span>
+        <p class="source-block-refs">段 4 标注：<a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/910beta1/index/index.html" target="_blank" rel="noopener">CANN 社区版导读</a></p>
+        <p>使用 Ascend C 进行自定义算子开发的突出优势有：C/C++ 原语编程；编程模型屏蔽硬件差异；编程范式提高开发效率；类库 API 封装。</p>
+      </div>
+
+      <div class="source-block official">
+        <span class="source-block-tag">昇腾社区官方</span>
+        <p class="source-block-refs">段 5 标注：<a href="https://www.hiascend.com/cann/ascend-c" target="_blank" rel="noopener">Ascend C 入口</a></p>
+        <p>开发者采用标准 C++ 语法和类库 API 进行编程。类库 API 分为两种：基础 API 和高阶 API。基础 API 实现对硬件能力的抽象，开放芯片的能力，保证完备性和兼容性；高阶 API 通常会调用多种基础 API 实现常用的计算算法，用于提高开发效率。</p>
+      </div>
+
+      <h4>三、编程模型：核函数与多核并行</h4>
+
+      <div class="source-block third">
+        <span class="source-block-tag">第三方教程</span>
+        <p class="source-block-refs">段 6 标注：<a href="https://zhuanlan.zhihu.com/p/653497102" target="_blank" rel="noopener">知乎专栏</a></p>
+        <p>使用 Ascend C 开发的算子运行在 AI Core 上，AI Core 是昇腾 NPU 硬件平台的计算核心，NPU 内部有多个 AI Core。Ascend C 编程过程中会将需要处理的数据拆分，同时在多个 AI Core 上运行，从而获取更高的性能。多个 AI Core 共享相同的指令代码，每个核上的运行实例唯一的区别是 block_idx 不同，开发者只需要关注单核上的处理程序，也就是核函数。</p>
+      </div>
+
+      <div class="source-block third">
+        <span class="source-block-tag">第三方教程</span>
+        <p class="source-block-refs">段 7 标注：<a href="https://zhuanlan.zhihu.com/p/653497102" target="_blank" rel="noopener">知乎专栏</a></p>
+        <p>要完成 AI Core 上的数据计算，输入数据需要先从外部存储 Global Memory 搬运进 AI Core 的内部存储 Local Memory，然后使用计算接口完成计算，得到最终结果，再搬出到外部存储 Global Memory 上。</p>
+      </div>
+
+      <h4>四、编程范式：流水线并行</h4>
+
+      <div class="source-block third">
+        <span class="source-block-tag">第三方教程</span>
+        <p class="source-block-refs">段 8 标注：<a href="https://zhuanlan.zhihu.com/p/687359397" target="_blank" rel="noopener">知乎专栏 · 流水线范式</a></p>
+        <p>Ascend C 编程范式是一种流水线式的编程范式，把算子核内的处理程序分成多个流水任务（Stage），以张量（Tensor）为数据载体，通过队列（Queue）完成任务间通信和同步，并通过统一的内存管理模块（Pipe）管理任务间通信内存。</p>
+      </div>
+
+      <div class="source-block third">
+        <span class="source-block-tag">第三方教程</span>
+        <p class="source-block-refs">段 9 标注：<a href="https://www.cnblogs.com/ZOMI/articles/18560677" target="_blank" rel="noopener">博客园 ZOMI · Init / Process</a></p>
+        <p>自定义向量算子核心部分一般由两个函数组成，分别是 Init() 函数（初始化函数）与 Process() 函数（执行函数）。Init() 函数完成板外数据定位以及板上内存初始化工作；Process() 函数完成向量算子的实现，分成三个流水任务：CopyIn、Compute、CopyOut。CopyIn 负责板外数据搬入，Compute 负责向量计算，CopyOut 负责板上数据搬出。</p>
+      </div>
+
+      <div class="source-block third">
+        <span class="source-block-tag">第三方教程</span>
+        <p class="source-block-refs">段 10 标注：<a href="https://www.cnblogs.com/ZOMI/articles/18560677" target="_blank" rel="noopener">博客园 ZOMI · TQue / Tensor</a></p>
+        <p>流水线任务之间存在数据依赖，需要进行数据传递。Ascend C 中使用 TQue 队列完成任务之间的数据通信和同步，提供 EnQue、DeQue 等基础 API；TQue 队列管理不同层级的物理内存时，用一种抽象的逻辑位置（TPosition）来表达各级别的存储，代替了片上物理存储的概念，开发者无需感知硬件架构。另外，Ascend C 使用 GlobalTensor 和 LocalTensor 作为数据的基本操作单元。</p>
+      </div>
+
+      <h4>五、API 体系</h4>
+
+      <div class="source-block third">
+        <span class="source-block-tag">第三方教程</span>
+        <p class="source-block-refs">段 11 标注：<a href="https://developer.aliyun.com/article/1644105" target="_blank" rel="noopener">阿里云 · Ascend C 语法扩展</a></p>
+        <p>基础 API 包括计算类、数据搬运、内存管理和任务同步等，使用基础 API 自由度更高，可以通过 API 组合实现自己的算子逻辑。具体包括：计算类 API（标量计算、向量计算、矩阵计算 API）；数据搬运 API（如 DataCopy 接口，负责 Global Memory 与 Local Memory 之间的数据搬运）；内存管理 API（如 AllocTensor、FreeTensor 接口，用于动态管理板上内存）。</p>
+      </div>
+
+      <h4>六、Tiling 机制</h4>
+
+      <div class="source-block third">
+        <span class="source-block-tag">第三方教程</span>
+        <p class="source-block-refs">段 12 标注：<a href="https://blog.csdn.net/weixin_66366070/article/details/140343119" target="_blank" rel="noopener">CSDN · Tiling 机制</a></p>
+        <p>由于 NPU 中 AI Core 内部存储无法完全容纳算子输入输出的所有数据，需要每次搬运一部分输入数据进行计算然后搬出，再搬运下一部分输入数据进行计算，这个过程就称之为 Tiling。切分数据的算法称为 Tiling 算法或 Tiling 策略。由于 Tiling 实现中完成的均为标量计算，AI Core 并不擅长，所以将其独立出来放在 Host 侧 CPU 上执行。</p>
+      </div>
+
+      <h4>七、孪生调试</h4>
+
+      <div class="source-block official">
+        <span class="source-block-tag">昇腾社区官方</span>
+        <p class="source-block-refs">段 13 标注：<a href="https://www.hiascend.com/cann/ascend-c" target="_blank" rel="noopener">Ascend C 入口</a></p>
+        <p>Ascend C 直击算子开发痛点，大幅提升算子调试效率。既可以在 CPU 域进行调试调优，又可以在 NPU 侧进行调优验证，通过 CPU 域与 NPU 域相结合的方式，降低调试难度，提升调试效率。</p>
+      </div>
+
+      <div class="source-block third">
+        <span class="source-block-tag">第三方教程</span>
+        <p class="source-block-refs">段 14 标注：<a href="https://zhuanlan.zhihu.com/p/653497102" target="_blank" rel="noopener">知乎专栏 · CPU / NPU 域调试</a></p>
+        <p>基于 NPU 域算子的调用接口编写程序，通过毕昇编译器编译后运行，可以完成算子 NPU 域的运行验证；基于 CPU 域算子的调用接口编写程序，通过标准的 GCC 编译器进行编译后运行，并通过 GDB 通用调试工具进行单步调试，精准验证程序执行流程是否符合预期。孪生调试的能力，大大提升了算子的调试效率。</p>
+      </div>
+
+      <h4>八、算子开发基本流程</h4>
+
+      <div class="source-block third">
+        <span class="source-block-tag">第三方教程</span>
+        <p class="source-block-refs">段 15 标注：<a href="https://www.cnblogs.com/taixian/p/18329141" target="_blank" rel="noopener">博客园 · 开发流程</a></p>
+        <p>开发基本流程包括：环境准备（安装 CANN 开发套件包）、算子分析（分析算子的数学表达式、输入输出数据类型和计算逻辑）、核函数开发，以及后续的编译与验证。</p>
+      </div>
+
+      <div class="source-block third">
+        <span class="source-block-tag">第三方教程</span>
+        <p class="source-block-refs">段 16 标注：<a href="https://cloud.tencent.com/developer/article/2476178" target="_blank" rel="noopener">腾讯云 · 核函数定义</a></p>
+        <p>在完成算子分析后，可以正式开始开发算子代码，第一步应该完成对核函数的定义和封装。核函数使用 <code>__global__</code> 函数类型限定符来标识可被调用，使用 <code>__aicore__</code> 函数类型限定符来标识该核函数在设备端 AI Core 上执行。</p>
+      </div>
+
+      <h4>九、学习路径（官方推荐）</h4>
+
+      <div class="source-block official">
+        <span class="source-block-tag">昇腾社区官方</span>
+        <p class="source-block-refs">段 17 标注：<a href="https://www.hiascend.com/cann/ascend-c" target="_blank" rel="noopener">Ascend C 入口</a></p>
+        <p>官方提供三个学习层次：HelloWorld 快速上手（完成矢量算子核函数和基础调用能力）；开发流程全面掌握（完成 Tiling 开发，并进行单算子、网络中算子调用）；高性能编程深度驾驭（开发高性能的复杂算子，充分发挥硬件能力，包括矩阵/融合算子编程）。</p>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template data-drawer-template="deepseek" data-drawer-title="DeepSeek 对话">
+  <p>
+    <a href="https://chat.deepseek.com/share/ms9wokoa8dj11ic25x" target="_blank" rel="noopener">DeepSeek</a>
+    · 导出文件：<a href="references/官方信源感知弱/deepseek-回答.md">deepseek-回答.md</a>（Pages 段末 <code>(URL:…)</code> 标注，23 单元溯源）· <a href="references/官方信源感知弱/deepseek-检索网页.md">deepseek-检索网页.md</a>（检索阶段 27 条 URL）
+  </p>
+
+  <div class="source-legend">
+    <span class="source-legend-item"><span class="source-legend-dot official"></span>昇腾社区官方</span>
+    <span class="source-legend-item"><span class="source-legend-dot alt-official"></span>其他官方渠道</span>
+    <span class="source-legend-item"><span class="source-legend-dot other"></span>其他来源</span>
+    <span class="source-legend-item"><span class="source-legend-dot model"></span>模型内化知识</span>
+  </div>
+  <div class="dialog-card">
+    <span class="dialog-card-role">用户</span>
+    <div class="dialog-card-body">基于官方资料，介绍一下 Ascend C 算子开发</div>
+  </div>
+  <div class="dialog-card">
+    <span class="dialog-card-role">DeepSeek</span>
+    <div class="dialog-card-body">
+
+      <div class="source-block other">
+        <span class="source-block-tag">其他来源</span>
+        <p class="source-block-refs">段 1 标注：<a href="https://bbs.huaweicloud.com/blogs/467955" target="_blank" rel="noopener">华为云博客</a></p>
+        <p><strong>Ascend C 是华为昇腾 AI 处理器上用于自定义算子开发的 C/C++ 编程语言</strong>，核心优势是通过多层接口抽象、SPMD 并行模型和流水式编程范式，在发挥极致硬件性能的同时，保持开发效率。</p>
+      </div>
+
+      <h4>1. 概述与定位</h4>
+
+      <div class="source-block other">
+        <span class="source-block-tag">其他来源</span>
+        <p class="source-block-refs">段 2 标注：<a href="https://bbs.huaweicloud.com/blogs/467955" target="_blank" rel="noopener">华为云博客</a></p>
+        <p><strong>本质</strong>：Ascend C 是 CANN 中专为算子开发设计的语言，原生支持 C/C++ 标准，旨在兼顾开发效率与执行性能。</p>
+      </div>
+
+      <div class="source-block official">
+        <span class="source-block-tag">昇腾社区官方</span>
+        <p class="source-block-refs">段 3 标注：<a href="https://www.hiascend.com/doc_center/source/zh/canncommercial/81RC1/developmentguide/opdevg/Ascendcopdevg/CANN%E5%95%86%E7%94%A8%E7%89%88%208.1.RC1%20Ascend%20C%E7%AE%97%E5%AD%90%E5%BC%80%E5%8F%91%E6%8C%87%E5%8D%97%2001.pdf" target="_blank" rel="noopener">CANN 8.1.RC1 算子开发指南 PDF</a> · <a href="https://www.hiascend.com/doc_center/source/zh/canncommercial/800/developmentguide/opdevg/Ascendcopdevg/CANN%E5%95%86%E7%94%A8%E7%89%88%208.0.0%20Ascend%20C%E8%87%AA%E5%AE%9A%E4%B9%89%E7%AE%97%E5%AD%90%E5%BC%80%E5%8F%91%E6%8C%87%E5%8D%97%2001.pdf" target="_blank" rel="noopener">CANN 8.0.0 自定义算子开发指南 PDF</a></p>
+        <p><strong>核心能力</strong>：提供丰富的类库 API，允许开发者直接操控 <strong>AI Core</strong> 的计算、存储和搬运单元，来实现深度学习模型中的各种计算操作。</p>
+      </div>
+
+      <h4>2. 核心特性</h4>
+
+      <div class="source-block other">
+        <span class="source-block-tag">其他来源</span>
+        <p class="source-block-refs">段 4 标注：<a href="https://bbs.huaweicloud.com/blogs/467955" target="_blank" rel="noopener">华为云博客</a></p>
+        <p><strong>SPMD 编程模型</strong>：采用单程序多数据（SPMD）模型，所有 AI Core 运行同一份代码，但处理不同的数据分片，方便利用多核并行。</p>
+      </div>
+
+      <div class="source-block alt-official">
+        <span class="source-block-tag">其他官方渠道</span>
+        <p class="source-block-refs">段 5 标注：<a href="https://developer.huawei.com/consumer/cn/doc/hiai-Guides/cannkit-programmingapi-basic-apis-0000002300239860" target="_blank" rel="noopener">CANN Kit 基础 API</a></p>
+        <p><strong>流水式编程范式</strong>：将算子核心逻辑细分为多个流水任务（Stage），使用 <code>TPipe</code> 统一管理资源，数据以 <code>LocalTensor</code> 为载体在任务间通过 <code>TQueue</code> 传递和同步。</p>
+      </div>
+
+      <div class="source-block alt-official">
+        <span class="source-block-tag">其他官方渠道</span>
+        <p class="source-block-refs">段 6 标注：<a href="https://developer.huawei.com/consumer/cn/doc/hiai-Guides/cannkit-programmingapi-basic-apis-0000002300239860" target="_blank" rel="noopener">CANN Kit 基础 API</a> · 兼有 <a href="https://www.hiascend.com/doc_center/source/zh/canncommercial/800/apiref/ascendcopapi/CANN%E5%95%86%E7%94%A8%E7%89%88%208.0.0%20%20Ascend%20C%E7%AE%97%E5%AD%90%E5%BC%80%E5%8F%91%E6%8E%A5%E5%8F%A3%E5%8F%82%E8%80%83%2001.pdf" target="_blank" rel="noopener">昇腾 API 参考 PDF</a></p>
+        <p><strong>基础 API</strong>：如数据搬运 <code>DataCopy</code>、矢量计算 <code>Add</code>，用于精细控制底层硬件，释放极致性能。</p>
+      </div>
+
+      <div class="source-block official">
+        <span class="source-block-tag">昇腾社区官方</span>
+        <p class="source-block-refs">段 7 标注：<a href="https://www.hiascend.com/doc_center/source/zh/canncommercial/800/apiref/ascendcopapi/CANN%E5%95%86%E7%94%A8%E7%89%88%208.0.0%20%20Ascend%20C%E7%AE%97%E5%AD%90%E5%BC%80%E5%8F%91%E6%8E%A5%E5%8F%A3%E5%8F%82%E8%80%83%2001.pdf" target="_blank" rel="noopener">昇腾 API 参考 PDF</a> · 兼有 <a href="https://developer.huawei.com/consumer/cn/doc/hiai-References/cannkit-matmul-usage-description-0000002158477037" target="_blank" rel="noopener">Matmul 说明</a></p>
+        <p><strong>高阶 API</strong>：如 <code>Matmul</code>，封装常用复杂算法的逻辑，通过简单配置快速实现高性能算子。</p>
+      </div>
+
+      <h4>3. 开发流程（工程化路径）</h4>
+
+      <div class="source-block alt-official">
+        <span class="source-block-tag">其他官方渠道</span>
+        <p class="source-block-refs">段 8 标注：<a href="https://developer.huawei.com/consumer/cn/doc/hiai-Guides/cannkit-environment-preparation-0000002157601593" target="_blank" rel="noopener">环境准备</a> · 兼有 <a href="https://bbs.huaweicloud.com/blogs/469418" target="_blank" rel="noopener">华为云博客</a></p>
+        <p><strong>步骤一：环境准备</strong>：安装 CANN 软件包并配置环境变量；确认运行环境已连接并识别 Ascend AI 处理器。</p>
+      </div>
+
+      <div class="source-block official">
+        <span class="source-block-tag">昇腾社区官方</span>
+        <p class="source-block-refs">段 9 标注：<a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/81RC1alpha001/devaids/opdev/optool/atlasopdev_16_0027.html" target="_blank" rel="noopener">msOpGen 工具链</a></p>
+        <p><strong>步骤二：创建算子工程</strong>：使用 <strong>msOpGen</strong> 工程生成工具，基于算子原型定义 JSON 生成 Host / Kernel 侧代码框架。</p>
+      </div>
+
+      <div class="source-block other">
+        <span class="source-block-tag">其他来源</span>
+        <p class="source-block-refs">段 10 标注：<a href="https://bbs.huaweicloud.com/blogs/469418" target="_blank" rel="noopener">华为云博客</a></p>
+        <p><strong>Host 侧实现</strong>：编写 <code>Tiling</code> 函数，为 Device 侧计算提供动态切分参数。</p>
+      </div>
+
+      <div class="source-block alt-official">
+        <span class="source-block-tag">其他官方渠道</span>
+        <p class="source-block-refs">段 11–13 标注：<a href="https://developer.huawei.com/consumer/cn/doc/hiai-Guides/cannkit-vector-programming-0000002157683241" target="_blank" rel="noopener">矢量编程 · CANN Kit</a></p>
+        <p><strong>Kernel 侧实现</strong>：① 通过 <code>DataCopy</code> 将数据从 Global Memory 搬入 Local Memory；② 调用计算 API（如 <code>Add</code>）完成计算；③ 将结果搬回 Global Memory。</p>
+      </div>
+
+      <div class="source-block alt-official">
+        <span class="source-block-tag">其他官方渠道</span>
+        <p class="source-block-refs">段 14 标注：<a href="https://developer.huawei.com/consumer/cn/doc/hiai-Guides/cannkit-vector-programming-0000002157683241" target="_blank" rel="noopener">矢量编程</a> · 兼有 <a href="https://www.hiascend.com/doc_center/source/zh/CANNCommunityEdition/82RC1alpha002/opdevg/Ascendcopdevg/CANN%E7%A4%BE%E5%8C%BA%E7%89%88%208.2.RC1.alpha002%20Ascend%20C%E7%AE%97%E5%AD%90%E5%BC%80%E5%8F%91%E6%8C%87%E5%8D%97%2001.pdf" target="_blank" rel="noopener">8.2.RC1 算子开发指南 PDF</a></p>
+        <p><strong>核函数定义</strong>：定义算子入口函数 <code>add_custom</code>，内部完成上述搬入 / 计算 / 搬出过程。</p>
+      </div>
+
+      <div class="source-block alt-official">
+        <span class="source-block-tag">其他官方渠道</span>
+        <p class="source-block-refs">段 15 标注：<a href="https://developer.huawei.com/consumer/cn/doc/hiai-guides/cannkit-operator-project-compilation-0000002122321636" target="_blank" rel="noopener">工程编译</a> · 兼有 <a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/81RC1alpha001/devaids/opdev/optool/atlasopdev_16_0027.html" target="_blank" rel="noopener">msOpGen</a></p>
+        <p><strong>步骤四：编译与部署</strong>：执行 <code>./build.sh</code> 编译，运行生成的 <code>.run</code> 安装包将自定义算子部署到 CANN 环境。</p>
+      </div>
+
+      <h4>4. 核心知识点</h4>
+
+      <div class="source-block other">
+        <span class="source-block-tag">其他来源</span>
+        <p class="source-block-refs">段 16 标注：<a href="https://bbs.huaweicloud.com/blogs/467955" target="_blank" rel="noopener">华为云博客</a> · 兼有 <a href="https://developer.huawei.com/consumer/cn/doc/hiai-Guides/cannkit-programmingapi-basic-apis-0000002300239860" target="_blank" rel="noopener">CANN Kit 基础 API</a></p>
+        <p><strong>编程模型关键要素</strong>：围绕「流水」「张量」「队列」构建——<code>TPipe</code> 统一管理资源，<code>TQueue</code> 传递 <code>LocalTensor</code>，数据须位于 Local Memory 方可参与计算。</p>
+      </div>
+
+      <div class="source-block alt-official">
+        <span class="source-block-tag">其他官方渠道</span>
+        <p class="source-block-refs">段 17 标注：<a href="https://developer.huawei.com/home/forum/ascend/thread-02162212495117620099-1-1.html" target="_blank" rel="noopener">昇腾论坛 · Tiling 讨论</a></p>
+        <p><strong>Tiling 机制</strong>：AI Core 片上内存有限，Host 侧将大张量切分为 Tile，Kernel 在循环中逐块搬运并计算。</p>
+      </div>
+
+      <h4>5. API 参考</h4>
+
+      <div class="source-block official">
+        <span class="source-block-tag">昇腾社区官方</span>
+        <p class="source-block-refs">段 18 标注：<a href="https://www.hiascend.com/doc_center/source/zh/canncommercial/800/apiref/ascendcopapi/CANN%E5%95%86%E7%94%A8%E7%89%88%208.0.0%20%20Ascend%20C%E7%AE%97%E5%AD%90%E5%BC%80%E5%8F%91%E6%8E%A5%E5%8F%A3%E5%8F%82%E8%80%83%2001.pdf" target="_blank" rel="noopener">API 参考 PDF</a></p>
+        <table class="data-table" style="font-size:12px;margin-top:8px;">
+          <thead><tr><th>API 分类</th><th>主要功能</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Kernel API</strong></td><td>AI Core 上执行的核心接口</td></tr>
+            <tr><td>├ 基础数据结构</td><td><code>GlobalTensor</code>、<code>LocalTensor</code></td></tr>
+            <tr><td>├ 基础 API</td><td><code>DataCopy</code>、<code>Add/Mul</code>、<code>TPipe/TQueue</code></td></tr>
+            <tr><td>├ 高阶 API</td><td><code>Matmul</code>、<code>Softmax</code>、数学库等</td></tr>
+            <tr><td><strong>Host API</strong></td><td>Host CPU 辅助接口</td></tr>
+            <tr><td>├ Tiling API</td><td>计算并下发 Tiling 参数</td></tr>
+            <tr><td>├ 算子注册 API</td><td>向 CANN 注册自定义算子</td></tr>
+            <tr><td>└ 平台信息 API</td><td>获取硬件核数、缓存大小等</td></tr>
+            <tr><td><strong>算子调测 API</strong></td><td>孪生调试、Profiling 等</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4>6. 最佳实践与调优</h4>
+
+      <div class="source-block official">
+        <span class="source-block-tag">昇腾社区官方</span>
+        <p class="source-block-refs">段 19 标注：<a href="https://www.hiascend.com/doc_center/source/zh/CANNCommunityEdition/82RC1alpha002/opdevg/Ascendcopdevg/CANN%E7%A4%BE%E5%8C%BA%E7%89%88%208.2.RC1.alpha002%20Ascend%20C%E7%AE%97%E5%AD%90%E5%BC%80%E5%8F%91%E6%8C%87%E5%8D%97%2001.pdf" target="_blank" rel="noopener">8.2.RC1 算子开发指南 PDF</a></p>
+        <p><strong>多核并行</strong>：充分利用 SPMD 模型，Host 侧 <code>Tiling</code> 函数计算各核数据范围，实现负载均衡。</p>
+      </div>
+
+      <div class="source-block other">
+        <span class="source-block-tag">其他来源</span>
+        <p class="source-block-refs">段 20 标注：<a href="https://bbs.huaweicloud.com/blogs/469234" target="_blank" rel="noopener">华为云博客</a></p>
+        <p><strong>双缓冲（Double Buffering）</strong>：使用 <code>TQueue</code> 管理两个缓冲区，计算当前 Tile 的同时预取下一 Tile，最大化流水线效率。</p>
+      </div>
+
+      <div class="source-block model">
+        <span class="source-block-tag">模型内化知识</span>
+        <p class="source-block-refs">段 21 · 无段末 URL 标注</p>
+        <p><strong>核函数融合</strong>：将 Matmul + Add + ReLU 等连续操作融合进一个 Ascend C 算子，减少中间结果内存读写，显著提升性能。</p>
+      </div>
+
+      <div class="source-block other">
+        <span class="source-block-tag">其他来源</span>
+        <p class="source-block-refs">段 22 标注：<a href="https://bbs.huaweicloud.com/blogs/467955" target="_blank" rel="noopener">华为云博客</a></p>
+        <p><strong>CPU 调测</strong>：使用孪生调试（CPU 调试）功能，在不依赖 NPU 硬件的情况下快速验证 Kernel 侧逻辑。</p>
+      </div>
+
+      <div class="source-block model">
+        <span class="source-block-tag">模型内化知识</span>
+        <p class="source-block-refs">段 23 · 无段末 URL 标注</p>
+        <p><strong>NPU 调测</strong>：在真实 NPU 上运行时使用 <code>printf</code> 打印信息，或利用 AscendCL 提供的 API 进行性能分析。</p>
+      </div>
+
+    </div>
+  </div>
+</template>
+
+<template data-drawer-template="qwen" data-drawer-title="千问 对话">
+  <p>
+    <a href="https://www.qianwen.com/share/chat/59a294a6cfc849c1b7ddd7737e977831" target="_blank" rel="noopener">千问</a>
+    · 导出文件：<a href="references/官方信源感知弱/千问-回答.md">千问-回答.md</a>（Pages 脚注 <code>[^1]–[^13]</code> 标注，18 单元溯源）· <a href="references/官方信源感知弱/千问-检索网页.md">千问-检索网页.md</a>（检索阶段 13 条 URL）
+  </p>
+
+  <div class="source-legend">
+    <span class="source-legend-item"><span class="source-legend-dot official"></span>昇腾社区官方</span>
+    <span class="source-legend-item"><span class="source-legend-dot third"></span>第三方教程</span>
+    <span class="source-legend-item"><span class="source-legend-dot model"></span>模型内化知识</span>
+    <span class="source-legend-item"><span class="source-legend-dot unknown"></span>无法溯源</span>
+  </div>
+  <div class="dialog-card">
+    <span class="dialog-card-role">用户</span>
+    <div class="dialog-card-body">基于官方资料，介绍一下 Ascend C 算子开发</div>
+  </div>
+  <div class="dialog-card">
+    <span class="dialog-card-role">千问</span>
+    <div class="dialog-card-body">
+      <p><strong>Ascend C 算子开发介绍（基于官方资料）</strong></p>
+
+      <h4>一、什么是 Ascend C？</h4>
+
+      <div class="source-block official">
+        <span class="source-block-tag">昇腾社区官方</span>
+        <p class="source-block-refs">段 1 标注 · 脚注 <code>[^1][^2]</code>：<a href="https://www.hiascend.cn/document/detail/zh/CANNCommunityEdition/83RC1/opdevg/Ascendcopdevg" target="_blank" rel="noopener">Ascend C 简介 · CANN 83RC1</a> · <a href="https://developer.huawei.com/home/forum/ascend/thread-0239124507827469022-1-1.html" target="_blank" rel="noopener">昇腾 Ascend C 编程入门教程 · 华为论坛</a></p>
+        <p>Ascend C 是华为 CANN（Compute Architecture for Neural Networks）针对昇腾 AI 处理器算子开发场景推出的编程语言。它原生支持 C 和 C++ 标准规范，兼具开发效率和运行性能。2023 年 5 月 6 日，在昇腾 AI 开发者峰会上正式发布。</p>
+      </div>
+
+      <div class="source-block official">
+        <span class="source-block-tag">昇腾社区官方</span>
+        <p class="source-block-refs">段 2 标注 · 脚注 <code>[^1]</code>：<a href="https://www.hiascend.cn/document/detail/zh/CANNCommunityEdition/83RC1/opdevg/Ascendcopdevg" target="_blank" rel="noopener">Ascend C 简介 · 昇腾社区</a></p>
+        <p>基于 Ascend C 编写的算子程序，通过编译器编译和运行时调度，运行在昇腾 AI 处理器（NPU）上。使用 Ascend C，开发者可以基于昇腾 AI 硬件，高效地实现自定义的创新算法。</p>
+      </div>
+
+      <div class="source-block third">
+        <span class="source-block-tag">第三方教程</span>
+        <p class="source-block-refs">段 3 标注 · 脚注 <code>[^3]</code>：<a href="https://www.cnblogs.com/chucz/p/20064171" target="_blank" rel="noopener">Ascend C 新一代算子编程语言 · 博客园</a></p>
+        <p>Ascend C 是 TBE TIK 的官方替代方案。</p>
+      </div>
+
+      <h4>二、核心特点</h4>
+
+      <div class="source-block official">
+        <span class="source-block-tag">昇腾社区官方</span>
+        <p class="source-block-refs">段 4 标注 · 脚注 <code>[^1][^4]</code>：<a href="https://www.hiascend.cn/document/detail/zh/CANNCommunityEdition/83RC1/opdevg/Ascendcopdevg" target="_blank" rel="noopener">Ascend C 简介</a> · <a href="https://www.hiascend.com/zh/ascend-c" target="_blank" rel="noopener">AscendC 与 CANN 算子开发</a></p>
+        <table class="data-table">
+          <thead><tr><th>特点</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td><strong>C/C++ 原生编程</strong></td><td>原生支持 C 和 C++ 标准规范，最大化匹配用户开发习惯，学习曲线低</td></tr>
+            <tr><td><strong>屏蔽硬件差异</strong></td><td>编程模型屏蔽了底层硬件差异，提高了代码的通用性</td></tr>
+            <tr><td><strong>多层 API 封装</strong></td><td>类库 API 封装，既保证易用性，又兼顾高效性</td></tr>
+            <tr><td><strong>孪生调试</strong></td><td>支持在 CPU 侧模拟 NPU 侧的行为（Asc-Tools），便于调试</td></tr>
+            <tr><td><strong>自动并行计算</strong></td><td>编译器自动优化，性能接近手写汇编</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4>三、编程模型</h4>
+
+      <div class="source-block official">
+        <span class="source-block-tag">昇腾社区官方</span>
+        <p class="source-block-refs">段 5 标注 · 脚注 <code>[^5]</code>：<a href="https://www.hiascend.cn/document/detail/zh/CANNCommunityEdition/900beta1/opdevg/Ascendcopdevg/atlas_ascendc_best_practices_10_10017.html" target="_blank" rel="noopener">概述-SIMD 算子实现 · CANN 900beta1</a></p>
+        <p>Ascend C 采用 Host-Device 异构协同架构，一个完整的算子实现主要包含两个部分：</p>
+      </div>
+
+      <h4>3.1 Host 侧 —— Tiling 实现（CPU 端）</h4>
+
+      <div class="source-block official">
+        <span class="source-block-tag">昇腾社区官方</span>
+        <p class="source-block-refs">段 6 标注 · 脚注 <code>[^5]</code>：<a href="https://www.hiascend.cn/document/detail/zh/CANNCommunityEdition/900beta1/opdevg/Ascendcopdevg/atlas_ascendc_best_practices_10_10017.html" target="_blank" rel="noopener">概述-SIMD 算子实现 · 昇腾社区</a></p>
+        <p>由于 NPU 中 AI Core 内部存储（Local Memory）无法完全容纳算子输入输出的所有数据，需要每次搬运一部分输入数据进行计算然后搬出，再搬运下一部分，这个过程称为 Tiling（切分）。</p>
+        <p>Tiling 函数根据算子的 shape 等信息来确定数据切分算法的相关参数（如每次搬运的块大小、总循环次数等）。</p>
+      </div>
+
+      <div class="source-block third">
+        <span class="source-block-tag">第三方教程</span>
+        <p class="source-block-refs">段 7 标注 · 脚注 <code>[^6]</code>：<a href="https://m.blog.csdn.net/fjqdxq/article/details/159736161" target="_blank" rel="noopener">Ascend C 核心组成 · CSDN</a></p>
+        <p>Host 侧充当「指挥者」角色，负责计算调度策略。</p>
+      </div>
+
+      <h4>3.2 Device 侧 —— Kernel 实现（NPU 端）</h4>
+
+      <div class="source-block official">
+        <span class="source-block-tag">昇腾社区官方</span>
+        <p class="source-block-refs">段 8 标注 · 脚注 <code>[^3][^5]</code>：<a href="https://www.cnblogs.com/chucz/p/20064171" target="_blank" rel="noopener">Ascend C 新一代算子编程语言 · 博客园</a> · <a href="https://www.hiascend.cn/document/detail/zh/CANNCommunityEdition/900beta1/opdevg/Ascendcopdevg/atlas_ascendc_best_practices_10_10017.html" target="_blank" rel="noopener">概述-SIMD 算子实现 · 昇腾社区</a></p>
+        <p>Kernel 实现即算子核函数，使用 <code>__global__</code> 修饰，运行在 AI Core 上。在 Kernel 函数内部：</p>
+        <ul>
+          <li>解析 Host 侧传入的 Tiling 结构体获取 Tiling 信息</li>
+          <li>根据 Tiling 信息控制数据搬入搬出 Local Memory 的流程</li>
+          <li>调用计算、数据搬运、内存管理、任务同步 API，实现算子逻辑</li>
+        </ul>
+      </div>
+
+      <h4>四、核心编程概念</h4>
+
+      <h4>4.1 内存层次模型</h4>
+
+      <div class="source-block third">
+        <span class="source-block-tag">第三方教程</span>
+        <p class="source-block-refs">段 9 标注 · 脚注 <code>[^7]</code>：<a href="https://pickstar.blog.csdn.net/article/details/156021299" target="_blank" rel="noopener">Ascend C 编程语言详解 · CSDN</a></p>
+        <p>昇腾 AI 处理器的内存分为多个层级：</p>
+        <ul>
+          <li><strong>Global Memory（全局内存）</strong>：外部存储，容量大但访问慢</li>
+          <li><strong>Local Memory（本地内存）</strong>：AI Core 内部的高速缓存，容量有限但访问极快</li>
+          <li>算子开发的核心之一就是在 Global Memory 和 Local Memory 之间高效地搬运数据</li>
+        </ul>
+      </div>
+
+      <h4>4.2 并行执行模型（SPMD）</h4>
+
+      <div class="source-block third">
+        <span class="source-block-tag">第三方教程</span>
+        <p class="source-block-refs">段 10 标注 · 脚注 <code>[^8]</code>：<a href="https://developer.aliyun.com/article/1643959" target="_blank" rel="noopener">Ascend C 的编程模型 · 阿里云</a></p>
+        <p>Ascend C 采用 SPMD（Single Program Multiple Data）编程模型，实现多核并行计算：</p>
+        <ul>
+          <li>将数据切分为多个分片，分配给不同的计算核心（block）并行处理</li>
+          <li>多个 AI Core 共享相同的指令代码</li>
+          <li>每个核通过唯一的 block_idx 来识别自身身份，处理不同的数据分片</li>
+        </ul>
+      </div>
+
+      <h4>4.3 流水线编程范式</h4>
+
+      <div class="source-block official">
+        <span class="source-block-tag">昇腾社区官方</span>
+        <p class="source-block-refs">段 11 标注 · 脚注 <code>[^9]</code>：<a href="https://www.hiascend.com/document/detail/zh/canncommercial/80RC1/developmentguide/opdevg/Ascendcopdevg/atlas_ascendc_10_0012.html" target="_blank" rel="noopener">流水编程范式 · CANN 80RC1 商用版</a></p>
+        <p>Ascend C 的编程范式是一种流水线式编程范式（Pipelining），核心要素包括：</p>
+        <ul>
+          <li><strong>流水任务设计</strong>：将核内处理程序分成多个并行任务（Stage），如 CopyIn、Compute、CopyOut</li>
+          <li><strong>任务间通信和同步</strong>：通过队列（Queue）完成任务间通信和同步（DeQue/EnQue）</li>
+          <li><strong>内存管理</strong>：通过统一的 Pipe 模块管理任务间通信内存</li>
+        </ul>
+        <p>每个并行任务 Stage 的标准编程范式为：</p>
+        <ol>
+          <li>AllocTensor 申请内存 / DeQue 从上游队列获取数据</li>
+          <li>完成计算或数据搬运</li>
+          <li>EnQue 将处理好的数据入队</li>
+          <li>FreeTensor 释放不再需要的内存</li>
+        </ol>
+      </div>
+
+      <h4>五、多层级 API</h4>
+
+      <div class="source-block official">
+        <span class="source-block-tag">昇腾社区官方</span>
+        <p class="source-block-refs">段 12 标注 · 脚注 <code>[^1]</code>：<a href="https://www.hiascend.cn/document/detail/zh/CANNCommunityEdition/83RC1/opdevg/Ascendcopdevg" target="_blank" rel="noopener">Ascend C 简介 · 昇腾社区</a></p>
+        <p>Ascend C 提供多层级 API，满足多维场景算子开发诉求：</p>
+      </div>
+
+      <div class="source-block official">
+        <span class="source-block-tag">昇腾社区官方</span>
+        <p class="source-block-refs">段 13 标注 · 脚注 <code>[^10]</code>：<a href="https://www.hiascend.com/document/detail/zh/canncommercial/850/opdevg/Ascendcopdevg/atlas_ascendc_map_10_0002.html" target="_blank" rel="noopener">什么是 Ascend C · CANN 850 商用版</a></p>
+        <p>开发者可根据需求选择不同层级的 API，从快速原型开发到极致性能调优均可覆盖。</p>
+      </div>
+
+      <h4>六、算子开发流程</h4>
+
+      <div class="source-block official">
+        <span class="source-block-tag">昇腾社区官方</span>
+        <p class="source-block-refs">段 14 标注 · 脚注 <code>[^11]</code>：<a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/82RC1alpha001/opdevg/Ascendcopdevg/atlas_ascendc_10_0005.html" target="_blank" rel="noopener">基于 Kernel 直调工程的算子开发 · 82RC1alpha001</a></p>
+        <p>基于官方文档，Ascend C 算子的标准开发流程如下：</p>
+        <ol>
+          <li>环境准备 → 安装 CANN 开发套件包</li>
+          <li>算子分析 → 明确算子数学逻辑、输入输出 Tensor 及需调用的 API</li>
+          <li>核函数开发 → 编写运行在 NPU 上的核心计算代码</li>
+          <li>CPU 侧验证 → 使用 ICPU_RUN_KF 宏在 CPU 侧模拟验证（孪生调试）</li>
+          <li>NPU 侧验证 → 使用 <code>&gt;&gt;&gt;</code> 内核调用符在 NPU 上运行验证</li>
+          <li>性能调优 → 使用性能分析工具进行优化</li>
+        </ol>
+      </div>
+
+      <div class="source-block third">
+        <span class="source-block-tag">第三方教程</span>
+        <p class="source-block-refs">段 15 标注 · 脚注 <code>[^12]</code>：<a href="https://cloud.tencent.com/developer/article/2606574" target="_blank" rel="noopener">Ascend C 算子开发入门指南（进阶版）· 腾讯云</a></p>
+        <p>工程目录结构示例：</p>
+        <pre>MatmulCustom/
+├── build.sh
+├── CMakeLists.txt
+├── op_host/
+│   ├── matmul_custom.cpp
+│   └── matmul_custom_tiling.h
+└── op_kernel/
+    └── matmul_custom.cpp</pre>
+      </div>
+
+      <h4>七、支持的产品型号</h4>
+
+      <div class="source-block official">
+        <span class="source-block-tag">昇腾社区官方</span>
+        <p class="source-block-refs">段 16 标注 · 脚注 <code>[^1]</code>：<a href="https://www.hiascend.cn/document/detail/zh/CANNCommunityEdition/83RC1/opdevg/Ascendcopdevg" target="_blank" rel="noopener">Ascend C 简介 · 昇腾社区</a></p>
+        <p>Ascend C 支持以下昇腾产品系列：</p>
+        <ul>
+          <li>Atlas A3 训练系列产品 / 推理系列产品</li>
+          <li>Atlas A2 训练系列产品 / 推理系列产品</li>
+        </ul>
+      </div>
+
+      <h4>八、开发前提与学习路径</h4>
+
+      <div class="source-block official">
+        <span class="source-block-tag">昇腾社区官方</span>
+        <p class="source-block-refs">段 17 标注 · 脚注 <code>[^13]</code>：<a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/82RC1/opdevg/ascendcbestP/atlas_ascendc_best_practices_10_0001.html" target="_blank" rel="noopener">前言-Ascend C 最佳实践 · CANN 82RC1</a></p>
+        <p>根据官方最佳实践文档，开发者在使用 Ascend C 前需要具备：</p>
+        <ul>
+          <li>熟练使用 C++ 编程语言</li>
+          <li>了解计算机架构</li>
+          <li>理解昇腾 AI 处理器硬件架构</li>
+        </ul>
+      </div>
+
+      <div class="source-block model">
+        <span class="source-block-tag">模型内化知识</span>
+        <p class="source-block-refs">段 18 · 无脚注</p>
+        <p>官方提供的学习资源包括：快速入门、成长地图、概念原理、API 参考、最佳实践。</p>
+      </div>
+
+    </div></div>
+</template>
+<script src="assets/js/preview-drawer.js"></script>
+<script src="assets/js/answer-drawer.js"></script>
+
+<script>
+(function () {
+  var main = document.querySelector('.main-content');
+  var tocList = document.getElementById('page-toc-list');
+  var used = {};
+  function slugify(text) {
+    var base = (text || '').trim().toLowerCase().replace(/[^\w\u4e00-\u9fff]+/g, '-').replace(/^-+|-+$/g, '');
+    if (!base) base = 'section';
+    var slug = base, n = 2;
+    while (used[slug]) slug = base + '-' + n++;
+    used[slug] = true;
+    return slug;
+  }
+  var headings = main ? main.querySelectorAll('h2, h3') : [];
+  var tocItems = [];
+  headings.forEach(function (el) {
+    if (el.closest('.preview-drawer, .answer-drawer, template')) return;
+    var text = el.textContent.replace(/\s+/g, ' ').trim();
+    if (!text) return;
+    if (!el.id) el.id = slugify(text);
+    tocItems.push({ id: el.id, text: text, level: el.tagName === 'H3' ? 3 : 2, el: el });
+  });
+  if (tocList) {
+    tocList.innerHTML = tocItems.map(function (item) {
+      var cls = item.level === 3 ? ' class="toc-h3"' : '';
+      return '<li><a href="#' + item.id + '"' + cls + ' data-toc-link>' + item.text + '</a></li>';
+    }).join('');
+  }
+  var tocLinks = document.querySelectorAll('[data-toc-link]');
+  function setTocActive(id) {
+    tocLinks.forEach(function (a) { a.classList.toggle('active', a.getAttribute('href') === '#' + id); });
+  }
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      var visible = entries.filter(function (e) { return e.isIntersecting; })
+        .sort(function (a, b) { return a.boundingClientRect.top - b.boundingClientRect.top; });
+      if (visible.length) setTocActive(visible[0].target.id);
+    }, { rootMargin: '-20% 0px -60% 0px', threshold: [0, 0.25, 0.5] });
+    tocItems.forEach(function (item) { io.observe(item.el); });
+  }
+  function syncHash() {
+    var id = (location.hash || '').replace('#', '');
+    if (id) setTocActive(id);
+  }
+  window.addEventListener('hashchange', syncHash);
+  syncHash();
+})();
+</script>
+<script>
+(function () {
+  var sidebar = document.querySelector('.comp-sidebar');
+  if (!sidebar) return;
+  var key = 'geo-measured-2026-06-sidebar-scroll';
+  var y = null;
+  try {
+    var saved = sessionStorage.getItem(key);
+    if (saved !== null) y = parseInt(saved, 10);
+  } catch (e) {}
+  function restore() {
+    if (y === null || isNaN(y)) return;
+    sidebar.scrollTop = y;
+  }
+  restore();
+  requestAnimationFrame(restore);
+  window.addEventListener('load', restore);
+  sidebar.addEventListener('scroll', function () {
+    try { sessionStorage.setItem(key, String(sidebar.scrollTop)); } catch (e) {}
+  }, { passive: true });
+  sidebar.querySelectorAll('a[href]').forEach(function (a) {
+    a.addEventListener('click', function () {
+      try { sessionStorage.setItem(key, String(sidebar.scrollTop)); } catch (e) {}
+    });
+  });
+})();
+</script>
+</body>
+</html>

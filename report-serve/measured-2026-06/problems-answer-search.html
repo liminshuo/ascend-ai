@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<link rel="stylesheet" href="../assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/style.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>检索阶段 · 实测记录 · 2026年6月</title>
+<style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  :root {
+    --bg: var(--color-bg); --panel: var(--color-surface); --panel2: var(--color-card-bg); --line: var(--color-border);
+    --text: var(--color-text); --muted: var(--color-text-secondary); --accent: var(--color-primary);
+    --link: var(--color-primary); --detail-head-h: var(--header-height);
+    --desc: rgba(0, 0, 0, 0.6);
+    --heading-rule: var(--color-heading-rule);
+    --card-bg: var(--color-card-bg); --card-border: var(--color-card-border);
+    --danger: #dc2626; --danger-bg: rgba(220, 38, 38, 0.08); --danger-border: rgba(220, 38, 38, 0.25);
+    --warning: #d97706; --warning-bg: rgba(217, 119, 6, 0.08); --warning-border: rgba(217, 119, 6, 0.28);
+    --success: #16a34a; --success-bg: rgba(22, 163, 74, 0.08); --success-border: rgba(22, 163, 74, 0.25);
+    --sidebar-w: var(--sidebar-width);
+    --toc-w: var(--toc-width);
+    --content-pad-x: var(--content-wide-pad-x);
+    --content-pad-left: var(--content-main-pad-left);
+    --content-pad-top: var(--content-main-pad-top);
+    --content-max: var(--content-max-width);
+    --body-size: var(--text-body);
+    --body-lh: var(--text-body-lh);
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-size: var(--body-size); margin: 0;
+    font-family: var(--font);
+    background: var(--bg); color: var(--muted); line-height: var(--body-lh);
+  }
+  body.modal-open { overflow: hidden; }
+  a { color: var(--link); }
+  code {
+    font-size: var(--text-auxiliary); background: var(--panel2); border: 1px solid var(--line);
+    border-radius: 4px; padding: 0 4px;
+  }
+  .detail-head-bar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 64px;
+    height: var(--detail-head-h);
+    min-height: var(--detail-head-h);
+    max-height: var(--detail-head-h);
+    padding: 0 24px;
+    box-sizing: border-box;
+    border-bottom: 1px solid var(--line);
+    background: #fff;
+    overflow: hidden;
+  }
+  .modal-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+  }
+  .back-link {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    color: var(--text);
+    text-decoration: none;
+    transition: background .15s, color .15s;
+  }
+  .back-link:hover {
+    background: var(--panel2);
+    color: var(--accent);
+  }
+  .back-link svg {
+    width: 18px;
+    height: 18px;
+    display: block;
+  }
+  .title-divider {
+    flex-shrink: 0;
+    width: 1px;
+    height: 18px;
+    background: var(--line);
+  }
+  .detail-head-bar .modal-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .modal-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .detail-head-tabs { display: flex; align-items: center; gap: 4px; min-width: 0; }
+  .detail-head-tabs a {
+    text-decoration: none;
+    color: var(--muted);
+    font-size: var(--text-body);
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 6px;
+    white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .detail-head-tabs a:hover { color: var(--accent); background: var(--color-bg); }
+  .detail-head-tabs a.active { color: var(--accent); background: var(--color-bg); font-weight: 600; }
+
+  .page-wrapper {
+    display: flex; align-items: stretch; width: 100%;
+    min-height: calc(100vh - var(--detail-head-h)); background: var(--bg);
+  }
+  .comp-sidebar {
+    width: var(--sidebar-w); flex-shrink: 0; position: sticky; top: var(--detail-head-h);
+    height: calc(100vh - var(--detail-head-h)); overflow-y: auto; padding: 16px 0 32px;
+    border-right: 1px solid var(--line); background: var(--panel);
+  }
+  .comp-sidebar-title {
+    font-size: var(--text-caption); font-weight: 700; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--muted); padding: 0 20px 10px;
+  }
+  .comp-nav ul { list-style: none; margin: 0; padding: 0; }
+  .comp-group-label {
+    font-size: var(--text-caption); font-weight: 700; letter-spacing: .04em; color: var(--muted);
+    padding: 12px 20px 4px; margin-top: 8px; border-top: 1px solid var(--line);
+  }
+  .comp-nav > .comp-group-label:first-child { margin-top: 0; border-top: none; padding-top: 0; }
+  .comp-nav a, .comp-nav .comp-pending {
+    display: block; padding: 8px 20px; font-size: 13px; line-height: 1.5;
+    text-decoration: none; border-left: 2px solid transparent;
+  }
+  .comp-nav a { color: var(--muted); }
+  .comp-nav a:hover { color: var(--text); background: var(--color-bg); }
+  .comp-nav a.active {
+    color: var(--accent); font-weight: 600; background: #EEF5FF; border-left-color: var(--accent);
+  }
+  .comp-nav .comp-pending { color: #bfbfbf; cursor: default; }
+  .main-content {
+    flex: 1; min-width: 0; background: var(--panel); border-right: 1px solid var(--line);
+    min-height: calc(100vh - var(--detail-head-h));
+    padding: var(--content-pad-top) var(--content-pad-x) 32px var(--content-pad-left);
+    box-sizing: border-box;
+  }
+  .main-content > .page-header,
+  .main-content > .page-desc,
+  .main-content > .section {
+    width: 100%; max-width: var(--content-max); margin-inline: 0;
+    padding-left: 0; padding-right: 0; box-sizing: border-box;
+  }
+  .page-header {
+    margin-bottom: 36px; padding-bottom: 24px; border-bottom: 1px solid var(--line);
+  }
+  .page-header-top {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; margin-bottom: 0;
+  }
+  .page-header-top h1 {
+    margin: 0; font-size: 32px; font-weight: 800; line-height: 1.2;
+    letter-spacing: -0.02em; color: var(--text);
+    display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
+    flex: 1; min-width: 0;
+  }
+  .badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: var(--text-auxiliary); font-weight: 600; line-height: 1;
+    padding: 4px 10px; border-radius: 4px; vertical-align: middle;
+  }
+  .badge-bad { color: var(--danger); background: var(--danger-bg); border: 1px solid var(--danger-border); }
+  .badge-should { color: var(--warning); background: var(--warning-bg); border: 1px solid var(--warning-border); }
+  .badge-ok { color: var(--success); background: var(--success-bg); border: 1px solid var(--success-border); }
+  .btn-preview {
+    flex-shrink: 0; border: none; background: none; padding: 0;
+    font-size: var(--text-body); font-weight: 600; color: var(--accent);
+    cursor: pointer; font-family: inherit; text-decoration: none;
+  }
+  .btn-preview:hover { text-decoration: underline; color: var(--accent); }
+  .btn-preview:disabled { opacity: 0.5; cursor: not-allowed; text-decoration: none; }
+  .page-desc {
+    font-size: var(--body-size); line-height: var(--body-lh);
+    color: var(--desc); margin: 0 0 48px;
+  }
+  .page-desc-line { display: block; line-height: var(--body-lh); }
+  .page-desc-line + .page-desc-line { margin-top: 4px; }
+  .page-desc strong { color: var(--text); font-weight: 600; }
+  .section {
+    margin-bottom: 48px;
+    scroll-margin-top: calc(var(--detail-head-h) + 16px);
+  }
+  .section > h2 {
+    margin: 48px 0 16px; padding-bottom: 24px;
+    font-size: var(--text-h2); font-weight: 700; line-height: 36px;
+    color: var(--text); border-bottom: 2px solid var(--heading-rule);
+  }
+  .section:first-of-type > h2 { margin-top: 0; }
+  .content-unit + .content-unit { margin-top: 40px; }
+  .section h3 {
+    margin: 32px 0 16px; font-size: var(--text-h3); font-weight: 700; line-height: 28px; color: var(--text);
+  }
+  .section h4 {
+    margin: 24px 0 16px; font-size: var(--text-body); font-weight: 700; color: var(--text);
+  }
+  .section p { margin: 0 0 8px; color: var(--muted); }
+  .section ul { margin: 8px 0 0; padding-left: 20px; color: var(--muted); }
+  .section li { margin-bottom: 6px; }
+  .section li:last-child { margin-bottom: 0; }
+  .section li strong { color: var(--text); font-weight: 600; }
+  .test-prompt-card {
+    background: rgba(222, 236, 255, 0.5); border-radius: 8px;
+    padding: 24px; margin: 0 0 24px;
+    font-size: var(--text-body); line-height: 22px; color: var(--text);
+  }
+  .test-prompt-card p { margin: 0; color: var(--text); line-height: 22px; }
+  .test-prompt-card a { color: var(--accent); }
+  .test-prompt-card strong { color: var(--text); }
+  .fix-suggestion {
+    background: var(--card-bg); border: 1px solid var(--card-border);
+    border-radius: 8px; padding: 16px 18px; margin: 12px 0 0;
+  }
+  .fix-suggestion > :first-child { margin-top: 0; }
+  .fix-suggestion > :last-child { margin-bottom: 0; }
+  .fix-suggestion h4 { margin: 0 0 8px; font-size: var(--text-body); font-weight: 700; color: var(--text); }
+  .fix-suggestion p { margin: 0; font-size: var(--text-body); line-height: 22px; color: var(--muted); }
+  .issue-body p { margin: 0; font-size: var(--text-body); line-height: 22px; color: var(--text); }
+  .issue-body p + p { margin-top: 8px; }
+  .issue-body code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 13px; background: #f1f5f9; padding: 1px 5px; border-radius: 4px;
+  }
+  .peer-test-table {
+    width: 100%; border-collapse: collapse; font-size: var(--text-table);
+    margin: 16px 0 0; background: var(--panel); border-radius: 8px;
+    overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,.08);
+  }
+  .peer-test-table th {
+    background: #f1f5f9; padding: 10px 14px; text-align: left;
+    font-weight: 600; color: var(--text); border-bottom: 1px solid var(--line);
+    vertical-align: middle;
+  }
+  .peer-test-table td {
+    padding: 10px 14px; border-bottom: 1px solid var(--line);
+    vertical-align: middle; color: var(--muted); line-height: 22px;
+  }
+  /* auto 布局下 width:1% = 按内容收缩；末列自然占满剩余宽度 */
+  .peer-test-table th:nth-child(1),
+  .peer-test-table td:nth-child(1),
+  .peer-test-table th:nth-child(2),
+  .peer-test-table td:nth-child(2),
+  .peer-test-table th:nth-child(3),
+  .peer-test-table td:nth-child(3),
+  .peer-test-table th:nth-child(4),
+  .peer-test-table td:nth-child(4) {
+    white-space: nowrap;
+    width: 1%;
+  }
+  .peer-test-table th:nth-child(5),
+  .peer-test-table td:nth-child(5) {
+    white-space: normal;
+    word-break: break-word;
+  }
+  .peer-test-table tr:last-child td { border-bottom: none; }
+  .peer-test-table a { color: var(--accent); text-decoration: none; }
+  .peer-test-table a:hover { text-decoration: underline; }
+  .peer-tag {
+    display: inline-block; font-size: var(--text-auxiliary); font-weight: 600;
+    padding: 2px 8px; border-radius: 4px; white-space: nowrap;
+  }
+  .peer-tag-ok { color: var(--success); background: var(--success-bg); border: 1px solid var(--success-border); }
+  .peer-tag-partial { color: var(--warning); background: var(--warning-bg); border: 1px solid var(--warning-border); }
+  .peer-tag-warn-ok { color: var(--muted); background: var(--panel2); border: 1px solid var(--line); }
+  .peer-reason { font-size: 13px; color: var(--muted); line-height: 22px; }
+  .peer-test-empty { margin: 12px 0 0; font-size: var(--text-body); line-height: 22px; color: var(--muted); }
+  .peer-test-note {
+    margin: 8px 0 0; font-size: 13px; line-height: 22px; color: var(--desc);
+  }
+  .peer-test-note strong { color: var(--text); font-weight: 600; }
+  .peer-th-sub {
+    display: block; font-size: var(--text-caption); font-weight: 500; color: var(--muted);
+    margin-top: 2px; line-height: 1.3;
+  }
+  .peer-floor-badge {
+    display: inline-block; font-size: var(--text-caption); font-weight: 500;
+    color: var(--muted); white-space: nowrap;
+  }
+  .peer-object-link {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    line-height: 1.35;
+    text-decoration: none;
+  }
+  .peer-object-link:hover .peer-object-name { text-decoration: underline; }
+  .peer-object-name { color: var(--accent); }
+  .page-toc {
+    width: var(--toc-w); flex-shrink: 0; position: sticky; top: var(--detail-head-h);
+    align-self: flex-start; height: calc(100vh - var(--detail-head-h));
+    overflow-y: auto; padding: 28px 16px 40px 20px; background: var(--bg);
+  }
+  .page-toc-title { font-size: var(--text-auxiliary); font-weight: 600; color: var(--muted); margin-bottom: 12px; }
+  .page-toc-nav ul { list-style: none; margin: 0; padding: 0; }
+  .page-toc-nav li + li { margin-top: 2px; }
+  .page-toc-nav a {
+    display: block; font-size: 13px; line-height: 1.5; color: var(--muted);
+    padding: 4px 0; text-decoration: none; border-left: 2px solid transparent;
+  }
+  .page-toc-nav a.toc-h3 { padding-left: 12px; font-size: var(--text-auxiliary); }
+  .page-toc-nav a:hover { color: var(--accent); }
+  .page-toc-nav a.active {
+    color: var(--accent); font-weight: 600; border-left-color: var(--accent);
+    padding-left: 8px; margin-left: -8px;
+  }
+  .page-toc-nav a.toc-h3.active { padding-left: 12px; margin-left: 0; border-left-color: transparent; }
+  @media (max-width: 1100px) {
+    .page-toc { display: none; }
+    .main-content { border-right: none; }
+  }
+  @media (max-width: 900px) {
+    .page-wrapper { flex-direction: column; }
+    .comp-sidebar {
+      position: static; width: 100%; height: auto;
+      border-right: none; border-bottom: 1px solid var(--line);
+    }
+  }
+  .modal[hidden] { display: none !important; }
+  .modal {
+    position: fixed; inset: 0; z-index: 100; background: rgba(17, 24, 39, 0.45);
+    display: flex; align-items: center; justify-content: center; padding: 24px;
+  }
+  .modal-panel {
+    width: min(720px, 100%); max-height: min(86vh, 900px); background: var(--panel);
+    border-radius: 16px; border: 1px solid var(--line);
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  .modal-head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; padding: 14px 18px; border-bottom: 1px solid var(--line);
+  }
+  .modal-title { margin: 0; font-size: 16px; font-weight: 650; }
+  .modal-close {
+    border: 1px solid var(--line); background: var(--panel); border-radius: 8px;
+    padding: 6px 10px; cursor: pointer; font-size: 13px; color: var(--muted); font-family: inherit;
+  }
+  .modal-close:hover { color: var(--accent); border-color: var(--accent); }
+  .modal-body { padding: 18px 20px; overflow: auto; background: var(--panel2); }
+  .dialog-card {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 12px; padding: 14px 16px; margin-bottom: 12px;
+  }
+  .dialog-card:last-child { margin-bottom: 0; }
+  .dialog-role { display: block; font-size: var(--text-auxiliary); font-weight: 650; color: var(--muted); margin-bottom: 6px; }
+  .dialog-card p { margin: 0 0 8px; color: var(--text); line-height: 1.65; }
+  .dialog-card p:last-child { margin-bottom: 0; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  .comp-nav a, .comp-nav .comp-pending {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  }
+  .comp-nav-label { flex: 1; min-width: 0; }
+  .comp-nav .aff {
+    display: inline-block; flex-shrink: 0;
+    font-size: var(--text-caption); font-weight: 600; line-height: 18px;
+    padding: 0 6px; border-radius: 999px; white-space: nowrap;
+  }
+  .comp-nav .aff-need { color: #b42318; background: #fef3f2; }
+  .comp-nav .aff-maybe { color: #b54708; background: #fffaeb; }
+  .comp-nav .aff-no { color: var(--color-text-secondary); background: var(--color-bg); }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  .comp-nav .comp-dot {
+    flex-shrink: 0;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #2563eb;
+  }
+
+
+
+
+  .comp-sidebar { overflow-anchor: none; }
+
+
+
+  .evidence-block {
+    margin: 12px 0 0;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel2);
+    overflow: hidden;
+  }
+  .evidence-block-title {
+    margin: 0;
+    padding: 8px 12px;
+    font-size: var(--text-auxiliary);
+    font-weight: 700;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+    background: var(--panel);
+  }
+  .section .evidence-block > .evidence-block-title {
+    margin: 0;
+    color: var(--muted);
+  }
+  .evidence-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    padding-top: 0;
+  }
+  .evidence-grid--single {
+    grid-template-columns: 1fr;
+  }
+  @media (max-width: 900px) {
+    .evidence-grid { grid-template-columns: 1fr; }
+  }
+  .evidence-pane {
+    min-width: 0;
+    padding: 12px;
+  }
+  .evidence-pane + .evidence-pane {
+    border-left: 1px solid var(--line);
+  }
+  @media (max-width: 900px) {
+    .evidence-pane + .evidence-pane {
+      border-left: none;
+      border-top: 1px solid var(--line);
+    }
+  }
+  .evidence-pane-label {
+    margin: 0 0 12px;
+    font-size: var(--text-auxiliary);
+    font-weight: 700;
+    color: var(--text);
+  }
+  .section .evidence-pane > .evidence-pane-label {
+    margin: 0 0 12px;
+    color: var(--text);
+  }
+  .evidence-pane img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    margin: 0;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #fff;
+  }
+  .evidence-pane pre {
+    margin: 0;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #0f172a;
+    color: var(--color-border);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 11.5px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 220px;
+    overflow: auto;
+  }
+  .evidence-caption {
+    margin: 12px 0 0;
+    padding: 0;
+    font-size: 12.5px;
+    line-height: 19px;
+    color: var(--muted);
+    text-align: left;
+  }
+  .section .evidence-pane > .evidence-caption {
+    margin: 12px 0 0;
+    color: var(--muted);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  /* measured-2026-06: tighter content padding */
+  :root {
+    --content-pad-x: 24px;
+    --content-pad-left: 24px;
+    --content-pad-top: 16px;
+    --content-main-pad-top: 16px;
+    --content-main-pad-left: 24px;
+    --content-wide-pad-x: 24px;
+    --space-page-header: 12px;
+    --space-section: 28px;
+  }
+  body.inner-page .page-wrapper,
+  .page-wrapper {
+    padding-top: 0 !important;
+    margin: 0;
+  }
+  .comp-sidebar { padding: 12px 0 24px; }
+  body.inner-page .main-content,
+  .main-content {
+    padding: 16px 24px 28px !important;
+    max-width: none !important;
+  }
+  body.inner-page:not(:has(#module-sidebar)) .main-content > .page-header,
+  body.inner-page:not(:has(#module-sidebar)) .main-content > .page-desc,
+  body.inner-page:not(:has(#module-sidebar)) .main-content > .section,
+  body.inner-page:not(:has(#module-sidebar)) .main-content > .page-nav,
+  body.inner-page:not(:has(#module-sidebar)) .main-content > .content-tabs,
+  .main-content > .page-header,
+  .main-content > .page-desc,
+  .main-content > .section {
+    max-width: none !important;
+    margin-inline: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  .page-header {
+    margin-bottom: 12px !important;
+    padding-bottom: 10px !important;
+  }
+  .page-header-top { margin-bottom: 0 !important; }
+  .page-header-top h1,
+  .page-header h1 {
+    font-size: 24px !important;
+    line-height: 1.3 !important;
+    margin: 0 !important;
+  }
+  .main-content > .page-desc,
+  .page-desc {
+    margin: 0 0 16px !important;
+  }
+  .section { margin-bottom: 24px !important; }
+  .section > h2 { margin: 24px 0 12px !important; padding-bottom: 10px !important; }
+  .section:first-of-type > h2 { margin-top: 0 !important; }
+  .content-unit + .content-unit { margin-top: 20px !important; }
+  .section h3 { margin: 16px 0 8px !important; }
+  .page-toc { padding: 16px 12px 24px 14px; }
+
+</style>
+</head>
+<body class="inner-page" data-module="problems" data-page="answer-search">
+<div class="detail-head-bar" aria-label="实测记录导航">
+  <div class="modal-title-wrap">
+    <a class="back-link" href="../ascend_geo_public_recon.html" aria-label="返回社区基线报告"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6L9 12l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    <span class="title-divider" aria-hidden="true"></span>
+    <div class="modal-title">实测记录 · 2026年6月</div>
+  </div>
+</div>
+
+<div class="page-wrapper">
+    <aside class="comp-sidebar" aria-label="实测问题列表">
+    <nav class="comp-nav">
+      <div class="comp-group-label">检索 / 生成</div>
+      <ul>
+        <li><a href="problems-answer-search.html" class="active"><span class="comp-nav-label">检索阶段</span></a></li>
+        <li><a href="problems-answer-generate.html"><span class="comp-nav-label">生成阶段</span></a></li>
+      </ul>
+      <div class="comp-group-label">抓不到</div>
+      <ul>
+        <li><a href="problems-structure-llms.html"><span class="comp-nav-label">机器发现层</span></a></li>
+      </ul>
+      <div class="comp-group-label">找不准</div>
+      <ul>
+        <li><a href="problems-timeliness.html"><span class="comp-nav-label">版本滞后 & 多版本并存</span></a></li>
+        <li><a href="problems-structure-metadata.html"><span class="comp-nav-label">页级元数据未结构化</span></a></li>
+        <li><a href="problems-structure-cross.html"><span class="comp-nav-label">跨页关系未显性化</span></a></li>
+      </ul>
+      <div class="comp-group-label">读不懂</div>
+      <ul>
+        <li><a href="problems-content-image.html"><span class="comp-nav-label">图片语义缺失</span></a></li>
+        <li><a href="problems-content-hotzone.html"><span class="comp-nav-label">热区信息缺失</span></a></li>
+        <li><a href="problems-content-table.html"><span class="comp-nav-label">表格语义缺失</span></a></li>
+        <li><a href="problems-content-code.html"><span class="comp-nav-label">代码块语义缺失</span></a></li>
+        <li><a href="problems-content-link.html"><span class="comp-nav-label">链接锚文本无效</span></a></li>
+        <li><a href="problems-content-note.html"><span class="comp-nav-label">警示级别缺失</span></a></li>
+        <li><a href="problems-content-tab.html"><span class="comp-nav-label">隐藏语义缺失</span></a></li>
+        <li><a href="problems-content-carousel.html"><span class="comp-nav-label">轮播帧语义噪声</span></a></li>
+      </ul>
+      <div class="comp-group-label">读不顺</div>
+      <ul>
+        <li><a href="problems-format.html"><span class="comp-nav-label">HTML 适配不足</span></a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+<div class="page-header">
+      <div class="page-header-top">
+        <h1>检索阶段</h1>
+      </div>
+    </div>
+
+    <p class="page-desc page-desc--split">
+      <span class="page-desc-line">检索阶段指三模型联网问答中为回答当前问题而访问的 URL 池（非知识库 chunk 召回）。</span>
+      <span class="page-desc-line">本页统计该池中昇腾社区（<code>hiascend.com</code>）官方 URL 占比。</span>
+    </p>
+
+    <section class="section" id="answer-search-problem">
+      <h2>问题实测</h2>
+
+      <div class="content-unit">
+        <h3>1. 向模型提问</h3>
+        <div class="test-prompt-card">
+          <p>我想基于官方资料了解一下 Ascend C 算子开发，能介绍一下吗？</p>
+        </div>
+      </div>
+
+      <div class="content-unit">
+        <h3>2. 大模型回答</h3>
+        <p>
+          <a href="https://claude.ai/share/0bd836f0-e4f6-4e90-acd7-c2d0b8a14885" target="_blank" rel="noopener">Claude AI</a>
+          · <a href="https://chat.deepseek.com/share/ms9wokoa8dj11ic25x" target="_blank" rel="noopener">DeepSeek</a>
+          · <a href="https://www.qianwen.com/share/chat/59a294a6cfc849c1b7ddd7737e977831" target="_blank" rel="noopener">千问</a>
+        </p>
+      </div>
+
+      <div class="content-unit">
+      <h3>3. 统计结果</h3>
+      <div class="answer-card-grid">
+
+        <div class="answer-card answer-card--claude">
+          <div class="answer-card-header">
+            <h4>Claude AI 检索 web 19 条</h4>
+          </div>
+
+          <div class="source-breakdown">
+            <div class="source-row">
+              <span class="source-row-label">昇腾社区官方</span>
+              <span class="source-bar"><span class="source-bar-fill official" style="width:21%"></span></span>
+              <span class="source-row-val low">21%</span>
+            </div>
+            <div class="source-row">
+              <span class="source-row-label">其他官方渠道</span>
+              <span class="source-bar"><span class="source-bar-fill alt-official" style="width:0%"></span></span>
+              <span class="source-row-val">0%</span>
+            </div>
+            <div class="source-row">
+              <span class="source-row-label">第三方教程</span>
+              <span class="source-bar"><span class="source-bar-fill third" style="width:79%"></span></span>
+              <span class="source-row-val">79%</span>
+            </div>
+            <div class="source-row">
+              <span class="source-row-label">其他来源</span>
+              <span class="source-bar"><span class="source-bar-fill other" style="width:0%"></span></span>
+              <span class="source-row-val">0%</span>
+            </div>
+          </div>
+
+          <ul class="answer-card-summary answer-card-summary--points">
+            <li>19 条 URL 中社区官方仅 4 条，第三方（CSDN / 知乎 / 博客园）占主导。</li>
+            <li>官方结果停留在 8.5α / 9.1β，未见 CANN 9.0 社区版。</li>
+          </ul>
+
+          <button type="button" class="answer-card-link" data-drawer-open="claude-search">查看检索网页列表</button>
+        </div>
+
+        <div class="answer-card answer-card--deepseek">
+          <div class="answer-card-header">
+            <h4>DeepSeek 检索 web 27 条</h4>
+          </div>
+
+          <div class="source-breakdown">
+            <div class="source-row">
+              <span class="source-row-label">昇腾社区官方</span>
+              <span class="source-bar"><span class="source-bar-fill official" style="width:33%"></span></span>
+              <span class="source-row-val low">33%</span>
+            </div>
+            <div class="source-row">
+              <span class="source-row-label">其他官方渠道</span>
+              <span class="source-bar"><span class="source-bar-fill alt-official" style="width:30%"></span></span>
+              <span class="source-row-val">30%</span>
+            </div>
+            <div class="source-row">
+              <span class="source-row-label">第三方教程</span>
+              <span class="source-bar"><span class="source-bar-fill third" style="width:11%"></span></span>
+              <span class="source-row-val">11%</span>
+            </div>
+            <div class="source-row">
+              <span class="source-row-label">其他来源</span>
+              <span class="source-bar"><span class="source-bar-fill other" style="width:26%"></span></span>
+              <span class="source-row-val">26%</span>
+            </div>
+          </div>
+
+          <ul class="answer-card-summary answer-card-summary--points">
+            <li>27 页中社区官方仅 9 条，多数来自华为开发者、华为云博客等其他渠道。</li>
+            <li>内容多为 CANN 8.x RC 版 PDF，未见 CANN 9.0。</li>
+          </ul>
+
+          <button type="button" class="answer-card-link" data-drawer-open="deepseek-search">查看检索网页列表</button>
+        </div>
+
+        <div class="answer-card answer-card--qwen">
+          <div class="answer-card-header">
+            <h4>千问 检索 web 未知</h4>
+          </div>
+
+          <div class="source-breakdown">
+            <div class="source-row">
+              <span class="source-row-label">昇腾社区官方</span>
+              <span class="source-bar"><span class="source-bar-fill official" style="width:0%"></span></span>
+              <span class="source-row-val low">0%</span>
+            </div>
+            <div class="source-row">
+              <span class="source-row-label">其他官方渠道</span>
+              <span class="source-bar"><span class="source-bar-fill alt-official" style="width:0%"></span></span>
+              <span class="source-row-val">0%</span>
+            </div>
+            <div class="source-row">
+              <span class="source-row-label">第三方教程</span>
+              <span class="source-bar"><span class="source-bar-fill third" style="width:0%"></span></span>
+              <span class="source-row-val">0%</span>
+            </div>
+            <div class="source-row">
+              <span class="source-row-label">其他来源</span>
+              <span class="source-bar"><span class="source-bar-fill other" style="width:0%"></span></span>
+              <span class="source-row-val">0%</span>
+            </div>
+          </div>
+
+          <p class="answer-card-summary">未显示检索网页链接</p>
+
+          <button type="button" class="answer-card-link" disabled title="千问对话界面未单独显示检索网页链接">查看检索网页列表</button>
+        </div>
+
+      </div>
+
+      <div class="source-type-defs">
+        <p class="source-type-defs-title">来源类型说明</p>
+        <table class="data-table">
+          <thead>
+            <tr><th>类型</th><th>判定口径</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="source-legend-dot official"></span> 昇腾社区官方</td><td><code>hiascend.com</code> — <code>/document/detail/</code>、<code>/doc_center/source/</code>、<code>/ascend-c</code> 等</td></tr>
+            <tr><td><span class="source-legend-dot alt-official"></span> 其他官方渠道</td><td>华为体系非社区域名，如 <code>developer.huawei.com</code>、<code>e.huawei.com</code></td></tr>
+            <tr><td><span class="source-legend-dot third"></span> 第三方教程</td><td>知乎、CSDN、博客园、阿里云开发者等独立教程站</td></tr>
+            <tr><td><span class="source-legend-dot other"></span> 其他来源</td><td>边缘来源，如华为云社区博客（<code>bbs.huaweicloud.com</code>）</td></tr>
+          </tbody>
+        </table>
+      </div>
+      </div>
+
+      <div class="content-unit">
+        <h3>4. 问题洞察</h3>
+        <ul>
+          <li><strong>社区官方占比偏低</strong>：Claude <strong>21%</strong>、DeepSeek <strong>33%</strong> 均未过半；千问界面未显示检索链接。</li>
+          <li><strong>非社区信源占主导</strong>：Claude 第三方 <strong>79%</strong>；DeepSeek 华为系其他渠道 <strong>56%</strong>——与「基于官方资料」约束错位。</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" id="answer-search-root-cause">
+      <h2>根因分析</h2>
+
+      <div class="content-unit">
+        <p>官方占比低的核心原因是：<strong>机器入口不清、第三方排序占优、官方渠道分散、版本信号缺失</strong>。</p>
+
+        <h3>1. 机器入口不清</h3>
+        <p>无 <code>llms.txt</code>，<code>/doc_center/</code> 被 robots 屏蔽，sitemap 只引导渲染页（详见 <a href="problems-structure-llms.html">机器发现层缺失</a>）。</p>
+        <div class="fix-suggestion">
+          <h4>修改建议</h4>
+          <p>部署 <code>llms.txt</code>，放行并优先声明 <code>/doc_center/source/</code>，让 Agent 默认抓社区机器源。</p>
+        </div>
+
+        <h3>2. 第三方排序占优</h3>
+        <p>Claude 检索池中第三方教程占 <strong>79%</strong>；Prompt 的「官方资料」约束无法直接过滤检索 URL。</p>
+        <div class="fix-suggestion">
+          <h4>修改建议</h4>
+          <p>双轨交付官方 Markdown / 源 HTML，提高官方内容的可索引性与排序权重（详见 <a href="problems-format.html#solution">格式交付</a>）。</p>
+        </div>
+
+        <h3>3. 官方渠道分散</h3>
+        <p>DeepSeek 拉取华为开发者 <strong>30%</strong>、华为云博客 <strong>26%</strong>；Agent 容易把「华为官方」泛化为社区官方。</p>
+        <div class="fix-suggestion">
+          <h4>修改建议</h4>
+          <p>将 <code>hiascend.com</code> 声明为 canonical 入口，并用 <code>source_channel</code> 区分社区官方与华为系其他渠道。</p>
+        </div>
+
+        <h3>4. 版本信号缺失</h3>
+        <p>检索结果多为 8.x、8.5 alpha、9.1 beta，<strong>未见 CANN 9.0 社区版</strong>（详见 <a href="problems-timeliness.html#timeliness-problem">版本滞后</a>）。</p>
+        <div class="fix-suggestion">
+          <h4>修改建议</h4>
+          <p>在 sitemap / <code>llms.txt</code> 中声明主推版本 900，并用页级 <code>version</code> 字段做默认过滤。</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <aside class="page-toc" id="page-toc" aria-label="本篇目录">
+    <div class="page-toc-title">本篇目录</div>
+    <nav class="page-toc-nav"><ul id="page-toc-list"></ul></nav>
+  </aside>
+</div>
+
+</div>
+
+
+
+<div class="answer-drawer" id="answer-drawer" aria-hidden="true">
+  <div class="answer-drawer-overlay" data-drawer-close></div>
+  <aside class="answer-drawer-panel" role="dialog" aria-labelledby="answer-drawer-title">
+    <header class="answer-drawer-header">
+      <h2 id="answer-drawer-title">对话详情</h2>
+      <button type="button" class="answer-drawer-close" data-drawer-close aria-label="关闭">×</button>
+    </header>
+    <div class="answer-drawer-body"></div>
+  </aside></div>
+
+
+<template data-drawer-template="claude-search" data-drawer-title="Claude AI 检索网页列表">
+  <p class="answer-card-prompt">联网检索 19 条 URL（19 个唯一地址）· 昇腾社区 21% · 第三方 79% · 完整列表见 <a href="references/官方信源感知弱/claude-检索网页.md">claude-检索网页.md</a></p>
+
+  <ul class="search-url-list">
+    <li>
+      <span class="search-url-badge third">第三方</span>
+      <a href="https://blog.csdn.net/weixin_66366070/article/details/140343119" target="_blank" rel="noopener">#1 Ascend C 算子开发学习笔记</a>
+    </li>
+    <li>
+      <span class="search-url-badge third">第三方</span>
+      <a href="https://zhuanlan.zhihu.com/p/653737107" target="_blank" rel="noopener">#2 知乎专栏文章</a>
+    </li>
+    <li>
+      <span class="search-url-badge third">第三方</span>
+      <a href="https://zhuanlan.zhihu.com/p/653497102" target="_blank" rel="noopener">#3 知乎专栏文章</a>
+    </li>
+    <li>
+      <span class="search-url-badge third">第三方</span>
+      <a href="https://news.zol.com.cn/843/8433114.html" target="_blank" rel="noopener">#4 Ascend C 保姆级教程</a>
+    </li>
+    <li>
+      <span class="search-url-badge official">昇腾社区官方</span>
+      <a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/850alpha001/opdevg/Ascendcopdevg/atlas_ascendc_10_0001.html" target="_blank" rel="noopener">#5 Ascend C 简介 · CANN 8.5.0.alpha001</a>
+    </li>
+    <li>
+      <span class="search-url-badge official">昇腾社区官方</span>
+      <a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/910beta1/index/index.html" target="_blank" rel="noopener">#6 使用导读 · CANN 9.1.0-beta.1</a>
+    </li>
+    <li>
+      <span class="search-url-badge official">昇腾社区官方</span>
+      <a href="https://www.hiascend.com/cann/ascend-c" target="_blank" rel="noopener">#7 AscendC 与 CANN 算子开发</a>
+    </li>
+    <li>
+      <span class="search-url-badge official">昇腾社区官方</span>
+      <a href="https://www.hiascend.com/document/detail/zh/canncommercial/700/operatordev/Ascendcopdevg/atlas_ascendc_10_0006.html" target="_blank" rel="noopener">#8 快速入门 · CANN 商用版 7.0.0</a>
+    </li>
+    <li>
+      <span class="search-url-badge third">第三方</span>
+      <a href="https://www.cnblogs.com/ZOMI/articles/18560677" target="_blank" rel="noopener">#9 【AI 系统】Ascend C 编程范式 · 博客园</a>
+    </li>
+    <li>
+      <span class="search-url-badge third">第三方</span>
+      <a href="https://blog.csdn.net/m0_37046057/article/details/144226382" target="_blank" rel="noopener">#10 【AI 系统】Ascend C 编程范式 · CSDN</a>
+    </li>
+    <li>
+      <span class="search-url-badge third">第三方</span>
+      <a href="https://www.cnblogs.com/rizhaojincheng/p/18606066" target="_blank" rel="noopener">#11 转载 · Ascend C 编程范式 · 博客园</a>
+    </li>
+    <li>
+      <span class="search-url-badge third">第三方</span>
+      <a href="https://zhuanlan.zhihu.com/p/687359397" target="_blank" rel="noopener">#12 知乎专栏文章</a>
+    </li>
+    <li>
+      <span class="search-url-badge third">第三方</span>
+      <a href="https://cloud.tencent.com/developer/article/2476178" target="_blank" rel="noopener">#13 转载 · Ascend C 编程范式 · 腾讯云</a>
+    </li>
+    <li>
+      <span class="search-url-badge third">第三方</span>
+      <a href="https://developer.aliyun.com/article/1644105" target="_blank" rel="noopener">#14 【AI 系统】Ascend C 语法扩展 · 阿里云</a>
+    </li>
+    <li>
+      <span class="search-url-badge third">第三方</span>
+      <a href="https://blog.csdn.net/2401_86149193/article/details/140146855" target="_blank" rel="noopener">#15 Ascend C 算子学习笔记 · CSDN</a>
+    </li>
+    <li>
+      <span class="search-url-badge third">第三方</span>
+      <a href="https://www.cnblogs.com/taixian/p/18329141" target="_blank" rel="noopener">#16 Ascend C 算子开发指南 · 博客园</a>
+    </li>
+    <li>
+      <span class="search-url-badge third">第三方</span>
+      <a href="https://blog.csdn.net/gitblog_00717/article/details/160915391" target="_blank" rel="noopener">#17 CANN/Ascend C 开发套件 · CSDN</a>
+    </li>
+    <li>
+      <span class="search-url-badge third">第三方</span>
+      <a href="https://developer.aliyun.com/article/1643821" target="_blank" rel="noopener">#18 昇腾 CANN 架构解析与 Ascend C 算子开发入门 · 阿里云</a>
+    </li>
+    <li>
+      <span class="search-url-badge third">第三方</span>
+      <a href="https://ascendai.csdn.net/693e936c0800f3458b822cce.html" target="_blank" rel="noopener">#19 昇腾 CANN 从单算子到融合优化实战 · CSDN 昇腾专区</a>
+    </li>
+  </ul>
+</template>
+
+<template data-drawer-template="deepseek-search" data-drawer-title="DeepSeek 检索网页列表">
+  <p class="answer-card-prompt">联网浏览 27 条 URL（27 个唯一地址）· 昇腾社区 33% · 华为开发者 30% · 华为云博客 26% · 百度系 11% · 完整列表见 <a href="references/官方信源感知弱/deepseek-检索网页.md">deepseek-检索网页.md</a></p>
+
+  <ul class="search-url-list">
+    <li><span class="search-url-badge official">昇腾社区官方</span><a href="https://www.hiascend.com/doc_center/source/zh/canncommercial/81RC1/developmentguide/opdevg/Ascendcopdevg/CANN%E5%95%86%E7%94%A8%E7%89%88%208.1.RC1%20Ascend%20C%E7%AE%97%E5%AD%90%E5%BC%80%E5%8F%91%E6%8C%87%E5%8D%97%2001.pdf" target="_blank" rel="noopener">#1 CANN 8.1.RC1 算子开发指南 PDF</a></li>
+    <li><span class="search-url-badge official">昇腾社区官方</span><a href="https://www.hiascend.com/doc_center/source/zh/CANNCommunityEdition/82RC1alpha002/opdevg/Ascendcopdevg/CANN%E7%A4%BE%E5%8C%BA%E7%89%88%208.2.RC1.alpha002%20Ascend%20C%E7%AE%97%E5%AD%90%E5%BC%80%E5%8F%91%E6%8C%87%E5%8D%97%2001.pdf" target="_blank" rel="noopener">#2 CANN 8.2.RC1.alpha002 算子开发指南 PDF</a></li>
+    <li><span class="search-url-badge alt-official">其他官方渠道</span><a href="https://developer.huawei.com/consumer/cn/doc/hiai-Guides/cannkit-vector-programming-0000002157683241" target="_blank" rel="noopener">#3 向量编程 · CANN Kit</a></li>
+    <li><span class="search-url-badge alt-official">其他官方渠道</span><a href="https://developer.huawei.com/consumer/cn/doc/hiai-guides/cannkit-matrix-programming-operator-0000002157683245" target="_blank" rel="noopener">#4 矩阵编程算子 · CANN Kit</a></li>
+    <li><span class="search-url-badge official">昇腾社区官方</span><a href="https://www.hiascend.com/doc_center/source/zh/CANNCommunityEdition/80RC3alpha003/devguide/opdevg/ascendcopdevg/CANN%208.0.RC3.alpha003%20Ascend%20C%E8%87%AA%E5%AE%9A%E4%B9%89%E7%AE%97%E5%AD%90%E5%BC%80%E5%8F%91%E6%8C%87%E5%8D%97%2001.pdf" target="_blank" rel="noopener">#5 CANN 8.0.RC3.alpha003 算子开发指南 PDF</a></li>
+    <li><span class="search-url-badge official">昇腾社区官方</span><a href="https://www.hiascend.com/doc_center/source/zh/canncommercial/800/developmentguide/opdevg/Ascendcopdevg/CANN%E5%95%86%E7%94%A8%E7%89%88%208.0.0%20Ascend%20C%E8%87%AA%E5%AE%9A%E4%B9%89%E7%AE%97%E5%AD%90%E5%BC%80%E5%8F%91%E6%8C%87%E5%8D%97%2001.pdf" target="_blank" rel="noopener">#6 CANN 8.0.0 自定义算子开发指南 PDF</a></li>
+    <li><span class="search-url-badge official">昇腾社区官方</span><a href="https://www.hiascend.com/doc_center/source/zh/canncommercial/80RC1/developmentguide/opdevg/Ascendcopdevg/CANN%208.0.RC1%20Ascend%20C%E8%87%AA%E5%AE%9A%E4%B9%89%E7%AE%97%E5%AD%90%E5%BC%80%E5%8F%91%E6%8C%87%E5%8D%97%2001.pdf" target="_blank" rel="noopener">#7 CANN 8.0.RC1 算子开发指南 PDF</a></li>
+    <li><span class="search-url-badge alt-official">其他官方渠道</span><a href="https://developer.huawei.com/consumer/cn/doc/hiai-Guides/cannkit-programmingapi-basic-apis-0000002300239860" target="_blank" rel="noopener">#8 编程 API 基础接口</a></li>
+    <li><span class="search-url-badge alt-official">其他官方渠道</span><a href="https://developer.huawei.com/home/forum/ascend/thread-02149210859291254016-1-1.html" target="_blank" rel="noopener">#9 昇腾论坛帖子</a></li>
+    <li><span class="search-url-badge alt-official">其他官方渠道</span><a href="https://developer.huawei.com/consumer/cn/doc/hiai-Guides/cannkit-environment-preparation-0000002157601593" target="_blank" rel="noopener">#10 环境准备 · CANN Kit</a></li>
+    <li><span class="search-url-badge unknown">其他来源</span><a href="https://bbs.huaweicloud.com/blogs/454296" target="_blank" rel="noopener">#11 华为云博客</a></li>
+    <li><span class="search-url-badge third">第三方</span><a href="https://developer.baidu.com/article/detail.html?id=6899421" target="_blank" rel="noopener">#12 百度开发者社区</a></li>
+    <li><span class="search-url-badge unknown">其他来源</span><a href="https://bbs.huaweicloud.com/blogs/467955" target="_blank" rel="noopener">#13 华为云博客</a></li>
+    <li><span class="search-url-badge official">昇腾社区官方</span><a href="https://www.hiascend.com/doc_center/source/zh/CANNCommunityEdition/80RC2alpha002/devguide/opdevg/ascendcopdevg/CANN%208.0.RC2.alpha002%20Ascend%20C%E8%87%AA%E5%AE%9A%E4%B9%89%E7%AE%97%E5%AD%90%E5%BC%80%E5%8F%91%E6%8C%87%E5%8D%97%2001.pdf" target="_blank" rel="noopener">#14 CANN 8.0.RC2.alpha002 算子开发指南 PDF</a></li>
+    <li><span class="search-url-badge official">昇腾社区官方</span><a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/81RC1alpha001/devaids/opdev/optool/atlasopdev_16_0027.html" target="_blank" rel="noopener">#15 Ascend C 算子开发辅助工具</a></li>
+    <li><span class="search-url-badge alt-official">其他官方渠道</span><a href="https://developer.huawei.com/consumer/cn/doc/hiai-guides/cannkit-operator-project-compilation-0000002122321636" target="_blank" rel="noopener">#16 算子工程编译</a></li>
+    <li><span class="search-url-badge unknown">其他来源</span><a href="https://bbs.huaweicloud.com/blogs/467112" target="_blank" rel="noopener">#17 华为云博客</a></li>
+    <li><span class="search-url-badge unknown">其他来源</span><a href="https://bbs.huaweicloud.com/blogs/469418" target="_blank" rel="noopener">#18 华为云博客</a></li>
+    <li><span class="search-url-badge official">昇腾社区官方</span><a href="https://www.hiascend.com/doc_center/source/zh/canncommercial/800/apiref/ascendcopapi/CANN%E5%95%86%E7%94%A8%E7%89%88%208.0.0%20%20Ascend%20C%E7%AE%97%E5%AD%90%E5%BC%80%E5%8F%91%E6%8E%A5%E5%8F%A3%E5%8F%82%E8%80%83%2001.pdf" target="_blank" rel="noopener">#19 CANN 8.0.0 算子开发接口参考 PDF</a></li>
+    <li><span class="search-url-badge alt-official">其他官方渠道</span><a href="https://developer.huawei.com/consumer/cn/doc/hiai-References/cannkit-matmul-usage-description-0000002158477037" target="_blank" rel="noopener">#20 MatMul 使用说明</a></li>
+    <li><span class="search-url-badge third">第三方</span><a href="https://developer.baidu.com/article/detail.html?id=5593259" target="_blank" rel="noopener">#21 百度开发者社区</a></li>
+    <li><span class="search-url-badge official">昇腾社区官方</span><a href="https://www.hiascend.com/doc_center/source/zh/canncommercial/800/developmentguide/opdevg/ascendcbestP/CANN%E5%95%86%E7%94%A8%E7%89%88%208.0.0%20Ascend%20C%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%2001.pdf" target="_blank" rel="noopener">#22 CANN 8.0.0 最佳实践 PDF</a></li>
+    <li><span class="search-url-badge unknown">其他来源</span><a href="https://bbs.huaweicloud.com/blogs/469234" target="_blank" rel="noopener">#23 华为云博客</a></li>
+    <li><span class="search-url-badge unknown">其他来源</span><a href="https://bbs.huaweicloud.com/blogs/469236" target="_blank" rel="noopener">#24 华为云博客</a></li>
+    <li><span class="search-url-badge third">第三方</span><a href="https://cloud.baidu.com/article/5317841" target="_blank" rel="noopener">#25 百度智能云文章</a></li>
+    <li><span class="search-url-badge alt-official">其他官方渠道</span><a href="https://developer.huawei.com/home/forum/ascend/thread-02162212495117620099-1-1.html" target="_blank" rel="noopener">#26 昇腾论坛 · Tiling 讨论</a></li>
+    <li><span class="search-url-badge unknown">其他来源</span><a href="https://bbs.huaweicloud.com/blogs/469426" target="_blank" rel="noopener">#27 华为云博客</a></li>
+  </ul>
+</template>
+
+<template data-drawer-template="qwen-search" data-drawer-title="千问 检索网页列表">
+  <p class="answer-card-prompt">脚注参考链接 13 条 URL（<code>[^1]</code>–<code>[^13]</code>）· 昇腾社区 54% · 其他官方 8% · 第三方 38% · 完整列表见 <a href="references/官方信源感知弱/千问-检索网页.md">千问-检索网页.md</a> · 旧版首次检索 10 条见 <a href="references/官方信源感知弱/千问-对话.md">千问-对话.md</a></p>
+
+  <ul class="search-url-list">
+    <li><span class="search-url-badge official">昇腾社区官方</span><a href="https://www.hiascend.cn/document/detail/zh/CANNCommunityEdition/83RC1/opdevg/Ascendcopdevg" target="_blank" rel="noopener">#1 [^1] Ascend C 简介 · CANN 83RC1</a></li>
+    <li><span class="search-url-badge alt-official">其他官方渠道</span><a href="https://developer.huawei.com/home/forum/ascend/thread-0239124507827469022-1-1.html" target="_blank" rel="noopener">#2 [^2] 昇腾 Ascend C 编程入门教程 · 华为论坛</a></li>
+    <li><span class="search-url-badge third">第三方</span><a href="https://www.cnblogs.com/chucz/p/20064171" target="_blank" rel="noopener">#3 [^3] Ascend C 新一代算子编程语言 · 博客园</a></li>
+    <li><span class="search-url-badge official">昇腾社区官方</span><a href="https://www.hiascend.com/zh/ascend-c" target="_blank" rel="noopener">#4 [^4] AscendC 与 CANN 算子开发</a></li>
+    <li><span class="search-url-badge official">昇腾社区官方</span><a href="https://www.hiascend.cn/document/detail/zh/CANNCommunityEdition/900beta1/opdevg/Ascendcopdevg/atlas_ascendc_best_practices_10_10017.html" target="_blank" rel="noopener">#5 [^5] 概述-SIMD 算子实现 · CANN 900beta1</a></li>
+    <li><span class="search-url-badge third">第三方</span><a href="https://m.blog.csdn.net/fjqdxq/article/details/159736161" target="_blank" rel="noopener">#6 [^6] Ascend C 核心组成 · CSDN</a></li>
+    <li><span class="search-url-badge third">第三方</span><a href="https://pickstar.blog.csdn.net/article/details/156021299" target="_blank" rel="noopener">#7 [^7] Ascend C 编程语言详解 · CSDN</a></li>
+    <li><span class="search-url-badge third">第三方</span><a href="https://developer.aliyun.com/article/1643959" target="_blank" rel="noopener">#8 [^8] Ascend C 的编程模型 · 阿里云</a></li>
+    <li><span class="search-url-badge official">昇腾社区官方</span><a href="https://www.hiascend.com/document/detail/zh/canncommercial/80RC1/developmentguide/opdevg/Ascendcopdevg/atlas_ascendc_10_0012.html" target="_blank" rel="noopener">#9 [^9] 流水编程范式 · CANN 80RC1 商用版</a></li>
+    <li><span class="search-url-badge official">昇腾社区官方</span><a href="https://www.hiascend.com/document/detail/zh/canncommercial/850/opdevg/Ascendcopdevg/atlas_ascendc_map_10_0002.html" target="_blank" rel="noopener">#10 [^10] 什么是 Ascend C · CANN 850 商用版</a></li>
+    <li><span class="search-url-badge official">昇腾社区官方</span><a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/82RC1alpha001/opdevg/Ascendcopdevg/atlas_ascendc_10_0005.html" target="_blank" rel="noopener">#11 [^11] 基于 Kernel 直调工程的算子开发 · 82RC1alpha001</a></li>
+    <li><span class="search-url-badge third">第三方</span><a href="https://cloud.tencent.com/developer/article/2606574" target="_blank" rel="noopener">#12 [^12] Ascend C 算子开发入门指南（进阶版）· 腾讯云</a></li>
+    <li><span class="search-url-badge official">昇腾社区官方</span><a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/82RC1/opdevg/ascendcbestP/atlas_ascendc_best_practices_10_0001.html" target="_blank" rel="noopener">#13 [^13] 前言-Ascend C 最佳实践 · CANN 82RC1</a></li>
+  </ul>
+</template>
+<script src="assets/js/answer-drawer.js"></script>
+
+<script>
+(function () {
+  var main = document.querySelector('.main-content');
+  var tocList = document.getElementById('page-toc-list');
+  var used = {};
+  function slugify(text) {
+    var base = (text || '').trim().toLowerCase().replace(/[^\w\u4e00-\u9fff]+/g, '-').replace(/^-+|-+$/g, '');
+    if (!base) base = 'section';
+    var slug = base, n = 2;
+    while (used[slug]) slug = base + '-' + n++;
+    used[slug] = true;
+    return slug;
+  }
+  var headings = main ? main.querySelectorAll('h2, h3') : [];
+  var tocItems = [];
+  headings.forEach(function (el) {
+    if (el.closest('.preview-drawer, .answer-drawer, template')) return;
+    var text = el.textContent.replace(/\s+/g, ' ').trim();
+    if (!text) return;
+    if (!el.id) el.id = slugify(text);
+    tocItems.push({ id: el.id, text: text, level: el.tagName === 'H3' ? 3 : 2, el: el });
+  });
+  if (tocList) {
+    tocList.innerHTML = tocItems.map(function (item) {
+      var cls = item.level === 3 ? ' class="toc-h3"' : '';
+      return '<li><a href="#' + item.id + '"' + cls + ' data-toc-link>' + item.text + '</a></li>';
+    }).join('');
+  }
+  var tocLinks = document.querySelectorAll('[data-toc-link]');
+  function setTocActive(id) {
+    tocLinks.forEach(function (a) { a.classList.toggle('active', a.getAttribute('href') === '#' + id); });
+  }
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      var visible = entries.filter(function (e) { return e.isIntersecting; })
+        .sort(function (a, b) { return a.boundingClientRect.top - b.boundingClientRect.top; });
+      if (visible.length) setTocActive(visible[0].target.id);
+    }, { rootMargin: '-20% 0px -60% 0px', threshold: [0, 0.25, 0.5] });
+    tocItems.forEach(function (item) { io.observe(item.el); });
+  }
+  function syncHash() {
+    var id = (location.hash || '').replace('#', '');
+    if (id) setTocActive(id);
+  }
+  window.addEventListener('hashchange', syncHash);
+  syncHash();
+})();
+</script>
+<script>
+(function () {
+  var sidebar = document.querySelector('.comp-sidebar');
+  if (!sidebar) return;
+  var key = 'geo-measured-2026-06-sidebar-scroll';
+  var y = null;
+  try {
+    var saved = sessionStorage.getItem(key);
+    if (saved !== null) y = parseInt(saved, 10);
+  } catch (e) {}
+  function restore() {
+    if (y === null || isNaN(y)) return;
+    sidebar.scrollTop = y;
+  }
+  restore();
+  requestAnimationFrame(restore);
+  window.addEventListener('load', restore);
+  sidebar.addEventListener('scroll', function () {
+    try { sessionStorage.setItem(key, String(sidebar.scrollTop)); } catch (e) {}
+  }, { passive: true });
+  sidebar.querySelectorAll('a[href]').forEach(function (a) {
+    a.addEventListener('click', function () {
+      try { sessionStorage.setItem(key, String(sidebar.scrollTop)); } catch (e) {}
+    });
+  });
+})();
+</script>
+</body>
+</html>
