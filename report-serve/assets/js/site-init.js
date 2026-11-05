@@ -225,8 +225,50 @@
 
   function injectExtraNav() {
     var path = (location.pathname || "").split("/").pop() || "";
+    var SURFACE_KEY = "geo-nav-surface";
+    var DESIGN_PAGES = {
+      "design-system.html": 1,
+      "design-system-section-anchor.html": 1,
+      "principles-image.html": 1,
+      "principles-media.html": 1,
+      "principles-icon-text.html": 1,
+      "principles-style-semantic.html": 1,
+      "principles-table.html": 1,
+      "principles-code.html": 1,
+      "principles-nontext.html": 1,
+      "principles-structured.html": 1,
+      "principles-hidden.html": 1,
+      "principles-tab.html": 1,
+      "principles-collapse.html": 1,
+      "principles-default-visible.html": 1,
+      "principles-mask-clear.html": 1,
+      "principles-hierarchy.html": 1,
+      "principles-structure-pattern.html": 1,
+      "principles-timeliness.html": 1,
+      "principles-date-modified.html": 1,
+      "principles-a2.html": 1,
+      "principles-link.html": 1,
+      "principles-note.html": 1,
+      "principles-status-word.html": 1,
+      "principles-hotzone.html": 1,
+      "principles-structure-align.html": 1,
+      "principles-expected.html": 1,
+      "principles-verify.html": 1,
+      "principles-outcome.html": 1
+    };
+    function currentSurface() {
+      try { return sessionStorage.getItem(SURFACE_KEY) || ""; } catch (e) { return ""; }
+    }
+    function setSurface(value) {
+      try {
+        if (value) sessionStorage.setItem(SURFACE_KEY, value);
+        else sessionStorage.removeItem(SURFACE_KEY);
+      } catch (e) {}
+    }
+    if (path === "design-system.html") setSurface("design-system");
     var extras = [
-      { href: "skills.html", label: "Skill 目录" }
+      { href: "skills.html", label: "Skill 目录" },
+      { href: "design-system.html", label: "设计系统" }
     ];
     document.querySelectorAll("nav.site-nav").forEach(function (nav) {
       nav.querySelectorAll('a[href="design-guide-image-text.html"]').forEach(function (a) {
@@ -253,6 +295,21 @@
           existing.classList.add("active");
         }
       });
+      nav.querySelectorAll("a").forEach(function (a) {
+        a.addEventListener("click", function () {
+          var href = (a.getAttribute("href") || "").split("/").pop();
+          if (href === "design-system.html") setSurface("design-system");
+          else if (href === "principles-overview.html" || href === "principles-background.html" || href === "principles-full-catalog.html") setSurface("principles");
+          else if (["index.html", "mintlify.html", "reachability.html", "community-ui.html", "skills.html"].indexOf(href) !== -1) setSurface("");
+        });
+      });
+      if (currentSurface() === "design-system" && DESIGN_PAGES[path]) {
+        nav.querySelectorAll("a").forEach(function (x) {
+          x.classList.remove("active");
+        });
+        var ds = nav.querySelector('a[href="design-system.html"]');
+        if (ds) ds.classList.add("active");
+      }
     });
   }
 

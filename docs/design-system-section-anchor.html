@@ -1,0 +1,1665 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>锚点可引用 · 设计系统 · 昇腾社区 AI 亲和原则</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+
+<style>
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid var(--color-border);
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: 100%; max-width: none; margin: 0; padding: 0 24px; box-sizing: border-box;
+    height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: var(--color-text); text-decoration: none; white-space: nowrap; margin-right: 40px;
+  }
+  .topbar .brand span { color: var(--color-primary); }
+  .topbar .site-nav { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; flex-wrap: wrap; }
+  .topbar .site-nav > a {
+    text-decoration: none; color: var(--color-text-secondary); font-size: var(--text-body); font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .topbar .site-nav > a:hover { color: var(--color-primary); background: var(--color-bg); text-decoration: none; }
+  .topbar .site-nav > a.active { color: var(--color-primary); background: var(--color-bg); font-weight: 600; }
+  .nav-dd { position: relative; z-index: 210; display: inline-flex; align-items: center; }
+  .nav-dd-trigger {
+    appearance: none; border: 0; background: transparent; cursor: pointer; font: inherit;
+    text-decoration: none; color: var(--color-text-secondary); font-size: var(--text-body); font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+    display: inline-flex; align-items: center; gap: 12px;
+  }
+  .nav-dd-trigger::after {
+    content: ""; width: 6px; height: 6px;
+    border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg); opacity: .65; margin-top: -3px; flex-shrink: 0;
+  }
+  .nav-dd-trigger:hover, .nav-dd:hover .nav-dd-trigger, .nav-dd:focus-within .nav-dd-trigger {
+    color: var(--color-primary); background: var(--color-bg);
+  }
+  .nav-dd::before { content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 10px; }
+  .nav-dd-panel {
+    position: absolute; top: calc(100% + 4px); left: 0; min-width: 148px; padding: 6px;
+    background: #fff; border: 1px solid var(--color-border); border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(25, 25, 25, 0.08);
+    opacity: 0; visibility: hidden; transform: translateY(-4px);
+    transition: opacity .15s, transform .15s, visibility .15s; z-index: 210;
+  }
+  .nav-dd:hover .nav-dd-panel, .nav-dd:focus-within .nav-dd-panel {
+    opacity: 1; visibility: visible; transform: translateY(0);
+  }
+  .nav-dd-panel a {
+    display: block; padding: 8px 12px; border-radius: 6px; text-decoration: none;
+    color: var(--color-text-secondary); font-size: 13px; font-weight: 500; line-height: 1.4;
+  }
+  .nav-dd-panel a:hover { color: var(--color-primary); background: var(--color-bg); }
+  body.inner-page .page-wrapper { min-height: 100vh; }
+
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: var(--space-stack, 16px);
+  }
+  .page-header > h1 {
+    font-family: var(--font);
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1-weight, 600);
+    line-height: var(--text-h1-lh);
+    letter-spacing: -0.02em;
+    margin: 0;
+    padding-top: var(--space-h1-pad-y, 32px);
+    padding-bottom: var(--space-h1-pad-y, 32px);
+    color: var(--color-text);
+  }
+  body.inner-page[data-page="ds-section-anchor"]:has(#module-sidebar) .main-content {
+    padding-top: var(--content-main-pad-top, 16px);
+    padding-left: 0;
+    padding-right: 0;
+  }
+  body.inner-page[data-page="ds-section-anchor"]:has(#module-sidebar) .main-content > .page-header,
+  body.inner-page[data-page="ds-section-anchor"]:has(#module-sidebar) .main-content > .section,
+  body.inner-page[data-page="ds-section-anchor"]:has(#module-sidebar) .main-content > .surface-tabs {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page[data-page="ds-section-anchor"] .main-content .section > h2 {
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    letter-spacing: -0.01em;
+    margin-top: 0;
+    margin-bottom: var(--space-stack, 16px);
+    padding-top: var(--space-h2-pad-y, 16px);
+    padding-bottom: var(--space-h2-pad-y, 16px);
+    border-bottom: 2px solid var(--color-card-border);
+    color: var(--color-text, var(--color-text));
+  }
+  body.inner-page[data-page="ds-section-anchor"] .main-content .section h3 {
+    height: auto;
+  }
+  /* H3 UI 规范（对齐设计模式页 fn-h3） */
+  h3.fn-h3 {
+    margin: 0;
+    padding-top: var(--space-h3-pad-y, 16px);
+    padding-bottom: var(--space-h3-pad-y, 16px);
+    font-size: var(--text-h3, 18px);
+    line-height: var(--text-h3-lh, 28px);
+    font-weight: var(--text-h3-weight, 650);
+    color: var(--color-text, var(--color-text));
+    letter-spacing: -0.01em;
+  }
+  body.inner-page[data-page="ds-section-anchor"] .main-content .section h4 {
+    height: auto;
+  }
+  /* H4 UI 规范（对齐设计模式页 fn-h4） */
+  h4.fn-h4 {
+    margin: 0;
+    padding-top: var(--space-h4-pad-y, 16px);
+    padding-bottom: var(--space-h4-pad-y, 16px);
+    font-size: var(--text-h4, 14px);
+    line-height: var(--text-h4-lh, 22px);
+    font-weight: var(--text-h4-weight, 650);
+    color: var(--color-text, var(--color-text));
+    letter-spacing: -0.01em;
+  }
+  h3.fn-h3 + .principle-example > h4.fn-h4,
+  h3.fn-h3 + h4.fn-h4 { margin-top: 0; }
+  h3.fn-h3:has(> .fn-h3-link),
+  h4.fn-h4:has(> .fn-h3-link) {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  h3.fn-h3 > .fn-h3-link,
+  h4.fn-h4 > .fn-h3-link {
+    margin-left: auto;
+    flex-shrink: 0;
+    font-weight: 500;
+  }
+
+  #scenarios .scene-def-table td .badge {
+    border: none;
+  }
+  .scene-def-table td .badge-optional {
+    background: var(--color-bg);
+    color: var(--color-text-secondary);
+  }
+
+  .scene-def-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--text-body);
+    line-height: 22px;
+    margin: 0 0 24px;
+    table-layout: fixed;
+  }
+  .scene-def-table th,
+  .scene-def-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: middle;
+    font-size: var(--text-body);
+    line-height: 22px;
+    font-weight: 400;
+  }
+  .scene-def-table tbody td {
+    height: 48px;
+  }
+  .scene-def-table th {
+    font-size: var(--text-auxiliary);
+    font-weight: 650;
+    color: var(--color-text-secondary);
+    background: var(--color-card-bg);
+    height: 40px;
+    box-sizing: border-box;
+  }
+  .scene-def-table .col-type { width: 18%; }
+  .scene-def-table .col-desc { width: 55%; }
+  .scene-def-table .col-place { width: 27%; }
+  #objects .scene-def-table .col-type { width: 18%; }
+  #objects .scene-def-table .col-desc { width: 82%; }
+  #scenarios .scene-def-table .col-type { width: 18%; }
+  #scenarios .scene-def-table .col-place { width: 40%; }
+  #scenarios .scene-def-table .col-desc { width: 42%; }
+
+  .fn-ex-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr auto;
+    column-gap: 16px;
+    row-gap: 0;
+    align-items: stretch;
+    margin: 16px 0 0;
+  }
+  .fn-ex-row .fn-ex {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 1 / span 3;
+    margin: 0;
+    min-width: 0;
+  }
+  .fn-ex-row .fn-ex-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .fn-ex-row .fn-ex-head .fn-ex-label { margin: 0; }
+  .fn-ex-row .fn-ex-head .fn-ex-bar {
+    display: block; margin: 0; width: 100%; align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-body {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 2 / span 2;
+    min-height: 0;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .fn-ex-row .fn-ex-mock {
+    min-height: 0; height: 100%; box-sizing: border-box;
+    border: none; border-radius: 0; align-self: stretch;
+  }
+  .fn-ex-row .fn-ex-mock pre.st-code {
+    margin: 0;
+    padding: 14px 16px;
+    background: #1e1e1e;
+    border: 1px solid #111;
+    border-radius: 0;
+    font-size: var(--text-auxiliary);
+    line-height: 18px;
+    color: #e8e8e8;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow: auto;
+    box-sizing: border-box;
+    min-height: 100%;
+  }
+  .fn-ex-row .fn-ex-foot {
+    display: flex; flex-direction: column; gap: 8px;
+    padding: 12px 14px 14px; background: #fff;
+    border-top: 1px solid var(--color-border);
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    gap: 4px;
+  }
+  .fn-ex-row .fn-ex-foot .fn-ex-list li {
+    font-size: 14px;
+    line-height: 22px;
+  }
+  .fn-ex-label {
+    display: inline-block; padding: 0 8px; border-radius: 4px;
+    font-size: var(--text-auxiliary); font-weight: 650; line-height: 20px;
+    color: #b42318; background: #fef3f2;
+  }
+  .fn-ex-label.is-good { color: #047857; background: #ecfdf5; }
+  .fn-ex-bar {
+    display: block; width: 100%; height: 3px;
+    background: #b42318; border-radius: 2px;
+  }
+  .fn-ex-bar.is-good { background: #047857; }
+  .fn-ex-list {
+    margin: 0; padding: 0 0 0 1.25em; list-style: disc;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .fn-ex-list li {
+    margin: 0; font-size: var(--text-body); line-height: 22px; color: var(--color-text);
+  }
+  .fn-ex-list strong { font-weight: 650; }
+  .st-card {
+    padding: 16px 18px 14px;
+    color: var(--color-text);
+  }
+  .st-card .st-crumb {
+    margin: 0 0 8px;
+    font-size: 13px;
+    line-height: 20px;
+    color: var(--color-primary);
+  }
+  .st-card .st-crumb-current {
+    color: var(--color-text);
+    font-weight: 650;
+  }
+  .st-card .st-crumb-muted {
+    color: #8c8c8c;
+  }
+  .st-card .st-meta {
+    margin: 8px 0 0;
+    font-size: var(--text-auxiliary);
+    line-height: 18px;
+    color: var(--color-text-secondary);
+  }
+  .st-card .st-title {
+    margin: 0;
+    font-size: 13px;
+    line-height: 20px;
+    font-weight: 650;
+  }
+  .st-card .st-nav {
+    margin: 12px 0 0;
+    font-size: 13px;
+    line-height: 20px;
+    color: var(--color-primary);
+  }
+  .st-card .st-nav.is-vague {
+    font-size: var(--text-auxiliary);
+    color: #8c8c8c;
+  }
+  .st-card .st-related {
+    margin: 12px 0 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .st-card .st-related li {
+    margin: 0;
+    font-size: 13px;
+    line-height: 20px;
+    color: var(--color-primary);
+  }
+  .st-card .st-related.is-vague li { color: #8c8c8c; font-size: var(--text-auxiliary); }
+  .st-card .st-related-label {
+    margin: 12px 0 0;
+    font-size: var(--text-auxiliary);
+    line-height: 18px;
+    color: var(--color-text-secondary);
+    font-weight: 650;
+  }
+  .ck-card { padding: 16px 18px 14px; color: var(--color-text); }
+  .an-doc { display: flex; gap: 16px; align-items: flex-start; }
+  .an-body { flex: 1; min-width: 0; }
+  .an-toc {
+    width: 112px; flex-shrink: 0;
+    padding-left: 12px; border-left: 1px solid var(--color-border);
+  }
+  .an-doc-t {
+    margin: 0 0 10px; font-size: var(--text-body); line-height: 22px;
+    font-weight: 650; color: var(--color-text);
+  }
+  .an-h {
+    margin: 0 0 4px; font-size: 13px; line-height: 20px;
+    font-weight: 650; color: var(--color-text);
+  }
+  .an-h2 {
+    font-size: 15px;
+    line-height: 22px;
+  }
+  .an-h3 {
+    font-size: 13px;
+    line-height: 20px;
+  }
+  .an-hash { margin-left: 4px; color: var(--color-primary); font-weight: 500; }
+  .an-link-ico {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin-left: 2px;
+    vertical-align: -2px;
+  }
+  #types .an-h2 { margin-top: 14px; }
+  #types .an-h3 { margin-top: 10px; }
+  #types .an-doc-t + .hd-skel-lines { margin-top: 8px; }
+  #types .an-chrome--fig > .an-h {
+    margin-bottom: 16px;
+    font-size: 14px;
+    line-height: 22px;
+  }
+  #types .an-fig {
+    margin: 0;
+    padding-bottom: 0;
+    overflow: visible;
+  }
+  #types .an-fig img {
+    display: block;
+    width: 100%;
+    max-width: 448px;
+    height: auto;
+    object-fit: contain;
+  }
+  #types .an-chrome--fig {
+    overflow: visible;
+  }
+  #types .an-fig-cap {
+    margin: 16px 0 0;
+    font-size: 12px;
+    line-height: 20px;
+    color: var(--color-text-secondary);
+  }
+  #types .an-fig-desc {
+    margin: 12px 0 0;
+    font-size: 13px;
+    line-height: 20px;
+    color: var(--color-text);
+  }
+  #types .an-fig-desc a {
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+  #types .an-fig-desc a:hover { text-decoration: underline; }
+  #types .an-anno {
+    overflow: visible;
+  }
+  #types .an-anno-row {
+    position: relative;
+    width: max-content;
+    max-width: 100%;
+  }
+  #types .an-anno-pin {
+    --anno-ink: #191919;
+    position: absolute;
+    left: calc(100% + 8px);
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    pointer-events: none;
+    color: var(--anno-ink);
+    font-size: 13px;
+    font-weight: 650;
+    line-height: 18px;
+    white-space: nowrap;
+  }
+  #types .an-anno-pin .anno-stem {
+    position: relative;
+    width: 16px;
+    height: 1.5px;
+    background: var(--anno-ink);
+    flex-shrink: 0;
+  }
+  #types .an-anno-pin .anno-stem::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--anno-ink);
+  }
+  #types .an-anno-pin .anno-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--anno-ink);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  @media (max-width: 900px) {
+    #types .an-anno-pin { display: none; }
+  }
+  .an-h--with-toast {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    max-width: 100%;
+  }
+  #anatomy .an-h--with-toast .an-toast {
+    left: auto;
+    right: 0;
+    top: calc(100% + 8px);
+    transform: none;
+  }
+  #anatomy .an-h--with-toast .an-toast::before {
+    left: 16px;
+    top: -5px;
+    transform: rotate(45deg);
+    border-left: 1px solid var(--color-border);
+    border-bottom: none;
+    border-top: 1px solid var(--color-border);
+  }
+  .an-toast {
+    position: absolute;
+    left: calc(100% + 8px);
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: var(--text-auxiliary);
+    line-height: 18px;
+    font-weight: 500;
+    color: var(--color-text);
+    background: #fff;
+    border: 1px solid var(--color-border);
+    box-shadow: 0 6px 16px rgba(25, 25, 25, 0.1);
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  .an-toast::before {
+    content: "";
+    position: absolute;
+    left: -5px;
+    top: 50%;
+    transform: translateY(-50%) rotate(45deg);
+    width: 8px;
+    height: 8px;
+    background: #fff;
+    border-left: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .fn-ex-row .fn-ex-body:has(.an-toast) {
+    overflow: visible;
+  }
+  .an-p {
+    margin: 0 0 10px; font-size: var(--text-auxiliary); line-height: 18px; color: var(--color-text-secondary);
+  }
+  .an-p:last-child { margin-bottom: 0; }
+  .an-toc-t {
+    margin: 0 0 8px; font-size: var(--text-auxiliary); line-height: 18px;
+    font-weight: 650; color: var(--color-text);
+  }
+  .an-toc ul {
+    margin: 0; padding: 0; list-style: none;
+    font-size: var(--text-auxiliary); line-height: 20px;
+  }
+  .an-toc .is-vague { color: #8c8c8c; }
+  .an-toc .is-link { color: var(--color-primary); }
+  .an-toc .is-current { font-weight: 650; color: var(--color-text); }
+  .an-hash.is-dead { color: #a3a3a3; }
+  .an-urlbar {
+    margin: 0 0 10px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    background: #f4f4f5;
+    font-size: 12px;
+    line-height: 18px;
+    color: #525252;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  .an-urlbar .hash { color: #b45309; font-weight: 650; }
+  .an-sec { padding: 8px 10px; border-radius: 4px; }
+  .an-sec.is-hit {
+    background: #fef3c7;
+    box-shadow: inset 3px 0 0 #f59e0b;
+  }
+  .an-chrome {
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
+  }
+  .an-chrome-bar {
+    height: 28px;
+    background: #fff;
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    font-size: 11px;
+    font-weight: 650;
+    color: var(--color-text-secondary);
+  }
+  .an-chrome-body { position: relative; padding: 12px; }
+  .an-chrome.is-clipped .an-h { margin-top: -14px; }
+  .an-offset-mark {
+    margin: 0 0 8px;
+    font-size: 11px;
+    line-height: 16px;
+    color: #047857;
+    font-weight: 650;
+  }
+  .an-block {
+    margin-top: 8px;
+    padding: 8px 10px;
+    border: 1px dashed var(--color-border);
+    border-radius: 6px;
+  }
+  .an-block .an-h { font-size: 12px; }
+  .principle-example + .principle-example { margin-top: var(--space-stack, 16px); }
+  .fn-h3-link {
+    margin-left: 12px;
+    font-size: var(--text-body);
+    font-weight: 500;
+    line-height: 22px;
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+  .fn-h3-link:hover { text-decoration: underline; }
+  body.inner-page[data-page="ds-section-anchor"] .main-content > .section:first-of-type > h2 {
+    margin-top: 0;
+  }
+  #definition,
+  #types,
+  #anatomy,
+  #interaction,
+  #usage {
+    margin-bottom: var(--space-stack, 16px);
+  }
+  #definition > p.page-lead,
+  #usage > p.page-lead,
+  #types .fn-h3-desc,
+  #anatomy .fn-h3-desc,
+  #interaction .fn-h3-desc,
+  #usage .fn-h3-desc {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  #definition > h2 + .page-lead,
+  #types > h2 + .principle-example,
+  #anatomy > h2 + .principle-example,
+  #interaction > h2 + .principle-example,
+  #usage > h2 + .page-lead {
+    margin-top: 0;
+  }
+  #types .principle-example > .fn-h3-desc + .an-chrome,
+  #types .principle-example > .fn-h3-desc + .an-shot,
+  #anatomy .principle-example > .fn-h3-desc + .ppt-anchor,
+  #interaction .principle-example > .fn-h3-desc + .ppt-anchor {
+    margin-top: var(--space-stack, 16px);
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .an-fig {
+    margin: 8px 0 0;
+    padding: 0;
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .an-fig img {
+    display: block;
+    width: 100%;
+    max-width: 420px;
+    height: auto;
+    object-fit: contain;
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .an-fig-cap {
+    margin: 8px 0 0;
+    font-size: 12px;
+    line-height: 20px;
+    color: var(--color-text-secondary);
+  }
+  :is(#anatomy, #interaction) .ppt-anchor--block .anchor-toc { display: none; }
+  .an-shot {
+    margin: 0;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
+  }
+  .an-shot img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  #definition > p.page-lead,
+  #usage > p.page-lead {
+    margin-bottom: var(--space-stack, 16px);
+  }
+  #definition > p.page-lead + p.page-lead,
+  #usage > p.page-lead + p.page-lead {
+    margin-top: 0;
+  }
+  #definition > p.page-lead + p.page-lead {
+    margin-bottom: 0;
+  }
+  #types .scene-def-table .col-type { width: 18%; }
+  #types .scene-def-table .col-when { width: 32%; }
+  #types .scene-def-table .col-place { width: 28%; }
+  #types .scene-def-table .col-toc { width: 22%; }
+  #types .scene-def-table tbody td { height: auto; vertical-align: top; }
+  #interaction .scene-def-table .col-state { width: 22%; }
+  #interaction .scene-def-table .col-rule { width: 78%; }
+  #interaction .scene-def-table tbody td { height: auto; vertical-align: top; }
+  .an-part {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    margin-right: 6px;
+    border-radius: 50%;
+    background: #191919;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 650;
+    line-height: 16px;
+    vertical-align: middle;
+  }
+  .an-legend {
+    margin: 12px 0 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .an-legend li {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: var(--text-body);
+    line-height: 22px;
+    color: var(--color-text);
+  }
+  .an-legend .an-part { margin: 2px 0 0; flex-shrink: 0; }
+  #usage .principle-example > h3.fn-h3 + .fn-h3-desc { margin-top: 0; }
+  #usage .principle-example { margin: 0; overflow: visible; }
+  #usage .principle-example + .principle-example {
+    margin-top: var(--space-stack, 16px);
+  }
+  #practices .principle-example > .ex-fold-panel + h4.fn-h4 {
+    margin-top: var(--space-stack, 16px);
+    padding-top: var(--space-h4-pad-y, 16px);
+  }
+  :is(#anatomy, #interaction) .ppt-anchor {
+    --anno-ink: #191919;
+    margin: 0 0 var(--space-stack, 16px);
+    overflow: visible;
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .hier-label {
+    margin: 0 0 12px;
+    padding: 0;
+    font-size: var(--text-body);
+    line-height: 22px;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .reach-file-intro {
+    margin: 0 0 16px;
+    font-size: 14px;
+    line-height: 22px;
+    color: #525252;
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .reach-file-intro p { margin: 0; }
+  :is(#anatomy, #interaction) .ppt-anchor .reach-file-intro code { font-size: 13px; }
+  :is(#anatomy, #interaction) .ppt-anchor .reach-file-intro a {
+    color: inherit;
+    overflow-wrap: anywhere;
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .llms-anno {
+    --anno-pad-left: 92px;
+    --anno-pad-right: 200px;
+    margin: 0;
+    padding: 0 var(--anno-pad-right) 0 var(--anno-pad-left);
+    display: flex;
+    flex-direction: column;
+    overflow: visible;
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .anchor-card {
+    margin: 0 0 24px;
+    background: #fff;
+    border: 1.5px solid #191919;
+    border-radius: 12px;
+    overflow: visible;
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .anchor-url {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    background: #e8e8e8;
+    border-radius: 10.5px 10.5px 0 0;
+    border-bottom: 1px solid #d4d4d4;
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .anchor-url .llms-row {
+    flex: 1;
+    min-width: 0;
+    display: block;
+    position: relative;
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .omnibox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    height: 28px;
+    padding: 0 12px;
+    background: #fff;
+    border: 1px solid #d0d0d0;
+    border-radius: 14px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .omnibox-lock {
+    flex-shrink: 0;
+    width: 12px;
+    height: 12px;
+    color: #737373;
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .omnibox-text {
+    display: flex;
+    align-items: baseline;
+    min-width: 0;
+    overflow: hidden;
+    font-family: system-ui, sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 28px;
+    color: #191919;
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .omnibox-path {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #191919;
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .omnibox-hash {
+    flex-shrink: 0;
+    margin-left: 6px;
+    color: #191919;
+    font-weight: 650;
+    background: rgba(254, 243, 199, 0.55);
+    border-bottom: 2px solid #facc15;
+    border-radius: 2px;
+    padding: 1px 3px;
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .anchor-doc {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 14px 16px 16px;
+    color: #191919;
+    font-size: 13px;
+    line-height: 20px;
+    overflow: visible;
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .anchor-body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow: visible;
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .anchor-toc {
+    position: relative;
+    width: 176px;
+    flex-shrink: 0;
+    padding-left: 12px;
+    overflow: visible;
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .anchor-toc .llms-pin--right {
+    position: absolute;
+    left: 100%;
+    top: 1px;
+    margin-left: 10px;
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .anchor-toc-t {
+    margin: 0 0 8px;
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 650;
+    color: #191919;
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .anchor-toc ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 12px;
+    line-height: 20px;
+    color: #191919;
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .anchor-toc li {
+    margin: 0;
+    padding: 3px 0 3px 10px;
+    border-left: 2px solid #d4d4d4;
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .anchor-toc li.is-sub { padding-left: 20px; }
+  :is(#anatomy, #interaction) .ppt-anchor .anchor-toc li:has(> a.is-current) {
+    border-left-color: #facc15;
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .anchor-toc a,
+  :is(#anatomy, #interaction) .ppt-anchor .anchor-toc a:hover {
+    display: block;
+    white-space: normal;
+    line-height: 18px;
+    color: #191919;
+    font-weight: inherit;
+    text-decoration: none;
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .anchor-toc a.is-current { font-weight: 650; }
+  :is(#anatomy, #interaction) .ppt-anchor .anchor-h1,
+  :is(#anatomy, #interaction) .ppt-anchor .anchor-h {
+    margin: 0;
+    font: inherit;
+    font-weight: 650;
+    color: #191919;
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .an-hash {
+    margin-left: 6px;
+    color: var(--color-primary);
+  }
+  #interaction .ppt-anchor .anchor-h.llms-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  #interaction .ppt-anchor .an-hash.is-hover {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    min-height: 24px;
+    margin-left: 8px;
+    color: #191919;
+    background: #f0f0f0;
+    border-radius: 6px;
+    box-shadow: none;
+  }
+  #interaction .ppt-anchor .an-hash.is-hover .an-link-ico {
+    width: 14px;
+    height: 14px;
+    margin: 0;
+    color: #191919;
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .anchor-sec.is-hit {
+    position: relative;
+    padding: 8px 10px;
+    margin: 0;
+    border-radius: 4px;
+    background: #fef3c7;
+    overflow: visible;
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .llms-skel {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 6px;
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .llms-skel-bar {
+    display: block;
+    height: 8px;
+    border-radius: 2px;
+    background: #e4e4e4;
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .llms-row {
+    position: relative;
+    display: block;
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .llms-pin {
+    position: absolute;
+    top: 1px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    pointer-events: none;
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .llms-pin .anno-cap {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 14px;
+    color: var(--anno-ink);
+    white-space: nowrap;
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .llms-pin .anno-name {
+    font-size: 11px;
+    font-weight: 500;
+    color: #737373;
+    line-height: 14px;
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .llms-pin--left {
+    right: 100%;
+    margin-right: 10px;
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .llms-pin--right {
+    position: relative;
+    left: auto;
+    top: -1px;
+    display: inline-flex;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .llms-pin--right .anno-cap { align-items: baseline; }
+  :is(#anatomy, #interaction) .ppt-anchor .anchor-url .llms-pin--right {
+    position: absolute;
+    left: 100%;
+    top: 1px;
+    margin-left: 10px;
+    flex-direction: row-reverse;
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .llms-pin .anno-leader {
+    position: relative;
+    width: 14px;
+    height: 1.5px;
+    background: var(--anno-ink);
+    flex-shrink: 0;
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .llms-pin .anno-tip {
+    display: none;
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .llms-pin--left .anno-leader::after,
+  :is(#anatomy, #interaction) .ppt-anchor .llms-pin--right .anno-leader::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--anno-ink);
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .llms-pin--left .anno-leader::after {
+    right: 0;
+    transform: translate(50%, -50%);
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .llms-pin--right .anno-leader::before {
+    left: 0;
+    transform: translate(-50%, -50%);
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .anno-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 18px;
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+    min-height: 18px;
+    box-sizing: border-box;
+    border-radius: 50%;
+    background: var(--anno-ink);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .llms-anno-legend {
+    list-style: none;
+    margin: 0 calc(-1 * var(--anno-pad-right)) 0 calc(-1 * var(--anno-pad-left));
+    padding: 0;
+    display: grid;
+    gap: 8px;
+    font-size: 13px;
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .llms-anno-legend li {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 14px;
+    line-height: 22px;
+    color: var(--color-text-secondary);
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .llms-anno-legend strong {
+    color: var(--color-text);
+    font-weight: 650;
+  }
+  @media (max-width: 900px) {
+    :is(#anatomy, #interaction) .ppt-anchor .llms-anno { padding: 0; }
+    :is(#anatomy, #interaction) .ppt-anchor .llms-pin { display: none; }
+  }
+  .bg-list {
+    margin: 0;
+    padding-left: 1.25em;
+    font-size: var(--text-body);
+    line-height: 22px;
+    list-style: disc;
+    color: var(--color-text-secondary);
+  }
+  #anatomy .bg-list li + li,
+  #interaction .bg-list li + li { margin-top: 16px; }
+  #anatomy ol.bg-list,
+  #interaction ol.bg-list {
+    list-style: decimal;
+    list-style-position: inside;
+    padding-left: 0;
+    margin-left: 0;
+  }
+  .file-sample {
+    margin: 0;
+    padding: 0;
+    background: #1e1e1e;
+    border: 1px solid #111;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .file-sample pre {
+    margin: 0;
+    padding: 12px 14px 14px;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: var(--text-auxiliary);
+    line-height: 20px;
+    color: #e8e8e8;
+    background: transparent;
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .file-sample pre code {
+    display: block;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    color: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    font-family: inherit;
+    white-space: inherit;
+  }
+  .file-sample .code-line-hl {
+    display: block;
+    margin: 0 -14px;
+    padding: 0 14px;
+  }
+  .file-sample .code-line-hl.is-bad { background: rgba(180, 35, 24, 0.28); }
+  .file-sample .code-line-hl.is-good { background: rgba(4, 120, 87, 0.28); }
+  .ex-card-title {
+    margin: 0;
+    padding: 0;
+    font-size: var(--text-body);
+    font-weight: 650;
+    line-height: 22px;
+    color: #191919;
+  }
+  .ex-card-pair > .ex-card-title {
+    grid-column: 1 / -1;
+    margin: 0;
+  }
+  .ex-card-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    padding: 16px;
+    align-items: stretch;
+  }
+  #ex1-md .ex-card-pair {
+    grid-template-columns: 1fr;
+  }
+  #ex1-md .ex-card-pair > .file-sample {
+    grid-column: 1 / -1;
+    margin: 0;
+  }
+  #practices .file-sample.file-sample--paper {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 0;
+    padding: 16px;
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  #practices .file-sample--paper .hier-md-sec { margin: 0; }
+  #practices .file-sample--paper .hier-md-sec code {
+    display: block;
+    margin: 0;
+    padding: 0;
+    background: none;
+    color: #191919;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 400;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+  }
+  .hd-skel-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 4px;
+  }
+  .hd-skel-line {
+    display: block;
+    height: 6px;
+    border-radius: 3px;
+    background: #e8eaed;
+  }
+  .hd-skel-line.is-w100 { width: 100%; }
+  .hd-skel-line.is-w92 { width: 92%; }
+  .hd-skel-line.is-w80 { width: 80%; }
+  .hd-skel-line.is-w72 { width: 72%; }
+  .hd-skel-line.is-w60 { width: 60%; }
+  #practices .file-sample--paper .hd-skel-lines { gap: 4px; }
+  .ex-card-pane {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .ex-card-pane .file-sample {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0;
+  }
+  .ex-card-pane .file-sample pre { flex: 1; }
+  .ex-fold-intro {
+    grid-column: 1 / -1;
+    margin: 0;
+  }
+  .ex-card-pair > .ex-card-title + .ex-fold-intro {
+    margin-top: 0;
+  }
+  .ex-fold-intro .fn-ex-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    gap: 4px;
+  }
+  .ex-fold-intro .fn-ex-list li {
+    font-size: 14px;
+    line-height: 22px;
+  }
+  .ex-fold-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: var(--space-stack, 16px) 0;
+  }
+  .ex-fold-bar + .ex-fold-panel { margin-top: var(--space-stack, 16px); }
+  .ex-fold-btn {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    padding: 4px 6px;
+    margin: 0;
+    cursor: pointer;
+    font: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 22px;
+    color: var(--color-text);
+  }
+  .ex-fold-btn img {
+    width: 20px;
+    height: 20px;
+    display: block;
+    flex-shrink: 0;
+  }
+  .ex-fold-btn img[src*="ex-fold-code.png"] { width: 22px; height: 22px; }
+  .ex-fold-btn[aria-expanded="true"] {
+    background: var(--color-primary-subtle);
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+  .ex-fold-panel { margin: var(--space-stack, 16px) 0; }
+  .ex-fold-panel > .ex-card-pair {
+    margin: 0;
+    border: none;
+    border-radius: 8px;
+    background: #fafafa;
+  }
+  .ex-card-pane-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .ex-card-pane-head .fn-ex-label { margin: 0; }
+  .ex-card-pane-head .fn-ex-bar {
+    display: block;
+    width: 100%;
+    margin: 0;
+  }
+  .af-figure {
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: none;
+    overflow-x: auto;
+    border-radius: 8px;
+  }
+  .aj {
+    width: 100%;
+    min-width: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+    color: var(--color-text);
+  }
+  .aj caption {
+    caption-side: top;
+    text-align: left;
+    font-size: var(--text-body);
+    font-weight: 650;
+    line-height: var(--text-body-lh);
+    padding: 0 0 10px;
+    color: var(--color-text);
+  }
+  .aj th,
+  .aj td {
+    border: 1px solid #e8eef5;
+    border-top: none;
+    border-left: none;
+    vertical-align: top;
+    padding: 12px 12px;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+  }
+  .aj tbody td {
+    vertical-align: middle;
+  }
+  .aj tbody tr:first-child > .aj-label,
+  .aj tbody tr:first-child > td {
+    vertical-align: top;
+  }
+  .aj thead tr:first-child > th { border-top: 1px solid #e8eef5; }
+  .aj .aj-corner,
+  .aj .aj-label {
+    width: 108px;
+    background: #f5f6f8;
+    color: var(--color-text-secondary);
+    font-weight: 650;
+    vertical-align: middle;
+    text-align: left;
+    padding: 12px 12px;
+    border-left: 1px solid #e8eef5;
+  }
+  .aj thead th.aj-corner {
+    background: #f5f6f8;
+    color: var(--color-text-secondary);
+    padding: 12px 12px;
+    border-top-left-radius: 8px;
+  }
+  .aj thead th.aj-corner .aj-stage-name {
+    color: inherit;
+  }
+  .aj thead tr:first-child > th:last-child { border-top-right-radius: 8px; }
+  .aj tbody tr:last-child .aj-label { border-bottom-left-radius: 8px; }
+  .aj tbody tr:last-child td:last-child { border-bottom-right-radius: 8px; }
+  .aj thead th {
+    background: #f5f6f8;
+    font-weight: 650;
+    text-align: left;
+    padding: 12px 12px;
+    color: var(--color-text);
+    vertical-align: middle;
+  }
+  .aj thead .aj-who {
+    display: block;
+    margin: 0 0 2px;
+    font-size: var(--text-caption);
+    color: #8c8c8c;
+    font-weight: 650;
+  }
+  .aj thead .aj-stage-name {
+    display: block;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  .aj thead .aj-pri { background: #f7fbff; }
+  .aj td.is-pri { background: #f7fbff; }
+  .aj tbody td:not(.is-pri):not(.is-mute):not(.aj-label) { background: #fff; }
+  .aj col.aj-rowhead { width: 108px; }
+  .aj .aj-file {
+    display: block;
+    margin: 0 0 6px;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  .aj td.is-mute { color: #8c8c8c; background: #f5f6f8; }
+
+  @media (max-width: 900px) {
+    .fn-ex-row {
+      grid-template-columns: 1fr;
+      grid-template-rows: none;
+    }
+    .fn-ex-row .fn-ex { display: block; grid-row: auto; }
+    .fn-ex-row .fn-ex-body {
+      display: flex; flex-direction: column; grid-row: auto;
+    }
+    .ex-card-pair { grid-template-columns: 1fr; }
+  }
+</style>
+
+</head>
+<body class="inner-page agent-entry-page" data-module="design-system" data-page="ds-section-anchor" data-no-surface-tabs>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span>AI 亲和原则</span></a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="mintlify.html">友商对照</a>
+      <a href="reachability.html">社区诊断</a>
+      <a href="principles-overview.html">亲和原则</a>
+      <a href="community-ui.html">组件亲和</a>
+      <a href="skills.html">Skill 目录</a>
+      <a href="design-system.html" class="active">设计系统</a>
+    </nav>
+  </div>
+</div>
+
+<div class="page-wrapper">
+
+  <aside id="module-sidebar"></aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <h1>锚点可引用</h1>
+    </div>
+
+    <section class="section" id="definition">
+      <h2>原则定义</h2>
+      <p class="page-lead">锚点让页面中的特定段落或内容区块能够被单独定位和引用。用户可以找到锚点入口、复制链接，并在打开链接后准确识别对应内容。</p>
+    </section>
+
+    <section class="section" id="types">
+      <h2>类型</h2>
+
+      <div class="principle-example">
+        <h3 class="fn-h3">段落锚点 <a class="fn-h3-link" href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/latest/programug/Ascendcopdevg/docs/zh/guide/programming_guide/programming_model/programming_model_overview.md" target="_blank" rel="noopener">查看示例来源</a></h3>
+        <p class="fn-h3-desc">整段被引用、从页内目录进入某一段落时使用。入口在段落标题右侧。以《编程模型概述》为例，标题旁的链接图标即段落锚点入口。</p>
+        <div class="ck-card an-chrome an-anno">
+          <p class="an-doc-t">编程模型概述</p>
+          <div class="hd-skel-lines" aria-hidden="true">
+            <span class="hd-skel-line is-w100"></span>
+            <span class="hd-skel-line is-w92"></span>
+            <span class="hd-skel-line is-w72"></span>
+          </div>
+          <p class="an-h an-h2 an-anno-row">并行执行模型：SIMD与SIMT<span class="an-hash" title="锚点入口"><svg class="an-link-ico" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M6.7 9.3a.75.75 0 0 1 0-1.06l1.94-1.94a2.5 2.5 0 0 1 3.54 3.54l-.88.88a.75.75 0 0 1-1.06-1.06l.88-.88a1 1 0 1 0-1.42-1.42L7.76 8.24A.75.75 0 0 1 6.7 9.3Zm2.6-2.6a.75.75 0 0 1 0 1.06L7.36 9.7a2.5 2.5 0 1 1-3.54-3.54l.88-.88A.75.75 0 0 1 5.76 6.34l-.88.88a1 1 0 1 0 1.42 1.42l1.94-1.94a.75.75 0 0 1 1.06 0Z"/></svg></span><span class="an-anno-pin" aria-hidden="true"><span class="anno-stem"></span><span class="anno-num">2</span><span class="anno-cap">二级锚点</span></span></p>
+          <div class="hd-skel-lines" aria-hidden="true">
+            <span class="hd-skel-line is-w100"></span>
+            <span class="hd-skel-line is-w80"></span>
+            <span class="hd-skel-line is-w60"></span>
+          </div>
+          <p class="an-h an-h3 an-anno-row">SIMD（单指令多数据流）<span class="an-hash" title="锚点入口"><svg class="an-link-ico" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M6.7 9.3a.75.75 0 0 1 0-1.06l1.94-1.94a2.5 2.5 0 0 1 3.54 3.54l-.88.88a.75.75 0 0 1-1.06-1.06l.88-.88a1 1 0 1 0-1.42-1.42L7.76 8.24A.75.75 0 0 1 6.7 9.3Zm2.6-2.6a.75.75 0 0 1 0 1.06L7.36 9.7a2.5 2.5 0 1 1-3.54-3.54l.88-.88A.75.75 0 0 1 5.76 6.34l-.88.88a1 1 0 1 0 1.42 1.42l1.94-1.94a.75.75 0 0 1 1.06 0Z"/></svg></span><span class="an-anno-pin" aria-hidden="true"><span class="anno-stem"></span><span class="anno-num">3</span><span class="anno-cap">三级锚点</span></span></p>
+          <div class="hd-skel-lines" aria-hidden="true">
+            <span class="hd-skel-line is-w92"></span>
+            <span class="hd-skel-line is-w80"></span>
+            <span class="hd-skel-line is-w60"></span>
+          </div>
+          <p class="an-h an-h3">SIMT（单指令多线程）<span class="an-hash" title="锚点入口"><svg class="an-link-ico" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M6.7 9.3a.75.75 0 0 1 0-1.06l1.94-1.94a2.5 2.5 0 0 1 3.54 3.54l-.88.88a.75.75 0 0 1-1.06-1.06l.88-.88a1 1 0 1 0-1.42-1.42L7.76 8.24A.75.75 0 0 1 6.7 9.3Zm2.6-2.6a.75.75 0 0 1 0 1.06L7.36 9.7a2.5 2.5 0 1 1-3.54-3.54l.88-.88A.75.75 0 0 1 5.76 6.34l-.88.88a1 1 0 1 0 1.42 1.42l1.94-1.94a.75.75 0 0 1 1.06 0Z"/></svg></span></p>
+          <div class="hd-skel-lines" aria-hidden="true">
+            <span class="hd-skel-line is-w92"></span>
+            <span class="hd-skel-line is-w80"></span>
+            <span class="hd-skel-line is-w60"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="principle-example">
+        <h3 class="fn-h3">内容块锚点 <a class="fn-h3-link" href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/latest/programug/Ascendcopdevg/docs/zh/guide/programming_guide/programming_model/ai_core_simd_programming/overview.md" target="_blank" rel="noopener">查看示例来源</a></h3>
+        <p class="fn-h3-desc">表格、图片、步骤块、结论卡被单独分享时使用。入口在该内容块标题右侧，默认不进目录。被引用的是图题、图与图注，图下正文不计入。</p>
+        <div class="ck-card an-chrome an-chrome--fig">
+          <p class="an-h">图2 SIMD-Reg矢量计算内存层级<span class="an-hash" title="锚点入口"><svg class="an-link-ico" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M6.7 9.3a.75.75 0 0 1 0-1.06l1.94-1.94a2.5 2.5 0 0 1 3.54 3.54l-.88.88a.75.75 0 0 1-1.06-1.06l.88-.88a1 1 0 1 0-1.42-1.42L7.76 8.24A.75.75 0 0 1 6.7 9.3Zm2.6-2.6a.75.75 0 0 1 0 1.06L7.36 9.7a2.5 2.5 0 1 1-3.54-3.54l.88-.88A.75.75 0 0 1 5.76 6.34l-.88.88a1 1 0 1 0 1.42 1.42l1.94-1.94a.75.75 0 0 1 1.06 0Z"/></svg></span></p>
+          <figure class="an-fig">
+            <img src="assets/design-system/simd-reg-memory-hierarchy.png" alt="图2 SIMD-Reg矢量计算内存层级：Local Memory 含 SIMD Cube、SIMD Vector 与 SIMT 内存，下方为 Global Memory。">
+            <figcaption class="an-fig-cap"><strong>图注</strong>　Device 侧 SIMD-Reg 矢量计算的内存层级：Local Memory 分为 SIMD Cube 内存（L0A/L0B/L0C Buffer、L1 Buffer）、SIMD Vector 内存（Register File，并与 Unified Buffer 共享）和 SIMT 内存（通用寄存器）；Global Memory 位于 Local Memory 之下，是数据搬入与搬出的全局存储。</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="anatomy">
+      <h2>元素拆解</h2>
+
+      <div class="principle-example">
+        <h3 class="fn-h3">段落锚点 <a class="fn-h3-link" href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/latest/programug/Ascendcopdevg/docs/zh/guide/programming_guide/programming_model/programming_model_overview.md" target="_blank" rel="noopener">查看示例来源</a></h3>
+        <p class="fn-h3-desc">顶部地址栏给出 URL 中的段落锚点（<code>#</code> 后的片段），正文标题旁是锚点符，右侧页内导航标出当前段落。四者同名，打开链接后落到这一段。以《编程模型概述》为例。</p>
+        <div class="reach-col reach-theme ppt-anchor">
+          <div class="llms-anno" aria-label="段落锚点标注">
+            <figure class="anchor-card">
+              <div class="anchor-url">
+                <span class="llms-row"><span class="omnibox"><svg class="omnibox-lock" viewBox="0 0 12 12" aria-hidden="true"><path fill="currentColor" d="M9.5 5.5V4a3.5 3.5 0 1 0-7 0v1.5H2A1 1 0 0 0 1 6.5v4A1 1 0 0 0 2 11.5h8a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1H9.5Zm-5.5 0V4a2 2 0 1 1 4 0v1.5H4Z"/></svg><span class="omnibox-text"><span class="omnibox-path">https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/latest/programug/Ascendcopdevg/docs/zh/guide/programming_guide/programming_model/programming_model_overview.md</span><span class="omnibox-hash">#并行执行模型：SIMD与SIMT</span></span></span><span class="llms-pin llms-pin--right" aria-hidden="true"><span class="anno-cap">URL 中的段落锚点</span><span class="anno-num">1</span><span class="anno-leader"></span><span class="anno-tip"></span></span></span>
+              </div>
+              <div class="anchor-doc">
+                <div class="anchor-body">
+                  <p class="anchor-h1">编程模型概述</p>
+                  <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:96%"></span><span class="llms-skel-bar" style="width:92%"></span><span class="llms-skel-bar" style="width:78%"></span></span>
+                  <div class="anchor-sec is-hit" id="ppt-ds-an-simd-simt">
+                    <p class="anchor-h llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">段落名<span class="anno-name">须与 # 后同名</span></span><span class="anno-num">2</span><span class="anno-leader"></span><span class="anno-tip"></span></span>并行执行模型：SIMD与SIMT<span class="an-hash" title="锚点入口"><svg class="an-link-ico" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M6.7 9.3a.75.75 0 0 1 0-1.06l1.94-1.94a2.5 2.5 0 0 1 3.54 3.54l-.88.88a.75.75 0 0 1-1.06-1.06l.88-.88a1 1 0 1 0-1.42-1.42L7.76 8.24A.75.75 0 0 1 6.7 9.3Zm2.6-2.6a.75.75 0 0 1 0 1.06L7.36 9.7a2.5 2.5 0 1 1-3.54-3.54l.88-.88A.75.75 0 0 1 5.76 6.34l-.88.88a1 1 0 1 0 1.42 1.42l1.94-1.94a.75.75 0 0 1 1.06 0Z"/></svg></span><span class="llms-pin llms-pin--right" aria-hidden="true"><span class="anno-tip"></span><span class="anno-leader"></span><span class="anno-num">3</span><span class="anno-cap">锚点符<span class="anno-name">写入 URL 的 #</span></span></span></p>
+                    <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:95%"></span><span class="llms-skel-bar" style="width:91%"></span><span class="llms-skel-bar" style="width:72%"></span></span>
+                  </div>
+                  <div class="anchor-sec" id="ppt-ds-an-simd">
+                    <p class="anchor-h">SIMD（单指令多数据流）</p>
+                    <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:92%"></span><span class="llms-skel-bar" style="width:84%"></span><span class="llms-skel-bar" style="width:70%"></span></span>
+                  </div>
+                  <div class="anchor-sec" id="ppt-ds-an-simt">
+                    <p class="anchor-h">SIMT（单指令多线程）</p>
+                    <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:94%"></span><span class="llms-skel-bar" style="width:86%"></span><span class="llms-skel-bar" style="width:68%"></span></span>
+                  </div>
+                </div>
+                <nav class="anchor-toc" aria-label="页内导航">
+                  <p class="anchor-toc-t">页内导航</p>
+                  <ul>
+                    <li class="llms-row"><a class="is-current" href="#ppt-ds-an-simd-simt" aria-current="location">并行执行模型：SIMD与SIMT</a><span class="llms-pin llms-pin--right" aria-hidden="true"><span class="anno-tip"></span><span class="anno-leader"></span><span class="anno-num">4</span><span class="anno-cap">页内导航<span class="anno-name">当前项与段落名同名</span></span></span></li>
+                    <li class="is-sub"><a href="#ppt-ds-an-simd">SIMD（单指令多数据流）</a></li>
+                    <li class="is-sub"><a href="#ppt-ds-an-simt">SIMT（单指令多线程）</a></li>
+                  </ul>
+                </nav>
+              </div>
+            </figure>
+            <ol class="llms-anno-legend">
+              <li><span class="anno-num">1</span><span><strong>URL 中的段落锚点</strong>　地址栏 <code>#</code> 后的「并行执行模型：SIMD与SIMT」，与该段标题同名，打开后落到这一段。</span></li>
+              <li><span class="anno-num">2</span><span><strong>段落名</strong>　正文标题「并行执行模型：SIMD与SIMT」，须与地址栏 <code>#</code> 后同名。</span></li>
+              <li><span class="anno-num">3</span><span><strong>锚点符</strong>　标题旁的链接图标，点击后把段落名写入 URL 的 <code>#</code>。</span></li>
+              <li><span class="anno-num">4</span><span><strong>页内导航</strong>　当前项与段落名同名，打开带 <code>#</code> 的地址后标出停在哪一段。</span></li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <div class="principle-example">
+        <h3 class="fn-h3">内容块锚点 <a class="fn-h3-link" href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/latest/programug/Ascendcopdevg/docs/zh/guide/programming_guide/programming_model/ai_core_simd_programming/overview.md" target="_blank" rel="noopener">查看示例来源</a></h3>
+        <p class="fn-h3-desc">顶部地址栏给出 URL 中的内容块锚点（<code>#</code> 后的片段）；入口在内容块标题旁；不进页内导航。被引用的是图题、图与图注。</p>
+        <div class="reach-col reach-theme ppt-anchor ppt-anchor--block">
+          <div class="llms-anno" aria-label="内容块锚点标注">
+            <figure class="anchor-card">
+              <div class="anchor-url">
+                <span class="llms-row"><span class="omnibox"><svg class="omnibox-lock" viewBox="0 0 12 12" aria-hidden="true"><path fill="currentColor" d="M9.5 5.5V4a3.5 3.5 0 1 0-7 0v1.5H2A1 1 0 0 0 1 6.5v4A1 1 0 0 0 2 11.5h8a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1H9.5Zm-5.5 0V4a2 2 0 1 1 4 0v1.5H4Z"/></svg><span class="omnibox-text"><span class="omnibox-path">https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/latest/programug/Ascendcopdevg/docs/zh/guide/programming_guide/programming_model/ai_core_simd_programming/overview.md</span><span class="omnibox-hash">#图2 SIMD-Reg矢量计算内存层级</span></span></span><span class="llms-pin llms-pin--right" aria-hidden="true"><span class="anno-cap">URL 中的内容块锚点</span><span class="anno-num">1</span><span class="anno-leader"></span><span class="anno-tip"></span></span></span>
+              </div>
+              <div class="anchor-doc">
+                <div class="anchor-body">
+                    <p class="anchor-h llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">块名<span class="anno-name">须与 # 后同名</span></span><span class="anno-num">2</span><span class="anno-leader"></span><span class="anno-tip"></span></span>图2 SIMD-Reg矢量计算内存层级<span class="an-hash" title="锚点入口"><svg class="an-link-ico" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M6.7 9.3a.75.75 0 0 1 0-1.06l1.94-1.94a2.5 2.5 0 0 1 3.54 3.54l-.88.88a.75.75 0 0 1-1.06-1.06l.88-.88a1 1 0 1 0-1.42-1.42L7.76 8.24A.75.75 0 0 1 6.7 9.3Zm2.6-2.6a.75.75 0 0 1 0 1.06L7.36 9.7a2.5 2.5 0 1 1-3.54-3.54l.88-.88A.75.75 0 0 1 5.76 6.34l-.88.88a1 1 0 1 0 1.42 1.42l1.94-1.94a.75.75 0 0 1 1.06 0Z"/></svg></span><span class="llms-pin llms-pin--right" aria-hidden="true"><span class="anno-tip"></span><span class="anno-leader"></span><span class="anno-num">3</span><span class="anno-cap">锚点符<span class="anno-name">写入 URL 的 #</span></span></span></p>
+                  <figure class="an-fig">
+                    <img src="assets/design-system/simd-reg-memory-hierarchy.png" alt="图2 SIMD-Reg矢量计算内存层级：Local Memory 含 SIMD Cube、SIMD Vector 与 SIMT 内存，下方为 Global Memory。">
+                    <figcaption class="an-fig-cap"><strong>图注</strong>　Device 侧 SIMD-Reg 矢量计算的内存层级：Local Memory 分为 SIMD Cube 内存（L0A/L0B/L0C Buffer、L1 Buffer）、SIMD Vector 内存（Register File，并与 Unified Buffer 共享）和 SIMT 内存（通用寄存器）；Global Memory 位于 Local Memory 之下，是数据搬入与搬出的全局存储。</figcaption>
+                  </figure>
+                </div>
+              </div>
+            </figure>
+            <ol class="llms-anno-legend">
+              <li><span class="anno-num">1</span><span><strong>URL 中的内容块锚点</strong>　地址栏 <code>#</code> 后的「图2 SIMD-Reg矢量计算内存层级」，与图题同名，打开后落到这一块。</span></li>
+              <li><span class="anno-num">2</span><span><strong>块名</strong>　内容块标题「图2 SIMD-Reg矢量计算内存层级」，须与地址栏 <code>#</code> 后同名。</span></li>
+              <li><span class="anno-num">3</span><span><strong>锚点符</strong>　块标题旁的链接图标，点击后把块名写入 URL 的 <code>#</code>。图与图注随图题一并被引用，不进页内导航。</span></li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="interaction">
+      <h2>交互规则</h2>
+
+      <div class="principle-example">
+        <h3 class="fn-h3">默认</h3>
+        <p class="fn-h3-desc">链接图标始终可见，不靠悬停才出现；颜色与正文可区分，但不抢过标题。</p>
+        <div class="reach-col reach-theme ppt-anchor">
+          <div class="llms-anno" aria-label="默认状态">
+            <figure class="anchor-card">
+              <div class="anchor-doc">
+                <div class="anchor-body">
+                  <p class="anchor-h1">编程模型概述</p>
+                  <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:96%"></span><span class="llms-skel-bar" style="width:92%"></span><span class="llms-skel-bar" style="width:78%"></span></span>
+                  <div class="anchor-sec" id="ppt-ix-def-h2">
+                    <p class="anchor-h llms-row">并行执行模型：SIMD与SIMT<span class="an-hash" title="锚点入口"><svg class="an-link-ico" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M6.7 9.3a.75.75 0 0 1 0-1.06l1.94-1.94a2.5 2.5 0 0 1 3.54 3.54l-.88.88a.75.75 0 0 1-1.06-1.06l.88-.88a1 1 0 1 0-1.42-1.42L7.76 8.24A.75.75 0 0 1 6.7 9.3Zm2.6-2.6a.75.75 0 0 1 0 1.06L7.36 9.7a2.5 2.5 0 1 1-3.54-3.54l.88-.88A.75.75 0 0 1 5.76 6.34l-.88.88a1 1 0 1 0 1.42 1.42l1.94-1.94a.75.75 0 0 1 1.06 0Z"/></svg></span><span class="llms-pin llms-pin--right" aria-hidden="true"><span class="anno-tip"></span><span class="anno-leader"></span><span class="anno-num">1</span><span class="anno-cap">锚点符<span class="anno-name">始终可见</span></span></span></p>
+                    <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:95%"></span><span class="llms-skel-bar" style="width:91%"></span><span class="llms-skel-bar" style="width:72%"></span></span>
+                  </div>
+                  <div class="anchor-sec">
+                    <p class="anchor-h">SIMD（单指令多数据流）<span class="an-hash" title="锚点入口"><svg class="an-link-ico" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M6.7 9.3a.75.75 0 0 1 0-1.06l1.94-1.94a2.5 2.5 0 0 1 3.54 3.54l-.88.88a.75.75 0 0 1-1.06-1.06l.88-.88a1 1 0 1 0-1.42-1.42L7.76 8.24A.75.75 0 0 1 6.7 9.3Zm2.6-2.6a.75.75 0 0 1 0 1.06L7.36 9.7a2.5 2.5 0 1 1-3.54-3.54l.88-.88A.75.75 0 0 1 5.76 6.34l-.88.88a1 1 0 1 0 1.42 1.42l1.94-1.94a.75.75 0 0 1 1.06 0Z"/></svg></span></p>
+                    <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:92%"></span><span class="llms-skel-bar" style="width:84%"></span><span class="llms-skel-bar" style="width:70%"></span></span>
+                  </div>
+                  <div class="anchor-sec">
+                    <p class="anchor-h">SIMT（单指令多线程）<span class="an-hash" title="锚点入口"><svg class="an-link-ico" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M6.7 9.3a.75.75 0 0 1 0-1.06l1.94-1.94a2.5 2.5 0 0 1 3.54 3.54l-.88.88a.75.75 0 0 1-1.06-1.06l.88-.88a1 1 0 1 0-1.42-1.42L7.76 8.24A.75.75 0 0 1 6.7 9.3Zm2.6-2.6a.75.75 0 0 1 0 1.06L7.36 9.7a2.5 2.5 0 1 1-3.54-3.54l.88-.88A.75.75 0 0 1 5.76 6.34l-.88.88a1 1 0 1 0 1.42 1.42l1.94-1.94a.75.75 0 0 1 1.06 0Z"/></svg></span></p>
+                    <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:94%"></span><span class="llms-skel-bar" style="width:86%"></span><span class="llms-skel-bar" style="width:68%"></span></span>
+                  </div>
+                </div>
+                <nav class="anchor-toc" aria-label="页内导航">
+                  <p class="anchor-toc-t">页内导航</p>
+                  <ul>
+                    <li><a href="#ppt-ix-def-h2">并行执行模型：SIMD与SIMT</a></li>
+                    <li class="is-sub"><a href="#ppt-ix-def-h2">SIMD（单指令多数据流）</a></li>
+                    <li class="is-sub"><a href="#ppt-ix-def-h2">SIMT（单指令多线程）</a></li>
+                  </ul>
+                </nav>
+              </div>
+            </figure>
+          </div>
+        </div>
+      </div>
+
+      <div class="principle-example">
+        <h3 class="fn-h3">悬停 / 聚焦</h3>
+        <p class="fn-h3-desc">悬停时入口变为灰色圆角底；旁侧气泡提示「复制链接」。</p>
+        <div class="reach-col reach-theme ppt-anchor">
+          <div class="llms-anno" aria-label="悬停状态">
+            <figure class="anchor-card">
+              <div class="anchor-doc">
+                <div class="anchor-body">
+                  <p class="anchor-h1">编程模型概述</p>
+                  <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:96%"></span><span class="llms-skel-bar" style="width:92%"></span><span class="llms-skel-bar" style="width:78%"></span></span>
+                  <div class="anchor-sec" id="ppt-ix-hov-h2">
+                    <p class="anchor-h llms-row">并行执行模型：SIMD与SIMT<span class="an-hash is-hover" title="复制链接"><svg class="an-link-ico" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M6.7 9.3a.75.75 0 0 1 0-1.06l1.94-1.94a2.5 2.5 0 0 1 3.54 3.54l-.88.88a.75.75 0 0 1-1.06-1.06l.88-.88a1 1 0 1 0-1.42-1.42L7.76 8.24A.75.75 0 0 1 6.7 9.3Zm2.6-2.6a.75.75 0 0 1 0 1.06L7.36 9.7a2.5 2.5 0 1 1-3.54-3.54l.88-.88A.75.75 0 0 1 5.76 6.34l-.88.88a1 1 0 1 0 1.42 1.42l1.94-1.94a.75.75 0 0 1 1.06 0Z"/></svg><span class="an-toast" role="tooltip">复制链接</span></span></p>
+                    <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:95%"></span><span class="llms-skel-bar" style="width:91%"></span><span class="llms-skel-bar" style="width:72%"></span></span>
+                  </div>
+                  <div class="anchor-sec">
+                    <p class="anchor-h">SIMD（单指令多数据流）<span class="an-hash" title="锚点入口"><svg class="an-link-ico" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M6.7 9.3a.75.75 0 0 1 0-1.06l1.94-1.94a2.5 2.5 0 0 1 3.54 3.54l-.88.88a.75.75 0 0 1-1.06-1.06l.88-.88a1 1 0 1 0-1.42-1.42L7.76 8.24A.75.75 0 0 1 6.7 9.3Zm2.6-2.6a.75.75 0 0 1 0 1.06L7.36 9.7a2.5 2.5 0 1 1-3.54-3.54l.88-.88A.75.75 0 0 1 5.76 6.34l-.88.88a1 1 0 1 0 1.42 1.42l1.94-1.94a.75.75 0 0 1 1.06 0Z"/></svg></span></p>
+                    <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:92%"></span><span class="llms-skel-bar" style="width:84%"></span><span class="llms-skel-bar" style="width:70%"></span></span>
+                  </div>
+                  <div class="anchor-sec">
+                    <p class="anchor-h">SIMT（单指令多线程）<span class="an-hash" title="锚点入口"><svg class="an-link-ico" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M6.7 9.3a.75.75 0 0 1 0-1.06l1.94-1.94a2.5 2.5 0 0 1 3.54 3.54l-.88.88a.75.75 0 0 1-1.06-1.06l.88-.88a1 1 0 1 0-1.42-1.42L7.76 8.24A.75.75 0 0 1 6.7 9.3Zm2.6-2.6a.75.75 0 0 1 0 1.06L7.36 9.7a2.5 2.5 0 1 1-3.54-3.54l.88-.88A.75.75 0 0 1 5.76 6.34l-.88.88a1 1 0 1 0 1.42 1.42l1.94-1.94a.75.75 0 0 1 1.06 0Z"/></svg></span></p>
+                    <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:94%"></span><span class="llms-skel-bar" style="width:86%"></span><span class="llms-skel-bar" style="width:68%"></span></span>
+                  </div>
+                </div>
+                <nav class="anchor-toc" aria-label="页内导航">
+                  <p class="anchor-toc-t">页内导航</p>
+                  <ul>
+                    <li><a href="#ppt-ix-hov-h2">并行执行模型：SIMD与SIMT</a></li>
+                    <li class="is-sub"><a href="#ppt-ix-hov-h2">SIMD（单指令多数据流）</a></li>
+                    <li class="is-sub"><a href="#ppt-ix-hov-h2">SIMT（单指令多线程）</a></li>
+                  </ul>
+                </nav>
+              </div>
+            </figure>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="usage">
+      <h2>如何使用</h2>
+      <p class="page-lead">锚点可引用让页面中的特定段落或内容区块能够被单独定位和引用。用户可以找到锚点入口、复制链接，并在打开链接后准确识别对应内容。下面按三种用法说明。</p>
+
+      <div class="principle-example">
+        <h3 class="fn-h3">复制段落或内容块链接</h3>
+        <p class="fn-h3-desc">用户要分享某一段落或某一张表时，在标题右侧找到始终可见的链接图标。点击后复制含 <code>#</code> 的完整 URL，并用「已复制链接」确认成功。被引用的对象是这一段或这一块，而不是整页。</p>
+      </div>
+
+      <div class="principle-example">
+        <h3 class="fn-h3">从目录或外链落到段落</h3>
+        <p class="fn-h3-desc">用户从页内导航或他人分享的链接打开带 <code>#</code> 的地址。页面滚到对应段落，标题与地址栏 <code>#</code> 后同名；目标给出短暂落点高亮，页内导航标出当前项。打开链接后能够认出停在哪一段。</p>
+      </div>
+
+      <div class="principle-example">
+        <h3 class="fn-h3">从图题或表题落到内容块</h3>
+        <p class="fn-h3-desc">图、表、步骤块不进入页内导航。用户要单独转发其中一块时，点内容块标题旁的链接图标，复制带 <code>#</code> 的地址；粘贴打开后页面滚到图题（或表题），图与图注随图题一并露出。页内导航只列段落：点目录项落到对应段落标题，不会落到这张图。图下正文不计入引用范围。入口、复制与 URL 规则与段落锚点相同。</p>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js?v=20261105a"></script>
+<script src="assets/js/module-sidebar.js?v=20261105a"></script>
+</body>
+</html>

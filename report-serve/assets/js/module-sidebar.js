@@ -91,11 +91,82 @@
       { group: null, id: "llms-parse-book", href: "principles-llms-parse-book.html", label: "分册 llms 解析",
         pageIds: ["llms-parse-book", "llms-parse-mintlify-docs", "llms-parse-nvidia-docs", "llms-parse-nvidia-cuda"] },
       { group: null, id: "llms-parse-nvidia-path-sample", href: "principles-llms-parse-nvidia-path-sample.html", label: "材料准备" }
+    ],
+    "design-system": [
+      {
+        group: "可达", id: "ds-section-anchor", href: "design-system-section-anchor.html", label: "锚点",
+        pageIds: ["ds-section-anchor"]
+      },
+      {
+        group: "可读", id: "carrier", href: "principles-image.html", label: "载体内容可转写",
+        pageIds: ["carrier", "nontext", "image", "icon-text", "style-semantic", "media", "structured", "table", "code"],
+        children: [
+          { id: "image", href: "principles-image.html", label: "图片内容可转写" },
+          { id: "media", href: "principles-media.html", label: "音视频内容可转写" },
+          { id: "icon-text", href: "principles-icon-text.html", label: "图标含义可读" },
+          { id: "style-semantic", href: "principles-style-semantic.html", label: "颜色含义可读" },
+          { id: "table", href: "principles-table.html", label: "表格结构可读" },
+          { id: "code", href: "principles-code.html", label: "代码块语义可读" }
+        ]
+      },
+      {
+        group: null, id: "interactive", href: "principles-hidden.html", label: "交互内容可抓取",
+        pageIds: ["interactive", "hidden", "tab", "collapse", "default-visible", "mask-clear"],
+        children: [
+          { id: "hidden", href: "principles-hidden.html", label: "关键正文不默认隐藏",
+            pageIds: ["hidden", "tab", "collapse", "default-visible", "mask-clear"] }
+        ]
+      },
+      {
+        group: "可理解", id: "doc-structure", href: "principles-hierarchy.html", label: "内容结构可识别",
+        pageIds: ["doc-structure", "hierarchy", "structure-pattern"],
+        children: [
+          { id: "hierarchy", href: "principles-hierarchy.html", label: "标题层级可识别" },
+          { id: "structure-pattern", href: "principles-structure-pattern.html", label: "页内结构模式化" }
+        ]
+      },
+      {
+        group: null, id: "lifecycle", href: "principles-timeliness.html", label: "必要信息完整",
+        pageIds: ["lifecycle", "timeliness", "date-modified", "a2"],
+        children: [
+          { id: "timeliness", href: "principles-timeliness.html", label: "版本与时效信息可识别" }
+        ]
+      },
+      {
+        group: null, id: "meaning", href: "principles-link.html", label: "内容含义明确",
+        pageIds: ["meaning", "status-word", "note", "link"],
+        children: [
+          { id: "link", href: "principles-link.html", label: "链接目标可识别" }
+        ]
+      },
+      { group: null, id: "structure-align", href: "principles-structure-align.html", label: "全站规范一致性" },
+      {
+        group: "可验证", id: "outcome", href: "principles-expected.html", label: "任务结果可确认",
+        pageIds: ["outcome", "verify", "expected"]
+      }
     ]
   };
 
   var module = document.body.getAttribute("data-module");
   var page = document.body.getAttribute("data-page");
+  var SURFACE_KEY = "geo-nav-surface";
+  var surface = "";
+  try { surface = sessionStorage.getItem(SURFACE_KEY) || ""; } catch (e) {}
+  function collectIds(list) {
+    var ids = {};
+    (list || []).forEach(function (item) {
+      ids[item.id] = true;
+      (item.pageIds || []).forEach(function (id) { ids[id] = true; });
+      (item.children || []).forEach(function (ch) {
+        ids[ch.id] = true;
+        (ch.pageIds || []).forEach(function (id) { ids[id] = true; });
+      });
+    });
+    return ids;
+  }
+  if (module === "principles" && surface === "design-system" && collectIds(NAV["design-system"])[page]) {
+    module = "design-system";
+  }
   var items = NAV[module];
   var aside = document.getElementById("module-sidebar");
   if (!aside) return;
@@ -111,7 +182,7 @@
     }
   });
 
-  var STORE_KEY = "aff-nav-open";
+  var STORE_KEY = module === "design-system" ? "ds-nav-open" : "aff-nav-open";
   var openMap = {};
   try {
     openMap = JSON.parse(sessionStorage.getItem(STORE_KEY) || "{}") || {};
@@ -250,6 +321,19 @@
     html += "<li><a href=\"principles-overview.html\"" + (page === "overview" ? " class=\"active\"" : "") + ">设计原则</a></li>";
     html += "<li><a href=\"principles-full-catalog.html\"" + (page === "full-catalog" ? " class=\"active\"" : "") + ">全量亲和原则</a></li>";
     html += "</ul>";
+  } else if (module === "design-system") {
+    html += "<ul class=\"sidebar-nav sidebar-phase-nav sidebar-module-title\">";
+    html += "<li class=\"nav-group-label nav-group-label--toggle\">";
+    html += "<span class=\"nav-group-label-text\">设计系统</span>";
+    html += "<span class=\"nav-title-actions\">";
+    html += "<button type=\"button\" class=\"nav-expand-all\" aria-expanded=\"false\" aria-label=\"展开全部一级菜单\" title=\"展开/收起全部\">";
+    html += "<img class=\"nav-expand-all-icon nav-expand-all-icon--expand\" src=\"assets/icons/nav-expand-all.png\" width=\"14\" height=\"14\" alt=\"\" aria-hidden=\"true\">";
+    html += "<img class=\"nav-expand-all-icon nav-expand-all-icon--collapse\" src=\"assets/icons/nav-collapse-all.png\" width=\"14\" height=\"14\" alt=\"\" aria-hidden=\"true\">";
+    html += "</button>";
+    html += "</span>";
+    html += "</li>";
+    html += "<li><a href=\"design-system.html\"" + (page === "home" ? " class=\"active\"" : "") + ">设计参照</a></li>";
+    html += "</ul>";
   } else if (module === "problems") {
     html += "<ul class=\"sidebar-nav sidebar-phase-nav sidebar-module-title\">";
     html += "<li class=\"nav-group-label\">内容载体实测</li>";
@@ -333,17 +417,6 @@
       return;
     }
 
-    var option = e.target.closest(".nav-settings-option");
-    if (option) {
-      e.preventDefault();
-      e.stopPropagation();
-      var scene = option.getAttribute("data-scene") || "all";
-      writeScene(scene);
-      applyScene(scene);
-      setSettingsOpen(false);
-      return;
-    }
-
     var settings = e.target.closest(".nav-settings");
     if (settings) {
       e.preventDefault();
@@ -400,12 +473,15 @@
 
     var a = e.target.closest("a[href]");
     if (!a || a.getAttribute("href").charAt(0) === "#") return;
+    if (module === "design-system") {
+      try { sessionStorage.setItem(SURFACE_KEY, "design-system"); } catch (errDs) {}
+    }
     try {
       sessionStorage.setItem("aff-sidebar-scroll", String(aside.scrollTop));
     } catch (err2) {}
   });
 
-  if (module === "principles") {
+  if (module === "principles" || module === "design-system") {
     document.documentElement.style.scrollBehavior = "auto";
     if ("scrollRestoration" in history) history.scrollRestoration = "manual";
     window.scrollTo(0, 0);
@@ -414,12 +490,13 @@
       if (saved != null) aside.scrollTop = Number(saved) || 0;
     } catch (err) {}
     syncExpandAllBtn();
-    applyScene(readScene());
-    document.addEventListener("click", function (ev) {
-      if (!ev.target.closest(".nav-settings-wrap")) setSettingsOpen(false);
-    });
-    document.addEventListener("keydown", function (ev) {
-      if (ev.key === "Escape") setSettingsOpen(false);
-    });
+    if (module === "principles") {
+      document.addEventListener("click", function (ev) {
+        if (!ev.target.closest(".nav-settings-wrap")) setSettingsOpen(false);
+      });
+      document.addEventListener("keydown", function (ev) {
+        if (ev.key === "Escape") setSettingsOpen(false);
+      });
+    }
   }
 })();
