@@ -98,10 +98,11 @@
         pageIds: ["ds-section-anchor"]
       },
       {
-        group: "可读", id: "carrier", href: "principles-image.html", label: "载体内容可转写",
-        pageIds: ["carrier", "nontext", "image", "icon-text", "style-semantic", "media", "structured", "table", "code"],
+        group: "可读", id: "ds-carrier", href: "design-system-carousel.html", label: "载体内容可转写",
+        pageIds: ["ds-carrier", "ds-carousel", "ds-image", "nontext", "icon-text", "style-semantic", "media", "structured", "table", "code"],
         children: [
-          { id: "image", href: "principles-image.html", label: "图片内容可转写" },
+          { id: "ds-carousel", href: "design-system-carousel.html", label: "轮播" },
+          { id: "ds-image", href: "design-system-image.html", label: "图片" },
           { id: "media", href: "principles-media.html", label: "音视频内容可转写" },
           { id: "icon-text", href: "principles-icon-text.html", label: "图标含义可读" },
           { id: "style-semantic", href: "principles-style-semantic.html", label: "颜色含义可读" },

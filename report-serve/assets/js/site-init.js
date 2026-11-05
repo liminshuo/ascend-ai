@@ -229,7 +229,8 @@
     var DESIGN_PAGES = {
       "design-system.html": 1,
       "design-system-section-anchor.html": 1,
-      "principles-image.html": 1,
+      "design-system-image.html": 1,
+      "design-system-carousel.html": 1,
       "principles-media.html": 1,
       "principles-icon-text.html": 1,
       "principles-style-semantic.html": 1,

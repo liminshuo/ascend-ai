@@ -84,6 +84,7 @@
   }
   body.inner-page[data-page="ds-section-anchor"]:has(#module-sidebar) .main-content {
     padding-top: var(--content-main-pad-top, 16px);
+    padding-bottom: 32px;
     padding-left: 0;
     padding-right: 0;
   }
@@ -105,8 +106,8 @@
     margin-top: 0;
     margin-bottom: var(--space-stack, 16px);
     padding-top: var(--space-h2-pad-y, 16px);
-    padding-bottom: var(--space-h2-pad-y, 16px);
-    border-bottom: 2px solid var(--color-card-border);
+    padding-bottom: 0 !important;
+    border-bottom: none;
     color: var(--color-text, var(--color-text));
   }
   body.inner-page[data-page="ds-section-anchor"] .main-content .section h3 {
@@ -613,12 +614,8 @@
   body.inner-page[data-page="ds-section-anchor"] .main-content > .section:first-of-type > h2 {
     margin-top: 0;
   }
-  #definition,
-  #types,
-  #anatomy,
-  #interaction,
-  #usage {
-    margin-bottom: var(--space-stack, 16px);
+  body.inner-page[data-page="ds-section-anchor"] .main-content > .section {
+    margin-bottom: 32px !important;
   }
   #definition > p.page-lead,
   #usage > p.page-lead,
@@ -725,9 +722,9 @@
     color: var(--color-text);
   }
   .an-legend .an-part { margin: 2px 0 0; flex-shrink: 0; }
-  #usage .principle-example > h3.fn-h3 + .fn-h3-desc { margin-top: 0; }
-  #usage .principle-example { margin: 0; overflow: visible; }
-  #usage .principle-example + .principle-example {
+  :is(#interaction, #usage) .principle-example > h3.fn-h3 + .fn-h3-desc { margin-top: 0; }
+  :is(#interaction, #usage) .principle-example { margin: 0; overflow: visible; }
+  :is(#interaction, #usage) .principle-example + .principle-example {
     margin-top: var(--space-stack, 16px);
   }
   #practices .principle-example > .ex-fold-panel + h4.fn-h4 {
@@ -771,8 +768,8 @@
   :is(#anatomy, #interaction) .ppt-anchor .anchor-card {
     margin: 0 0 24px;
     background: #fff;
-    border: 1.5px solid #191919;
-    border-radius: 12px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
     overflow: visible;
   }
   :is(#anatomy, #interaction) .ppt-anchor .anchor-url {
@@ -782,7 +779,7 @@
     gap: 8px;
     padding: 8px 10px;
     background: #e8e8e8;
-    border-radius: 10.5px 10.5px 0 0;
+    border-radius: 7px 7px 0 0;
     border-bottom: 1px solid #d4d4d4;
   }
   :is(#anatomy, #interaction) .ppt-anchor .anchor-url .llms-row {
@@ -1063,7 +1060,7 @@
     gap: 8px;
     font-size: 13px;
   }
-  :is(#anatomy, #interaction) .ppt-anchor .llms-anno-legend li {
+  :is(#anatomy, #interaction) .ppt-anchor .llms-anno-legend > li {
     display: flex;
     align-items: flex-start;
     gap: 8px;
@@ -1071,9 +1068,19 @@
     line-height: 22px;
     color: var(--color-text-secondary);
   }
+  :is(#anatomy, #interaction) .ppt-anchor .llms-anno-legend > li > span:last-child {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+  }
   :is(#anatomy, #interaction) .ppt-anchor .llms-anno-legend strong {
+    display: block;
     color: var(--color-text);
     font-weight: 650;
+  }
+  :is(#anatomy, #interaction) .ppt-anchor .llms-anno-legend .anno-desc {
+    display: block;
   }
   @media (max-width: 900px) {
     :is(#anatomy, #interaction) .ppt-anchor .llms-anno { padding: 0; }
@@ -1434,7 +1441,7 @@
     </section>
 
     <section class="section" id="types">
-      <h2>类型</h2>
+      <h2>组件类型</h2>
 
       <div class="principle-example">
         <h3 class="fn-h3">段落锚点 <a class="fn-h3-link" href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/latest/programug/Ascendcopdevg/docs/zh/guide/programming_guide/programming_model/programming_model_overview.md" target="_blank" rel="noopener">查看示例来源</a></h3>
@@ -1446,13 +1453,13 @@
             <span class="hd-skel-line is-w92"></span>
             <span class="hd-skel-line is-w72"></span>
           </div>
-          <p class="an-h an-h2 an-anno-row">并行执行模型：SIMD与SIMT<span class="an-hash" title="锚点入口"><svg class="an-link-ico" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M6.7 9.3a.75.75 0 0 1 0-1.06l1.94-1.94a2.5 2.5 0 0 1 3.54 3.54l-.88.88a.75.75 0 0 1-1.06-1.06l.88-.88a1 1 0 1 0-1.42-1.42L7.76 8.24A.75.75 0 0 1 6.7 9.3Zm2.6-2.6a.75.75 0 0 1 0 1.06L7.36 9.7a2.5 2.5 0 1 1-3.54-3.54l.88-.88A.75.75 0 0 1 5.76 6.34l-.88.88a1 1 0 1 0 1.42 1.42l1.94-1.94a.75.75 0 0 1 1.06 0Z"/></svg></span><span class="an-anno-pin" aria-hidden="true"><span class="anno-stem"></span><span class="anno-num">1</span><span class="anno-cap">二级锚点</span></span></p>
+          <p class="an-h an-h2 an-anno-row">并行执行模型：SIMD与SIMT<span class="an-hash" title="锚点入口"><svg class="an-link-ico" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M6.7 9.3a.75.75 0 0 1 0-1.06l1.94-1.94a2.5 2.5 0 0 1 3.54 3.54l-.88.88a.75.75 0 0 1-1.06-1.06l.88-.88a1 1 0 1 0-1.42-1.42L7.76 8.24A.75.75 0 0 1 6.7 9.3Zm2.6-2.6a.75.75 0 0 1 0 1.06L7.36 9.7a2.5 2.5 0 1 1-3.54-3.54l.88-.88A.75.75 0 0 1 5.76 6.34l-.88.88a1 1 0 1 0 1.42 1.42l1.94-1.94a.75.75 0 0 1 1.06 0Z"/></svg></span><span class="an-anno-pin" aria-hidden="true"><span class="anno-stem"></span><span class="anno-num">1</span><span class="anno-cap">H2 锚点</span></span></p>
           <div class="hd-skel-lines" aria-hidden="true">
             <span class="hd-skel-line is-w100"></span>
             <span class="hd-skel-line is-w80"></span>
             <span class="hd-skel-line is-w60"></span>
           </div>
-          <p class="an-h an-h3 an-anno-row">SIMD（单指令多数据流）<span class="an-hash" title="锚点入口"><svg class="an-link-ico" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M6.7 9.3a.75.75 0 0 1 0-1.06l1.94-1.94a2.5 2.5 0 0 1 3.54 3.54l-.88.88a.75.75 0 0 1-1.06-1.06l.88-.88a1 1 0 1 0-1.42-1.42L7.76 8.24A.75.75 0 0 1 6.7 9.3Zm2.6-2.6a.75.75 0 0 1 0 1.06L7.36 9.7a2.5 2.5 0 1 1-3.54-3.54l.88-.88A.75.75 0 0 1 5.76 6.34l-.88.88a1 1 0 1 0 1.42 1.42l1.94-1.94a.75.75 0 0 1 1.06 0Z"/></svg></span><span class="an-anno-pin" aria-hidden="true"><span class="anno-stem"></span><span class="anno-num">2</span><span class="anno-cap">三级锚点</span></span></p>
+          <p class="an-h an-h3 an-anno-row">SIMD（单指令多数据流）<span class="an-hash" title="锚点入口"><svg class="an-link-ico" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M6.7 9.3a.75.75 0 0 1 0-1.06l1.94-1.94a2.5 2.5 0 0 1 3.54 3.54l-.88.88a.75.75 0 0 1-1.06-1.06l.88-.88a1 1 0 1 0-1.42-1.42L7.76 8.24A.75.75 0 0 1 6.7 9.3Zm2.6-2.6a.75.75 0 0 1 0 1.06L7.36 9.7a2.5 2.5 0 1 1-3.54-3.54l.88-.88A.75.75 0 0 1 5.76 6.34l-.88.88a1 1 0 1 0 1.42 1.42l1.94-1.94a.75.75 0 0 1 1.06 0Z"/></svg></span><span class="an-anno-pin" aria-hidden="true"><span class="anno-stem"></span><span class="anno-num">2</span><span class="anno-cap">H3 锚点</span></span></p>
           <div class="hd-skel-lines" aria-hidden="true">
             <span class="hd-skel-line is-w92"></span>
             <span class="hd-skel-line is-w80"></span>
@@ -1497,7 +1504,7 @@
                   <p class="anchor-h1">编程模型概述</p>
                   <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:96%"></span><span class="llms-skel-bar" style="width:92%"></span><span class="llms-skel-bar" style="width:78%"></span></span>
                   <div class="anchor-sec is-hit" id="ppt-ds-an-simd-simt">
-                    <p class="anchor-h llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">段落名<span class="anno-name">须与 # 后同名</span></span><span class="anno-num">2</span><span class="anno-leader"></span><span class="anno-tip"></span></span>并行执行模型：SIMD与SIMT<span class="an-hash" title="锚点入口"><svg class="an-link-ico" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M6.7 9.3a.75.75 0 0 1 0-1.06l1.94-1.94a2.5 2.5 0 0 1 3.54 3.54l-.88.88a.75.75 0 0 1-1.06-1.06l.88-.88a1 1 0 1 0-1.42-1.42L7.76 8.24A.75.75 0 0 1 6.7 9.3Zm2.6-2.6a.75.75 0 0 1 0 1.06L7.36 9.7a2.5 2.5 0 1 1-3.54-3.54l.88-.88A.75.75 0 0 1 5.76 6.34l-.88.88a1 1 0 1 0 1.42 1.42l1.94-1.94a.75.75 0 0 1 1.06 0Z"/></svg></span><span class="llms-pin llms-pin--right" aria-hidden="true"><span class="anno-tip"></span><span class="anno-leader"></span><span class="anno-num">3</span><span class="anno-cap">锚点符<span class="anno-name">写入 URL 的 #</span></span></span></p>
+                    <p class="anchor-h llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">段落名</span><span class="anno-num">2</span><span class="anno-leader"></span><span class="anno-tip"></span></span>并行执行模型：SIMD与SIMT<span class="an-hash" title="锚点入口"><svg class="an-link-ico" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M6.7 9.3a.75.75 0 0 1 0-1.06l1.94-1.94a2.5 2.5 0 0 1 3.54 3.54l-.88.88a.75.75 0 0 1-1.06-1.06l.88-.88a1 1 0 1 0-1.42-1.42L7.76 8.24A.75.75 0 0 1 6.7 9.3Zm2.6-2.6a.75.75 0 0 1 0 1.06L7.36 9.7a2.5 2.5 0 1 1-3.54-3.54l.88-.88A.75.75 0 0 1 5.76 6.34l-.88.88a1 1 0 1 0 1.42 1.42l1.94-1.94a.75.75 0 0 1 1.06 0Z"/></svg></span><span class="llms-pin llms-pin--right" aria-hidden="true"><span class="anno-tip"></span><span class="anno-leader"></span><span class="anno-num">3</span><span class="anno-cap">锚点符</span></span></p>
                     <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:95%"></span><span class="llms-skel-bar" style="width:91%"></span><span class="llms-skel-bar" style="width:72%"></span></span>
                   </div>
                   <div class="anchor-sec" id="ppt-ds-an-simd">
@@ -1512,7 +1519,7 @@
                 <nav class="anchor-toc" aria-label="页内导航">
                   <p class="anchor-toc-t">页内导航</p>
                   <ul>
-                    <li class="llms-row"><a class="is-current" href="#ppt-ds-an-simd-simt" aria-current="location">并行执行模型：SIMD与SIMT</a><span class="llms-pin llms-pin--right" aria-hidden="true"><span class="anno-tip"></span><span class="anno-leader"></span><span class="anno-num">4</span><span class="anno-cap">页内导航<span class="anno-name">当前项与段落名同名</span></span></span></li>
+                    <li class="llms-row"><a class="is-current" href="#ppt-ds-an-simd-simt" aria-current="location">并行执行模型：SIMD与SIMT</a><span class="llms-pin llms-pin--right" aria-hidden="true"><span class="anno-tip"></span><span class="anno-leader"></span><span class="anno-num">4</span><span class="anno-cap">页内导航</span></span></li>
                     <li class="is-sub"><a href="#ppt-ds-an-simd">SIMD（单指令多数据流）</a></li>
                     <li class="is-sub"><a href="#ppt-ds-an-simt">SIMT（单指令多线程）</a></li>
                   </ul>
@@ -1520,10 +1527,10 @@
               </div>
             </figure>
             <ol class="llms-anno-legend">
-              <li><span class="anno-num">1</span><span><strong>URL 中的段落锚点</strong>　地址栏 <code>#</code> 后的「并行执行模型：SIMD与SIMT」，与该段标题同名，打开后落到这一段。</span></li>
-              <li><span class="anno-num">2</span><span><strong>段落名</strong>　正文标题「并行执行模型：SIMD与SIMT」，须与地址栏 <code>#</code> 后同名。</span></li>
-              <li><span class="anno-num">3</span><span><strong>锚点符</strong>　标题旁的链接图标，点击后把段落名写入 URL 的 <code>#</code>。</span></li>
-              <li><span class="anno-num">4</span><span><strong>页内导航</strong>　当前项与段落名同名，打开带 <code>#</code> 的地址后标出停在哪一段。</span></li>
+              <li><span class="anno-num">1</span><span><strong>URL 中的段落锚点</strong><span class="anno-desc">地址栏 <code>#</code> 后的片段应与段落标题同名，打开链接后定位到该段。</span></span></li>
+              <li><span class="anno-num">2</span><span><strong>段落名</strong><span class="anno-desc">正文标题作为可引用名称，须与地址栏 <code>#</code> 后同名。</span></span></li>
+              <li><span class="anno-num">3</span><span><strong>锚点符</strong><span class="anno-desc">标题旁的链接入口，点击后将段落名写入 URL 的 <code>#</code>。</span></span></li>
+              <li><span class="anno-num">4</span><span><strong>页内导航</strong><span class="anno-desc">当前项与段落名同名，打开带 <code>#</code> 的地址后标出当前段落。</span></span></li>
             </ol>
           </div>
         </div>
@@ -1540,7 +1547,7 @@
               </div>
               <div class="anchor-doc">
                 <div class="anchor-body">
-                    <p class="anchor-h llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">块名<span class="anno-name">须与 # 后同名</span></span><span class="anno-num">2</span><span class="anno-leader"></span><span class="anno-tip"></span></span>图2 SIMD-Reg矢量计算内存层级<span class="an-hash" title="锚点入口"><svg class="an-link-ico" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M6.7 9.3a.75.75 0 0 1 0-1.06l1.94-1.94a2.5 2.5 0 0 1 3.54 3.54l-.88.88a.75.75 0 0 1-1.06-1.06l.88-.88a1 1 0 1 0-1.42-1.42L7.76 8.24A.75.75 0 0 1 6.7 9.3Zm2.6-2.6a.75.75 0 0 1 0 1.06L7.36 9.7a2.5 2.5 0 1 1-3.54-3.54l.88-.88A.75.75 0 0 1 5.76 6.34l-.88.88a1 1 0 1 0 1.42 1.42l1.94-1.94a.75.75 0 0 1 1.06 0Z"/></svg></span><span class="llms-pin llms-pin--right" aria-hidden="true"><span class="anno-tip"></span><span class="anno-leader"></span><span class="anno-num">3</span><span class="anno-cap">锚点符<span class="anno-name">写入 URL 的 #</span></span></span></p>
+                    <p class="anchor-h llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">块名</span><span class="anno-num">2</span><span class="anno-leader"></span><span class="anno-tip"></span></span>图2 SIMD-Reg矢量计算内存层级<span class="an-hash" title="锚点入口"><svg class="an-link-ico" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M6.7 9.3a.75.75 0 0 1 0-1.06l1.94-1.94a2.5 2.5 0 0 1 3.54 3.54l-.88.88a.75.75 0 0 1-1.06-1.06l.88-.88a1 1 0 1 0-1.42-1.42L7.76 8.24A.75.75 0 0 1 6.7 9.3Zm2.6-2.6a.75.75 0 0 1 0 1.06L7.36 9.7a2.5 2.5 0 1 1-3.54-3.54l.88-.88A.75.75 0 0 1 5.76 6.34l-.88.88a1 1 0 1 0 1.42 1.42l1.94-1.94a.75.75 0 0 1 1.06 0Z"/></svg></span><span class="llms-pin llms-pin--right" aria-hidden="true"><span class="anno-tip"></span><span class="anno-leader"></span><span class="anno-num">3</span><span class="anno-cap">锚点符</span></span></p>
                   <figure class="an-fig">
                     <img src="assets/design-system/simd-reg-memory-hierarchy.png" alt="图2 SIMD-Reg矢量计算内存层级：Local Memory 含 SIMD Cube、SIMD Vector 与 SIMT 内存，下方为 Global Memory。">
                     <figcaption class="an-fig-cap"><strong>图注</strong>　Device 侧 SIMD-Reg 矢量计算的内存层级：Local Memory 分为 SIMD Cube 内存（L0A/L0B/L0C Buffer、L1 Buffer）、SIMD Vector 内存（Register File，并与 Unified Buffer 共享）和 SIMT 内存（通用寄存器）；Global Memory 位于 Local Memory 之下，是数据搬入与搬出的全局存储。</figcaption>
@@ -1549,9 +1556,9 @@
               </div>
             </figure>
             <ol class="llms-anno-legend">
-              <li><span class="anno-num">1</span><span><strong>URL 中的内容块锚点</strong>　地址栏 <code>#</code> 后的「图2 SIMD-Reg矢量计算内存层级」，与图题同名，打开后落到这一块。</span></li>
-              <li><span class="anno-num">2</span><span><strong>块名</strong>　内容块标题「图2 SIMD-Reg矢量计算内存层级」，须与地址栏 <code>#</code> 后同名。</span></li>
-              <li><span class="anno-num">3</span><span><strong>锚点符</strong>　块标题旁的链接图标，点击后把块名写入 URL 的 <code>#</code>。图与图注随图题一并被引用，不进页内导航。</span></li>
+              <li><span class="anno-num">1</span><span><strong>URL 中的内容块锚点</strong><span class="anno-desc">地址栏 <code>#</code> 后的片段应与内容块标题同名，打开链接后定位到该块。</span></span></li>
+              <li><span class="anno-num">2</span><span><strong>块名</strong><span class="anno-desc">内容块标题作为可引用名称，须与地址栏 <code>#</code> 后同名。</span></span></li>
+              <li><span class="anno-num">3</span><span><strong>锚点符</strong><span class="anno-desc">块标题旁的链接入口，点击后将块名写入 URL 的 <code>#</code>。被引用范围为图题、图与图注，不进入页内导航。</span></span></li>
             </ol>
           </div>
         </div>
@@ -1562,7 +1569,7 @@
       <h2>交互规则</h2>
 
       <div class="principle-example">
-        <h3 class="fn-h3">默认</h3>
+        <h3 class="fn-h3">默认状态：入口始终可见</h3>
         <p class="fn-h3-desc">链接图标始终可见，不靠悬停才出现；颜色与正文可区分，但不抢过标题。</p>
         <div class="reach-col reach-theme ppt-anchor">
           <div class="llms-anno" aria-label="默认状态">
@@ -1572,7 +1579,7 @@
                   <p class="anchor-h1">编程模型概述</p>
                   <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:96%"></span><span class="llms-skel-bar" style="width:92%"></span><span class="llms-skel-bar" style="width:78%"></span></span>
                   <div class="anchor-sec" id="ppt-ix-def-h2">
-                    <p class="anchor-h llms-row">并行执行模型：SIMD与SIMT<span class="an-hash" title="锚点入口"><svg class="an-link-ico" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M6.7 9.3a.75.75 0 0 1 0-1.06l1.94-1.94a2.5 2.5 0 0 1 3.54 3.54l-.88.88a.75.75 0 0 1-1.06-1.06l.88-.88a1 1 0 1 0-1.42-1.42L7.76 8.24A.75.75 0 0 1 6.7 9.3Zm2.6-2.6a.75.75 0 0 1 0 1.06L7.36 9.7a2.5 2.5 0 1 1-3.54-3.54l.88-.88A.75.75 0 0 1 5.76 6.34l-.88.88a1 1 0 1 0 1.42 1.42l1.94-1.94a.75.75 0 0 1 1.06 0Z"/></svg></span><span class="llms-pin llms-pin--right" aria-hidden="true"><span class="anno-tip"></span><span class="anno-leader"></span><span class="anno-num">1</span><span class="anno-cap">锚点符<span class="anno-name">始终可见</span></span></span></p>
+                    <p class="anchor-h llms-row">并行执行模型：SIMD与SIMT<span class="an-hash" title="锚点入口"><svg class="an-link-ico" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M6.7 9.3a.75.75 0 0 1 0-1.06l1.94-1.94a2.5 2.5 0 0 1 3.54 3.54l-.88.88a.75.75 0 0 1-1.06-1.06l.88-.88a1 1 0 1 0-1.42-1.42L7.76 8.24A.75.75 0 0 1 6.7 9.3Zm2.6-2.6a.75.75 0 0 1 0 1.06L7.36 9.7a2.5 2.5 0 1 1-3.54-3.54l.88-.88A.75.75 0 0 1 5.76 6.34l-.88.88a1 1 0 1 0 1.42 1.42l1.94-1.94a.75.75 0 0 1 1.06 0Z"/></svg></span><span class="llms-pin llms-pin--right" aria-hidden="true"><span class="anno-tip"></span><span class="anno-leader"></span><span class="anno-num">1</span><span class="anno-cap">锚点符</span></span></p>
                     <span class="llms-skel" aria-hidden="true"><span class="llms-skel-bar" style="width:95%"></span><span class="llms-skel-bar" style="width:91%"></span><span class="llms-skel-bar" style="width:72%"></span></span>
                   </div>
                   <div class="anchor-sec">
@@ -1599,8 +1606,8 @@
       </div>
 
       <div class="principle-example">
-        <h3 class="fn-h3">悬停 / 聚焦</h3>
-        <p class="fn-h3-desc">悬停时入口变为灰色圆角底；旁侧气泡提示「复制链接」。</p>
+        <h3 class="fn-h3">悬停或聚焦：提示可复制</h3>
+        <p class="fn-h3-desc">悬停或聚焦时入口变为灰色圆角底，旁侧提示「复制链接」。</p>
         <div class="reach-col reach-theme ppt-anchor">
           <div class="llms-anno" aria-label="悬停状态">
             <figure class="anchor-card">
@@ -1634,26 +1641,22 @@
           </div>
         </div>
       </div>
+
+      <div class="principle-example">
+        <h3 class="fn-h3">点击入口：复制带 # 的链接</h3>
+        <p class="fn-h3-desc">点击标题旁入口后，复制含 <code>#</code> 的完整 URL，并以「已复制链接」确认。引用对象是该段或该块，不是整页。</p>
+      </div>
+
+      <div class="principle-example">
+        <h3 class="fn-h3">打开链接：落到对应内容</h3>
+        <p class="fn-h3-desc">打开带 <code>#</code> 的地址后，页面滚动到对应标题；标题须与 <code>#</code> 后同名，目标给出短暂落点高亮，页内导航标出当前项。</p>
+      </div>
     </section>
 
     <section class="section" id="usage">
-      <h2>如何使用</h2>
-      <p class="page-lead">锚点可引用让页面中的特定段落或内容区块能够被单独定位和引用。用户可以找到锚点入口、复制链接，并在打开链接后准确识别对应内容。下面按三种用法说明。</p>
-
-      <div class="principle-example">
-        <h3 class="fn-h3">复制段落或内容块链接</h3>
-        <p class="fn-h3-desc">用户要分享某一段落或某一张表时，在标题右侧找到始终可见的链接图标。点击后复制含 <code>#</code> 的完整 URL，并用「已复制链接」确认成功。被引用的对象是这一段或这一块，而不是整页。</p>
-      </div>
-
-      <div class="principle-example">
-        <h3 class="fn-h3">从目录或外链落到段落</h3>
-        <p class="fn-h3-desc">用户从页内导航或他人分享的链接打开带 <code>#</code> 的地址。页面滚到对应段落，标题与地址栏 <code>#</code> 后同名；目标给出短暂落点高亮，页内导航标出当前项。打开链接后能够认出停在哪一段。</p>
-      </div>
-
-      <div class="principle-example">
-        <h3 class="fn-h3">从图题或表题落到内容块</h3>
-        <p class="fn-h3-desc">图、表、步骤块不进入页内导航。用户要单独转发其中一块时，点内容块标题旁的链接图标，复制带 <code>#</code> 的地址；粘贴打开后页面滚到图题（或表题），图与图注随图题一并露出。页内导航只列段落：点目录项落到对应段落标题，不会落到这张图。图下正文不计入引用范围。入口、复制与 URL 规则与段落锚点相同。</p>
-      </div>
+      <h2>适用边界</h2>
+      <p class="page-lead">是否需要提供锚点，取决于内容是否需要被 AI 识别、定位或引用。文档与知识类文章中，章节、关键段落、图题、表题、步骤块等稳定内容应提供锚点。</p>
+      <p class="page-lead">若无需被 AI 读取，例如纯装饰、临时提示、控件文案或过细碎的单句，不必单独加锚点。</p>
     </section>
   </main>
 </div>
