@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>微认证 · 学习中心 DLC · 昇腾社区 AI 亲和原则</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid var(--color-border);
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: 100%; max-width: none; margin: 0; padding: 0 24px; box-sizing: border-box;
+    height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: var(--color-text); text-decoration: none; white-space: nowrap; margin-right: 40px;
+  }
+  .topbar .brand span { color: var(--color-primary); }
+  .topbar .site-nav { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; flex-wrap: wrap; }
+  .topbar .site-nav > a {
+    text-decoration: none; color: var(--color-text-secondary); font-size: var(--text-body); font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .topbar .site-nav > a:hover { color: var(--color-primary); background: var(--color-bg); text-decoration: none; }
+  .topbar .site-nav > a.active { color: var(--color-primary); background: var(--color-bg); font-weight: 600; }
+  body.inner-page .page-wrapper { min-height: 100vh; }
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: var(--space-stack, 16px);
+  }
+  .page-header > h1 {
+    font-family: var(--font);
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1-weight, 600);
+    line-height: var(--text-h1-lh);
+    letter-spacing: -0.02em;
+    margin: 0;
+    padding-top: var(--space-h1-pad-y, 32px);
+    padding-bottom: var(--space-h1-pad-y, 32px);
+    color: var(--color-text);
+  }
+  .dlc-md-deploy-note {
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  .section > h2 + .dlc-md-deploy-note { margin-top: 0; }
+  .dlc-md-deploy-card {
+    margin: 0;
+    padding: 16px;
+    box-sizing: border-box;
+    border-radius: 8px;
+    background: var(--color-bg, #f5f7fa);
+  }
+  .dlc-md-deploy {
+    margin: 0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 22px;
+    color: var(--color-text);
+    word-break: break-all;
+  }
+  body.inner-page.agent-entry-page .main-content .section > h2.dlc-h2-split {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  body.inner-page.agent-entry-page .main-content .section > h2.dlc-h2-split > .dlc-source-link {
+    margin-left: auto;
+    flex-shrink: 0;
+    font-size: var(--text-body);
+    font-weight: 500;
+    line-height: 22px;
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+  body.inner-page.agent-entry-page .main-content .section > h2.dlc-h2-split > .dlc-source-link:hover {
+    text-decoration: underline;
+  }
+  body.inner-page.agent-entry-page:has(#module-sidebar) .main-content {
+    padding-top: var(--content-main-pad-top, 16px);
+    padding-left: 0;
+    padding-right: 0;
+  }
+  body.inner-page.agent-entry-page:has(#module-sidebar) .main-content > .page-header,
+  body.inner-page.agent-entry-page:has(#module-sidebar) .main-content > .section {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page.agent-entry-page .main-content .section > h2 {
+    font-size: var(--text-h2, 24px) !important;
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px) !important;
+    letter-spacing: -0.01em;
+    margin-top: 0 !important;
+    margin-bottom: var(--space-stack, 16px) !important;
+    padding-top: var(--space-h2-pad-y, 16px) !important;
+    padding-bottom: var(--space-h2-pad-y, 16px) !important;
+    border-bottom: none;
+    color: var(--color-text, var(--color-text));
+  }
+  body.inner-page.agent-entry-page .main-content > .section:first-of-type > h2 {
+    margin-top: 0 !important;
+  }
+  body.inner-page.agent-entry-page .main-content > .section {
+    margin-bottom: var(--space-stack, 16px) !important;
+  }
+  body.inner-page.agent-entry-page .main-content .section h3 { height: auto; }
+  h3.fn-h3 {
+    margin: 0;
+    padding-top: var(--space-h3-pad-y, 16px);
+    padding-bottom: var(--space-h3-pad-y, 16px);
+    font-size: var(--text-h3, 18px);
+    line-height: var(--text-h3-lh, 28px);
+    font-weight: var(--text-h3-weight, 650);
+    color: var(--color-text, var(--color-text));
+    letter-spacing: -0.01em;
+  }
+  .page-header > .page-lead {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  .page-lead {
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  .section > h2 + .page-lead { margin-top: 0; margin-bottom: var(--space-stack, 16px); }
+  .dlc-tpl {
+    position: relative;
+    margin: 0;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    background: #fff;
+    overflow: hidden;
+  }
+  .dlc-tpl-bar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 0;
+    padding: 8px 14px;
+    box-sizing: border-box;
+    background: #f4f4f5;
+    border-bottom: 1px solid #e5e5e5;
+    line-height: 1;
+  }
+  .dlc-tpl-bar > .dlc-tpl-bar-title {
+    margin: 0 !important;
+    padding: 0;
+    border: 0;
+    font-size: 13px;
+    line-height: 16px;
+    font-weight: 600;
+    color: #525252;
+  }
+  .dlc-copy {
+    appearance: none;
+    -webkit-appearance: none;
+    border: 0;
+    outline: none;
+    background: none;
+    box-shadow: none;
+    color: #737373;
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    min-height: 16px;
+    max-width: 16px;
+    max-height: 16px;
+    padding: 0;
+    margin: 0;
+    border-radius: 0;
+    line-height: 0;
+    font-size: 0;
+    display: block;
+    cursor: pointer;
+    flex: 0 0 16px;
+  }
+  .dlc-copy:hover,
+  .dlc-copy:focus-visible { color: var(--color-primary, #1476ff); background: none; }
+  .dlc-copy.is-copied { color: #15803d; background: none; }
+  .dlc-copy svg {
+    display: block;
+    width: 16px;
+    height: 16px;
+    margin: 0;
+  }
+  .dlc-tpl pre {
+    margin: 0;
+    padding: 16px 18px 20px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: min(70vh, 720px);
+    background: #fff;
+    color: #191919;
+    border-radius: 0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 13px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+  .dlc-tpl pre code {
+    display: block;
+    background: transparent;
+    color: inherit;
+    padding: 0;
+    white-space: inherit;
+    word-break: inherit;
+    overflow-wrap: inherit;
+  }
+  #howto > h2 + .fn-h3,
+  #howto > .page-lead + .fn-h3 { margin-top: 0; }
+  #howto .dlc-how-list {
+    margin: 0 0 var(--space-stack, 16px);
+    padding-left: 1.25em;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text);
+  }
+  #howto .dlc-how-list li + li { margin-top: 8px; }
+  #howto .dlc-how-list strong { font-weight: 650; }
+  #howto .dlc-how-list code,
+  #howto .dlc-how-sample code {
+    font-size: 12px;
+    padding: 1px 5px;
+    border-radius: 4px;
+    background: var(--color-bg, #f5f7fa);
+  }
+  #howto .dlc-how-sample {
+    margin: 0 0 var(--space-stack, 16px);
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    background: #fff;
+    overflow: hidden;
+  }
+  #howto .dlc-how-sample figcaption {
+    margin: 0;
+    padding: 8px 14px;
+    background: #f4f4f5;
+    border-bottom: 1px solid #e5e5e5;
+    font-size: 13px;
+    line-height: 16px;
+    font-weight: 600;
+    color: #525252;
+  }
+  #howto .dlc-how-sample pre {
+    margin: 0;
+    padding: 14px 16px;
+    overflow-x: hidden;
+    background: #fff;
+    color: #191919;
+    border-radius: 0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 13px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  #howto .dlc-how-sample pre code {
+    display: block;
+    padding: 0;
+    background: transparent;
+    color: inherit;
+    font-size: inherit;
+  }
+  .dlc-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 28px;
+    transform: translateX(-50%) translateY(12px);
+    z-index: 300;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(25,25,25,.14);
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--color-text);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .18s ease, transform .18s ease;
+  }
+  .dlc-toast.is-show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+</style>
+</head>
+<body class="inner-page agent-entry-page" data-module="dlc" data-page="dlc-microcert" data-no-surface-tabs>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span>AI 亲和原则</span></a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="mintlify.html">友商对照</a>
+      <a href="reachability.html">社区诊断</a>
+      <a href="principles-overview.html">亲和原则</a>
+      <a href="community-ui.html">组件亲和</a>
+      <a href="skills.html">Skill 目录</a>
+      <a href="design-system.html">设计系统</a>
+      <a href="dlc-path.html" class="active">学习中心 DLC</a>
+    </nav>
+  </div>
+</div>
+
+<div class="page-wrapper">
+  <aside id="module-sidebar"></aside>
+  <main class="main-content">
+    <div class="page-header">
+      <h1>微认证</h1>
+    </div>
+
+    <section class="section">
+      <h2>Markdown 文件部署的推荐 URL</h2>
+      <p class="dlc-md-deploy-note">下方模板中的 MD 文件，是「以 多机多卡并行推理 为例」人读页的镜像。</p>
+      <div class="dlc-md-deploy-card"><p class="dlc-md-deploy">https://www.hiascend.com/llms-content/learning/certification/zh_edu_certification_detail_e87272e2648d4c61a4ed39c5930397c2.md</p></div>
+    </section>
+
+    <section class="section">
+      <h2 class="dlc-h2-split">微认证 Markdown 文件模板<a class="dlc-source-link" href="https://www.hiascend.com/edu/certification/detail/e87272e2648d4c61a4ed39c5930397c2" target="_blank" rel="noopener">以 多机多卡并行推理 为例</a></h2>
+      <div class="dlc-tpl">
+      <div class="dlc-tpl-bar">
+        <p class="dlc-tpl-bar-title">multi-node-multi-card-parallel-inference.microcert.md</p>
+        <button type="button" class="dlc-copy" data-dlc-copy aria-label="复制" title="复制">
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M10.5 5.5V4A1.5 1.5 0 0 0 9 2.5H4A1.5 1.5 0 0 0 2.5 4v5A1.5 1.5 0 0 0 4 10.5h1.5" stroke="currentColor" stroke-width="1.2"/></svg>
+        </button>
+      </div>
+      <pre><code>---
+title: "多机多卡并行推理"
+type: "micro-certification"
+schema_version: "1.1"
+id: "e87272e2648d4c61a4ed39c5930397c2"
+url: "https://www.hiascend.com/edu/certification/detail/e87272e2648d4c61a4ed39c5930397c2"
+updated: "YYYY-MM-DD"
+---
+
+# 多机多卡并行推理
+
+&gt; 本认证主要考核如何使用 MindIE 进行大模型推理部署的流程与优化方法，旨在帮助开发者高效完成大模型多机多卡并行推理部署。
+
+## 认证概要
+- 适用对象：对大模型推理部署感兴趣的企业、伙伴、高校开发者
+- 认证级别：中级
+- 能力范围：围绕昇腾平台上的大模型推理部署，覆盖模型迁移适配、并行策略选择、量化及性能优化等内容
+- 学习时长：约 1.1 小时
+- 通过条件：考试总分达到 70 分及以上（以官方公布的计分规则为准）
+- 证书有效期：自颁布之日起 2 年
+- 认证成果：以 DeepSeek 模型为例，学习使用 MindIE 进行大模型多机多卡推理部署的流程与优化方法
+- 对应正式认证：未明确
+
+## 认证内容
+
+### 1. 大模型推理在昇腾上的部署（学习时长：6 分钟）
+- 学习目标：了解大模型推理在昇腾上的部署方法
+
+### 2. DeepSeek 模型迁移适配（学习时长：10 分钟）
+- 学习目标：了解 DeepSeek 模型迁移适配方法
+
+### 3. DeepSeek 模型并行策略选择及模型性能调优（学习时长：25 分钟）
+- 学习目标：了解 DeepSeek 模型并行策略选择及模型性能调优方法
+
+### 4. DeepSeek 量化精度及性能调优（学习时长：10 分钟）
+- 学习目标：掌握 DeepSeek 量化精度及性能调优方法
+
+### 5. MTP 优化（学习时长：12 分钟）
+- 学习目标：了解 MTP 优化方法
+
+### 6. 常见问题（学习时长：1 分钟）
+- 学习目标：了解常见问题及解决方案
+
+## 环境准备
+本认证需完成大模型推理环境的搭建，可通过以下方式完成：
+1. 使用昇腾硬件搭建 MindIE 推理环境
+2. 使用华为云平台搭建 MindIE 推理环境
+
+具体操作请进入认证界面，严格按照认证考试要求进行环境准备。
+
+## 认证学习
+
+### 推荐课程
+- [LLM 多机多卡并行推理](https://www.hiascend.com/developer/courses/detail/2004093014389059585)
+  - 资源说明：以 DeepSeek 模型为例，介绍在昇腾平台上使用 MindIE 进行大模型推理部署的流程与优化方法
+  - 学习成果：
+    1. 大模型推理在昇腾上的部署
+    2. DeepSeek 模型迁移适配
+    3. DeepSeek 模型并行策略选择
+    4. DeepSeek 量化精度及性能调优
+    5. MTP 优化
+    6. 常见问题
+  - 关联认证内容：大模型推理在昇腾上的部署、DeepSeek 模型迁移适配、DeepSeek 模型并行策略选择及模型性能调优、DeepSeek 量化精度及性能调优、MTP 优化、常见问题
+
+## 认证事项
+
+### 考试规则
+1. 考试仅支持电脑端操作
+2. 通过考试后，需在 10 天内完成实名认证；逾期未完成实名认证将无法发放证书
+
+### 证书获取与查询
+1. 考试及实名认证均通过后 24 小时，可前往[个人中心-我的微认证](https://www.hiascend.com/profile/study?tab=micro-certification)查看证书编号或下载电子证书
+2. 证书自颁布之日起 2 年内有效
+3. 微认证证书支持在社区公开查询，可前往[微认证证书查询](https://www.hiascend.com/edu/certification/query)使用证书编号进行查询
+</code></pre>
+    </div>
+        </section>
+
+    <section class="section" id="howto">
+      <h2>元素拆解</h2>
+      <p class="page-lead">对照上方完整示例按块填写。链接须为 https 绝对地址并直达正文；无内容则整节省略。写清能力范围与对应正式认证，勿把认证内容当成考试大纲或补占比。</p>
+
+      <h3 class="fn-h3">1. 文首 Frontmatter（必填）</h3>
+      <ol class="dlc-how-list">
+        <li><strong>说明</strong>：标识微认证类型、唯一身份和人读页地址。</li>
+        <li><strong>写法</strong>：置于文件最上方，以 <code>---</code> 包裹；键名固定，勿增删。字符串值统一加双引号。</li>
+        <li><strong>title</strong>：微认证名称，与正文一级标题完全一致。</li>
+        <li><strong>type</strong>：固定为 <code>"micro-certification"</code>。</li>
+        <li><strong>schema_version</strong>：当前固定 <code>"1.1"</code>；由规范维护者更新，业务侧勿改。</li>
+        <li><strong>id</strong>：人读页 URL 末段 ID，须与人读页一致。</li>
+        <li><strong>url</strong>：人读页 HTTPS 绝对地址；路径为 <code>/edu/certification/detail/…</code>，不得误填正式开发者认证 <code>/edu/developer-certification/detail/…</code>。</li>
+        <li><strong>updated</strong>：内容最后更新日期 <code>"YYYY-MM-DD"</code>（非首次发布日）。</li>
+      </ol>
+      <figure class="dlc-how-sample" aria-label="Frontmatter 示例">
+        <figcaption>Frontmatter</figcaption>
+        <pre><code>---
+title: "多机多卡并行推理"
+type: "micro-certification"
+schema_version: "1.1"
+id: "e87272e2648d4c61a4ed39c5930397c2"
+url: "https://www.hiascend.com/edu/certification/detail/e87272e2648d4c61a4ed39c5930397c2"
+updated: "YYYY-MM-DD"
+---</code></pre>
+      </figure>
+
+      <h3 class="fn-h3">2. 标题与摘要（必填）</h3>
+      <ol class="dlc-how-list">
+        <li><strong>说明</strong>：微认证正式名称，以及一两句介绍（考什么、能力边界）。</li>
+        <li><strong>写法</strong>：一级标题 <code># 微认证名</code>，须与 Frontmatter <code>title</code> 完全一致；下一行以 <code>&gt;</code> 写摘要，对齐人读页简介。</li>
+      </ol>
+      <figure class="dlc-how-sample" aria-label="标题与摘要示例">
+        <figcaption>标题与摘要</figcaption>
+        <pre><code># 多机多卡并行推理
+
+&gt; 本认证主要考核如何使用 MindIE 进行大模型推理部署的流程与优化方法，旨在帮助开发者高效完成大模型多机多卡并行推理部署。</code></pre>
+      </figure>
+
+      <h3 class="fn-h3">3. 认证概要（必填）</h3>
+      <ol class="dlc-how-list">
+        <li><strong>说明</strong>：说明对象、能力范围、学习投入和认证结果；能力范围是与正式开发者认证区分的核心，不能只依赖名称和级别。</li>
+        <li><strong>写法</strong>：二级标题 <code>## 认证概要</code>；下列 <code>- 字段名：内容</code>，一行一项。官方未公布的字段可省略，不得将未知推断为无要求。</li>
+        <li><strong>适用对象</strong>：适合参加认证的人群及其背景。</li>
+        <li><strong>认证级别</strong>：与人读页官方标注一致，如 <code>入门级</code>、<code>中级</code>、<code>高级</code>。</li>
+        <li><strong>能力范围</strong>：必填。明确覆盖的技术主题、知识领域或实践任务；须与认证内容章节一致，不得写入未覆盖的能力。</li>
+        <li><strong>学习时长</strong>：完成认证课程 / 学习内容所需时间（如 <code>约 1.1 小时</code>）；<strong>不等于考试时长</strong>。可按章节学习时长汇总核对；有四舍五入差异时以官方展示为准。</li>
+        <li><strong>通过条件</strong>：官方公布的通过分数及计分要求（如 <code>考试总分达到 70 分及以上（以官方公布的计分规则为准）</code>）。计分规则不明确时不得自行推断百分制或其他口径。</li>
+        <li><strong>证书有效期</strong>：自颁布之日起的有效期限；可与认证事项中的操作说明并存。</li>
+        <li><strong>认证成果</strong>：完成认证后能够掌握或验证的知识与技能；不得超出能力范围与认证内容。</li>
+        <li><strong>对应正式认证</strong>：有明确关联时填 <code>[名称](https://…)</code>；经业务确认无关联时填 <code>无</code>；仅页面未展示、尚未确认时填 <code>未明确</code>。<strong>「无」与「未明确」不可互换</strong>，不得因页面未展示就推断为无。</li>
+      </ol>
+      <figure class="dlc-how-sample" aria-label="认证概要示例">
+        <figcaption>认证概要</figcaption>
+        <pre><code>## 认证概要
+- 适用对象：对大模型推理部署感兴趣的企业、伙伴、高校开发者
+- 认证级别：中级
+- 能力范围：围绕昇腾平台上的大模型推理部署，覆盖模型迁移适配、并行策略选择、量化及性能优化等内容
+- 学习时长：约 1.1 小时
+- 通过条件：考试总分达到 70 分及以上（以官方公布的计分规则为准）
+- 证书有效期：自颁布之日起 2 年
+- 认证成果：以 DeepSeek 模型为例，学习使用 MindIE 进行大模型多机多卡推理部署的流程与优化方法
+- 对应正式认证：未明确</code></pre>
+      </figure>
+
+      <h3 class="fn-h3">4. 认证内容（必填）</h3>
+      <ol class="dlc-how-list">
+        <li><strong>说明</strong>：描述微认证实际覆盖的章节、学习目标与内容范围，供 Agent 判断能力边界。章节是学习内容单元，<strong>不是考试题目或考试权重</strong>；勿擅自赋予考试占比、题目数量等页面未提供的信息。</li>
+        <li><strong>写法</strong>：二级标题 <code>## 认证内容</code>；各章三级标题统一为 <code>### N. 章节名称（学习时长：N 分钟）</code>；下挂 <code>- 学习目标：…</code>。按人读页表格逐项整理，保持顺序。</li>
+        <li><strong>学习目标</strong>：忠实于人读页；不扩大能力范围，不将「了解」改写成「熟练掌握」。</li>
+        <li><strong>时长</strong>：按官方数据填写，未提供则不自行估算；章节学习时长之和应与概要总学习时长基本一致。</li>
+      </ol>
+      <figure class="dlc-how-sample" aria-label="认证内容示例">
+        <figcaption>认证内容（节选示例，完整微认证须连续编写全部章节）</figcaption>
+        <pre><code>## 认证内容
+
+### 1. 大模型推理在昇腾上的部署（学习时长：6 分钟）
+- 学习目标：了解大模型推理在昇腾上的部署方法
+
+### 2. DeepSeek 模型迁移适配（学习时长：10 分钟）
+- 学习目标：了解 DeepSeek 模型迁移适配方法</code></pre>
+      </figure>
+
+      <h3 class="fn-h3">5. 环境准备（条件必填）</h3>
+      <ol class="dlc-how-list">
+        <li><strong>说明</strong>：考前环境搭建要求，供 Agent 回答「要备什么环境」；放在认证内容之后、认证学习之前。</li>
+        <li><strong>写法</strong>：独立二级标题 <code>## 环境准备</code>；按人读页官方原文整理可选方式、硬性要求与操作入口说明。</li>
+        <li><strong>缺省</strong>：人读页无该块时整节省略，不得自行编造；勿与「认证事项」下的考试规则混写。</li>
+      </ol>
+      <figure class="dlc-how-sample" aria-label="环境准备示例">
+        <figcaption>环境准备</figcaption>
+        <pre><code>## 环境准备
+本认证需完成大模型推理环境的搭建，可通过以下方式完成：
+1. 使用昇腾硬件搭建 MindIE 推理环境
+2. 使用华为云平台搭建 MindIE 推理环境
+
+具体操作请进入认证界面，严格按照认证考试要求进行环境准备。</code></pre>
+      </figure>
+
+      <h3 class="fn-h3">6. 预备知识（可选）</h3>
+      <ol class="dlc-how-list">
+        <li><strong>说明</strong>：仅记录官方明确的前置要求；不是默认模块。</li>
+        <li><strong>写法</strong>：有官方前置要求时用 <code>## 预备知识</code>，每条单独列出。若仅为推荐背景，须标注「推荐」，勿写成强制准入。人读页无相关信息时整节省略，不自行推测。</li>
+      </ol>
+
+      <h3 class="fn-h3">7. 认证学习（条件必填）</h3>
+      <ol class="dlc-how-list">
+        <li><strong>说明</strong>：关联官方推荐的学习资源，回答「如何学习这项认证内容」。认证内容描述考查 / 覆盖范围，认证学习描述学习资源；二者可关联，但课程章节不等于考题。</li>
+        <li><strong>写法</strong>：二级标题 <code>## 认证学习</code>；按类型设三级标题，如 <code>### 推荐课程</code>、<code>### 推荐教程</code>、<code>### 推荐案例</code>、<code>### 实验与实践</code>。</li>
+        <li><strong>资源说明</strong>：每项资源一句介绍学习内容或实践目标。</li>
+        <li><strong>学习成果</strong>：人读页有「通过本课程将掌握」等列表时，整理为编号列表保留。</li>
+        <li><strong>关联认证内容</strong>：可选；将资源映射到「认证内容」章节名，须依据资源正文核验，不得仅凭标题推测。</li>
+        <li><strong>缺省</strong>：仅收录人读页展示或业务明确认可的资源；无推荐资源时整节省略；无对应类型时不保留空标题。</li>
+      </ol>
+      <figure class="dlc-how-sample" aria-label="认证学习示例">
+        <figcaption>认证学习</figcaption>
+        <pre><code>## 认证学习
+
+### 推荐课程
+- [LLM 多机多卡并行推理](https://www.hiascend.com/developer/courses/detail/2004093014389059585)
+  - 资源说明：以 DeepSeek 模型为例，介绍在昇腾平台上使用 MindIE 进行大模型推理部署的流程与优化方法
+  - 学习成果：
+    1. 大模型推理在昇腾上的部署
+    2. DeepSeek 模型迁移适配
+    3. DeepSeek 模型并行策略选择
+    4. DeepSeek 量化精度及性能调优
+    5. MTP 优化
+    6. 常见问题
+  - 关联认证内容：大模型推理在昇腾上的部署、DeepSeek 模型迁移适配、DeepSeek 模型并行策略选择及模型性能调优、DeepSeek 量化精度及性能调优、MTP 优化、常见问题</code></pre>
+      </figure>
+
+      <h3 class="fn-h3">8. 认证事项（必填）</h3>
+      <ol class="dlc-how-list">
+        <li><strong>说明</strong>：说明考试参与规则、证书发放条件与查询方式。</li>
+        <li><strong>写法</strong>：二级标题 <code>## 认证事项</code>；下设 <code>### 考试规则</code>、<code>### 证书获取与查询</code>。</li>
+        <li><strong>考试规则</strong>：设备 / 作答要求 / 禁止事项；以及考试后须完成的实名认证等条件与截止时间。</li>
+        <li><strong>证书获取与查询</strong>：发放前置条件与预计时间、电子证书入口、有效期与公开查询。「考试通过」与「证书发放」是不同状态，先后关系须写清。「个人中心」「证书查询」保留 HTTPS 绝对链接。</li>
+        <li><strong>缺省</strong>：无对应信息时省略子标题；勿写领券 / 购前运营话术与客套收尾。</li>
+      </ol>
+      <figure class="dlc-how-sample" aria-label="认证事项示例">
+        <figcaption>认证事项</figcaption>
+        <pre><code>## 认证事项
+
+### 考试规则
+1. 考试仅支持电脑端操作
+2. 通过考试后，需在 10 天内完成实名认证；逾期未完成实名认证将无法发放证书
+
+### 证书获取与查询
+1. 考试及实名认证均通过后 24 小时，可前往[个人中心-我的微认证](https://www.hiascend.com/profile/study?tab=micro-certification)查看证书编号或下载电子证书
+2. 证书自颁布之日起 2 年内有效
+3. 微认证证书支持在社区公开查询，可前往[微认证证书查询](https://www.hiascend.com/edu/certification/query)使用证书编号进行查询</code></pre>
+      </figure>
+
+      <h3 class="fn-h3">发布前核验</h3>
+      <ol class="dlc-how-list">
+        <li><strong>能力边界</strong>：能力范围、认证成果与认证内容一致；「对应正式认证」口径正确（<code>无</code> / <code>未明确</code> / 链接），勿与正式开发者认证混淆。</li>
+        <li><strong>内容与时长</strong>：章节、学习目标与人读页一致；章节学习时长合计与概要学习时长相符，勿当作考试时长。</li>
+        <li><strong>通过与出证</strong>：通过条件、实名时限、证书领取与有效期准确；环境准备有则写、无则省。</li>
+        <li><strong>链接</strong>：HTTPS 绝对地址，直达正文（HTTP 200 ≠ 正文有效）。</li>
+        <li><strong>一致与时效</strong>：与人读页名称、级别、内容一致；变更时更新 <code>updated</code>。</li>
+      </ol>
+    </section>
+  </main>
+</div>
+
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js?v=20261109d"></script>
+<script src="assets/js/module-sidebar.js?v=20261109d"></script>
+<script>
+(function () {
+  function toast(msg) {
+    var el = document.querySelector('.dlc-toast');
+    if (!el) {
+      el = document.createElement('div');
+      el.className = 'dlc-toast';
+      el.setAttribute('role', 'status');
+      document.body.appendChild(el);
+    }
+    el.textContent = msg || '已复制模板';
+    el.classList.add('is-show');
+    clearTimeout(el._t);
+    el._t = setTimeout(function () { el.classList.remove('is-show'); }, 1600);
+  }
+  document.querySelectorAll('[data-dlc-copy]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var root = btn.closest('.dlc-tpl');
+      var pre = root && root.querySelector('pre code, pre');
+      var text = pre ? (pre.textContent || '') : '';
+      function done() {
+        btn.classList.add('is-copied');
+        btn.setAttribute('title', '已复制');
+        btn.setAttribute('aria-label', '已复制');
+        toast('已复制 Markdown 模板');
+        setTimeout(function () {
+          btn.classList.remove('is-copied');
+          btn.setAttribute('title', '复制');
+          btn.setAttribute('aria-label', '复制');
+        }, 1400);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done).catch(function () {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); } catch (e) {}
+          ta.remove(); done();
+        });
+      } else {
+        var ta = document.createElement('textarea');
+        ta.value = text; document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); } catch (e) {}
+        ta.remove(); done();
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>

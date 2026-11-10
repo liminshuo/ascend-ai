@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>学习课程 · 学习中心 DLC · 昇腾社区 AI 亲和原则</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid var(--color-border);
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: 100%; max-width: none; margin: 0; padding: 0 24px; box-sizing: border-box;
+    height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: var(--color-text); text-decoration: none; white-space: nowrap; margin-right: 40px;
+  }
+  .topbar .brand span { color: var(--color-primary); }
+  .topbar .site-nav { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; flex-wrap: wrap; }
+  .topbar .site-nav > a {
+    text-decoration: none; color: var(--color-text-secondary); font-size: var(--text-body); font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .topbar .site-nav > a:hover { color: var(--color-primary); background: var(--color-bg); text-decoration: none; }
+  .topbar .site-nav > a.active { color: var(--color-primary); background: var(--color-bg); font-weight: 600; }
+  body.inner-page .page-wrapper { min-height: 100vh; }
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: var(--space-stack, 16px);
+  }
+  .page-header > h1 {
+    font-family: var(--font);
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1-weight, 600);
+    line-height: var(--text-h1-lh);
+    letter-spacing: -0.02em;
+    margin: 0;
+    padding-top: var(--space-h1-pad-y, 32px);
+    padding-bottom: var(--space-h1-pad-y, 32px);
+    color: var(--color-text);
+  }
+  .dlc-md-deploy-note {
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  .section > h2 + .dlc-md-deploy-note { margin-top: 0; }
+  .dlc-md-deploy-card {
+    margin: 0;
+    padding: 16px;
+    box-sizing: border-box;
+    border-radius: 8px;
+    background: var(--color-bg, #f5f7fa);
+  }
+  .dlc-md-deploy {
+    margin: 0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 22px;
+    color: var(--color-text);
+    word-break: break-all;
+  }
+  body.inner-page.agent-entry-page .main-content .section > h2.dlc-h2-split {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  body.inner-page.agent-entry-page .main-content .section > h2.dlc-h2-split > .dlc-source-link {
+    margin-left: auto;
+    flex-shrink: 0;
+    font-size: var(--text-body);
+    font-weight: 500;
+    line-height: 22px;
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+  body.inner-page.agent-entry-page .main-content .section > h2.dlc-h2-split > .dlc-source-link:hover {
+    text-decoration: underline;
+  }
+  body.inner-page.agent-entry-page:has(#module-sidebar) .main-content {
+    padding-top: var(--content-main-pad-top, 16px);
+    padding-left: 0;
+    padding-right: 0;
+  }
+  body.inner-page.agent-entry-page:has(#module-sidebar) .main-content > .page-header,
+  body.inner-page.agent-entry-page:has(#module-sidebar) .main-content > .section {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page.agent-entry-page .main-content .section > h2 {
+    font-size: var(--text-h2, 24px) !important;
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px) !important;
+    letter-spacing: -0.01em;
+    margin-top: 0 !important;
+    margin-bottom: var(--space-stack, 16px) !important;
+    padding-top: var(--space-h2-pad-y, 16px) !important;
+    padding-bottom: var(--space-h2-pad-y, 16px) !important;
+    border-bottom: none;
+    color: var(--color-text, var(--color-text));
+  }
+  body.inner-page.agent-entry-page .main-content > .section:first-of-type > h2 {
+    margin-top: 0 !important;
+  }
+  body.inner-page.agent-entry-page .main-content > .section {
+    margin-bottom: var(--space-stack, 16px) !important;
+  }
+  body.inner-page.agent-entry-page .main-content .section h3 { height: auto; }
+  h3.fn-h3 {
+    margin: 0;
+    padding-top: var(--space-h3-pad-y, 16px);
+    padding-bottom: var(--space-h3-pad-y, 16px);
+    font-size: var(--text-h3, 18px);
+    line-height: var(--text-h3-lh, 28px);
+    font-weight: var(--text-h3-weight, 650);
+    color: var(--color-text, var(--color-text));
+    letter-spacing: -0.01em;
+  }
+  .page-header > .page-lead {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  .page-lead {
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  .section > h2 + .page-lead { margin-top: 0; margin-bottom: var(--space-stack, 16px); }
+  .dlc-tpl {
+    position: relative;
+    margin: 0;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    background: #fff;
+    overflow: hidden;
+  }
+  .dlc-tpl-bar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 0;
+    padding: 8px 14px;
+    box-sizing: border-box;
+    background: #f4f4f5;
+    border-bottom: 1px solid #e5e5e5;
+    line-height: 1;
+  }
+  .dlc-tpl-bar > .dlc-tpl-bar-title {
+    margin: 0 !important;
+    padding: 0;
+    border: 0;
+    font-size: 13px;
+    line-height: 16px;
+    font-weight: 600;
+    color: #525252;
+  }
+  .dlc-copy {
+    appearance: none;
+    -webkit-appearance: none;
+    border: 0;
+    outline: none;
+    background: none;
+    box-shadow: none;
+    color: #737373;
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    min-height: 16px;
+    max-width: 16px;
+    max-height: 16px;
+    padding: 0;
+    margin: 0;
+    border-radius: 0;
+    line-height: 0;
+    font-size: 0;
+    display: block;
+    cursor: pointer;
+    flex: 0 0 16px;
+  }
+  .dlc-copy:hover,
+  .dlc-copy:focus-visible { color: var(--color-primary, #1476ff); background: none; }
+  .dlc-copy.is-copied { color: #15803d; background: none; }
+  .dlc-copy svg {
+    display: block;
+    width: 16px;
+    height: 16px;
+    margin: 0;
+  }
+  .dlc-tpl pre {
+    margin: 0;
+    padding: 16px 18px 20px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: min(70vh, 720px);
+    background: #fff;
+    color: #191919;
+    border-radius: 0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 13px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+  .dlc-tpl pre code {
+    display: block;
+    background: transparent;
+    color: inherit;
+    padding: 0;
+    white-space: inherit;
+    word-break: inherit;
+    overflow-wrap: inherit;
+  }
+  #howto > h2 + .fn-h3,
+  #howto > .page-lead + .fn-h3 { margin-top: 0; }
+  #howto .dlc-how-list {
+    margin: 0 0 var(--space-stack, 16px);
+    padding-left: 1.25em;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text);
+  }
+  #howto .dlc-how-list li + li { margin-top: 8px; }
+  #howto .dlc-how-list strong { font-weight: 650; }
+  #howto .dlc-how-list code,
+  #howto .dlc-how-sample code {
+    font-size: 12px;
+    padding: 1px 5px;
+    border-radius: 4px;
+    background: var(--color-bg, #f5f7fa);
+  }
+  #howto .dlc-how-sample {
+    margin: 0 0 var(--space-stack, 16px);
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    background: #fff;
+    overflow: hidden;
+  }
+  #howto .dlc-how-sample figcaption {
+    margin: 0;
+    padding: 8px 14px;
+    background: #f4f4f5;
+    border-bottom: 1px solid #e5e5e5;
+    font-size: 13px;
+    line-height: 16px;
+    font-weight: 600;
+    color: #525252;
+  }
+  #howto .dlc-how-sample pre {
+    margin: 0;
+    padding: 14px 16px;
+    overflow-x: hidden;
+    background: #fff;
+    color: #191919;
+    border-radius: 0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 13px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  #howto .dlc-how-sample pre code {
+    display: block;
+    padding: 0;
+    background: transparent;
+    color: inherit;
+    font-size: inherit;
+  }
+  .dlc-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 28px;
+    transform: translateX(-50%) translateY(12px);
+    z-index: 300;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(25,25,25,.14);
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--color-text);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .18s ease, transform .18s ease;
+  }
+  .dlc-toast.is-show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+</style>
+</head>
+<body class="inner-page agent-entry-page" data-module="dlc" data-page="dlc-course" data-no-surface-tabs>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span>AI 亲和原则</span></a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="mintlify.html">友商对照</a>
+      <a href="reachability.html">社区诊断</a>
+      <a href="principles-overview.html">亲和原则</a>
+      <a href="community-ui.html">组件亲和</a>
+      <a href="skills.html">Skill 目录</a>
+      <a href="design-system.html">设计系统</a>
+      <a href="dlc-path.html" class="active">学习中心 DLC</a>
+    </nav>
+  </div>
+</div>
+
+<div class="page-wrapper">
+  <aside id="module-sidebar"></aside>
+  <main class="main-content">
+    <div class="page-header">
+      <h1>学习课程</h1>
+    </div>
+
+    <section class="section">
+      <h2>Markdown 文件部署的推荐 URL</h2>
+      <p class="dlc-md-deploy-note">下方模板中的 MD 文件，是「以 昇腾异构编程基础（速成班） 为例」人读页的镜像。</p>
+      <div class="dlc-md-deploy-card"><p class="dlc-md-deploy">https://www.hiascend.com/llms-content/learning/courses/zh_developer_courses_detail_1925466587412258817.md</p></div>
+    </section>
+
+    <section class="section">
+      <h2 class="dlc-h2-split">学习课程 Markdown 文件模板<a class="dlc-source-link" href="https://www.hiascend.com/developer/courses/detail/1925466587412258817" target="_blank" rel="noopener">以 昇腾异构编程基础（速成班） 为例</a></h2>
+      <div class="dlc-tpl">
+      <div class="dlc-tpl-bar">
+        <p class="dlc-tpl-bar-title">ascend-heterogeneous-programming-basics.course.md</p>
+        <button type="button" class="dlc-copy" data-dlc-copy aria-label="复制" title="复制">
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M10.5 5.5V4A1.5 1.5 0 0 0 9 2.5H4A1.5 1.5 0 0 0 2.5 4v5A1.5 1.5 0 0 0 4 10.5h1.5" stroke="currentColor" stroke-width="1.2"/></svg>
+        </button>
+      </div>
+      <pre><code>---
+title: 昇腾异构编程基础（速成班）
+type: course
+schema_version: "1.1"
+id: 1925466587412258817
+url: https://www.hiascend.com/developer/courses/detail/1925466587412258817
+updated: YYYY-MM-DD
+---
+
+# 昇腾异构编程基础（速成班）
+
+&gt; 本课程深入解析昇腾 AI 处理器的达芬奇架构，涵盖 AI Core、AI CPU、层次化存储等核心组件；通过 CANN 异构计算架构与 Ascend C 核函数特性讲解，帮助学员掌握 SPMD 编程范式，并用仿真工具完成自定义算子开发与性能评估。
+
+## 课程概要
+- 适用对象：算子开发者；希望掌握昇腾 AI 处理器架构与 Ascend C 核函数开发的工程师
+- 学习目标：掌握昇腾达芬奇架构、Ascend C 核函数与 SPMD 编程，并能用仿真工具完成自定义算子开发与性能评估
+- 能力等级：中级
+- 学习时长：100 分钟
+- 关联场景：算子编写与调用
+- 关联产品：CANN · Ascend C
+- 环境要求：CANN 开发环境；仿真分析章节需仿真工具（如 msprof）
+
+## 预备知识
+
+### 必备基础
+- C/C++ 基础
+
+### 推荐学习
+- [昇腾AI处理器及CANN基础](https://www.hiascend.com/developer/courses/detail/1559096386317148161)
+
+## 知识点
+- 昇腾达芬奇架构（AI Core、AI CPU、层次化存储）
+- Ascend C 核函数与 SPMD 编程
+- 流水线优化与 Cache 利用率
+- 仿真工具与 msprof 性能分析
+- 自定义算子开发与性能评估
+
+## 课程介绍
+
+### 课程目标
+学完本课后，能够：
+1. 说明昇腾 AI 处理器的达芬奇架构特性
+2. 使用 Ascend C 语言实现核函数开发
+3. 按 SPMD 模型完成多核数据切分
+4. 通过 msprof 工具分析指令执行时序
+5. 说明 L2 缓存对算子性能的影响，并完成基础性能评估
+
+## 课程目录
+
+### 第 1 章 · 昇腾硬件架构介绍
+- 学习材料：[昇腾硬件架构介绍](https://www.hiascend.com/developer/courses/detail/1925466587412258817)
+  [昇腾硬件架构介绍](https://www.hiascend.com/….md)
+- 视频：[昇腾硬件架构介绍](https://www.hiascend.com/developer/courses/detail/1925466587412258817)
+  [昇腾硬件架构介绍](https://www.hiascend.com/….md)
+
+### 第 2 章 · CANN软件包结构
+- 学习材料：[CANN软件包结构](https://www.hiascend.com/developer/courses/detail/1925466587412258817)
+  [CANN软件包结构](https://www.hiascend.com/….md)
+- 视频：[CANN软件包结构](https://www.hiascend.com/developer/courses/detail/1925466587412258817)
+  [CANN软件包结构](https://www.hiascend.com/….md)
+
+### 第 3 章 · 算子开发编程基础
+- 学习材料：[算子开发编程基础](https://www.hiascend.com/developer/courses/detail/1925466587412258817)
+  [算子开发编程基础](https://www.hiascend.com/….md)
+- 视频：[算子开发编程基础](https://www.hiascend.com/developer/courses/detail/1925466587412258817)
+  [算子开发编程基础](https://www.hiascend.com/….md)
+
+### 第 4 章 · 算子开发编程范式
+- 学习材料：[算子开发编程范式](https://www.hiascend.com/developer/courses/detail/1925466587412258817)
+  [算子开发编程范式](https://www.hiascend.com/….md)
+- 视频：[算子开发编程范式](https://www.hiascend.com/developer/courses/detail/1925466587412258817)
+  [算子开发编程范式](https://www.hiascend.com/….md)
+
+### 第 5 章 · 昇腾平台仿真分析
+- 学习材料：[昇腾平台仿真分析](https://www.hiascend.com/developer/courses/detail/1925466587412258817)
+  [昇腾平台仿真分析](https://www.hiascend.com/….md)
+- 视频：[昇腾平台仿真分析](https://www.hiascend.com/developer/courses/detail/1925466587412258817)
+  [昇腾平台仿真分析](https://www.hiascend.com/….md)
+
+### 第 6 章 · 自定义算子性能评估
+- 学习材料：[自定义算子性能评估](https://www.hiascend.com/developer/courses/detail/1925466587412258817)
+  [自定义算子性能评估](https://www.hiascend.com/….md)
+- 视频：[自定义算子性能评估](https://www.hiascend.com/developer/courses/detail/1925466587412258817)
+  [自定义算子性能评估](https://www.hiascend.com/….md)
+
+### 第 7 章 · 自定义算子性能优化
+- 学习材料：[自定义算子性能优化](https://www.hiascend.com/developer/courses/detail/1925466587412258817)
+  [自定义算子性能优化](https://www.hiascend.com/….md)
+- 视频：[自定义算子性能优化](https://www.hiascend.com/developer/courses/detail/1925466587412258817)
+  [自定义算子性能优化](https://www.hiascend.com/….md)
+
+### 第 8 章 · 多机多卡系统
+- 学习材料：[多机多卡系统](https://www.hiascend.com/developer/courses/detail/1925466587412258817)
+  [多机多卡系统](https://www.hiascend.com/….md)
+- 视频：[多机多卡系统](https://www.hiascend.com/developer/courses/detail/1925466587412258817)
+  [多机多卡系统](https://www.hiascend.com/….md)
+
+### 第 9 章 · 异构编程实践
+- 学习材料：[异构编程实践](https://www.hiascend.com/developer/courses/detail/1925466587412258817)
+  [异构编程实践](https://www.hiascend.com/….md)
+- 视频：[异构编程实践](https://www.hiascend.com/developer/courses/detail/1925466587412258817)
+  [异构编程实践](https://www.hiascend.com/….md)
+
+## 实操与实验
+- [Triton Celu算子开发](https://www.hiascend.com/developer/blog/details/0296197562496608213)：Triton Celu 算子开发代码编写和性能优化流程
+
+## 学完之后
+- 推荐学习路径：[Ascend C编程](https://www.hiascend.com/edu/growth/details/9614049b0d6044c28e291aea1d931a53)
+- 推荐认证：[昇腾异构编程基础](https://www.hiascend.com/edu/certification/detail/c9ce549104334952b06a472ef600dc53)（初级微认证）：考察昇腾 AI 处理器基本知识，含硬件架构、CANN 异构计算架构、算子开发及性能分析
+</code></pre>
+    </div>
+        </section>
+
+    <section class="section" id="howto">
+      <h2>元素拆解</h2>
+      <p class="page-lead">对照上方完整示例按块填写。链接须为 https 绝对地址，并直达具体资源正文；无内容的块整节省略，勿保留空标题。名称以官网正式用语为准，全文保持一致。课程目标与课程目录必须写成文字，勿只依赖截图。</p>
+
+      <h3 class="fn-h3">1. 文首 Frontmatter（必填）</h3>
+      <ol class="dlc-how-list">
+        <li><strong>说明</strong>：标识本课程，并与人读详情页对齐；区分内容更新与模板结构版本。</li>
+        <li><strong>写法</strong>：置于文件最上方，以 <code>---</code> 包裹；键名固定，勿增删。</li>
+        <li><strong>title</strong>：课程名称，与正文一级标题一致。</li>
+        <li><strong>type</strong>：固定为 <code>course</code>。</li>
+        <li><strong>schema_version</strong>：模板结构版本，当前固定 <code>"1.1"</code>；模板字段升级时由规范更新，业务侧勿改。</li>
+        <li><strong>id</strong>：人读页 URL 末段 ID。</li>
+        <li><strong>url</strong>：人读详情页绝对地址。</li>
+        <li><strong>updated</strong>：内容最后更新日期 <code>YYYY-MM-DD</code>（非首次发布日）；暂无则上线时填写。</li>
+      </ol>
+      <figure class="dlc-how-sample" aria-label="Frontmatter 示例">
+        <figcaption>Frontmatter</figcaption>
+        <pre><code>---
+title: 昇腾异构编程基础（速成班）
+type: course
+schema_version: "1.1"
+id: 1925466587412258817
+url: https://www.hiascend.com/developer/courses/detail/1925466587412258817
+updated: YYYY-MM-DD
+---</code></pre>
+      </figure>
+
+      <h3 class="fn-h3">2. 标题与摘要（必填）</h3>
+      <ol class="dlc-how-list">
+        <li><strong>说明</strong>：课程正式名称，以及一两句介绍（学什么、覆盖哪些环节）。</li>
+        <li><strong>写法</strong>：一级标题 <code># 课程名</code>；下一行以 <code>&gt;</code> 写摘要，对齐人读页简介。</li>
+      </ol>
+      <figure class="dlc-how-sample" aria-label="标题与摘要示例">
+        <figcaption>标题与摘要</figcaption>
+        <pre><code># 昇腾异构编程基础（速成班）
+
+&gt; 本课程深入解析昇腾 AI 处理器的达芬奇架构，涵盖 AI Core、AI CPU、层次化存储等核心组件…</code></pre>
+      </figure>
+
+      <h3 class="fn-h3">3. 课程概要（必填）</h3>
+      <ol class="dlc-how-list">
+        <li><strong>说明</strong>：面向选课与推荐的基础信息；对应人读页横幅区（Tab 之上），勿写入「课程介绍」。</li>
+        <li><strong>写法</strong>：二级标题 <code>## 课程概要</code>；下列 <code>- 字段名：内容</code>，一行一项。</li>
+        <li><strong>适用对象</strong>：明确人群，可附能力诉求。</li>
+        <li><strong>学习目标</strong>：完成本课后的综合能力（一句话）。</li>
+        <li><strong>能力等级</strong>：如 <code>入门</code>、<code>中级</code>、<code>进阶</code>；与人读页难度口径一致。</li>
+        <li><strong>学习时长</strong>：与人读页口径一致；须明确是否含视频、阅读、实操时间。</li>
+        <li><strong>关联场景</strong>：如 <code>算子编写与调用</code>。</li>
+        <li><strong>关联产品</strong>：如 <code>CANN · Ascend C</code>。</li>
+        <li><strong>环境要求</strong>：开发 / 仿真 / NPU 等条件；无人读页依据则可省略本行。</li>
+      </ol>
+      <figure class="dlc-how-sample" aria-label="课程概要示例">
+        <figcaption>课程概要</figcaption>
+        <pre><code>## 课程概要
+- 适用对象：算子开发者；希望掌握昇腾 AI 处理器架构与 Ascend C 核函数开发的工程师
+- 学习目标：掌握昇腾达芬奇架构、Ascend C 核函数与 SPMD 编程，并能用仿真工具完成自定义算子开发与性能评估
+- 能力等级：中级
+- 学习时长：100 分钟
+- 关联场景：算子编写与调用
+- 关联产品：CANN · Ascend C
+- 环境要求：CANN 开发环境；仿真分析章节需仿真工具（如 msprof）</code></pre>
+      </figure>
+
+      <h3 class="fn-h3">4. 预备知识（条件必填）</h3>
+      <ol class="dlc-how-list">
+        <li><strong>说明</strong>：区分强制门槛与建议预习，降低 Agent 对学习门槛的误判。</li>
+        <li><strong>写法</strong>：二级标题 <code>## 预备知识</code>；下设 <code>### 必备基础</code>、<code>### 推荐学习</code>。一行一项；有链接用 <code>- [名称](https://…)</code>。</li>
+      </ol>
+      <figure class="dlc-how-sample" aria-label="预备知识示例">
+        <figcaption>预备知识</figcaption>
+        <pre><code>## 预备知识
+
+### 必备基础
+- C/C++ 基础
+
+### 推荐学习
+- [昇腾AI处理器及CANN基础](https://www.hiascend.com/developer/courses/detail/1559096386317148161)</code></pre>
+      </figure>
+
+      <h3 class="fn-h3">5. 知识点（条件必填）</h3>
+      <ol class="dlc-how-list">
+        <li><strong>说明</strong>：本课程覆盖的知识主题，便于检索与问答。</li>
+        <li><strong>写法</strong>：二级标题 <code>## 知识点</code>；一行一个短主题。可在括号内补充真实专业同义词，勿堆砌无关关键词。</li>
+      </ol>
+      <figure class="dlc-how-sample" aria-label="知识点示例">
+        <figcaption>知识点</figcaption>
+        <pre><code>## 知识点
+- 昇腾达芬奇架构（AI Core、AI CPU、层次化存储）
+- Ascend C 核函数与 SPMD 编程
+- 流水线优化与 Cache 利用率
+- 仿真工具与 msprof 性能分析
+- 自定义算子开发与性能评估</code></pre>
+      </figure>
+
+      <h3 class="fn-h3">6. 课程介绍（必填）</h3>
+      <ol class="dlc-how-list">
+        <li><strong>说明</strong>：写清学完后的可观察目标；摘要已在标题下 <code>&gt;</code> 写过的，此处勿重复粘贴。</li>
+        <li><strong>写法</strong>：二级标题 <code>## 课程介绍</code>；下设 <code>### 课程目标</code>，按人读页抄为编号列表。目标优先写成可观察行动（如「能…」「说明…」）。</li>
+      </ol>
+      <figure class="dlc-how-sample" aria-label="课程介绍示例">
+        <figcaption>课程介绍</figcaption>
+        <pre><code>## 课程介绍
+
+### 课程目标
+学完本课后，能够：
+1. 说明昇腾 AI 处理器的达芬奇架构特性
+2. 使用 Ascend C 语言实现核函数开发
+3. 按 SPMD 模型完成多核数据切分
+4. 通过 msprof 工具分析指令执行时序
+5. 说明 L2 缓存对算子性能的影响，并完成基础性能评估</code></pre>
+      </figure>
+
+      <h3 class="fn-h3">7. 课程目录（必填）</h3>
+      <ol class="dlc-how-list">
+        <li><strong>说明</strong>：按章交付材料与视频，供 Agent 按章定位，而非只读课程卡片。</li>
+        <li><strong>写法</strong>：二级标题 <code>## 课程目录</code>；各章用三级标题 <code>### 第 N 章 · 名称</code>，章名按人读页抄写，编号须连续。</li>
+        <li><strong>学习材料 / 视频</strong>：各两行——上一行人读绝对 URL，下一行镜像 <code>.md</code> 绝对 URL；先人读、后 Markdown。</li>
+        <li><strong>深链</strong>：优先材料 / 视频自身地址。现网暂无独立深链时，示例暂用课程页与 <code>….md</code> 占位，上线前换成真实 URL。</li>
+      </ol>
+      <figure class="dlc-how-sample" aria-label="课程目录示例">
+        <figcaption>课程目录（节选示例，完整课程须连续编写全部章节）</figcaption>
+        <pre><code>## 课程目录
+
+### 第 1 章 · 昇腾硬件架构介绍
+- 学习材料：[昇腾硬件架构介绍](https://www.hiascend.com/developer/courses/detail/1925466587412258817)
+  [昇腾硬件架构介绍](https://www.hiascend.com/….md)
+- 视频：[昇腾硬件架构介绍](https://www.hiascend.com/developer/courses/detail/1925466587412258817)
+  [昇腾硬件架构介绍](https://www.hiascend.com/….md)</code></pre>
+      </figure>
+
+      <h3 class="fn-h3">8. 实操与实验（条件必填）</h3>
+      <ol class="dlc-how-list">
+        <li><strong>说明</strong>：与本课程配套的实操 / 实验资源。</li>
+        <li><strong>写法</strong>：二级标题 <code>## 实操与实验</code>；每条 <code>- [名称](https://…)：一句用途说明</code>。</li>
+      </ol>
+      <figure class="dlc-how-sample" aria-label="实操与实验示例">
+        <figcaption>实操与实验</figcaption>
+        <pre><code>## 实操与实验
+- [Triton Celu算子开发](https://www.hiascend.com/developer/blog/details/0296197562496608213)：Triton Celu 算子开发代码编写和性能优化流程</code></pre>
+      </figure>
+
+      <h3 class="fn-h3">9. 学完之后（条件必填）</h3>
+      <ol class="dlc-how-list">
+        <li><strong>说明</strong>：学完本课后的推荐去向，帮助回答「下一步学什么」。</li>
+        <li><strong>写法</strong>：二级标题 <code>## 学完之后</code>；可写 <code>推荐学习路径</code> / <code>推荐认证</code> 等，值为可点链接，认证可附级别与一句能力说明。</li>
+      </ol>
+      <figure class="dlc-how-sample" aria-label="学完之后示例">
+        <figcaption>学完之后</figcaption>
+        <pre><code>## 学完之后
+- 推荐学习路径：[Ascend C编程](https://www.hiascend.com/edu/growth/details/9614049b0d6044c28e291aea1d931a53)
+- 推荐认证：[昇腾异构编程基础](https://www.hiascend.com/edu/certification/detail/c9ce549104334952b06a472ef600dc53)（初级微认证）：考察昇腾 AI 处理器基本知识，含硬件架构、CANN 异构计算架构、算子开发及性能分析</code></pre>
+      </figure>
+
+      <h3 class="fn-h3">发布前核验</h3>
+      <ol class="dlc-how-list">
+        <li><strong>链接</strong>：均为 https 绝对地址；可访问；指向预期资源正文（非栏目首页、安全验证页或登录拦截页）。HTTP 200 不等于正文有效。</li>
+        <li><strong>目录</strong>：章名与人读页一致；学习材料 / 视频的人读与 <code>.md</code> 成对；占位 <code>….md</code> 不得直接上线。</li>
+        <li><strong>一致</strong>：人读页与 Markdown 的课程名、目标、章节、资源名称保持一致。</li>
+      </ol>
+    </section>
+  </main>
+</div>
+
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js?v=20261109d"></script>
+<script src="assets/js/module-sidebar.js?v=20261109d"></script>
+<script>
+(function () {
+  function toast(msg) {
+    var el = document.querySelector('.dlc-toast');
+    if (!el) {
+      el = document.createElement('div');
+      el.className = 'dlc-toast';
+      el.setAttribute('role', 'status');
+      document.body.appendChild(el);
+    }
+    el.textContent = msg || '已复制模板';
+    el.classList.add('is-show');
+    clearTimeout(el._t);
+    el._t = setTimeout(function () { el.classList.remove('is-show'); }, 1600);
+  }
+  document.querySelectorAll('[data-dlc-copy]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var root = btn.closest('.dlc-tpl');
+      var pre = root && root.querySelector('pre code, pre');
+      var text = pre ? (pre.textContent || '') : '';
+      function done() {
+        btn.classList.add('is-copied');
+        btn.setAttribute('title', '已复制');
+        btn.setAttribute('aria-label', '已复制');
+        toast('已复制 Markdown 模板');
+        setTimeout(function () {
+          btn.classList.remove('is-copied');
+          btn.setAttribute('title', '复制');
+          btn.setAttribute('aria-label', '复制');
+        }, 1400);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done).catch(function () {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); } catch (e) {}
+          ta.remove(); done();
+        });
+      } else {
+        var ta = document.createElement('textarea');
+        ta.value = text; document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); } catch (e) {}
+        ta.remove(); done();
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>

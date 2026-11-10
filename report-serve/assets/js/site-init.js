@@ -267,9 +267,18 @@
       } catch (e) {}
     }
     if (path === "design-system.html") setSurface("design-system");
+    var DLC_PAGES = {
+      "dlc-llms.html": 1,
+      "dlc-path.html": 1,
+      "dlc-course.html": 1,
+      "dlc-cert.html": 1,
+      "dlc-microcert.html": 1
+    };
+    if (DLC_PAGES[path]) setSurface("dlc");
     var extras = [
       { href: "skills.html", label: "Skill 目录" },
-      { href: "design-system.html", label: "设计系统" }
+      { href: "design-system.html", label: "设计系统" },
+      { href: "dlc-path.html", label: "学习中心 DLC" }
     ];
     document.querySelectorAll("nav.site-nav").forEach(function (nav) {
       nav.querySelectorAll('a[href="design-guide-image-text.html"]').forEach(function (a) {
@@ -300,6 +309,7 @@
         a.addEventListener("click", function () {
           var href = (a.getAttribute("href") || "").split("/").pop();
           if (href === "design-system.html") setSurface("design-system");
+          else if (DLC_PAGES[href]) setSurface("dlc");
           else if (href === "principles-overview.html" || href === "principles-background.html" || href === "principles-full-catalog.html") setSurface("principles");
           else if (["index.html", "mintlify.html", "reachability.html", "community-ui.html", "skills.html"].indexOf(href) !== -1) setSurface("");
         });
@@ -310,6 +320,13 @@
         });
         var ds = nav.querySelector('a[href="design-system.html"]');
         if (ds) ds.classList.add("active");
+      }
+      if (currentSurface() === "dlc" && DLC_PAGES[path]) {
+        nav.querySelectorAll("a").forEach(function (x) {
+          x.classList.remove("active");
+        });
+        var dlc = nav.querySelector('a[href="dlc-path.html"]');
+        if (dlc) dlc.classList.add("active");
       }
     });
   }

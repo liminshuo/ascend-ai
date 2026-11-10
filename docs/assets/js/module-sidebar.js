@@ -145,6 +145,13 @@
         group: "可验证", id: "outcome", href: "principles-expected.html", label: "任务结果可确认",
         pageIds: ["outcome", "verify", "expected"]
       }
+    ],
+    dlc: [
+      { group: null, id: "dlc-llms", href: "dlc-llms.html", label: "llms.txt 索引" },
+      { group: null, id: "dlc-path", href: "dlc-path.html", label: "学习路径" },
+      { group: null, id: "dlc-course", href: "dlc-course.html", label: "学习课程" },
+      { group: null, id: "dlc-cert", href: "dlc-cert.html", label: "开发者认证" },
+      { group: null, id: "dlc-microcert", href: "dlc-microcert.html", label: "微认证" }
     ]
   };
 
@@ -183,7 +190,7 @@
     }
   });
 
-  var STORE_KEY = module === "design-system" ? "ds-nav-open" : "aff-nav-open";
+  var STORE_KEY = module === "design-system" ? "ds-nav-open" : (module === "dlc" ? "dlc-nav-open" : "aff-nav-open");
   var openMap = {};
   try {
     openMap = JSON.parse(sessionStorage.getItem(STORE_KEY) || "{}") || {};
@@ -477,12 +484,15 @@
     if (module === "design-system") {
       try { sessionStorage.setItem(SURFACE_KEY, "design-system"); } catch (errDs) {}
     }
+    if (module === "dlc") {
+      try { sessionStorage.setItem(SURFACE_KEY, "dlc"); } catch (errDlc) {}
+    }
     try {
       sessionStorage.setItem("aff-sidebar-scroll", String(aside.scrollTop));
     } catch (err2) {}
   });
 
-  if (module === "principles" || module === "design-system") {
+  if (module === "principles" || module === "design-system" || module === "dlc") {
     document.documentElement.style.scrollBehavior = "auto";
     if ("scrollRestoration" in history) history.scrollRestoration = "manual";
     window.scrollTo(0, 0);

@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>llms.txt 索引 · 学习中心 DLC · 昇腾社区 AI 亲和原则</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid var(--color-border);
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: 100%; max-width: none; margin: 0; padding: 0 24px; box-sizing: border-box;
+    height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: var(--color-text); text-decoration: none; white-space: nowrap; margin-right: 40px;
+  }
+  .topbar .brand span { color: var(--color-primary); }
+  .topbar .site-nav { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; flex-wrap: wrap; }
+  .topbar .site-nav > a {
+    text-decoration: none; color: var(--color-text-secondary); font-size: var(--text-body); font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .topbar .site-nav > a:hover { color: var(--color-primary); background: var(--color-bg); text-decoration: none; }
+  .topbar .site-nav > a.active { color: var(--color-primary); background: var(--color-bg); font-weight: 600; }
+  body.inner-page .page-wrapper { min-height: 100vh; }
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: var(--space-stack, 16px);
+  }
+  .page-header > h1 {
+    font-family: var(--font);
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1-weight, 600);
+    line-height: var(--text-h1-lh);
+    letter-spacing: -0.02em;
+    margin: 0;
+    padding-top: var(--space-h1-pad-y, 32px);
+    padding-bottom: var(--space-h1-pad-y, 32px);
+    color: var(--color-text);
+  }
+  body.inner-page.agent-entry-page .main-content .section > h2.dlc-h2-split {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  body.inner-page.agent-entry-page .main-content .section > h2.dlc-h2-split > .dlc-source-link {
+    margin-left: auto;
+    flex-shrink: 0;
+    font-size: var(--text-body);
+    font-weight: 500;
+    line-height: 22px;
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+  body.inner-page.agent-entry-page .main-content .section > h2.dlc-h2-split > .dlc-source-link:hover {
+    text-decoration: underline;
+  }
+  body.inner-page.agent-entry-page:has(#module-sidebar) .main-content {
+    padding-top: var(--content-main-pad-top, 16px);
+    padding-left: 0;
+    padding-right: 0;
+  }
+  body.inner-page.agent-entry-page:has(#module-sidebar) .main-content > .page-header,
+  body.inner-page.agent-entry-page:has(#module-sidebar) .main-content > .section {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page.agent-entry-page .main-content .section > h2 {
+    font-size: var(--text-h2, 24px) !important;
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px) !important;
+    letter-spacing: -0.01em;
+    margin-top: 0 !important;
+    margin-bottom: var(--space-stack, 16px) !important;
+    padding-top: var(--space-h2-pad-y, 16px) !important;
+    padding-bottom: var(--space-h2-pad-y, 16px) !important;
+    border-bottom: none;
+    color: var(--color-text, var(--color-text));
+  }
+  body.inner-page.agent-entry-page .main-content > .section:first-of-type > h2 {
+    margin-top: 0 !important;
+  }
+  body.inner-page.agent-entry-page .main-content > .section {
+    margin-bottom: var(--space-stack, 16px) !important;
+  }
+  body.inner-page.agent-entry-page .main-content .section h3 { height: auto; }
+  h3.fn-h3 {
+    margin: 0;
+    padding-top: var(--space-h3-pad-y, 16px);
+    padding-bottom: var(--space-h3-pad-y, 16px);
+    font-size: var(--text-h3, 18px);
+    line-height: var(--text-h3-lh, 28px);
+    font-weight: var(--text-h3-weight, 650);
+    color: var(--color-text, var(--color-text));
+    letter-spacing: -0.01em;
+  }
+  .page-header > .page-lead {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  .page-lead {
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  .section > h2 + .page-lead { margin-top: 0; margin-bottom: var(--space-stack, 16px); }
+  .dlc-map {
+    margin: 0 0 16px;
+    padding: 0;
+    list-style: none;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
+  }
+  .dlc-map li {
+    display: grid;
+    grid-template-columns: 7.5em 1fr;
+    gap: 12px;
+    padding: 10px 14px;
+    font-size: var(--text-body);
+    line-height: 22px;
+    border-top: 1px solid #eee;
+  }
+  .dlc-map li:first-child { border-top: 0; }
+  .dlc-map .k { font-weight: 650; color: var(--color-text); }
+  .dlc-map .v { color: var(--color-text-secondary); }
+  .dlc-map a { color: var(--color-primary); text-decoration: none; }
+  .dlc-map a:hover { text-decoration: underline; }
+  .dlc-map code {
+    font-size: 12px;
+    padding: 1px 5px;
+    border-radius: 4px;
+    background: var(--color-bg, #f5f7fa);
+    color: var(--color-text);
+  }
+  .dlc-tpl {
+    position: relative;
+    margin: 0 0 var(--space-stack, 16px);
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    background: #fff;
+    overflow: hidden;
+  }
+  .dlc-tpl-bar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 0;
+    padding: 8px 14px;
+    box-sizing: border-box;
+    background: #f4f4f5;
+    border-bottom: 1px solid #e5e5e5;
+    line-height: 1;
+  }
+  .dlc-tpl-bar > .dlc-tpl-bar-title {
+    margin: 0 !important;
+    padding: 0;
+    border: 0;
+    font-size: 13px;
+    line-height: 16px;
+    font-weight: 600;
+    color: #525252;
+  }
+  .dlc-copy {
+    appearance: none;
+    -webkit-appearance: none;
+    border: 0;
+    outline: none;
+    background: none;
+    box-shadow: none;
+    color: #737373;
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    min-height: 16px;
+    max-width: 16px;
+    max-height: 16px;
+    padding: 0;
+    margin: 0;
+    border-radius: 0;
+    line-height: 0;
+    font-size: 0;
+    display: block;
+    cursor: pointer;
+    flex: 0 0 16px;
+  }
+  .dlc-copy:hover,
+  .dlc-copy:focus-visible { color: var(--color-primary, #1476ff); background: none; }
+  .dlc-copy.is-copied { color: #15803d; background: none; }
+  .dlc-copy svg {
+    display: block;
+    width: 16px;
+    height: 16px;
+    margin: 0;
+  }
+  .dlc-tpl pre {
+    margin: 0;
+    padding: 16px 18px 20px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: min(70vh, 720px);
+    background: #fff;
+    color: #191919;
+    border-radius: 0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 13px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+  .dlc-tpl pre code {
+    display: block;
+    background: transparent;
+    color: inherit;
+    padding: 0;
+    white-space: inherit;
+    word-break: inherit;
+    overflow-wrap: inherit;
+  }
+  .dlc-tpl pre a {
+    color: var(--color-link, #0067d1);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .dlc-tpl pre a:hover { color: var(--color-link-hover, #0050a0); }
+  .dlc-tpl mark.hl {
+    background: #fff3bf;
+    color: inherit;
+    padding: 0 2px;
+    border-radius: 2px;
+  }
+  #howto > h2 + .fn-h3,
+  #howto > .page-lead + .fn-h3 { margin-top: 0; }
+  #howto .dlc-how-list {
+    margin: 0 0 var(--space-stack, 16px);
+    padding-left: 1.25em;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text);
+  }
+  #howto .dlc-how-list li + li { margin-top: 8px; }
+  #howto .dlc-how-list strong { font-weight: 650; }
+  #howto .dlc-how-list code {
+    font-size: 12px;
+    padding: 1px 5px;
+    border-radius: 4px;
+    background: var(--color-bg, #f5f7fa);
+  }
+  .dlc-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 28px;
+    transform: translateX(-50%) translateY(12px);
+    z-index: 300;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(25,25,25,.14);
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--color-text);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .18s ease, transform .18s ease;
+  }
+  .dlc-toast.is-show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+</style>
+</head>
+<body class="inner-page agent-entry-page" data-module="dlc" data-page="dlc-llms" data-no-surface-tabs>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span>AI 亲和原则</span></a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="mintlify.html">友商对照</a>
+      <a href="reachability.html">社区诊断</a>
+      <a href="principles-overview.html">亲和原则</a>
+      <a href="community-ui.html">组件亲和</a>
+      <a href="skills.html">Skill 目录</a>
+      <a href="design-system.html">设计系统</a>
+      <a href="dlc-path.html" class="active">学习中心 DLC</a>
+    </nav>
+  </div>
+</div>
+
+<div class="page-wrapper">
+  <aside id="module-sidebar"></aside>
+  <main class="main-content">
+    <div class="page-header">
+      <h1>llms.txt 索引</h1>
+    </div>
+
+    <section class="section">
+      <h2 class="dlc-h2-split">根 llms.txt<a class="dlc-source-link" href="https://www.hiascend.com/llms.txt" target="_blank" rel="noopener">现网根索引</a></h2>
+      <p class="page-lead">按业务主题组织分册链接；每条只说明分册类型，不展开详情页摘要。一个分册一个入口；仅登记已部署可访问的分册。</p>
+      <div class="dlc-tpl">
+        <div class="dlc-tpl-bar">
+          <p class="dlc-tpl-bar-title">https://www.hiascend.com/llms.txt · ## 学习（节选）</p>
+          <button type="button" class="dlc-copy" data-dlc-copy aria-label="复制" title="复制">
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M10.5 5.5V4A1.5 1.5 0 0 0 9 2.5H4A1.5 1.5 0 0 0 2.5 4v5A1.5 1.5 0 0 0 4 10.5h1.5" stroke="currentColor" stroke-width="1.2"/></svg>
+          </button>
+        </div>
+        <pre><code>## 学习
+
+…（career-certification / experiment / training 等其他分册略）
+
+<mark class="hl">- [学习 - growth](https://www.hiascend.com/learning/growth/llms.txt): 学习路径分册</mark>
+<mark class="hl">- [学习 - courses](https://www.hiascend.com/learning/courses/llms.txt): 学习课程分册</mark>
+<mark class="hl">- [学习 - developer-certification](https://www.hiascend.com/learning/developer-certification/llms.txt): 开发者认证分册</mark>
+<mark class="hl">- [学习 - certification](https://www.hiascend.com/learning/certification/llms.txt): 微认证分册</mark>
+</code></pre>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="dlc-h2-split">分册 · 学习路径<a class="dlc-source-link" href="dlc-path.html">DLC 模板</a></h2>
+      <p class="page-lead">收录完整学习路径 Markdown；说明侧重适用对象、学习阶段与能力覆盖。</p>
+      <div class="dlc-tpl">
+        <div class="dlc-tpl-bar">
+          <p class="dlc-tpl-bar-title">learning/growth/llms.txt · 以 Ascend C编程 为例</p>
+          <button type="button" class="dlc-copy" data-dlc-copy aria-label="复制" title="复制">
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M10.5 5.5V4A1.5 1.5 0 0 0 9 2.5H4A1.5 1.5 0 0 0 2.5 4v5A1.5 1.5 0 0 0 4 10.5h1.5" stroke="currentColor" stroke-width="1.2"/></svg>
+          </button>
+        </div>
+        <pre><code># 学习 - growth
+
+- [Ascend C编程](<a href="dlc-path.html">https://www.hiascend.com/llms-content/learning/growth/zh_edu_growth_details_9614049b0d6044c28e291aea1d931a53.md</a>): 面向 Ascend C 算子开发者，覆盖算子开发、算子调用、性能分析与优化等学习阶段。
+</code></pre>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="dlc-h2-split">分册 · 学习课程<a class="dlc-source-link" href="dlc-course.html">DLC 模板</a></h2>
+      <p class="page-lead">收录单门课程 Markdown；说明侧重课程主题、核心知识点与实践内容。</p>
+      <div class="dlc-tpl">
+        <div class="dlc-tpl-bar">
+          <p class="dlc-tpl-bar-title">learning/courses/llms.txt · 以 昇腾异构编程基础（速成班） 为例</p>
+          <button type="button" class="dlc-copy" data-dlc-copy aria-label="复制" title="复制">
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M10.5 5.5V4A1.5 1.5 0 0 0 9 2.5H4A1.5 1.5 0 0 0 2.5 4v5A1.5 1.5 0 0 0 4 10.5h1.5" stroke="currentColor" stroke-width="1.2"/></svg>
+          </button>
+        </div>
+        <pre><code># 学习 - courses
+
+- [昇腾异构编程基础（速成班）](<a href="dlc-course.html">https://www.hiascend.com/llms-content/learning/courses/zh_developer_courses_detail_1925466587412258817.md</a>): 介绍昇腾 AI 处理器架构、CANN 异构计算及 Ascend C 核函数编程，涵盖自定义算子开发与性能评估。
+</code></pre>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="dlc-h2-split">分册 · 开发者认证<a class="dlc-source-link" href="dlc-cert.html">DLC 模板</a></h2>
+      <p class="page-lead">收录正式开发者认证 Markdown；说明侧重认证对象、考查领域与能力范围。勿与微认证分册混收。</p>
+      <div class="dlc-tpl">
+        <div class="dlc-tpl-bar">
+          <p class="dlc-tpl-bar-title">learning/developer-certification/llms.txt · 以 算子开发者认证（入门级） 为例</p>
+          <button type="button" class="dlc-copy" data-dlc-copy aria-label="复制" title="复制">
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M10.5 5.5V4A1.5 1.5 0 0 0 9 2.5H4A1.5 1.5 0 0 0 2.5 4v5A1.5 1.5 0 0 0 4 10.5h1.5" stroke="currentColor" stroke-width="1.2"/></svg>
+          </button>
+        </div>
+        <pre><code># 学习 - developer-certification
+
+- [算子开发者认证（入门级）](<a href="dlc-cert.html">https://www.hiascend.com/llms-content/learning/developer-certification/zh_edu_developer-certification_detail_3a0544a46aad4d588630c15bc83f2ee9.md</a>): 面向算子开发者，考查昇腾 AI 处理器架构、Kernel 编程、自定义算子开发、测试调优及模型迁移。
+</code></pre>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="dlc-h2-split">分册 · 微认证<a class="dlc-source-link" href="dlc-microcert.html">DLC 模板</a></h2>
+      <p class="page-lead">收录范围更窄的微认证 Markdown；说明侧重特定技术主题与核心实践。勿与正式开发者认证分册混收。</p>
+      <div class="dlc-tpl">
+        <div class="dlc-tpl-bar">
+          <p class="dlc-tpl-bar-title">learning/certification/llms.txt · 以 多机多卡并行推理 为例</p>
+          <button type="button" class="dlc-copy" data-dlc-copy aria-label="复制" title="复制">
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M10.5 5.5V4A1.5 1.5 0 0 0 9 2.5H4A1.5 1.5 0 0 0 2.5 4v5A1.5 1.5 0 0 0 4 10.5h1.5" stroke="currentColor" stroke-width="1.2"/></svg>
+          </button>
+        </div>
+        <pre><code># 学习 - certification
+
+- [多机多卡并行推理](<a href="dlc-microcert.html">https://www.hiascend.com/llms-content/learning/certification/zh_edu_certification_detail_e87272e2648d4c61a4ed39c5930397c2.md</a>): 围绕 MindIE 大模型推理部署，介绍 DeepSeek 模型迁移适配、多机多卡并行策略、量化及性能优化。
+</code></pre>
+      </div>
+    </section>
+
+    <section class="section" id="howto">
+      <h2>元素拆解</h2>
+      <p class="page-lead">根索引保持轻量，分册保持可发现，详情页保持完整。不建议给分册加 YAML、标签等多余元数据；一行 Markdown 条目即可。</p>
+
+      <h3 class="fn-h3">1. 三级职责</h3>
+      <ol class="dlc-how-list">
+        <li><strong>根索引</strong>：只列分册入口与分册类型说明；不写详情页摘要，避免与分册重复维护。</li>
+        <li><strong>内容分册</strong>：按业务类型列详情页；每条含标题、Markdown 绝对链接、一句说明。</li>
+        <li><strong>Markdown 详情页</strong>：完整内容、目标、规则与资源；索引不替代详情页。</li>
+      </ol>
+
+      <h3 class="fn-h3">2. 分册一行格式</h3>
+      <ol class="dlc-how-list">
+        <li><strong>写法</strong>：<code>- [内容标题](https://www.hiascend.com/llms-content/learning/分册路径/xxx.md): 一句说明</code></li>
+        <li><strong>内容标题</strong>：与详情页 Frontmatter <code>title</code> 完全一致。</li>
+        <li><strong>Markdown 链接</strong>：HTTPS 绝对地址，直达 <code>.md</code> 正文；勿用人读页、栏目首页或中间跳转页。</li>
+        <li><strong>一句说明</strong>：概括核心主题、覆盖范围或适用场景，帮助 Agent 判断是否打开详情页；须与正文一致，勿超范围、勿堆关键词、通常一至两句。</li>
+      </ol>
+      <div class="dlc-tpl">
+        <div class="dlc-tpl-bar">
+          <p class="dlc-tpl-bar-title">条目一行</p>
+          <button type="button" class="dlc-copy" data-dlc-copy aria-label="复制" title="复制">
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M10.5 5.5V4A1.5 1.5 0 0 0 9 2.5H4A1.5 1.5 0 0 0 2.5 4v5A1.5 1.5 0 0 0 4 10.5h1.5" stroke="currentColor" stroke-width="1.2"/></svg>
+          </button>
+        </div>
+        <pre><code>- [内容标题](https://www.hiascend.com/llms-content/learning/…/xxx.md): 一句说明
+</code></pre>
+      </div>
+
+      <h3 class="fn-h3">3. 分册分类边界</h3>
+      <ol class="dlc-how-list">
+        <li><strong>growth</strong>：完整学习路径（多阶段、多资源串联）。</li>
+        <li><strong>courses</strong>：单门课程详情。</li>
+        <li><strong>developer-certification</strong>：正式开发者认证科目。</li>
+        <li><strong>certification</strong>：微认证（范围更窄、常以课程章节为内容核心）。</li>
+      </ol>
+    </section>
+  </main>
+</div>
+
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js?v=20261109d"></script>
+<script src="assets/js/module-sidebar.js?v=20261109d"></script>
+<script>
+(function () {
+  function toast(msg) {
+    var el = document.querySelector('.dlc-toast');
+    if (!el) {
+      el = document.createElement('div');
+      el.className = 'dlc-toast';
+      el.setAttribute('role', 'status');
+      document.body.appendChild(el);
+    }
+    el.textContent = msg || '已复制模板';
+    el.classList.add('is-show');
+    clearTimeout(el._t);
+    el._t = setTimeout(function () { el.classList.remove('is-show'); }, 1600);
+  }
+  document.querySelectorAll('[data-dlc-copy]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var root = btn.closest('.dlc-tpl');
+      var pre = root && root.querySelector('pre');
+      var text = pre ? (pre.innerText || pre.textContent || '') : '';
+      function done() {
+        btn.classList.add('is-copied');
+        btn.setAttribute('title', '已复制');
+        btn.setAttribute('aria-label', '已复制');
+        toast('已复制模板');
+        setTimeout(function () {
+          btn.classList.remove('is-copied');
+          btn.setAttribute('title', '复制');
+          btn.setAttribute('aria-label', '复制');
+        }, 1400);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done).catch(function () {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); } catch (e) {}
+          ta.remove(); done();
+        });
+      } else {
+        var ta = document.createElement('textarea');
+        ta.value = text; document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); } catch (e) {}
+        ta.remove(); done();
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>

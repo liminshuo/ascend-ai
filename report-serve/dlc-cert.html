@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>开发者认证 · 学习中心 DLC · 昇腾社区 AI 亲和原则</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid var(--color-border);
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: 100%; max-width: none; margin: 0; padding: 0 24px; box-sizing: border-box;
+    height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: var(--color-text); text-decoration: none; white-space: nowrap; margin-right: 40px;
+  }
+  .topbar .brand span { color: var(--color-primary); }
+  .topbar .site-nav { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; flex-wrap: wrap; }
+  .topbar .site-nav > a {
+    text-decoration: none; color: var(--color-text-secondary); font-size: var(--text-body); font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .topbar .site-nav > a:hover { color: var(--color-primary); background: var(--color-bg); text-decoration: none; }
+  .topbar .site-nav > a.active { color: var(--color-primary); background: var(--color-bg); font-weight: 600; }
+  body.inner-page .page-wrapper { min-height: 100vh; }
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: var(--space-stack, 16px);
+  }
+  .page-header > h1 {
+    font-family: var(--font);
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1-weight, 600);
+    line-height: var(--text-h1-lh);
+    letter-spacing: -0.02em;
+    margin: 0;
+    padding-top: var(--space-h1-pad-y, 32px);
+    padding-bottom: var(--space-h1-pad-y, 32px);
+    color: var(--color-text);
+  }
+  .dlc-md-deploy-note {
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  .section > h2 + .dlc-md-deploy-note { margin-top: 0; }
+  .dlc-md-deploy-card {
+    margin: 0;
+    padding: 16px;
+    box-sizing: border-box;
+    border-radius: 8px;
+    background: var(--color-bg, #f5f7fa);
+  }
+  .dlc-md-deploy {
+    margin: 0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 22px;
+    color: var(--color-text);
+    word-break: break-all;
+  }
+  body.inner-page.agent-entry-page .main-content .section > h2.dlc-h2-split {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  body.inner-page.agent-entry-page .main-content .section > h2.dlc-h2-split > .dlc-source-link {
+    margin-left: auto;
+    flex-shrink: 0;
+    font-size: var(--text-body);
+    font-weight: 500;
+    line-height: 22px;
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+  body.inner-page.agent-entry-page .main-content .section > h2.dlc-h2-split > .dlc-source-link:hover {
+    text-decoration: underline;
+  }
+  body.inner-page.agent-entry-page:has(#module-sidebar) .main-content {
+    padding-top: var(--content-main-pad-top, 16px);
+    padding-left: 0;
+    padding-right: 0;
+  }
+  body.inner-page.agent-entry-page:has(#module-sidebar) .main-content > .page-header,
+  body.inner-page.agent-entry-page:has(#module-sidebar) .main-content > .section {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page.agent-entry-page .main-content .section > h2 {
+    font-size: var(--text-h2, 24px) !important;
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px) !important;
+    letter-spacing: -0.01em;
+    margin-top: 0 !important;
+    margin-bottom: var(--space-stack, 16px) !important;
+    padding-top: var(--space-h2-pad-y, 16px) !important;
+    padding-bottom: var(--space-h2-pad-y, 16px) !important;
+    border-bottom: none;
+    color: var(--color-text, var(--color-text));
+  }
+  body.inner-page.agent-entry-page .main-content > .section:first-of-type > h2 {
+    margin-top: 0 !important;
+  }
+  body.inner-page.agent-entry-page .main-content > .section {
+    margin-bottom: var(--space-stack, 16px) !important;
+  }
+  body.inner-page.agent-entry-page .main-content .section h3 { height: auto; }
+  h3.fn-h3 {
+    margin: 0;
+    padding-top: var(--space-h3-pad-y, 16px);
+    padding-bottom: var(--space-h3-pad-y, 16px);
+    font-size: var(--text-h3, 18px);
+    line-height: var(--text-h3-lh, 28px);
+    font-weight: var(--text-h3-weight, 650);
+    color: var(--color-text, var(--color-text));
+    letter-spacing: -0.01em;
+  }
+  .page-header > .page-lead {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  .page-lead {
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  .section > h2 + .page-lead { margin-top: 0; margin-bottom: var(--space-stack, 16px); }
+  .dlc-tpl {
+    position: relative;
+    margin: 0;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    background: #fff;
+    overflow: hidden;
+  }
+  .dlc-tpl-bar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 0;
+    padding: 8px 14px;
+    box-sizing: border-box;
+    background: #f4f4f5;
+    border-bottom: 1px solid #e5e5e5;
+    line-height: 1;
+  }
+  .dlc-tpl-bar > .dlc-tpl-bar-title {
+    margin: 0 !important;
+    padding: 0;
+    border: 0;
+    font-size: 13px;
+    line-height: 16px;
+    font-weight: 600;
+    color: #525252;
+  }
+  .dlc-copy {
+    appearance: none;
+    -webkit-appearance: none;
+    border: 0;
+    outline: none;
+    background: none;
+    box-shadow: none;
+    color: #737373;
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    min-height: 16px;
+    max-width: 16px;
+    max-height: 16px;
+    padding: 0;
+    margin: 0;
+    border-radius: 0;
+    line-height: 0;
+    font-size: 0;
+    display: block;
+    cursor: pointer;
+    flex: 0 0 16px;
+  }
+  .dlc-copy:hover,
+  .dlc-copy:focus-visible { color: var(--color-primary, #1476ff); background: none; }
+  .dlc-copy.is-copied { color: #15803d; background: none; }
+  .dlc-copy svg {
+    display: block;
+    width: 16px;
+    height: 16px;
+    margin: 0;
+  }
+  .dlc-tpl pre {
+    margin: 0;
+    padding: 16px 18px 20px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: min(70vh, 720px);
+    background: #fff;
+    color: #191919;
+    border-radius: 0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 13px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+  .dlc-tpl pre code {
+    display: block;
+    background: transparent;
+    color: inherit;
+    padding: 0;
+    white-space: inherit;
+    word-break: inherit;
+    overflow-wrap: inherit;
+  }
+  #howto > h2 + .fn-h3,
+  #howto > .page-lead + .fn-h3 { margin-top: 0; }
+  #howto .dlc-how-list {
+    margin: 0 0 var(--space-stack, 16px);
+    padding-left: 1.25em;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text);
+  }
+  #howto .dlc-how-list li + li { margin-top: 8px; }
+  #howto .dlc-how-list strong { font-weight: 650; }
+  #howto .dlc-how-list code,
+  #howto .dlc-how-sample code {
+    font-size: 12px;
+    padding: 1px 5px;
+    border-radius: 4px;
+    background: var(--color-bg, #f5f7fa);
+  }
+  #howto .dlc-how-sample {
+    margin: 0 0 var(--space-stack, 16px);
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    background: #fff;
+    overflow: hidden;
+  }
+  #howto .dlc-how-sample figcaption {
+    margin: 0;
+    padding: 8px 14px;
+    background: #f4f4f5;
+    border-bottom: 1px solid #e5e5e5;
+    font-size: 13px;
+    line-height: 16px;
+    font-weight: 600;
+    color: #525252;
+  }
+  #howto .dlc-how-sample pre {
+    margin: 0;
+    padding: 14px 16px;
+    overflow-x: hidden;
+    background: #fff;
+    color: #191919;
+    border-radius: 0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 13px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  #howto .dlc-how-sample pre code {
+    display: block;
+    padding: 0;
+    background: transparent;
+    color: inherit;
+    font-size: inherit;
+  }
+  .dlc-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 28px;
+    transform: translateX(-50%) translateY(12px);
+    z-index: 300;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(25,25,25,.14);
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--color-text);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .18s ease, transform .18s ease;
+  }
+  .dlc-toast.is-show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+</style>
+</head>
+<body class="inner-page agent-entry-page" data-module="dlc" data-page="dlc-cert" data-no-surface-tabs>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span>AI 亲和原则</span></a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="mintlify.html">友商对照</a>
+      <a href="reachability.html">社区诊断</a>
+      <a href="principles-overview.html">亲和原则</a>
+      <a href="community-ui.html">组件亲和</a>
+      <a href="skills.html">Skill 目录</a>
+      <a href="design-system.html">设计系统</a>
+      <a href="dlc-path.html" class="active">学习中心 DLC</a>
+    </nav>
+  </div>
+</div>
+
+<div class="page-wrapper">
+  <aside id="module-sidebar"></aside>
+  <main class="main-content">
+    <div class="page-header">
+      <h1>开发者认证</h1>
+    </div>
+
+    <section class="section">
+      <h2>Markdown 文件部署的推荐 URL</h2>
+      <p class="dlc-md-deploy-note">下方模板中的 MD 文件，是「以 算子开发者认证（入门级） 为例」人读页的镜像。</p>
+      <div class="dlc-md-deploy-card"><p class="dlc-md-deploy">https://www.hiascend.com/llms-content/learning/developer-certification/zh_edu_developer-certification_detail_3a0544a46aad4d588630c15bc83f2ee9.md</p></div>
+    </section>
+
+    <section class="section">
+      <h2 class="dlc-h2-split">开发者认证 Markdown 文件模板<a class="dlc-source-link" href="https://www.hiascend.com/edu/developer-certification/detail/3a0544a46aad4d588630c15bc83f2ee9" target="_blank" rel="noopener">以 算子开发者认证（入门级） 为例</a></h2>
+      <div class="dlc-tpl">
+      <div class="dlc-tpl-bar">
+        <p class="dlc-tpl-bar-title">operator-developer-certification-entry.cert.md</p>
+        <button type="button" class="dlc-copy" data-dlc-copy aria-label="复制" title="复制">
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M10.5 5.5V4A1.5 1.5 0 0 0 9 2.5H4A1.5 1.5 0 0 0 2.5 4v5A1.5 1.5 0 0 0 4 10.5h1.5" stroke="currentColor" stroke-width="1.2"/></svg>
+        </button>
+      </div>
+      <pre><code>---
+title: "算子开发者认证（入门级）"
+type: "developer-certification"
+schema_version: "1.1"
+id: "3a0544a46aad4d588630c15bc83f2ee9"
+url: "https://www.hiascend.com/edu/developer-certification/detail/3a0544a46aad4d588630c15bc83f2ee9"
+updated: "YYYY-MM-DD"
+---
+
+# 算子开发者认证（入门级）
+
+&gt; 本认证涵盖算子开发的多个场景，综合考察学员对昇腾AI处理器架构、自定义算子开发与测试调优、kernel编程、模型迁移的理解，以及算子模板库、性能分析工具的应用。
+
+## 认证概要
+- 适用对象：对算子开发感兴趣的伙伴、企业客户、高校师生和个人开发者
+- 认证目标：综合考察昇腾 AI 处理器架构、自定义算子开发与调优、Kernel 编程、模型迁移及模板库与性能分析工具的应用能力
+- 认证级别：入门级
+- 考试形式：在线考试（仅电脑端）
+- 考试时长：100 分钟
+- 通过条件：考试总分达到 60 分及以上
+- 考试条件：完成实名认证后参加考试
+- 证书有效期：2 年
+- 关联产品：CANN · Ascend C
+- 认证价值：验证学员在昇腾算子开发、模型迁移与性能优化方面的综合知识和应用能力；定位为 CANN 开源开放推荐认证
+
+## 认证内容
+
+### 昇腾AI处理器架构（考试占比：14%）
+1. 昇腾AI处理器组件功能
+2. 分离耦合架构区别与优势
+3. CANN五层体系功能
+4. 控制单元与同步机制
+5. HCCL定义与核心价值
+6. 软硬件同步机制原理与实现
+
+### 存储与计算单元功能（考试占比：10%）
+1. 计算单元分工与协作机制
+2. MTE数据流向与多级缓存
+3. Queue同步与内存管理
+4. 计算、存储与搬运单元的分工与协作
+5. Tile层数据搬运与计算流水编排
+
+### 并行计算与Kernel编程（考试占比：13%）
+1. BlockDim取值与优化策略
+2. SPMD并行原理与block_idx应用
+3. 核函数定义与调用方法
+4. 经典并行和通用调优策略应用
+
+### 模板库基本概念（考试占比：13%）
+1. 模板库基本概念与5层架构
+2. CATLASS定位、价值与应用场景
+3. 模板库支持的数据类型与分层Block复用
+
+### 自定义算子开发（考试占比：10%）
+1. Vector/Cube编程范式
+2. 自定义算子开发与接入注册
+3. MIX算子代码框架与实现
+4. GEMV AIV/AIC实现差异与方案要点
+
+### 性能分析工具使用与性能评估（考试占比：10%）
+1. 仿真分析波形解读与缺陷识别
+2. msprof性能分析工具使用
+3. 可视化定性识别瓶颈与性能指标量化评估
+
+### 模型迁移、适配与精度调试（考试占比：10%）
+1. 模型迁移优势与挑战
+2. 模型迁移分析可行性评估
+3. 自动、工具、手工迁移的选择与应用
+4. 模型迁移适配及环境部署
+
+### GEMM类算子实现与优化（考试占比：10%）
+1. GEMM通用分块计算方案
+2. 双缓冲与Swizzle排布优化
+3. 数据格式与Padding对齐优化
+
+### 算子性能调优（考试占比：10%）
+1. 自定义算子优化策略（数据搬运、内存、API）
+2. Cube与Vector核架构
+3. 4种映射策略的优化逻辑与访存影响
+
+## 在线学习
+
+### 推荐课程
+- [课程1：《昇腾异构编程基础（速成班）》](https://www.hiascend.com/developer/courses/detail/1925466587412258817)
+  - 资源说明：深入解析昇腾 AI 处理器达芬奇架构及 AI Core、AI CPU、层次化存储等核心组件
+  - 关联考查领域：昇腾AI处理器架构、存储与计算单元功能
+- [课程2：《Ascend C算子开发（入门）》](https://www.hiascend.com/developer/courses/detail/1691696509765107713)
+  - 资源说明：通过课程讲解及样例实操学习 Ascend C 算子开发
+  - 关联考查领域：并行计算与Kernel编程、自定义算子开发
+- [课程3：《算子注册与模型迁移》](https://www.hiascend.com/developer/courses/detail/1925016082085007361)
+  - 资源说明：讲解 PyTorch 模型向昇腾 NPU 迁移与自定义算子库注册流程
+  - 关联考查领域：模型迁移、适配与精度调试、自定义算子开发
+- [课程4：《算子模板库》](https://www.hiascend.com/developer/courses/detail/1925707689125974018)
+  - 资源说明：介绍 CATLASS 模板化开发，并通过 GroupGEMM 掌握矩阵乘法扩展应用
+  - 关联考查领域：模板库基本概念、GEMM类算子实现与优化
+- [课程5：CATLASS算子开发（入门）](https://www.hiascend.com/developer/courses/detail/1995421335433535490)
+  - 资源说明：介绍 CATLASS 背景、核心特性及从环境搭建到编译执行的入门流程
+  - 关联考查领域：模板库基本概念
+
+### 推荐案例
+- [《算子模板库》案例：昇腾算子模板库开发(上)](https://www.hiascend.com/developer/blog/details/0237183374795476212)
+  - 资源说明：模板库编程基础入门，上篇：第1章 ~ 第4章
+  - 关联考查领域：模板库基本概念
+- [《算子模板库》案例：昇腾算子模板库开发(中)](https://www.hiascend.com/developer/blog/details/02102183375265137182)
+  - 资源说明：模板库编程基础入门，中篇：第5章 ~ 第8章
+  - 关联考查领域：模板库基本概念、GEMM类算子实现与优化
+- [《算子模板库》案例：昇腾算子模板库开发(下)](https://www.hiascend.com/developer/blog/details/0237183375559754213)
+  - 资源说明：模板库编程基础入门，下篇：第9章 ~ 第12章
+  - 关联考查领域：模板库基本概念、算子性能调优
+
+## 考试说明
+
+### 考试规则
+1. 考试仅支持电脑端操作
+2. 考试期间严禁使用 AI 工具辅助作答
+
+### 证书获取与查询
+1. 考试及实名认证通过后 24 小时，可前往个人中心-我的证书-开发者认证证书查看或下载电子证书
+2. 证书自颁布之日起 2 年内有效
+3. 开发者认证证书支持在社区公开查询，可前往[人才认证-证书查询](https://www.hiascend.com/edu/certification/query)页面使用证书编号进行查询
+</code></pre>
+    </div>
+        </section>
+
+    <section class="section" id="howto">
+      <h2>元素拆解</h2>
+      <p class="page-lead">对照上方完整示例按块填写。链接须为 https 绝对地址，并直达具体资源正文；无内容的块整节省略，勿保留空标题。名称以官网正式用语为准，全文保持一致。认证内容与考查要点必须写成文字，勿只依赖截图。</p>
+
+      <h3 class="fn-h3">1. 文首 Frontmatter（必填）</h3>
+      <ol class="dlc-how-list">
+        <li><strong>说明</strong>：标识本认证，并与人读详情页对齐；区分内容更新与模板结构版本。</li>
+        <li><strong>写法</strong>：置于文件最上方，以 <code>---</code> 包裹；键名固定，勿增删。字符串值统一加双引号，便于 YAML 解析。</li>
+        <li><strong>title</strong>：认证名称，与正文一级标题完全一致。</li>
+        <li><strong>type</strong>：固定为 <code>"developer-certification"</code>。</li>
+        <li><strong>schema_version</strong>：模板结构版本，当前固定 <code>"1.1"</code>；模板字段升级时由规范更新，业务侧勿改。</li>
+        <li><strong>id</strong>：人读页 URL 末段 ID。</li>
+        <li><strong>url</strong>：人读详情页绝对地址。</li>
+        <li><strong>updated</strong>：内容最后更新日期 <code>"YYYY-MM-DD"</code>（非首次发布日）；暂无则上线时填写。</li>
+      </ol>
+      <figure class="dlc-how-sample" aria-label="Frontmatter 示例">
+        <figcaption>Frontmatter</figcaption>
+        <pre><code>---
+title: "算子开发者认证（入门级）"
+type: "developer-certification"
+schema_version: "1.1"
+id: "3a0544a46aad4d588630c15bc83f2ee9"
+url: "https://www.hiascend.com/edu/developer-certification/detail/3a0544a46aad4d588630c15bc83f2ee9"
+updated: "YYYY-MM-DD"
+---</code></pre>
+      </figure>
+
+      <h3 class="fn-h3">2. 标题与摘要（必填）</h3>
+      <ol class="dlc-how-list">
+        <li><strong>说明</strong>：认证正式名称，以及一两句介绍（考什么、覆盖哪些能力）。</li>
+        <li><strong>写法</strong>：一级标题 <code># 认证名</code>，须与 Frontmatter <code>title</code> 完全一致；下一行以 <code>&gt;</code> 写摘要，对齐人读页简介。</li>
+      </ol>
+      <figure class="dlc-how-sample" aria-label="标题与摘要示例">
+        <figcaption>标题与摘要</figcaption>
+        <pre><code># 算子开发者认证（入门级）
+
+&gt; 本认证涵盖算子开发的多个场景，综合考察学员对昇腾AI处理器架构、自定义算子开发与测试调优…</code></pre>
+      </figure>
+
+      <h3 class="fn-h3">3. 认证概要（必填）</h3>
+      <ol class="dlc-how-list">
+        <li><strong>说明</strong>：面向认证选择与备考问答的基础信息，对应人读页认证概要区域；勿写入「认证内容」。</li>
+        <li><strong>写法</strong>：二级标题 <code>## 认证概要</code>；下列 <code>- 字段名：内容</code>，一行一项。官方未公布的信息不填写，不得将未知信息推断为无要求或无限制。</li>
+        <li><strong>适用对象</strong>：明确适合参加认证的人群及能力背景。</li>
+        <li><strong>认证目标</strong>：描述本认证主要考查的综合知识与应用能力。</li>
+        <li><strong>认证级别</strong>：与官方认证名称及人读页保持一致，如 <code>入门级</code>、<code>中级</code>、<code>高级</code>。</li>
+        <li><strong>考试形式</strong>：如 <code>在线考试（仅电脑端）</code>；仅填写官方明确公布的信息。</li>
+        <li><strong>考试时长</strong>：正式考试作答时长，勿与备考学习时长混淆。</li>
+        <li><strong>通过条件</strong>：明确考试通过分数或其他官方通过要求（如 <code>考试总分达到 60 分及以上</code>），不得自行推断；考试通过与证书领取条件须区分开写。</li>
+        <li><strong>考试条件</strong>：如实名认证等参加考试的前置条件；官方未公布则省略本行。</li>
+        <li><strong>证书有效期</strong>：证书自颁布之日起的有效期限（概要供快速取数；操作细节见考试说明）。</li>
+        <li><strong>关联产品</strong>：如 <code>CANN · Ascend C</code>。</li>
+        <li><strong>认证价值</strong>：说明认证所验证的能力及应用价值；可附官方定位，避免无法验证的宣传性描述；勿写价格、领券 / 兑换等运营文案。</li>
+      </ol>
+      <figure class="dlc-how-sample" aria-label="认证概要示例">
+        <figcaption>认证概要</figcaption>
+        <pre><code>## 认证概要
+- 适用对象：对算子开发感兴趣的伙伴、企业客户、高校师生和个人开发者
+- 认证目标：综合考察昇腾 AI 处理器架构、自定义算子开发与调优、Kernel 编程、模型迁移及模板库与性能分析工具的应用能力
+- 认证级别：入门级
+- 考试形式：在线考试（仅电脑端）
+- 考试时长：100 分钟
+- 通过条件：考试总分达到 60 分及以上
+- 考试条件：完成实名认证后参加考试
+- 证书有效期：2 年
+- 关联产品：CANN · Ascend C
+- 认证价值：验证学员在昇腾算子开发、模型迁移与性能优化方面的综合知识和应用能力；定位为 CANN 开源开放推荐认证</code></pre>
+      </figure>
+
+      <h3 class="fn-h3">4. 认证内容（必填）</h3>
+      <ol class="dlc-how-list">
+        <li><strong>说明</strong>：明确考试覆盖的知识领域、考查要点及各领域占比，帮助 Agent 回答「考什么 / 重点考什么」；领域标题即主题索引，不必再单列「知识点」。须写成文字，勿只贴截图。</li>
+        <li><strong>写法</strong>：二级标题 <code>## 认证内容</code>；各领域用三级标题 <code>### 领域名称（考试占比：N%）</code>；领域下用编号列表列出考查要点。</li>
+        <li><strong>知识领域</strong>：按官方考试大纲领域名称填写，不自行合并、拆分或调整。</li>
+        <li><strong>考查要点</strong>：依据官方考试大纲填写；不得自行推测、扩展或改写为超出官方范围的内容。官方未公布具体要点时，不得编造。</li>
+        <li><strong>考试占比</strong>：与官方公布一致；所有领域占比之和必须为 100%。占比表示领域权重，不代表固定题目数量，不得据此推算题数。</li>
+      </ol>
+      <figure class="dlc-how-sample" aria-label="认证内容示例">
+        <figcaption>认证内容（节选示例，完整认证须连续编写全部领域）</figcaption>
+        <pre><code>## 认证内容
+
+### 昇腾AI处理器架构（考试占比：14%）
+1. 昇腾AI处理器组件功能
+2. 分离耦合架构区别与优势
+3. CANN五层体系功能
+4. 控制单元与同步机制
+5. HCCL定义与核心价值
+6. 软硬件同步机制原理与实现</code></pre>
+      </figure>
+
+      <h3 class="fn-h3">5. 在线学习（条件必填）</h3>
+      <ol class="dlc-how-list">
+        <li><strong>说明</strong>：官方推荐的备考课程与案例，是回答「备什么 / 优先学什么」的主入口。勿另写短「预备知识」列表冒充门槛。</li>
+        <li><strong>写法</strong>：二级标题 <code>## 在线学习</code>；按类型用三级标题组织，如 <code>### 推荐课程</code>、<code>### 推荐案例</code>。每项先写资源链接，下挂 <code>资源说明</code>；可选填写 <code>关联考查领域</code>。</li>
+        <li><strong>资源名称</strong>：与人读页推荐资源卡片名称保持一致（可含「课程1：」等前缀）。</li>
+        <li><strong>资源说明</strong>：一句介绍主要学习内容或实践目标。</li>
+        <li><strong>关联考查领域</strong>：可选；须依据资源实际教学内容映射到「认证内容」中的领域名称，不得仅凭课程名称推断。无法核对时省略本行。</li>
+        <li><strong>类型与链接</strong>：类型须与真实内容一致；使用 HTTPS 绝对地址，直达具体资源正文。仅收录官方推荐或明确认可的备考资源。</li>
+        <li><strong>缺省</strong>：无对应资源的子标题省略；无任何推荐资源时整节省略。</li>
+      </ol>
+      <figure class="dlc-how-sample" aria-label="在线学习示例">
+        <figcaption>在线学习（节选）</figcaption>
+        <pre><code>## 在线学习
+
+### 推荐课程
+- [课程1：《昇腾异构编程基础（速成班）》](https://www.hiascend.com/developer/courses/detail/1925466587412258817)
+  - 资源说明：深入解析昇腾 AI 处理器达芬奇架构及核心组件
+  - 关联考查领域：昇腾AI处理器架构、存储与计算单元功能
+- [课程2：《Ascend C算子开发（入门）》](https://www.hiascend.com/developer/courses/detail/1691696509765107713)
+  - 资源说明：通过课程讲解及样例实操学习 Ascend C 算子开发
+  - 关联考查领域：并行计算与Kernel编程、自定义算子开发
+
+### 推荐案例
+- [《算子模板库》案例：昇腾算子模板库开发(上)](https://www.hiascend.com/developer/blog/details/0237183374795476212)
+  - 资源说明：模板库编程基础入门，上篇：第1章 ~ 第4章
+  - 关联考查领域：模板库基本概念</code></pre>
+      </figure>
+
+      <h3 class="fn-h3">6. 考试说明（必填）</h3>
+      <ol class="dlc-how-list">
+        <li><strong>说明</strong>：描述考试参与规则与证书获取 / 查询，帮助 Agent 分别回答「如何参加考试」与「如何获得证书」。</li>
+        <li><strong>写法</strong>：二级标题 <code>## 考试说明</code>；下设 <code>### 考试规则</code>、<code>### 证书获取与查询</code>。</li>
+        <li><strong>考试规则</strong>：设备限制、考试环境、作答要求、禁止事项及其他官方规则。</li>
+        <li><strong>证书获取与查询</strong>：实名认证要求、证书发放时间、电子证书下载方式、有效期及公开查询方式。考试通过不等于证书已发放，先后关系须写清。「证书查询」等入口保留 HTTPS 绝对链接。</li>
+        <li><strong>缺省</strong>：无对应说明时省略子标题；官方未公布的规则不得自行推断。勿写领券 / 兑换等运营话术与客套收尾。</li>
+      </ol>
+      <figure class="dlc-how-sample" aria-label="考试说明示例">
+        <figcaption>考试说明</figcaption>
+        <pre><code>## 考试说明
+
+### 考试规则
+1. 考试仅支持电脑端操作
+2. 考试期间严禁使用 AI 工具辅助作答
+
+### 证书获取与查询
+1. 考试及实名认证通过后 24 小时，可前往个人中心-我的证书-开发者认证证书查看或下载电子证书
+2. 证书自颁布之日起 2 年内有效
+3. 开发者认证证书支持在社区公开查询，可前往[人才认证-证书查询](https://www.hiascend.com/edu/certification/query)页面使用证书编号进行查询</code></pre>
+      </figure>
+
+      <h3 class="fn-h3">发布前核验</h3>
+      <ol class="dlc-how-list">
+        <li><strong>考试内容</strong>：领域、要点与官方大纲一致；占比之和为 100%，勿自增考查范围。</li>
+        <li><strong>通过与出证</strong>：通过条件、考试限制、证书有效期及领取条件与官方一致。</li>
+        <li><strong>备考资源</strong>：类型真实；关联考查领域有教学内容依据。</li>
+        <li><strong>链接</strong>：HTTPS 绝对地址，直达正文（HTTP 200 ≠ 正文有效）。</li>
+        <li><strong>一致与时效</strong>：与人读页名称、级别、内容一致；变更时更新 <code>updated</code>。</li>
+      </ol>
+    </section>
+  </main>
+</div>
+
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js?v=20261109d"></script>
+<script src="assets/js/module-sidebar.js?v=20261109d"></script>
+<script>
+(function () {
+  function toast(msg) {
+    var el = document.querySelector('.dlc-toast');
+    if (!el) {
+      el = document.createElement('div');
+      el.className = 'dlc-toast';
+      el.setAttribute('role', 'status');
+      document.body.appendChild(el);
+    }
+    el.textContent = msg || '已复制模板';
+    el.classList.add('is-show');
+    clearTimeout(el._t);
+    el._t = setTimeout(function () { el.classList.remove('is-show'); }, 1600);
+  }
+  document.querySelectorAll('[data-dlc-copy]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var root = btn.closest('.dlc-tpl');
+      var pre = root && root.querySelector('pre code, pre');
+      var text = pre ? (pre.textContent || '') : '';
+      function done() {
+        btn.classList.add('is-copied');
+        btn.setAttribute('title', '已复制');
+        btn.setAttribute('aria-label', '已复制');
+        toast('已复制 Markdown 模板');
+        setTimeout(function () {
+          btn.classList.remove('is-copied');
+          btn.setAttribute('title', '复制');
+          btn.setAttribute('aria-label', '复制');
+        }, 1400);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done).catch(function () {
+          var ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); } catch (e) {}
+          ta.remove(); done();
+        });
+      } else {
+        var ta = document.createElement('textarea');
+        ta.value = text; document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); } catch (e) {}
+        ta.remove(); done();
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>
