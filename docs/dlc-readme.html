@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CANN 学习旅程 · 学习中心 DLC</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid var(--color-border);
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: 100%; max-width: none; margin: 0; padding: 0 24px; box-sizing: border-box;
+    height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: var(--color-text); text-decoration: none; white-space: nowrap; margin-right: 40px;
+  }
+  .topbar .brand span { color: var(--color-primary); }
+  .topbar .site-nav { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; flex-wrap: wrap; }
+  .topbar .site-nav > a {
+    text-decoration: none; color: var(--color-text-secondary); font-size: var(--text-body); font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .topbar .site-nav > a:hover { color: var(--color-primary); background: var(--color-bg); text-decoration: none; }
+  .topbar .site-nav > a.active { color: var(--color-primary); background: var(--color-bg); font-weight: 600; }
+  body.inner-page .page-wrapper { min-height: 100vh; }
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: var(--space-stack, 16px);
+  }
+  .page-header > h1 {
+    font-family: var(--font);
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1-weight, 600);
+    line-height: var(--text-h1-lh);
+    letter-spacing: -0.02em;
+    margin: 0;
+    padding-top: var(--space-h1-pad-y, 32px);
+    padding-bottom: var(--space-h1-pad-y, 32px);
+    color: var(--color-text);
+  }
+  body.inner-page.agent-entry-page .main-content .section > h2.dlc-h2-split {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  body.inner-page.agent-entry-page .main-content .section > h2.dlc-h2-split > .dlc-source-link {
+    margin-left: auto;
+    flex-shrink: 0;
+    font-size: var(--text-body);
+    font-weight: 500;
+    line-height: 22px;
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+  body.inner-page.agent-entry-page .main-content .section > h2.dlc-h2-split > .dlc-source-link:hover {
+    text-decoration: underline;
+  }
+  body.inner-page.agent-entry-page:has(#module-sidebar) .main-content {
+    padding-top: var(--content-main-pad-top, 16px);
+    padding-left: 0;
+    padding-right: 0;
+  }
+  body.inner-page.agent-entry-page:has(#module-sidebar) .main-content > .page-header,
+  body.inner-page.agent-entry-page:has(#module-sidebar) .main-content > .section {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page.agent-entry-page .main-content .section > h2 {
+    font-size: var(--text-h2, 24px) !important;
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px) !important;
+    letter-spacing: -0.01em;
+    margin-top: 0 !important;
+    margin-bottom: var(--space-stack, 16px) !important;
+    padding-top: var(--space-h2-pad-y, 16px) !important;
+    padding-bottom: var(--space-h2-pad-y, 16px) !important;
+    border-bottom: none;
+    color: var(--color-text, var(--color-text));
+  }
+  body.inner-page.agent-entry-page .main-content > .section:first-of-type > h2 {
+    margin-top: 0 !important;
+  }
+  body.inner-page.agent-entry-page .main-content > .section {
+    margin-bottom: var(--space-stack, 16px) !important;
+  }
+  body.inner-page.agent-entry-page .main-content .section h3 { height: auto; }
+  h3.fn-h3 {
+    margin: 0;
+    padding-top: var(--space-h3-pad-y, 16px);
+    padding-bottom: var(--space-h3-pad-y, 16px);
+    font-size: var(--text-h3, 18px);
+    line-height: var(--text-h3-lh, 28px);
+    font-weight: var(--text-h3-weight, 650);
+    color: var(--color-text, var(--color-text));
+    letter-spacing: -0.01em;
+  }
+  .page-header > .page-lead {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  .page-lead {
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  .section > h2 + .page-lead { margin-top: 0; margin-bottom: var(--space-stack, 16px); }
+  .dlc-map {
+    margin: 0 0 16px;
+    padding: 0;
+    list-style: none;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
+  }
+  .dlc-map li {
+    display: grid;
+    grid-template-columns: 7.5em 1fr;
+    gap: 12px;
+    padding: 10px 14px;
+    font-size: var(--text-body);
+    line-height: 22px;
+    border-top: 1px solid #eee;
+  }
+  .dlc-map li:first-child { border-top: 0; }
+  .dlc-map .k { font-weight: 650; color: var(--color-text); }
+  .dlc-map .v { color: var(--color-text-secondary); }
+  .dlc-map a { color: var(--color-primary); text-decoration: none; }
+  .dlc-map a:hover { text-decoration: underline; }
+  .dlc-map code {
+    font-size: 12px;
+    padding: 1px 5px;
+    border-radius: 4px;
+    background: var(--color-bg, #f5f7fa);
+    color: var(--color-text);
+  }
+  .dlc-tpl {
+    position: relative;
+    margin: 0 0 var(--space-stack, 16px);
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    background: #fff;
+    overflow: hidden;
+  }
+  .dlc-tpl-bar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 0;
+    padding: 8px 14px;
+    box-sizing: border-box;
+    background: #f4f4f5;
+    border-bottom: 1px solid #e5e5e5;
+    line-height: 1;
+  }
+  .dlc-tpl-bar > .dlc-tpl-bar-title {
+    margin: 0 !important;
+    padding: 0;
+    border: 0;
+    font-size: 13px;
+    line-height: 16px;
+    font-weight: 600;
+    color: #525252;
+  }
+  .dlc-copy {
+    appearance: none;
+    -webkit-appearance: none;
+    border: 0;
+    outline: none;
+    background: none;
+    box-shadow: none;
+    color: #737373;
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    min-height: 16px;
+    max-width: 16px;
+    max-height: 16px;
+    padding: 0;
+    margin: 0;
+    border-radius: 0;
+    line-height: 0;
+    font-size: 0;
+    display: block;
+    cursor: pointer;
+    flex: 0 0 16px;
+  }
+  .dlc-copy:hover,
+  .dlc-copy:focus-visible { color: var(--color-primary, #1476ff); background: none; }
+  .dlc-copy.is-copied { color: #15803d; background: none; }
+  .dlc-copy svg {
+    display: block;
+    width: 16px;
+    height: 16px;
+    margin: 0;
+  }
+  .dlc-tpl pre {
+    margin: 0;
+    padding: 16px 18px 20px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: min(70vh, 720px);
+    background: #fff;
+    color: #191919;
+    border-radius: 0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 13px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+  .dlc-tpl pre code {
+    display: block;
+    background: transparent;
+    color: inherit;
+    padding: 0;
+    white-space: inherit;
+    word-break: inherit;
+    overflow-wrap: inherit;
+  }
+  .dlc-tpl pre a {
+    color: var(--color-link, #0067d1);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .dlc-tpl pre a:hover { color: var(--color-link-hover, #0050a0); }
+
+  .file-sample {
+    margin: 0;
+    border: 1px solid var(--color-border, #e5e5e5);
+    background: #fff;
+  }
+  .file-sample figcaption {
+    margin: 0;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--color-border, #e5e5e5);
+    font-size: 13px;
+    line-height: 20px;
+    color: var(--color-text-secondary, #595959);
+    background: #fafafa;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .file-sample figcaption code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 12px;
+    background: none;
+    padding: 0;
+    color: inherit;
+  }
+  .file-sample pre {
+    margin: 0;
+    padding: 16px 18px 20px;
+    overflow: auto;
+    max-height: min(70vh, 720px);
+    background: #fff;
+    color: #191919;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+  .file-sample pre code {
+    display: block;
+    background: transparent;
+    color: inherit;
+    padding: 0;
+    white-space: inherit;
+  }
+  .file-sample pre a {
+    color: var(--color-link, #0067d1);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .dlc-tpl mark.hl {
+    background: #fff3bf;
+    color: inherit;
+    padding: 0 2px;
+    border-radius: 2px;
+  }
+  #howto > h2 + .fn-h3,
+  #howto > .page-lead + .fn-h3 { margin-top: 0; }
+  #howto .dlc-how-list {
+    margin: 0 0 var(--space-stack, 16px);
+    padding-left: 1.25em;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text);
+  }
+  #howto .dlc-how-list li + li { margin-top: 8px; }
+  #howto .dlc-how-list strong { font-weight: 650; }
+  #howto .dlc-how-list code {
+    font-size: 12px;
+    padding: 1px 5px;
+    border-radius: 4px;
+    background: var(--color-bg, #f5f7fa);
+  }
+  .dlc-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 28px;
+    transform: translateX(-50%) translateY(12px);
+    z-index: 300;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(25,25,25,.14);
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--color-text);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .18s ease, transform .18s ease;
+  }
+  .dlc-toast.is-show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+
+  .readme-body { font-size: var(--text-body); line-height: var(--text-body-lh, 22px); color: var(--color-text); }
+  .readme-body > h2 { font-size: var(--text-h2, 24px); font-weight: 700; line-height: var(--text-h2-lh, 36px); margin: 0 0 var(--space-stack, 16px); padding-top: var(--space-h2-pad-y, 16px); padding-bottom: var(--space-h2-pad-y, 16px); }
+  .readme-body > h3 { font-size: var(--text-h3, 18px); font-weight: 650; line-height: var(--text-h3-lh, 28px); margin: 24px 0 12px; }
+  .readme-body > p { margin: 0 0 16px; }
+  .readme-body > blockquote { margin: 0 0 16px; padding: 10px 14px; border-left: 3px solid var(--color-border, #e5e5e5); color: var(--color-text-secondary); background: #fafafa; }
+  .readme-body > blockquote p { margin: 0; }
+  .readme-body > ul, .readme-body > ol { margin: 0 0 16px; padding-left: 1.25em; }
+  .readme-body li + li { margin-top: 6px; }
+  .readme-body table { width: 100%; border-collapse: collapse; margin: 0 0 16px; font-size: 13px; line-height: 20px; }
+  .readme-body th, .readme-body td { border: 1px solid var(--color-border, #e5e5e5); padding: 8px 10px; text-align: left; vertical-align: top; }
+  .readme-body th { background: #fafafa; font-weight: 650; }
+  .readme-body a { color: var(--color-link, #0067d1); }
+  .readme-body hr { border: 0; border-top: 1px solid var(--color-border, #e5e5e5); margin: 24px 0; }
+  .readme-body code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 12px; background: #f5f5f5; padding: 1px 4px; border-radius: 3px; }
+  .readme-body pre { margin: 0 0 16px; padding: 14px 16px; overflow: auto; background: #fafafa; border: 1px solid var(--color-border, #e5e5e5); font-size: 12px; line-height: 1.5; }
+  .readme-body pre code { background: none; padding: 0; }
+  .readme-body strong { font-weight: 650; }
+
+</style>
+</head>
+<body class="inner-page agent-entry-page" data-module="dlc" data-page="dlc-readme" data-no-surface-tabs>
+<div class="topbar"><div class="topbar-inner">
+<a class="brand" href="index.html"><span>AI 亲和原则</span></a>
+<nav class="site-nav" aria-label="主导航">
+<a href="index.html">首页</a><a href="mintlify.html">友商对照</a><a href="reachability.html">社区诊断</a>
+<a href="principles-overview.html">亲和原则</a><a href="community-ui.html">组件亲和</a>
+<a href="skills.html">Skill 目录</a><a href="design-system.html">设计系统</a>
+<a href="dlc-path.html" class="active">学习中心 DLC</a>
+</nav></div></div>
+<div class="page-wrapper"><aside id="module-sidebar"></aside>
+<main class="main-content">
+<div class="page-header"><h1>CANN 学习旅程</h1></div>
+<section class="section">
+<div class="readme-body">
+<blockquote><p>把一句学习意图（如「我想学一下推理」「我想学 Ascend C 算子开发」）整理成<strong>可跟随的学习主线</strong>：公共基础 → 主题阶段 → 练习与认证。  <br>按角色导航、前置基础与五条主线组织；阶段骨架由 <code>cann-learning-journey</code> Skill 生成旅程地图。<strong>可点击入口一律指向昇腾社区学习中心（DLC）人读页</strong>（课程 / 路径 / 认证），并标明资源类型。</p></blockquote>
+<table><thead><tr><th>入口</th><th>说明</th><th>链接</th></tr></thead><tbody>
+<tr><td>昇腾社区学习中心（枢纽）</td><td>路径 / 课 / 认证总门户，不作具体课入口</td><td><a href="https://www.hiascend.com/developer/learn" target="_blank" rel="noopener">https://www.hiascend.com/developer/learn</a></td></tr>
+<tr><td>查找学习资源</td><td>全量检索</td><td><a href="https://www.hiascend.com/developer/edu/find-resource" target="_blank" rel="noopener">https://www.hiascend.com/developer/edu/find-resource</a></td></tr>
+<tr><td>学习路径栏目</td><td>DLC 路径列表</td><td><a href="https://www.hiascend.com/edu/growth" target="_blank" rel="noopener">https://www.hiascend.com/edu/growth</a></td></tr>
+<tr><td>自主学习课程</td><td>DLC 精选课</td><td><a href="https://www.hiascend.com/edu/courses" target="_blank" rel="noopener">https://www.hiascend.com/edu/courses</a></td></tr>
+<tr><td>开发者认证</td><td>DLC 认证栏目</td><td><a href="https://www.hiascend.com/edu/certification" target="_blank" rel="noopener">https://www.hiascend.com/edu/certification</a></td></tr>
+<tr><td>旅程地图 Skill</td><td>本目录</td><td><a href="./SKILL.md"><code>SKILL.md</code></a></td></tr>
+</tbody></table>
+<hr>
+<h2 id="角色导航">角色导航</h2>
+<blockquote><p>找到你的角色，直达对应主线与社区资源</p></blockquote>
+<table><thead><tr><th>角色</th><th>推荐主线</th><th>社区入口（DLC）</th></tr></thead><tbody>
+<tr><td>新手开发者</td><td><a href="#从这里开始-cann-基础-公共阶段">从这里开始：CANN 基础</a></td><td><a href="https://www.hiascend.com/developer/courses/detail/1925466587412258817" target="_blank" rel="noopener">昇腾异构编程基础（速成班）</a> · <a href="https://www.hiascend.com/edu/growth/details/9614049b0d6044c28e291aea1d931a53" target="_blank" rel="noopener">Ascend C编程（学习路径）</a></td></tr>
+<tr><td>大模型开发者</td><td><a href="#主线一-大模型训练-training">主线一：大模型训练</a> · <a href="#主线二-大模型推理-inference">主线二：大模型推理</a></td><td><a href="https://www.hiascend.com/edu/growth/details/785809de8b7a47d496e2acbb992f7858" target="_blank" rel="noopener">LLM 后训练</a> · <a href="https://www.hiascend.com/edu/growth/details/6bc86a3877c442308d6a92079765d899" target="_blank" rel="noopener">文本生成推理</a></td></tr>
+<tr><td>算子开发工程师</td><td><a href="#主线三-算子开发-operator">主线三：算子开发</a> · <a href="#延伸专题-skill-可生成">延伸：Python 算子</a></td><td><a href="https://www.hiascend.com/edu/growth/details/9614049b0d6044c28e291aea1d931a53" target="_blank" rel="noopener">Ascend C 编程</a></td></tr>
+<tr><td>应用开发工程师</td><td><a href="#主线四-应用开发-离线推理-application">主线四：应用开发</a></td><td><a href="https://www.hiascend.com/edu/growth/details/d1c1ac12e6284557a0230ba6ebb4ddc1" target="_blank" rel="noopener">推理应用调优实践</a></td></tr>
+<tr><td>AI 应用开发者</td><td><a href="#延伸专题-skill-可生成">延伸：AI 应用 RAG</a></td><td><a href="https://www.hiascend.com/edu/growth/details/d75ff158fb3046e087440a47745b40f1" target="_blank" rel="noopener">RAG 应用开发</a></td></tr>
+<tr><td>推荐算法工程师</td><td><a href="#主线五-推荐系统-recommend">主线五：推荐系统</a></td><td><a href="https://www.hiascend.com/developer/edu/find-resource" target="_blank" rel="noopener">查找学习资源</a></td></tr>
+<tr><td>图 / 通信专项</td><td><a href="#延伸专题-skill-可生成">延伸：图框架 / 集合通信</a></td><td><a href="https://www.hiascend.com/edu/growth/details/c4ef987e0ae04fa3a3846c573c4766da" target="_blank" rel="noopener">推理引擎</a> · <a href="https://www.hiascend.com/edu/growth/details/e73027aabc0a4e01a0ee3692b63474a3" target="_blank" rel="noopener">MindCluster</a></td></tr>
+<tr><td>想用 AI 写算子</td><td><a href="#延伸专题-skill-可生成">延伸：CANNBot</a></td><td><a href="https://www.hiascend.com/edu/growth/details/9614049b0d6044c28e291aea1d931a53" target="_blank" rel="noopener">Ascend C 编程</a></td></tr>
+</tbody></table>
+<p>三种学习方式：</p>
+<ol>
+<li><strong>社区路径 / 课程 / 认证</strong> — 按下方主线进入昇腾 DLC 人读页  </li>
+<li><strong>Notebook 在线体验</strong> — 各课在社区或配套实验环境中零配置运行  </li>
+<li><strong>本地 / 云端实操</strong> — 按社区课程说明配置昇腾环境（CANNLab、CANNJudge 等）</li>
+</ol>
+<hr>
+<h2 id="前置基础-按需补">前置基础（按需补）</h2>
+<p>入门阶段有 <strong>Python + NumPy</strong> 即可开始 CANN 基础第一课；进入算子主线再补 C/C++，进入大模型主线再补深度学习与 PyTorch。</p>
+<table><thead><tr><th>基础</th><th>什么时候需要</th></tr></thead><tbody>
+<tr><td>Python</td><td>全部课程</td></tr>
+<tr><td>NumPy / PyTorch</td><td>基础课起；训练 / 推理主线</td></tr>
+<tr><td>C / C++</td><td>Ascend C 算子开发主线</td></tr>
+<tr><td>Linux / Git</td><td>本地实操与社区贡献</td></tr>
+</tbody></table>
+<p>社区具体课入口：<a href="https://www.hiascend.com/developer/courses/detail/1925466587412258817" target="_blank" rel="noopener">昇腾异构编程基础（速成班）</a> · <a href="https://www.hiascend.com/edu/growth/details/9614049b0d6044c28e291aea1d931a53" target="_blank" rel="noopener">Ascend C编程（学习路径）</a> · <a href="https://www.hiascend.com/developer/edu/find-resource" target="_blank" rel="noopener">查找学习资源</a></p>
+<hr>
+<h2 id="从这里开始-cann-基础-公共阶段">从这里开始：CANN 基础（公共阶段）</h2>
+<blockquote><p>所有学习路径的<strong>公共基础</strong>（阶段一，约 2h），也是后续五条主线的共同起点。  <br>具体入口用下方课程 / 路径（<code>/developer/learn</code> 是学习中心枢纽页，不作为单课落地）。</p></blockquote>
+<table><thead><tr><th>序号</th><th>社区资源（标题与落地页一致）</th><th>说明</th><th>链接</th></tr></thead><tbody>
+<tr><td>1</td><td>昇腾异构编程基础（速成班）</td><td>硬件架构 / NPU / CANN 异构入门</td><td><a href="https://www.hiascend.com/developer/courses/detail/1925466587412258817" target="_blank" rel="noopener">课程</a></td></tr>
+<tr><td>2</td><td>Ascend C编程（学习路径）</td><td>含异构基础 → Ascend C 入门 / 进阶 / 高级</td><td><a href="https://www.hiascend.com/edu/growth/details/9614049b0d6044c28e291aea1d931a53" target="_blank" rel="noopener">路径</a></td></tr>
+</tbody></table>
+<p>学完基础后，任选下面一条主线深入（可多条并行）。</p>
+<hr>
+<h2 id="学完基础-选择一条主线">学完基础，选择一条主线</h2>
+<p>完成公共基础（阶段一）后，按场景选方向深入：<strong>先五条主线</strong>；互不冲突，可多学。  <br><strong>可点击入口只挂昇腾社区</strong>路径 / 课程 / 认证详情，并标明资源类型。</p>
+<table><thead><tr><th>主线</th><th>适合人群</th><th>总时长</th><th>核心产出</th><th>难度</th><th>Skill key</th></tr></thead><tbody>
+<tr><td><a href="#主线一-大模型训练-training">主线一：大模型训练</a></td><td>想做模型训练与微调</td><td>~16h</td><td>SFT/RL 训练与微调能力</td><td>★★★</td><td><code>training</code></td></tr>
+<tr><td><a href="#主线二-大模型推理-inference">主线二：大模型推理</a></td><td>想快速跑通大模型、做推理优化</td><td>~10h</td><td>端到端推理调优能力</td><td>★★☆</td><td><code>inference</code></td></tr>
+<tr><td><a href="#主线三-算子开发-operator">主线三：算子开发</a></td><td>想掌握底层编程、做算子级优化</td><td>~20h</td><td>自定义算子开发与接入</td><td>★★★</td><td><code>operator</code></td></tr>
+<tr><td><a href="#主线四-应用开发-离线推理-application">主线四：应用开发（离线推理）</a></td><td>想做 ACL 离线推理与应用部署</td><td>~6h</td><td>ATC 编译 + ACL 推理 + 调优</td><td>★★☆</td><td><code>application</code></td></tr>
+<tr><td><a href="#主线五-推荐系统-recommend">主线五：推荐系统</a></td><td>想做推荐/召回业务落地</td><td>~8h</td><td>CTR 排序 + 召回全链路</td><td>★★☆</td><td><code>recommend</code></td></tr>
+</tbody></table>
+<blockquote><p>旅程地图由 Skill 按主题 key 生成。PyASC、图框架、集合通信、CANNBot、AI 应用等见 <a href="#延伸专题-skill-可生成">延伸专题</a>。</p></blockquote>
+<hr>
+<h3 id="主线一-大模型训练-training">主线一：大模型训练（<code>training</code>）</h3>
+<blockquote><p>从微调实战到 SFT/RL 训练全流程，系统掌握大模型训练与性能优化能力。</p></blockquote>
+<p><strong>阶段一：CANN 基础（公共，约 2h）</strong> — 已在上文完成 → 直接进入后续阶段</p>
+<p><strong>阶段二：微调实战案例（SwanLab 共建）</strong></p>
+<table><thead><tr><th>序号</th><th>课程</th><th>课程内容</th><th>状态</th><th>社区入口</th></tr></thead><tbody>
+<tr><td>1</td><td>医学模型微调</td><td>Qwen3 医学领域 SFT + SwanLab 可视化</td><td>已上线</td><td><a href="https://www.hiascend.com/edu/growth/details/85a0535925534e73a8416e3d0cda65e2" target="_blank" rel="noopener">LLM 微调</a> · <a href="https://www.hiascend.com/edu/growth/details/785809de8b7a47d496e2acbb992f7858" target="_blank" rel="noopener">LLM 后训练</a></td></tr>
+<tr><td>2</td><td>ms-swift 框架微调</td><td>ms-swift 框架微调 + SwanLab 可视化</td><td>建设中</td><td><a href="https://www.hiascend.com/edu/growth/details/85a0535925534e73a8416e3d0cda65e2" target="_blank" rel="noopener">LLM 微调</a></td></tr>
+<tr><td>3</td><td>Qwen3-smolVLM 多模态微调</td><td>多模态拼接微调 + SwanLab 可视化</td><td>建设中</td><td><a href="https://www.hiascend.com/edu/growth/details/9886471faf0045329c7c8ec51d818c4b" target="_blank" rel="noopener">多模态微调</a> · <a href="https://www.hiascend.com/developer/courses/detail/1980469166009548801" target="_blank" rel="noopener">多模态大模型训练微调</a></td></tr>
+<tr><td>4</td><td>CosyVoice 语音微调</td><td>语音模型微调 + SwanLab 可视化</td><td>建设中</td><td><a href="https://www.hiascend.com/edu/growth/details/9886471faf0045329c7c8ec51d818c4b" target="_blank" rel="noopener">多模态微调</a></td></tr>
+</tbody></table>
+<blockquote><p>案例正迁入 <code>contrib/tutorials/swanlab_examples/</code>，完成后可在 CANNLab 体验。另有 MNIST、数学解题 LoRA 等已上线样例。</p></blockquote>
+<p><strong>阶段三：SFT/RL 初阶</strong></p>
+<table><thead><tr><th>序号</th><th>课程</th><th>课程内容</th><th>状态</th><th>社区入口</th></tr></thead><tbody>
+<tr><td>5</td><td>SFT 训练系列（初阶）</td><td>Wordle 与 SFT 原理 / TorchTitan-FSDP 环境 / Qwen3-1.7B 基线训练与评测 / 融合算子与 Profiling</td><td>已上线</td><td><a href="https://www.hiascend.com/developer/courses/detail/1998643482066972673" target="_blank" rel="noopener">MindSpeed 大模型训练全流程（速成班）</a> · <a href="https://www.hiascend.com/developer/courses/detail/1910963014913622017" target="_blank" rel="noopener">MindSpeed LLM 训练框架和特性介绍</a></td></tr>
+<tr><td>6</td><td>RL 训练系列（初阶）</td><td>verl+vLLM-Ascend / RL+GRPO 与 KL 稳定性 / Wordle Agent Loop 与奖励 / 指标监控与崩塌调优</td><td>已上线</td><td><a href="https://www.hiascend.com/developer/courses/detail/2013153653191442434" target="_blank" rel="noopener">MindSpeed RL 强化学习全流程</a> · <a href="https://www.hiascend.com/developer/courses/detail/2071849100282081282" target="_blank" rel="noopener">verl 强化学习全流程</a></td></tr>
+</tbody></table>
+<p><strong>阶段四：SFT/RL 中阶</strong></p>
+<table><thead><tr><th>序号</th><th>课程</th><th>课程内容</th><th>状态</th><th>社区入口</th></tr></thead><tbody>
+<tr><td>7</td><td>SFT 训练系列（中阶）</td><td>Attention（SDPA→VarLen）/ Sequence Packing 与 TND / FSDP·TP·CP / VarLen+CP 与 TP2/FSDP2</td><td>已上线</td><td><a href="https://www.hiascend.com/edu/growth/details/f81218a9cc1641fa8ca1467651da1418" target="_blank" rel="noopener">大语言模型训练</a> · <a href="https://www.hiascend.com/developer/courses/detail/1935570808551755777" target="_blank" rel="noopener">MindSpeed LLM 基于 Qwen2.5-7B 开发实践</a></td></tr>
+<tr><td>8</td><td>RL 训练系列（中阶）</td><td>FSDP→TorchTitan-NPU FSDP2 / offload·TND / Wordle 三步训练 / 后端切换排查</td><td>已上线</td><td><a href="https://www.hiascend.com/developer/courses/detail/1998576696487342081" target="_blank" rel="noopener">MindSpeed 预训练、微调与强化学习</a></td></tr>
+</tbody></table>
+<p><strong>阶段五：SFT/RL 高阶</strong></p>
+<table><thead><tr><th>序号</th><th>课程</th><th>课程内容</th><th>状态</th><th>社区入口</th></tr></thead><tbody>
+<tr><td>9</td><td>SFT 训练系列（高阶）</td><td>计算图静态化与 AutoFuse、selective AC 显存调优</td><td>建设中</td><td><a href="https://www.hiascend.com/edu/growth/details/a4e2517feebc47eda47e35d516b5d3a1" target="_blank" rel="noopener">昇腾大模型训练开发（PyTorch）</a></td></tr>
+<tr><td>10</td><td>RL 训练系列（高阶）</td><td>性能基线与瓶颈定位，FSDP2/TP/CP/PP 并行调优</td><td>建设中</td><td><a href="https://www.hiascend.com/edu/developer-certification/detail/5fc08c73e1924b5f8ba1a878fa3ed25b" target="_blank" rel="noopener">训练开发者认证（工作级）</a></td></tr>
+</tbody></table>
+<table><thead><tr><th>类型</th><th>社区资源</th></tr></thead><tbody>
+<tr><td>学习路径</td><td><a href="https://www.hiascend.com/edu/growth/details/785809de8b7a47d496e2acbb992f7858" target="_blank" rel="noopener">LLM 后训练</a> · <a href="https://www.hiascend.com/edu/growth/details/f81218a9cc1641fa8ca1467651da1418" target="_blank" rel="noopener">大语言模型训练</a> · <a href="https://www.hiascend.com/edu/growth/details/9e4f9adb505f4830b3dc370af4926a39" target="_blank" rel="noopener">大模型训练初体验</a> · <a href="https://www.hiascend.com/edu/growth/details/85a0535925534e73a8416e3d0cda65e2" target="_blank" rel="noopener">LLM 微调</a></td></tr>
+<tr><td>课程</td><td><a href="https://www.hiascend.com/developer/courses/detail/1998643482066972673" target="_blank" rel="noopener">MindSpeed 大模型训练全流程（速成班）</a> · <a href="https://www.hiascend.com/developer/courses/detail/2013153653191442434" target="_blank" rel="noopener">MindSpeed RL 强化学习全流程</a> · <a href="https://www.hiascend.com/developer/courses/detail/2071849100282081282" target="_blank" rel="noopener">verl 强化学习全流程</a> · <a href="https://www.hiascend.com/developer/courses/detail/1910963014913622017" target="_blank" rel="noopener">MindSpeed LLM 训练框架和特性介绍</a></td></tr>
+<tr><td>认证</td><td><a href="https://www.hiascend.com/edu/developer-certification/detail/d49a9915599e49be8e978db5dce42d88" target="_blank" rel="noopener">训练开发者认证（入门级）</a> · <a href="https://www.hiascend.com/edu/developer-certification/detail/5fc08c73e1924b5f8ba1a878fa3ed25b" target="_blank" rel="noopener">训练开发者认证（工作级）</a></td></tr>
+</tbody></table>
+<hr>
+<h3 id="主线二-大模型推理-inference">主线二：大模型推理（<code>inference</code>）</h3>
+<blockquote><p>以 Qwen3 端到端推理为主线，理论课件 + 实践双轨：跑通推理 → 发现瓶颈 → 融合优化 → 量化与算子 → 图模式调优。</p></blockquote>
+<p><strong>阶段一：CANN 基础（公共，约 2h）</strong> — 已在上文完成</p>
+<p><strong>阶段二：初阶 — 跑通推理（约 3–4h）</strong></p>
+<table><thead><tr><th>序号</th><th>课程</th><th>课程内容</th><th>状态</th><th>社区入口</th></tr></thead><tbody>
+<tr><td>1</td><td>章节介绍</td><td>全流程概览</td><td>已上线</td><td><a href="https://www.hiascend.com/edu/growth/details/6bc86a3877c442308d6a92079765d899" target="_blank" rel="noopener">文本生成推理</a></td></tr>
+<tr><td>2</td><td>Baseline 推理</td><td>跑通 Qwen3-8B BF16 推理</td><td>已上线</td><td><a href="https://www.hiascend.com/edu/growth/details/6bc86a3877c442308d6a92079765d899" target="_blank" rel="noopener">文本生成推理</a> · <a href="https://www.hiascend.com/developer/courses/detail/2071428481241497602" target="_blank" rel="noopener">vLLM-Ascend 推理部署及模型迁移适配</a></td></tr>
+<tr><td>3</td><td>Profiling 分析</td><td>定位 RMSNorm 等小算子链路瓶颈</td><td>已上线</td><td><a href="https://www.hiascend.com/developer/courses/detail/2060174102022684674" target="_blank" rel="noopener">基于 vllm-ascend 的 profiling 采集及性能分析</a> · <a href="https://www.hiascend.com/edu/growth/details/e73ec56894914c64bd0285101955e58b" target="_blank" rel="noopener">推理性能调优</a></td></tr>
+</tbody></table>
+<p><strong>阶段三：中阶 — 融合优化与量化（约 4–6h）</strong></p>
+<table><thead><tr><th>序号</th><th>课程</th><th>课程内容</th><th>状态</th><th>社区入口</th></tr></thead><tbody>
+<tr><td>4</td><td>Dense RMSNorm NPU 融合优化</td><td>融合开关 A/B 对比</td><td>已上线</td><td><a href="https://www.hiascend.com/edu/growth/details/e73ec56894914c64bd0285101955e58b" target="_blank" rel="noopener">推理性能调优</a></td></tr>
+<tr><td>5</td><td>量化 Qwen3-8B</td><td>AMCT 导出 W8A8 → 量化推理 → Profiling</td><td>已上线</td><td><a href="https://www.hiascend.com/edu/growth/details/4a0ce7932c534d42816b6fa3b8ff4dbc" target="_blank" rel="noopener">模型量化压缩</a> · <a href="https://www.hiascend.com/developer/courses/detail/2049008829341143041" target="_blank" rel="noopener">msModelSlim 量化精度调优</a></td></tr>
+<tr><td>6</td><td>自定义量化算子接入</td><td>Ascend C 实现并替换瓶颈算子（建议先修算子主线）</td><td>已上线</td><td><a href="https://www.hiascend.com/edu/growth/details/9614049b0d6044c28e291aea1d931a53" target="_blank" rel="noopener">Ascend C 编程</a> · <a href="https://www.hiascend.com/developer/courses/detail/1691696509765107713" target="_blank" rel="noopener">Ascend C 算子开发（入门）</a></td></tr>
+</tbody></table>
+<p><strong>阶段四：高阶 — 图模式调优（可选）</strong></p>
+<table><thead><tr><th>序号</th><th>课程</th><th>课程内容</th><th>状态</th><th>社区入口</th></tr></thead><tbody>
+<tr><td>7</td><td>图模式优化</td><td>eager / ge_graph / npugraph_ex 对比</td><td>已上线</td><td><a href="https://www.hiascend.com/edu/growth/details/c4ef987e0ae04fa3a3846c573c4766da" target="_blank" rel="noopener">推理引擎</a></td></tr>
+<tr><td>8</td><td>GE Graph o_proj 权重预取</td><td>关闭 / 16MiB / 32MiB 三组对比</td><td>已上线</td><td><a href="https://www.hiascend.com/edu/growth/details/c4ef987e0ae04fa3a3846c573c4766da" target="_blank" rel="noopener">推理引擎</a> · <a href="https://www.hiascend.com/edu/growth/details/89478efb20ed4592817deaf5f97f815d" target="_blank" rel="noopener">企业级推理部署</a></td></tr>
+</tbody></table>
+<table><thead><tr><th>类型</th><th>社区资源</th></tr></thead><tbody>
+<tr><td>学习路径</td><td><a href="https://www.hiascend.com/edu/growth/details/6bc86a3877c442308d6a92079765d899" target="_blank" rel="noopener">文本生成推理</a> · <a href="https://www.hiascend.com/edu/growth/details/4e9c703842904f28b1289ae3e259e94a" target="_blank" rel="noopener">多机多卡并行推理</a> · <a href="https://www.hiascend.com/edu/growth/details/4a0ce7932c534d42816b6fa3b8ff4dbc" target="_blank" rel="noopener">模型量化压缩</a> · <a href="https://www.hiascend.com/edu/growth/details/e73ec56894914c64bd0285101955e58b" target="_blank" rel="noopener">推理性能调优</a> · <a href="https://www.hiascend.com/edu/growth/details/c4ef987e0ae04fa3a3846c573c4766da" target="_blank" rel="noopener">推理引擎</a></td></tr>
+<tr><td>课程</td><td><a href="https://www.hiascend.com/developer/courses/detail/2004093014389059585" target="_blank" rel="noopener">LLM 多机多卡并行推理</a> · <a href="https://www.hiascend.com/developer/courses/detail/2071428481241497602" target="_blank" rel="noopener">vLLM-Ascend 推理部署及模型迁移适配</a> · <a href="https://www.hiascend.com/developer/courses/detail/2060174102022684674" target="_blank" rel="noopener">基于 vllm-ascend 的 profiling 采集及性能分析</a> · <a href="https://www.hiascend.com/developer/courses/detail/1995425210102222850" target="_blank" rel="noopener">MindSpore Transformers LLM 推理迁移与实践</a></td></tr>
+<tr><td>认证</td><td><a href="https://www.hiascend.com/edu/developer-certification/detail/a2a114ff736e4e3eaae4e09b2caea8e9" target="_blank" rel="noopener">推理开发者认证（入门级）</a> · <a href="https://www.hiascend.com/edu/developer-certification/detail/583e838e9cfd4417b0c0f5e88eed6740" target="_blank" rel="noopener">推理开发者认证（工作级）</a></td></tr>
+</tbody></table>
+<hr>
+<h3 id="主线三-算子开发-operator">主线三：算子开发（<code>operator</code>）</h3>
+<blockquote><p>从「10 分钟体验算子」到 Ascend C 编程范式，具备自定义算子开发与工程化能力。</p></blockquote>
+<p><strong>阶段一：CANN 基础（公共，约 2h）</strong> — 已在上文完成</p>
+<p><strong>阶段二：体验算子（约 2h）</strong></p>
+<table><thead><tr><th>序号</th><th>课程</th><th>课程内容</th><th>状态</th><th>社区入口</th></tr></thead><tbody>
+<tr><td>1</td><td>10 分钟体验自定义算子</td><td>Ascend C 编写与编译全流程感知</td><td>已上线</td><td><a href="https://www.hiascend.com/developer/courses/detail/1691696509765107713" target="_blank" rel="noopener">Ascend C 算子开发（入门）</a> · <a href="https://www.hiascend.com/developer/courses/detail/1925466587412258817" target="_blank" rel="noopener">昇腾异构编程基础（速成班）</a></td></tr>
+<tr><td>2</td><td>10 分钟体验算子 API 调用</td><td>算子调用与价值感知</td><td>已上线</td><td><a href="https://www.hiascend.com/developer/courses/detail/1925707689125974018" target="_blank" rel="noopener">算子模板库</a></td></tr>
+</tbody></table>
+<p><strong>阶段三：系统学习（约 12h）</strong></p>
+<table><thead><tr><th>序号</th><th>课程</th><th>课程内容</th><th>状态</th><th>社区入口</th></tr></thead><tbody>
+<tr><td>3</td><td>Ascend C 算子开发系列（Kernel 直调版）</td><td>概念、编程范式、Vector / Cube / 融合与调试调优</td><td>已上线</td><td><a href="https://www.hiascend.com/edu/growth/details/9614049b0d6044c28e291aea1d931a53" target="_blank" rel="noopener">Ascend C 编程</a> · <a href="https://www.hiascend.com/developer/courses/detail/1691696509765107713" target="_blank" rel="noopener">Ascend C 算子开发（入门）</a> · <a href="https://www.hiascend.com/developer/courses/detail/1696414606799486977" target="_blank" rel="noopener">Ascend C 算子开发（进阶）</a></td></tr>
+</tbody></table>
+<p><strong>阶段四：算子开发实战</strong></p>
+<table><thead><tr><th>序号</th><th>课程</th><th>课程内容</th><th>状态</th><th>社区入口</th></tr></thead><tbody>
+<tr><td>4</td><td>Ascend C 算子开发系列（工程版）</td><td>工程化流程、开源贡献规范</td><td>已上线</td><td><a href="https://www.hiascend.com/developer/courses/detail/1696690858236694530" target="_blank" rel="noopener">Ascend C 算子开发（高级）</a> · <a href="https://www.hiascend.com/developer/courses/detail/2056647289996673026" target="_blank" rel="noopener">Ascend C Skills 全景概览</a></td></tr>
+<tr><td>5</td><td>Vector 算子开发</td><td>Vector 算子开发实战</td><td>建设中</td><td><a href="https://www.hiascend.com/developer/courses/detail/1696414606799486977" target="_blank" rel="noopener">Ascend C 算子开发（进阶）</a></td></tr>
+<tr><td>6</td><td>Conv 算子开发实战</td><td>卷积算子核心概念与实践</td><td>建设中</td><td><a href="https://www.hiascend.com/developer/courses/detail/1995421335433535490" target="_blank" rel="noopener">CATLASS 算子开发（入门）</a></td></tr>
+<tr><td>7</td><td>MC2 融合算子实战</td><td>Matmul / Conv / 通算融合</td><td>已上线</td><td><a href="https://www.hiascend.com/developer/courses/detail/1925473416036966402" target="_blank" rel="noopener">GEMM 类算子调优</a> · <a href="https://www.hiascend.com/edu/growth/details/66ce04408bdc4e2b9db8169b66aff9a6" target="_blank" rel="noopener">GEMM 类算子调优路径</a></td></tr>
+</tbody></table>
+<p><strong>阶段五：算子性能优化（进阶）</strong></p>
+<table><thead><tr><th>类别</th><th>课程</th><th>课程内容</th><th>社区入口</th></tr></thead><tbody>
+<tr><td>Vector</td><td>Vector 算子优化</td><td>RegBase 改写、融合、多核与访存</td><td><a href="https://www.hiascend.com/developer/courses/detail/2046475214141014018" target="_blank" rel="noopener">MindStudio 算子调优工具</a></td></tr>
+<tr><td>Cube</td><td>矩阵乘算子优化</td><td>Tiling、搬运、尾轮负载、低精度量化</td><td><a href="https://www.hiascend.com/developer/courses/detail/1925473416036966402" target="_blank" rel="noopener">GEMM 类算子调优</a></td></tr>
+<tr><td>CV 融合</td><td>Cube/Vector 融合</td><td>FA / 注意力残差 / KDA 等</td><td><a href="https://www.hiascend.com/developer/courses/detail/1696690858236694530" target="_blank" rel="noopener">Ascend C 算子开发（高级）</a></td></tr>
+<tr><td>通算融合</td><td>通信与计算融合</td><td>MoE Token 分发与合并</td><td><a href="https://www.hiascend.com/edu/growth/details/e73027aabc0a4e01a0ee3692b63474a3" target="_blank" rel="noopener">MindCluster</a></td></tr>
+<tr><td>专题</td><td>SIMD VF / SIMT / Scalar</td><td>广播归约、不规则访存、标量开销</td><td><a href="https://www.hiascend.com/developer/courses/detail/2046763915643473921" target="_blank" rel="noopener">MindStudio 算子调试工具</a></td></tr>
+</tbody></table>
+<table><thead><tr><th>类型</th><th>社区资源</th></tr></thead><tbody>
+<tr><td>学习路径</td><td><a href="https://www.hiascend.com/edu/growth/details/9614049b0d6044c28e291aea1d931a53" target="_blank" rel="noopener">Ascend C 编程</a> · <a href="https://www.hiascend.com/edu/growth/details/66ce04408bdc4e2b9db8169b66aff9a6" target="_blank" rel="noopener">GEMM 类算子调优</a> · <a href="https://www.hiascend.com/edu/growth/details/40da2182f5c94d4c9ddb2b582161e0f5" target="_blank" rel="noopener">Triton</a></td></tr>
+<tr><td>课程</td><td><a href="https://www.hiascend.com/developer/courses/detail/1691696509765107713" target="_blank" rel="noopener">Ascend C 算子开发（入门）</a> · <a href="https://www.hiascend.com/developer/courses/detail/1696414606799486977" target="_blank" rel="noopener">Ascend C 算子开发（进阶）</a> · <a href="https://www.hiascend.com/developer/courses/detail/1696690858236694530" target="_blank" rel="noopener">Ascend C 算子开发（高级）</a> · <a href="https://www.hiascend.com/developer/courses/detail/1925473416036966402" target="_blank" rel="noopener">GEMM 类算子调优</a> · <a href="https://www.hiascend.com/developer/courses/detail/1995421335433535490" target="_blank" rel="noopener">CATLASS 算子开发（入门）</a></td></tr>
+<tr><td>认证</td><td><a href="https://www.hiascend.com/edu/developer-certification/detail/3a0544a46aad4d588630c15bc83f2ee9" target="_blank" rel="noopener">算子开发者认证（入门级）</a> · <a href="https://www.hiascend.com/edu/developer-certification/detail/92d0e017a21c4939af509ba985e635a5" target="_blank" rel="noopener">算子开发者认证（工作级）</a></td></tr>
+</tbody></table>
+<hr>
+<h3 id="主线四-应用开发-离线推理-application">主线四：应用开发·离线推理（<code>application</code>）</h3>
+<blockquote><p>以 YOLOv13 目标检测为例：ONNX 导出 → ATC 离线编译 → ACL 推理 → 性能调优。</p></blockquote>
+<p><strong>阶段一：CANN 基础（公共，约 2h）</strong> — 已在上文完成</p>
+<p><strong>阶段二：YOLOv13 离线推理实战（约 4h）</strong></p>
+<table><thead><tr><th>序号</th><th>课程</th><th>课程内容</th><th>状态</th><th>社区入口</th></tr></thead><tbody>
+<tr><td>1</td><td>章节介绍</td><td>学习目标、流程和目录</td><td>已上线</td><td><a href="https://www.hiascend.com/edu/growth/details/d1c1ac12e6284557a0230ba6ebb4ddc1" target="_blank" rel="noopener">推理应用调优实践</a></td></tr>
+<tr><td>2</td><td>环境准备与模型转换</td><td>导出 ONNX，ATC 生成 OM</td><td>已上线</td><td><a href="https://www.hiascend.com/edu/growth/details/8bb5482e933c43e98237ac7cdb14d1dc" target="_blank" rel="noopener">Pytorch 模型迁移</a></td></tr>
+<tr><td>3</td><td>ACL 离线推理</td><td>编译并运行 ACL C++ 推理</td><td>已上线</td><td><a href="https://www.hiascend.com/developer/courses/detail/2118624825056010242" target="_blank" rel="noopener">昇腾小模型推理迁移部署调优</a></td></tr>
+<tr><td>4</td><td>结果处理与性能调优</td><td>后处理、可视化、多流参数</td><td>已上线</td><td><a href="https://www.hiascend.com/edu/growth/details/e73ec56894914c64bd0285101955e58b" target="_blank" rel="noopener">推理性能调优</a> · <a href="https://www.hiascend.com/developer/courses/detail/2047203003227951106" target="_blank" rel="noopener">MindStudio 系统调优工具</a></td></tr>
+<tr><td>5</td><td>章节练习</td><td>巩固转换、推理与调优</td><td>已上线</td><td><a href="https://www.hiascend.com/developer/edu/find-resource" target="_blank" rel="noopener">查找学习资源</a></td></tr>
+</tbody></table>
+<table><thead><tr><th>类型</th><th>社区资源</th></tr></thead><tbody>
+<tr><td>学习路径</td><td><a href="https://www.hiascend.com/edu/growth/details/d1c1ac12e6284557a0230ba6ebb4ddc1" target="_blank" rel="noopener">推理应用调优实践</a> · <a href="https://www.hiascend.com/edu/growth/details/8bb5482e933c43e98237ac7cdb14d1dc" target="_blank" rel="noopener">Pytorch 模型迁移</a> · <a href="https://www.hiascend.com/edu/growth/details/e73ec56894914c64bd0285101955e58b" target="_blank" rel="noopener">推理性能调优</a></td></tr>
+<tr><td>课程</td><td><a href="https://www.hiascend.com/developer/courses/detail/2118624825056010242" target="_blank" rel="noopener">昇腾小模型推理迁移部署调优</a> · <a href="https://www.hiascend.com/developer/courses/detail/2047203003227951106" target="_blank" rel="noopener">MindStudio 系统调优工具</a></td></tr>
+<tr><td>检索</td><td><a href="https://www.hiascend.com/developer/edu/find-resource" target="_blank" rel="noopener">查找学习资源</a></td></tr>
+</tbody></table>
+<hr>
+<h3 id="主线五-推荐系统-recommend">主线五：推荐系统（<code>recommend</code>）</h3>
+<blockquote><p>基于 Torch-RecHub：排序 → 召回 → 多任务 → 工程化 → NPU 推理优化。</p></blockquote>
+<p><strong>阶段一：CANN 基础（公共，约 2h）</strong> — 已在上文完成</p>
+<p><strong>阶段二：跑通 CTR（约 2h）</strong></p>
+<table><thead><tr><th>序号</th><th>课程</th><th>课程内容</th><th>状态</th><th>社区入口</th></tr></thead><tbody>
+<tr><td>1</td><td>QuickStart：CTR 预测（DeepFM）</td><td>DataFrame → Feature → DeepFM → CTRTrainer → AUC</td><td>已上线</td><td><a href="https://www.hiascend.com/developer/courses/detail/1906524655197753346" target="_blank" rel="noopener">认识安装 Rec SDK</a> · <a href="https://www.hiascend.com/developer/courses/detail/1906525736459960321" target="_blank" rel="noopener">如何利用 Rec SDK 完成推荐模型训练</a></td></tr>
+</tbody></table>
+<p><strong>阶段三：进阶建模（约 4h）</strong></p>
+<table><thead><tr><th>序号</th><th>课程</th><th>课程内容</th><th>状态</th><th>社区入口</th></tr></thead><tbody>
+<tr><td>2</td><td>序列兴趣建模：DIN</td><td>历史行为序列与 DIN attention</td><td>已上线</td><td><a href="https://www.hiascend.com/developer/courses/detail/2009234890159132674" target="_blank" rel="noopener">Mindx-RecSDK 架构及特性解读</a></td></tr>
+<tr><td>3</td><td>匹配/召回：DSSM + Annoy</td><td>双塔召回与向量 Top-K</td><td>已上线</td><td><a href="https://www.hiascend.com/edu/growth/details/310d161ab02c45958f9bc3d8fbbec51e" target="_blank" rel="noopener">检索应用开发</a> · <a href="https://www.hiascend.com/developer/courses/detail/1990696096522833921" target="_blank" rel="noopener">Index SDK 检索应用开发</a></td></tr>
+<tr><td>4</td><td>多任务学习：MMOE</td><td>expert / gate / tower</td><td>已上线</td><td><a href="https://www.hiascend.com/developer/courses/detail/1906525736459960321" target="_blank" rel="noopener">如何利用 Rec SDK 完成推荐模型训练</a></td></tr>
+</tbody></table>
+<p><strong>阶段四：工程化（约 2h）</strong></p>
+<table><thead><tr><th>序号</th><th>课程</th><th>课程内容</th><th>状态</th><th>社区入口</th></tr></thead><tbody>
+<tr><td>5</td><td>实验跟踪</td><td>WandB / SwanLab / TensorBoardX</td><td>已上线</td><td><a href="https://www.hiascend.com/edu/courses" target="_blank" rel="noopener">自主学习课程</a></td></tr>
+<tr><td>6</td><td>模型导出与推理验证</td><td>ONNX 导出、ONNXRuntime、量化入口</td><td>已上线</td><td><a href="https://www.hiascend.com/edu/growth/details/8bb5482e933c43e98237ac7cdb14d1dc" target="_blank" rel="noopener">Pytorch 模型迁移</a></td></tr>
+</tbody></table>
+<p><strong>阶段五：NPU 推理优化（约 1h）</strong></p>
+<table><thead><tr><th>序号</th><th>课程</th><th>课程内容</th><th>状态</th><th>社区入口</th></tr></thead><tbody>
+<tr><td>7</td><td>DIN 多进程控核推理</td><td>TorchAir 整图控核与 latency 统计</td><td>已上线</td><td><a href="https://www.hiascend.com/edu/growth/details/c4ef987e0ae04fa3a3846c573c4766da" target="_blank" rel="noopener">推理引擎</a> · <a href="https://www.hiascend.com/edu/growth/details/e73ec56894914c64bd0285101955e58b" target="_blank" rel="noopener">推理性能调优</a></td></tr>
+</tbody></table>
+<table><thead><tr><th>类型</th><th>社区资源</th></tr></thead><tbody>
+<tr><td>课程</td><td><a href="https://www.hiascend.com/developer/courses/detail/1906524655197753346" target="_blank" rel="noopener">认识安装 Rec SDK</a> · <a href="https://www.hiascend.com/developer/courses/detail/1906525736459960321" target="_blank" rel="noopener">如何利用 Rec SDK 完成推荐模型训练</a> · <a href="https://www.hiascend.com/developer/courses/detail/2009234890159132674" target="_blank" rel="noopener">Mindx-RecSDK 架构及特性解读</a> · <a href="https://www.hiascend.com/developer/courses/detail/1990696096522833921" target="_blank" rel="noopener">Index SDK 检索应用开发</a></td></tr>
+<tr><td>学习路径</td><td><a href="https://www.hiascend.com/edu/growth/details/310d161ab02c45958f9bc3d8fbbec51e" target="_blank" rel="noopener">检索应用开发</a></td></tr>
+<tr><td>检索</td><td><a href="https://www.hiascend.com/developer/edu/find-resource" target="_blank" rel="noopener">查找学习资源</a></td></tr>
+<tr><td>课程栏目</td><td><a href="https://www.hiascend.com/edu/courses" target="_blank" rel="noopener">自主学习课程</a></td></tr>
+</tbody></table>
+<hr>
+<h3 id="延伸专题-skill-可生成">延伸专题（Skill 可生成）</h3>
+<p>五条主线之外，还有下列延伸方向；意图命中时用对应 Skill key 出图。</p>
+<table><thead><tr><th>专题</th><th>Skill key</th><th>阶段要点</th><th>社区资源</th></tr></thead><tbody>
+<tr><td>CANN 基础入门（仅公共）</td><td><code>basics</code></td><td>异构编程基础 → Ascend C 路径</td><td><a href="https://www.hiascend.com/developer/courses/detail/1925466587412258817" target="_blank" rel="noopener">昇腾异构编程基础（速成班）</a> · <a href="https://www.hiascend.com/edu/growth/details/9614049b0d6044c28e291aea1d931a53" target="_blank" rel="noopener">Ascend C编程（学习路径）</a></td></tr>
+<tr><td>算子开发 · Python（PyASC / PyPTO）</td><td><code>pyasc</code></td><td>PyASC → PyPTO</td><td><a href="https://www.hiascend.com/edu/growth/details/40da2182f5c94d4c9ddb2b582161e0f5" target="_blank" rel="noopener">Triton 路径</a> · <a href="https://www.hiascend.com/developer/courses/detail/1998217338603737090" target="_blank" rel="noopener">Triton 算子开发（初级）</a> · <a href="https://www.hiascend.com/developer/courses/detail/2044691037452255234" target="_blank" rel="noopener">Triton 算子开发（进阶）</a> · <a href="https://www.hiascend.com/developer/courses/detail/2114627851088642049" target="_blank" rel="noopener">Triton 算子开发（高级）</a></td></tr>
+<tr><td>图框架（GE / TorchAir / AutoFusion）</td><td><code>graph</code></td><td>GE → TorchAir → AutoFusion</td><td><a href="https://www.hiascend.com/edu/growth/details/c4ef987e0ae04fa3a3846c573c4766da" target="_blank" rel="noopener">推理引擎</a> · <a href="https://www.hiascend.com/edu/growth/details/89478efb20ed4592817deaf5f97f815d" target="_blank" rel="noopener">企业级推理部署</a></td></tr>
+<tr><td>集合通信（HCCL / HiXL）</td><td><code>comm</code></td><td>HCCL → HiXL</td><td><a href="https://www.hiascend.com/edu/growth/details/e73027aabc0a4e01a0ee3692b63474a3" target="_blank" rel="noopener">MindCluster</a> · <a href="https://www.hiascend.com/edu/growth/details/4e9c703842904f28b1289ae3e259e94a" target="_blank" rel="noopener">多机多卡并行推理</a></td></tr>
+<tr><td>CANNBot 算子生成</td><td><code>cannbot</code></td><td>CANNBot 入门与进阶</td><td><a href="https://www.hiascend.com/edu/growth/details/9614049b0d6044c28e291aea1d931a53" target="_blank" rel="noopener">Ascend C 编程</a> · <a href="https://www.hiascend.com/developer/courses/detail/2056647289996673026" target="_blank" rel="noopener">Ascend C Skills 全景概览</a></td></tr>
+<tr><td>AI 应用（RAG）</td><td><code>ai_app</code></td><td>RAG 知识库问答端到端</td><td><a href="https://www.hiascend.com/edu/growth/details/d75ff158fb3046e087440a47745b40f1" target="_blank" rel="noopener">RAG 应用开发</a> · <a href="https://www.hiascend.com/developer/courses/detail/1980194995581026305" target="_blank" rel="noopener">RAG SDK 技术原理和功能介绍</a> · <a href="https://www.hiascend.com/developer/courses/detail/1980187680169578498" target="_blank" rel="noopener">RAG SDK 部署和应用开发</a> · <a href="https://www.hiascend.com/developer/courses/detail/1990696096522833921" target="_blank" rel="noopener">Index SDK 检索应用开发</a></td></tr>
+</tbody></table>
+<hr>
+<h2 id="社区入口一览">社区入口一览</h2>
+<table><thead><tr><th>栏目</th><th>用途</th><th>链接</th></tr></thead><tbody>
+<tr><td>昇腾社区学习中心（枢纽）</td><td>总门户；具体学习请下钻路径 / 课 / 认证</td><td><a href="https://www.hiascend.com/developer/learn" target="_blank" rel="noopener">https://www.hiascend.com/developer/learn</a></td></tr>
+<tr><td>查找学习资源</td><td>全量检索</td><td><a href="https://www.hiascend.com/developer/edu/find-resource" target="_blank" rel="noopener">https://www.hiascend.com/developer/edu/find-resource</a></td></tr>
+<tr><td>学习路径栏目</td><td>DLC 路径列表</td><td><a href="https://www.hiascend.com/edu/growth" target="_blank" rel="noopener">https://www.hiascend.com/edu/growth</a></td></tr>
+<tr><td>自主学习课程</td><td>DLC 精选课</td><td><a href="https://www.hiascend.com/edu/courses" target="_blank" rel="noopener">https://www.hiascend.com/edu/courses</a></td></tr>
+<tr><td>开发者认证</td><td>DLC 认证栏目</td><td><a href="https://www.hiascend.com/edu/certification" target="_blank" rel="noopener">https://www.hiascend.com/edu/certification</a></td></tr>
+</tbody></table>
+<hr>
+<h2 id="用-skill-生成-学习旅程地图-html">用 Skill 生成「学习旅程地图」HTML</h2>
+<p>当你（或智能助手）听到「我想学 XXX」时，按主题 key 一键出图：</p>
+<pre><code># 在本目录下
+python3 scripts/generate.py --topic inference --out ./out/推理学习旅程.html \
+  --role 开发人员 --goal 大模型推理入门 --level 入门</code></pre>
+<table><thead><tr><th>参数</th><th>说明</th></tr></thead><tbody>
+<tr><td><code>--topic</code></td><td>上表 11 个 key 之一</td></tr>
+<tr><td><code>--role</code> / <code>--goal</code> / <code>--level</code></td><td>可选画像；缺省见 <a href="./scripts/topics.py"><code>scripts/topics.py</code></a></td></tr>
+<tr><td><code>--out</code></td><td>输出 HTML 路径</td></tr>
+</tbody></table>
+<p>资讯 / 案例意图（「有什么新技术」「实践案例」）走博客墙：</p>
+<pre><code>python3 scripts/build_blog_wall.py --out ./out/技术博客墙.html</code></pre>
+<p>规则真源：</p>
+<ul>
+<li>人类可读：<a href="./references/intent-map.md"><code>references/intent-map.md</code></a>  </li>
+<li>脚本消费：<a href="./scripts/topics.py"><code>scripts/topics.py</code></a>  </li>
+<li>Skill 说明：<a href="./SKILL.md"><code>SKILL.md</code></a></li>
+</ul>
+<hr>
+<h2 id="维护说明">维护说明</h2>
+<ol>
+<li>社区路径 / 课 / 认证 URL 变更时，更新本页对应真链（标题与落地页同名同义）。  </li>
+<li>增删主题或调整阶段：同步改 <code>scripts/topics.py</code> 与 <code>references/intent-map.md</code>，再更新本页。  </li>
+<li>具体课入口用路径 / 课程 / 认证详情页；<strong>不要把枢纽页 <code>/developer/learn</code> 当成单课落地</strong>。  </li>
+</ol>
+</div></section></main></div>
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js?v=20261109d"></script>
+<script src="assets/js/module-sidebar.js?v=20261109d"></script>
+</body></html>

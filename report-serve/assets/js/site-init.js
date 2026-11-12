@@ -269,6 +269,8 @@
     if (path === "design-system.html") setSurface("design-system");
     var DLC_PAGES = {
       "dlc-llms.html": 1,
+      "dlc-readme.html": 1,
+      "dlc-example.html": 1,
       "dlc-path.html": 1,
       "dlc-course.html": 1,
       "dlc-cert.html": 1,

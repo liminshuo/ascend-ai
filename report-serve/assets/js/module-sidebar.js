@@ -151,7 +151,9 @@
       { group: null, id: "dlc-path", href: "dlc-path.html", label: "学习路径" },
       { group: null, id: "dlc-course", href: "dlc-course.html", label: "学习课程" },
       { group: null, id: "dlc-cert", href: "dlc-cert.html", label: "开发者认证" },
-      { group: null, id: "dlc-microcert", href: "dlc-microcert.html", label: "微认证" }
+      { group: null, id: "dlc-microcert", href: "dlc-microcert.html", label: "微认证" },
+      { group: null, id: "dlc-readme", href: "dlc-readme.html", label: "README", below: true },
+      { group: null, id: "dlc-example", href: "dlc-example.html", label: "学习旅程地图示例", below: true }
     ]
   };
 
@@ -349,38 +351,55 @@
     html += "</ul>";
   }
 
-  html += "<ul class=\"sidebar-nav sidebar-phase-nav\">";
-  var lastGroup = null;
-  items.forEach(function (item) {
-    if (item.extraGroup) return;
-    if (item.group && item.group !== lastGroup) {
-      html += "<li class=\"nav-group-label\">" + item.group + "</li>";
-      lastGroup = item.group;
-    }
-
+  function renderNavItem(item) {
     var hasKids = item.children && item.children.length;
     var active = navItemActive(item);
     var open = hasKids && isOpen(item);
     var liClass = "nav-item" + (hasKids ? " has-children" : "") + (open ? " is-open" : "");
-    html += "<li class=\"" + liClass + "\" data-nav-id=\"" + item.id + "\">";
+    var out = "<li class=\"" + liClass + "\" data-nav-id=\"" + item.id + "\">";
 
     if (hasKids) {
-      html += "<div class=\"nav-row\">";
-      html += "<a class=\"nav-link" + (active && !item.children.some(childActive) ? " active" : "") + (active ? " is-current" : "") + "\" href=\"" + item.href + "\">" + item.label + "</a>";
-      html += "<button type=\"button\" class=\"nav-fold\" aria-expanded=\"" + (open ? "true" : "false") + "\" aria-label=\"展开或收起「" + item.label + "」\"></button>";
-      html += "</div>";
-      html += "<ul class=\"nav-sub\"" + (open ? "" : " hidden") + ">";
+      out += "<div class=\"nav-row\">";
+      out += "<a class=\"nav-link" + (active && !item.children.some(childActive) ? " active" : "") + (active ? " is-current" : "") + "\" href=\"" + item.href + "\">" + item.label + "</a>";
+      out += "<button type=\"button\" class=\"nav-fold\" aria-expanded=\"" + (open ? "true" : "false") + "\" aria-label=\"展开或收起「" + item.label + "」\"></button>";
+      out += "</div>";
+      out += "<ul class=\"nav-sub\"" + (open ? "" : " hidden") + ">";
       item.children.forEach(function (child) {
         var ca = childActive(child) ? " class=\"active\"" : "";
-        html += "<li><a href=\"" + child.href + "\"" + ca + ">" + child.label + "</a></li>";
+        out += "<li><a href=\"" + child.href + "\"" + ca + ">" + child.label + "</a></li>";
       });
-      html += "</ul>";
+      out += "</ul>";
     } else {
-      html += "<a href=\"" + item.href + "\"" + (active ? " class=\"active\"" : "") + ">" + item.label + "</a>";
+      out += "<a href=\"" + item.href + "\"" + (active ? " class=\"active\"" : "") + ">" + item.label + "</a>";
     }
-    html += "</li>";
+    out += "</li>";
+    return out;
+  }
+
+  html += "<ul class=\"sidebar-nav sidebar-phase-nav\">";
+  var lastGroup = null;
+  var belowItems = [];
+  items.forEach(function (item) {
+    if (item.extraGroup) return;
+    if (item.below) {
+      belowItems.push(item);
+      return;
+    }
+    if (item.group && item.group !== lastGroup) {
+      html += "<li class=\"nav-group-label\">" + item.group + "</li>";
+      lastGroup = item.group;
+    }
+    html += renderNavItem(item);
   });
   html += "</ul>";
+
+  if (belowItems.length) {
+    html += "<ul class=\"sidebar-nav sidebar-phase-nav sidebar-nav-below\">";
+    belowItems.forEach(function (item) {
+      html += renderNavItem(item);
+    });
+    html += "</ul>";
+  }
 
   aside.className = "sidebar";
   aside.innerHTML = html;
