@@ -366,7 +366,75 @@
   .readme-body pre code { background: none; padding: 0; }
   .readme-body strong { font-weight: 650; }
 
+  /* iframe 内嵌：隐藏站点壳，只留 README 正文；去掉顶栏预留灰空 */
+  html.is-embed body .topbar,
+  html.is-embed body #module-sidebar,
+  body.is-embed .topbar,
+  body.is-embed #module-sidebar { display: none !important; }
+  html.is-embed,
+  html.is-embed body,
+  html.is-embed body .page-wrapper,
+  html.is-embed body .main-content,
+  html.is-embed body.inner-page:has(#module-sidebar) .main-content,
+  body.is-embed,
+  body.is-embed .page-wrapper,
+  body.is-embed .main-content,
+  body.is-embed.inner-page:has(#module-sidebar) .main-content {
+    background: #fff !important;
+  }
+  html.is-embed body .page-wrapper,
+  html.is-embed body.inner-page:has(#module-sidebar) .page-wrapper,
+  body.is-embed .page-wrapper,
+  body.is-embed.inner-page:has(#module-sidebar) .page-wrapper {
+    display: block !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    padding-top: 0 !important;
+  }
+  html.is-embed body.inner-page .main-content,
+  html.is-embed body.inner-page:has(#module-sidebar) .main-content,
+  body.is-embed.inner-page .main-content,
+  body.is-embed.inner-page:has(#module-sidebar) .main-content {
+    padding: 12px 16px 24px !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-height: 0 !important;
+    border: 0 !important;
+  }
+  html.is-embed body.inner-page.agent-entry-page:has(#module-sidebar) .main-content > .page-header,
+  html.is-embed body.inner-page.agent-entry-page:has(#module-sidebar) .main-content > .section,
+  body.is-embed.inner-page.agent-entry-page:has(#module-sidebar) .main-content > .page-header,
+  body.is-embed.inner-page.agent-entry-page:has(#module-sidebar) .main-content > .section {
+    width: 100% !important;
+    max-width: none !important;
+    margin-inline: 0 !important;
+  }
+  html.is-embed body .page-header,
+  body.is-embed .page-header {
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+  }
+  html.is-embed body .page-header > h1,
+  body.is-embed .page-header > h1 {
+    padding-top: 4px !important;
+    padding-bottom: 8px !important;
+    margin: 0 !important;
+  }
+
 </style>
+<script>
+(function () {
+  var q = new URLSearchParams(location.search);
+  if (q.get("embed") === "1" || q.get("embed") === "true") {
+    document.documentElement.classList.add("is-embed");
+  }
+})();
+</script>
 </head>
 <body class="inner-page agent-entry-page" data-module="dlc" data-page="dlc-readme" data-no-surface-tabs>
 <div class="topbar"><div class="topbar-inner">
@@ -626,4 +694,11 @@ python3 scripts/generate.py --topic inference --out ./out/推理学习旅程.htm
 <script src="assets/js/site-config.js"></script>
 <script src="assets/js/site-init.js?v=20261109d"></script>
 <script src="assets/js/module-sidebar.js?v=20261109d"></script>
+<script>
+(function () {
+  if (document.documentElement.classList.contains("is-embed")) {
+    document.body.classList.add("is-embed");
+  }
+})();
+</script>
 </body></html>

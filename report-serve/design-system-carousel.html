@@ -807,9 +807,91 @@
     font-weight: 500;
     color: #737373;
   }
+  :is(#types, #anatomy) .an-stage {
+    margin: 0;
+    padding: 24px;
+    background: #f4f4f5;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    box-sizing: border-box;
+    overflow: visible;
+  }
+  #types .an-stage > .an-chrome,
+  #anatomy .an-stage > .an-chrome {
+    margin: 0;
+    width: 100%;
+  }
+  #anatomy .an-shot-anno > .an-stage {
+    margin: 0 calc(-1 * var(--anno-pad-right)) 24px calc(-1 * var(--anno-pad-left));
+    padding: 24px var(--anno-pad-right) 24px var(--anno-pad-left);
+  }
+  #anatomy .an-shot-anno .anno-rule-groups {
+    margin: 0 calc(-1 * var(--anno-pad-right)) 0 calc(-1 * var(--anno-pad-left));
+    display: grid;
+    gap: 8px;
+  }
+  #anatomy .an-shot-anno .anno-rule-group > .fn-h4 {
+    margin: 0;
+    padding-top: var(--space-h4-pad-y, 16px) !important;
+    padding-bottom: 0 !important;
+  }
+  #anatomy .an-shot-anno .anno-rule-group:first-child > .fn-h4 {
+    padding-top: 0 !important;
+  }
+  #anatomy .an-shot-anno .anno-rule-group .llms-anno-legend {
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: var(--space-stack, 16px);
+  }
+  #anatomy .an-shot-anno .anno-rule-group > .anno-example-label {
+    margin: 12px 0 0;
+    font-size: 14px;
+    line-height: 22px;
+    color: var(--color-text-secondary);
+  }
+  #anatomy .an-shot-anno .anno-rule-group > .anno-code {
+    margin: 8px 0 0;
+    padding: 12px 14px;
+    background: #f5f6f8;
+    border-radius: 6px;
+    font-size: 12px;
+    line-height: 18px;
+    color: var(--color-text);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  #anatomy .an-shot-anno .anno-rule-group > .anno-code .anno-hl {
+    display: inline;
+    margin: 0;
+    padding: 0 3px;
+    background: #ffedd5;
+    color: inherit;
+    border-radius: 3px;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+  #anatomy .an-shot-anno .llms-anno-legend--dots > li {
+    align-items: flex-start;
+  }
+  #anatomy .an-shot-anno .llms-anno-legend--dots .anno-dot {
+    flex: 0 0 18px;
+    width: 18px;
+    height: 22px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #anatomy .an-shot-anno .llms-anno-legend--dots .anno-dot::before {
+    content: "";
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--anno-ink, #191919);
+  }
   #anatomy .an-shot-anno .llms-anno-legend {
     list-style: none;
-    margin: 16px calc(-1 * var(--anno-pad-right)) 0 calc(-1 * var(--anno-pad-left));
+    margin: 0;
     padding: 0;
     display: grid;
     gap: 8px;
@@ -1050,7 +1132,9 @@
     margin-top: 0;
   }
   #definition .principle-example > .an-chrome,
+  #types .principle-example > .fn-h3 + .an-stage,
   #types .principle-example > .fn-h3-desc + .an-chrome,
+  #types .principle-example > .fn-h3-desc + .an-stage,
   #types .principle-example > .fn-h4 + .an-chrome,
   #types .principle-example > .fn-h3-desc + .an-shot,
   #anatomy .principle-example > .fn-h3-desc + .an-shot-anno,
@@ -1857,17 +1941,19 @@
 
     <section class="section" id="types">
       <h2>组件类型</h2>
-      <p class="page-lead">轮播采用统一的稿面结构，由文字、按钮和底图组成。产品入口、活动推广等业务用途不改变这一结构。</p>
       <div class="principle-example">
-        <div class="ck-card an-chrome an-anno">
-          <div class="mock-carousel mock-carousel--shot">
-            <img class="frame-bg" src="assets/design-system/carousel-hero.jpg" alt="">
-            <div class="frame-copy">
-              <p class="frame-h">昇腾开发者计划 2026</p>
-              <p class="frame-p">加入我们，加速 AI 梦想落地</p>
-              <a class="frame-cta" href="https://www.hiascend.com/developer-program">进入开发者计划</a>
+        <h3 class="fn-h3">Banner <a class="fn-h3-link" href="https://www.hiascend.com/developer-program" target="_blank" rel="noopener">查看示例来源</a></h3>
+        <div class="an-stage">
+          <div class="ck-card an-chrome an-anno">
+            <div class="mock-carousel mock-carousel--shot">
+              <img class="frame-bg" src="assets/design-system/carousel-hero.jpg" alt="">
+              <div class="frame-copy">
+                <p class="frame-h">昇腾开发者计划 2026</p>
+                <p class="frame-p">加入我们，加速 AI 梦想落地</p>
+                <a class="frame-cta" href="https://www.hiascend.com/developer-program">进入开发者计划</a>
+              </div>
+              <div class="frame-dots" aria-hidden="true"><span class="is-on"></span><span></span><span></span></div>
             </div>
-            <div class="frame-dots" aria-hidden="true"><span class="is-on"></span><span></span><span></span></div>
           </div>
         </div>
       </div>
@@ -1877,37 +1963,54 @@
       <h2>元素拆解</h2>
 
       <div class="principle-example">
-        <h3 class="fn-h3">Banner</h3>
-        <p class="fn-h3-desc">每张 Banner 由文字、按钮和底图构成。需要被识别和引用的信息由文字与按钮承载；底图用于视觉表达。</p>
+        <h3 class="fn-h3">Banner <a class="fn-h3-link" href="https://www.hiascend.com/developer-program" target="_blank" rel="noopener">查看示例来源</a></h3>
+        <p class="fn-h3-desc">轮播采用统一的稿面结构，由文字、按钮和底图组成。需要被识别和引用的信息由文字与按钮承载；底图用于视觉表达。</p>
         <div class="an-shot-anno" aria-label="轮播 Banner 标注">
-          <div class="ck-card an-chrome an-anno">
-            <div class="mock-carousel mock-carousel--shot">
-              <img class="frame-bg" src="assets/design-system/carousel-hero.jpg" alt="">
-              <div class="frame-copy">
-                <div class="frame-text an-anno-row">
-                  <p class="frame-h">昇腾开发者计划 2026</p>
-                  <p class="frame-p">加入我们，加速 AI 梦想落地</p>
-                  <span class="an-anno-pin an-anno-pin--left" aria-hidden="true"><span class="anno-cap">文字</span><span class="anno-num">1</span><span class="anno-stem"></span></span>
+          <div class="an-stage">
+            <div class="ck-card an-chrome an-anno">
+              <div class="mock-carousel mock-carousel--shot">
+                <img class="frame-bg" src="assets/design-system/carousel-hero.jpg" alt="">
+                <div class="frame-copy">
+                  <div class="frame-text an-anno-row">
+                    <p class="frame-h">昇腾开发者计划 2026</p>
+                    <p class="frame-p">加入我们，加速 AI 梦想落地</p>
+                    <span class="an-anno-pin an-anno-pin--left" aria-hidden="true"><span class="anno-cap">文字</span><span class="anno-num">1</span><span class="anno-stem"></span></span>
+                  </div>
+                  <a class="frame-cta an-anno-row" href="https://www.hiascend.com/developer-program">进入开发者计划<span class="an-anno-pin an-anno-pin--left" aria-hidden="true"><span class="anno-cap">按钮</span><span class="anno-num">2</span><span class="anno-stem"></span></span></a>
                 </div>
-                <a class="frame-cta an-anno-row" href="https://www.hiascend.com/developer-program">进入开发者计划<span class="an-anno-pin an-anno-pin--left" aria-hidden="true"><span class="anno-cap">按钮</span><span class="anno-num">2</span><span class="anno-stem"></span></span></a>
+                <div class="frame-dots" aria-hidden="true"><span class="is-on"></span><span></span><span></span></div>
+                <span class="an-anno-pin an-anno-pin--right" aria-hidden="true"><span class="anno-stem"></span><span class="anno-num">3</span><span class="anno-cap">底图</span></span>
               </div>
-              <div class="frame-dots" aria-hidden="true"><span class="is-on"></span><span></span><span></span></div>
-              <span class="an-anno-pin an-anno-pin--right" aria-hidden="true"><span class="anno-stem"></span><span class="anno-num">3</span><span class="anno-cap">底图</span></span>
             </div>
           </div>
-          <ol class="llms-anno-legend">
-            <li><span class="anno-num">1</span><span><strong>文字</strong><span class="anno-desc">标题明确对象名称，描述说明 Banner 的内容或目的。二者应使用独立文本，不嵌入底图。</span></span></li>
-            <li><span class="anno-num">2</span><span><strong>按钮</strong><span class="anno-desc"><ul class="anno-points"><li>按钮文案应同时表达操作与去向，避免使用「了解更多」等模糊表述。</li><li>代码中应提供可访问的真实链接地址。</li></ul><pre class="anno-code"><code>&lt;a href="https://www.hiascend.com/developer-program"&gt;进入开发者计划&lt;/a&gt;</code></pre></span></span></li>
-            <li><span class="anno-num">3</span><span><strong>底图</strong><span class="anno-desc">底图用于装饰和氛围营造，不承载对象名称、跳转去向、规格或结论，使用空 <code>alt</code>。</span></span></li>
-          </ol>
+          <div class="anno-rule-groups">
+            <div class="anno-rule-group">
+              <h4 class="fn-h4">视觉规则</h4>
+              <ol class="llms-anno-legend">
+                <li><span class="anno-num">1</span><span><strong>文字</strong><span class="anno-desc">标题明确对象名称，描述说明 Banner 的内容或目的。二者应使用独立文本，不嵌入底图。</span></span></li>
+                <li><span class="anno-num">2</span><span><strong>按钮</strong><span class="anno-desc">按钮文案应同时表达操作与去向，避免使用「了解更多」等模糊表述。</span></span></li>
+                <li><span class="anno-num">3</span><span><strong>底图</strong><span class="anno-desc">底图用于装饰和氛围营造，不承载对象名称、跳转去向、规格或结论。</span></span></li>
+              </ol>
+            </div>
+            <div class="anno-rule-group">
+              <h4 class="fn-h4">前端规则</h4>
+              <ol class="llms-anno-legend llms-anno-legend--dots">
+                <li><span class="anno-dot" aria-hidden="true"></span><span><strong>href</strong><span class="anno-desc">按钮应提供可访问的绝对地址（含协议与域名），避免相对路径。</span></span></li>
+                <li><span class="anno-dot" aria-hidden="true"></span><span><strong>alt</strong><span class="anno-desc">底图使用空 <code>alt</code>，不把对象名称或跳转去向写进图片属性。</span></span></li>
+              </ol>
+              <p class="anno-example-label">示例如下：</p>
+              <pre class="anno-code"><code>&lt;a <span class="anno-hl">href</span>="https://www.hiascend.com/developer-program"&gt;进入开发者计划&lt;/a&gt;
+&lt;img <span class="anno-hl">alt</span>=""&gt;</code></pre>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
     <section class="section" id="usage">
       <h2>适用边界</h2>
-      <p class="page-lead">是否需要遵循上述规则，取决于 Banner 内容是否需要被 AI 识别、检索或引用。</p>
-      <p class="page-lead">若无需被 AI 读取，例如仅用于装饰、氛围或口号展示，且不含对象名称、跳转去向或事实信息，可将艺术字保留在图像中，并使用空 <code>alt</code>。</p>
+      <p class="page-lead">上述规则适用于 Banner 内容需要被 AI 识别、检索或引用的场景。</p>
+      <p class="page-lead">若仅用于装饰、氛围或口号展示，且不含对象名称、跳转去向或事实信息，可将艺术字保留在图像中，并使用空 <code>alt</code>。</p>
     </section>
 
   </main>
