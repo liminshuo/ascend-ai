@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HTML 转化成 Markdown · Skill · AI 亲和原则</title>
+  <title>提供 Markdown 正文 · Skill · AI 亲和原则</title>
   <link rel="stylesheet" href="assets/css/style.css">
 <style>
   .topbar {
@@ -117,12 +117,21 @@
   }
   .bg-list li + li { margin-top: 10px; }
   .bg-list strong { font-weight: 650; }
-  .section ul.plain-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+  #overview > h2,
+  #overview .page-lead,
+  #usage > h2 {
+    text-align: left;
   }
-  .section ul.plain-list li + li { margin-top: 10px; }
+  #overview .bg-list,
+  #usage .bg-list {
+    margin-left: 0;
+    padding-left: 0;
+    list-style-position: inside;
+    text-align: left;
+  }
+  #overview .bg-list {
+    margin-bottom: var(--space-stack, 16px);
+  }
   .probe-table {
     width: 100%;
     border-collapse: separate;
@@ -136,7 +145,7 @@
     border: 1px solid #e8eef5;
     border-top: none;
     border-left: none;
-    vertical-align: top;
+    vertical-align: middle;
     padding: 10px 12px;
     text-align: left;
   }
@@ -145,6 +154,27 @@
   .probe-table td:first-child { border-left: 1px solid #e8eef5; }
   .probe-table th { background: #f5f6f8; font-weight: 650; width: 22%; }
   .probe-table code { font-size: 12px; }
+  #usage .probe-table {
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+    border-radius: 8px;
+    border: 1px solid #e8eef5;
+  }
+  #usage .probe-table th,
+  #usage .probe-table td {
+    border-right: 1px solid #e8eef5;
+    border-bottom: 1px solid #e8eef5;
+    border-top: none;
+    border-left: none;
+  }
+  #usage .probe-table th:last-child,
+  #usage .probe-table td:last-child { border-right: none; }
+  #usage .probe-table tbody tr:last-child > th,
+  #usage .probe-table tbody tr:last-child > td { border-bottom: none; }
+  #usage .probe-table thead tr:first-child > th { border-top: none; }
+  #usage .probe-table th:first-child,
+  #usage .probe-table td:first-child { border-left: none; }
   .skill-detail-actions {
     display: flex;
     flex-wrap: wrap;
@@ -180,17 +210,90 @@
     opacity: 0.92;
     color: #fff;
   }
-  .crumb {
-    margin: 0 0 8px;
+  .skill-demo-shot {
+    margin: var(--space-stack, 16px) 0 0;
+    padding: 0;
+    border: 1px solid #e8eef5;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08), 0 2px 6px rgba(15, 23, 42, 0.06);
+  }
+  .skill-demo-shot a {
+    display: block;
+    line-height: 0;
+  }
+  .skill-demo-shot img {
+    display: block;
+    width: 100%;
+    height: 561px;
+    object-fit: cover;
+    object-position: top center;
+  }
+  body.inner-page[data-page="skill-detail"] .main-content > .crumb {
+    position: sticky;
+    top: var(--header-height, 56px);
+    z-index: 150;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    box-sizing: border-box;
+    padding: 10px max(clamp(16px, 2.5vw, 24px), calc((100% - var(--content-max-width, 1000px)) / 2));
     font-size: 13px;
     line-height: 20px;
     color: var(--color-text-secondary);
+    background: #fff;
+    border-bottom: 1px solid transparent;
+  }
+  .crumb.is-stuck {
+    border-bottom-color: #e8eef5;
   }
   .crumb a {
     color: var(--color-primary);
     text-decoration: none;
   }
   .crumb a:hover { text-decoration: underline; }
+  .prompt-card {
+    margin: 12px 0 16px;
+    padding: 14px 16px;
+    background: #f5f6f8;
+    border: 1px solid #e8eef5;
+    border-radius: 8px;
+    box-sizing: border-box;
+  }
+  .prompt-card-label {
+    margin: 0 0 8px;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 18px;
+    color: var(--color-text-secondary);
+  }
+  .prompt-card ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+  }
+  .prompt-card li {
+    margin: 0;
+    font-size: 14px;
+    line-height: 22px;
+    color: var(--color-text);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  .prompt-card .slash-tag {
+    display: inline-block;
+    margin-right: 6px;
+    padding: 0 6px;
+    border-radius: 4px;
+    background: #ffedd5;
+    color: #9a3412;
+    font-size: 13px;
+    font-weight: 650;
+    line-height: 20px;
+    vertical-align: baseline;
+  }
 </style>
 </head>
 <body class="inner-page" data-page="skill-detail" data-no-surface-tabs>
@@ -211,78 +314,61 @@
 
 <div class="page-wrapper">
   <main class="main-content">
+    <p class="crumb"><a href="skills.html">Skill 目录</a> / 提供 Markdown 正文</p>
     <div class="page-header">
-      <p class="crumb"><a href="skills.html">Skill 目录</a> / HTML 转化成 Markdown</p>
-      <h1>HTML 转化成 Markdown</h1>
+      <h1>提供 Markdown 正文</h1>
     </div>
     <p class="page-meta">
-      Skill ID：<code>html-to-md</code>
-      · 依据：<a href="principles-format.html">Markdown 正文可直取</a>
-      · <a href="principles-noise.html">推荐内容后置</a>
+      Skill ID：<code>/html-to-md</code>
     </p>
 
     <section class="section" id="overview">
-      <h2>核心命题</h2>
-      <p class="page-lead">原始 HTML（尤其营销站）对 Agent 噪声高。本 Skill 把给定页面压成可扫读的 Markdown：去壳去重、保留 CTA；文首索引模块只声明根 llms 与对应 HTML 的 URL；报告只下载 .md。与 <a href="skill-md-discoverability.html">md-discoverability</a> 成对：本 Skill 生成 MD，后者核验人读页能否发现平行稿。</p>
+      <h2>这个 Skill 做什么</h2>
+      <p class="page-lead">这是一份用于把网页 HTML 转成 Agent 可读 Markdown 的 Skill 说明。它适合营销页噪声高、需要精简正文时使用：先清洗页面，再输出对照报告，并给出可下载的 Markdown 文件。不编造正文，不把全站导航写进稿子。依据见<a href="principles-format.html">Markdown 正文可直取</a>。与 <a href="skill-md-discoverability.html">Markdown 正文可发现</a> 成对：本 Skill 生成 Markdown，后者核验人读页能否发现平行稿。</p>
+      <ol class="bg-list">
+        <li>清洗：去掉导航、页脚等壳层，合并重复段落，保留带链接的按钮文案。</li>
+        <li>报告：生成独立 HTML 对照报告（Part1 转换说明）；顶栏可导出 PDF，没有站点侧栏。</li>
+        <li>产出：在报告中附建议稿 Markdown（文首只声明站点根 <code>llms.txt</code> 与对应网页地址），顶栏可单独下载。</li>
+      </ol>
       <div class="skill-detail-actions">
         <a class="is-primary" href="exports/html-to-md.zip" download="html-to-md.zip">下载 Skill</a>
         <a href="html-to-md-agentarts.html">查看示例报告</a>
       </div>
-    </section>
-
-    <section class="section" id="scope">
-      <h2>转换范围</h2>
-      <p class="page-lead">主输入为页面 URL；也可本地 HTML 或粘贴片段。输出精简 <code>.md</code> 与轻量对照报告。不编造正文；不把全站导航写进 MD。</p>
-      <table class="probe-table">
-        <thead>
-          <tr><th>项</th><th>要求</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>页面 URL</td><td>优先：GET 后抽正文；记最终 URL</td></tr>
-          <tr><td>本地 / 片段</td><td>需登录、反爬或 JS 不全时改用</td></tr>
-          <tr><td>去壳</td><td>去掉 nav/header/footer、登录购物车、语言切换、备案热线</td></tr>
-          <tr><td>去重</td><td>轮播等造成的连续重复标题/段落只留一份</td></tr>
-          <tr><td>语义</td><td>标题层级、列表、绝对链接、代码块、表格；图片用 alt</td></tr>
-          <tr><td>按钮 / CTA</td><td>有有效 href 的按钮文案必须写入 MD 为 <code>[文案](URL)</code>；空链可保留文案并注明</td></tr>
-          <tr><td>交付</td><td>Part1 转换说明 + Part2 MD 预览；可下载 .md、导出 PDF</td></tr>
-        </tbody>
-      </table>
-    </section>
-
-    <section class="section" id="workflow">
-      <h2>工作流</h2>
-      <ol class="bg-list">
-        <li><strong>输入</strong>：页面 URL（优先）或本地 HTML / 片段；可选正文选择器。</li>
-        <li><strong>获取</strong>：GET 或读文件；去掉 script/style 噪声。</li>
-        <li><strong>定位正文</strong>：选择器 → main/article → 最大文本块；丢弃壳层。</li>
-        <li><strong>转 MD</strong>：文首索引（根 llms + 对应 HTML）→ 正文；来源/清洗写报告 Part1；报告只下载 MD。</li>
-        <li><strong>质检</strong>：是否仍含登录/备案等；过短则标 JS 可能不全。</li>
-        <li><strong>输出</strong>：<code>.md</code> + 对照 HTML；双写 <code>docs/</code> 与 <code>report-serve/</code>。</li>
-      </ol>
-    </section>
-
-    <section class="section" id="report">
-      <h2>报告结构</h2>
-      <p class="page-lead">白底 HTML，无侧栏；顶栏品牌 +「下载 Markdown」+「导出 PDF」，与正文 1000px 栏对齐。</p>
-      <ol class="bg-list">
-        <li><strong>Part1. 转换说明</strong>：来源与可达、正文定位与清洗、问题与发现。</li>
-        <li><strong>Part2. 转换结果</strong>：建议稿预览；下载 .md；编写说明。</li>
-      </ol>
+      <figure class="skill-demo-shot">
+        <a href="html-to-md-agentarts.html">
+          <img src="assets/skills/html-to-md-agentarts-preview.png" alt="AgentArts HTML 转化成 Markdown 示例报告截图" width="998" height="561">
+        </a>
+      </figure>
     </section>
 
     <section class="section" id="usage">
-      <h2>如何使用</h2>
+      <h2>如何触发</h2>
       <ol class="bg-list">
-        <li>下载 Skill 包，解压到 Cursor 的 <code>.cursor/skills/html-to-md/</code>（或个人 skills 目录）。</li>
-        <li>准备要转换的页面 URL（优先）；若暂不可抓取，改用本地 HTML 或粘贴片段。</li>
-        <li>在对话中调用，例如：按 html-to-md 转换 <code>https://agentorchard.huaweicloud.com/agentarts.html</code>（文首声明根 llms 与对应 HTML URL）。</li>
-        <li>按报告模板输出 HTML，并将优化后的 <code>.md</code> 放到 <code>exports/</code> 供下载。可对照示例：<a href="html-to-md-agentarts.html">智果 AgentArts 对照报告</a>。</li>
+        <li>下载 Skill 包，放到 Agent 可读取的 skills 目录（如 <code>.cursor/skills/html-to-md/</code>）。</li>
+        <li>在对话中用 <code>/html-to-md</code> 唤起；斜杠后写页面 URL。没有地址时，Agent 会先追问。页面抓不全时再交本地 HTML 或粘贴片段。</li>
+      </ol>
+      <table class="probe-table" style="margin-top:12px;margin-bottom:16px;width:100%">
+        <thead><tr><th>字段</th><th>必填</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>斜杠命令</td><td>是</td><td>用 <code>/html-to-md</code> 明确唤起这个 Skill</td></tr>
+          <tr><td>页面 URL</td><td>是</td><td>如 <code>https://agentorchard.huaweicloud.com/agentarts.html</code></td></tr>
+          <tr><td>本地 HTML / 片段</td><td>可选</td><td>抓不全时再给。不交也能跑</td></tr>
+        </tbody>
+      </table>
+      <div class="prompt-card" aria-label="用户输入示例">
+        <p class="prompt-card-label">用户可以这样输入</p>
+        <ul>
+          <li><span class="slash-tag">/html-to-md</span>转换 https://agentorchard.huaweicloud.com/agentarts.html</li>
+        </ul>
+      </div>
+      <ol class="bg-list" start="3">
+        <li>生成结果是一份独立 HTML（Part1 转换说明 + Part2 可下载 Markdown）。可对照 <a href="html-to-md-agentarts.html">智果 AgentArts 示例</a>。</li>
       </ol>
     </section>
   </main>
 </div>
 
 <script src="assets/js/site-config.js"></script>
-<script src="assets/js/site-init.js?v=20261105a"></script>
+<script src="assets/js/site-init.js?v=20261120c"></script>
 </body>
 </html>

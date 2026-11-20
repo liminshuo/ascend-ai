@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>页级亲和探针 · Skill · AI 亲和原则</title>
+  <title>实测页级亲和 · Skill · AI 亲和原则</title>
   <link rel="stylesheet" href="assets/css/style.css">
 <style>
   .topbar {
@@ -76,6 +76,21 @@
     padding-bottom: var(--space-h1-pad-y, 32px);
     color: var(--color-text);
   }
+  .skill-badge {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 10px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: #eef4ff;
+    color: #175cd3;
+    font-size: 13px;
+    font-weight: 650;
+    line-height: 20px;
+    letter-spacing: 0;
+    vertical-align: 6px;
+    white-space: nowrap;
+  }
   .page-meta {
     margin: 0 0 var(--space-stack, 16px);
     font-size: var(--text-body);
@@ -117,12 +132,21 @@
   }
   .bg-list li + li { margin-top: 10px; }
   .bg-list strong { font-weight: 650; }
-  .section ul.plain-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+  #overview > h2,
+  #overview .page-lead,
+  #usage > h2 {
+    text-align: left;
   }
-  .section ul.plain-list li + li { margin-top: 10px; }
+  #overview .bg-list,
+  #usage .bg-list {
+    margin-left: 0;
+    padding-left: 0;
+    list-style-position: inside;
+    text-align: left;
+  }
+  #overview .bg-list {
+    margin-bottom: var(--space-stack, 16px);
+  }
   .probe-table {
     width: 100%;
     border-collapse: separate;
@@ -136,7 +160,7 @@
     border: 1px solid #e8eef5;
     border-top: none;
     border-left: none;
-    vertical-align: top;
+    vertical-align: middle;
     padding: 10px 12px;
     text-align: left;
   }
@@ -145,6 +169,27 @@
   .probe-table td:first-child { border-left: 1px solid #e8eef5; }
   .probe-table th { background: #f5f6f8; font-weight: 650; width: 22%; }
   .probe-table code { font-size: 12px; }
+  #usage .probe-table {
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+    border-radius: 8px;
+    border: 1px solid #e8eef5;
+  }
+  #usage .probe-table th,
+  #usage .probe-table td {
+    border-right: 1px solid #e8eef5;
+    border-bottom: 1px solid #e8eef5;
+    border-top: none;
+    border-left: none;
+  }
+  #usage .probe-table th:last-child,
+  #usage .probe-table td:last-child { border-right: none; }
+  #usage .probe-table tbody tr:last-child > th,
+  #usage .probe-table tbody tr:last-child > td { border-bottom: none; }
+  #usage .probe-table thead tr:first-child > th { border-top: none; }
+  #usage .probe-table th:first-child,
+  #usage .probe-table td:first-child { border-left: none; }
   .skill-detail-actions {
     display: flex;
     flex-wrap: wrap;
@@ -180,17 +225,90 @@
     opacity: 0.92;
     color: #fff;
   }
-  .crumb {
-    margin: 0 0 8px;
+  .skill-demo-shot {
+    margin: var(--space-stack, 16px) 0 0;
+    padding: 0;
+    border: 1px solid #e8eef5;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08), 0 2px 6px rgba(15, 23, 42, 0.06);
+  }
+  .skill-demo-shot a {
+    display: block;
+    line-height: 0;
+  }
+  .skill-demo-shot img {
+    display: block;
+    width: 100%;
+    height: 561px;
+    object-fit: cover;
+    object-position: top center;
+  }
+  body.inner-page[data-page="skill-detail"] .main-content > .crumb {
+    position: sticky;
+    top: var(--header-height, 56px);
+    z-index: 150;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    box-sizing: border-box;
+    padding: 10px max(clamp(16px, 2.5vw, 24px), calc((100% - var(--content-max-width, 1000px)) / 2));
     font-size: 13px;
     line-height: 20px;
     color: var(--color-text-secondary);
+    background: #fff;
+    border-bottom: 1px solid transparent;
+  }
+  .crumb.is-stuck {
+    border-bottom-color: #e8eef5;
   }
   .crumb a {
     color: var(--color-primary);
     text-decoration: none;
   }
   .crumb a:hover { text-decoration: underline; }
+  .prompt-card {
+    margin: 12px 0 16px;
+    padding: 14px 16px;
+    background: #f5f6f8;
+    border: 1px solid #e8eef5;
+    border-radius: 8px;
+    box-sizing: border-box;
+  }
+  .prompt-card-label {
+    margin: 0 0 8px;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 18px;
+    color: var(--color-text-secondary);
+  }
+  .prompt-card ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+  }
+  .prompt-card li {
+    margin: 0;
+    font-size: 14px;
+    line-height: 22px;
+    color: var(--color-text);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  .prompt-card .slash-tag {
+    display: inline-block;
+    margin-right: 6px;
+    padding: 0 6px;
+    border-radius: 4px;
+    background: #ffedd5;
+    color: #9a3412;
+    font-size: 13px;
+    font-weight: 650;
+    line-height: 20px;
+    vertical-align: baseline;
+  }
 </style>
 </head>
 <body class="inner-page" data-page="skill-detail" data-no-surface-tabs>
@@ -211,87 +329,87 @@
 
 <div class="page-wrapper">
   <main class="main-content">
+    <p class="crumb"><a href="skills.html">Skill 目录</a> / 实测页级亲和</p>
     <div class="page-header">
-      <p class="crumb"><a href="skills.html">Skill 目录</a> / 页级亲和探针</p>
-      <h1>页级亲和探针</h1>
+      <h1>实测页级亲和 <span class="skill-badge">领队</span></h1>
     </div>
     <p class="page-meta">
-      Skill ID：<code>page-affinity-probe</code>
-      · 依据：<a href="principles-full-catalog.html">全量原则25项</a>
+      Skill ID：<code>/page-affinity-probe</code>
     </p>
 
     <section class="section" id="overview">
-      <h2>核心命题</h2>
-      <p class="page-lead">对<strong>单个</strong>文档/产品 URL 做 AI 亲和实测：以全量原则 25 项为准，有子原则则分项判定；只测本页实际出现的组件。输出含状态表与 problems 同构块的 HTML 报告。不是全站 25 项清单审计，也不使用旧「35 条」口径。</p>
+      <h2>这个 Skill 做什么</h2>
+      <p class="page-lead">这是<strong>单页领队</strong>。给一页文档或产品页，只敲 <code>/page-affinity-probe</code>：先判断有没有可打开的平行 Markdown；没有就从人读页抽正文；最后按原则改成可部署的 Markdown。全站入口（robots / sitemap / llms）请用总检。依据见<a href="principles-full-catalog.html">全量原则 25 项</a>。</p>
+      <ol class="bg-list">
+        <li>发现：确认本页有没有平行 Markdown，以及文件是否可访问。</li>
+        <li>诊断：只看这一页实际出现的图、代码、步骤、说明等内容。</li>
+        <li>改稿：基于现网 Markdown 或抽出的正文给建议稿；绿色只标改过的字。</li>
+      </ol>
       <div class="skill-detail-actions">
         <a class="is-primary" href="exports/page-affinity-probe.zip" download="page-affinity-probe.zip">下载 Skill</a>
         <a href="page-probe-codearts-vscode.html">查看示例报告</a>
       </div>
+      <figure class="skill-demo-shot">
+        <a href="page-probe-codearts-vscode.html">
+          <img src="assets/skills/page-probe-codearts-vscode-preview.png" alt="CodeArts VS Code 页级亲和探针示例报告截图" width="998" height="561">
+        </a>
+      </figure>
     </section>
 
-    <section class="section" id="input">
-      <h2>输入</h2>
-      <table class="probe-table">
-        <thead><tr><th>字段</th><th>必填</th><th>说明</th></tr></thead>
+    <section class="section" id="lead">
+      <h2>它怎么带其它 Skill</h2>
+      <p class="page-lead">把它当作单页入口：对话里只敲 <code>/page-affinity-probe</code>，后面接页面地址。它会把「可发现」和「转 Markdown」两件事接起来，再统一产出一份可部署稿。下载本包即可完成这条流程，不必先装两个分项。</p>
+      <table class="probe-table" style="margin-top:12px;margin-bottom:16px;width:100%">
+        <thead><tr><th>输入</th><th>怎么接力</th><th>输出</th></tr></thead>
         <tbody>
-          <tr><td>页面 URL</td><td>是（主）</td><td>文档页或产品页</td></tr>
-          <tr><td>站点 / 产品名</td><td>建议</td><td>写进报告页眉</td></tr>
-          <tr><td>关注组件</td><td>可选</td><td>如图、表、代码、Tab、折叠；缺则按页上实际出现的测</td></tr>
-          <tr><td>本地 HTML</td><td>条件</td><td>抓不全 / 需登录时</td></tr>
+          <tr>
+            <td>一页文档或产品 URL</td>
+            <td>先查平行 Markdown；没有可用文件时抽正文；再按原则补标题、图意、代码语言、验收等</td>
+            <td>一份页级报告 + 一份可下载 <code>.md</code>。修改说明会写清页面上怎么声明这份 Markdown</td>
+          </tr>
+          <tr>
+            <td>站点根（只有域名）</td>
+            <td>先确认是查全站，还是只改首页这一页</td>
+            <td>查全站时改走总检；这里不改 robots、sitemap、llms</td>
+          </tr>
         </tbody>
       </table>
-    </section>
-
-    <section class="section" id="scope">
-      <h2>检查与判定</h2>
+      <p class="page-lead">本包已经内置这些分项说明，会在页级探针里按需接上：</p>
       <ol class="bg-list">
-        <li>映射本页组件 → 相关原则/子原则；无关标「不适用」。</li>
-        <li>状态仅用：达标 / 待改进 / 缺失 / 不适用；子原则单独行。</li>
-        <li>可证伪证据来自 DOM/属性/平行资源可达性，不编造未出现组件。</li>
+        <li><a href="skill-md-discoverability.html">核验 Markdown 正文可发现</a> <code>/md-discoverability</code>：看声明和文件能不能打开</li>
+        <li><a href="skill-html-to-md.html">提供 Markdown 正文</a> <code>/html-to-md</code>：没有可打开的平行稿时，用来抽正文</li>
       </ol>
-    </section>
-
-    <section class="section" id="workflow">
-      <h2>工作流</h2>
-      <ol class="bg-list">
-        <li><strong>输入</strong>：页面 URL（优先）+ 建议产品名；可选关注组件或本地 HTML。</li>
-        <li><strong>拉取与识别</strong>：列组件清单；对照全量原则 25 项与子原则。</li>
-        <li><strong>实测</strong>：图/表/代码/锚点/警示/步骤/验证/平行 md·llms 等碰到什么测什么。</li>
-        <li><strong>成稿</strong>：状态表 + 若干问句/证据/洞察/根因块；导出 PDF。</li>
-        <li><strong>落盘</strong>：双写 <code>docs/</code> 与 <code>report-serve/</code>。</li>
-      </ol>
-    </section>
-
-    <section class="section" id="report">
-      <h2>报告结构</h2>
-      <ol class="bg-list">
-        <li><strong>Part1</strong>：组件清单 + 子原则状态表。</li>
-        <li><strong>Part2</strong>：problems 同构实测块（问句→证据→洞察→根因）。</li>
-        <li><strong>Part3</strong>：优先改法。</li>
-      </ol>
-    </section>
-
-    <section class="section" id="boundary">
-      <h2>边界</h2>
-      <ol class="bg-list">
-        <li>不替代 <code>robots-txt-audit</code> / <code>sitemap-audit</code> / <code>llms-txt-generate</code> / <code>html-to-md</code>。</li>
-        <li>全站 25 项清单审计若另有 Skill，与本 Skill 分工：本 Skill 只做单页。</li>
-      </ol>
+      <p class="page-lead">分项仍保留单独下载入口：只想核验声明，或只想把网页转成 Markdown，可以直接用对应 Skill。</p>
     </section>
 
     <section class="section" id="usage">
-      <h2>如何使用</h2>
+      <h2>如何触发</h2>
       <ol class="bg-list">
-        <li>下载 Skill 包，解压到 Cursor 的 <code>.cursor/skills/page-affinity-probe/</code>（或个人 skills 目录）。</li>
-        <li>准备文档/产品页 URL；可选注明产品名与关注组件。</li>
-        <li>在对话中调用，例如：按 page-affinity-probe 探针 <code>https://support.huaweicloud.com/qs-codeartsagent/codeartsagent_qs_0002.html</code>。</li>
-        <li>输出 HTML 报告并双写；可对照示例：<a href="page-probe-codearts-vscode.html">CodeArts VS Code 快速入门探针</a>。</li>
+        <li>下载本领队包，放到 Agent 可读取的 skills 目录（如 <code>.cursor/skills/page-affinity-probe/</code>）。包内已含「可发现」和「转 Markdown」说明，不必再下两份分项。</li>
+        <li>在对话中用 <code>/page-affinity-probe</code> 唤起；斜杠后写页面 URL。不要再敲分项斜杠。没有地址时，Agent 会先追问。</li>
+      </ol>
+      <table class="probe-table" style="margin-top:12px;margin-bottom:16px;width:100%">
+        <thead><tr><th>字段</th><th>必填</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>斜杠命令</td><td>是</td><td>用 <code>/page-affinity-probe</code> 明确唤起这个 Skill</td></tr>
+          <tr><td>页面 URL</td><td>是</td><td>如 <code>https://support.huaweicloud.com/qs-codeartsagent/codeartsagent_qs_0002.html</code></td></tr>
+          <tr><td>本地 HTML</td><td>可选</td><td>抓不全时再给。不交也能跑</td></tr>
+        </tbody>
+      </table>
+      <div class="prompt-card" aria-label="用户输入示例">
+        <p class="prompt-card-label">用户可以这样输入</p>
+        <ul>
+          <li><span class="slash-tag">/page-affinity-probe</span>核验 https://support.huaweicloud.com/qs-codeartsagent/codeartsagent_qs_0002.html</li>
+        </ul>
+      </div>
+      <ol class="bg-list" start="3">
+        <li>生成结果是一份独立 HTML（问题判定 + 平行 Markdown 建议稿）和可下载的 <code>.md</code>。可对照 <a href="page-probe-codearts-vscode.html">CodeArts VS Code 示例</a>。</li>
       </ol>
     </section>
   </main>
 </div>
 
 <script src="assets/js/site-config.js"></script>
-<script src="assets/js/site-init.js?v=20261105a"></script>
+<script src="assets/js/site-init.js?v=20261120c"></script>
 </body>
 </html>

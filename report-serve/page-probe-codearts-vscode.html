@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>页级亲和探针 · CodeArts VS Code 快速入门 · AI 亲和原则</title>
+  <title>页级亲和探针 · CodeArts VS Code · AI 亲和原则</title>
   <link rel="stylesheet" href="assets/css/style.css">
 <style>
   .topbar {
@@ -233,7 +233,10 @@
     color: #191919;
     background: #fafafa;
     font-size: 12px;
-    line-height: 20px;
+    line-height: 16px;
+  }
+  #optimized .file-sample pre {
+    padding: 10px 14px 12px;
   }
   #optimized .file-sample .cmt { color: #737373; }
   #optimized .file-sample .add { background: rgba(34, 197, 94, 0.18); border-radius: 2px; padding: 0 3px; }
@@ -262,6 +265,13 @@
   .probe-table td:first-child { border-left: 1px solid #e8eef5; }
   .probe-table th { background: #f5f6f8; font-weight: 650; }
   .probe-table code { font-size: 12px; }
+  /* 状态列：加宽且不换行，避免徽章折行 */
+  .probe-table th:nth-child(3),
+  .probe-table td:nth-child(3) {
+    width: 7.5em;
+    min-width: 7.5em;
+    white-space: nowrap;
+  }
 
   .topbar .btn-export-pdf,
   .btn-export-pdf,
@@ -306,6 +316,29 @@
     margin: 0 0 var(--space-stack, 16px);
   }
 
+  .source-shot {
+    margin: 0 0 var(--space-stack, 16px);
+    padding: 0;
+    border: 1px solid #e8eef5;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08), 0 2px 6px rgba(15, 23, 42, 0.06);
+  }
+  .source-shot a.shot-link {
+    display: block;
+    line-height: 0;
+  }
+  .source-shot img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1920 / 1080;
+    object-fit: contain;
+    object-position: top center;
+    vertical-align: top;
+  }
+
   @media print {
     @page { size: A4; margin: 14mm 12mm; }
     html, body {
@@ -336,6 +369,7 @@
       margin-inline: 0 !important;
     }
     .file-sample,
+    .source-shot,
     .probe-table,
     .bg-list { break-inside: avoid; }
     a[href]::after { content: none !important; }
@@ -353,254 +387,185 @@
 <div class="topbar">
   <div class="topbar-inner">
     <a class="brand" href="https://liminshuo.github.io/ascend-ai/principles-overview.html" target="_blank" rel="noopener"><span>AI 亲和原则</span></a>
-    <div class="topbar-actions">
-      <button type="button" class="btn-export-pdf" id="btn-export-pdf">导出 PDF</button>
-    </div>
+    <button type="button" class="btn-export-pdf" id="btn-export-pdf">导出 PDF</button>
   </div>
 </div>
 
 <div class="page-wrapper">
   <main class="main-content">
     <div class="page-header">
-      <h1>页级亲和探针</h1>
+      <h1>页级亲和探针 · CodeArts VS Code</h1>
     </div>
     <p class="page-meta">
-      源页面：<a href="https://support.huaweicloud.com/qs-codeartsagent/codeartsagent_qs_0002.html" target="_blank" rel="noopener">codeartsagent_qs_0002.html</a>
-      · 产品：华为云码道 CodeArts · Visual Studio Code 快速入门
-      · 生成日期：2026-10-19
-      · 依据：<a href="principles-full-catalog.html">全量原则25项</a>（含子原则分判）
+      示例页面：<a href="https://support.huaweicloud.com/qs-codeartsagent/codeartsagent_qs_0002.html" target="_blank" rel="noopener">https://support.huaweicloud.com/qs-codeartsagent/codeartsagent_qs_0002.html</a>
+      · 实测日期：2026-10-19
+      · 依据：<a href="principles-full-catalog.html">全量原则25项</a>
     </p>
 
-    <section class="section" id="overview">
-      <h2>Part1. 本页概况</h2>
-      <p class="page-lead">单页探针，只测本页实际出现的组件与相关原则/子原则；站点级 robots/sitemap 部署标为不适用。不按旧 35 条口径。</p>
+    <section class="section" id="current-config">
+      <h2>Part1. 当前配置分析</h2>
+      <h3 class="aj-caption">当前人读页</h3>
+      <p class="page-lead"><a href="https://support.huaweicloud.com/qs-codeartsagent/codeartsagent_qs_0002.html" target="_blank" rel="noopener">https://support.huaweicloud.com/qs-codeartsagent/codeartsagent_qs_0002.html</a></p>
+      <figure class="source-shot" aria-label="CodeArts VS Code 快速入门现网截图">
+        <a class="shot-link" href="https://support.huaweicloud.com/qs-codeartsagent/codeartsagent_qs_0002.html" target="_blank" rel="noopener">
+          <img src="assets/page-probe/codearts-vscode-source.png" alt="华为云码道 Visual Studio Code 快速入门页现网截图" width="1920" height="1080">
+        </a>
+      </figure>
 
-      <h3 id="components">本页组件清单</h3>
+      <h3 id="problems">问题判定</h3>
       <ol class="bg-list">
-        <li><strong>有</strong>：步骤列表、提示/Note 块、多张界面截图（图1–图4）、若干 <code>pre.screen</code> 代码/提示词块、面包屑/文档导航壳、页内「更新时间」、平行 Markdown 声明、llms.txt 声明。</li>
-        <li><strong>无</strong>：数据表格、Tab/折叠面板、音视频、图片热区 map。</li>
-      </ol>
-
-      <h3 id="status">相关子原则状态</h3>
-      <table class="probe-table">
-        <thead>
-          <tr><th>原则</th><th>子原则</th><th>状态</th><th>短证据</th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>2 llms.txt部署</td>
-            <td>llms.txt / llm-full.txt 部署</td>
-            <td><span class="badge-ok">达标</span></td>
-            <td><code>&lt;link rel="alternate" type="text/plain" data-link-type="llms-txt" href="/codeartsagent/llms.txt"&gt;</code>；同日 GET 200</td>
-          </tr>
-          <tr>
-            <td>5 章节锚点可定位</td>
-            <td>段落锚点</td>
-            <td><span class="badge-mid">待改进</span></td>
-            <td>H1/各 H4 无稳定 <code>id</code>；部分 note/li 有生成式 id，标题级锚点不足</td>
-          </tr>
-          <tr>
-            <td>6 HTML页面正文可读</td>
-            <td>内容可检索</td>
-            <td><span class="badge-ok">达标</span></td>
-            <td>步骤与正文在静态 HTML 中可取；非纯客户端渲染空壳</td>
-          </tr>
-          <tr>
-            <td>6 HTML页面正文可读</td>
-            <td>降噪纯净</td>
-            <td><span class="badge-mid">待改进</span></td>
-            <td>同文档壳含顶栏/登录/评价等噪声；未见清晰 <code>main</code>/<code>article</code> 包裹正文</td>
-          </tr>
-          <tr>
-            <td>7 Markdown 正文可直取</td>
-            <td>双轨交付</td>
-            <td><span class="badge-ok">达标</span></td>
-            <td><code>rel="alternate" type="text/markdown"</code> → <code>…/codeartsagent_qs_0002.md</code>；GET 200</td>
-          </tr>
-          <tr>
-            <td>8 图片内容可转写</td>
-            <td>图文图意</td>
-            <td><span class="badge-bad">缺失</span></td>
-            <td>文档截图 <code>alt</code> 为空；无 <code>figure</code>/<code>figcaption</code>；仅有「图1…」类文字题注</td>
-          </tr>
-          <tr>
-            <td>11 颜色含义可读</td>
-            <td>安全警示语义</td>
-            <td><span class="badge-mid">待改进</span></td>
-            <td>有 <code>div.note</code> 且正文可见；<code>notetitle</code> 为空，类型依赖 note 图标图</td>
-          </tr>
-          <tr>
-            <td>12 表格结构可读</td>
-            <td>表格语义</td>
-            <td><span class="badge-na">不适用</span></td>
-            <td>本页无数据表</td>
-          </tr>
-          <tr>
-            <td>13 代码块语义可读</td>
-            <td>代码语义</td>
-            <td><span class="badge-mid">待改进</span></td>
-            <td><code>pre.screen</code> 无语言 class；提示词与 Java 示例未标注 language；无预期输出块</td>
-          </tr>
-          <tr>
-            <td>14 关键正文不默认隐藏</td>
-            <td>隐藏语义</td>
-            <td><span class="badge-ok">达标</span></td>
-            <td>未见 Tab/折叠隐藏关键步骤；步骤正文直出</td>
-          </tr>
-          <tr>
-            <td>16 标题层级可识别</td>
-            <td>格式规范统一</td>
-            <td><span class="badge-mid">待改进</span></td>
-            <td>H1 后直接 H4，跳过 H2/H3</td>
-          </tr>
-          <tr>
-            <td>16 标题层级可识别</td>
-            <td>标题明确</td>
-            <td><span class="badge-ok">达标</span></td>
-            <td>「准备工作 / 步骤一… / 体验代码续写」等为任务向标题</td>
-          </tr>
-          <tr>
-            <td>18 文档结构规范化</td>
-            <td>内容结构模式</td>
-            <td><span class="badge-mid">待改进</span></td>
-            <td>有准备与步骤模式，缺独立「验证/预期结果」模式；无 <code>data-pattern</code></td>
-          </tr>
-          <tr>
-            <td>18 文档结构规范化</td>
-            <td>步骤列表化</td>
-            <td><span class="badge-ok">达标</span></td>
-            <td>安装与体验步骤使用有序步骤呈现</td>
-          </tr>
-          <tr>
-            <td>19 版本与时效信息可识别</td>
-            <td>明确更新日期</td>
-            <td><span class="badge-mid">待改进</span></td>
-            <td>页内展示「更新时间：2026-09-30」；建议同步机器可读 <code>last-modified</code> / dateModified</td>
-          </tr>
-          <tr>
-            <td>21 链接目标可识别</td>
-            <td>链接语义</td>
-            <td><span class="badge-mid">待改进</span></td>
-            <td>存在「单击…图标」依赖空图标位；注册账号等链接可读性尚可</td>
-          </tr>
-          <tr>
-            <td>24 任务结果可确认</td>
-            <td>验证区块</td>
-            <td><span class="badge-bad">缺失</span></td>
-            <td>快速入门操作文末无「验证 / 预期结果」专章</td>
-          </tr>
-          <tr>
-            <td>1 / 3 / 4 / 9 / 10 / …</td>
-            <td>（站点级或本页无组件）</td>
-            <td><span class="badge-na">不适用</span></td>
-            <td>robots、全站 sitemap、音视频、表格热区等本页不测或未出现</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-
-    <section class="section" id="probe-image">
-      <h2>Part2. 问题实测 · 图片图意</h2>
-      <div class="probe-q">
-        <strong>问句：</strong>我在看
-        <a href="https://support.huaweicloud.com/qs-codeartsagent/codeartsagent_qs_0002.html" target="_blank" rel="noopener">Visual Studio Code 快速入门</a>
-        ，「图1 工具生成效果」等截图里的界面信息，能否仅凭 HTML 文本被 Agent 检索到？
-      </div>
-      <h3>证据</h3>
-      <ol class="bg-list">
-        <li>文档区多张 <code>zh-cn_image_*.png</code> 的 <code>&lt;img&gt;</code> <strong>无 alt</strong>（或空）。</li>
-        <li>无 <code>&lt;figure&gt;</code> / <code>&lt;figcaption&gt;</code>；题注以「图1…」文本出现在附近，但未与 img 结构化绑定。</li>
-        <li>部分图仅有 <code>title="点击放大"</code>，对图意无信息量。</li>
-      </ol>
-      <h3>洞察</h3>
-      <ol class="bg-list">
-        <li><strong>图意未入库风险：</strong>切片若只拿文件名或空 alt，界面步骤截图语义丢失。</li>
-        <li><strong>与原则 8 子原则「图文图意」冲突：</strong>缺非空 alt 与转写位。</li>
-      </ol>
-      <h3 id="solution-image">根因与改法</h3>
-      <ol class="bg-list">
-        <li><strong>内容：</strong>为图1–图4 写一句 alt/转写（界面状态 + 操作结果）。</li>
-        <li><strong>前端：</strong><code>figure+figcaption</code> 包裹，补锚点 id；装饰图标空 alt 或 aria-hidden。</li>
-        <li><strong>对照：</strong><a href="principles-image.html">图片内容可转写</a> / 全量原则 #8。</li>
+        <li>
+          <span class="sev sev-p1">P1</span>
+          <strong>截图没有文字说明。</strong>
+          图1–图4 的 <code>alt</code> 为空，没有和题注绑在一起，Agent 读不到界面里的步骤。
+        </li>
+        <li>
+          <span class="sev sev-p1">P1</span>
+          <strong>做完步骤后没有验收。</strong>
+          文末没有「验证 / 预期结果」，成功标准散落在步骤叙述里。
+        </li>
+        <li>
+          <span class="sev sev-p1">P1</span>
+          <strong>章节不好定位。</strong>
+          标题从一级直接跳到四级，且没有稳定 id，没法用链接指到「体验代码续写」。
+        </li>
+        <li>
+          <span class="sev sev-p1">P1</span>
+          <strong>代码没有标明语言。</strong>
+          提示词和 Java 示例都在 <code>pre.screen</code> 里，没有语言标记。
+        </li>
+        <li>
+          <span class="sev sev-p2">P2</span>
+          <strong>提示块看不出类型。</strong>
+          说明框标题是空的，只靠图标区分。
+        </li>
+        <li>
+          <span class="sev sev-p2">P2</span>
+          <strong>正文和壳层没有分开。</strong>
+          顶栏、登录、评价和正文混在一起，没有清晰的正文区域。
+        </li>
       </ol>
     </section>
 
-    <section class="section" id="probe-code">
-      <h2>Part2. 问题实测 · 代码块</h2>
-      <div class="probe-q">
-        <strong>问句：</strong>页内 Fib4 Java 示例与提示词块，Agent 能否识别语言并安全复制纯净代码？
-      </div>
-      <h3>证据</h3>
-      <ol class="bg-list">
-        <li>代码容器为 <code>&lt;pre class="screen"&gt;</code>，未见 <code>&lt;code class="language-*"&gt;</code>。</li>
-        <li>既有自然语言提示词，也有 Java 源码，语言元数据缺失。</li>
-        <li>无「预期输出」配套块。</li>
-      </ol>
-      <h3>洞察</h3>
-      <ol class="bg-list">
-        <li><strong>语义弱：</strong>切片难以区分「用户提示词」与「可运行代码」。</li>
-        <li><strong>原则 13 子原则「代码语义」待改进。</strong></li>
-      </ol>
-      <h3 id="solution-code">根因与改法</h3>
-      <ol class="bg-list">
-        <li>统一 <code>pre&gt;code.language-java</code>（提示词可用 <code>text</code> 或单独样式）。</li>
-        <li>执行类示例补「预期输出」；行号勿写入文本节点。</li>
-        <li>对照：<a href="principles-code.html">代码块语义可读</a> / 全量原则 #13。</li>
-      </ol>
-    </section>
+    <section class="section" id="optimized">
+      <h2>Part2. 优化建议</h2>
+      <p class="page-lead">建议稿以现网平行 Markdown 全文为底。绿色只标改过的地方：标题层级、图片说明、代码语言、说明前缀和验收。</p>
+      <h3 class="aj-caption">建议模板（可部署的平行 Markdown）</h3>
+      <figure class="file-sample" aria-label="CodeArts VS Code 快速入门平行 Markdown 建议稿">
+        <figcaption><code>https://support.huaweicloud.com/qs-codeartsagent/codeartsagent_qs_0002.md</code>（建议稿）</figcaption>
+        <pre><code class="language-markdown"># Visual Studio Code
 
-    <section class="section" id="probe-verify">
-      <h2>Part2. 问题实测 · 验证区块</h2>
-      <div class="probe-q">
-        <strong>问句：</strong>按本页完成「安装插件 / 体验智能体」后，文档是否给出可执行的成功判定？
-      </div>
-      <h3>证据</h3>
-      <ol class="bg-list">
-        <li>结构为准备工作 → 步骤一 → 步骤二（三个体验），文末直接相关文档/评价。</li>
-        <li>无「验证」「预期结果」专节；成功标准散落在步骤叙述中（如「可查看到图标」）。</li>
-      </ol>
-      <h3>洞察</h3>
-      <ol class="bg-list">
-        <li><strong>任务可确认性不足：</strong>Agent/用户难一次定位验收清单。</li>
-        <li><strong>原则 24 子原则「验证区块」缺失。</strong></li>
-      </ol>
-      <h3 id="solution-verify">根因与改法</h3>
-      <ol class="bg-list">
-        <li>每条体验路径末增加「验证」：可见侧边栏图标 / 能打开 login.html / 能插入代码等可勾选项。</li>
-        <li>容器建议 <code>data-pattern="verification"</code>。</li>
-        <li>对照：全量原则 #24。</li>
-      </ol>
-    </section>
+<span class="add">##</span> 准备工作
 
-    <section class="section" id="probe-heading">
-      <h2>Part2. 问题实测 · 标题与锚点</h2>
-      <div class="probe-q">
-        <strong>问句：</strong>能否用稳定 URL 片段定位到「体验代码续写」一节？
-      </div>
-      <h3>证据</h3>
-      <ol class="bg-list">
-        <li>大纲标题多为 <code>h4</code> 且 <strong>无 id</strong>；H1 亦无 id。</li>
-        <li>层级从 H1 跳到 H4，不符合 H1–H2–H3 连续规范。</li>
-      </ol>
-      <h3>洞察</h3>
-      <ol class="bg-list">
-        <li>原则 5「段落锚点」待改进；原则 16「格式规范统一」待改进、「标题明确」达标。</li>
-      </ol>
-      <h3 id="solution-heading">根因与改法</h3>
-      <ol class="bg-list">
-        <li>章节改用 H2/H3，并生成语义化稳定 id（slug）。</li>
-        <li>对照：全量原则 #5、#16。</li>
-      </ol>
-    </section>
+- 你可参考文档[注册华为云账号](https://support.huaweicloud.com/usermanual-account/account_id_001.html)，进入[华为云官网](https://www.huaweicloud.com/)注册**华为云账号**。
+- 下载并安装[Visual Studio Code](https://code.visualstudio.com/download)，版本需为1.95.3（2024年11月13日）及以上。
+- 示例运行环境：Windows 10 (x64，2019 及以上版本) / Windows 11 (x64)。Visual Studio Code支持的全部运行环境，请参见[Visual Studio Code](https://support.huaweicloud.com/usermanual-plugin/codeartsagent_plugin_0002.html)。
 
-    <section class="section" id="priority">
-      <h2>Part3. 优先改法</h2>
+<span class="add">##</span> 步骤一：安装并登录插件
+
+1. 启动Visual Studio Code，单击侧边栏的扩展图标 ![<span class="add">扩展图标</span>](https://support.huaweicloud.com/qs-codeartsagent/zh-cn_image_0000002717577155.png)。
+2. 在搜索框中，输入"CodeArts Agent"并回车。
+3. 在搜索结果中找到插件，单击"Install"。
+   在Visual Studio Code侧边栏中可查看到图标 ![<span class="add">CodeArts Agent 图标</span>](https://support.huaweicloud.com/qs-codeartsagent/zh-cn_image_0000002687977410.png)，说明插件安装成功。
+4. 单击侧边栏的图标 ![<span class="add">聊天入口图标</span>](https://support.huaweicloud.com/qs-codeartsagent/zh-cn_image_0000002717737021.png)，唤醒聊天窗口。
+5. 单击"华为账号登录"会自动唤起浏览器，输入你的华为云账号密码，完成登录。
+   <span class="add">**说明：**</span> 如果第一次使用，登录成功后系统会自动为你开通免费的**个人体验版**套餐（套餐有效期为1个月，到期后会自动续期，不会产生任何费用，无需担心扣费）。后续如果想解锁更多高级功能，随时可以在订阅管理里升级。
+6. 新建一个项目，用于存放项目中的文件。
+
+<span class="add">### 验证
+1. 侧边栏能看到 CodeArts Agent 图标。
+2. 能打开聊天窗口并完成登录。</span>
+
+<span class="add">##</span> 步骤二：体验华为云码道代码智能体
+
+接下来通过三个小例子，带你亲身感受下华为云码道代码智能体的强大能力。
+
+<span class="add">###</span> 体验智能体模式开发网页
+
+你只需描述需求（例如开发简约风格前端登录页面），智能体即可自主规划逻辑、编写代码，为你生成可直接运行的程序。
+1. 单击图标 ![<span class="add">聊天窗口图标</span>](https://support.huaweicloud.com/qs-codeartsagent/zh-cn_image_0000002711280550.png)，打开聊天窗口，切换到"智能体"模式，切换到"氛围编程"模式。
+2. 在聊天界面的输入框下方，选择"自动审批"，开启AI自动化。
+3. 发送你的需求给AI。
+   ```<span class="add">text</span>
+   编写一个简约风格的前端登录页面
+   ```
+4. 页面创建完成后，左侧"资源管理器"中找到刚生成的login.html文件，右键选择"在文件资源管理器中显示"。双击并打开login.html文件，即可查看到登录页面。
+
+<span class="add">### 验证
+1. 能打开生成的 login.html，并看到登录页面。</span>
+
+<span class="add">###</span> 体验代码生成和研发知识问答
+
+1. 单击侧边栏图标 ![<span class="add">智能问答入口</span>](https://support.huaweicloud.com/qs-codeartsagent/zh-cn_image_0000002717737023.png)，打开聊天窗口，切换到"智能问答"模式。
+2. 发送你的需求给AI。
+   ```<span class="add">text</span>
+   请分析什么是二叉树，并写一段Python代码示例
+   ```
+3. 对话将返回二叉树的概念解释和Python代码示例，单击代码块右上角的插入 ![<span class="add">插入代码</span>](https://support.huaweicloud.com/qs-codeartsagent/zh-cn_image_0000002687817552.png)，你可直接将代码添加到新文件。
+   图1 工具生成效果
+   ![<span class="add">聊天窗口返回二叉树说明，并给出可插入的 Python 示例代码。</span>](https://support.huaweicloud.com/qs-codeartsagent/zh-cn_image_0000002717577159.png)
+4. 你可基于AI回复持续提问，进行多轮会话。例如，你可以继续给AI发送需求。
+   ```<span class="add">text</span>
+   把上面生成的Python代码改写为Java代码。
+   ```
+   图2 生成的Java代码效果图
+   ![<span class="add">同一段需求被改写成 Java 代码后的聊天结果。</span>](https://support.huaweicloud.com/qs-codeartsagent/zh-cn_image_0000002687977414.png)
+
+<span class="add">### 验证
+1. 能把返回的代码插入新文件。</span>
+
+<span class="add">###</span> 体验代码续写
+
+你可根据上下文或注释，自动续写Java语言实现的Fib4数列第n个元素计算代码。
+1. 创建Java类文件（例如"Solution.java"），在代码编辑器中输入如下代码内容。
+   ```<span class="add">java</span>
+   public class Solution {
+       /**
+        The Fib4 number sequence is a sequence similar to the Fibonacci sequence that's defined as follows:
+        fib4(0) -&gt; 0
+        fib4(1) -&gt; 0
+        fib4(2) -&gt; 2
+        fib4(3) -&gt; 0
+        fib4(n) -&gt; fib4(n-1) + fib4(n-2) + fib4(n-3) + fib4(n-4).
+        Please write a function to efficiently compute the n-th element of the fib4 number sequence. Do not use recursion.
+        &gt;&gt;&gt; fib4(5)
+        4
+        &gt;&gt;&gt; fib4(6)
+        8
+        &gt;&gt;&gt; fib4(7)
+        14
+        */
+       public int fib4(int n) {
+   }
+   }
+   ```
+2. 在"public int fib4(int n) {"后按下快捷键"Alt+C"，AI会基于注释，在编辑器中生成对应代码。
+   为获得更精准、完整的多行代码生成效果，建议你完善代码的注释内容。
+   图3 代码续写效果
+   ![<span class="add">编辑器根据注释生成 fib4 函数实现。</span>](https://support.huaweicloud.com/qs-codeartsagent/zh-cn_image_0000002717737025.png)
+3. 如果认可当前代码建议，你可按下Tab键或者单击编辑区的"接受"完成采纳。
+   图4 接受续写代码
+   ![<span class="add">单击接受后，续写代码写入编辑器。</span>](https://support.huaweicloud.com/qs-codeartsagent/zh-cn_image_0000002687817556.png)
+
+<span class="add">### 验证
+1. 按下 Tab 或「接受」后，编辑器中出现完整的 fib4 实现。</span></code></pre>
+      </figure>
+      <h3 id="changelog">修改说明</h3>
       <ol class="bg-list">
-        <li><strong>P0 体验：</strong>为关键截图补 alt/figcaption 转写（原则 8）。</li>
-        <li><strong>P1 结构：</strong>补验证区块；理顺标题层级并加锚点 id（原则 24、5、16）。</li>
-        <li><strong>P1 代码：</strong><code>pre&gt;code</code> + language 类（原则 13）。</li>
-        <li><strong>P2 警示：</strong>Note 增加可见文字前缀（原则 11）。</li>
-        <li><strong>已具备：</strong>平行 <code>.md</code> 与产品 <code>llms.txt</code> 声明且可达——可继续保持并写入发布检查。</li>
+        <li><strong>绿色只标改过的字</strong>：标题层级、图片说明、代码语言、说明前缀、验收；其余按现网原文。</li>
+        <li><strong>给截图补一句说明</strong>：图标和效果图不要空说明。对照 <a href="principles-image.html">图片内容可转写</a>。</li>
+        <li><strong>每条体验路径末尾加验收</strong>：例如能看到侧边栏图标、能打开指定页面、能插入代码。</li>
+        <li><strong>标题改成连续层级</strong>：现网用四级标题，建议改成二级 / 三级，方便顺着读。</li>
+        <li><strong>给代码标明语言</strong>：Java 示例和提示词分开写。对照 <a href="principles-code.html">代码块语义可读</a>。</li>
+        <li><strong>提示框加上可见文字前缀</strong>：如「说明：」，不要只靠图标。</li>
+        <li><strong>已具备、继续保持</strong>：本页已声明平行 Markdown 和产品 llms，且都能打开。</li>
+      </ol>
+      <h3 id="tbd">待确认事项</h3>
+      <ol class="bg-list">
+        <li>
+          <span class="sev sev-ask">待确认</span>
+          文档壳（顶栏、登录、评价）能否在本页模板里收进独立区域，还是只能改正文。
+        </li>
       </ol>
     </section>
   </main>

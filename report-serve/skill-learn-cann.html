@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>生成 CANN 学习路径（社区） · Skill · AI 亲和原则</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid var(--color-border);
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: 100%; max-width: none; margin: 0; padding: 0 24px; box-sizing: border-box;
+    height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: var(--color-text); text-decoration: none; white-space: nowrap; margin-right: 40px;
+  }
+  .topbar .brand span { color: var(--color-primary); }
+  .topbar .site-nav { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; flex-wrap: wrap; }
+  .topbar .site-nav > a {
+    text-decoration: none; color: var(--color-text-secondary); font-size: var(--text-body); font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .topbar .site-nav > a:hover { color: var(--color-primary); background: var(--color-bg); text-decoration: none; }
+  .topbar .site-nav > a.active { color: var(--color-primary); background: var(--color-bg); font-weight: 600; }
+
+  body.inner-page[data-page="skill-detail"] .page-wrapper {
+    min-height: 100vh;
+    background: #fff;
+  }
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: var(--space-stack, 16px);
+  }
+  body.inner-page[data-page="skill-detail"] .main-content {
+    padding-top: var(--content-main-pad-top, 16px);
+    padding-bottom: 32px;
+    padding-left: 0;
+    padding-right: 0;
+    background: #fff;
+    min-height: calc(100vh - var(--header-height, 56px));
+  }
+  body.inner-page[data-page="skill-detail"] .main-content > .page-header,
+  body.inner-page[data-page="skill-detail"] .main-content > .page-meta,
+  body.inner-page[data-page="skill-detail"] .main-content > .section {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page[data-page="skill-detail"] .main-content > .section {
+    margin-bottom: 32px;
+  }
+  body.inner-page[data-page="skill-detail"] .main-content > .section:first-of-type > h2 {
+    margin-top: 0;
+  }
+  .page-header > h1 {
+    font-family: var(--font);
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1-weight, 600);
+    line-height: var(--text-h1-lh);
+    letter-spacing: -0.02em;
+    margin: 0;
+    padding-top: var(--space-h1-pad-y, 32px);
+    padding-bottom: var(--space-h1-pad-y, 32px);
+    color: var(--color-text);
+  }
+  .page-meta {
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  .page-meta a { color: var(--color-primary); text-decoration: none; }
+  .page-meta a:hover { text-decoration: underline; }
+  .page-meta code {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+  }
+  body.inner-page[data-page="skill-detail"] .main-content .section > h2 {
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    letter-spacing: -0.01em;
+    margin-top: 0;
+    margin-bottom: var(--space-stack, 16px);
+    padding-top: var(--space-h2-pad-y, 16px);
+    padding-bottom: 0;
+    border-bottom: none;
+    color: var(--color-text);
+  }
+  .page-lead {
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  .page-lead a { color: var(--color-primary); text-decoration: none; }
+  .page-lead a:hover { text-decoration: underline; }
+  .bg-list {
+    margin: 0;
+    padding-left: 1.25em;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text);
+  }
+  .bg-list li + li { margin-top: 10px; }
+  .bg-list strong { font-weight: 650; }
+  #usage > h2 {
+    text-align: left;
+  }
+  #usage .bg-list {
+    margin-left: 0;
+    padding-left: 0;
+    list-style-position: inside;
+    text-align: left;
+  }
+  .section ul.plain-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .section ul.plain-list li + li { margin-top: 10px; }
+  .probe-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+  }
+  .probe-table th,
+  .probe-table td {
+    border: 1px solid #e8eef5;
+    border-top: none;
+    border-left: none;
+    vertical-align: top;
+    padding: 10px 12px;
+    text-align: left;
+  }
+  .probe-table thead tr:first-child > th { border-top: 1px solid #e8eef5; }
+  .probe-table th:first-child,
+  .probe-table td:first-child { border-left: 1px solid #e8eef5; }
+  .probe-table th { background: #f5f6f8; font-weight: 650; width: 22%; }
+  .probe-table code { font-size: 12px; }
+  #usage .probe-table {
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+    border-radius: 8px;
+    border: 1px solid #e8eef5;
+  }
+  #usage .probe-table th,
+  #usage .probe-table td {
+    border-right: 1px solid #e8eef5;
+    border-bottom: 1px solid #e8eef5;
+    border-top: none;
+    border-left: none;
+  }
+  #usage .probe-table th:last-child,
+  #usage .probe-table td:last-child { border-right: none; }
+  #usage .probe-table tbody tr:last-child > th,
+  #usage .probe-table tbody tr:last-child > td { border-bottom: none; }
+  #usage .probe-table thead tr:first-child > th { border-top: none; }
+  #usage .probe-table th:first-child,
+  #usage .probe-table td:first-child { border-left: none; }
+  .skill-detail-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: var(--space-stack, 16px);
+  }
+  .skill-detail-actions a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 88px;
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: 1px solid #d0d5dd;
+    background: #fff;
+    color: var(--color-text);
+    font-size: 13px;
+    font-weight: 650;
+    line-height: 20px;
+    text-decoration: none;
+    box-sizing: border-box;
+  }
+  .skill-detail-actions a:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+  .skill-detail-actions a.is-primary {
+    border-color: var(--color-primary);
+    background: var(--color-primary);
+    color: #fff;
+  }
+  .skill-detail-actions a.is-primary:hover {
+    opacity: 0.92;
+    color: #fff;
+  }
+  body.inner-page[data-page="skill-detail"] .main-content > .crumb {
+    position: sticky;
+    top: var(--header-height, 56px);
+    z-index: 150;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    box-sizing: border-box;
+    padding: 10px max(clamp(16px, 2.5vw, 24px), calc((100% - var(--content-max-width, 1000px)) / 2));
+    font-size: 13px;
+    line-height: 20px;
+    color: var(--color-text-secondary);
+    background: #fff;
+    border-bottom: 1px solid transparent;
+  }
+  .crumb.is-stuck {
+    border-bottom-color: #e8eef5;
+  }
+  .crumb a {
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+  .crumb a:hover { text-decoration: underline; }
+  .prompt-card {
+    margin: 12px 0 16px;
+    padding: 14px 16px;
+    background: #f5f6f8;
+    border: 1px solid #e8eef5;
+    border-radius: 8px;
+    box-sizing: border-box;
+  }
+  .prompt-card-label {
+    margin: 0 0 8px;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 18px;
+    color: var(--color-text-secondary);
+  }
+  .prompt-card ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+  }
+  .prompt-card li {
+    margin: 0;
+    font-size: 14px;
+    line-height: 22px;
+    color: var(--color-text);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  .prompt-card .slash-tag {
+    display: inline-block;
+    margin-right: 6px;
+    padding: 0 6px;
+    border-radius: 4px;
+    background: #ffedd5;
+    color: #9a3412;
+    font-size: 13px;
+    font-weight: 650;
+    line-height: 20px;
+    vertical-align: baseline;
+  }
+  .skill-demo-video {
+    margin: var(--space-stack, 16px) 0 0;
+    padding: 0;
+    border: 1px solid #e8eef5;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #000;
+  }
+  .skill-demo-video video {
+    display: block;
+    width: 100%;
+    height: auto;
+    vertical-align: top;
+  }
+</style>
+</head>
+<body class="inner-page" data-page="skill-detail" data-no-surface-tabs>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span>AI 亲和原则</span></a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="mintlify.html">友商对照</a>
+      <a href="reachability.html">社区诊断</a>
+      <a href="principles-overview.html">亲和原则</a>
+      <a href="community-ui.html">组件亲和</a>
+      <a href="skills.html" class="active">Skill 目录</a>
+    </nav>
+  </div>
+</div>
+
+<div class="page-wrapper">
+  <main class="main-content">
+    <p class="crumb"><a href="skills.html">Skill 目录</a> / 生成 CANN 学习路径（社区）</p>
+    <div class="page-header">
+      <h1>生成 CANN 学习路径（社区）</h1>
+    </div>
+    <p class="page-meta">
+      Skill ID：<code>/learn-cann</code>
+    </p>
+
+    <section class="section" id="overview">
+      <h2>这个 Skill 做什么</h2>
+      <p class="page-lead">当用户想学习 CANN / 昇腾相关主题时，这个 Skill 会把一句学习意图整理成一张可点击的学习路径地图。地图按「公共基础 → 主题阶段 → 练习与认证」组织，帮助用户直接进入适合自己的课程、学习路径或认证资源。</p>
+      <p class="page-lead">输出是一份本地 HTML 页面：每张卡片都使用昇腾社区学习中心（DLC）的真实资源名称与详情页链接，并标明资源类型，避免只给一段文字大纲。</p>
+      <div class="skill-detail-actions">
+        <a class="is-primary" href="exports/learn-cann.zip" download="learn-cann.zip">下载 Skill</a>
+        <a href="assets/dlc-example-operator-journey.html" target="_blank" rel="noopener">打开学习路径样例</a>
+      </div>
+      <figure class="skill-demo-video" aria-label="学习旅程 Skill 演示视频">
+        <video controls playsinline preload="metadata">
+          <source src="assets/videos/cann-learning-journey-skill.mp4" type="video/mp4">
+          你的浏览器不支持视频播放。
+        </video>
+      </figure>
+    </section>
+
+    <section class="section" id="usage">
+      <h2>如何触发</h2>
+      <ol class="bg-list">
+        <li>下载 Skill 包，放到 Agent 可读取的 skills 目录（如 <code>.cursor/skills/learn-cann/</code>）。</li>
+        <li>在对话中用 <code>/learn-cann</code> 唤起；斜杠后写学习主题，也可以补充画像。没有主题时，Agent 会先追问学习方向。</li>
+      </ol>
+      <table class="probe-table" style="margin-top:12px;margin-bottom:16px;width:100%">
+        <thead><tr><th>字段</th><th>必填</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>斜杠命令</td><td>是</td><td>用 <code>/learn-cann</code> 明确唤起这个 Skill</td></tr>
+          <tr><td>学习主题</td><td>建议</td><td>例如算子开发、大模型推理、训练、应用开发、CANN 入门等</td></tr>
+          <tr><td>画像</td><td>可选</td><td>说明角色、目标或技术基础，用于调整路径推荐</td></tr>
+        </tbody>
+      </table>
+      <div class="prompt-card" aria-label="用户输入示例">
+        <p class="prompt-card-label">用户可以这样输入</p>
+        <ul>
+          <li><span class="slash-tag">/learn-cann</span>我想学大模型推理</li>
+          <li><span class="slash-tag">/learn-cann</span>我是开发人员，有 C++ 基础，想学 Ascend C 算子开发</li>
+        </ul>
+      </div>
+      <ol class="bg-list" start="3">
+        <li>生成结果是一份本地单文件 HTML，包含头图、学习者画像与时间轴卡片；卡片可跳转到社区课程 / 路径 / 认证。可<a href="assets/dlc-example-operator-journey.html" target="_blank" rel="noopener">打开学习路径样例</a>查看最终效果。</li>
+      </ol>
+    </section>
+  </main>
+</div>
+
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js?v=20261120c"></script>
+</body>
+</html>

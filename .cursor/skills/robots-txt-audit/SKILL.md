@@ -1,13 +1,16 @@
 ---
 name: robots-txt-audit
 description: >-
+  斜杠唤起。仅当用户输入 /robots-txt-audit 时使用。后面可接站点根或 robots URL。
   按 AI 亲和「配置 robots.txt 许可声明」原则诊断站点 robots.txt：核验入口可达、Allow/Disallow、
   Sitemap 绝对 URL 声明、可选 LLMs.txt 声明，输出与示例报告同构的 HTML（Part1 当前配置分析 +
-  Part2 优化建议，含顶栏导出 PDF）。适用于 robots.txt、Robots Exclusion、爬虫许可、
-  Sitemap 声明、Agent 抓取准入等场景。
+  Part2 优化建议，含顶栏导出 PDF）。
+disable-model-invocation: true
 ---
 
 # robots.txt 配置诊断
+
+单独斜杠 `/robots-txt-audit` 仍可用。站点根走 `/geo-checklist-audit` 时会读本说明接力出稿，不要再让用户敲本斜杠。
 
 ## 核心命题
 
@@ -23,7 +26,7 @@ description: >-
 | Allow | 有显式 `Allow:`（建议至少 `Allow: /`），或记录「仅默认放行」为问题 |
 | Disallow | 列出全部路径；标记疑似误屏蔽的公开/知识向路径 |
 | Sitemap 声明 | 文件内有 `Sitemap:` / `sitemap:` **绝对 URL**（有即不算 P0；小写可记 P2） |
-| LLMs.txt 声明 | 若站点目标含 AI Agent：有 `LLMs.txt:`（或等价）绝对 URL；未部署则标待确认，勿强行写入不可达地址 |
+| LLMs.txt 声明 | 默认探测 `/llms.txt`：文件内有声明则核对可达；无声明则记待确认。不要向人另要材料 |
 
 **不要查**
 
@@ -34,23 +37,24 @@ description: >-
 
 ```
 Step 0  输入
-        · 站点根域名（或完整 robots URL）
-        · 可选：是否需要 AI Agent / llms 场景
+        · 站点根域名（或完整 robots URL）。不要追问「是否 AI Agent 场景」。
+        · 默认轻量探测 /llms.txt 是否可达；文件未声明且探测不到则记待确认，勿当作用户还要另交材料
 
 Step 1  拉取 robots.txt
         · GET https://{域名}/robots.txt（需网络权限）
         · 解析：User-agent 组、Allow[]、Disallow[]、Sitemap[]、LLMs.txt[]、Content-Signal
         · 记录状态码与字节数
 
-Step 2  轻量关联探测（同日 GET，表格用）
+Step 2  轻量核验（数字写进问题，不要单独成表）
         · Allow / Sitemap 声明条数（来自解析，不是猜）
-        · HEAD/GET /llms.txt（若相关）→ 是否可声明
+        · HEAD/GET /llms.txt（若相关）
         · GET 候选 Sitemap 路径仅用于「能否作为声明候选」（200/非 200），不评价清单质量
-        · 对疑似知识向 Disallow 路径抽 1～2 条探测，供待确认
+        · 对疑似知识向 Disallow 路径抽 1～2 条，供待确认
 
-Step 3  对照原则出问题列表
-        · 读下方「问题判定」；文案风格：标题一句 + 证据一句
+Step 3  对照原则出问题判定
+        · 读下方「问题判定」；标题一句 + 证据一句（含状态码/条数）
         · 严重度：P0 发现入口缺失 → P1 放行/屏蔽/索引声明 → P2 写法/可维护性
+        · **不要**单独写「当日拉取结果 / 关联探测」表
 
 Step 4  生成建议稿 robots.txt
         · 保留明确噪声 Disallow
@@ -123,10 +127,8 @@ Part1. 当前配置分析                    ← H2
     figure.file-sample--robots-full
     标注块为兄弟 llms-sec，勿嵌套：
       文件头 | Sitemap | LLMs.txt | Allow | Disallow
-  关联探测（同日 GET）                 ← H3
-    表：探测项 / 结果 / 解读
-  问题列表                             ← H3
-    ol + P0/P1/P2
+  问题判定                             ← H3
+    ol + P0/P1/P2；证据写进每条，不要另做拉取结果表
 
 Part2. robots.txt 的优化建议           ← H2
   建议模板                             ← H3.aj-caption
@@ -145,11 +147,15 @@ Part2. robots.txt 的优化建议           ← H2
 
 ### 建议稿着色
 
+robots.txt 是短配置，可按**行**着色：
+
 | class | 含义 |
 |-------|------|
-| `.add` | 建议新增 |
-| `.keep` | 建议保留 |
+| `.add` | 建议新增的行 |
+| `.keep` | 建议原样保留的 Disallow 等 |
 | `.ask` | 待确认（可先注释） |
+
+不要给整份文件套一层 `.add` / `.keep`。长文类建议稿（Markdown）只标改过的字，不在本 Skill 使用。
 
 ### 待确认文案
 

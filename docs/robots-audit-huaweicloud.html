@@ -491,75 +491,32 @@
         </div>
       </div>
 
-      <h3 id="probes">关联探测（同日 GET）</h3>
-      <table class="probe-table">
-        <thead>
-          <tr>
-            <th>探测项</th>
-            <th>结果</th>
-            <th>解读</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>/robots.txt</code></td>
-            <td>200 · 241 B</td>
-            <td>入口存在，规则可被读取</td>
-          </tr>
-          <tr>
-            <td><code>Allow</code> 规则</td>
-            <td>0 条</td>
-            <td>文件中无任何 <code>Allow:</code>；仅有 10 条 <code>Disallow</code>。按 RFC 默认，未禁止路径可抓，但未显式写明开放范围</td>
-          </tr>
-          <tr>
-            <td><code>Sitemap</code> 声明</td>
-            <td>0 条</td>
-            <td>robots.txt 中无 <code>Sitemap:</code> 绝对 URL（站点虽有 <code>/sitemap.xml</code> 可访问）</td>
-          </tr>
-          <tr>
-            <td><code>/llms.txt</code></td>
-            <td>403</td>
-            <td>未对爬虫开放机器可读索引（或 WAF 拦截）</td>
-          </tr>
-          <tr>
-            <td><code>/guide/</code> · <code>/zhishi/</code></td>
-            <td>曾测得 200/404（部分请求遇 WAF 418）</td>
-            <td>路径语义偏「指南 / 知识」，却被 Disallow；是否应公开需业务确认</td>
-          </tr>
-          <tr>
-            <td><code>support.huaweicloud.com/robots.txt</code></td>
-            <td>200，且含 Sitemap 声明</td>
-            <td>支持站已声明 Sitemap；主站缺失声明形成对照缺口</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h3 id="problems">问题列表</h3>
+      <h3 id="problems">问题判定</h3>
       <ol class="bg-list">
         <li>
           <span class="sev sev-p0">P0</span>
-          <strong>未声明 Sitemap 绝对 URL。</strong>
-          robots.txt 中无 <code>Sitemap:</code> 行；公开页面缺少稳定发现入口。
+          <strong>未声明 Sitemap。</strong>
+          robots 能打开（200），但没有 <code>Sitemap:</code> 行；对照支持站 robots 已声明。
         </li>
         <li>
           <span class="sev sev-p1">P1</span>
-          <strong>未声明任何 Allow 规则。</strong>
-          仅有 10 条 Disallow，无 <code>Allow:</code>；放行范围未显式写出，只能依赖默认「未禁止即可抓」。
+          <strong>没有写放行范围。</strong>
+          <code>Allow</code> 0 条，<code>Disallow</code> 10 条，开放范围只能靠默认「没禁止就能抓」。
         </li>
         <li>
           <span class="sev sev-p1">P1</span>
-          <strong>未声明 LLMs.txt 路径。</strong>
-          文件中无 <code>LLMs.txt:</code> 行；若需服务 AI Agent，缺少机器可读索引入口。
+          <strong>未声明 llms.txt。</strong>
+          robots 里没有 <code>LLMs.txt:</code> 行；<code>/llms.txt</code> 实测 403。
         </li>
         <li>
           <span class="sev sev-p1">P1</span>
-          <strong>疑似误屏蔽公开内容路径。</strong>
-          <code>/zhishi/</code>、<code>/guide/</code>、<code>/topic/</code>、<code>/theme/</code>、<code>/special/</code> 均被 Disallow，需确认是否本应对外发现。
+          <strong>可能误屏蔽了公开内容。</strong>
+          <code>/zhishi/</code>、<code>/guide/</code>、<code>/topic/</code>、<code>/theme/</code>、<code>/special/</code> 都被 Disallow，要业务确认该不该对外。
         </li>
         <li>
           <span class="sev sev-p2">P2</span>
           <strong>Disallow 写法不统一。</strong>
-          部分行为 <code>Disallow:/path/</code>（冒号后无空格），影响可读与维护，但不影响多数解析器识别。
+          部分是 <code>Disallow:/path/</code>（冒号后没空格），多数解析器仍能认。
         </li>
       </ol>
     </section>

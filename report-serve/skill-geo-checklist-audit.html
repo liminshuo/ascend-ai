@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>全站亲和 Checklist · Skill · AI 亲和原则</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid var(--color-border);
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: 100%; max-width: none; margin: 0; padding: 0 24px; box-sizing: border-box;
+    height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: var(--color-text); text-decoration: none; white-space: nowrap; margin-right: 40px;
+  }
+  .topbar .brand span { color: var(--color-primary); }
+  .topbar .site-nav { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; flex-wrap: wrap; }
+  .topbar .site-nav > a {
+    text-decoration: none; color: var(--color-text-secondary); font-size: var(--text-body); font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .topbar .site-nav > a:hover { color: var(--color-primary); background: var(--color-bg); text-decoration: none; }
+  .topbar .site-nav > a.active { color: var(--color-primary); background: var(--color-bg); font-weight: 600; }
+
+  body.inner-page[data-page="skill-detail"] .page-wrapper {
+    min-height: 100vh;
+    background: #fff;
+  }
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: var(--space-stack, 16px);
+  }
+  body.inner-page[data-page="skill-detail"] .main-content {
+    padding-top: var(--content-main-pad-top, 16px);
+    padding-bottom: 32px;
+    padding-left: 0;
+    padding-right: 0;
+    background: #fff;
+    min-height: calc(100vh - var(--header-height, 56px));
+  }
+  body.inner-page[data-page="skill-detail"] .main-content > .page-header,
+  body.inner-page[data-page="skill-detail"] .main-content > .page-meta,
+  body.inner-page[data-page="skill-detail"] .main-content > .section {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page[data-page="skill-detail"] .main-content > .section {
+    margin-bottom: 32px;
+  }
+  body.inner-page[data-page="skill-detail"] .main-content > .section:first-of-type > h2 {
+    margin-top: 0;
+  }
+  .page-header > h1 {
+    font-family: var(--font);
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1-weight, 600);
+    line-height: var(--text-h1-lh);
+    letter-spacing: -0.02em;
+    margin: 0;
+    padding-top: var(--space-h1-pad-y, 32px);
+    padding-bottom: var(--space-h1-pad-y, 32px);
+    color: var(--color-text);
+  }
+  .skill-badge {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 10px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: #eef4ff;
+    color: #175cd3;
+    font-size: 13px;
+    font-weight: 650;
+    line-height: 20px;
+    letter-spacing: 0;
+    vertical-align: 6px;
+    white-space: nowrap;
+  }
+  .page-meta {
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  .page-meta a { color: var(--color-primary); text-decoration: none; }
+  .page-meta a:hover { text-decoration: underline; }
+  .page-meta code {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+  }
+  body.inner-page[data-page="skill-detail"] .main-content .section > h2 {
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    letter-spacing: -0.01em;
+    margin-top: 0;
+    margin-bottom: var(--space-stack, 16px);
+    padding-top: var(--space-h2-pad-y, 16px);
+    padding-bottom: 0;
+    border-bottom: none;
+    color: var(--color-text);
+  }
+  .page-lead {
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  .page-lead a { color: var(--color-primary); text-decoration: none; }
+  .page-lead a:hover { text-decoration: underline; }
+  .bg-list {
+    margin: 0;
+    padding-left: 1.25em;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text);
+  }
+  .bg-list li + li { margin-top: 10px; }
+  .bg-list strong { font-weight: 650; }
+  #usage > h2 {
+    text-align: left;
+  }
+  #usage .bg-list {
+    margin-left: 0;
+    padding-left: 0;
+    list-style-position: inside;
+    text-align: left;
+  }
+  .section ul.plain-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .section ul.plain-list li + li { margin-top: 10px; }
+  .probe-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+  }
+  .probe-table th,
+  .probe-table td {
+    border: 1px solid #e8eef5;
+    border-top: none;
+    border-left: none;
+    vertical-align: middle;
+    padding: 10px 12px;
+    text-align: left;
+  }
+  .probe-table thead tr:first-child > th { border-top: 1px solid #e8eef5; }
+  .probe-table th:first-child,
+  .probe-table td:first-child { border-left: 1px solid #e8eef5; }
+  .probe-table th { background: #f5f6f8; font-weight: 650; width: 22%; }
+  .probe-table code { font-size: 12px; }
+  .probe-table .opt-stack {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .probe-table .opt-stack li + li { margin-top: 8px; }
+  #usage .probe-table {
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+    border-radius: 8px;
+    border: 1px solid #e8eef5;
+  }
+  #usage .probe-table th,
+  #usage .probe-table td {
+    border-right: 1px solid #e8eef5;
+    border-bottom: 1px solid #e8eef5;
+    border-top: none;
+    border-left: none;
+  }
+  #usage .probe-table th:last-child,
+  #usage .probe-table td:last-child { border-right: none; }
+  #usage .probe-table tbody tr:last-child > th,
+  #usage .probe-table tbody tr:last-child > td { border-bottom: none; }
+  #usage .probe-table thead tr:first-child > th { border-top: none; }
+  #usage .probe-table th:first-child,
+  #usage .probe-table td:first-child { border-left: none; }
+  .skill-detail-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: var(--space-stack, 16px);
+  }
+  .skill-detail-actions a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 88px;
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: 1px solid #d0d5dd;
+    background: #fff;
+    color: var(--color-text);
+    font-size: 13px;
+    font-weight: 650;
+    line-height: 20px;
+    text-decoration: none;
+    box-sizing: border-box;
+  }
+  .skill-detail-actions a:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+  .skill-detail-actions a.is-primary {
+    border-color: var(--color-primary);
+    background: var(--color-primary);
+    color: #fff;
+  }
+  .skill-detail-actions a.is-primary:hover {
+    opacity: 0.92;
+    color: #fff;
+  }
+  .skill-demo-shot {
+    margin: var(--space-stack, 16px) 0 0;
+    padding: 0;
+    border: 1px solid #e8eef5;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08), 0 2px 6px rgba(15, 23, 42, 0.06);
+  }
+  .skill-demo-shot a {
+    display: block;
+    line-height: 0;
+  }
+  .skill-demo-shot img {
+    display: block;
+    width: 100%;
+    height: 561px;
+    object-fit: cover;
+    object-position: top center;
+  }
+  body.inner-page[data-page="skill-detail"] .main-content > .crumb {
+    position: sticky;
+    top: var(--header-height, 56px);
+    z-index: 150;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    box-sizing: border-box;
+    padding: 10px max(clamp(16px, 2.5vw, 24px), calc((100% - var(--content-max-width, 1000px)) / 2));
+    font-size: 13px;
+    line-height: 20px;
+    color: var(--color-text-secondary);
+    background: #fff;
+    border-bottom: 1px solid transparent;
+  }
+  .crumb.is-stuck {
+    border-bottom-color: #e8eef5;
+  }
+  .crumb a {
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+  .crumb a:hover { text-decoration: underline; }
+  .prompt-card {
+    margin: 12px 0 16px;
+    padding: 14px 16px;
+    background: #f5f6f8;
+    border: 1px solid #e8eef5;
+    border-radius: 8px;
+    box-sizing: border-box;
+  }
+  .prompt-card-label {
+    margin: 0 0 8px;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 18px;
+    color: var(--color-text-secondary);
+  }
+  .prompt-card ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+  }
+  .prompt-card li {
+    margin: 0;
+    font-size: 14px;
+    line-height: 22px;
+    color: var(--color-text);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  .prompt-card .slash-tag {
+    display: inline-block;
+    margin-right: 6px;
+    padding: 0 6px;
+    border-radius: 4px;
+    background: #ffedd5;
+    color: #9a3412;
+    font-size: 13px;
+    font-weight: 650;
+    line-height: 20px;
+    vertical-align: baseline;
+  }
+</style>
+</head>
+<body class="inner-page" data-page="skill-detail" data-no-surface-tabs>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span>AI 亲和原则</span></a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="mintlify.html">友商对照</a>
+      <a href="reachability.html">社区诊断</a>
+      <a href="principles-overview.html">亲和原则</a>
+      <a href="community-ui.html">组件亲和</a>
+      <a href="skills.html" class="active">Skill 目录</a>
+    </nav>
+  </div>
+</div>
+
+<div class="page-wrapper">
+  <main class="main-content">
+    <p class="crumb"><a href="skills.html">Skill 目录</a> / 全站亲和 Checklist</p>
+    <div class="page-header">
+      <h1>全站亲和 Checklist <span class="skill-badge">领队</span></h1>
+    </div>
+    <p class="page-meta">
+      Skill ID：<code>/geo-checklist-audit</code>
+    </p>
+
+    <section class="section" id="overview">
+      <h2>这个 Skill 做什么</h2>
+      <p class="page-lead">这是<strong>站点根领队</strong>。给一个站点根地址，只敲 <code>/geo-checklist-audit</code>：先做全站亲和 Checklist，看基础建设是否对 Agent 友好（可达 / 可读 / 可理解），也看模型回答里是否会提品牌、引用官网。能测的写证据，缺材料的标「未测」。</p>
+      <p class="page-lead">测完会接着带出 robots、sitemap、llms 三份建议稿，不必再敲分项斜杠。核验表和三份配置稿分开交付。只想改其中一项，目录里的分项仍可单独下载。输入是一页文档时，会先问你查全站还是只改这一页。</p>
+      <div class="skill-detail-actions">
+        <a class="is-primary" href="exports/geo-checklist-audit.zip" download="geo-checklist-audit.zip">下载 Skill</a>
+        <a href="checklist-audit-hiascend.html">查看示例报告</a>
+      </div>
+      <figure class="skill-demo-shot">
+        <a href="checklist-audit-hiascend.html">
+          <img src="assets/skills/checklist-audit-hiascend-preview.png?v=2" alt="昇腾社区全站亲和 Checklist 示例报告截图" width="998" height="561">
+        </a>
+      </figure>
+    </section>
+
+    <section class="section" id="lead">
+      <h2>它怎么带其它 Skill</h2>
+      <p class="page-lead">把它当作站点根入口：对话里只敲 <code>/geo-checklist-audit</code>，后面接站点地址。它会先做总检，再把需要改的基础配置拆成三份建议稿。下载本包就能完成这条流程，不用先装 robots / sitemap / llms 三个分项。</p>
+      <table class="probe-table" style="margin-top:12px;margin-bottom:16px;width:100%">
+        <thead><tr><th>输入</th><th>怎么接力</th><th>输出</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>站点根，如 <code>https://www.example.com/</code></td>
+            <td>先跑 Checklist，再按包内说明分别处理 robots、sitemap、llms</td>
+            <td>一份核验表 + 三份可下载建议稿：<code>robots.txt</code>、sitemap 基线、<code>llms.txt</code>。报告分开交付</td>
+          </tr>
+          <tr>
+            <td>某一页文档地址</td>
+            <td>先确认是查全站，还是只改这一页</td>
+            <td>只改一页时，改走页级探针；不会在这里批量生成页面 Markdown</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="page-lead">本包已经内置这些分项说明，会在总检后按需接上：</p>
+      <ol class="bg-list">
+        <li><a href="skill-robots-txt-audit.html">配置 robots.txt 许可声明</a> <code>/robots-txt-audit</code></li>
+        <li><a href="skill-sitemap-audit.html">提供可发现的 sitemap 路径清单</a> <code>/sitemap-audit</code></li>
+        <li><a href="skill-llms-txt-generate.html">部署 llms.txt 索引目录</a> <code>/llms-txt-generate</code></li>
+      </ol>
+      <p class="page-lead">分项仍保留单独下载入口：只想改 <code>robots.txt</code>、只想看 sitemap，或只想生成 <code>llms.txt</code>，可以直接用对应 Skill。</p>
+    </section>
+
+    <section class="section" id="usage">
+      <h2>如何触发</h2>
+      <ol class="bg-list">
+        <li>下载本领队包，放到 Agent 可读取的 skills 目录（如 <code>.cursor/skills/geo-checklist-audit/</code>）。包内已含 robots / sitemap / llms 说明，不必再下三份分项。</li>
+        <li>在对话中用 <code>/geo-checklist-audit</code> 唤起；斜杠后写站点根 URL。不要再敲分项斜杠。默认两块一起测：生成 10 题，并由当前模型答一版。没有根地址时，Agent 会先追问。</li>
+      </ol>
+      <table class="probe-table" style="margin-top:12px;margin-bottom:16px;width:100%">
+        <thead><tr><th>字段</th><th>必填</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>斜杠命令</td><td>是</td><td>用 <code>/geo-checklist-audit</code> 明确唤起这个 Skill</td></tr>
+          <tr><td>站点根 URL</td><td>是</td><td>如 <code>https://www.example.com/</code>。测 A 时拉 robots / Sitemap / llms；测 B 时默认把该根域名（含 www 与裸域）当作官网引用，不必另填白名单</td></tr>
+          <tr>
+            <td>页面清单</td>
+            <td>可选</td>
+            <td>
+              <ul class="opt-stack">
+                <li>默认按 Sitemap + llms 清单对每条 URL 发请求，不必另授权</li>
+                <li>要求更高再补全站抓取 CSV（URL、状态码、标题），用来对照 Sitemap 覆盖缺口</li>
+              </ul>
+            </td>
+          </tr>
+          <tr>
+            <td>固定测试题</td>
+            <td>可选</td>
+            <td>
+              <ul class="opt-stack">
+                <li>默认：按站点生成 10 题。报告附录列出，并附可下载文件</li>
+                <li>用户上传题表则用用户的题，同样放进附录和附件</li>
+              </ul>
+            </td>
+          </tr>
+          <tr>
+            <td>模型答卷</td>
+            <td>可选</td>
+            <td>
+              <ul class="opt-stack">
+                <li>默认：本对话当前模型按 10 题答一版，写入答卷附件，标明模型名</li>
+                <li>样本要更全面时：用户提供「模型回答记录表」（模型名、题号、回答正文、检索 URL、引用 URL）</li>
+              </ul>
+            </td>
+          </tr>
+          <tr><td>主推版本规则</td><td>可选</td><td>如路径含 <code>/900/</code> 视为社区主推版</td></tr>
+        </tbody>
+      </table>
+      <div class="prompt-card" aria-label="用户输入示例">
+        <p class="prompt-card-label">用户可以这样输入</p>
+        <ul>
+          <li><span class="slash-tag">/geo-checklist-audit</span>核验 https://www.hiascend.com/</li>
+        </ul>
+      </div>
+      <ol class="bg-list" start="3">
+        <li>生成结果是一份 Checklist HTML（无侧栏，可导出 PDF），并附 robots / sitemap / llms 建议稿。附录含测试题表与下载附件。缺材料的行标「未测」。可<a href="checklist-audit-hiascend.html">查看示例报告</a>对照核验表形态。</li>
+      </ol>
+    </section>
+  </main>
+</div>
+
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js?v=20261120c"></script>
+</body>
+</html>

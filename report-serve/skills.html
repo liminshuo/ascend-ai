@@ -60,6 +60,9 @@
   body.inner-page[data-page="skills"] .main-content > .section {
     margin-bottom: 32px;
   }
+  body.inner-page[data-page="skills"] .main-content > .section:first-of-type > h2 {
+    padding-top: 0;
+  }
   .page-header > h1 {
     font-family: var(--font);
     font-size: var(--text-h1);
@@ -78,27 +81,36 @@
     color: var(--color-text-secondary);
   }
   body.inner-page[data-page="skills"] .main-content .section > h2 {
-    font-size: var(--text-h2, 24px);
-    font-weight: 700;
-    line-height: var(--text-h2-lh, 36px);
-    margin: 0 0 var(--space-stack, 16px);
-    padding-top: var(--space-h2-pad-y, 16px);
-    color: var(--color-text);
+    font-size: 13px;
+    font-weight: 650;
+    line-height: 20px;
+    letter-spacing: 0.02em;
+    margin: 0 0 8px;
+    padding-top: 8px;
+    padding-bottom: 0;
+    border-bottom: none;
+    color: var(--color-text, #1d2129);
   }
   .section ul.skill-list {
     list-style: none;
     margin: 0;
     padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    border: none;
+    background: transparent;
   }
   .skill-list > li {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     gap: 24px;
-    padding: 16px 0;
-    border-top: 1px solid #e8eef5;
+    padding: 16px;
+    border: 1px solid #e8eef5;
+    border-radius: 8px;
+    background: #fff;
   }
-  .skill-list > li:last-child { border-bottom: 1px solid #e8eef5; }
   .skill-list .skill-main {
     min-width: 0;
     flex: 1 1 auto;
@@ -115,9 +127,28 @@
     font-weight: 650;
     line-height: 24px;
     color: var(--color-text);
+    text-decoration: none;
+  }
+  .skill-list .skill-name a.skill-title:hover {
+    color: var(--color-primary);
+    text-decoration: underline;
+  }
+  .skill-badge {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 8px;
+    padding: 1px 7px;
+    border-radius: 999px;
+    background: #eef4ff;
+    color: #175cd3;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 18px;
+    vertical-align: 2px;
+    white-space: nowrap;
   }
   .skill-list .skill-desc {
-    margin: 0 0 16px;
+    margin: 0 0 8px;
     font-size: var(--text-body);
     line-height: var(--text-body-lh, 22px);
     color: var(--color-text-secondary);
@@ -191,13 +222,30 @@
     </div>
 
     <section class="section">
-      <p class="page-lead">可复用的 AI 亲和诊断与改造 Skill。在 Cursor 中按名称调用，或打开示例报告查看交付形态。</p>
+      <h2>全站亲和总检</h2>
       <ul class="skill-list">
         <li>
           <div class="skill-main">
-            <p class="skill-name"><span class="skill-title">robots.txt 配置诊断</span></p>
-            <p class="skill-desc">核验入口可达、Allow/Disallow、Sitemap 绝对 URL 声明、可选 LLMs.txt 声明，输出 Part1/Part2 HTML 报告，支持导出 PDF。</p>
-            <p class="skill-id"><code>robots-txt-audit</code></p>
+            <p class="skill-name"><a class="skill-title" href="skill-geo-checklist-audit.html">全站亲和 Checklist</a><span class="skill-badge">领队</span></p>
+            <p class="skill-desc">斜杠 <code>/geo-checklist-audit</code> 唤起：给站点根则先跑 Checklist（A 基础建设，B 品牌与可信），接着写出 robots、sitemap、llms 建议稿。缺材料标未测。分项仍可单独下载。</p>
+            <p class="skill-id"><code>/geo-checklist-audit</code></p>
+          </div>
+          <div class="skill-actions">
+            <a href="skill-geo-checklist-audit.html">查看</a>
+            <a class="skill-btn-primary" href="exports/geo-checklist-audit.zip" download="geo-checklist-audit.zip">下载</a>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>基础建设可发现</h2>
+      <ul class="skill-list">
+        <li>
+          <div class="skill-main">
+            <p class="skill-name"><a class="skill-title" href="skill-robots-txt-audit.html">配置 robots.txt 许可声明</a></p>
+            <p class="skill-desc">斜杠 <code>/robots-txt-audit</code> 唤起：核验入口可达、开放和禁止范围、Sitemap 与可选 llms 声明。输出独立 HTML 报告，可导出 PDF。</p>
+            <p class="skill-id"><code>/robots-txt-audit</code></p>
           </div>
           <div class="skill-actions">
             <a href="skill-robots-txt-audit.html">查看</a>
@@ -206,64 +254,93 @@
         </li>
         <li>
           <div class="skill-main">
-            <p class="skill-name"><span class="skill-title">Sitemap 轻量诊断</span></p>
-            <p class="skill-desc">主输入 Sitemap URL；建议附站点根。举证旧清单问题，给出新旧对照与可下载优化稿（index/核心册）；可选抓取表做覆盖缺口。输出 Part1/Part2 HTML，支持导出 PDF。</p>
-            <p class="skill-id"><code>sitemap-audit</code></p>
+            <p class="skill-name"><a class="skill-title" href="skill-sitemap-audit.html">提供可发现的 sitemap 路径清单</a></p>
+            <p class="skill-desc">斜杠 <code>/sitemap-audit</code> 唤起：核验路径清单能不能拿到、规模和结构、是否对得上 robots。输出独立 HTML 报告，可导出 PDF。</p>
+            <p class="skill-id"><code>/sitemap-audit</code></p>
           </div>
           <div class="skill-actions">
             <a href="skill-sitemap-audit.html">查看</a>
             <a class="skill-btn-primary" href="exports/sitemap-audit.zip" download="sitemap-audit.zip">下载</a>
           </div>
         </li>
-
         <li>
           <div class="skill-main">
-            <p class="skill-name"><span class="skill-title">llms.txt 配置诊断</span></p>
-            <p class="skill-desc">基于抓取 URL 表精选生成 llms.txt；有表时轻量核对 Sitemap，无表时以 Sitemap 为弱输入。输出 Part1/Part2 HTML，支持下载 llms.txt 与导出 PDF。</p>
-            <p class="skill-id"><code>llms-txt-generate</code></p>
+            <p class="skill-name"><a class="skill-title" href="skill-llms-txt-generate.html">部署 llms.txt 索引目录</a></p>
+            <p class="skill-desc">斜杠 <code>/llms-txt-generate</code> 唤起：诊断现有入口并给出精选 llms.txt。有抓取表更准，没有就用 Sitemap。输出独立 HTML 报告，可下载 txt。</p>
+            <p class="skill-id"><code>/llms-txt-generate</code></p>
           </div>
           <div class="skill-actions">
             <a href="skill-llms-txt-generate.html">查看</a>
             <a class="skill-btn-primary" href="exports/llms-txt-generate.zip" download="llms-txt-generate.zip">下载</a>
           </div>
         </li>
+      </ul>
+    </section>
 
+    <section class="section">
+      <h2>单页内容核验</h2>
+      <ul class="skill-list">
         <li>
           <div class="skill-main">
-            <p class="skill-name"><span class="skill-title">HTML 转化成 Markdown</span></p>
-            <p class="skill-desc">将页面 HTML 转为 Agent 可读 Markdown：去壳去重、保留 CTA；文首声明根 llms 与对应 HTML URL。与 md-discoverability 成对（本 Skill 生成，后者验发现）。</p>
-            <p class="skill-id"><code>html-to-md</code></p>
-          </div>
-          <div class="skill-actions">
-            <a href="skill-html-to-md.html">查看</a>
-            <a class="skill-btn-primary" href="exports/html-to-md.zip" download="html-to-md.zip">下载</a>
-          </div>
-        </li>
-
-        <li>
-          <div class="skill-main">
-            <p class="skill-name"><span class="skill-title">Markdown 正文可发现</span></p>
-            <p class="skill-desc">核验人读页是否声明 alternate markdown、平行 .md 是否可达。与 html-to-md 成对（一个产 MD，一个验发现）。输出 Part1/Part2 HTML，支持导出 PDF。</p>
-            <p class="skill-id"><code>md-discoverability</code></p>
-          </div>
-          <div class="skill-actions">
-            <a href="skill-md-discoverability.html">查看</a>
-            <a class="skill-btn-primary" href="exports/md-discoverability.zip" download="md-discoverability.zip">下载</a>
-          </div>
-        </li>
-
-        <li>
-          <div class="skill-main">
-            <p class="skill-name"><span class="skill-title">页级亲和探针</span></p>
-            <p class="skill-desc">单页 URL 实测：依据全量原则 25 项（含子原则分判），只测本页组件；输出状态表 + problems 同构报告，支持导出 PDF。</p>
-            <p class="skill-id"><code>page-affinity-probe</code></p>
+            <p class="skill-name"><a class="skill-title" href="skill-page-affinity-probe.html">实测页级亲和</a><span class="skill-badge">领队</span></p>
+            <p class="skill-desc">斜杠 <code>/page-affinity-probe</code> 唤起：给一页则先看平行 Markdown 能不能打开，没有就抽出正文，再按原则改成可部署稿。分项仍可单独下载。</p>
+            <p class="skill-id"><code>/page-affinity-probe</code></p>
           </div>
           <div class="skill-actions">
             <a href="skill-page-affinity-probe.html">查看</a>
             <a class="skill-btn-primary" href="exports/page-affinity-probe.zip" download="page-affinity-probe.zip">下载</a>
           </div>
         </li>
+        <li>
+          <div class="skill-main">
+            <p class="skill-name"><a class="skill-title" href="skill-md-discoverability.html">核验 Markdown 正文可发现</a></p>
+            <p class="skill-desc">斜杠 <code>/md-discoverability</code> 唤起：看人读网页有没有声明平行 Markdown，以及那个文件能不能打开。不负责把网页转成 Markdown。</p>
+            <p class="skill-id"><code>/md-discoverability</code></p>
+          </div>
+          <div class="skill-actions">
+            <a href="skill-md-discoverability.html">查看</a>
+            <a class="skill-btn-primary" href="exports/md-discoverability.zip" download="md-discoverability.zip">下载</a>
+          </div>
+        </li>
+        <li>
+          <div class="skill-main">
+            <p class="skill-name"><a class="skill-title" href="skill-html-to-md.html">提供 Markdown 正文</a></p>
+            <p class="skill-desc">斜杠 <code>/html-to-md</code> 唤起：把网页转成 Agent 可读 Markdown，去掉导航页脚，保留带链接的按钮文案。可下载 Markdown。</p>
+            <p class="skill-id"><code>/html-to-md</code></p>
+          </div>
+          <div class="skill-actions">
+            <a href="skill-html-to-md.html">查看</a>
+            <a class="skill-btn-primary" href="exports/html-to-md.zip" download="html-to-md.zip">下载</a>
+          </div>
+        </li>
+      </ul>
+    </section>
 
+    <section class="section">
+      <h2>学习路径生成</h2>
+      <ul class="skill-list">
+        <li>
+          <div class="skill-main">
+            <p class="skill-name"><a class="skill-title" href="skill-learn-cann.html">生成 CANN 学习路径（社区）</a></p>
+            <p class="skill-desc">斜杠 <code>/learn-cann</code> 唤起：按主题生成可点击的学习路径地图 HTML，卡片直达昇腾社区学习中心（课程 / 路径 / 认证）。</p>
+            <p class="skill-id"><code>/learn-cann</code></p>
+          </div>
+          <div class="skill-actions">
+            <a href="skill-learn-cann.html">查看</a>
+            <a class="skill-btn-primary" href="exports/learn-cann.zip" download="learn-cann.zip">下载</a>
+          </div>
+        </li>
+        <li>
+          <div class="skill-main">
+            <p class="skill-name"><a class="skill-title" href="skill-cann-learning-journey-gitcode.html">生成 CANN 学习路径（GitCode）</a></p>
+            <p class="skill-desc">斜杠 <code>/cann-learning-journey-gitcode</code> 唤起：按 GitCode cann-learning-hub 实时目录生成学习路径地图；卡片跳转到仓库课程文件，不是社区 DLC 课页。</p>
+            <p class="skill-id"><code>/cann-learning-journey-gitcode</code></p>
+          </div>
+          <div class="skill-actions">
+            <a href="skill-cann-learning-journey-gitcode.html">查看</a>
+            <a class="skill-btn-primary" href="exports/cann-learning-journey-gitcode.zip" download="cann-learning-journey-gitcode.zip">下载</a>
+          </div>
+        </li>
       </ul>
     </section>
   </main>

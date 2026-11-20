@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>全站亲和 Checklist · 昇腾社区 · AI 亲和原则</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid var(--color-border);
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin: 0 auto;
+    padding: 0;
+    box-sizing: border-box;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: var(--color-text); text-decoration: none; white-space: nowrap;
+  }
+  .topbar .brand span { color: var(--color-primary); }
+  .topbar .brand:hover { text-decoration: none; opacity: 0.9; }
+  body.inner-page .page-wrapper { min-height: 100vh; }
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: var(--space-stack, 16px);
+  }
+  .page-header > h1 {
+    font-family: var(--font);
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1-weight, 600);
+    line-height: var(--text-h1-lh);
+    letter-spacing: -0.02em;
+    margin: 0;
+    padding-top: var(--space-h1-pad-y, 32px);
+    padding-bottom: var(--space-h1-pad-y, 32px);
+    color: var(--color-text);
+  }
+  .page-meta {
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  .page-meta a { color: var(--color-primary); text-decoration: none; }
+  .page-meta a:hover { text-decoration: underline; }
+  body.inner-page.agent-entry-page .page-wrapper {
+    background: #fff;
+    padding-top: var(--header-height, 56px);
+  }
+  body.inner-page.agent-entry-page .main-content {
+    padding-top: 16px;
+    padding-bottom: 32px;
+    padding-left: 0;
+    padding-right: 0;
+    background: #fff;
+    min-height: calc(100vh - var(--header-height, 56px));
+  }
+  body.inner-page.agent-entry-page .main-content > .page-header,
+  body.inner-page.agent-entry-page .main-content > .page-meta,
+  body.inner-page.agent-entry-page .main-content > .section {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page.agent-entry-page .main-content .section > h2,
+  body.inner-page.agent-entry-page .main-content .section .block-title {
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    letter-spacing: -0.01em;
+    margin-top: 0;
+    margin-bottom: var(--space-stack, 16px);
+    padding-top: var(--space-h2-pad-y, 16px);
+    padding-bottom: 0;
+    border-bottom: none;
+    color: var(--color-text);
+  }
+  body.inner-page.agent-entry-page .main-content .section > h3,
+  body.inner-page.agent-entry-page .main-content .section .layer > h3 {
+    font-size: var(--text-h3, 18px);
+    font-weight: var(--text-h3-weight, 650);
+    line-height: var(--text-h3-lh, 28px);
+    letter-spacing: -0.01em;
+    margin-top: 0;
+    margin-bottom: var(--space-stack, 16px);
+    padding-top: var(--space-h3-pad-y, 16px);
+    padding-bottom: var(--space-h3-pad-y, 16px);
+    border-bottom: none;
+    color: var(--color-text);
+  }
+  body.inner-page.agent-entry-page .main-content > .section:first-of-type > h2 { margin-top: 0; }
+  body.inner-page.agent-entry-page .main-content > .section { margin-bottom: 32px; }
+  :root {
+    --ck-line: #e8eef5;
+    --green: #18794e;
+    --green-bg: #eaf8f0;
+    --red: #b42318;
+    --red-bg: #fff0ee;
+    --amber: #9a5b00;
+    --amber-bg: #fff5df;
+    --blue: var(--color-primary, #2457d6);
+    --blue-bg: #edf3ff;
+    --muted: #667085;
+  }
+  .layer { margin: 0 0 var(--space-stack, 16px); }
+  .panel { margin: 0 0 24px; }
+  .checklist-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    margin: 0 0 12px;
+  }
+  .checklist-head h4 { margin: 0; font-size: 16px; font-weight: 650; line-height: 24px; }
+  .checklist-head .small { margin: 0; text-align: right; flex-shrink: 0; font-size: 12px; color: var(--muted); }
+  .checklist-note { margin: 0 0 12px; font-size: 13px; line-height: 20px; color: var(--muted); }
+  table.v-mid { width: 100%; border-collapse: collapse; font-size: var(--text-body); }
+  table.v-mid th, table.v-mid td {
+    text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--ck-line); vertical-align: middle;
+  }
+  table.v-mid th { background: #f5f6f8; color: #475467; font-weight: 650; }
+  table.v-mid tr:last-child td { border-bottom: 0; }
+  table.v-mid td code { word-break: break-all; font-size: 12px; }
+  .status {
+    display: inline-block; border-radius: 6px; padding: 3px 8px;
+    font-size: 12px; font-weight: 650; white-space: nowrap;
+  }
+  .done { background: var(--green-bg); color: var(--green); }
+  .risk { background: var(--red-bg); color: var(--red); }
+  .pending, .potential, .partial { background: var(--amber-bg); color: var(--amber); }
+  .notdone { background: #eef2f6; color: #475467; }
+  .result-block { margin: 0; }
+  .result-block + .result-block { margin-top: 6px; }
+  .result-label { font-weight: 700; }
+  .result-label.risk { background: var(--red-bg); border-radius: 4px; padding: 1px 6px; color: var(--red); }
+  .baseline-alert {
+    margin: 0 0 12px; padding: 12px 14px; border-left: 4px solid var(--red);
+    background: var(--red-bg); border-radius: 0 8px 8px 0; font-size: 13px; line-height: 1.55; color: #7a271a;
+  }
+  a.dl {
+    display: inline-flex; align-items: center; gap: 8px; margin: 0 0 14px; padding: 8px 14px;
+    border-radius: 6px; background: var(--color-primary, #2457d6); color: #fff;
+    font-size: 13px; font-weight: 650; text-decoration: none;
+  }
+  a.dl:hover { opacity: 0.92; color: #fff; text-decoration: none; }
+  .section footer { padding: 8px 0 0; color: var(--muted); font-size: 12px; }
+  .topbar .btn-export-pdf, .btn-export-pdf {
+    appearance: none; border: 1px solid #d0d5dd; background: #fff;
+    color: var(--color-text, #191919); font: inherit; font-size: 13px; font-weight: 650;
+    line-height: 20px; padding: 6px 12px; border-radius: 6px; cursor: pointer;
+  }
+  .topbar .btn-export-pdf:hover, .btn-export-pdf:hover {
+    border-color: var(--color-primary, #1476ff); color: var(--color-primary, #1476ff);
+  }
+  @media print {
+    @page { size: A4; margin: 14mm 12mm; }
+    html, body { background: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .topbar, .btn-export-pdf { display: none !important; }
+    body.inner-page.agent-entry-page .page-wrapper,
+    body.inner-page.agent-entry-page .main-content {
+      padding: 0 !important; margin: 0 !important; background: #fff !important; min-height: 0 !important;
+    }
+    body.inner-page.agent-entry-page .main-content > .page-header,
+    body.inner-page.agent-entry-page .main-content > .page-meta,
+    body.inner-page.agent-entry-page .main-content > .section {
+      width: 100% !important; max-width: none !important; margin-inline: 0 !important;
+    }
+    table.v-mid { break-inside: avoid; }
+    a[href]::after { content: none !important; }
+  }
+</style>
+</head>
+<body class="inner-page agent-entry-page" data-page="checklist-audit-hiascend" data-no-surface-tabs>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span>AI 亲和原则</span></a>
+    <button type="button" class="btn-export-pdf" id="btn-export-pdf">导出 PDF</button>
+  </div>
+</div>
+
+<div class="page-wrapper">
+  <main class="main-content">
+    <div class="page-header">
+      <h1>全站亲和 Checklist · 昇腾社区</h1>
+    </div>
+    <p class="page-meta">
+      示例站点：<a href="https://www.hiascend.com/" target="_blank" rel="noopener">https://www.hiascend.com/</a>
+      · 实测日期：2026-10-28
+      · 样本：单次摸底（10 题 × Claude / DeepSeek）
+    </p>
+    <section class="section" id="checklist">
+<h2 class="block-title">AI 亲和基础建设完善度</h2>
+
+<section id="reach" class="layer">
+  <h3>01｜可达 · 清晰的信息入口</h3>
+  <div class="panel" id="reach-robots">
+  <div class="checklist-head">
+    <h4>robots.txt 核验 Checklist</h4>
+    <p class="small">现网文件：<a href="https://www.hiascend.com/robots.txt" target="_blank" rel="noopener">robots.txt</a></p>
+  </div>
+  <table class="v-mid">
+    <thead><tr><th style="width:4%">#</th><th style="width:14%">检查维度</th><th style="width:24%">核验内容</th><th style="width:12%">核验结果</th><th>测评结果</th><th style="width:8%">优先级</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><strong>文件可访问性</strong></td>
+        <td>检查 <code>/robots.txt</code> 是否能正常访问，内容是否可读取。</td>
+        <td><span class="status done">核验通过</span></td>
+        <td>
+          <div class="result-block"><span class="result-label">访问正常：</span>文件可正常打开，返回可读取的规则文本。</div>
+          <div class="result-block"><span class="result-label">规则完整：</span>包含通用爬虫和 AI Agent 的抓取规则。</div>
+          <div class="result-block"><span class="result-label">未见异常：</span>未发现异常跳转或错误页替代正文。</div>
+        </td>
+        <td>P0</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><strong>Sitemap 声明</strong></td>
+        <td>检查 <code>robots.txt</code> 是否列出站点地图地址，以及地址格式是否正确。</td>
+        <td><span class="status done">核验通过</span></td>
+        <td>
+          <div class="result-block"><span class="result-label">已声明站点地图：</span>共列出 11 条地址。</div>
+          <div class="result-block"><span class="result-label">覆盖多类内容：</span>包含网站根站点地图、中英文站点地图及不同内容分类的站点地图。</div>
+          <div class="result-block"><span class="result-label">地址可直接打开：</span>均为带协议与域名的完整链接，未使用相对路径。</div>
+        </td>
+        <td>P0</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><strong>抓取规则合理性</strong></td>
+        <td>检查抓取规则是否允许公开内容被发现，并限制不需要公开抓取的路径。</td>
+        <td><span class="status done">核验通过</span></td>
+        <td>
+          <div class="result-block"><span class="result-label">公开内容允许抓取：</span>通用规则允许访问网站内容。</div>
+          <div class="result-block"><span class="result-label">指定路径受到限制：</span>已限制 <code>/profile/</code>、<code>/doc_center/</code> 路径。</div>
+        </td>
+        <td>P0</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td><strong>llms 入口声明</strong></td>
+        <td>检查是否声明 AI 可读取的网站知识入口。</td>
+        <td><span class="status done">核验通过</span></td>
+        <td>
+          <div class="result-block"><span class="result-label">2026-10 修改后：</span>已声明 <code>/llms.txt</code>、<code>/llms-full.txt</code>、<code>/llms-content/</code> 等路径，并配置 <code>LLM-Policy</code>。</div>
+          <div class="result-block"><span class="result-label risk">2026-06 基线对照：</span>当时 llms 入口完全缺失（根目录无法访问、子产品未部署）。详见下方 llms Checklist 红条说明。</div>
+        </td>
+        <td>P0</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="panel" id="reach-sitemap">
+  <div class="checklist-head">
+    <h4>Sitemap 核验 Checklist</h4>
+  </div>
+  <table class="v-mid">
+    <thead><tr><th style="width:4%">#</th><th style="width:14%">检查维度</th><th style="width:24%">核验内容</th><th style="width:12%">核验结果</th><th>测评结果</th><th style="width:8%">优先级</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><strong>站点地图可访问性</strong></td>
+        <td>检查已声明的站点地图文件能否正常访问、解析，以及能否提取页面地址用于统计。</td>
+        <td><span class="status done">核验通过</span></td>
+        <td>
+          <div class="result-block"><span class="result-label">文件均可正常访问：</span>现网 11 个站点地图文件均返回 HTTP 200，内容格式正常，可提取页面地址。</div>
+        </td>
+        <td>P0</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><strong>页面自动化访问与正文获取</strong></td>
+        <td>从站点地图中抽样检查页面，确认自动化访问能否返回预期正文（返回安全验证页不等于 URL 已失效）。</td>
+        <td><span class="status risk">发现风险</span></td>
+        <td>
+          <div class="result-block"><span class="result-label">多数抽样链接访问正常：</span>案例库、博客、中英文栏目及任务页面等大多返回预期页面，标题与页面内容基本符合预期。</div>
+          <div class="result-block"><span class="result-label risk">部分链接未能返回预期正文：</span>抽查的 <code>/document/detail/</code> 相关页面及部分外部链接未能正常获取预期内容，具体情况详见「页面可访问性」Checklist。</div>
+        </td>
+        <td>P0</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><strong>站点地图组织与覆盖</strong></td>
+        <td>检查站点地图的声明情况、分片组织、页面覆盖及跨文件重复情况，确认入口是否完整、统计口径是否清晰。</td>
+        <td><span class="status risk">发现风险</span></td>
+        <td>
+          <div class="result-block"><span class="result-label">站点地图采用并列组织方式：</span>现网 11 个站点地图文件均已在 <code>robots.txt</code> 中声明。</div>
+          <div class="result-block"><span class="result-label risk">根站点地图未汇总其他分片：</span>根目录 <code>sitemap.xml</code> 仅包含自身的 295 条页面地址，未进一步指向其他站点地图文件。</div>
+          <div class="result-block"><span class="result-label risk">存在跨文件重复记录：</span>站点地图共包含 77,430 条记录，去重后为 76,753 条，存在约 677 条重复记录。</div>
+        </td>
+        <td>P1</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td><strong>页面更新时间（lastmod）</strong></td>
+        <td>检查站点地图是否填写页面更新时间，以及时间信息能否合理反映页面的实际更新情况。</td>
+        <td><span class="status risk">发现风险</span></td>
+        <td>
+          <div class="result-block"><span class="result-label risk">少量页面缺少更新时间：</span>共 85 条记录未填写 <code>lastmod</code>，约占总记录的 0.11%，主要分布于中文和英文站点地图。</div>
+          <div class="result-block"><span class="result-label risk">更新时间的准确性待核验：</span>抽样页面普遍缺少可供对照的更新时间信息，部分同类页面的 <code>lastmod</code> 日期高度一致。约 93% 的记录标注为 2026 年，需进一步确认这些时间是否真实反映页面更新情况。</div>
+        </td>
+        <td>P1</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td><strong>URL 可识别性</strong></td>
+        <td>检查站点地图分片命名和 URL 路径是否便于识别页面所属栏目、语言及内容主题。</td>
+        <td><span class="status risk">发现风险</span></td>
+        <td>
+          <div class="result-block"><span class="result-label risk">分片文件名的语义不够明确：</span>如 <code>sitemapdata1</code>、<code>sitemapdoc1</code>，仅凭文件名较难判断其具体内容范围。</div>
+          <div class="result-block"><span class="result-label risk">部分 URL 难以直接识别主题：</span>现网约 6 万条 URL 位于 <code>/document/detail/</code> 路径下，另有部分博客数字 ID、任务 UUID 和案例 topic ID 等路径。仅凭地址较难判断页面主题，可能增加人工核验或辅助选页的判断成本。</div>
+        </td>
+        <td>P2</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="panel" id="reach-llms">
+  <div class="checklist-head">
+    <h4>llms.txt 核验 Checklist</h4>
+  </div>
+  <div class="baseline-alert" role="note"><strong>2026-06 基线：llms 入口完全缺失。</strong>当时根目录 <code>/llms.txt</code> 无法访问，且未发现子产品部署该文件，AI Agent 缺乏结构化导航。以下表格为 <strong>2026-10 修改后基线</strong>实测。</div>
+  <table class="v-mid">
+    <thead><tr><th style="width:4%">#</th><th style="width:14%">检查维度</th><th style="width:24%">核验内容</th><th style="width:12%">核验结果</th><th>测评结果</th><th style="width:8%">优先级</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><strong>索引文件可访问性</strong></td>
+        <td>检查 <code>llms.txt</code> 和 <code>llms-full.txt</code> 是否能够正常访问并读取文本。</td>
+        <td><span class="status done">核验通过</span></td>
+        <td>
+          <div class="result-block"><span class="result-label">文件均可正常访问：</span>两个文件均返回 HTTP 200，响应内容为纯文本。相对 6 月基线，根目录 llms 入口已补齐。</div>
+        </td>
+        <td>P0</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><strong>HTML 与 Markdown 对应关系</strong></td>
+        <td>检查目录条目是否同时提供 HTML 页面地址及对应的 Markdown 文件路径。</td>
+        <td><span class="status done">核验通过</span></td>
+        <td>
+          <div class="result-block"><span class="result-label">路径对应关系完整：</span>约 26,147 条条目同时包含 HTML 页面地址和 Markdown 路径，占比约 99.96%。该结果反映目录映射情况，不代表目标 Markdown 文件均可正常读取。</div>
+        </td>
+        <td>P0</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><strong>目录结构与内容质量</strong></td>
+        <td>检查目录分类、标题和条目说明是否有助于 AI 判断内容主题与相关性。</td>
+        <td><span class="status risk">发现风险</span></td>
+        <td>
+          <div class="result-block"><span class="result-label">已具备分层/分册索引能力：</span>相对 6 月「完全缺失」，10 月已出现根目录与子产品 <code>llms.txt</code> 等结构化入口。</div>
+          <div class="result-block"><span class="result-label risk">主题分类仍不够清晰：</span>目录仍大量以连续清单形式排列，部分说明较笼统或含转义符号，不利于快速识别内容重点。</div>
+        </td>
+        <td>P1</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td><strong>文件体量与读取效率</strong></td>
+        <td>检查目录文件体量，以及在指定测试条件下能否被 AI 工具完整读取。</td>
+        <td><span class="status risk">发现风险</span></td>
+        <td>
+          <div class="result-block"><span class="result-label risk">文件体量较大：</span><code>llms.txt</code> 和 <code>llms-full.txt</code> 均超过 12&nbsp;MB，目录包含约 2.6 万条条目。</div>
+          <div class="result-block"><span class="result-label risk">实测存在读取截断：</span>本次测试中，指定 AI 工具未能完整读取目录文件，返回内容出现截断，可能影响目录信息的完整获取和后续选页。</div>
+        </td>
+        <td>P1</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="panel" id="reach-pages">
+  <div class="checklist-head">
+    <h4>页面可访问性 Checklist</h4>
+  </div>
+  <table class="v-mid">
+    <thead><tr><th style="width:4%">#</th><th style="width:14%">检查维度</th><th style="width:24%">核验内容</th><th style="width:12%">核验结果</th><th>测评结果</th><th style="width:8%">优先级</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><strong>重要入口可访问性</strong></td>
+        <td>抽查开发者、技术支持、文档、论坛和下载等当前有效的重要入口，确认页面能正常访问，并展示符合预期的内容。</td>
+        <td><span class="status risk">发现风险</span></td>
+        <td>
+          <div class="result-block"><span class="result-label">重要入口正常访问：</span><code>/developer</code>、<code>/support</code>、<code>/document</code>、<code>/forum</code>、<code>/developer/download</code> 均返回 HTTP 200，页面内容符合入口预期。</div>
+          <div class="result-block"><span class="result-label risk">部分中文入口正文提取较少：</span><code>/cn/developer/inference</code> 等页面虽返回 HTTP 200，但自动化工具提取到的正文较少，可能影响 AI Agent 获取信息；具体原因尚待进一步核验。</div>
+        </td>
+        <td>P0</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section id="readable" class="layer">
+  <h3>02｜可读 · 完整可读的内容</h3>
+  <div class="panel" id="readable-md">
+  <div class="checklist-head">
+    <h4>Markdown 核验 Checklist</h4>
+  </div>
+  <table class="v-mid">
+    <thead><tr><th style="width:4%">#</th><th style="width:14%">检查维度</th><th style="width:24%">核验内容</th><th style="width:12%">核验结果</th><th>测评结果</th><th style="width:8%">优先级</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><strong>Markdown 文件可访问性</strong></td>
+        <td>抽查目录指向的 Markdown 文件，检查能否正常访问并获取实际正文。</td>
+        <td><span class="status risk">发现风险</span></td>
+        <td>
+          <div class="result-block"><span class="result-label risk">抽样文件未能读取到正文：</span>10 个样本均返回 HTTP 200，但响应内容为安全验证或 Cookie 验证页面，而非预期的 Markdown 正文。当前自动化访问方式无法获取这些文件的实际内容，可能影响 AI Agent 读取和利用相关技术资料。</div>
+        </td>
+        <td>P0</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><strong>Markdown 正文有效性</strong></td>
+        <td>检查正文内容是否完整、可读，格式是否符合预期（是否为真实 Markdown，而非同壳 SPA / 渲染页）。</td>
+        <td><span class="status risk">发现风险</span></td>
+        <td>
+          <div class="result-block"><span class="result-label risk">.md 名实不符（读不顺 · HTML 适配不足）：</span>以「什么是 Ascend C」为例，将地址改为 <code>.md</code> 仍走 Nuxt SPA，实测出现 <code>[object Object]</code>、锚文本丢失——扩展名不能当作「模型友好正文」依据。</div>
+          <div class="result-block"><span class="result-label risk">双轨缺失、默认落渲染壳：</span>人读渲染页约 224 KB；更纯净的 <code>/doc_center/source/</code>（约 4–11 KB）未在机器入口稳定声明，Agent 默认仍剥高噪声 HTML 壳层。</div>
+        </td>
+        <td>P0</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="panel" id="readable-render">
+  <div class="checklist-head">
+    <h4>页面渲染 / 抓取 Checklist</h4>
+  </div>
+  <table class="v-mid">
+    <thead><tr><th style="width:4%">#</th><th style="width:14%">检查维度</th><th style="width:24%">核验内容</th><th style="width:12%">核验结果</th><th>测评结果</th><th style="width:8%">优先级</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><strong>正文可提取性</strong></td>
+        <td>检查页面正文能否被自动化工具提取，判断原始 HTML 是否包含有效正文，以及是否依赖 JavaScript 渲染才能获取内容。</td>
+        <td><span class="status risk">发现风险</span></td>
+        <td>
+          <div class="result-block"><span class="result-label">部分页面正文可正常提取：</span><code>/cann</code>、<code>/document/caselibrary</code> 及案例详情页均可提取有效文本。</div>
+          <div class="result-block"><span class="result-label risk">部分技术文档正文读取受阻：</span><code>/document/detail/</code> 相关页面在未执行 JavaScript 的请求中返回安全验证页，而非文档正文，无法据此判断正常浏览器渲染后的实际表现。</div>
+        </td>
+        <td>P0</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><strong>图片信息可读性</strong></td>
+        <td>检查正文图片是否提供 <code>alt</code>、图注等文本说明，以及重要图示所表达的信息是否能通过文本获取。</td>
+        <td><span class="status risk">发现风险</span></td>
+        <td>
+          <div class="result-block"><span class="result-label risk">栏目页图片说明不足：</span>抽查 <code>/cann</code>、<code>/document/caselibrary</code> 及案例详情页时，多数 <code>&lt;img&gt;</code> 缺少 <code>alt</code>，未见 <code>figure</code>/<code>figcaption</code>。</div>
+          <div class="result-block"><span class="result-label risk">文档图意未入库（读不懂·图片语义）：</span>以「什么是 Ascend C」为例，6 张信息型 PNG 在转文本管道中完全不进入 chunk；HTML 多见 <code>zh-cn_image_xxx.png</code> 文件名，无 alt 与图意转写，问「API 有几层」时知识库无对应内容。</div>
+        </td>
+        <td>P0</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><strong>颜色语义可读性</strong></td>
+        <td>检查颜色、图标所表达的状态或提示级别（如注意 / 警告）是否有可读取文字，而非仅依赖视觉表现。</td>
+        <td><span class="status risk">发现风险</span></td>
+        <td>
+          <div class="result-block"><span class="result-label">提示正文可抓（读不懂·Note）：</span>环境准备等页 <code>notebody</code> 正文可入库。</div>
+          <div class="result-block"><span class="result-label risk">颜色 / 图标级别无文本：</span>「注意 / 警告」等类型主要靠彩色图标 PNG 区分，无文本标签；问「有哪些注意事项」时难以按级别过滤检索。</div>
+        </td>
+        <td>P1</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td><strong>表格结构可读性</strong></td>
+        <td>检查表格是否具有明确的标题和表头、表头与数据对应关系是否清晰，以及单元格内容能否被提取。</td>
+        <td><span class="status risk">发现风险</span></td>
+        <td>
+          <div class="result-block"><span class="result-label">抽样表格的基本内容可读取：</span>部分案例详情页使用 <code>thead</code>/<code>th</code>，单元格为文本，行列信息可提取。</div>
+          <div class="result-block"><span class="result-label risk">规格表语义劣化（读不懂·表格语义）：</span>以 Add 自定义算子「表 1 设计规格」为例，列布局混杂、空单元格与伪多行并存，接口列表与 OpType 从属易在 chunk 中断开；表题未写入 <code>caption</code>，难以锚定「表 1 含哪些 API」。</div>
+        </td>
+        <td>P1</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td><strong>代码块语义可读性</strong></td>
+        <td>检查代码块是否可提取纯净源码，是否混入行号，以及语言类型是否可识别。</td>
+        <td><span class="status risk">发现风险</span></td>
+        <td>
+          <div class="result-block"><span class="result-label">代码主体部分可抓（读不懂·代码语义）：</span>HelloWorld 等页代码文本可获取，属「部分可抓」。</div>
+          <div class="result-block"><span class="result-label risk">行号与源码混杂、语言未标注：</span><code>highlighttable</code> 将行号写入单元格，入库后出现 <code>1 2 3…</code> 前缀，复制后不能直接编译；缺少 <code>language-xxx</code>，bash / C++ / CMake 易混淆，HTML 实体未解码。</div>
+        </td>
+        <td>P1</td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td><strong>交互隐藏内容可读性</strong></td>
+        <td>检查 Tab、折叠等交互区内正文是否进入默认抓取结果，而非仅标题可见。</td>
+        <td><span class="status risk">发现风险</span></td>
+        <td>
+          <div class="result-block"><span class="result-label risk">非激活 Tab 未入库（读不懂·Tab）：</span>CANN 软件下载页多轴 Tab 选型，非激活面板可被 <code>display:none</code> 隐藏，默认抓取往往只入库当前 Tab 组合；问「Atlas 800 离线安装」时可能仅有在线安装说明。</div>
+          <div class="result-block"><span class="result-label risk">折叠区步骤丢失（读不懂·折叠）：</span>「我不知道硬件信息」默认收起，区内硬件确认步骤可能仅剩标题；与 Tab 叠加后，「不知硬件 → 如何选包」链路对 RAG 不可见。</div>
+        </td>
+        <td>P0</td>
+      </tr>
+      <tr>
+        <td>7</td>
+        <td><strong>轮播 / 运营位内容可读性</strong></td>
+        <td>检查首页等多帧运营位文案是否可抓，以及是否适合作为可引用知识入库。</td>
+        <td><span class="status risk">发现风险</span></td>
+        <td>
+          <div class="result-block"><span class="result-label">多帧标题部分可抓（读不懂·轮播）：</span>首页轮播源码可见「智能助手上线」「HCCL 通信库创新大赛」等帧文案，好于「只入库当前帧」。</div>
+          <div class="result-block"><span class="result-label risk">营销噪声不宜当规格知识：</span>帧内容偏活动/招募/认证引流；若整站首页进知识库，模型易把口号答成官方能力说明；图意与 CANN 文档落地页绑定弱。</div>
+        </td>
+        <td>P2</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section id="understand" class="layer">
+  <h3>03｜可理解 · 明确的内容语义</h3>
+  <div class="panel" id="understand-semantic">
+  <div class="checklist-head">
+    <h4>语义与结构化 Checklist</h4>
+  </div>
+  <table class="v-mid">
+    <thead><tr><th style="width:4%">#</th><th style="width:14%">检查维度</th><th style="width:24%">核验内容</th><th style="width:12%">核验结果</th><th>测评结果</th><th style="width:8%">优先级</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><strong>链接与热区可识别性</strong></td>
+        <td>检查链接文本是否能说明目标页面或用途；图片热区（<code>usemap</code>/<code>area</code>）是否另有可读文本链接，避免跳转语义只存在于像素坐标或占位符。</td>
+        <td><span class="status risk">发现风险</span></td>
+        <td>
+          <div class="result-block"><span class="result-label">多数栏目链接尚可读：</span>抽查可读取页面中，多数链接使用栏目名、产品名或文档标题。</div>
+          <div class="result-block"><span class="result-label risk">占位符锚文本劣化（读不懂·链接语义）：</span>HelloWorld 页出现「完整样例请参考 LINK」——<code>href</code> 指向 GitCode，chunk 中仅保留「LINK」，问「样例仓库地址」时无法检索目标语义。</div>
+          <div class="result-block"><span class="result-label risk">泛化锚文本仍存在：</span>「查看详情」「了解更多」及无名称图标链接增加目标判断难度。</div>
+          <div class="result-block"><span class="result-label risk">热区链接完全丢失（读不懂·热区）：</span>以「什么是 Ascend C」成长地图为例，全页约 28 个热区；<code>map</code>/<code>area</code> 不进入 chunk，问「学习顺序 / 环境准备在第几阶段」时知识库无对应链接文本。</div>
+        </td>
+        <td>P0</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><strong>结构化数据（JSON-LD）</strong></td>
+        <td>检查首包 HTML 是否包含 <code>application/ld+json</code>，字段是否完整，以及是否与页面可见信息一致。</td>
+        <td><span class="status risk">发现风险</span></td>
+        <td>
+          <div class="result-block"><span class="result-label">部分可读取页面已输出 JSON-LD：</span>首页为 <code>WebSite</code>；<code>/cann</code>、<code>/document/caselibrary</code> 等为 <code>WebPage</code>，且出现在首包 HTML 中。</div>
+          <div class="result-block"><span class="result-label risk">字段完整性与可用性不足：</span>抽样栏目页 <code>name</code> 写成 URL；缺 <code>headline</code>、<code>description</code>、日期与作者等常见字段。</div>
+          <div class="result-block"><span class="result-label">技术文档页暂无法充分核验：</span><code>/document/detail/</code> 自动化请求常返回验证页，未能确认其 JSON-LD。</div>
+        </td>
+        <td>P1</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<h2 class="block-title">AI 回答中的品牌与可信</h2>
+
+<section id="effect" class="layer">
+  <div class="panel" id="effect-source">
+  <div class="checklist-head">
+    <h4>官方信源链路实测（Ascend C）</h4>
+  </div>
+  <table class="v-mid">
+    <thead><tr><th style="width:4%">#</th><th style="width:16%">检查维度</th><th style="width:22%">核验内容</th><th style="width:12%">核验结果</th><th>测评结果</th><th style="width:8%">优先级</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><strong>检索阶段 · 社区官方占比</strong></td>
+        <td>联网问答检索 URL 池中，<code>hiascend.com</code> 社区官方 URL 占比（非知识库 chunk 召回）。</td>
+        <td><span class="status risk">发现风险</span></td>
+        <td>
+          <div class="result-block"><span class="result-label risk">社区官方未过半：</span>Claude <strong>21%</strong>（19 条中 4 条）、DeepSeek <strong>33%</strong>（27 条中 9 条）；千问界面未单独显示检索链接。</div>
+          <div class="result-block"><span class="result-label risk">非社区信源占主导：</span>Claude 第三方教程 <strong>79%</strong>；DeepSeek 华为系其他渠道合计约 <strong>56%</strong>——与「基于官方资料」约束错位。</div>
+        </td>
+        <td>P0</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><strong>生成阶段 · 社区官方引用占比</strong></td>
+        <td>回答段末 URL / 脚注中，昇腾社区官方引用占比。</td>
+        <td><span class="status risk">发现风险</span></td>
+        <td>
+          <div class="result-block"><span class="result-label risk">社区主信源识别偏弱：</span>Claude <strong>35%</strong>、DeepSeek <strong>22%</strong>、千问 <strong>67%</strong>；「基于官方资料」未能稳定拉高 <code>hiascend.com</code> 选材优先级。</div>
+          <div class="result-block"><span class="result-label risk">「官方」归类失准：</span>Claude 以第三方为主体（<strong>65%</strong>）；DeepSeek 以华为系非社区渠道为主体（约 <strong>69%</strong>）；三模型溯源构成差异大。</div>
+        </td>
+        <td>P0</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><strong>版本滞后 &amp; 多版本并存</strong></td>
+        <td>以 CANN 社区版 <strong>9.0.0（900）</strong> 为基准，核验检索池与生成溯源中的版本分布。</td>
+        <td><span class="status risk">发现风险</span></td>
+        <td>
+          <div class="result-block"><span class="result-label risk">未见主推版本：</span>三模型检索与生成均未引用 <code>…/900/…</code> 社区版路径；多见 8.x / 850 / 83RC1 / 900beta / 9.1β 等旧版或预览版。</div>
+          <div class="result-block"><span class="result-label risk">多版本并存：</span>不同世代命令与 API 混在同一回答，按旧路径操作易与 9.0.0 产品面脱节。与下方「引用页面适用率」中「版本偏低」结论同向。</div>
+        </td>
+        <td>P0</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="panel" id="effect-kpi">
+  <div class="checklist-head">
+    <h4>品牌提及与官网引用</h4>
+  </div>
+  <table class="v-mid">
+    <thead><tr><th style="width:4%">#</th><th style="width:16%">检查维度</th><th style="width:22%">核验内容</th><th style="width:12%">核验结果</th><th>测评结果</th><th style="width:8%">优先级</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><strong>官网引用率</strong></td>
+        <td>回答是否给出昇腾官网链接。</td>
+        <td><span class="status risk">发现风险</span></td>
+        <td>
+          <div class="result-block"><span class="result-label risk">55%（11/20）：</span>DeepSeek 9/10、Claude 2/10。品牌提及与官网引用并不一致：提到昇腾，不等于给出可核验的官方链接。</div>
+        </td>
+        <td>P0</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><strong>引用页面适用率</strong></td>
+        <td>引用页是否与问题匹配（版本、语种等），非回答事实准确率。</td>
+        <td><span class="status risk">发现风险</span></td>
+        <td>
+          <div class="result-block"><span class="result-label risk">73.7%（42/57）：</span>问题页 15 条（版本偏低 13、多语言 2）；另 6 条 <code>/doc_center/</code> 因 robots 单独记录。</div>
+        </td>
+        <td>P0</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><strong>品牌提及率</strong></td>
+        <td>回答是否提到「昇腾」或「昇腾社区」。</td>
+        <td><span class="status done">核验通过</span></td>
+        <td>
+          <div class="result-block"><span class="result-label">100%（20/20）：</span>Q10 提问已含「昇腾」，只反映指定问题下的可见性，不能单独证明开放式选型中会被主动推荐。</div>
+        </td>
+        <td>P1</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td><strong>官网链接可访问率</strong></td>
+        <td>已引用的官网链接是否可正常打开（排除验证页/错误页）。</td>
+        <td><span class="status done">核验通过</span></td>
+        <td>
+          <div class="result-block"><span class="result-label">100%（14/14）：</span>仅代表已核验样本，不代表全部官网引用均可访问。</div>
+        </td>
+        <td>P1</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td><strong>引用支持率</strong></td>
+        <td>引用内容是否支撑回答中的相关表述。</td>
+        <td><span class="status done">核验通过</span></td>
+        <td>
+          <div class="result-block"><span class="result-label">100%（14/14）：</span>不代表所有回答事实均准确。</div>
+        </td>
+        <td>P1</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  
+</section>
+
+<h2 class="block-title">附录</h2>
+<section class="layer">
+  <div class="panel" id="appendix-keywords">
+  <div class="checklist-head">
+    <h4>关键词选择</h4>
+  </div>
+  <p class="checklist-note">以下为核心测试关键词及其类型，用于设计固定问题集并观察 AI 回答中的品牌提及、官方引用与事实表现。</p>
+  <table class="v-mid">
+    <thead>
+      <tr>
+        <th style="width:6%">序号</th>
+        <th style="width:18%">核心关键词</th>
+        <th style="width:16%">关键词类型</th>
+        <th>选择原因</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td><strong>昇腾</strong></td><td>品牌词</td><td>测试 AI 是否能够识别和提及昇腾品牌</td></tr>
+      <tr><td>2</td><td><strong>昇腾社区</strong></td><td>品牌词</td><td>测试 AI 对社区定位、开发者资源的认知</td></tr>
+      <tr><td>3</td><td><strong>昇腾处理器</strong></td><td>产品与技术词</td><td>测试硬件产品相关信息的提及与准确性</td></tr>
+      <tr><td>4</td><td><strong>CANN</strong></td><td>技术生态词</td><td>测试对昇腾软件栈及开发生态的认知</td></tr>
+      <tr><td>5</td><td><strong>昇腾开发文档</strong></td><td>开发资源词</td><td>测试官方技术文档的发现与引用情况</td></tr>
+      <tr><td>6</td><td><strong>昇腾模型迁移</strong></td><td>开发任务词</td><td>测试实际开发任务中的解决方案与官方资源引用</td></tr>
+      <tr><td>7</td><td><strong>昇腾应用案例</strong></td><td>应用场景词</td><td>测试真实应用案例的发现与事实准确性</td></tr>
+      <tr><td>8</td><td><strong>AI 计算平台选型</strong></td><td>选型决策词</td><td>测试用户未指定品牌时，昇腾能否自然进入 AI 的回答</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="panel" id="appendix-testset">
+  <div class="checklist-head">
+    <h4>测试集</h4>
+  </div>
+  <p class="checklist-note">昇腾社区 GEO 摸底测试题（10 题）。用于观察 AI 回答中的品牌提及、官网引用与事实核验表现。</p>
+  <a class="dl" href="exports/ascend_geo_recon_testset_1028.xlsx" download="昇腾社区_GEO摸底测试集_1028.xlsx">下载记录表（xlsx）</a>
+  <table class="v-mid">
+    <thead>
+      <tr>
+        <th style="width:6%">编号</th>
+        <th style="width:32%">测试问题</th>
+        <th style="width:18%">主要测试目的</th>
+        <th>重点核验内容</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Q1</td><td>昇腾是什么？它主要面向哪些计算场景？</td><td>品牌认知</td><td>是否提及昇腾；品牌定位与应用场景是否准确</td></tr>
+      <tr><td>Q2</td><td>昇腾社区是什么？开发者可以在社区获取哪些资源？</td><td>社区认知</td><td>是否提及昇腾社区；是否引用官网；资源类型是否属实</td></tr>
+      <tr><td>Q3</td><td>昇腾处理器主要用于哪些 AI 计算场景？</td><td>产品认知</td><td>产品名称、用途及场景描述是否准确</td></tr>
+      <tr><td>Q4</td><td>CANN 是什么？它在昇腾 AI 计算软件体系中发挥什么作用？</td><td>技术认知</td><td>是否正确解释 CANN；是否引用官方技术资料</td></tr>
+      <tr><td>Q5</td><td>如果开发者需要查找昇腾相关的开发文档，应该去哪里查找？</td><td>官网引用</td><td>是否发现并引用昇腾官网的相关文档入口；链接是否有效</td></tr>
+      <tr><td>Q6</td><td>开发者如何查找昇腾平台上的模型迁移指南或相关工具？</td><td>官网引用、事实核验</td><td>是否提供真实的官方文档或工具入口；描述是否与页面内容一致</td></tr>
+      <tr><td>Q7</td><td>在昇腾平台上进行算子开发，可以从哪些官方文档或开发资源入手？</td><td>官网引用、事实核验</td><td>是否引用相关官方开发资料；资源名称和用途是否准确</td></tr>
+      <tr><td>Q8</td><td>昇腾社区有哪些公开的应用案例？请列举具体案例并提供来源。</td><td>品牌提及、官网引用、事实核验</td><td>案例是否真实；是否有官方来源；案例描述是否有依据</td></tr>
+      <tr><td>Q9</td><td>如果开发者要了解昇腾平台的产品、软件及开发资源，应优先查阅哪些官方页面？</td><td>官网引用</td><td>是否找到对应的官方入口；链接和页面内容是否匹配</td></tr>
+      <tr><td>Q10</td><td>选择 AI 计算平台时，应该比较哪些关键因素？昇腾可以在哪些方面纳入评估？</td><td>自然品牌可见性、事实核验</td><td>在未预先指定品牌的情况下是否提及昇腾；相关能力描述是否有依据</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+<footer>文档版本：v0.3｜定位：初步 GEO 基线摸底｜样本：10 题 × Claude / DeepSeek（20 条）｜A/B 为技术检查、C 为回答测试，证据分开解读｜样本结论不外推为全平台总体表现。</footer>
+    </section>
+  </main>
+</div>
+
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js?v=20261105a"></script>
+<script>
+(function () {
+  var btn = document.getElementById('btn-export-pdf');
+  if (!btn) return;
+  btn.addEventListener('click', function () { window.print(); });
+})();
+</script>
+</body>
+</html>

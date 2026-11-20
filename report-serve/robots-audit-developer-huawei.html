@@ -622,70 +622,23 @@ robots-txt-audit report template placeholders:
         </div>
       </div>
 
-      <h3 id="probes">关联探测（同日 GET）</h3>
-      <table class="probe-table">
-        <thead>
-          <tr>
-            <th>探测项</th>
-            <th>结果</th>
-            <th>解读</th>
-          </tr>
-        </thead>
-        <tbody>
-
-          <tr>
-            <td><code>/robots.txt</code></td>
-            <td>200 · 1070 B</td>
-            <td>入口存在，规则可被读取</td>
-          </tr>
-          <tr>
-            <td><code>Allow</code> 规则</td>
-            <td>0 条</td>
-            <td>无 <code>Allow:</code>；仅默认放行 + 1 条 Disallow</td>
-          </tr>
-          <tr>
-            <td><code>Sitemap</code> 声明</td>
-            <td>13 条</td>
-            <td>均为绝对 URL（字段名为小写 <code>sitemap:</code>）</td>
-          </tr>
-          <tr>
-            <td><code>/llms.txt</code></td>
-            <td>200</td>
-            <td>索引可访问，但 robots.txt 未声明 <code>LLMs.txt:</code></td>
-          </tr>
-          <tr>
-            <td><code>/home/sitemap.xml</code></td>
-            <td>200</td>
-            <td>已在 robots 中声明的候选之一可访问（不评价清单质量）</td>
-          </tr>
-          <tr>
-            <td><code>Disallow</code> 搜索路径</td>
-            <td>1 条</td>
-            <td><code>/consumer/cn/doc/search?*</code> 属检索结果噪声面，倾向保留</td>
-          </tr>
-
-        </tbody>
-      </table>
-
-      <h3 id="problems">问题列表</h3>
+      <h3 id="problems">问题判定</h3>
       <ol class="bg-list">
-
         <li>
           <span class="sev sev-p1">P1</span>
-          <strong>未声明任何 Allow 规则。</strong>
-          仅有 Content-Signal 与 1 条 Disallow，放行范围未显式写出。
+          <strong>没有写放行范围。</strong>
+          robots 能打开（200）；<code>Allow</code> 0 条，<code>Disallow</code> 1 条。
         </li>
         <li>
           <span class="sev sev-p1">P1</span>
-          <strong>未声明 LLMs.txt 路径。</strong>
-          <code>/llms.txt</code> 已返回 200，但 robots 中无 <code>LLMs.txt:</code> 行。
+          <strong>未声明 llms.txt。</strong>
+          <code>/llms.txt</code> 实测 200，但 robots 里没有 <code>LLMs.txt:</code> 行。
         </li>
         <li>
           <span class="sev sev-p2">P2</span>
           <strong>Sitemap 字段名小写。</strong>
-          现为 <code>sitemap:</code>；建议统一为 <code>Sitemap:</code>，与常见写法及原则示例一致。
+          已有 13 条绝对地址，字段名是 <code>sitemap:</code>，建议改成 <code>Sitemap:</code>。
         </li>
-
       </ol>
     </section>
 

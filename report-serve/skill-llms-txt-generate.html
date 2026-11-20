@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>llms.txt 配置诊断 · Skill · AI 亲和原则</title>
+  <title>部署 llms.txt 索引目录 · Skill · AI 亲和原则</title>
   <link rel="stylesheet" href="assets/css/style.css">
 <style>
   .topbar {
@@ -117,12 +117,21 @@
   }
   .bg-list li + li { margin-top: 10px; }
   .bg-list strong { font-weight: 650; }
-  .section ul.plain-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+  #overview > h2,
+  #overview .page-lead,
+  #usage > h2 {
+    text-align: left;
   }
-  .section ul.plain-list li + li { margin-top: 10px; }
+  #overview .bg-list,
+  #usage .bg-list {
+    margin-left: 0;
+    padding-left: 0;
+    list-style-position: inside;
+    text-align: left;
+  }
+  #overview .bg-list {
+    margin-bottom: var(--space-stack, 16px);
+  }
   .probe-table {
     width: 100%;
     border-collapse: separate;
@@ -136,7 +145,7 @@
     border: 1px solid #e8eef5;
     border-top: none;
     border-left: none;
-    vertical-align: top;
+    vertical-align: middle;
     padding: 10px 12px;
     text-align: left;
   }
@@ -145,6 +154,27 @@
   .probe-table td:first-child { border-left: 1px solid #e8eef5; }
   .probe-table th { background: #f5f6f8; font-weight: 650; width: 22%; }
   .probe-table code { font-size: 12px; }
+  #usage .probe-table {
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+    border-radius: 8px;
+    border: 1px solid #e8eef5;
+  }
+  #usage .probe-table th,
+  #usage .probe-table td {
+    border-right: 1px solid #e8eef5;
+    border-bottom: 1px solid #e8eef5;
+    border-top: none;
+    border-left: none;
+  }
+  #usage .probe-table th:last-child,
+  #usage .probe-table td:last-child { border-right: none; }
+  #usage .probe-table tbody tr:last-child > th,
+  #usage .probe-table tbody tr:last-child > td { border-bottom: none; }
+  #usage .probe-table thead tr:first-child > th { border-top: none; }
+  #usage .probe-table th:first-child,
+  #usage .probe-table td:first-child { border-left: none; }
   .skill-detail-actions {
     display: flex;
     flex-wrap: wrap;
@@ -180,17 +210,90 @@
     opacity: 0.92;
     color: #fff;
   }
-  .crumb {
-    margin: 0 0 8px;
+  .skill-demo-shot {
+    margin: var(--space-stack, 16px) 0 0;
+    padding: 0;
+    border: 1px solid #e8eef5;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08), 0 2px 6px rgba(15, 23, 42, 0.06);
+  }
+  .skill-demo-shot a {
+    display: block;
+    line-height: 0;
+  }
+  .skill-demo-shot img {
+    display: block;
+    width: 100%;
+    height: 561px;
+    object-fit: cover;
+    object-position: top center;
+  }
+  body.inner-page[data-page="skill-detail"] .main-content > .crumb {
+    position: sticky;
+    top: var(--header-height, 56px);
+    z-index: 150;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    box-sizing: border-box;
+    padding: 10px max(clamp(16px, 2.5vw, 24px), calc((100% - var(--content-max-width, 1000px)) / 2));
     font-size: 13px;
     line-height: 20px;
     color: var(--color-text-secondary);
+    background: #fff;
+    border-bottom: 1px solid transparent;
+  }
+  .crumb.is-stuck {
+    border-bottom-color: #e8eef5;
   }
   .crumb a {
     color: var(--color-primary);
     text-decoration: none;
   }
   .crumb a:hover { text-decoration: underline; }
+  .prompt-card {
+    margin: 12px 0 16px;
+    padding: 14px 16px;
+    background: #f5f6f8;
+    border: 1px solid #e8eef5;
+    border-radius: 8px;
+    box-sizing: border-box;
+  }
+  .prompt-card-label {
+    margin: 0 0 8px;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 18px;
+    color: var(--color-text-secondary);
+  }
+  .prompt-card ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+  }
+  .prompt-card li {
+    margin: 0;
+    font-size: 14px;
+    line-height: 22px;
+    color: var(--color-text);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  .prompt-card .slash-tag {
+    display: inline-block;
+    margin-right: 6px;
+    padding: 0 6px;
+    border-radius: 4px;
+    background: #ffedd5;
+    color: #9a3412;
+    font-size: 13px;
+    font-weight: 650;
+    line-height: 20px;
+    vertical-align: baseline;
+  }
 </style>
 </head>
 <body class="inner-page" data-page="skill-detail" data-no-surface-tabs>
@@ -211,101 +314,61 @@
 
 <div class="page-wrapper">
   <main class="main-content">
+    <p class="crumb"><a href="skills.html">Skill 目录</a> / 部署 llms.txt 索引目录</p>
     <div class="page-header">
-      <p class="crumb"><a href="skills.html">Skill 目录</a> / llms.txt 配置诊断</p>
-      <h1>llms.txt 配置诊断</h1>
+      <h1>部署 llms.txt 索引目录</h1>
     </div>
     <p class="page-meta">
-      Skill ID：<code>llms-txt-generate</code>
-      · 依据：<a href="principles-llms.html">llms.txt 索引入口可发现</a>
+      Skill ID：<code>/llms-txt-generate</code>
     </p>
 
     <section class="section" id="overview">
-      <h2>核心命题</h2>
-      <p class="page-lead"><code>llms.txt</code> 是给大模型 / Agent 的精选知识索引入口。本 Skill 优先基于抓取 URL 表（如 Screaming Frog CSV）分析结构、筛选有价值页面；有表时对 Sitemap 做轻量覆盖核对，无表时以 Sitemap 为弱输入。按 llmstxt.org 格式生成优化稿，并输出与 robots 诊断同构的 HTML 报告（可下载 llms.txt、导出 PDF）。</p>
+      <h2>这个 Skill 做什么</h2>
+      <p class="page-lead">这是一份用于检查与优化 <code>llms.txt</code> 的 Skill 说明。它适合在站点需要面向大模型 / Agent 提供精选知识入口时使用：先诊断现有入口与候选页面，再输出报告，并给出一份建议版 <code>llms.txt</code>。依据见<a href="principles-llms.html">部署 llms.txt 索引目录</a>。</p>
+      <ol class="bg-list">
+        <li>诊断：检查 <code>/llms.txt</code> 入口是否可发现，现有精选是否合理。</li>
+        <li>报告：生成独立 HTML 报告，说明当前入口、筛选依据与数据缺口；顶栏可导出 PDF，没有站点侧栏。</li>
+        <li>优化稿：在报告中附建议版 <code>llms.txt</code>，顶栏可单独下载。</li>
+      </ol>
       <div class="skill-detail-actions">
         <a class="is-primary" href="exports/llms-txt-generate.zip" download="llms-txt-generate.zip">下载 Skill</a>
         <a href="llms-audit-huaweicloud.html">查看示例报告</a>
       </div>
-    </section>
-
-    <section class="section" id="scope">
-      <h2>检查与生成范围</h2>
-      <p class="page-lead">输入为站点 URL + 抓取表（优先）和/或 Sitemap；输出为精选 <code>llms.txt</code> 与诊断报告。不编造链接；不把 SEO 排名当作 AI 价值；不声称已读完全部正文；不把 Sitemap 全量写入 llms.txt。</p>
-      <table class="probe-table">
-        <thead>
-          <tr>
-            <th>项</th>
-            <th>要求</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>有抓取表</td>
-            <td>CSV 为主输入；Sitemap 仅轻量核对（可达、规模、多 host、与表的覆盖缺口）</td>
-          </tr>
-          <tr>
-            <td>无抓取表</td>
-            <td>Sitemap 作弱输入：路径簇抽样 + 尽量补 Title；报告标明质量受限</td>
-          </tr>
-          <tr>
-            <td>结构分析</td>
-            <td>结合 URL、标题、H1、Description、状态码与内链归纳分类；信息不足标待核验</td>
-          </tr>
-          <tr>
-            <td>页面筛选</td>
-            <td>保留有主题与信息价值的页；排除失效、无价值重复、纯导航壳</td>
-          </tr>
-          <tr>
-            <td>重定向</td>
-            <td>核验并优先使用最终有效 URL</td>
-          </tr>
-          <tr>
-            <td>llms.txt 格式</td>
-            <td><code>#</code> 站名、<code>&gt;</code> 范围说明、<code>##</code> 分类、<code>- [标题](URL): 说明</code></td>
-          </tr>
-          <tr>
-            <td>报告交付</td>
-            <td>Part1（含 Sitemap 小节）+ Part2 优化稿；顶栏可下载 llms.txt 与导出 PDF</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-
-    <section class="section" id="workflow">
-      <h2>工作流</h2>
-      <ol class="bg-list">
-        <li><strong>输入</strong>：站点根 URL；抓取 CSV（优先）和/或 Sitemap；可选收录范围与站点名。</li>
-        <li><strong>模式</strong>：有表 → 清洗 CSV + Sitemap 轻量核对；无表 → Sitemap 弱输入（抽样，不灌全量）。</li>
-        <li><strong>分类与精选</strong>：归纳云产品 / 文档 / 解决方案 / 开发者 / 帮助中心等；每类代表页。</li>
-        <li><strong>分册判断</strong>：Agent 按体量 / 多 host / 多语言 / 用户要求自主判断是否分册；需要或用户要求时给出分册方案。</li>
-        <li><strong>生成 llms.txt</strong>：仅写入核验过的绝对 URL；不足处标待确认；分册时根文件只链分册。</li>
-        <li><strong>输出 HTML</strong>：填报告模板；双写 <code>docs/</code> 与 <code>report-serve/</code>；提供 txt 下载。</li>
-      </ol>
-    </section>
-
-    <section class="section" id="report">
-      <h2>报告结构</h2>
-      <p class="page-lead">交付为白底 HTML，无侧栏；顶栏品牌 +「下载 llms.txt」+「导出 PDF」，与正文 1000px 栏对齐（同 robots.txt 诊断排版）。</p>
-      <ol class="bg-list">
-        <li><strong>Part1. 输入数据与结构分析</strong>：数据概况、Sitemap 核对/弱输入、内容分类、筛选依据、问题与发现、待确认事项。</li>
-        <li><strong>Part2. llms.txt 的优化建议</strong>：分册判断与方案、建议稿预览、下载优化文件、编写说明。</li>
-      </ol>
+      <figure class="skill-demo-shot">
+        <a href="llms-audit-huaweicloud.html">
+          <img src="assets/skills/llms-audit-huaweicloud-preview.png" alt="华为云 llms.txt 配置诊断示例报告截图" width="998" height="561">
+        </a>
+      </figure>
     </section>
 
     <section class="section" id="usage">
-      <h2>如何使用</h2>
+      <h2>如何触发</h2>
       <ol class="bg-list">
-        <li>下载 Skill 包，解压到 Cursor 的 <code>.cursor/skills/llms-txt-generate/</code>（或个人 skills 目录）。</li>
-        <li>优先准备 Screaming Frog（或同类）导出的 CSV；若暂无表，准备或让 Agent 发现 Sitemap。</li>
-        <li>在对话中调用，例如：按 llms-txt-generate 分析 <code>crawl/export.csv</code>，为 <code>https://www.huaweicloud.com/</code> 生成 llms.txt（有表则轻量核对 Sitemap）。</li>
-        <li>按报告模板输出 HTML，并将优化后的 <code>llms.txt</code> 放到 <code>exports/</code> 供下载。</li>
+        <li>下载 Skill 包，放到 Agent 可读取的 skills 目录（如 <code>.cursor/skills/llms-txt-generate/</code>）。</li>
+        <li>在对话中用 <code>/llms-txt-generate</code> 唤起；斜杠后写站点根 URL。没有地址时，Agent 会先追问。Sitemap 由 Skill 从 robots 或 <code>/sitemap.xml</code> 发现，不必另交。</li>
+      </ol>
+      <table class="probe-table" style="margin-top:12px;margin-bottom:16px;width:100%">
+        <thead><tr><th>字段</th><th>必填</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>斜杠命令</td><td>是</td><td>用 <code>/llms-txt-generate</code> 明确唤起这个 Skill</td></tr>
+          <tr><td>站点根 URL</td><td>是</td><td>如 <code>https://www.huaweicloud.com/</code></td></tr>
+          <tr><td>抓取表 CSV</td><td>可选</td><td>有则精选更准。不交也能跑，改用 Sitemap 弱输入，报告会标明质量受限</td></tr>
+        </tbody>
+      </table>
+      <div class="prompt-card" aria-label="用户输入示例">
+        <p class="prompt-card-label">用户可以这样输入</p>
+        <ul>
+          <li><span class="slash-tag">/llms-txt-generate</span>诊断 https://www.huaweicloud.com/</li>
+        </ul>
+      </div>
+      <ol class="bg-list" start="3">
+        <li>生成结果是一份独立 HTML（Part1 当前分析 + Part2 可下载优化稿）。可对照 <a href="llms-audit-huaweicloud.html">华为云示例</a>。</li>
       </ol>
     </section>
   </main>
 </div>
 
 <script src="assets/js/site-config.js"></script>
-<script src="assets/js/site-init.js?v=20261105a"></script>
+<script src="assets/js/site-init.js?v=20261120c"></script>
 </body>
 </html>
