@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<!--
+  llms-txt-generate report template.
+  Fill placeholders named like SITE_NAME / STATS_ROWS / OPTIMIZED_LLMS_HTML
+  (see SKILL.md). Do not put live placeholder tokens in this comment block.
+-->
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>llms.txt 配置诊断 · 华为开发者 developer.huawei.com · AI 亲和原则</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid var(--color-border);
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin: 0 auto;
+    padding: 0;
+    box-sizing: border-box;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: var(--color-text); text-decoration: none; white-space: nowrap;
+  }
+  .topbar .brand span { color: var(--color-primary); }
+  .topbar .brand:hover { text-decoration: none; opacity: 0.9; }
+  .topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  body.inner-page .page-wrapper { min-height: 100vh; }
+
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: var(--space-stack, 16px);
+  }
+  .page-header > h1 {
+    font-family: var(--font);
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1-weight, 600);
+    line-height: var(--text-h1-lh);
+    letter-spacing: -0.02em;
+    margin: 0;
+    padding-top: var(--space-h1-pad-y, 32px);
+    padding-bottom: var(--space-h1-pad-y, 32px);
+    color: var(--color-text);
+  }
+  .page-meta {
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  .page-meta a { color: var(--color-primary); text-decoration: none; }
+  .page-meta a:hover { text-decoration: underline; }
+
+  body.inner-page.agent-entry-page .page-wrapper {
+    background: #fff;
+    padding-top: var(--header-height, 56px);
+  }
+  body.inner-page.agent-entry-page .main-content {
+    padding-top: 16px;
+    padding-bottom: 32px;
+    padding-left: 0;
+    padding-right: 0;
+    background: #fff;
+    min-height: calc(100vh - var(--header-height, 56px));
+  }
+  body.inner-page.agent-entry-page .main-content > .page-header,
+  body.inner-page.agent-entry-page .main-content > .page-meta,
+  body.inner-page.agent-entry-page .main-content > .section {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page.agent-entry-page .main-content .section > h2 {
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    letter-spacing: -0.01em;
+    margin-top: 0;
+    margin-bottom: var(--space-stack, 16px);
+    padding-top: var(--space-h2-pad-y, 16px);
+    padding-bottom: 0;
+    border-bottom: none;
+    color: var(--color-text);
+  }
+  body.inner-page.agent-entry-page .main-content .section > h3 {
+    font-size: var(--text-h3, 18px);
+    font-weight: var(--text-h3-weight, 650);
+    line-height: var(--text-h3-lh, 28px);
+    letter-spacing: -0.01em;
+    margin-top: 0;
+    margin-bottom: var(--space-stack, 16px);
+    padding-top: var(--space-h3-pad-y, 16px);
+    padding-bottom: var(--space-h3-pad-y, 16px);
+    border-bottom: none;
+    color: var(--color-text);
+  }
+  body.inner-page.agent-entry-page .main-content > .section:first-of-type > h2 {
+    margin-top: 0;
+  }
+  body.inner-page.agent-entry-page .main-content > .section {
+    margin-bottom: 32px;
+  }
+  body.inner-page.agent-entry-page .main-content .section > h3.aj-caption {
+    margin: 0 0 var(--space-stack, 16px);
+    padding-top: 0;
+    padding-bottom: 0;
+    text-align: left;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+  .page-lead {
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  .page-lead a { color: var(--color-primary); text-decoration: none; }
+  .page-lead a:hover { text-decoration: underline; }
+  .bg-list {
+    margin: 0;
+    padding-left: 1.25em;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text);
+  }
+  .bg-list li + li { margin-top: 10px; }
+  .bg-list strong { font-weight: 650; }
+  .sev {
+    display: inline-block;
+    margin-right: 6px;
+    padding: 1px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 18px;
+    vertical-align: 1px;
+  }
+  .sev-p0 { background: #fee2e2; color: #991b1b; }
+  .sev-p1 { background: #ffedd5; color: #9a3412; }
+  .sev-p2 { background: #fef9c3; color: #854d0e; }
+  .sev-ok { background: #dcfce7; color: #166534; }
+  .sev-ask { background: #e0e7ff; color: #3730a3; }
+
+  .file-sample {
+    margin: 0 0 var(--space-stack, 16px);
+    padding: 0;
+    background: #1e1e1e;
+    border: 1px solid #111;
+    border-radius: 16px;
+    overflow: hidden;
+    color-scheme: dark;
+    scrollbar-color: #5c5c5c #1e1e1e;
+  }
+  .file-sample figcaption {
+    margin: 0;
+    padding: 12px 14px;
+    font-size: 14px;
+    font-weight: 650;
+    line-height: 22px;
+    color: #a3a3a3;
+    border-bottom: 1px solid #333;
+  }
+  .file-sample figcaption code {
+    font-size: inherit;
+    color: #e8e8e8;
+    background: none;
+  }
+  .file-sample figcaption a {
+    color: #e8e8e8;
+    text-decoration: none;
+  }
+  .file-sample figcaption a:hover { text-decoration: underline; }
+  .file-sample pre {
+    margin: 0;
+    padding: 12px 14px 14px;
+    font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: 12px;
+    line-height: 20px;
+    color: #e8e8e8;
+    background: transparent;
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .file-sample pre code {
+    display: block;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    color: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    font-family: inherit;
+    white-space: inherit;
+  }
+  .file-sample .cmt { color: #737373; }
+
+  #current-config .reach-theme {
+    overflow: visible;
+    margin: 0 0 var(--space-stack, 16px);
+  }
+  #current-config .llms-anno {
+    --vendor-anno-col: 220px;
+    --vendor-anno-inset: 14px;
+    padding: 0;
+    margin: 0;
+    overflow: visible;
+  }
+  #current-config .llms-anno .file-sample {
+    overflow: visible;
+    margin: 0 var(--vendor-anno-col) 0 0;
+    border-radius: 16px;
+  }
+  #current-config .llms-anno .file-sample figcaption { border-radius: 16px 16px 0 0; }
+  #current-config .llms-anno .file-sample pre {
+    padding-top: 16px;
+    border-radius: 0 0 16px 16px;
+    overflow: visible;
+  }
+  #current-config .llms-anno .file-sample pre,
+  #current-config .llms-anno .file-sample pre code,
+  #current-config .llms-anno .file-sample pre .llms-row {
+    overflow: visible;
+    font-size: 12px;
+    line-height: 20px;
+  }
+  #current-config .llms-secs {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 0;
+    white-space: normal;
+  }
+  #current-config .llms-sec {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px 12px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.06);
+    white-space: normal;
+  }
+  #current-config .llms-mod { display: none; }
+  #current-config .llms-sec .llms-row { white-space: pre-wrap; display: block; position: static; }
+  #current-config .llms-row mark {
+    color: inherit;
+    font: inherit;
+    border-radius: 2px;
+    padding: 0 3px;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+  #current-config .llms-row .hl-1 { background: rgba(250, 204, 21, 0.48); }
+  #current-config .llms-row .hl-2 { background: rgba(248, 113, 113, 0.45); }
+  #current-config .llms-row .hl-3 { background: rgba(167, 139, 250, 0.42); }
+  #current-config .llms-pin {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    pointer-events: none;
+  }
+  #current-config .llms-pin .anno-cap {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    flex: 0 0 auto;
+    width: max-content;
+    min-width: 0;
+    max-width: 168px;
+    gap: 0;
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 650;
+    line-height: 20px;
+    color: #191919;
+    white-space: normal;
+    overflow-wrap: break-word;
+    text-align: right;
+  }
+  #current-config .llms-pin .anno-name {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 16px;
+    margin-top: 2px;
+    color: #737373;
+    text-align: right;
+  }
+  #current-config .llms-pin--right {
+    box-sizing: border-box;
+    left: 100%;
+    width: var(--vendor-anno-col);
+    margin-left: var(--vendor-anno-inset);
+    padding-left: 4px;
+    flex-direction: row-reverse;
+  }
+  #current-config .llms-pin .anno-leader {
+    flex: 1 1 auto;
+    min-width: 16px;
+    height: 1.5px;
+    background: #191919;
+  }
+  #current-config .llms-pin .anno-tip {
+    flex: 0 0 auto;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #191919;
+  }
+  @media (max-width: 960px) {
+    #current-config .llms-anno .file-sample { margin-right: 0; }
+    #current-config .llms-pin { display: none; }
+  }
+
+  #optimized .file-sample {
+    background: #fafafa;
+    border: 1px solid #e5e5e5;
+    border-radius: 16px;
+    color-scheme: light;
+    scrollbar-color: #c4c4c4 #fafafa;
+  }
+  #optimized .file-sample figcaption {
+    padding: 12px 14px;
+    color: #525252;
+    background: #fafafa;
+    border-bottom-color: #e5e5e5;
+  }
+  #optimized .file-sample figcaption code { color: #191919; }
+  #optimized .file-sample pre,
+  #optimized .file-sample pre code {
+    color: #191919;
+    background: #fafafa;
+    font-size: 12px;
+    line-height: 20px;
+  }
+  #optimized .file-sample .cmt { color: #737373; }
+  #optimized .file-sample .add { background: rgba(34, 197, 94, 0.18); border-radius: 2px; padding: 0 3px; }
+  #optimized .file-sample .keep { background: rgba(167, 139, 250, 0.28); border-radius: 2px; padding: 0 3px; }
+  #optimized .file-sample .ask { background: rgba(250, 204, 21, 0.35); border-radius: 2px; padding: 0 3px; }
+
+  .probe-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh);
+  }
+  .probe-table th,
+  .probe-table td {
+    border: 1px solid #e8eef5;
+    border-top: none;
+    border-left: none;
+    vertical-align: top;
+    padding: 10px 12px;
+    text-align: left;
+  }
+  .probe-table thead tr:first-child > th { border-top: 1px solid #e8eef5; }
+  .probe-table th:first-child,
+  .probe-table td:first-child { border-left: 1px solid #e8eef5; }
+  .probe-table th { background: #f5f6f8; font-weight: 650; }
+  .probe-table code { font-size: 12px; }
+
+  .topbar .btn-export-pdf,
+  .btn-export-pdf,
+  .btn-download-llms {
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #d0d5dd;
+    background: #fff;
+    color: var(--color-text, #191919);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 650;
+    line-height: 20px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    box-sizing: border-box;
+  }
+  .topbar .btn-export-pdf:hover,
+  .btn-export-pdf:hover,
+  .btn-download-llms:hover {
+    border-color: var(--color-primary, #1476ff);
+    color: var(--color-primary, #1476ff);
+    text-decoration: none;
+  }
+  .btn-download-llms.is-primary {
+    border-color: var(--color-primary, #1476ff);
+    background: var(--color-primary, #1476ff);
+    color: #fff;
+  }
+  .btn-download-llms.is-primary:hover {
+    opacity: 0.92;
+    color: #fff;
+  }
+  .download-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 var(--space-stack, 16px);
+  }
+
+  @media print {
+    @page { size: A4; margin: 14mm 12mm; }
+    html, body {
+      background: #fff !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .topbar,
+    .download-row,
+    .btn-export-pdf,
+    .btn-download-llms,
+    #module-sidebar,
+    .sidebar { display: none !important; }
+    body.inner-page .page-wrapper,
+    body.inner-page.agent-entry-page .page-wrapper,
+    body.inner-page.agent-entry-page .main-content {
+      padding: 0 !important;
+      margin: 0 !important;
+      background: #fff !important;
+      min-height: 0 !important;
+      border: none !important;
+    }
+    body.inner-page.agent-entry-page .main-content > .page-header,
+    body.inner-page.agent-entry-page .main-content > .page-meta,
+    body.inner-page.agent-entry-page .main-content > .section {
+      width: 100% !important;
+      max-width: none !important;
+      margin-inline: 0 !important;
+    }
+    #current-config .llms-anno .file-sample {
+      margin-right: 0 !important;
+      break-inside: avoid;
+    }
+    #current-config .llms-pin { display: none !important; }
+    .file-sample,
+    .probe-table,
+    .bg-list { break-inside: avoid; }
+    a[href]::after { content: none !important; }
+  }
+</style>
+</head>
+<body class="inner-page agent-entry-page" data-module="principles" data-page="llms-audit-developer-huawei" data-no-surface-tabs>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="https://liminshuo.github.io/ascend-ai/principles-overview.html" target="_blank" rel="noopener"><span>AI 亲和原则</span></a>
+    <div class="topbar-actions" style="display:flex;gap:8px;align-items:center">
+    <a class="btn-download-llms is-primary" href="exports/llms-developer-huawei.txt" download="llms-developer-huawei.txt">下载 llms.txt</a>
+    <button type="button" class="btn-export-pdf" id="btn-export-pdf">导出 PDF</button>
+  </div>
+  </div>
+</div>
+
+<div class="page-wrapper">
+  <main class="main-content">
+    <div class="page-header">
+      <h1>llms.txt 配置诊断 · 华为开发者</h1>
+    </div>
+    <p class="page-meta">
+      示例站点：<a href="https://developer.huawei.com/llms.txt" target="_blank" rel="noopener">https://developer.huawei.com/llms.txt</a>
+      · 实测日期：2026-11-20
+      · 依据：<a href="principles-llms.html">部署 llms.txt 索引目录</a>
+      · 弱输入：无抓取表，Sitemap 只作规模信号
+    </p>
+    <section class="section" id="current-config">
+      <h2>Part1. 当前配置分析</h2>
+      <h3 class="aj-caption">当前 llms.txt（带标注）</h3>
+      <div class="reach-theme"><div class="llms-anno">
+      <figure class="file-sample file-sample--robots-full">
+        <figcaption><a href="https://developer.huawei.com/llms.txt"><code>https://developer.huawei.com/llms.txt</code></a></figcaption>
+        <pre><code class="language-markdown"><span class="llms-secs"><span class="llms-sec"><span class="llms-mod">入口</span><span class="llms-row"><span class="llms-pin llms-pin--right" aria-hidden="true"><span class="anno-cap">入口<span class="anno-name">200 · 6803 字节</span></span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-1">GET /llms.txt → 200 text/plain</mark></span></span>
+<span class="llms-sec"><span class="llms-mod">声明</span><span class="llms-row"><span class="llms-pin llms-pin--right" aria-hidden="true"><span class="anno-cap">robots<span class="anno-name">未写 LLMs.txt:</span></span><span class="anno-leader"></span><span class="anno-tip"></span></span><span class="cmt"># robots.txt 无 LLMs.txt: 行</span></span></span>
+<span class="llms-sec"><span class="llms-mod">形态</span><span class="llms-row"><span class="llms-pin llms-pin--right" aria-hidden="true"><span class="anno-cap">形态<span class="anno-name">根文件门户 + 24 分册</span></span><span class="anno-leader"></span><span class="anno-tip"></span></span># HarmonyOS Developer Documentation</span></span>
+<span class="llms-sec"><span class="llms-mod">边界</span><span class="llms-row"><span class="llms-pin llms-pin--right" aria-hidden="true"><span class="anno-cap">边界<span class="anno-name">llms-full 是首页 HTML</span></span><span class="anno-leader"></span><span class="anno-tip"></span></span><mark class="hl-2">GET /llms-full.txt → 302 → HTML</mark></span></span></span></code></pre>
+      </figure></div></div>
+      <h3 id="problems">问题判定</h3>
+      <ol class="bg-list">
+        <li><span class="sev sev-p1">P1</span> <strong>robots 没声明这份已存在的索引。</strong> 文件能开，声明缺失。</li>
+        <li><span class="sev sev-p1">P1</span> <strong><code>/llms-full.txt</code> 名实不符。</strong> 302 到站点首页 HTML。</li>
+        <li><span class="sev sev-p2">P2</span> <strong>栏目根没有 llms。</strong> <code>/consumer/cn/llms.txt</code> 404；门户页也未链到根索引。</li>
+      </ol>
+    </section>
+    <section class="section" id="optimized">
+      <h2>Part2. llms.txt 的优化建议</h2>
+      <p class="page-lead">现网根文件已经是合格的精选门户（24 个文档分册）。建议保留分册结构，只补消费区门户入口，并在 robots 声明。需要分册：是，现网已经这么做。</p>
+      <p class="download-row"><a class="btn-download-llms is-primary" href="exports/llms-developer-huawei.txt" download>下载优化稿</a></p>
+      <h3 class="aj-caption">建议模板</h3>
+      <figure class="file-sample"><figcaption><code>https://developer.huawei.com/llms.txt</code>（建议稿）</figcaption>
+      <pre><code># HarmonyOS Developer Documentation
+&gt; 精选索引，非 Sitemap 全量。
+
+<span class="add">## 门户</span>
+<span class="add">- [华为开发者联盟（中文）](https://developer.huawei.com/consumer/cn/): HarmonyOS 开发者官网入口。</span>
+
+## 分册
+- [Getting Started](https://developer.huawei.com/consumer/cn/llms/docs-getting-started.txt): 入门与准备。
+<span class="cmt"># …现网其余 23 个分册保持不变，见下载文件</span></code></pre></figure>
+      <h3 id="changelog">修改说明</h3>
+      <ol class="bg-list">
+        <li><strong>保留现网 24 个分册：</strong>抽查 Getting Started 分册 200。</li>
+        <li><strong>根文件加门户：</strong>链到 <code>/consumer/cn/</code> 与文档中心。</li>
+        <li><strong>不要灌论坛 Sitemap：</strong>3 万+ 帖子不进 llms。</li>
+        <li><strong>结论：需要分册</strong> — 文档树已超过单文件可读上限，现网方案可延续。</li>
+      </ol>
+      <h3 id="tbd">待确认事项</h3>
+      <ol class="bg-list">
+        <li><span class="sev sev-ask">待确认</span> 是否下线或改名 <code>/llms-full.txt</code>，避免 Agent 把首页 HTML 当索引。</li>
+        <li><span class="sev sev-ask">待确认</span> 是否在 <code>/consumer/cn/</code> 增加指向根 llms 的声明。</li>
+      </ol>
+    </section>
+  </main>
+</div>
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js?v=20261120c"></script>
+<script>(function(){var b=document.getElementById('btn-export-pdf');if(b)b.addEventListener('click',function(){window.print();});})();</script>
+</body></html>

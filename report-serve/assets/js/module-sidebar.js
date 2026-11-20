@@ -136,7 +136,7 @@
         group: null, id: "ds-meaning", href: "design-system-link.html", label: "内容含义明确",
         pageIds: ["ds-meaning", "ds-link"],
         children: [
-          { id: "ds-link", href: "design-system-link.html", label: "链接目标可识别" }
+          { id: "ds-link", href: "design-system-link.html", label: "链接" }
         ]
       },
       { group: null, id: "ds-structure-align", href: "design-system-structure-align.html", label: "全站规范一致性",
@@ -342,7 +342,7 @@
     html += "</button>";
     html += "</span>";
     html += "</li>";
-    html += "<li><a href=\"design-system.html\"" + (page === "home" ? " class=\"active\"" : "") + ">设计参照</a></li>";
+    html += "<li><a href=\"design-system.html\"" + (page === "home" ? " class=\"active\"" : "") + ">设计项总览</a></li>";
     html += "</ul>";
   } else if (module === "problems") {
     html += "<ul class=\"sidebar-nav sidebar-phase-nav sidebar-module-title\">";

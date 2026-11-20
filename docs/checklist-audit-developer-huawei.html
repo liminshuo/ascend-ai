@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>全站亲和 Checklist · 华为开发者联盟 · AI 亲和原则</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid var(--color-border);
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin: 0 auto;
+    padding: 0;
+    box-sizing: border-box;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: var(--color-text); text-decoration: none; white-space: nowrap;
+  }
+  .topbar .brand span { color: var(--color-primary); }
+  .topbar .brand:hover { text-decoration: none; opacity: 0.9; }
+  .topbar-actions { display:flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
+  .topbar-actions a.btn-export-pdf { text-decoration:none; }
+  body.inner-page .page-wrapper { min-height: 100vh; }
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: var(--space-stack, 16px);
+  }
+  .page-header > h1 {
+    font-family: var(--font);
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1-weight, 600);
+    line-height: var(--text-h1-lh);
+    letter-spacing: -0.02em;
+    margin: 0;
+    padding-top: var(--space-h1-pad-y, 32px);
+    padding-bottom: var(--space-h1-pad-y, 32px);
+    color: var(--color-text);
+  }
+  .page-meta {
+    margin: 0 0 var(--space-stack, 16px);
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  .page-meta a { color: var(--color-primary); text-decoration: none; }
+  .page-meta a:hover { text-decoration: underline; }
+  body.inner-page.agent-entry-page .page-wrapper {
+    background: #fff;
+    padding-top: var(--header-height, 56px);
+  }
+  body.inner-page.agent-entry-page .main-content {
+    padding-top: 16px;
+    padding-bottom: 32px;
+    padding-left: 0;
+    padding-right: 0;
+    background: #fff;
+    min-height: calc(100vh - var(--header-height, 56px));
+  }
+  body.inner-page.agent-entry-page .main-content > .page-header,
+  body.inner-page.agent-entry-page .main-content > .page-meta,
+  body.inner-page.agent-entry-page .main-content > .section {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page.agent-entry-page .main-content .section > h2,
+  body.inner-page.agent-entry-page .main-content .section .block-title {
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    letter-spacing: -0.01em;
+    margin-top: 0;
+    margin-bottom: var(--space-stack, 16px);
+    padding-top: var(--space-h2-pad-y, 16px);
+    padding-bottom: 0;
+    border-bottom: none;
+    color: var(--color-text);
+  }
+  body.inner-page.agent-entry-page .main-content .section > h3,
+  body.inner-page.agent-entry-page .main-content .section .layer > h3 {
+    font-size: var(--text-h3, 18px);
+    font-weight: var(--text-h3-weight, 650);
+    line-height: var(--text-h3-lh, 28px);
+    letter-spacing: -0.01em;
+    margin-top: 0;
+    margin-bottom: var(--space-stack, 16px);
+    padding-top: var(--space-h3-pad-y, 16px);
+    padding-bottom: var(--space-h3-pad-y, 16px);
+    border-bottom: none;
+    color: var(--color-text);
+  }
+  body.inner-page.agent-entry-page .main-content > .section:first-of-type > h2 { margin-top: 0; }
+  body.inner-page.agent-entry-page .main-content > .section { margin-bottom: 32px; }
+  :root {
+    --ck-line: #e8eef5;
+    --green: #18794e;
+    --green-bg: #eaf8f0;
+    --red: #b42318;
+    --red-bg: #fff0ee;
+    --amber: #9a5b00;
+    --amber-bg: #fff5df;
+    --blue: var(--color-primary, #2457d6);
+    --blue-bg: #edf3ff;
+    --muted: #667085;
+  }
+  .layer { margin: 0 0 var(--space-stack, 16px); }
+  .panel { margin: 0 0 24px; }
+  .checklist-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    margin: 0 0 12px;
+  }
+  .checklist-head h4 { margin: 0; font-size: 16px; font-weight: 650; line-height: 24px; }
+  .checklist-head .small { margin: 0; text-align: right; flex-shrink: 0; font-size: 12px; color: var(--muted); }
+  .checklist-note { margin: 0 0 12px; font-size: 13px; line-height: 20px; color: var(--muted); }
+  table.v-mid { width: 100%; border-collapse: collapse; font-size: var(--text-body); }
+  table.v-mid th, table.v-mid td {
+    text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--ck-line); vertical-align: middle;
+  }
+  table.v-mid th { background: #f5f6f8; color: #475467; font-weight: 650; }
+  table.v-mid tr:last-child td { border-bottom: 0; }
+  table.v-mid td code { word-break: break-all; font-size: 12px; }
+  .status {
+    display: inline-block; border-radius: 6px; padding: 3px 8px;
+    font-size: 12px; font-weight: 650; white-space: nowrap;
+  }
+  .done { background: var(--green-bg); color: var(--green); }
+  .risk { background: var(--red-bg); color: var(--red); }
+  .pending, .potential, .partial { background: var(--amber-bg); color: var(--amber); }
+  .notdone { background: #eef2f6; color: #475467; }
+  .result-block { margin: 0; }
+  .result-block + .result-block { margin-top: 6px; }
+  .result-label { font-weight: 700; }
+  .result-label.risk { background: var(--red-bg); border-radius: 4px; padding: 1px 6px; color: var(--red); }
+  .baseline-alert {
+    margin: 0 0 12px; padding: 12px 14px; border-left: 4px solid var(--red);
+    background: var(--red-bg); border-radius: 0 8px 8px 0; font-size: 13px; line-height: 1.55; color: #7a271a;
+  }
+  a.dl {
+    display: inline-flex; align-items: center; gap: 8px; margin: 0 0 14px; padding: 8px 14px;
+    border-radius: 6px; background: var(--color-primary, #2457d6); color: #fff;
+    font-size: 13px; font-weight: 650; text-decoration: none;
+  }
+  a.dl:hover { opacity: 0.92; color: #fff; text-decoration: none; }
+  .section footer { padding: 8px 0 0; color: var(--muted); font-size: 12px; }
+  .topbar .btn-export-pdf, .btn-export-pdf {
+    appearance: none; border: 1px solid #d0d5dd; background: #fff;
+    color: var(--color-text, #191919); font: inherit; font-size: 13px; font-weight: 650;
+    line-height: 20px; padding: 6px 12px; border-radius: 6px; cursor: pointer;
+  }
+  .topbar .btn-export-pdf:hover, .btn-export-pdf:hover {
+    border-color: var(--color-primary, #1476ff); color: var(--color-primary, #1476ff);
+  }
+  @media print {
+    @page { size: A4; margin: 14mm 12mm; }
+    html, body { background: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .topbar, .btn-export-pdf { display: none !important; }
+    body.inner-page.agent-entry-page .page-wrapper,
+    body.inner-page.agent-entry-page .main-content {
+      padding: 0 !important; margin: 0 !important; background: #fff !important; min-height: 0 !important;
+    }
+    body.inner-page.agent-entry-page .main-content > .page-header,
+    body.inner-page.agent-entry-page .main-content > .page-meta,
+    body.inner-page.agent-entry-page .main-content > .section {
+      width: 100% !important; max-width: none !important; margin-inline: 0 !important;
+    }
+    table.v-mid { break-inside: avoid; }
+    a[href]::after { content: none !important; }
+  }
+</style>
+</head>
+<body class="inner-page agent-entry-page" data-page="checklist-audit-developer-huawei" data-no-surface-tabs>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span>AI 亲和原则</span></a>
+    <div class="topbar-actions">
+      <a class="btn-export-pdf" href="robots-audit-developer-huawei.html">robots 建议稿</a>
+      <a class="btn-export-pdf" href="sitemap-audit-developer-huawei.html">sitemap 建议稿</a>
+      <a class="btn-export-pdf" href="llms-audit-developer-huawei.html">llms 建议稿</a>
+      <button type="button" class="btn-export-pdf" id="btn-export-pdf">导出 PDF</button>
+    </div>
+  </div>
+</div>
+
+<div class="page-wrapper">
+  <main class="main-content">
+    <div class="page-header">
+      <h1>诊断 Checklist · 华为开发者联盟</h1>
+    </div>
+    <p class="page-meta">
+      示例站点：<a href="https://developer.huawei.com/consumer/cn/" target="_blank" rel="noopener">https://developer.huawei.com/consumer/cn/</a>
+      · 实测日期：2026-11-20
+      · 测了 A + B（B 为当前模型单版 10 题）
+      · 配置稿：<a href="robots-audit-developer-huawei.html">robots</a> · <a href="sitemap-audit-developer-huawei.html">sitemap</a> · <a href="llms-audit-developer-huawei.html">llms</a>
+    </p>
+    <section class="section" id="checklist">
+<h2 class="block-title">AI 亲和基础建设完善度</h2>
+
+<section id="reach" class="layer">
+  <h3>01｜可达 · 清晰的信息入口</h3>
+  <div class="panel" id="reach-robots">
+  <div class="checklist-head">
+    <h4>robots.txt 核验 Checklist</h4>
+    <p class="small">现网文件：<a href="https://developer.huawei.com/robots.txt" target="_blank" rel="noopener">https://developer.huawei.com/robots.txt</a>（200，1070 字节）</p>
+  </div>
+  <table class="v-mid">
+    <thead><tr><th style="width:4%">#</th><th style="width:14%">检查维度</th><th style="width:24%">核验内容</th><th style="width:12%">核验结果</th><th>测评结果</th><th style="width:8%">优先级</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><strong>文件可访问性</strong></td>
+        <td>检查 <code>/robots.txt</code> 是否能正常访问，内容是否可读取。</td>
+        <td><span class="status done">核验通过</span></td>
+        <td><div class="result-block"><span class="result-label">访问正常：</span>GET <code>https://developer.huawei.com/robots.txt</code> → 200，<code>text/plain</code>，1070 字节，规则可解析。</div></td>
+        <td>P0</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><strong>Sitemap 声明</strong></td>
+        <td>检查是否列出站点地图绝对地址。</td>
+        <td><span class="status done">核验通过</span></td>
+        <td>
+          <div class="result-block"><span class="result-label">已声明 13 条绝对 URL：</span>培训、市场、伙伴、首页、论坛 4 册、文档、Codelabs、资讯等。</div>
+          <div class="result-block"><span class="result-label risk">字段名小写：</span>写成 <code>sitemap:</code>，多数解析器仍可用，记 P2。</div>
+        </td>
+        <td>P0</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><strong>放行与禁止</strong></td>
+        <td>检查 Allow / Disallow 是否写清。</td>
+        <td><span class="status risk">发现风险</span></td>
+        <td>
+          <div class="result-block"><span class="result-label">禁止范围很窄：</span>仅 <code>Disallow: /consumer/cn/doc/search?*</code>，适合挡住搜索结果页噪声。</div>
+          <div class="result-block"><span class="result-label risk">没有 Allow：</span>0 条 <code>Allow:</code>，只靠默认放行。有 <code>Content-Signal: ai-train=yes, search=yes, ai-input=yes</code>。</div>
+        </td>
+        <td>P1</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td><strong>llms 入口声明</strong></td>
+        <td>检查 robots 是否声明 AI 可读索引。</td>
+        <td><span class="status risk">发现风险</span></td>
+        <td>
+          <div class="result-block"><span class="result-label">约定路径已有文件：</span><code>/llms.txt</code> → 200，6803 字节，HarmonyOS 文档分册索引。</div>
+          <div class="result-block"><span class="result-label risk">robots 未声明：</span>没有 <code>LLMs.txt:</code> 行。<code>/llms-full.txt</code> 302 到首页 HTML，不是索引正文。<code>/consumer/cn/llms.txt</code> → 404。</div>
+        </td>
+        <td>P1</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="panel" id="reach-sitemap">
+  <div class="checklist-head">
+    <h4>Sitemap 核验 Checklist</h4>
+  </div>
+  <table class="v-mid">
+    <thead><tr><th style="width:4%">#</th><th style="width:14%">检查维度</th><th style="width:24%">核验内容</th><th style="width:12%">核验结果</th><th>测评结果</th><th style="width:8%">优先级</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><strong>站点地图可访问性</strong></td>
+        <td>已声明文件能否打开。</td>
+        <td><span class="status done">核验通过</span></td>
+        <td><div class="result-block"><span class="result-label">抽查均为 200：</span>home、training、doc、codelabs、forum1、information、market、partners 均可下载 XML。根路径 <code>/sitemap.xml</code> → 404，入口只靠 robots 清单。</div></td>
+        <td>P0</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><strong>规模与结构</strong></td>
+        <td>urlset / 条数 / 路径簇（13 份已声明分册全量解析）。</td>
+        <td><span class="status risk">发现风险</span></td>
+        <td>
+          <div class="result-block"><span class="result-label">没有根索引：</span>13 份并列 urlset，不是 sitemapindex。合计 <strong>244103</strong> 条 loc，全部 https://developer.huawei.com。</div>
+          <div class="result-block"><span class="result-label risk">论坛体量压过文档：</span>forum 四册 50000 + 50000 + 50000 + 47490 = 197490（约 81%）；doc/sitemap1 35832；培训 cn/en 各 4323；training 分册 651；market 1112；codelabs 189；information 165；partners 16；home 2。</div>
+        </td>
+        <td>P1</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><strong>lastmod</strong></td>
+        <td>是否填写更新时间。</td>
+        <td><span class="status risk">发现风险</span></td>
+        <td><div class="result-block"><span class="result-label risk">覆盖率低：</span>全量 244103 条里仅 8664 条有 lastmod（约 3.5%），区间 2021-07-30～2026-11-11。</div></td>
+        <td>P1</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td><strong>覆盖缺口</strong></td>
+        <td>无抓取表，不做表对照。</td>
+        <td><span class="status notdone">未测</span></td>
+        <td><div class="result-block"><span class="result-label">未提供全站抓取 CSV：</span>不写覆盖缺口数字。</div></td>
+        <td>—</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="panel" id="reach-llms">
+  <div class="checklist-head">
+    <h4>llms.txt 核验 Checklist</h4>
+  </div>
+  <table class="v-mid">
+    <thead><tr><th style="width:4%">#</th><th style="width:14%">检查维度</th><th style="width:24%">核验内容</th><th style="width:12%">核验结果</th><th>测评结果</th><th style="width:8%">优先级</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><strong>入口可达</strong></td>
+        <td>根 <code>/llms.txt</code> 能否打开。</td>
+        <td><span class="status done">核验通过</span></td>
+        <td><div class="result-block"><span class="result-label">可打开：</span>200，<code>text/plain;charset=UTF-8</code>，6803 字节，标题「HarmonyOS Developer Documentation」，含 24 个分册链接。</div></td>
+        <td>P0</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><strong>分册可达</strong></td>
+        <td>抽查分册是否为纯文本索引。</td>
+        <td><span class="status done">核验通过</span></td>
+        <td><div class="result-block"><span class="result-label">Getting Started 分册：</span><code>/consumer/cn/llms/docs-getting-started.txt</code> → 200，45187 字节，<code>text/plain</code>，条目链到 <code>.md</code>。</div></td>
+        <td>P0</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><strong>llms-full 与路径约定</strong></td>
+        <td><code>/llms-full.txt</code> 与栏目路径。</td>
+        <td><span class="status risk">发现风险</span></td>
+        <td>
+          <div class="result-block"><span class="result-label risk">llms-full 不是索引：</span>302 到 <code>http://developer.huawei.com</code>，终页 HTML 标题「华为开发者官方网站」。</div>
+          <div class="result-block"><span class="result-label risk">栏目根没有 llms：</span><code>/consumer/cn/llms.txt</code> → 404。索引只在站点根。</div>
+        </td>
+        <td>P1</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="panel" id="reach-pages">
+  <div class="checklist-head">
+    <h4>页面可访问性 Checklist</h4>
+    <p class="small">样本口径：用户入口 <code>/consumer/cn/</code>、文档中心、一条平行 Markdown、一条 Codelabs。未对 Sitemap 全量 URL 发请求。</p>
+  </div>
+  <table class="v-mid">
+    <thead><tr><th style="width:4%">#</th><th style="width:14%">检查维度</th><th style="width:24%">核验内容</th><th style="width:12%">核验结果</th><th>测评结果</th><th style="width:8%">优先级</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><strong>重要入口可访问性</strong></td>
+        <td>门户、文档中心、平行稿。</td>
+        <td><span class="status risk">发现风险</span></td>
+        <td>
+          <div class="result-block"><span class="result-label">门户 200：</span><code>/consumer/cn/</code> HTML 217794 字节，title「华为开发者联盟-HarmonyOS开发者官网」；可见 <code>h1</code> 为 <code>display:none</code>。</div>
+          <div class="result-block"><span class="result-label">文档中心可打开：</span><code>/consumer/cn/doc/</code> 302 到 <code>/consumer/cn/doc/doccenter</code>，终页 200，title「文档中心」。</div>
+          <div class="result-block"><span class="result-label risk">门户偏壳层：</span>首包大量空 CMS 容器，正文依赖前端渲染，无 JS 时可用文字少。</div>
+        </td>
+        <td>P1</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section id="readable" class="layer">
+  <h3>02｜可读 · 完整可读的内容</h3>
+  <div class="panel" id="readable-md">
+  <div class="checklist-head"><h4>Markdown 核验 Checklist</h4></div>
+  <table class="v-mid">
+    <thead><tr><th style="width:4%">#</th><th style="width:14%">检查维度</th><th style="width:24%">核验内容</th><th style="width:12%">核验结果</th><th>测评结果</th><th style="width:8%">优先级</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><strong>Markdown 文件可访问性</strong></td>
+        <td>分册指向的 <code>.md</code> 能否打开。</td>
+        <td><span class="status done">核验通过</span></td>
+        <td><div class="result-block"><span class="result-label">抽查可打开：</span><code>.../agc-help-account-0000002270829385.md</code> → 200，<code>text/markdown; charset=utf-8</code>，251 字节，正文以 <code># 管理账户</code> 开头。</div></td>
+        <td>P0</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><strong>人读页是否声明平行稿</strong></td>
+        <td>HTML 是否有 alternate markdown。</td>
+        <td><span class="status risk">发现风险</span></td>
+        <td><div class="result-block"><span class="result-label risk">门户未声明：</span><code>/consumer/cn/</code> 未见 markdown alternate。文档人读页抽查有：<code>.../agc-help-account-0000002270829385</code> 含 <code>rel="alternate" type="text/markdown"</code>，平行稿 200。</div></td>
+        <td>P1</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="panel" id="readable-render">
+  <div class="checklist-head"><h4>页面渲染 / 抓取 Checklist</h4></div>
+  <table class="v-mid">
+    <thead><tr><th style="width:4%">#</th><th style="width:14%">检查维度</th><th style="width:24%">核验内容</th><th style="width:12%">核验结果</th><th>测评结果</th><th style="width:8%">优先级</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><strong>正文可提取性</strong></td>
+        <td>无 JS 时能否拿到正文。</td>
+        <td><span class="status risk">发现风险</span></td>
+        <td><div class="result-block"><span class="result-label risk">门户依赖渲染：</span>consumer 首页大量空节点，meta 与隐藏 h1 可抓，栏目正文不足。文档中心同样偏 SPA。</div></td>
+        <td>P0</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><strong>图片 / 表格 / 代码 / Tab 等组件</strong></td>
+        <td>需文档页 DOM。</td>
+        <td><span class="status notdone">未测</span></td>
+        <td><div class="result-block"><span class="result-label">未逐 DOM 打开技术文档页：</span>清单过大，组件项标未测。单页请用页级探针。</div></td>
+        <td>—</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section id="understand" class="layer">
+  <h3>03｜可理解 · 明确的内容语义</h3>
+  <div class="panel">
+  <div class="checklist-head"><h4>语义与结构化 Checklist</h4></div>
+  <table class="v-mid">
+    <thead><tr><th style="width:4%">#</th><th style="width:14%">检查维度</th><th style="width:24%">核验内容</th><th style="width:12%">核验结果</th><th>测评结果</th><th style="width:8%">优先级</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><strong>JSON-LD</strong></td>
+        <td>首包是否含结构化数据。</td>
+        <td><span class="status risk">发现风险</span></td>
+        <td><div class="result-block"><span class="result-label risk">门户未见 JSON-LD：</span><code>/consumer/cn/</code> 前 8KB 与整页检索无 <code>ld+json</code>。</div></td>
+        <td>P2</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><strong>链接语义</strong></td>
+        <td>入口链是否可读。</td>
+        <td><span class="status notdone">未测</span></td>
+        <td><div class="result-block"><span class="result-label">未展开门户 JS 导航：</span>不把未渲染菜单写成通过。</div></td>
+        <td>—</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<h2 class="block-title">AI 回答中的品牌与可信</h2>
+<p class="page-lead">样本：当前对话模型 Cursor Grok 4.6 按 10 题各答一版。不是多模型、不是联网检索对照。检索阶段官网占比标未测。</p>
+
+<section id="effect" class="layer">
+  <div class="panel">
+  <div class="checklist-head"><h4>官方信源链路实测</h4></div>
+  <table class="v-mid">
+    <thead><tr><th style="width:4%">#</th><th style="width:16%">检查维度</th><th style="width:22%">核验内容</th><th style="width:12%">核验结果</th><th>测评结果</th><th style="width:8%">优先级</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><strong>检索阶段 · 官方占比</strong></td>
+        <td>联网检索 URL 池。</td>
+        <td><span class="status notdone">未测</span></td>
+        <td><div class="result-block"><span class="result-label">本模型答卷无独立检索链接列表。</span></div></td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><strong>生成阶段 · 官网引用占比</strong></td>
+        <td>回答是否给出 <code>developer.huawei.com</code>。</td>
+        <td><span class="status done">核验通过</span></td>
+        <td><div class="result-block"><span class="result-label">100%（10/10）：</span>每题都写了可打开的官方 URL。单模型样本，不外推多模型。</div></td>
+        <td>P0</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><strong>版本滞后</strong></td>
+        <td>用户未给 HarmonyOS 主推版本规则。</td>
+        <td><span class="status notdone">未测</span></td>
+        <td><div class="result-block"><span class="result-label">未提供主推版本路径规则，不编造。</span></div></td>
+        <td>—</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="panel">
+  <div class="checklist-head"><h4>品牌提及与官网引用</h4></div>
+  <table class="v-mid">
+    <thead><tr><th style="width:4%">#</th><th style="width:16%">检查维度</th><th style="width:22%">核验内容</th><th style="width:12%">核验结果</th><th>测评结果</th><th style="width:8%">优先级</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><strong>官网引用率</strong></td>
+        <td>是否给出官网链接。</td>
+        <td><span class="status done">核验通过</span></td>
+        <td><div class="result-block"><span class="result-label">100%（10/10）</span></div></td>
+        <td>P0</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><strong>品牌提及率</strong></td>
+        <td>是否提及华为开发者联盟或 HarmonyOS。</td>
+        <td><span class="status done">核验通过</span></td>
+        <td><div class="result-block"><span class="result-label">100%（10/10）：</span>含 Q10 在开放选型后半句纳入 HarmonyOS。</div></td>
+        <td>P1</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><strong>官网链接可访问率</strong></td>
+        <td>已引用链接抽查。</td>
+        <td><span class="status done">核验通过</span></td>
+        <td><div class="result-block"><span class="result-label">抽查通过：</span>门户、llms.txt、Getting Started 分册、文档中心跳转、一条 Codelabs URL 均为 200。未对答卷里每个分册再扫一遍。</div></td>
+        <td>P1</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td><strong>引用支持率</strong></td>
+        <td>引用是否支撑表述。</td>
+        <td><span class="status done">核验通过</span></td>
+        <td><div class="result-block"><span class="result-label">关键词与入口一致：</span>答卷只指向本次拉到的官方入口，不做事实全量审。</div></td>
+        <td>P1</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<h2 class="block-title">附录</h2>
+<section class="layer">
+  <div class="panel">
+  <div class="checklist-head"><h4>测试集</h4></div>
+  <p class="checklist-note">本次生成 10 题。附件：<a class="dl" href="exports/developer-huawei-testset.csv" download>题集 csv</a> · <a class="dl" href="exports/developer-huawei-answers.csv" download>答卷 csv</a></p>
+  <table class="v-mid">
+    <thead><tr><th style="width:6%">编号</th><th style="width:40%">测试问题</th><th style="width:18%">主要测试目的</th><th>重点核验内容</th></tr></thead>
+    <tbody>
+      <tr><td>Q1</td><td>华为开发者联盟是什么？主要面向哪些场景？</td><td>品牌认知</td><td>品牌与定位</td></tr>
+      <tr><td>Q2</td><td>华为开发者联盟官网能获取哪些开发资源？</td><td>社区/官网认知</td><td>是否引用官网</td></tr>
+      <tr><td>Q3</td><td>HarmonyOS 主要用于哪些应用开发场景？</td><td>产品认知</td><td>场景是否属实</td></tr>
+      <tr><td>Q4</td><td>DevEco Studio 是什么？在 HarmonyOS 开发中起什么作用？</td><td>技术认知</td><td>IDE 与官方资料</td></tr>
+      <tr><td>Q5</td><td>开发者查找 HarmonyOS 官方文档应该去哪里？</td><td>官网引用</td><td>文档中心 / llms</td></tr>
+      <tr><td>Q6</td><td>如何查找 HarmonyOS 入门与应用开发准备资料？</td><td>官网引用、事实</td><td>Getting Started 分册</td></tr>
+      <tr><td>Q7</td><td>做一个 HarmonyOS 应用可以从哪些官方资源入手？</td><td>官网引用、事实</td><td>指南 / API / 工具</td></tr>
+      <tr><td>Q8</td><td>华为开发者联盟有哪些公开的 Codelabs 或实践入口？请给来源。</td><td>案例</td><td>官方 Codelabs</td></tr>
+      <tr><td>Q9</td><td>了解 HarmonyOS 产品、工具和文档应优先查阅哪些官方页？</td><td>官网引用</td><td>门户与索引</td></tr>
+      <tr><td>Q10</td><td>选择消费设备应用开发平台时，应比较哪些因素？HarmonyOS 可在哪些方面纳入评估？</td><td>开放选型</td><td>后半句是否给官方入口</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+<footer>文档版本：v0.1｜站点根领队产出｜A 入口层全量探测 robots / 已声明 Sitemap（13 册 244103 loc）/ llms；页面层按路径簇抽样｜B 单模型 10 题｜配置稿分开交付，不糊进本表。</footer>
+    </section>
+  </main>
+</div>
+
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js?v=20261120c"></script>
+<script>
+(function () {
+  var btn = document.getElementById('btn-export-pdf');
+  if (btn) btn.addEventListener('click', function () { window.print(); });
+})();
+</script>
+</body>
+</html>

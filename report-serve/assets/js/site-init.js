@@ -369,6 +369,20 @@
     });
   }
 
+  function bindSkillCrumbSticky() {
+    if (!document.body || document.body.getAttribute("data-page") !== "skill-detail") return;
+    var crumb = document.querySelector(".main-content > .crumb");
+    var header = document.querySelector(".main-content > .page-header");
+    if (!crumb || !header || crumb.dataset.stickyBound) return;
+    crumb.dataset.stickyBound = "1";
+    if (!window.IntersectionObserver) return;
+    var io = new IntersectionObserver(function (entries) {
+      var entry = entries[0];
+      crumb.classList.toggle("is-stuck", !!(entry && !entry.isIntersecting));
+    }, { root: null, threshold: 0, rootMargin: "-56px 0px 0px 0px" });
+    io.observe(header);
+  }
+
   injectPeerFoldStyles();
   injectStyles();
   if (document.readyState === "loading") {
@@ -377,12 +391,14 @@
       injectSelector();
       syncFromHash();
       initPeerFolds();
+      bindSkillCrumbSticky();
     });
   } else {
     injectExtraNav();
     injectSelector();
     syncFromHash();
     initPeerFolds();
+    bindSkillCrumbSticky();
   }
   window.addEventListener("hashchange", syncFromHash);
 })();
