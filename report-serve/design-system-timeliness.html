@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>版本与时效信息可识别 · 设计系统 · 昇腾社区 AI 亲和原则</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid var(--color-border);
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: 100%; max-width: none; margin: 0; padding: 0 24px; box-sizing: border-box;
+    height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: var(--color-text); text-decoration: none; white-space: nowrap; margin-right: 40px;
+  }
+  .topbar .brand span { color: var(--color-primary); }
+  .topbar .site-nav { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; flex-wrap: wrap; }
+  .topbar .site-nav > a {
+    text-decoration: none; color: var(--color-text-secondary); font-size: var(--text-body); font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .topbar .site-nav > a:hover { color: var(--color-primary); background: var(--color-bg); text-decoration: none; }
+  .topbar .site-nav > a.active { color: var(--color-primary); background: var(--color-bg); font-weight: 600; }
+  body.inner-page .page-wrapper { min-height: 100vh; }
+
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: var(--space-stack, 16px);
+  }
+  .page-header > h1 {
+    font-family: var(--font);
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1-weight, 600);
+    line-height: var(--text-h1-lh);
+    letter-spacing: -0.02em;
+    margin: 0;
+    padding-top: var(--space-h1-pad-y, 32px);
+    padding-bottom: var(--space-h1-pad-y, 32px);
+    color: var(--color-text);
+  }
+  body.inner-page[data-page="ds-timeliness"]:has(#module-sidebar) .main-content {
+    padding-top: var(--content-main-pad-top, 16px);
+    padding-bottom: 32px;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  body.inner-page[data-page="ds-timeliness"]:has(#module-sidebar) .main-content > .page-header,
+  body.inner-page[data-page="ds-timeliness"]:has(#module-sidebar) .main-content > .section,
+  body.inner-page[data-page="ds-timeliness"]:has(#module-sidebar) .main-content > .surface-tabs {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page[data-page="ds-timeliness"] .main-content .section > h2 {
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    letter-spacing: -0.01em;
+    margin-top: 0;
+    margin-bottom: var(--space-stack, 16px);
+    padding-top: var(--space-h2-pad-y, 16px);
+    padding-bottom: 0 !important;
+    border-bottom: none;
+    color: var(--color-text, var(--color-text));
+  }
+  body.inner-page[data-page="ds-timeliness"] .main-content .section h3 { height: auto; }
+  h3.fn-h3 {
+    margin: 0;
+    padding-top: var(--space-h3-pad-y, 16px);
+    padding-bottom: var(--space-h3-pad-y, 16px);
+    font-size: var(--text-h3, 18px);
+    line-height: var(--text-h3-lh, 28px);
+    font-weight: var(--text-h3-weight, 650);
+    color: var(--color-text, var(--color-text));
+    letter-spacing: -0.01em;
+  }
+  body.inner-page[data-page="ds-timeliness"] .main-content .section h4 { height: auto; }
+  h4.fn-h4 {
+    margin: 0;
+    padding-top: var(--space-h4-pad-y, 16px);
+    padding-bottom: var(--space-h4-pad-y, 16px);
+    font-size: var(--text-h4, 14px);
+    line-height: var(--text-h4-lh, 22px);
+    font-weight: var(--text-h4-weight, 650);
+    color: var(--color-text, var(--color-text));
+    letter-spacing: -0.01em;
+  }
+  h3.fn-h3:has(> .fn-h3-link),
+  h4.fn-h4:has(> .fn-h3-link) {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  h3.fn-h3 > .fn-h3-link,
+  h4.fn-h4 > .fn-h3-link {
+    margin-left: auto;
+    flex-shrink: 0;
+    font-weight: 500;
+    font-size: var(--text-body);
+    line-height: 22px;
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+  h3.fn-h3 > .fn-h3-link:hover { text-decoration: underline; }
+  .fn-h3-desc {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: 22px;
+    color: var(--color-text-secondary);
+  }
+  .principle-example + .principle-example { margin-top: var(--space-stack, 16px); }
+  body.inner-page[data-page="ds-timeliness"] .main-content > .section:first-of-type > h2 { margin-top: 0; }
+  body.inner-page[data-page="ds-timeliness"] .main-content > .section { margin-bottom: 32px !important; }
+  #definition > p.page-lead,
+  #types > p.page-lead,
+  #usage > p.page-lead,
+  #types .fn-h3-desc,
+  #anatomy .fn-h3-desc {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  #definition > h2 + .page-lead,
+  #types > h2 + .principle-example,
+  #anatomy > h2 + .principle-example,
+  #usage > h2 + .page-lead { margin-top: 0; }
+  #definition > p.page-lead,
+  #usage > p.page-lead { margin-bottom: var(--space-stack, 16px); }
+  #definition > p.page-lead + p.page-lead,
+  #usage > p.page-lead + p.page-lead { margin-top: 0; }
+  #definition > p.page-lead + p.page-lead { margin-bottom: 0; }
+  #usage > p.page-lead + p.page-lead:last-child { margin-bottom: 0; }
+  #types .principle-example > .fn-h3 + .an-stage,
+  #anatomy .principle-example > .fn-h3-desc + .ppt-anchor { margin-top: var(--space-stack, 16px); }
+  :is(#types, #anatomy) .an-stage {
+    margin: 0;
+    padding: 24px;
+    background: #f4f4f5;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    box-sizing: border-box;
+    overflow: visible;
+  }
+  .ck-card {
+    background: #fff;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    box-sizing: border-box;
+  }
+
+  #types .ver-chrome,
+  #anatomy .ver-chrome {
+    margin: 0;
+    padding: 16px 18px;
+    width: min(100%, 640px);
+    position: relative;
+    overflow: visible;
+  }
+  .ver-chrome table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    line-height: 18px;
+    color: var(--color-text);
+  }
+  .ver-chrome th,
+  .ver-chrome td {
+    padding: 6px 8px;
+    border: 1px solid #e5e5e5;
+    text-align: left;
+    vertical-align: middle;
+    font-weight: 400;
+  }
+  .ver-chrome th {
+    background: #f5f5f5;
+    font-weight: 650;
+    white-space: nowrap;
+  }
+  .ver-status.is-live { color: #2563eb; font-weight: 650; }
+  .ver-status.is-sunset { color: #ea580c; font-weight: 650; }
+  .ver-status.is-eol { color: #737373; font-weight: 650; }
+
+  /* 文档详情：还原截图示意（非简化页头卡片） */
+  #types .doc-shot-chrome,
+  #anatomy .doc-shot-chrome {
+    width: min(100%, 640px);
+    padding: 0;
+    overflow: hidden;
+    position: relative;
+    background: #f4f4f5;
+  }
+  #anatomy .doc-shot-chrome {
+    overflow: visible;
+    width: min(100%, 560px);
+  }
+  .doc-shot {
+    margin: 0;
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1760 / 1160;
+    overflow: hidden;
+    background: #f4f4f5;
+    border-radius: 8px;
+  }
+  .doc-shot img {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+  }
+
+  :is(#anatomy) .ppt-anchor {
+    --anno-ink: #191919;
+    margin: 0;
+    overflow: visible;
+  }
+  :is(#anatomy) .ppt-anchor .llms-anno {
+    --anno-pad-left: 112px;
+    --anno-pad-right: 200px;
+    margin: 0;
+    padding: 0 var(--anno-pad-right) 0 var(--anno-pad-left);
+    display: flex;
+    flex-direction: column;
+    overflow: visible;
+  }
+  :is(#anatomy) .ppt-anchor .llms-row { position: relative; display: block; }
+  :is(#anatomy) .ppt-anchor .llms-pin {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    pointer-events: none;
+    z-index: 2;
+  }
+  :is(#anatomy) .ppt-anchor .llms-pin .anno-cap {
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 14px;
+    color: var(--anno-ink);
+    white-space: nowrap;
+  }
+  :is(#anatomy) .ppt-anchor .llms-pin--left {
+    right: 100%;
+    margin-right: 10px;
+  }
+  :is(#anatomy) .ppt-anchor .llms-pin--right {
+    left: 100%;
+    margin-left: 12px;
+  }
+  :is(#anatomy) .ppt-anchor .llms-pin .anno-leader {
+    position: relative;
+    width: 20px;
+    height: 1.5px;
+    background: var(--anno-ink);
+    flex-shrink: 0;
+  }
+  :is(#anatomy) .ppt-anchor .llms-pin--left .anno-leader::after,
+  :is(#anatomy) .ppt-anchor .llms-pin--right .anno-leader::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--anno-ink);
+  }
+  :is(#anatomy) .ppt-anchor .llms-pin--left .anno-leader::after {
+    right: 0;
+    transform: translate(50%, -50%);
+  }
+  :is(#anatomy) .ppt-anchor .llms-pin--right .anno-leader::before {
+    left: 0;
+    transform: translate(-50%, -50%);
+  }
+  :is(#anatomy) .ppt-anchor .anno-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 18px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--anno-ink);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+  }
+  /* 标注挂卡片外，表体与 types 同构，避免 th/td 被 display:block 撑破 */
+  #anatomy .ver-chrome > .llms-pin--left,
+  #anatomy .ver-chrome > .llms-pin--right {
+    position: absolute;
+    transform: none;
+    top: auto;
+    z-index: 2;
+    white-space: nowrap;
+  }
+  #anatomy .ver-chrome > .llms-pin--ver {
+    right: 100%;
+    left: auto;
+    margin-right: 10px;
+    top: 28px;
+  }
+  #anatomy .ver-chrome > .llms-pin--status {
+    left: 100%;
+    margin-left: 16px;
+    top: 58px;
+  }
+  #anatomy .ver-chrome > .llms-pin--date {
+    left: 100%;
+    margin-left: 16px;
+    top: 88px;
+  }
+  #anatomy .doc-shot-chrome > .llms-pin--right,
+  #anatomy .doc-shot-chrome > .llms-pin--left {
+    position: absolute;
+    transform: none;
+    z-index: 2;
+  }
+  #anatomy .doc-shot-chrome > .llms-pin--ver {
+    right: 100%;
+    left: auto;
+    margin-right: 10px;
+    top: 52px;
+  }
+  #anatomy .doc-shot-chrome > .llms-pin--time {
+    left: 100%;
+    right: auto;
+    margin-left: 16px;
+    top: 96px;
+  }
+  #anatomy .ppt-anchor .anno-rule-groups {
+    margin: 0 calc(-1 * var(--anno-pad-right)) 0 calc(-1 * var(--anno-pad-left));
+    display: grid;
+    gap: 8px;
+  }
+  #anatomy .ppt-anchor .anno-rule-group > .fn-h4 {
+    margin: 0;
+    padding-top: var(--space-h4-pad-y, 16px) !important;
+    padding-bottom: 0 !important;
+  }
+  #anatomy .ppt-anchor .anno-rule-group:first-child > .fn-h4 { padding-top: 0 !important; }
+  #anatomy .ppt-anchor .anno-rule-group .llms-anno-legend {
+    list-style: none;
+    margin: var(--space-stack, 16px) 0 0;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+  }
+  #anatomy .ppt-anchor .llms-anno-legend > li {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 14px;
+    line-height: 22px;
+    color: var(--color-text-secondary);
+  }
+  /* 对齐轮播：标题与说明分行 */
+  #anatomy .ppt-anchor .llms-anno-legend > li > span:last-child {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+  }
+  #anatomy .ppt-anchor .llms-anno-legend strong {
+    display: block;
+    color: var(--color-text);
+    font-weight: 650;
+  }
+  #anatomy .ppt-anchor .llms-anno-legend .anno-desc {
+    display: block;
+  }
+  #anatomy .ppt-anchor .llms-anno-legend > li > .anno-num {
+    margin-top: 2px;
+  }
+  #anatomy .ppt-anchor .llms-anno-legend--dots > li { align-items: flex-start; }
+  #anatomy .ppt-anchor .llms-anno-legend--dots .anno-dot {
+    flex: 0 0 18px;
+    width: 18px;
+    height: 22px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #anatomy .ppt-anchor .llms-anno-legend--dots .anno-dot::before {
+    content: "";
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--anno-ink);
+  }
+  #anatomy .ppt-anchor .anno-rule-group > .anno-example-label {
+    margin: 12px 0 0;
+    font-size: 14px;
+    line-height: 22px;
+    color: var(--color-text-secondary);
+  }
+  #anatomy .ppt-anchor .anno-rule-group > .anno-code {
+    margin: 8px 0 0;
+    padding: 12px 14px;
+    background: #f5f6f8;
+    border-radius: 6px;
+    font-size: 12px;
+    line-height: 18px;
+    color: var(--color-text);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  #anatomy .ppt-anchor .anno-code .anno-hl {
+    display: inline;
+    margin: 0;
+    padding: 0 3px;
+    background: #ffedd5;
+    border-radius: 3px;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+  #anatomy .llms-anno > .an-stage {
+    margin: 0 calc(-1 * var(--anno-pad-right)) 24px calc(-1 * var(--anno-pad-left));
+    padding: 24px var(--anno-pad-right) 24px var(--anno-pad-left);
+  }
+  @media (max-width: 900px) {
+    :is(#anatomy) .ppt-anchor .llms-anno { padding: 0; }
+    :is(#anatomy) .ppt-anchor .llms-pin { display: none; }
+    #anatomy .llms-anno > .an-stage {
+      margin: 0 0 24px;
+      padding: 24px;
+    }
+  }
+</style>
+</head>
+<body class="inner-page agent-entry-page" data-module="design-system" data-page="ds-timeliness" data-no-surface-tabs>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span>AI 亲和原则</span></a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="mintlify.html">友商对照</a>
+      <a href="reachability.html">社区诊断</a>
+      <a href="principles-overview.html">亲和原则</a>
+      <a href="community-ui.html">组件亲和</a>
+      <a href="skills.html">Skill 目录</a>
+      <a href="design-system.html" class="active">设计系统</a>
+    </nav>
+  </div>
+</div>
+
+<div class="page-wrapper">
+
+  <aside id="module-sidebar"></aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <h1>版本与时效信息可识别</h1>
+    </div>
+
+    <section class="section" id="definition">
+      <h2>原则定义</h2>
+      <p class="page-lead">技术文档、产品说明和操作指南会随版本迭代更新。若页面未明确标注版本、更新时间或内容状态，AI Agent 就难以判断内容适用哪个版本、是否仍有效，可能引用过时信息。</p>
+      <p class="page-lead">版本号、更新时间与生命周期状态须以可读文本呈现，并在列表、详情页与机器可读字段间保持一致；不能仅用颜色、图标、「新版」或「EOL」等缩写代替。</p>
+    </section>
+
+    <section class="section" id="types">
+      <h2>组件类型</h2>
+
+      <div class="principle-example">
+        <h3 class="fn-h3">版本列表</h3>
+        <div class="an-stage">
+          <div class="ck-card ver-chrome">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">OmniAdvisor 版本号</th>
+                  <th scope="col">版本状态</th>
+                  <th scope="col">更新时间</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>v24.0.0</td>
+                  <td><span class="ver-status is-live">维护中</span></td>
+                  <td><time datetime="2026-06-30">预计2026/6/30发布</time></td>
+                </tr>
+                <tr>
+                  <td>v23.0.1</td>
+                  <td><span class="ver-status is-sunset">即将停止支持</span></td>
+                  <td><time datetime="2026-03-30">2026/3/30</time></td>
+                </tr>
+                <tr>
+                  <td>v2.2.0</td>
+                  <td><span class="ver-status is-eol">已废弃</span></td>
+                  <td><time datetime="2025-09-30">2025/9/30</time></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="principle-example">
+        <h3 class="fn-h3">文档详情页 <a class="fn-h3-link" href="https://www.hikunpeng.com/document/detail/zh/omniruntime/omnidata/kunpengbds_omniruntime_20_0123.html" target="_blank" rel="noopener">查看示例来源</a></h3>
+        <div class="an-stage">
+          <div class="ck-card doc-shot-chrome">
+            <figure class="doc-shot">
+              <img src="assets/cases-html/hikunpeng-spark-dochead-top.png?v=2" alt="安装 Spark 引擎详情页：标题旁标注 24.0.0" width="1760" height="1160" loading="lazy" decoding="async">
+            </figure>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="anatomy">
+      <h2>元素拆解</h2>
+
+      <div class="principle-example">
+        <h3 class="fn-h3">版本列表</h3>
+        <p class="fn-h3-desc">版本列表为每一行分别承载版本号、生命周期状态与更新时间。三者须写成独立文本，状态不依赖颜色或内部代号。</p>
+        <div class="reach-col reach-theme ppt-anchor ppt-anchor--block">
+          <div class="llms-anno" aria-label="版本列表标注">
+            <div class="an-stage">
+              <div class="ck-card ver-chrome">
+                <span class="llms-pin llms-pin--left llms-pin--ver" aria-hidden="true"><span class="anno-cap">版本号</span><span class="anno-num">1</span><span class="anno-leader"></span></span>
+                <span class="llms-pin llms-pin--right llms-pin--status" aria-hidden="true"><span class="anno-leader"></span><span class="anno-num">2</span><span class="anno-cap">生命周期状态</span></span>
+                <span class="llms-pin llms-pin--right llms-pin--date" aria-hidden="true"><span class="anno-leader"></span><span class="anno-num">3</span><span class="anno-cap">更新时间</span></span>
+                <table>
+                  <thead>
+                    <tr>
+                      <th scope="col">OmniAdvisor 版本号</th>
+                      <th scope="col">版本状态</th>
+                      <th scope="col">更新时间</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>v24.0.0</td>
+                      <td><span class="ver-status is-live">维护中</span></td>
+                      <td><time datetime="2026-06-30">预计2026/6/30发布</time></td>
+                    </tr>
+                    <tr>
+                      <td>v23.0.1</td>
+                      <td><span class="ver-status is-sunset">即将停止支持</span></td>
+                      <td><time datetime="2026-03-30">2026/3/30</time></td>
+                    </tr>
+                    <tr>
+                      <td>v2.2.0</td>
+                      <td><span class="ver-status is-eol">已废弃</span></td>
+                      <td><time datetime="2025-09-30">2025/9/30</time></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="anno-rule-groups">
+              <div class="anno-rule-group">
+                <h4 class="fn-h4">视觉规则</h4>
+                <ol class="llms-anno-legend">
+                  <li><span class="anno-num">1</span><span><strong>版本号</strong><span class="anno-desc">展示具体版本号（如 v24.0.0），不用「新版」「旧版」等相对描述。</span></span></li>
+                  <li><span class="anno-num">2</span><span><strong>生命周期状态</strong><span class="anno-desc">使用「维护中」「即将停止支持」「已废弃」等可读中文，不单靠颜色或 EOL 缩写。</span></span></li>
+                  <li><span class="anno-num">3</span><span><strong>更新时间</strong><span class="anno-desc">展示明确日期或发布说明，格式统一；不依赖排序位置推断新旧。</span></span></li>
+                </ol>
+              </div>
+              <div class="anno-rule-group">
+                <h4 class="fn-h4">前端规则</h4>
+                <ol class="llms-anno-legend llms-anno-legend--dots">
+                  <li><span class="anno-dot" aria-hidden="true"></span><span><strong>可见文本</strong><span class="anno-desc">版本号与生命周期状态写入单元格可见文本；颜色 class 仅作样式，不得替代文案。</span></span></li>
+                  <li><span class="anno-dot" aria-hidden="true"></span><span><strong>time</strong><span class="anno-desc">日期使用 <code>&lt;time datetime&gt;</code>，展示文案与 <code>datetime</code> 一致。</span></span></li>
+                </ol>
+                <p class="anno-example-label">示例如下：</p>
+                <pre class="anno-code"><code>&lt;td&gt;<span class="anno-hl">v24.0.0</span>&lt;/td&gt;
+&lt;td&gt;<span class="anno-hl">维护中</span>&lt;/td&gt;
+&lt;time <span class="anno-hl">datetime="2026-06-30"</span>&gt;预计2026/6/30发布&lt;/time&gt;</code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="principle-example">
+        <h3 class="fn-h3">文档详情页 <a class="fn-h3-link" href="https://www.hikunpeng.com/document/detail/zh/omniruntime/omnidata/kunpengbds_omniruntime_20_0123.html" target="_blank" rel="noopener">查看示例来源</a></h3>
+        <p class="fn-h3-desc">详情页页头须写明本文档适用的版本号与更新时间，并与版本列表同源、同值。</p>
+        <div class="reach-col reach-theme ppt-anchor ppt-anchor--block">
+          <div class="llms-anno" aria-label="文档详情页标注">
+            <div class="an-stage">
+              <div class="ck-card doc-shot-chrome">
+                <span class="llms-pin llms-pin--left llms-pin--ver" aria-hidden="true"><span class="anno-cap">适用版本</span><span class="anno-num">1</span><span class="anno-leader"></span></span>
+                <span class="llms-pin llms-pin--right llms-pin--time" aria-hidden="true"><span class="anno-leader"></span><span class="anno-num">2</span><span class="anno-cap">更新时间</span></span>
+                <figure class="doc-shot">
+                  <img src="assets/cases-html/hikunpeng-spark-dochead-top.png?v=2" alt="安装 Spark 引擎详情页：标题旁标注 24.0.0" width="1760" height="1160" loading="lazy" decoding="async">
+                </figure>
+              </div>
+            </div>
+            <div class="anno-rule-groups">
+              <div class="anno-rule-group">
+                <h4 class="fn-h4">视觉规则</h4>
+                <ol class="llms-anno-legend">
+                  <li><span class="anno-num">1</span><span><strong>适用版本</strong><span class="anno-desc">在标题区域展示具体版本号，便于与列表对照。</span></span></li>
+                  <li><span class="anno-num">2</span><span><strong>更新时间</strong><span class="anno-desc">写清本文最后更新或发布日期，置于页头可见区域。</span></span></li>
+                </ol>
+              </div>
+              <div class="anno-rule-group">
+                <h4 class="fn-h4">前端规则</h4>
+                <ol class="llms-anno-legend llms-anno-legend--dots">
+                  <li><span class="anno-dot" aria-hidden="true"></span><span><strong>可见版本</strong><span class="anno-desc">版本号写入标题旁可见文本，不只放在 URL 或元数据。</span></span></li>
+                  <li><span class="anno-dot" aria-hidden="true"></span><span><strong>time</strong><span class="anno-desc">更新时间使用 <code>&lt;time datetime&gt;</code>，与页头展示文案一致。</span></span></li>
+                </ol>
+                <p class="anno-example-label">示例如下：</p>
+                <pre class="anno-code"><code>&lt;h1&gt;安装 Spark 引擎 &lt;span&gt;<span class="anno-hl">24.0.0</span>&lt;/span&gt;&lt;/h1&gt;
+&lt;time <span class="anno-hl">datetime="2026-04-14"</span>&gt;更新时间：2026/04/14&lt;/time&gt;</code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="usage">
+      <h2>适用边界</h2>
+      <p class="page-lead">上述规则适用于版本列表或文档详情中的版本、日期与状态需要被 AI 识别、筛选或引用的场景。</p>
+      <p class="page-lead">版本号、更新时间与生命周期状态应分别表达，不能相互替代；「最新」不等于「仍受支持」。历史版本可保留，但须标明状态并在必要时链向现行版本。</p>
+      <p class="page-lead">列表、详情与机器可读字段应随内容变更同步更新，避免不同入口的版本信息冲突。</p>
+    </section>
+  </main>
+</div>
+
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js?v=20261105a"></script>
+<script src="assets/js/module-sidebar.js?v=20261105a"></script>
+</body>
+</html>

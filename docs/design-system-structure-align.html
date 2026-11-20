@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>全站规范一致性 · 设计系统 · 昇腾社区 AI 亲和原则</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; min-height: 56px; max-height: 56px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid var(--color-border);
+    overflow: visible;
+  }
+  .topbar-inner {
+    width: 100%; max-width: none; margin: 0; padding: 0 24px; box-sizing: border-box;
+    height: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 0;
+  }
+  .topbar .brand {
+    font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+    color: var(--color-text); text-decoration: none; white-space: nowrap; margin-right: 40px;
+  }
+  .topbar .brand span { color: var(--color-primary); }
+  .topbar .site-nav { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; flex-wrap: wrap; }
+  .topbar .site-nav > a {
+    text-decoration: none; color: var(--color-text-secondary); font-size: var(--text-body); font-weight: 500;
+    padding: 6px 14px; border-radius: 6px; white-space: nowrap;
+    transition: background .15s, color .15s;
+  }
+  .topbar .site-nav > a:hover { color: var(--color-primary); background: var(--color-bg); text-decoration: none; }
+  .topbar .site-nav > a.active { color: var(--color-primary); background: var(--color-bg); font-weight: 600; }
+  body.inner-page .page-wrapper { min-height: 100vh; }
+
+  .page-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: var(--space-stack, 16px);
+  }
+  .page-header > h1 {
+    font-family: var(--font);
+    font-size: var(--text-h1);
+    font-weight: var(--text-h1-weight, 600);
+    line-height: var(--text-h1-lh);
+    letter-spacing: -0.02em;
+    margin: 0;
+    padding-top: var(--space-h1-pad-y, 32px);
+    padding-bottom: var(--space-h1-pad-y, 32px);
+    color: var(--color-text);
+  }
+  body.inner-page[data-page="ds-structure-align"]:has(#module-sidebar) .main-content {
+    padding-top: var(--content-main-pad-top, 16px);
+    padding-bottom: 32px;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  body.inner-page[data-page="ds-structure-align"]:has(#module-sidebar) .main-content > .page-header,
+  body.inner-page[data-page="ds-structure-align"]:has(#module-sidebar) .main-content > .section,
+  body.inner-page[data-page="ds-structure-align"]:has(#module-sidebar) .main-content > .surface-tabs {
+    width: min(var(--content-max-width, 1000px), calc(100% - 2 * clamp(16px, 2.5vw, 24px)));
+    max-width: var(--content-max-width, 1000px);
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  body.inner-page[data-page="ds-structure-align"] .main-content .section > h2 {
+    font-size: var(--text-h2, 24px);
+    font-weight: 700;
+    line-height: var(--text-h2-lh, 36px);
+    letter-spacing: -0.01em;
+    margin-top: 0;
+    margin-bottom: var(--space-stack, 16px);
+    padding-top: var(--space-h2-pad-y, 16px);
+    padding-bottom: 0 !important;
+    border-bottom: none;
+    color: var(--color-text, var(--color-text));
+  }
+  body.inner-page[data-page="ds-structure-align"] .main-content .section h3 { height: auto; }
+  h3.fn-h3 {
+    margin: 0;
+    padding-top: var(--space-h3-pad-y, 16px);
+    padding-bottom: var(--space-h3-pad-y, 16px);
+    font-size: var(--text-h3, 18px);
+    line-height: var(--text-h3-lh, 28px);
+    font-weight: var(--text-h3-weight, 650);
+    color: var(--color-text, var(--color-text));
+    letter-spacing: -0.01em;
+  }
+  body.inner-page[data-page="ds-structure-align"] .main-content .section h4 { height: auto; }
+  h4.fn-h4 {
+    margin: 0;
+    padding-top: var(--space-h4-pad-y, 16px);
+    padding-bottom: var(--space-h4-pad-y, 16px);
+    font-size: var(--text-h4, 14px);
+    line-height: var(--text-h4-lh, 22px);
+    font-weight: var(--text-h4-weight, 650);
+    color: var(--color-text, var(--color-text));
+    letter-spacing: -0.01em;
+  }
+  h3.fn-h3 + .principle-example > h4.fn-h4,
+  h3.fn-h3 + h4.fn-h4 { margin-top: 0; }
+  .fn-h3-desc {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: 22px;
+    color: var(--color-text-secondary);
+  }
+  .principle-example + .principle-example { margin-top: var(--space-stack, 16px); }
+  body.inner-page[data-page="ds-structure-align"] .main-content > .section:first-of-type > h2 { margin-top: 0; }
+  body.inner-page[data-page="ds-structure-align"] .main-content > .section { margin-bottom: 32px !important; }
+  #definition > p.page-lead,
+  #types > p.page-lead,
+  #usage > p.page-lead,
+  #types .fn-h3-desc,
+  #anatomy .fn-h3-desc {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body-lh, 22px);
+    color: var(--color-text-secondary);
+  }
+  #definition > h2 + .page-lead,
+  #types > h2 + .principle-example,
+  #anatomy > h2 + .principle-example,
+  #usage > h2 + .page-lead { margin-top: 0; }
+  #definition > p.page-lead,
+  #usage > p.page-lead { margin-bottom: var(--space-stack, 16px); }
+  #definition > p.page-lead + p.page-lead,
+  #usage > p.page-lead + p.page-lead { margin-top: 0; }
+  #definition > p.page-lead + p.page-lead { margin-bottom: 0; }
+  #usage > p.page-lead + p.page-lead:last-child { margin-bottom: 0; }
+  #types .principle-example > .fn-h3 + .an-stage,
+  #types .principle-example > .fn-h3-desc + .an-stage,
+  #anatomy .principle-example > .fn-h3-desc + .ppt-anchor { margin-top: var(--space-stack, 16px); }
+  :is(#types, #anatomy) .an-stage {
+    margin: 0;
+    padding: 24px;
+    background: #f4f4f5;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    box-sizing: border-box;
+    overflow: visible;
+  }
+  .ck-card {
+    background: #fff;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    box-sizing: border-box;
+  }
+
+  /* 双页大纲：对齐 design-system-hierarchy 的 hier-chrome */
+  #types .align-duo-chrome,
+  #anatomy .align-duo-chrome {
+    margin: 0;
+    padding: 0;
+    width: min(100%, 720px);
+    position: relative;
+    overflow: visible;
+    background: transparent;
+    border: none;
+  }
+  .align-duo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+  @media (max-width: 640px) {
+    .align-duo { grid-template-columns: 1fr; }
+  }
+  .align-page-label {
+    margin: 0 0 8px;
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 650;
+    color: var(--color-text-secondary);
+  }
+  .align-hier {
+    width: 100%;
+    padding: 16px 18px 14px;
+    overflow: visible;
+  }
+  .hd-skel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .hd-skel-block {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .hd-skel-block > * + * { margin-top: 12px; }
+  .hd-skel-block:first-child > * + * { margin-top: 16px; }
+  .hd-skel-block > .align-skel-code { margin-top: 16px; }
+  .hd-skel-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .hd-skel-line {
+    display: block;
+    height: 6px;
+    border-radius: 2px;
+    background: #e8e8e8;
+  }
+  .hd-skel-line.is-w100 { width: 100%; }
+  .hd-skel-line.is-w92 { width: 92%; }
+  .hd-skel-line.is-w80 { width: 80%; }
+  .hd-skel-line.is-w72 { width: 72%; }
+  .hd-skel-line.is-w60 { width: 60%; }
+  .hd-ttl {
+    margin: 0;
+    padding: 0;
+    border: none;
+    color: var(--color-text);
+  }
+  .align-hier .hd-ttl {
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    height: auto !important;
+    color: var(--color-text) !important;
+  }
+  .align-hier .hd-ttl.is-h1 {
+    font-size: 18px !important;
+    font-weight: 700;
+    line-height: 26px !important;
+  }
+  .align-hier .hd-ttl.is-h2 {
+    font-size: 14px !important;
+    font-weight: 650;
+    line-height: 22px !important;
+  }
+  /* 示例块：代码块骨架 */
+  .align-skel-code {
+    margin: 0;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: #fff;
+    border: 1px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-sizing: border-box;
+  }
+  .align-skel-code-lang {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .align-skel-code-lang .hd-skel-line {
+    flex: 0 0 auto;
+    width: 36px;
+    height: 8px;
+  }
+  .align-skel-code-acts {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex-shrink: 0;
+  }
+  .align-skel-code-act {
+    display: block;
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    background: #ececec;
+  }
+  .align-skel-code-body {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .align-skel-code-body .hd-skel-line {
+    height: 8px;
+  }
+
+  :is(#anatomy) .ppt-anchor {
+    --anno-ink: #191919;
+    margin: 0;
+    overflow: visible;
+  }
+  :is(#anatomy) .ppt-anchor .llms-anno {
+    --anno-pad-left: 112px;
+    --anno-pad-right: 200px;
+    margin: 0;
+    padding: 0 var(--anno-pad-right) 0 var(--anno-pad-left);
+    display: flex;
+    flex-direction: column;
+    overflow: visible;
+  }
+  :is(#anatomy) .ppt-anchor .llms-row { position: relative; display: block; }
+  :is(#anatomy) .ppt-anchor .llms-pin {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    pointer-events: none;
+    z-index: 2;
+    white-space: nowrap;
+  }
+  :is(#anatomy) .ppt-anchor .llms-pin .anno-cap {
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 14px;
+    color: var(--anno-ink);
+    white-space: nowrap;
+  }
+  :is(#anatomy) .ppt-anchor .llms-pin--left {
+    right: 100%;
+    margin-right: 10px;
+  }
+  :is(#anatomy) .ppt-anchor .llms-pin--right {
+    left: 100%;
+    margin-left: 12px;
+  }
+  :is(#anatomy) .ppt-anchor .llms-pin .anno-leader {
+    position: relative;
+    width: 20px;
+    height: 1.5px;
+    background: var(--anno-ink);
+    flex-shrink: 0;
+  }
+  :is(#anatomy) .ppt-anchor .llms-pin--left .anno-leader::after,
+  :is(#anatomy) .ppt-anchor .llms-pin--right .anno-leader::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--anno-ink);
+  }
+  :is(#anatomy) .ppt-anchor .llms-pin--left .anno-leader::after {
+    right: 0;
+    transform: translate(50%, -50%);
+  }
+  :is(#anatomy) .ppt-anchor .llms-pin--right .anno-leader::before {
+    left: 0;
+    transform: translate(-50%, -50%);
+  }
+  :is(#anatomy) .ppt-anchor .anno-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 18px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--anno-ink);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+  }
+  #anatomy .align-duo-chrome > .llms-pin--term {
+    top: 116px;
+    transform: none;
+  }
+  #anatomy .align-duo-chrome > .llms-pin--format {
+    left: 100%;
+    right: auto;
+    margin-left: 16px;
+    top: 112px;
+    transform: none;
+  }
+  #anatomy .ppt-anchor .anno-rule-groups {
+    margin: 0 calc(-1 * var(--anno-pad-right)) 0 calc(-1 * var(--anno-pad-left));
+    display: grid;
+    gap: 8px;
+  }
+  #anatomy .ppt-anchor .anno-rule-group > .fn-h4 {
+    margin: 0;
+    padding-top: var(--space-h4-pad-y, 16px) !important;
+    padding-bottom: 0 !important;
+  }
+  #anatomy .ppt-anchor .anno-rule-group:first-child > .fn-h4 { padding-top: 0 !important; }
+  #anatomy .ppt-anchor .anno-rule-group .llms-anno-legend {
+    list-style: none;
+    margin: var(--space-stack, 16px) 0 0;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+  }
+  #anatomy .ppt-anchor .llms-anno-legend > li {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 14px;
+    line-height: 22px;
+    color: var(--color-text-secondary);
+  }
+  #anatomy .ppt-anchor .llms-anno-legend > li > span:last-child {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+  }
+  #anatomy .ppt-anchor .llms-anno-legend strong {
+    display: block;
+    color: var(--color-text);
+    font-weight: 650;
+  }
+  #anatomy .ppt-anchor .llms-anno-legend .anno-desc {
+    display: block;
+  }
+  #anatomy .ppt-anchor .llms-anno-legend > li > .anno-num {
+    margin-top: 2px;
+  }
+  #anatomy .ppt-anchor .llms-anno-legend--dots > li { align-items: flex-start; }
+  #anatomy .ppt-anchor .llms-anno-legend--dots .anno-dot {
+    flex: 0 0 18px;
+    width: 18px;
+    height: 22px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #anatomy .ppt-anchor .llms-anno-legend--dots .anno-dot::before {
+    content: "";
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--anno-ink);
+  }
+  #anatomy .ppt-anchor .anno-rule-group > .anno-example-label {
+    margin: 12px 0 0;
+    font-size: 14px;
+    line-height: 22px;
+    color: var(--color-text-secondary);
+  }
+  #anatomy .ppt-anchor .anno-rule-group > .anno-code {
+    margin: 8px 0 0;
+    padding: 12px 14px;
+    background: #f5f6f8;
+    border-radius: 6px;
+    font-size: 12px;
+    line-height: 18px;
+    color: var(--color-text);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  #anatomy .ppt-anchor .anno-code .anno-hl {
+    display: inline;
+    margin: 0;
+    padding: 0 3px;
+    background: #ffedd5;
+    border-radius: 3px;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+  #anatomy .llms-anno > .an-stage {
+    margin: 0 calc(-1 * var(--anno-pad-right)) 24px calc(-1 * var(--anno-pad-left));
+  }
+  @media (max-width: 900px) {
+    :is(#anatomy) .ppt-anchor .llms-anno { padding: 0; }
+    :is(#anatomy) .ppt-anchor .llms-pin { display: none; }
+    #anatomy .llms-anno > .an-stage {
+      margin: 0 0 24px;
+    }
+  }
+</style>
+</head>
+<body class="inner-page agent-entry-page" data-module="design-system" data-page="ds-structure-align" data-no-surface-tabs>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span>AI 亲和原则</span></a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="mintlify.html">友商对照</a>
+      <a href="reachability.html">社区诊断</a>
+      <a href="principles-overview.html">亲和原则</a>
+      <a href="community-ui.html">组件亲和</a>
+      <a href="skills.html">Skill 目录</a>
+      <a href="design-system.html" class="active">设计系统</a>
+    </nav>
+  </div>
+</div>
+
+<div class="page-wrapper">
+
+  <aside id="module-sidebar"></aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <h1>全站规范一致性</h1>
+    </div>
+
+    <section class="section" id="definition">
+      <h2>原则定义</h2>
+      <p class="page-lead">即便单篇已按模式块书写，若同类任务页各写各的——章节名不统一、顺序不一致、内部格式各异——AI Agent 仍难以跨页对齐同一任务类型，检索与复述时易把「准备工作」与「前提条件」当成不同结构。</p>
+      <p class="page-lead">全站规范一致性要求：全站范围内，核心概念、术语、格式规范、结构模式与交互样式保持一致；跨文档的相同内容使用完全相同的表达、格式和结构。单篇如何切块见「页内结构模式化」。</p>
+    </section>
+
+    <section class="section" id="types">
+      <h2>组件类型</h2>
+
+      <div class="principle-example">
+        <h3 class="fn-h3">同类任务页章节大纲</h3>
+        <p class="fn-h3-desc">以安装场景为例：同类页须统一章节名与顺序（前提条件 → 步骤 → 验证 → 示例）。禁止一篇用「准备工作」、另一篇用「前置 Cond」，或打乱「步骤 / 验证」。</p>
+        <div class="an-stage">
+          <div class="align-duo-chrome">
+            <div class="align-duo">
+              <div>
+                <p class="align-page-label">页 A</p>
+                <div class="ck-card align-hier">
+                  <div class="hd-skel">
+                    <div class="hd-skel-block">
+                      <p class="hd-ttl is-h1">安装 CANN</p>
+                      <div class="hd-skel-lines" aria-hidden="true">
+                        <span class="hd-skel-line is-w100"></span>
+                        <span class="hd-skel-line is-w72"></span>
+                      </div>
+                    </div>
+                    <div class="hd-skel-block">
+                      <p class="hd-ttl is-h2">前提条件</p>
+                      <div class="hd-skel-lines" aria-hidden="true">
+                        <span class="hd-skel-line is-w92"></span>
+                        <span class="hd-skel-line is-w60"></span>
+                      </div>
+                    </div>
+                    <div class="hd-skel-block">
+                      <p class="hd-ttl is-h2">步骤</p>
+                      <div class="hd-skel-lines" aria-hidden="true">
+                        <span class="hd-skel-line is-w80"></span>
+                        <span class="hd-skel-line is-w60"></span>
+                      </div>
+                    </div>
+                    <div class="hd-skel-block">
+                      <p class="hd-ttl is-h2">验证</p>
+                      <div class="hd-skel-lines" aria-hidden="true">
+                        <span class="hd-skel-line is-w72"></span>
+                      </div>
+                    </div>
+                    <div class="hd-skel-block">
+                      <p class="hd-ttl is-h2">示例</p>
+                      <div class="align-skel-code" aria-hidden="true">
+                        <div class="align-skel-code-lang">
+                          <span class="hd-skel-line"></span>
+                          <span class="align-skel-code-acts">
+                            <span class="align-skel-code-act"></span>
+                            <span class="align-skel-code-act"></span>
+                          </span>
+                        </div>
+                        <div class="align-skel-code-body">
+                          <span class="hd-skel-line is-w72"></span>
+                          <span class="hd-skel-line is-w60"></span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <p class="align-page-label">页 B</p>
+                <div class="ck-card align-hier">
+                  <div class="hd-skel">
+                    <div class="hd-skel-block">
+                      <p class="hd-ttl is-h1">安装 NPU 驱动</p>
+                      <div class="hd-skel-lines" aria-hidden="true">
+                        <span class="hd-skel-line is-w100"></span>
+                        <span class="hd-skel-line is-w72"></span>
+                      </div>
+                    </div>
+                    <div class="hd-skel-block">
+                      <p class="hd-ttl is-h2">前提条件</p>
+                      <div class="hd-skel-lines" aria-hidden="true">
+                        <span class="hd-skel-line is-w92"></span>
+                        <span class="hd-skel-line is-w60"></span>
+                      </div>
+                    </div>
+                    <div class="hd-skel-block">
+                      <p class="hd-ttl is-h2">步骤</p>
+                      <div class="hd-skel-lines" aria-hidden="true">
+                        <span class="hd-skel-line is-w80"></span>
+                        <span class="hd-skel-line is-w60"></span>
+                      </div>
+                    </div>
+                    <div class="hd-skel-block">
+                      <p class="hd-ttl is-h2">验证</p>
+                      <div class="hd-skel-lines" aria-hidden="true">
+                        <span class="hd-skel-line is-w72"></span>
+                      </div>
+                    </div>
+                    <div class="hd-skel-block">
+                      <p class="hd-ttl is-h2">示例</p>
+                      <div class="align-skel-code" aria-hidden="true">
+                        <div class="align-skel-code-lang">
+                          <span class="hd-skel-line"></span>
+                          <span class="align-skel-code-acts">
+                            <span class="align-skel-code-act"></span>
+                            <span class="align-skel-code-act"></span>
+                          </span>
+                        </div>
+                        <div class="align-skel-code-body">
+                          <span class="hd-skel-line is-w72"></span>
+                          <span class="hd-skel-line is-w60"></span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="section" id="anatomy">
+      <h2>元素拆解</h2>
+
+      <div class="principle-example">
+        <h3 class="fn-h3">同类任务页章节大纲</h3>
+        <p class="fn-h3-desc">对照页 A / 页 B：跨页要对齐的是章节<strong>同名</strong>与<strong>同序</strong>，不是页标题本身。</p>
+        <div class="reach-col reach-theme ppt-anchor ppt-anchor--block">
+          <div class="llms-anno" aria-label="同类任务页章节大纲标注">
+            <div class="an-stage">
+              <div class="align-duo-chrome">
+                <span class="llms-pin llms-pin--left llms-pin--term" aria-hidden="true"><span class="anno-cap">同名</span><span class="anno-num">1</span><span class="anno-leader"></span></span>
+                <span class="llms-pin llms-pin--right llms-pin--format" aria-hidden="true"><span class="anno-leader"></span><span class="anno-num">2</span><span class="anno-cap">同序</span></span>
+                <div class="align-duo">
+                  <div>
+                    <p class="align-page-label">页 A</p>
+                    <div class="ck-card align-hier">
+                      <div class="hd-skel">
+                        <div class="hd-skel-block">
+                          <p class="hd-ttl is-h1">安装 CANN</p>
+                          <div class="hd-skel-lines" aria-hidden="true">
+                            <span class="hd-skel-line is-w100"></span>
+                            <span class="hd-skel-line is-w72"></span>
+                          </div>
+                        </div>
+                        <div class="hd-skel-block">
+                          <p class="hd-ttl is-h2">前提条件</p>
+                          <div class="hd-skel-lines" aria-hidden="true">
+                            <span class="hd-skel-line is-w92"></span>
+                            <span class="hd-skel-line is-w60"></span>
+                          </div>
+                        </div>
+                        <div class="hd-skel-block">
+                          <p class="hd-ttl is-h2">步骤</p>
+                          <div class="hd-skel-lines" aria-hidden="true">
+                            <span class="hd-skel-line is-w80"></span>
+                            <span class="hd-skel-line is-w60"></span>
+                          </div>
+                        </div>
+                        <div class="hd-skel-block">
+                          <p class="hd-ttl is-h2">验证</p>
+                          <div class="hd-skel-lines" aria-hidden="true">
+                            <span class="hd-skel-line is-w72"></span>
+                          </div>
+                        </div>
+                        <div class="hd-skel-block">
+                          <p class="hd-ttl is-h2">示例</p>
+                          <div class="align-skel-code" aria-hidden="true">
+                            <div class="align-skel-code-lang">
+                              <span class="hd-skel-line"></span>
+                              <span class="align-skel-code-acts">
+                                <span class="align-skel-code-act"></span>
+                                <span class="align-skel-code-act"></span>
+                              </span>
+                            </div>
+                            <div class="align-skel-code-body">
+                              <span class="hd-skel-line is-w72"></span>
+                              <span class="hd-skel-line is-w60"></span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <p class="align-page-label">页 B</p>
+                    <div class="ck-card align-hier">
+                      <div class="hd-skel">
+                        <div class="hd-skel-block">
+                          <p class="hd-ttl is-h1">安装 NPU 驱动</p>
+                          <div class="hd-skel-lines" aria-hidden="true">
+                            <span class="hd-skel-line is-w100"></span>
+                            <span class="hd-skel-line is-w72"></span>
+                          </div>
+                        </div>
+                        <div class="hd-skel-block">
+                          <p class="hd-ttl is-h2">前提条件</p>
+                          <div class="hd-skel-lines" aria-hidden="true">
+                            <span class="hd-skel-line is-w92"></span>
+                            <span class="hd-skel-line is-w60"></span>
+                          </div>
+                        </div>
+                        <div class="hd-skel-block">
+                          <p class="hd-ttl is-h2">步骤</p>
+                          <div class="hd-skel-lines" aria-hidden="true">
+                            <span class="hd-skel-line is-w80"></span>
+                            <span class="hd-skel-line is-w60"></span>
+                          </div>
+                        </div>
+                        <div class="hd-skel-block">
+                          <p class="hd-ttl is-h2">验证</p>
+                          <div class="hd-skel-lines" aria-hidden="true">
+                            <span class="hd-skel-line is-w72"></span>
+                          </div>
+                        </div>
+                        <div class="hd-skel-block">
+                          <p class="hd-ttl is-h2">示例</p>
+                          <div class="align-skel-code" aria-hidden="true">
+                            <div class="align-skel-code-lang">
+                              <span class="hd-skel-line"></span>
+                              <span class="align-skel-code-acts">
+                                <span class="align-skel-code-act"></span>
+                                <span class="align-skel-code-act"></span>
+                              </span>
+                            </div>
+                            <div class="align-skel-code-body">
+                              <span class="hd-skel-line is-w72"></span>
+                              <span class="hd-skel-line is-w60"></span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="anno-rule-groups">
+              <div class="anno-rule-group">
+                <h4 class="fn-h4">视觉规则</h4>
+                <ol class="llms-anno-legend">
+                  <li><span class="anno-num">1</span><span><strong>同名</strong><span class="anno-desc">跨页章节标题字面一致（如一律「前提条件」），不用近义词或内部代号。</span></span></li>
+                  <li><span class="anno-num">2</span><span><strong>同序</strong><span class="anno-desc">章节先后顺序一致；勿在个别页调换「步骤 / 验证」。</span></span></li>
+                </ol>
+              </div>
+              <div class="anno-rule-group">
+                <h4 class="fn-h4">前端规则</h4>
+                <ol class="llms-anno-legend llms-anno-legend--dots">
+                  <li><span class="anno-dot" aria-hidden="true"></span><span><strong>h2 同构</strong><span class="anno-desc">同类型页的 <code>h2</code> 文案与 DOM 顺序保持一致，由统一模板生成更稳妥。</span></span></li>
+                </ol>
+                <p class="anno-example-label">示例如下（页 A / 页 B 同构）：</p>
+                <pre class="anno-code"><code>&lt;<span class="anno-hl">h2</span>&gt;前提条件&lt;/<span class="anno-hl">h2</span>&gt;
+&lt;<span class="anno-hl">h2</span>&gt;步骤&lt;/<span class="anno-hl">h2</span>&gt;
+&lt;<span class="anno-hl">h2</span>&gt;验证&lt;/<span class="anno-hl">h2</span>&gt;
+&lt;<span class="anno-hl">h2</span>&gt;示例&lt;/<span class="anno-hl">h2</span>&gt;</code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="usage">
+      <h2>适用边界</h2>
+      <p class="page-lead">上述规则适用于安装、配置、API、排障等同类型任务页需要被 AI 跨页识别、对比或聚合的场景。</p>
+      <p class="page-lead">先约定任务类型模板，再约束各页落地；有助于 Agent 跨页对齐固定模板，降低「同义不同名」造成的结构错配。本原则管<strong>跨页</strong>是否同名同序同格式；单篇是否切成模式块见「页内结构模式化」。</p>
+      <p class="page-lead">不同任务类型可各自选用不同章节集，但同一类型内须保持稳定；局部业务差异不应成为各写各的的借口。</p>
+    </section>
+  </main>
+</div>
+
+<script src="assets/js/site-config.js"></script>
+<script src="assets/js/site-init.js?v=20261105a"></script>
+<script src="assets/js/module-sidebar.js?v=20261105a"></script>
+</body>
+</html>

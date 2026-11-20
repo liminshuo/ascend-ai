@@ -234,31 +234,15 @@
       "design-system-media.html": 1,
       "design-system-icon-text.html": 1,
       "design-system-style-semantic.html": 1,
-      "principles-media.html": 1,
-      "principles-icon-text.html": 1,
-      "principles-style-semantic.html": 1,
-      "principles-table.html": 1,
-      "principles-code.html": 1,
-      "principles-nontext.html": 1,
-      "principles-structured.html": 1,
-      "principles-hidden.html": 1,
-      "principles-tab.html": 1,
-      "principles-collapse.html": 1,
-      "principles-default-visible.html": 1,
-      "principles-mask-clear.html": 1,
-      "principles-hierarchy.html": 1,
-      "principles-structure-pattern.html": 1,
-      "principles-timeliness.html": 1,
-      "principles-date-modified.html": 1,
-      "principles-a2.html": 1,
-      "principles-link.html": 1,
-      "principles-note.html": 1,
-      "principles-status-word.html": 1,
-      "principles-hotzone.html": 1,
-      "principles-structure-align.html": 1,
-      "principles-expected.html": 1,
-      "principles-verify.html": 1,
-      "principles-outcome.html": 1
+      "design-system-table.html": 1,
+      "design-system-code.html": 1,
+      "design-system-control-label.html": 1,
+      "design-system-hierarchy.html": 1,
+      "design-system-structure-pattern.html": 1,
+      "design-system-timeliness.html": 1,
+      "design-system-link.html": 1,
+      "design-system-structure-align.html": 1,
+      "design-system-expected.html": 1
     };
     function currentSurface() {
       try { return sessionStorage.getItem(SURFACE_KEY) || ""; } catch (e) { return ""; }
@@ -269,7 +253,7 @@
         else sessionStorage.removeItem(SURFACE_KEY);
       } catch (e) {}
     }
-    if (path === "design-system.html") setSurface("design-system");
+    if (path === "design-system.html" || DESIGN_PAGES[path]) setSurface("design-system");
     var DLC_PAGES = {
       "dlc-llms.html": 1,
       "dlc-readme.html": 1,

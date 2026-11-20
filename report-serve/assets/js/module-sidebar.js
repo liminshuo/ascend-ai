@@ -31,9 +31,9 @@
         pageIds: ["carrier", "nontext", "image", "icon-text", "style-semantic", "media", "structured", "table", "code"],
         children: [
           { id: "image", href: "principles-image.html", label: "图片内容可转写" },
-          { id: "media", href: "design-system-media.html", label: "音视频内容可转写" },
-          { id: "icon-text", href: "design-system-icon-text.html", label: "图标含义可读" },
-          { id: "style-semantic", href: "design-system-style-semantic.html", label: "颜色含义可读" },
+          { id: "media", href: "principles-media.html", label: "音视频内容可转写" },
+          { id: "icon-text", href: "principles-icon-text.html", label: "图标含义可读" },
+          { id: "style-semantic", href: "principles-style-semantic.html", label: "颜色含义可读" },
           { id: "table", href: "principles-table.html", label: "表格结构可读" },
           { id: "code", href: "principles-code.html", label: "代码块语义可读" }
         ]
@@ -99,51 +99,51 @@
       },
       {
         group: "可读", id: "ds-carrier", href: "design-system-carousel.html", label: "载体内容可转写",
-        pageIds: ["ds-carrier", "ds-carousel", "ds-image", "ds-media", "ds-icon-text", "ds-style-semantic", "nontext", "icon-text", "style-semantic", "media", "structured", "table", "code"],
+        pageIds: ["ds-carrier", "ds-carousel", "ds-image", "ds-media", "ds-icon-text", "ds-style-semantic", "ds-table", "ds-code"],
         children: [
           { id: "ds-carousel", href: "design-system-carousel.html", label: "轮播" },
           { id: "ds-image", href: "design-system-image.html", label: "图片" },
           { id: "ds-media", href: "design-system-media.html", label: "音视频内容可转写" },
           { id: "ds-icon-text", href: "design-system-icon-text.html", label: "图标含义可读" },
           { id: "ds-style-semantic", href: "design-system-style-semantic.html", label: "颜色含义可读" },
-          { id: "table", href: "principles-table.html", label: "表格结构可读" },
-          { id: "code", href: "principles-code.html", label: "代码块语义可读" }
+          { id: "ds-table", href: "design-system-table.html", label: "表格结构可读" },
+          { id: "ds-code", href: "design-system-code.html", label: "代码块语义可读" }
         ]
       },
       {
-        group: null, id: "interactive", href: "principles-hidden.html", label: "交互内容可抓取",
-        pageIds: ["interactive", "hidden", "tab", "collapse", "default-visible", "mask-clear"],
+        group: null, id: "ds-interactive", href: "design-system-control-label.html", label: "交互内容可抓取",
+        pageIds: ["ds-interactive", "ds-control-label"],
         children: [
-          { id: "hidden", href: "principles-hidden.html", label: "关键正文不默认隐藏",
-            pageIds: ["hidden", "tab", "collapse", "default-visible", "mask-clear"] }
+          { id: "ds-control-label", href: "design-system-control-label.html", label: "控件名称与值可读" }
         ]
       },
       {
-        group: "可理解", id: "doc-structure", href: "principles-hierarchy.html", label: "内容结构可识别",
-        pageIds: ["doc-structure", "hierarchy", "structure-pattern"],
+        group: "可理解", id: "ds-doc-structure", href: "design-system-hierarchy.html", label: "内容结构可识别",
+        pageIds: ["ds-doc-structure", "ds-hierarchy", "ds-structure-pattern"],
         children: [
-          { id: "hierarchy", href: "principles-hierarchy.html", label: "标题层级可识别" },
-          { id: "structure-pattern", href: "principles-structure-pattern.html", label: "页内结构模式化" }
+          { id: "ds-hierarchy", href: "design-system-hierarchy.html", label: "标题层级可识别" },
+          { id: "ds-structure-pattern", href: "design-system-structure-pattern.html", label: "页内结构模式化" }
         ]
       },
       {
-        group: null, id: "lifecycle", href: "principles-timeliness.html", label: "必要信息完整",
-        pageIds: ["lifecycle", "timeliness", "date-modified", "a2"],
+        group: null, id: "ds-lifecycle", href: "design-system-timeliness.html", label: "必要信息完整",
+        pageIds: ["ds-lifecycle", "ds-timeliness"],
         children: [
-          { id: "timeliness", href: "principles-timeliness.html", label: "版本与时效信息可识别" }
+          { id: "ds-timeliness", href: "design-system-timeliness.html", label: "版本与时效信息可识别" }
         ]
       },
       {
-        group: null, id: "meaning", href: "principles-link.html", label: "内容含义明确",
-        pageIds: ["meaning", "status-word", "note", "link"],
+        group: null, id: "ds-meaning", href: "design-system-link.html", label: "内容含义明确",
+        pageIds: ["ds-meaning", "ds-link"],
         children: [
-          { id: "link", href: "principles-link.html", label: "链接目标可识别" }
+          { id: "ds-link", href: "design-system-link.html", label: "链接目标可识别" }
         ]
       },
-      { group: null, id: "structure-align", href: "principles-structure-align.html", label: "全站规范一致性" },
+      { group: null, id: "ds-structure-align", href: "design-system-structure-align.html", label: "全站规范一致性",
+        pageIds: ["ds-structure-align"] },
       {
-        group: "可验证", id: "outcome", href: "principles-expected.html", label: "任务结果可确认",
-        pageIds: ["outcome", "verify", "expected"]
+        group: "可验证", id: "ds-outcome", href: "design-system-expected.html", label: "任务结果可确认",
+        pageIds: ["ds-outcome", "ds-expected"]
       }
     ],
     dlc: [

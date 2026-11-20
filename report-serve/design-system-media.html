@@ -1128,6 +1128,32 @@
     flex-direction: column;
     overflow: visible;
   }
+  /* media anatomy: match #types an-stage width (1000); pins stay inside */
+  #anatomy .ppt-anchor .llms-anno:has(.media-chrome) {
+    --anno-pad-left: 0px;
+    --anno-pad-right: 0px;
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  #anatomy .ppt-anchor .llms-anno:has(.media-chrome) > .an-stage {
+    margin: 0 0 24px;
+    width: 100%;
+    max-width: 100%;
+    padding: 24px;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+  #anatomy .ppt-anchor .llms-anno:has(.media-chrome) .media-chrome {
+    width: 660px;
+    max-width: 100%;
+    flex: 0 1 660px;
+    box-sizing: border-box;
+    overflow: visible;
+  }
   :is(#anatomy, #interaction) .ppt-anchor .anchor-card {
     margin: 0 0 24px;
     background: #fff;
@@ -1780,10 +1806,21 @@
     border: 1px solid var(--color-border);
     border-radius: 12px;
   }
+  #types .media-chrome,
+  #anatomy .media-chrome {
+    width: 660px;
+    max-width: 100%;
+    flex: 0 0 auto;
+    box-sizing: border-box;
+  }
   #types .media-chrome .case-video,
   #anatomy .media-chrome .case-video,
   #types .media-chrome .st-card,
   #anatomy .media-chrome .st-card {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
     padding: 0;
     height: auto;
   }
@@ -1793,8 +1830,8 @@
   #anatomy .media-chrome .case-video-player {
     min-height: 160px;
   }
-  #types .case-video-expanded,
-  #anatomy .case-video-expanded {
+  #types .case-video-expanded:not([hidden]),
+  #anatomy .case-video-expanded:not([hidden]) {
     display: flex;
   }
   #anatomy .ppt-anchor .media-chrome {
@@ -1911,7 +1948,7 @@
     border-radius: 6px;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 8px;
     box-sizing: border-box;
   }
 
@@ -1920,14 +1957,15 @@
     align-items: center;
     justify-content: space-between;
     gap: 12px;
+    min-height: 24px;
   }
 .case-video-copy .case-video-copy-t {
     margin: 0;
     padding: 0;
     flex: 1 1 auto;
     min-width: 0;
-    font-size: 14px;
-    line-height: 22px;
+    font-size: 16px;
+    line-height: 24px;
     font-weight: 700;
     color: var(--color-text);
   }
@@ -1946,6 +1984,8 @@
     display: flex;
     flex: 0 0 auto;
     flex-wrap: nowrap;
+    align-items: center;
+    align-self: center;
     justify-content: flex-end;
     gap: 8px;
     margin: 0;
@@ -1955,8 +1995,8 @@
     padding: 0;
     background: transparent;
     border-radius: 0;
-    font-size: 11px;
-    line-height: 22px;
+    font-size: 12px;
+    line-height: 24px;
     color: var(--color-text-secondary);
   }
 .case-video-actions,
@@ -1991,45 +2031,78 @@
     margin: 0;
     padding: 0;
     background: transparent;
-    font-size: 12px;
-    line-height: 18px;
+    font-size: 14px;
+    line-height: 22px;
+  }
+.case-video-summary + .case-video-more {
+    margin-top: 8px; /* + copy gap 8 = 16 */
   }
 .case-video-more {
     align-self: flex-start;
     appearance: none;
     border: 0;
+    margin: 0;
     padding: 0;
     background: transparent;
-    color: var(--color-primary);
-    font-size: 12px;
-    line-height: 18px;
-    font-weight: 650;
+    color: var(--color-text);
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 400;
     cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+.case-video-more::after {
+    content: "";
+    width: 5px;
+    height: 5px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg);
+    margin-top: -2px;
+  }
+.case-video-more[aria-expanded="true"] {
+    display: none;
+  }
+.case-video-more[aria-expanded="true"]::after {
+    transform: rotate(-135deg);
+    margin-top: 2px;
   }
 .case-video-expanded {
     display: flex;
     flex-direction: column;
     gap: 4px;
+    margin-top: 8px; /* + copy gap 8 = 16 from summary when more is hidden */
     font-size: 12px;
     line-height: 18px;
+  }
+.case-video-expanded > .case-video-k:first-child {
+    margin-top: 0;
   }
 .case-video-expanded[hidden] {
     display: none;
   }
-.case-video-expanded .case-video-k,
-.case-video-expanded ul li,
 .case-video-expanded .case-video-actions a,
-.case-video-expanded .case-video-actions span,
-.case-video-expanded .case-video-chips li {
+  .case-video-expanded .case-video-actions span {
     font-size: 12px;
     line-height: 18px;
+    min-height: 18px;
   }
 .case-video-copy .case-video-k {
     margin: 2px 0 0;
-    font-size: 12px;
-    line-height: 18px;
+    font-size: 14px;
+    line-height: 22px;
     font-weight: 650;
-    color: var(--color-text-secondary);
+    color: var(--color-text);
+  }
+.case-video-copy .case-video-k + ul,
+  .case-video-copy .case-video-k + .case-video-actions {
+    margin-top: 4px; /* + expanded gap 4 = 8 */
+  }
+.case-video-expanded ul + .case-video-k,
+  .case-video-expanded .case-video-actions + .case-video-k {
+    margin-top: 12px; /* + expanded gap 4 = 16 between sections */
   }
 .case-video-copy ul {
     margin: 4px 0 0;
@@ -2038,19 +2111,22 @@
   }
 .case-video-copy ul li {
     margin: 0;
-    font-size: var(--text-auxiliary);
-    line-height: 18px;
+    font-size: 14px;
+    line-height: 22px;
     color: var(--color-text);
   }
 .case-video-copy ul li + li { margin-top: 2px; }
 .case-video-copy .case-video-topics {
     display: block;
   }
+.case-video-copy .case-video-topics li + li {
+    margin-top: 4px;
+  }
 .case-video-copy .case-video-chips {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 2px;
+    gap: 4px;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -2060,11 +2136,15 @@
     width: auto;
     margin: 0;
     font-family: var(--font-mono, "SF Mono", ui-monospace, monospace);
+    font-size: 14px;
+    line-height: 22px;
     color: var(--color-text);
   }
 .case-video-copy .case-video-chips a {
     display: inline-flex;
     align-items: center;
+    font-size: 14px;
+    line-height: 22px;
     color: inherit;
     text-decoration: none;
   }
@@ -2072,9 +2152,9 @@
     text-decoration: underline;
   }
 .case-video-copy .case-video-chips time {
-    margin-right: 4px;
-    color: var(--color-primary);
-    font-weight: 650;
+    margin-right: 8px;
+    color: var(--color-text);
+    font-weight: 400;
   }
 .case-video-copy .case-video-chap {
     margin: 4px 0 0;
@@ -2115,8 +2195,8 @@
 .audio-bar-play {
     position: relative;
     flex-shrink: 0;
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
     background: var(--color-primary);
   }
@@ -2124,16 +2204,16 @@
 .audio-bar-play::after {
     content: "";
     position: absolute;
-    left: 11px;
-    top: 8px;
+    left: 9px;
+    top: 6px;
     border-style: solid;
-    border-width: 6px 0 6px 9px;
+    border-width: 6px 0 6px 8px;
     border-color: transparent transparent transparent #fff;
   }
 
 .audio-bar-wave {
     flex: 1;
-    height: 28px;
+    height: 18px;
     display: flex;
     align-items: center;
     gap: 2px;
@@ -2141,15 +2221,19 @@
 
 .audio-bar-wave i {
     display: block;
-    width: 3px;
+    width: 2px;
     border-radius: 1px;
     background: #bfbfbf;
+    max-height: 18px;
+    transform: scaleY(0.72);
+    transform-origin: center;
   }
 
 .audio-bar-time {
     flex-shrink: 0;
-    font-size: var(--text-auxiliary);
-    color: #8c8c8c;
+    font-size: 12px;
+    line-height: 24px;
+    color: var(--color-text-secondary);
   }
 
 .st-card {
@@ -2160,10 +2244,11 @@
 
 .st-card .audio-bar + p,
   .st-card .audio-bar + .case-video-copy {
-    margin-top: 10px;
+    margin-top: 0;
   }
   .st-card .case-video-copy {
-    flex: none;
+    flex: 0 0 auto;
+    min-width: 0;
   }
 
 
@@ -2198,15 +2283,15 @@
 
     <section class="section" id="definition">
       <h2>原则定义</h2>
-      <p class="page-lead">音视频里的讲解、步骤、参数与结论如果只留在声音或画面中，AI Agent 往往无法完整获取。需要把核心知识写成可读取文本，并用章节、时间戳建立文本与媒体的对应关系。</p>
-      <p class="page-lead">不必逐字转写全部口播；应保证关键知识完整、准确，且与字幕、章节索引同步更新。</p>
+      <p class="page-lead">音视频里的讲解、步骤、参数与结论如果只留在声音或画面中，AI Agent 往往无法完整获取。需要把核心知识写成默认可读取的文本（标题、摘要、主要观点）；教程类可再用时间定位建立文本与媒体的对应关系。</p>
+      <p class="page-lead">逐字稿与字幕为可选补充，不能替代默认可见的要点。应保证关键知识完整、准确；若提供字幕、章节或时间戳，须与要点同步更新。</p>
     </section>
 
     <section class="section" id="types">
       <h2>组件类型</h2>
 
       <div class="principle-example">
-        <h3 class="fn-h3">视频 · 旁侧要点 <a class="fn-h3-link" href="https://www.hiascend.com/industries/solutions/smart-city" target="_blank" rel="noopener">查看示例来源</a></h3>
+        <h3 class="fn-h3">视频</h3>
         <div class="an-stage">
           <div class="ck-card media-chrome">
             <div class="case-video">
@@ -2224,29 +2309,32 @@
                   <p class="case-video-copy-t">以智生慧、融慧赋能</p>
                   <div class="case-video-meta" aria-label="视频元信息">
                     <span>12.8 万次观看</span>
-                    <span>7 小时前</span>
+                    <span>2026年11月13日</span>
                   </div>
                 </div>
-                <p class="case-video-summary">深圳龙岗以「数据 + 算力」建设智慧城市 2.0，覆盖城管、消防、交通、工地、水务、市监等场景。</p>
-                <div class="case-video-expanded">
+                <p class="case-video-summary">深圳龙岗以「数据 + 算力」建设智慧城市 2.0。本视频说明建设目标、平台底座，以及城管、消防、交通等场景的落地结果。</p>
+                <button type="button" class="case-video-more" aria-expanded="false" aria-controls="case-video-expanded-types-v">展开要点</button>
+                <div class="case-video-expanded" id="case-video-expanded-types-v" hidden>
                   <p class="case-video-k">主要观点</p>
                   <ul class="case-video-topics">
-                    <li>大运 AI 小镇</li>
-                    <li>数据与算力底座</li>
-                    <li>20+ AI 算法</li>
-                    <li>60+ 城市场景</li>
+                    <li>了解智慧城市 2.0 建设目标</li>
+                    <li>看清数据与算力底座如何支撑业务</li>
+                    <li>对照六大城市场景的落地结果</li>
+                    <li>定位可复用的算法与平台能力</li>
                   </ul>
                   <p class="case-video-k">时间定位</p>
                   <ul class="case-video-chips">
+                    <li><a href="#t=0"><time>00:00</time>开场与背景</a></li>
                     <li><a href="#t=12"><time>00:12</time>建设目标</a></li>
                     <li><a href="#t=100"><time>01:40</time>落地结果</a></li>
+                    <li><a href="#t=210"><time>03:30</time>总结与延伸</a></li>
                   </ul>
                   <p class="case-video-k">相关内容</p>
                   <div class="case-video-actions" aria-label="相关内容">
-                    <a href="#types">字幕</a>
-                    <a href="#types">章节</a>
-                    <a href="https://www.hiascend.com/industries/solutions/smart-city" target="_blank" rel="noopener">来源页</a>
-                    <a href="https://www.hiascend.com/industries/solutions" target="_blank" rel="noopener">相关案例</a>
+                    <a href="https://www.hiascend.com/industries/solutions/smart-city" target="_blank" rel="noopener">方案文档</a>
+                    <a href="https://www.hiascend.com/industries/solutions" target="_blank" rel="noopener">行业案例</a>
+                    <a href="https://www.hiascend.com/document" target="_blank" rel="noopener">产品文档</a>
+                    <a href="https://www.hiascend.com/forum" target="_blank" rel="noopener">技术答疑</a>
                   </div>
                 </div>
               </div>
@@ -2256,7 +2344,7 @@
       </div>
 
       <div class="principle-example">
-        <h3 class="fn-h3">音频 · 旁侧要点</h3>
+        <h3 class="fn-h3">音频</h3>
         <div class="an-stage">
           <div class="ck-card media-chrome">
             <div class="st-card">
@@ -2272,11 +2360,12 @@
                   <p class="case-video-copy-t">CANN 安装答疑</p>
                   <div class="case-video-meta" aria-label="音频元信息">
                     <span>3.2 万次收听</span>
-                    <span>2 天前</span>
+                    <span>2026年11月16日</span>
                   </div>
                 </div>
-                <p class="case-video-summary">驱动版本须与 CANN 配套；配置 PATH 后用版本查询确认匹配，再重启设备。</p>
-                <div class="case-video-expanded">
+                <p class="case-video-summary">本音频说明 CANN 安装前的配套核对、PATH 配置与版本校验，以及安装完成后的重启确认。</p>
+                <button type="button" class="case-video-more" aria-expanded="false" aria-controls="case-video-expanded-types-a">展开要点</button>
+                <div class="case-video-expanded" id="case-video-expanded-types-a" hidden>
                   <p class="case-video-k">主要观点</p>
                   <ul class="case-video-topics">
                     <li>确认驱动版本与 CANN 配套</li>
@@ -2285,15 +2374,16 @@
                   </ul>
                   <p class="case-video-k">时间定位</p>
                   <ul class="case-video-chips">
+                    <li><a href="#t=0"><time>00:00</time>问题背景</a></li>
                     <li><a href="#t=80"><time>01:20</time>版本配套说明</a></li>
                     <li><a href="#t=245"><time>04:05</time>PATH 配置与校验</a></li>
+                    <li><a href="#t=420"><time>07:00</time>重启与收尾</a></li>
                   </ul>
                   <p class="case-video-k">相关内容</p>
                   <div class="case-video-actions" aria-label="相关内容">
-                    <a href="#types">字幕</a>
-                    <a href="#types">章节</a>
                     <a href="https://www.hiascend.com/document" target="_blank" rel="noopener">安装文档</a>
-                    <a href="https://www.hiascend.com/forum" target="_blank" rel="noopener">相关答疑</a>
+                    <a href="https://www.hiascend.com/software/cann" target="_blank" rel="noopener">CANN 概述</a>
+                    <a href="https://www.hiascend.com/forum" target="_blank" rel="noopener">技术答疑</a>
                   </div>
                 </div>
               </div>
@@ -2307,8 +2397,8 @@
       <h2>元素拆解</h2>
 
       <div class="principle-example">
-        <h3 class="fn-h3">视频 · 旁侧要点 <a class="fn-h3-link" href="https://www.hiascend.com/industries/solutions/smart-city" target="_blank" rel="noopener">查看示例来源</a></h3>
-        <p class="fn-h3-desc">视频旁侧要点由标题、摘要、主要观点、时间定位与相关入口构成；播放器内的字幕与章节标记用于对照片段，但不能替代页面默认可见的文字。</p>
+        <h3 class="fn-h3">视频</h3>
+        <p class="fn-h3-desc">下图按展开后结构标注：标题、摘要、主要观点；时间定位与相关内容为可选。组件类型中默认可先收起长列表；展开区正文须留在初始 HTML 中可被抓取。</p>
         <div class="reach-col reach-theme ppt-anchor ppt-anchor--block">
           <div class="llms-anno" aria-label="视频旁侧要点标注">
             <div class="an-stage">
@@ -2316,7 +2406,7 @@
                 <div class="case-video">
                   <div class="case-video-player">
                     <span class="case-video-play" aria-hidden="true"></span>
-                    <p class="case-video-caption llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">字幕</span><span class="anno-num">5</span><span class="anno-leader"></span><span class="anno-tip"></span></span>字幕：以数据、算力与平台赋能六大城市场景。</p>
+                    <p class="case-video-caption">字幕：以数据、算力与平台赋能六大城市场景。</p>
                     <div class="case-video-progress" aria-label="播放条章节定位">
                       <span aria-hidden="true"></span>
                       <i style="left:12%"></i>
@@ -2326,26 +2416,27 @@
                   <div class="case-video-copy">
                     <div class="case-video-head">
                       <p class="case-video-copy-t llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">标题</span><span class="anno-num">1</span><span class="anno-leader"></span><span class="anno-tip"></span></span>以智生慧、融慧赋能</p>
-                      <div class="case-video-meta"><span>12.8 万次观看</span><span>7 小时前</span></div>
+                      <div class="case-video-meta"><span>12.8 万次观看</span><span>2026年11月13日</span></div>
                     </div>
-                    <p class="case-video-summary llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">摘要</span><span class="anno-num">2</span><span class="anno-leader"></span><span class="anno-tip"></span></span>深圳龙岗以「数据 + 算力」建设智慧城市 2.0，覆盖城管、消防、交通、工地、水务、市监等场景。</p>
-                    <div class="case-video-expanded">
+                    <p class="case-video-summary llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">摘要</span><span class="anno-num">2</span><span class="anno-leader"></span><span class="anno-tip"></span></span>深圳龙岗以「数据 + 算力」建设智慧城市 2.0。本视频说明建设目标、平台底座，以及城管、消防、交通等场景的落地结果。</p>
+                    <div class="case-video-expanded" id="case-video-expanded-anatomy-v">
                       <p class="case-video-k llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">主要观点</span><span class="anno-num">3</span><span class="anno-leader"></span><span class="anno-tip"></span></span>主要观点</p>
                       <ul class="case-video-topics">
-                        <li>大运 AI 小镇</li>
-                        <li>数据与算力底座</li>
-                        <li>20+ AI 算法；60+ 城市场景</li>
+                        <li>了解智慧城市 2.0 建设目标</li>
+                        <li>看清数据与算力底座如何支撑业务</li>
+                        <li>对照六大城市场景的落地结果</li>
                       </ul>
-                      <p class="case-video-k llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">时间定位</span><span class="anno-num">4</span><span class="anno-leader"></span><span class="anno-tip"></span></span>时间定位</p>
+                      <p class="case-video-k llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">时间定位（可选）</span><span class="anno-num">4</span><span class="anno-leader"></span><span class="anno-tip"></span></span>时间定位</p>
                       <ul class="case-video-chips">
+                        <li><a href="#t=0"><time>00:00</time>开场与背景</a></li>
                         <li><a href="#t=12"><time>00:12</time>建设目标</a></li>
                         <li><a href="#t=100"><time>01:40</time>落地结果</a></li>
                       </ul>
-                      <p class="case-video-k">相关内容</p>
+                      <p class="case-video-k llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">相关内容（可选）</span><span class="anno-num">5</span><span class="anno-leader"></span><span class="anno-tip"></span></span>相关内容</p>
                       <div class="case-video-actions">
-                        <a href="#anatomy">字幕</a>
-                        <a href="#anatomy">章节</a>
-                        <a href="https://www.hiascend.com/industries/solutions/smart-city" target="_blank" rel="noopener">来源页</a>
+                        <a href="https://www.hiascend.com/industries/solutions/smart-city" target="_blank" rel="noopener">方案文档</a>
+                        <a href="https://www.hiascend.com/industries/solutions" target="_blank" rel="noopener">行业案例</a>
+                        <a href="https://www.hiascend.com/forum" target="_blank" rel="noopener">技术答疑</a>
                       </div>
                     </div>
                   </div>
@@ -2358,22 +2449,32 @@
                 <ol class="llms-anno-legend">
                   <li><span class="anno-num">1</span><span><strong>标题</strong><span class="anno-desc">用可读文字命名该音视频主题，默认露出，不依赖口播或画面烧录字。</span></span></li>
                   <li><span class="anno-num">2</span><span><strong>摘要</strong><span class="anno-desc">概括建设目标、场景或结论，保证不打开播放器也能读到核心信息。</span></span></li>
-                  <li><span class="anno-num">3</span><span><strong>主要观点</strong><span class="anno-desc">列出关键步骤、参数或结论要点；可折叠展开，但对应正文须可被抓取。</span></span></li>
-                  <li><span class="anno-num">4</span><span><strong>时间定位</strong><span class="anno-desc">章节或时间戳指向具体片段，帮助定位与引用；链接须指向正确内容。</span></span></li>
-                  <li><span class="anno-num">5</span><span><strong>字幕（可选）</strong><span class="anno-desc">可作补充，不能替代默认可见的标题、摘要与结论。</span></span></li>
+                  <li><span class="anno-num">3</span><span><strong>主要观点</strong><span class="anno-desc">展开后露出；列出可学会的步骤或结论。正文须留在初始 HTML，禁止点击后才注入唯一正文。</span></span></li>
+                  <li><span class="anno-num">4</span><span><strong>时间定位（可选）</strong><span class="anno-desc">教程、课程类建议提供；宣传片等无明确章节时可省略。有则用时间戳指向具体片段。</span></span></li>
+                  <li><span class="anno-num">5</span><span><strong>相关内容（可选）</strong><span class="anno-desc">有可跟进的方案文档、案例、答疑时再放；无延伸入口可省略，不放社交分发。</span></span></li>
+                </ol>
+              </div>
+              <div class="anno-rule-group">
+                <h4 class="fn-h4">交互规则</h4>
+                <ol class="llms-anno-legend llms-anno-legend--dots">
+                  <li><span class="anno-dot" aria-hidden="true"></span><span><strong>默认收起</strong><span class="anno-desc">首屏只露出标题、元信息、摘要与「展开要点」；主要观点及可选区块默认折叠，避免长列表占满首屏。</span></span></li>
+                  <li><span class="anno-dot" aria-hidden="true"></span><span><strong>一次展开</strong><span class="anno-desc">点击「展开要点」后露出主要观点，以及已提供的时间定位、相关内容；展开后可不再提供「收起」，避免打断阅读。</span></span></li>
+                  <li><span class="anno-dot" aria-hidden="true"></span><span><strong>时间定位跳转</strong><span class="anno-desc">若提供时间定位：点击条目将播放器跳到对应时刻并继续播放；无真实播放器时至少保持可聚焦的时间锚点链接。</span></span></li>
+                  <li><span class="anno-dot" aria-hidden="true"></span><span><strong>相关内容跳转</strong><span class="anno-desc">若提供相关内容：点击后打开对应文档/案例/答疑页（新标签或站内均可），不在当前页用弹层代替正文。</span></span></li>
                 </ol>
               </div>
               <div class="anno-rule-group">
                 <h4 class="fn-h4">前端规则</h4>
                 <ol class="llms-anno-legend llms-anno-legend--dots">
-                  <li><span class="anno-dot" aria-hidden="true"></span><span><strong>可见文本节点</strong><span class="anno-desc">标题、摘要、观点、时间定位与相关入口写成 HTML 文本或 Markdown 正文，勿只放在懒加载空壳或仅媒体轨中。</span></span></li>
-                  <li><span class="anno-dot" aria-hidden="true"></span><span><strong>时间锚点</strong><span class="anno-desc">时间定位使用可跳转的锚点或带时间参数的链接；媒体地址可提供，但不能替代文本转写。</span></span></li>
+                  <li><span class="anno-dot" aria-hidden="true"></span><span><strong>可见文本节点</strong><span class="anno-desc">标题、摘要、主要观点写成 HTML/Markdown 正文；若有时间定位或相关入口一并写成文本。勿只放在懒加载空壳或仅媒体轨中。</span></span></li>
+                  <li><span class="anno-dot" aria-hidden="true"></span><span><strong>时间锚点（可选）</strong><span class="anno-desc">提供时间定位时，用可跳转锚点或带时间参数的链接；媒体地址不能替代文本要点。</span></span></li>
+                  <li><span class="anno-dot" aria-hidden="true"></span><span><strong>折叠不删正文</strong><span class="anno-desc">可用 <code>hidden</code> / CSS 收起；展开区正文须在初始 HTML 中，禁止点击后才异步注入唯一正文。</span></span></li>
                 </ol>
                 <p class="anno-example-label">示例如下：</p>
                 <pre class="anno-code"><code>&lt;h3&gt;以智生慧、融慧赋能&lt;/h3&gt;
 &lt;p&gt;深圳龙岗以「数据 + 算力」建设智慧城市 2.0。&lt;/p&gt;
-&lt;ul&gt;&lt;li&gt;大运 AI 小镇&lt;/li&gt;…&lt;/ul&gt;
-&lt;a href="<span class="anno-hl">#t=12</span>"&gt;&lt;time&gt;00:12&lt;/time&gt;建设目标&lt;/a&gt;</code></pre>
+&lt;ul&gt;&lt;li&gt;了解智慧城市 2.0 建设目标&lt;/li&gt;…&lt;/ul&gt;
+&lt;!-- 可选：&lt;a href="<span class="anno-hl">#t=12</span>"&gt;&lt;time&gt;00:12&lt;/time&gt;建设目标&lt;/a&gt; --&gt;</code></pre>
               </div>
             </div>
           </div>
@@ -2381,8 +2482,8 @@
       </div>
 
       <div class="principle-example">
-        <h3 class="fn-h3">音频 · 旁侧要点</h3>
-        <p class="fn-h3-desc">音频同样需要旁侧标题与要点。安装答疑、操作说明等口播内容应落成可读列表与时间定位；纯装饰背景音且要点已覆盖同一内容时，可不再单独转写音频轨。</p>
+        <h3 class="fn-h3">音频</h3>
+        <p class="fn-h3-desc">音频与视频同一套旁侧结构：元信息、标题、摘要、主要观点、时间定位、相关内容。口播步骤须落成可读列表；相关内容放安装文档/答疑等可跟进链接。纯装饰背景音且要点已覆盖同一内容时，可不再单独转写音频轨。</p>
         <div class="reach-col reach-theme ppt-anchor ppt-anchor--block">
           <div class="llms-anno" aria-label="音频旁侧要点标注">
             <div class="an-stage">
@@ -2396,15 +2497,31 @@
                     <span class="audio-bar-time">8:15</span>
                   </div>
                   <div class="case-video-copy">
-                    <p class="case-video-copy-t llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">标题</span><span class="anno-num">1</span><span class="anno-leader"></span><span class="anno-tip"></span></span>CANN 安装答疑</p>
-                    <p class="case-video-summary llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">摘要</span><span class="anno-num">2</span><span class="anno-leader"></span><span class="anno-tip"></span></span>驱动版本须与 CANN 配套；配置 PATH 后用版本查询确认匹配。</p>
-                    <div class="case-video-expanded">
+                    <div class="case-video-head">
+                      <p class="case-video-copy-t llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">标题</span><span class="anno-num">1</span><span class="anno-leader"></span><span class="anno-tip"></span></span>CANN 安装答疑</p>
+                      <div class="case-video-meta"><span>3.2 万次收听</span><span>2026年11月16日</span></div>
+                    </div>
+                    <p class="case-video-summary llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">摘要</span><span class="anno-num">2</span><span class="anno-leader"></span><span class="anno-tip"></span></span>本音频说明 CANN 安装前的配套核对、PATH 配置与版本校验，以及安装完成后的重启确认。</p>
+                    <div class="case-video-expanded" id="case-video-expanded-anatomy-a">
                       <p class="case-video-k llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">主要观点</span><span class="anno-num">3</span><span class="anno-leader"></span><span class="anno-tip"></span></span>主要观点</p>
                       <ul class="case-video-topics">
                         <li>确认驱动版本与 CANN 配套</li>
                         <li>配置 PATH 后执行版本查询</li>
                         <li>安装完成后重启设备</li>
                       </ul>
+                      <p class="case-video-k llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">时间定位（可选）</span><span class="anno-num">4</span><span class="anno-leader"></span><span class="anno-tip"></span></span>时间定位</p>
+                      <ul class="case-video-chips">
+                        <li><a href="#t=0"><time>00:00</time>问题背景</a></li>
+                        <li><a href="#t=80"><time>01:20</time>版本配套说明</a></li>
+                        <li><a href="#t=245"><time>04:05</time>PATH 配置与校验</a></li>
+                        <li><a href="#t=420"><time>07:00</time>重启与收尾</a></li>
+                      </ul>
+                      <p class="case-video-k llms-row"><span class="llms-pin llms-pin--left" aria-hidden="true"><span class="anno-cap">相关内容（可选）</span><span class="anno-num">5</span><span class="anno-leader"></span><span class="anno-tip"></span></span>相关内容</p>
+                      <div class="case-video-actions">
+                        <a href="https://www.hiascend.com/document" target="_blank" rel="noopener">安装文档</a>
+                        <a href="https://www.hiascend.com/software/cann" target="_blank" rel="noopener">CANN 概述</a>
+                        <a href="https://www.hiascend.com/forum" target="_blank" rel="noopener">技术答疑</a>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -2417,6 +2534,8 @@
                   <li><span class="anno-num">1</span><span><strong>标题</strong><span class="anno-desc">标明音频主题，避免只有波形与时长。</span></span></li>
                   <li><span class="anno-num">2</span><span><strong>摘要</strong><span class="anno-desc">写出配套条件与校验结论等关键信息。</span></span></li>
                   <li><span class="anno-num">3</span><span><strong>主要观点</strong><span class="anno-desc">步骤化列出安装或操作要点，便于检索与引用。</span></span></li>
+                  <li><span class="anno-num">4</span><span><strong>时间定位（可选）</strong><span class="anno-desc">答疑、教程类建议提供；无明确章节时可省略。</span></span></li>
+                  <li><span class="anno-num">5</span><span><strong>相关内容（可选）</strong><span class="anno-desc">有安装文档、概述、答疑等可跟进链接时再放。</span></span></li>
                 </ol>
               </div>
               <div class="anno-rule-group">
@@ -2447,5 +2566,34 @@
 <script src="assets/js/site-config.js"></script>
 <script src="assets/js/site-init.js?v=20261105a"></script>
 <script src="assets/js/module-sidebar.js?v=20261105a"></script>
+<script>
+(function () {
+  document.querySelectorAll(".case-video-more").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var id = btn.getAttribute("aria-controls");
+      var panel = id ? document.getElementById(id) : btn.nextElementSibling;
+      if (!panel) return;
+      var open = btn.getAttribute("aria-expanded") === "true";
+      var nextOpen = !open;
+      var label = nextOpen ? "收起" : "展开要点";
+      btn.setAttribute("aria-expanded", nextOpen ? "true" : "false");
+      panel.hidden = !nextOpen;
+      var pin = btn.querySelector(".llms-pin");
+      if (pin) {
+        var labeled = false;
+        btn.childNodes.forEach(function (n) {
+          if (!labeled && n.nodeType === 3 && n.textContent.trim()) {
+            n.textContent = label;
+            labeled = true;
+          }
+        });
+        if (!labeled) btn.appendChild(document.createTextNode(label));
+      } else {
+        btn.textContent = label;
+      }
+    });
+  });
+})();
+</script>
 </body>
 </html>
